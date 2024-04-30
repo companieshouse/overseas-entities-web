@@ -1,31 +1,7 @@
 {% extends "update-layout.html" %}
 
-{% set bos = [{
-    value: "individualOwner",
-    text: "Individual beneficial owner"
-  },
-  {
-    value: "otherLegalOwner",
-    text: "Other legal entity beneficial owner"
-  },
-  {
-    value: "governmentOrPublicOwner",
-    text: "Government or public authority beneficial owner"
-  },
-  {
-    value: "individualOfficer",
-    text: "Individual managing officer"
-  },
-  {
-    value: "corporateOfficer",
-    text: "Corporate managing officer"
-  }]
-%}
-
 {% set beneficial_owners_statement = "ALL_IDENTIFIED_ALL_DETAILS" %}
 {% set boTypesLegendText = "Which type of beneficial owner or managing officer do you want to add?" %}
-{% set title = "Beneficial owners and managing officers involved in the overseas entity" %}
-{% set boTypes = bos %}
 {% set whatToAdd = "another beneficial owner or managing officer" %}
 {% set hiddenTextValue = "beneficial owners and managing officers" %}
 {% set entity_name = entity_name %}

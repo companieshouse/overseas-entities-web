@@ -22,6 +22,9 @@ import { checkEntityRequiresTrusts, getTrustLandingUrl } from "../../utils/trust
 import { retrieveTrustData } from "../../utils/update/trust.model.fetch";
 import { saveAndContinue } from "../../utils/save.and.continue";
 import { Session } from "@companieshouse/node-session-handler";
+import { generateManagerOfficerFields } from "../../service/update.managing.officer.service";
+
+const title = "Beneficial owners and managing officers involved in the overseas entity";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -48,13 +51,16 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     const hasNewlyAddedBosMos = allBosMos.find(boMo => !boMo.ch_reference) !== undefined;
     const hasExistingBosMos = allBosMos.find(boMo => boMo.ch_reference) !== undefined;
+    const managingOfficerFields = generateManagerOfficerFields(appData);
 
     return res.render(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, {
       backLinkUrl: config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
       templateName: config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
       ...appData,
       hasExistingBosMos,
-      hasNewlyAddedBosMos
+      hasNewlyAddedBosMos,
+      title: managingOfficerFields.title ? managingOfficerFields.title : title,
+      boTypes: managingOfficerFields.radioItems
     });
   } catch (error) {
     logger.errorRequest(req, error);

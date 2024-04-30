@@ -20,7 +20,8 @@ import {
   HasFormerNames,
   HasSameResidentialAddressKey,
   ID,
-  InputDateKeys
+  InputDateKeys,
+  yesNoResponse
 } from "../model/data.types.model";
 import {
   DateOfBirthKey,
@@ -32,7 +33,7 @@ import {
   StartDateKeys
 } from "../model/date.model";
 import { ServiceAddressKey, ServiceAddressKeys, UsualResidentialAddressKey, UsualResidentialAddressKeys } from "../model/address.model";
-import { FormerNamesKey, ManagingOfficerIndividual, ManagingOfficerKey, ManagingOfficerKeys } from "../model/managing.officer.model";
+import { FormerNamesKey, IsStillManagingOE, ManagingOfficerIndividual, ManagingOfficerKey, ManagingOfficerKeys } from "../model/managing.officer.model";
 import { v4 as uuidv4 } from 'uuid';
 import { addResignedDateToTemplateOptions } from "./update/ceased_date_util";
 import * as config from "../config";
@@ -174,6 +175,7 @@ export const setOfficerData = (reqBody: any, id: string): ApplicationDataType =>
   }
   if ('is_still_mo' in reqBody){
     data[ResignedOnDateKey] = reqBody["is_still_mo"] === '0' ? mapFieldsToDataObject(reqBody, ResignedOnDateKeys, InputDateKeys) : {};
+    data[IsStillManagingOE] = reqBody["is_still_mo"] === '0' ? yesNoResponse.No : yesNoResponse.Yes;
   }
   data[ID] = id;
 

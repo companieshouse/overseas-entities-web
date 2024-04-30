@@ -23,8 +23,11 @@ export const ManagingOfficerKeys: string[] = [
   "occupation",
   "role_and_responsibilities",
   "start_date",
-  "resigned_on"
+  "resigned_on",
+  "is_still_managing_OE"
 ];
+
+export const IsStillManagingOE = "is_still_managing_OE";
 
 export interface ManagingOfficerIndividual {
   id: string;
@@ -44,6 +47,7 @@ export interface ManagingOfficerIndividual {
   role_and_responsibilities?: string;
   start_date?: InputDate;
   resigned_on?: InputDate;
+  is_still_managing_OE?: yesNoResponse;
 }
 
 export const FormerNamesKey = "former_names";

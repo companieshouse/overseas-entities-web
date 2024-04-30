@@ -59,7 +59,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       ...appData,
       hasExistingBosMos,
       hasNewlyAddedBosMos,
-      title: managingOfficerFields.title ? managingOfficerFields.title : title,
+      title: managingOfficerFields.title !== undefined ? managingOfficerFields.title : title,
       boTypes: managingOfficerFields.radioItems
     });
   } catch (error) {

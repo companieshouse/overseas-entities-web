@@ -630,6 +630,29 @@ export const validateEmail = (email: string, maxLength: number) => {
   return true;
 };
 
+export const checkPropertyNameOrNumberIfRadioButtonSelected = (selected: boolean, propertyNameOrNumber: string, req) => {
+  if (selected) {
+    return checkPresenceOfPropertyNameOrNumber(propertyNameOrNumber, req);
+  }
+
+  return true;
+};
+
+export const checkPresenceOfPropertyNameOrNumber = (propertyNameOrNumber: string, req) => {
+  if (propertyNameOrNumber === undefined || propertyNameOrNumber === "") {
+    const appData: ApplicationData = getApplicationData(req.session);
+
+    // If this is a Registration journey, a property name or number must be entered, if not,
+    // a validation error must be shown to the user (the field is optional on the Update and Remove
+    // journeys, as value is moved into the 'Address Line 1' field)
+    if (!appData.entity_number) {
+      throw new Error(ErrorMessages.PROPERTY_NAME_OR_NUMBER);
+    }
+  }
+
+  return true;
+};
+
 export const checkNoChangeStatementSubmission = (value: any, req) => {
   if (value === undefined) {
     if (isRemoveJourney(req)) {

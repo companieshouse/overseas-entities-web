@@ -252,8 +252,7 @@ export const UPDATE_TRUSTS_ASSOCIATED_ADDED_HEADING = "What you have added so fa
 export const UPDATE_MANAGE_TRUSTS_REVIEWED_HEADING = "What you have reviewed";
 
 // Remove journey
-export const REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE = "Has the overseas entity disposed of all its property or land in the UK?";
-export const REMOVE_NEW_SOLD_ALL_LAND_FILTER_PAGE_TITLE = "Has the overseas entity disposed of all relevant property or land in the UK?";
+export const REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE = "Has the overseas entity disposed of all relevant property or land in the UK?";
 export const REMOVE_IS_ENTITY_REGISTERED_OWNER_TITLE = "Is the overseas entity currently listed on any land registry records as the registered owner of property or land in the UK?";
 export const REMOVE_INTERRUPT_CARD_TEXT = "Once an overseas entity is removed";
 export const REMOVE_USE_INFORMATION_NEED_MORE = "We’ll use this if we need more information about the application.";
@@ -273,6 +272,9 @@ export const REMOVE_SECURE_REGISTER_CHANGE_LINK = "/update-an-overseas-entity/se
 export const REMOVE_CHECK_YOUR_ANSWERS_BACK_LINK = "/update-an-overseas-entity/remove/remove-confirm-statement";
 export const BEFORE_START_PAGE_LINK_AUTHENTICATION = "https://www.gov.uk/guidance/remove-an-overseas-entity#how-to-get-an-authentication-code";
 export const BEFORE_START_PAGE_LINK_VERIFICATION = "https://www.gov.uk/guidance/remove-an-overseas-entity#verify";
+export const REMOVE_WHAT_IS_RELEVANT_PROPERTY_OR_LAND_TEXT = "What does 'relevant property or land' mean?";
+export const REMOVE_RELEVANT_PROPERTY_OR_LAND_DEFINED_TEXT = "This means property or land in the UK that was bought on or after:";
+export const REMOVE_PROPERTY_BOUGHT_ON_OR_AFTER_DATE_TEXT = "1 January 1999 in England and Wales";
 
 // Manage Trusts
 export const UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_TITLE = "Review former beneficial owners";

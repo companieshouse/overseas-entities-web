@@ -94,7 +94,7 @@ describe("Update Filing Date controller", () => {
       expect(resp.text).toContain(BACK_LINK_FOR_UPDATE_FILING_DATE);
       expect(resp.text).toContain(saveAndContinueButtonText);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-      expect(resp.text).not.toContain(UPDATE_DATE_OF_UPDATE_STATEMENT_TEXT);
+      expect(resp.text).toContain(UPDATE_DATE_OF_UPDATE_STATEMENT_TEXT);
       expect(resp.text).toContain('href="test"');
     });
 
@@ -109,7 +109,7 @@ describe("Update Filing Date controller", () => {
       expect(resp.text).toContain(BACK_LINK_FOR_UPDATE_FILING_DATE);
       expect(resp.text).toContain(saveAndContinueButtonText);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-      expect(resp.text).not.toContain(UPDATE_DATE_OF_UPDATE_STATEMENT_TEXT);
+      expect(resp.text).toContain(UPDATE_DATE_OF_UPDATE_STATEMENT_TEXT);
       expect(resp.text).toContain('href="test"');
     });
 
@@ -124,7 +124,7 @@ describe("Update Filing Date controller", () => {
       expect(resp.text).toContain(BACK_LINK_FOR_UPDATE_FILING_DATE);
       expect(resp.text).toContain(saveAndContinueButtonText);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-      expect(resp.text).not.toContain(UPDATE_DATE_OF_UPDATE_STATEMENT_TEXT);
+      expect(resp.text).toContain(UPDATE_DATE_OF_UPDATE_STATEMENT_TEXT);
       expect(resp.text).toContain('href="test"');
     });
 
@@ -139,7 +139,7 @@ describe("Update Filing Date controller", () => {
       expect(resp.text).toContain(BACK_LINK_FOR_UPDATE_FILING_DATE);
       expect(resp.text).toContain(saveAndContinueButtonText);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-      expect(resp.text).not.toContain(UPDATE_DATE_OF_UPDATE_STATEMENT_TEXT);
+      expect(resp.text).toContain(UPDATE_DATE_OF_UPDATE_STATEMENT_TEXT);
       expect(resp.text).toContain('href="test"');
     });
 

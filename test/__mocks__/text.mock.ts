@@ -250,7 +250,7 @@ export const UPDATE_TRUSTS_ASSOCIATED_BACK_LINK = "/update-an-overseas-entity/up
 export const HOME_ADDRESS_LINE1 = "addressLine1";
 export const UPDATE_TRUSTS_ASSOCIATED_ADDED_HEADING = "What you have added so far";
 export const UPDATE_MANAGE_TRUSTS_REVIEWED_HEADING = "What you have reviewed";
-export const UPDATE_DATE_OF_UPDATE_STATEMENT_TEXT = "The date you enter must be on or before the overseas entity's update statement date";
+export const UPDATE_DATE_OF_UPDATE_STATEMENT_TEXT = "You can find the update statement date by searching for the entity on the";
 
 // Remove journey
 export const REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE = "Has the overseas entity disposed of all its property or land in the UK?";

@@ -121,9 +121,6 @@ variable "feature_flag_enable_save_and_resume_17102022" {
 variable "feature_flag_enable_roe_update_24112022" {
   type        = string
 }
-variable "feature_flag_enable_roe_remove_24112022" {
-  type        = string
-}
 variable "feature_flag_enable_trusts_web_07112022" {
   type        = string
 }

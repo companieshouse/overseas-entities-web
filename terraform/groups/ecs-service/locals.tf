@@ -74,7 +74,6 @@ locals {
     { "name": "FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION_05072023", "value": "${var.feature_flag_enable_update_statement_validation_05072023}" },
     { "name": "FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022", "value": "${var.feature_flag_enable_save_and_resume_17102022}" },
     { "name": "FEATURE_FLAG_ENABLE_ROE_UPDATE_24112022", "value": "${var.feature_flag_enable_roe_update_24112022}" },
-    { "name": "FEATURE_FLAG_ENABLE_ROE_REMOVE_24112022", "value": "${var.feature_flag_enable_roe_remove_24112022}" },
     { "name": "FEATURE_FLAG_ENABLE_TRUSTS_WEB_07112022", "value": "${var.feature_flag_enable_trusts_web_07112022}" },
     { "name": "FEATURE_FLAG_ENABLE_UPDATE_SAVE_AND_RESUME_07032023", "value": "${var.feature_flag_enable_update_save_and_resume_07032023}" },
     { "name": "FEATURE_FLAG_ENABLE_UPDATE_TRUSTS_30062023", "value": "${var.feature_flag_enable_update_trusts_30062023}" },

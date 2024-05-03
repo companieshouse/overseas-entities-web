@@ -49,7 +49,7 @@ locals {
     { "name": "COOKIE_SECRET", "valueFrom": "${local.secrets_arn_map.web-oauth2-cookie-secret}" },
     { "name": "CHS_API_KEY", "valueFrom": "${local.service_secrets_arn_map.chs_api_key}" },
     { "name": "CACHE_SERVER", "valueFrom": "${local.service_secrets_arn_map.cache_server}" },
-    { "name": "OAUTH2_CLIENT_ID", "valueFrom": "${local.service_secrets_arn_map.oauth2_client_id}" },  
+    { "name": "OAUTH2_CLIENT_ID", "valueFrom": "${local.service_secrets_arn_map.oauth2_client_id}" },
     { "name": "OAUTH2_CLIENT_SECRET", "valueFrom": "${local.service_secrets_arn_map.oauth2_client_secret}" },
     { "name": "ACCOUNT_URL", "valueFrom": "${local.service_secrets_arn_map.account_url}" },
     { "name": "INTERNAL_API_URL", "valueFrom": "${local.service_secrets_arn_map.internal_api_url}" },
@@ -81,13 +81,14 @@ locals {
     { "name": "FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS_29082023", "value": "${var.feature_flag_enable_update_manage_trusts_29082023}" },
     { "name": "FEATURE_FLAG_ENABLE_REDIS_REMOVAL_27092023", "value": "${var.feature_flag_enable_redis_removal_27092023}" },
     { "name": "FEATURE_FLAG_ENABLE_CEASE_TRUSTS_19022024", "value": "${var.feature_flag_enable_cease_trusts_19022024}" },
+    { "name": "FEATURE_FLAG_ENABLE_RELEVANT_PERIOD_26042024", "value": "${var.feature_flag_enable_relevant_period_26042024}" },
     { "name": "LANDING_PAGE_URL", "value": "${var.landing_page_url}" },
     { "name": "LANDING_PAGE_STARTING_NEW_URL", "value": "${var.landing_page_starting_new_url}" },
     { "name": "PAYMENT_FEE", "value": "${var.payment_fee}" },
     { "name": "UPDATE_LANDING_PAGE_URL", "value": "${var.update_landing_page_url}" },
     { "name": "REMOVE_LANDING_PAGE_URL", "value": "${var.remove_landing_page_url}" },
     { "name": "UPDATE_PAYMENT_FEE", "value": "${var.update_payment_fee}" },
-    { "name": "VF01_FORM_DOWNLOAD_URL", "value": "${var.vf01_form_download_url}" }, 
+    { "name": "VF01_FORM_DOWNLOAD_URL", "value": "${var.vf01_form_download_url}" },
     { "name": "API_URL", "value": "${var.api_url}" } # TODO Should this be a secret?
   ]
 }

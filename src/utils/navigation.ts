@@ -102,6 +102,11 @@ export const NAVIGATION: Navigation = {
     previousPage: (appData: ApplicationData, req: Request) => getUpdateOrRemoveBackLink(req, config.OVERSEAS_ENTITY_QUERY_URL),
     nextPage: [config.UPDATE_FILING_DATE_PAGE, config.PRESENTER_URL]
   },
+  [config.UPDATE_ADDITIONAL_TRUSTS_INVOLVED_URL]: {
+    currentPage: config.UPDATE_ADDITIONAL_TRUSTS_INVOLVED_URL,
+    previousPage: () => ``,
+    nextPage: []
+  },
   [config.WHO_IS_MAKING_UPDATE_URL]: {
     currentPage: config.WHO_IS_MAKING_UPDATE_PAGE,
     previousPage: () => config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL,

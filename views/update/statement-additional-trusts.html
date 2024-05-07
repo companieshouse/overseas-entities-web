@@ -1,0 +1,70 @@
+{% extends "update-layout.html" %}
+{% import "includes/date-macros.html" as dateMacros %}
+
+{% set title = "Additional Trusts Involved" %}
+{% set start_date = "28 February 2022" %}
+{% set displayRegistrationDate = dateMacros.formatDate(registrationDate["day"], registrationDate["month"], registrationDate["year"]) %}
+{% set registration_date = dateMacros.formatDate(update.date_of_creation["day"], update.date_of_creation["month"], update.date_of_creation["year"]) %}
+{% block pageTitle %}
+{% include "includes/update-page-title.html" %}
+
+{% endblock %}
+
+{% block backLink %}
+{% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        {% include "includes/list/errors.html" %}
+        <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ entity_name }} - {{ entity_number }}</span>
+
+        <h1 class="govuk-heading-xl">Were there any trusts involved in the overseas entity during the relevant period that it has not already told us about?</h1>
+        {% include "includes/page-templates/important-banner.html" %}
+        <form method="post">
+            <div class="govuk-form-group">
+
+            {{ govukRadios({
+            errorMessage: errors.update.additional_any_trusts_involved if errors,
+            idPrefix: "additional_trusts",
+            name: "additional_any_trusts_involved",
+            fieldset: {
+            legend: {
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--xl"
+            }
+            },
+            items: [
+            {
+            value: "0",
+            text: "No – the entity has <strong>no reasonable cause</strong> to believe that there were  <strong>any trusts</strong> involved in the overseas entity during the
+            relevant period that it has not already provided information about." | safe,
+            checked: additional_trusts === "no"
+            },
+            {
+            value: "1",
+            text: "Yes – the entity <strong>has reasonable cause</strong> to believe that there was <strong>at least one trust</strong> involved in the overseas entity during the
+            relevant period that it has not already provided information about." | safe,
+            checked: additional_trusts === "yes"
+            }
+            ]
+            }) }}
+                {% include "includes/inputs/radio-input.html" %}
+            </div>
+
+            {{ govukInsetText({
+            html: '
+            <h2 class="govuk-heading-m">What information we’ll show on the public register</h2>
+            <p>We will show this statement on the public Register of Overseas Entities.</p>
+            '
+            })
+            }}
+
+            {% include "includes/save-and-continue-button.html" %}
+        </form>
+    </div>
+</div>
+
+{% endblock %}

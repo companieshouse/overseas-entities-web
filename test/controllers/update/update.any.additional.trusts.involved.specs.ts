@@ -59,7 +59,7 @@ describe("additional trusts involved page tests", () => {
       const resp = await request(app).get(config.UPDATE_ADDITIONAL_TRUSTS_INVOLVED_URL);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(UPDATE_ADDITIONAL_TRUSTS_INVOLVED_PAGE);
+      expect(resp.text).toContain(ADDITIONAL_TRUSTS_INVOLVED_PAGE);
       expect(resp.text).not.toContain(RADIO_BUTTON_YES_SELECTED);
       expect(resp.text).not.toContain(RADIO_BUTTON_NO_SELECTED);
       expect(resp.text).toContain("The relevant period is between <strong>28 February 2022</strong> and <strong>");
@@ -91,7 +91,7 @@ describe("additional trusts involved page tests", () => {
   });
   test('when feature flag is off, 404 is returned', async () => {
     mockIsActiveFeature.mockReturnValueOnce(false);
-    const resp = await request(app).get(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
+    const resp = await request(app).get(config.UPDATE_ADDITIONAL_TRUSTS_INVOLVED_URL);
 
     expect(resp.status).toEqual(404);
     expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);

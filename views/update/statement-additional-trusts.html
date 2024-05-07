@@ -2,12 +2,8 @@
 {% import "includes/date-macros.html" as dateMacros %}
 
 {% set title = "Additional Trusts Involved" %}
-{% set start_date = "28 February 2022" %}
-{% set displayRegistrationDate = dateMacros.formatDate(registrationDate["day"], registrationDate["month"], registrationDate["year"]) %}
-{% set registration_date = dateMacros.formatDate(update.date_of_creation["day"], update.date_of_creation["month"], update.date_of_creation["year"]) %}
 {% block pageTitle %}
 {% include "includes/update-page-title.html" %}
-
 {% endblock %}
 
 {% block backLink %}

@@ -251,6 +251,7 @@ export const HOME_ADDRESS_LINE1 = "addressLine1";
 export const UPDATE_TRUSTS_ASSOCIATED_ADDED_HEADING = "What you have added so far";
 export const UPDATE_MANAGE_TRUSTS_REVIEWED_HEADING = "What you have reviewed";
 export const UPDATE_DATE_OF_UPDATE_STATEMENT_TEXT = "You can find the update statement date by searching for the entity on the";
+export const STATMENT_BO_CEASE_TITLE = "Did anyone become or cease to be a beneficial owner during the relevant period?";
 
 // Remove journey
 export const REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE = "Has the overseas entity disposed of all relevant property or land in the UK?";

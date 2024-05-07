@@ -101,6 +101,7 @@ import {
   updateManageTrustsIndividualsOrEntitiesInvolved,
   updatePaymentFailed,
   updateManageTrustsTellUsAboutTheLegalEntity,
+  statmentBOcease,
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -1108,5 +1109,11 @@ router.route(config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL)
   .post(validateStatements, ...validator.statementResolution, updateStatementValidationErrors.post);
 
 router.get(config.REMOVE_CANNOT_USE_URL, authentication, removeCannotUse.get);
+router.route(config.UPDATE_STATEMENT_BO_CEASE_URL)
+  .all(
+    authentication,
+    companyAuthentication
+  )
+  .get(statmentBOcease.get);
 
 export default router;

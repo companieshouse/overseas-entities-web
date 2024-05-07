@@ -2,7 +2,10 @@
 
 Web front-end for the **register an overseas entity and tell us about its beneficial owners** service. Link to the live page [here](https://www.gov.uk/guidance/register-an-overseas-entity)
 </br>
-
+Web front-end for the **file an overseas entity update statement** service. Link to the live page [here](https://www.gov.uk/guidance/file-an-overseas-entity-update-statement)
+</br>
+Web front-end for the **apply to remove an overseas entity from the register** service. Link to the live page [here](https://www.gov.uk/guidance/remove-an-overseas-entity)
+</br>
 ## Overseas entities architecture
 
 Simplified view of the architecture and does not show all services, components and infrastructure
@@ -87,12 +90,12 @@ COOKIE_SECRET | The shared secret used in validating/calculating the session coo
 INTERNAL_API_URL | Internal API URL | `http://api.chs.local:4001`
 LANDING_PAGE_URL | Register OE landing Page | `/register-an-overseas-entity/sold-land-filter?start=0`
 UPDATE_LANDING_PAGE_URL | Update OE landing Page | `/update-an-overseas-entity/overseas-entity-query`
-REMOVE_LANDING_PAGE_URL | Remove OE landing Page | `http://gov-uk-external-remove-guidance-page`
+REMOVE_LANDING_PAGE_URL | Remove OE landing Page | `/update-an-overseas-entity/continue-with-saved-filing?journey=remove`
 LOG_LEVEL | LOG level | DEBUG
 OAUTH2_CLIENT_ID | OAUTH2 client ID | client ID
 OAUTH2_CLIENT_SECRET | OAUTH2 client secret | secret
-PAYMENT_FEE | Payment Fee | 100
-UPDATE_PAYMENT_FEE | Update Payment Fee | 120
+PAYMENT_FEE | Payment Fee | 234.00
+UPDATE_PAYMENT_FEE | Update Payment Fee | 234.00
 PIWIK_URL | Matomo URL | `https://matomo.platform.aws.chdev.org`
 PIWIK_SITE_ID | Matomo Site ID | 24
 PIWIK_START_GOAL_ID | Matomo Start goal ID | 3

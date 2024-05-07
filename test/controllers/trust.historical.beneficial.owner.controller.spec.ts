@@ -12,6 +12,7 @@ jest.mock('../../src/utils/trust/common.trust.data.mapper');
 jest.mock('../../src/utils/feature.flag');
 jest.mock('../../src/utils/url');
 jest.mock('../../src/middleware/service.availability.middleware');
+jest.mock('../../src/utils/update/review_trusts');
 
 import { constants } from 'http2';
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
@@ -40,6 +41,7 @@ import { mapCommonTrustDataToPage } from '../../src/utils/trust/common.trust.dat
 import { isActiveFeature } from '../../src/utils/feature.flag';
 import { getUrlWithParamsToPath } from '../../src/utils/url';
 import { serviceAvailabilityMiddleware } from '../../src/middleware/service.availability.middleware';
+import { getTrustInReview, hasTrustsToReview } from '../../src/utils/update/review_trusts';
 
 const MOCKED_URL = TRUST_ENTRY_WITH_PARAMS_URL + "MOCKED_URL";
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
@@ -58,11 +60,13 @@ describe('Trust Historical Beneficial Owner Controller', () => {
   const mockTrust1Data = {
     trust_id: '999',
     trust_name: 'dummyTrustName1',
+    unable_to_obtain_all_trust_info: "Yes",
   } as Trust;
 
   const mockTrust2Data = {
     trust_id: '802',
     trust_name: 'dummyTrustName2',
+    unable_to_obtain_all_trust_info: "No",
   } as Trust;
 
   const mockTrust3Data = {
@@ -273,6 +277,73 @@ describe('Trust Historical Beneficial Owner Controller', () => {
       expect(resp.text).toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(ErrorMessages.TRUST_CEASED_DATE_BEFORE_START_DATE);
 
+      expect(authentication).toBeCalledTimes(1);
+      expect(hasTrustWithIdRegister).toBeCalledTimes(1);
+    });
+
+    test('renders the current page with end date error message', async () => {
+      // Given
+      const historicalBORequest = { ...mockHistBORequest };
+      historicalBORequest.endDateDay = "";
+      historicalBORequest.endDateMonth = "";
+      historicalBORequest.endDateYear = "";
+      // When
+      const resp = await request(app).post(pageWithParamsUrl).send(historicalBORequest);
+      // Then
+      expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
+      expect(resp.text).toContain(HISTORICAL_BO_TEXTS.title);
+      expect(resp.text).toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(ErrorMessages.ENTER_END_DATE_HISTORICAL_BO);
+
+      expect(authentication).toBeCalledTimes(1);
+      expect(hasTrustWithIdRegister).toBeCalledTimes(1);
+    });
+
+    test('does not validate BO end date if unable_to_provide_all_trust_info_flag is true and endDate is empty', async () => {
+      // Given
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockGetUrlWithParamsToPath.mockReturnValueOnce(MOCKED_URL);
+      const historicalBORequest = { ...mockHistBORequest };
+      historicalBORequest.endDateDay = "";
+      historicalBORequest.endDateMonth = "";
+      historicalBORequest.endDateYear = "";
+      (hasTrustsToReview as jest.Mock).mockReturnValue(true);
+      (getTrustInReview as jest.Mock).mockReturnValue(mockTrust1Data);
+      // When
+      const resp = await request(app).post(pageWithParamsUrl).send(historicalBORequest);
+      // Then
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).not.toContain(ErrorMessages.ENTER_END_DATE_HISTORICAL_BO);
+      expect(resp.text).toContain(MOCKED_URL + `/${trustId}${TRUST_INVOLVED_URL}`); // back link
+
+      expect(hasTrustsToReview).toBeCalledTimes(1);
+      expect(getTrustInReview).toBeCalledTimes(1);
+      expect(authentication).toBeCalledTimes(1);
+      expect(hasTrustWithIdRegister).toBeCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(TRUST_ENTRY_WITH_PARAMS_URL);
+    });
+
+    test('does validate BO end date if unable_to_provide_all_trust_info_flag is false', async () => {
+      // Given
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockGetUrlWithParamsToPath.mockReturnValueOnce(MOCKED_URL);
+      const historicalBORequest = { ...mockHistBORequest };
+      historicalBORequest.endDateDay = "";
+      historicalBORequest.endDateMonth = "";
+      historicalBORequest.endDateYear = "";
+      (hasTrustsToReview as jest.Mock).mockReturnValue(false);
+      (getTrustByIdFromApp as jest.Mock).mockReturnValue(mockTrust2Data);
+      // When
+      const resp = await request(app).post(pageWithParamsUrl).send(historicalBORequest);
+      // Then
+      expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
+      expect(resp.text).toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(ErrorMessages.ENTER_END_DATE_HISTORICAL_BO);
+      expect(resp.text).toContain(MOCKED_URL + `/${trustId}${TRUST_INVOLVED_URL}`); // back link
+
+      expect(hasTrustsToReview).toBeCalledTimes(1);
+      expect(getTrustByIdFromApp).toBeCalledTimes(1);
       expect(authentication).toBeCalledTimes(1);
       expect(hasTrustWithIdRegister).toBeCalledTimes(1);
     });

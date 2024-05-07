@@ -9,6 +9,9 @@ jest.mock('../../../src/service/overseas.entities.service');
 jest.mock("../../../src/utils/feature.flag" );
 jest.mock('../../../src/middleware/navigation/update/has.overseas.entity.middleware');
 
+// import remove journey middleware mock before app to prevent real function being used instead of mock
+import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
+
 import * as config from "../../../src/config";
 import app from "../../../src/app";
 import request from "supertest";
@@ -38,6 +41,7 @@ import {
   FOUND_REDIRECT_TO,
   PAGE_TITLE_ERROR,
   SERVICE_UNAVAILABLE,
+  UPDATE_DATE_OF_UPDATE_STATEMENT_TEXT,
 } from "../../__mocks__/text.mock";
 
 import { FILING_DATE_REQ_BODY_MOCK } from '../../__mocks__/fields/date.mock';
@@ -45,6 +49,8 @@ import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.moc
 
 import { NextFunction } from "express";
 import { ErrorMessages } from "../../../src/validation/error.messages";
+
+mockRemoveJourneyMiddleware.mockClear();
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockHasOverseasEntity = hasOverseasEntity as jest.Mock;
@@ -88,6 +94,8 @@ describe("Update Filing Date controller", () => {
       expect(resp.text).toContain(BACK_LINK_FOR_UPDATE_FILING_DATE);
       expect(resp.text).toContain(saveAndContinueButtonText);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(UPDATE_DATE_OF_UPDATE_STATEMENT_TEXT);
+      expect(resp.text).toContain('href="test"');
     });
 
     test('renders the update-filing-date page with no update session data', async () => {
@@ -101,6 +109,8 @@ describe("Update Filing Date controller", () => {
       expect(resp.text).toContain(BACK_LINK_FOR_UPDATE_FILING_DATE);
       expect(resp.text).toContain(saveAndContinueButtonText);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(UPDATE_DATE_OF_UPDATE_STATEMENT_TEXT);
+      expect(resp.text).toContain('href="test"');
     });
 
     test('renders the update-filing-date page with update session data', async () => {
@@ -114,6 +124,8 @@ describe("Update Filing Date controller", () => {
       expect(resp.text).toContain(BACK_LINK_FOR_UPDATE_FILING_DATE);
       expect(resp.text).toContain(saveAndContinueButtonText);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(UPDATE_DATE_OF_UPDATE_STATEMENT_TEXT);
+      expect(resp.text).toContain('href="test"');
     });
 
     test('does not fetch private overseas entity data to app data if already exists', async () => {
@@ -127,6 +139,8 @@ describe("Update Filing Date controller", () => {
       expect(resp.text).toContain(BACK_LINK_FOR_UPDATE_FILING_DATE);
       expect(resp.text).toContain(saveAndContinueButtonText);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(UPDATE_DATE_OF_UPDATE_STATEMENT_TEXT);
+      expect(resp.text).toContain('href="test"');
     });
 
     test('catch error when rendering the page', async () => {

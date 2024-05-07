@@ -4,10 +4,14 @@ jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
 jest.mock('../../src/middleware/navigation/has.sold.land.middleware');
 jest.mock("../../src/middleware/service.availability.middleware");
+jest.mock("../../src/middleware/navigation/remove/remove.journey.middleware");
 
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
+
+// import remove journey middleware mock before app to prevent real function being used instead of mock
+import mockRemoveJourneyMiddleware from "../__mocks__/remove.journey.middleware.mock";
 
 import app from "../../src/app";
 import * as config from "../../src/config";
@@ -42,6 +46,8 @@ const mockSetExtraData = setExtraData as jest.Mock;
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+
+mockRemoveJourneyMiddleware.mockClear();
 
 describe( "SECURE REGISTER FILTER controller", () => {
 

@@ -9,6 +9,9 @@ type TrustDetailsForm = {
   createdDateDay: string;
   createdDateMonth: string;
   createdDateYear: string;
+  ceasedDateDay?: string;
+  ceasedDateMonth?: string;
+  ceasedDateYear?: string;
   beneficialOwnersIds: string[];
   hasAllInfo: string;
 };

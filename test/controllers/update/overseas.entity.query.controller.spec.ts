@@ -7,6 +7,9 @@ jest.mock("../../../src/service/company.profile.service");
 jest.mock("../../../src/utils/update/company.profile.mapper.to.overseas.entity");
 jest.mock("../../../src/utils/update/beneficial_owners_managing_officers_data_fetch");
 
+// import remove journey middleware mock before app to prevent real function being used instead of mock
+import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
+
 import * as config from "../../../src/config";
 import app from "../../../src/app";
 import request from "supertest";
@@ -32,6 +35,8 @@ import { ApplicationData } from "../../../src/model";
 const testOENumber = "OE123456";
 const invalidOENUmberError = "OE number must be &quot;OE&quot; followed by 6 digits";
 const notFoundOENumberError = "An Overseas Entity with OE number &quot;" + testOENumber + "&quot; was not found";
+
+mockRemoveJourneyMiddleware.mockClear();
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;

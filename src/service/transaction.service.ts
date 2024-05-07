@@ -18,6 +18,8 @@ export const postTransaction = async (req: Request, session: Session): Promise<s
 
   const transaction: Transaction = companyNumber === undefined ? { reference: REFERENCE, companyName, description: DESCRIPTION } : { reference: REFERENCE, companyName, companyNumber, description: DESCRIPTION };
 
+  logger.infoRequest(req, `Calling 'postTransaction' for company number '${companyNumber}' with name '${companyName}'`);
+
   const response = await makeApiCallWithRetry(
     "transaction",
     "postTransaction",
@@ -27,12 +29,12 @@ export const postTransaction = async (req: Request, session: Session): Promise<s
   );
 
   if (!response.httpStatusCode || response.httpStatusCode >= 400) {
-    throw createAndLogErrorRequest(req, `Http status code ${response.httpStatusCode}`);
+    throw createAndLogErrorRequest(req, `'postTransaction' for company number '${companyNumber}' with name '${companyName}' returned HTTP status code ${response.httpStatusCode}`);
   } else if (!response.resource) {
-    throw createAndLogErrorRequest(req, `POST - Transaction API request returned no response`);
+    throw createAndLogErrorRequest(req, `'postTransaction' for company number '${companyNumber}' with name '${companyName}' returned no response`);
   }
 
-  logger.debugRequest(req, `Received transaction ${JSON.stringify(response)}`);
+  logger.infoRequest(req, `Response from 'postTransaction' for company number '${companyNumber}' with name '${companyName}': ${JSON.stringify(response)}`);
 
   return response.resource.id;
 };
@@ -51,6 +53,8 @@ export const closeTransaction = async (
     status: "closed"
   };
 
+  logger.infoRequest(req, `Calling 'putTransaction' for transaction id '${transactionId}'`);
+
   const response = await makeApiCallWithRetry(
     "transaction",
     "putTransaction",
@@ -60,12 +64,12 @@ export const closeTransaction = async (
   );
 
   if (!response) {
-    throw createAndLogErrorRequest(req, `PUT - Transaction API request returned no response`);
+    throw createAndLogErrorRequest(req, `'putTransaction' for transaction id '${transactionId}' returned no response`);
   } else if (!response.httpStatusCode || response.httpStatusCode >= 400) {
-    throw createAndLogErrorRequest(req, `Http status code ${response.httpStatusCode}`);
+    throw createAndLogErrorRequest(req, `'putTransaction' for transaction id '${transactionId}' returned HTTP status code ${response.httpStatusCode}`);
   }
 
-  logger.debugRequest(req, `Closed transaction ${JSON.stringify(response)}`);
+  logger.infoRequest(req, `Response from 'putTransaction' for transaction id '${transactionId}': ${JSON.stringify(response)}`);
 
   return response;
 };
@@ -74,6 +78,8 @@ export const getTransaction = async (
   req: Request,
   transactionId: string
 ): Promise<Transaction> => {
+
+  logger.infoRequest(req, `Calling 'getTransaction' for transaction id '${transactionId}'`);
 
   const response = await makeApiCallWithRetry(
     "transaction",
@@ -84,14 +90,14 @@ export const getTransaction = async (
   );
 
   if ( !response?.httpStatusCode ) {
-    throw createAndLogErrorRequest(req, `getTransaction - Transaction API request returned no correct response`);
+    throw createAndLogErrorRequest(req, `'getTransaction' for transaction id '${transactionId}' returned incorrect response`);
   } else if ( response.httpStatusCode >= 400 ) {
-    throw createAndLogErrorRequest(req, `getTransaction - Http status code ${response.httpStatusCode}`);
+    throw createAndLogErrorRequest(req, `'getTransaction' for transaction id '${transactionId}' returned HTTP status code ${response.httpStatusCode}`);
   } else if ( !response.resource ) {
-    throw createAndLogErrorRequest(req, `getTransaction - Transaction API request returned no resource`);
+    throw createAndLogErrorRequest(req, `'getTransaction' for transaction id '${transactionId}' returned no resource`);
   }
 
-  logger.debugRequest(req, `Getting transaction ${JSON.stringify(response)}`);
+  logger.infoRequest(req, `Response from 'getTransaction' for transaction id '${transactionId}': ${JSON.stringify(response)}`);
 
   return response.resource;
 };

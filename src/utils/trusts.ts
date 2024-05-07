@@ -158,14 +158,23 @@ const getBoIndividualAssignableToTrust = (
   appData: ApplicationData,
 ): BeneficialOwnerIndividual[] => {
   return (appData[BeneficialOwnerIndividualKey] ?? [])
-    .filter((bo: BeneficialOwnerOther) => bo.trustees_nature_of_control_types?.length);
+    .filter((bo: BeneficialOwnerIndividual) => bo.trustees_nature_of_control_types?.length)
+    .filter((bo: BeneficialOwnerIndividual) => Object.keys(bo.ceased_date || {}).length === 0);
 };
 
 const getBoOtherAssignableToTrust = (
   appData: ApplicationData,
 ): BeneficialOwnerOther[] => {
   return (appData[BeneficialOwnerOtherKey] ?? [])
-    .filter((bo: BeneficialOwnerOther) => bo.trustees_nature_of_control_types?.length);
+    .filter((bo: BeneficialOwnerOther) => bo.trustees_nature_of_control_types?.length)
+    .filter((bo: BeneficialOwnerOther) => Object.keys(bo.ceased_date || {}).length === 0);
+};
+
+const hasNoBoAssignableToTrust = (appData: ApplicationData): boolean => {
+  return [
+    ...getBoIndividualAssignableToTrust(appData),
+    ...getBoOtherAssignableToTrust(appData)
+  ].length === 0;
 };
 
 const getTrustBoIndividuals = (
@@ -492,6 +501,7 @@ export {
   saveTrustInApp,
   getBoIndividualAssignableToTrust,
   getBoOtherAssignableToTrust,
+  hasNoBoAssignableToTrust,
   getTrustBoIndividuals,
   getTrustBoOthers,
   getIndividualTrusteesFromTrust,

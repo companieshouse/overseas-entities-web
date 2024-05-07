@@ -4,6 +4,9 @@ jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/application.data');
 
+// import remove journey middleware mock before app to prevent real function being used instead of mock
+import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
+
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
@@ -15,7 +18,10 @@ import {
   ANY_MESSAGE_ERROR,
   FOUND_REDIRECT_TO,
   PAGE_TITLE_ERROR,
+  REMOVE_PROPERTY_BOUGHT_ON_OR_AFTER_DATE_TEXT,
+  REMOVE_RELEVANT_PROPERTY_OR_LAND_DEFINED_TEXT,
   REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE,
+  REMOVE_WHAT_IS_RELEVANT_PROPERTY_OR_LAND_TEXT,
   SERVICE_UNAVAILABLE,
 } from "../../__mocks__/text.mock";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
@@ -26,8 +32,14 @@ import { getApplicationData, getRemove, setApplicationData } from "../../../src/
 import { RemoveKey } from "../../../src/model/remove.type.model";
 import { HasSoldAllLandKey } from "../../../src/model/data.types.model";
 
+mockRemoveJourneyMiddleware.mockClear();
+
 const mockAuthenticationMiddleware = authentication as jest.Mock;
-mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => {
+  // Add userEmail to res.locals to make sign-out url appear
+  res.locals.userEmail = "userEmail";
+  return next();
+});
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
@@ -52,6 +64,10 @@ describe("Remove sold all land filter controller", () => {
       expect(resp.text).toContain(REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE);
       expect(resp.text).toContain(REMOVE_SERVICE_NAME);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(REMOVE_WHAT_IS_RELEVANT_PROPERTY_OR_LAND_TEXT);
+      expect(resp.text).toContain(REMOVE_RELEVANT_PROPERTY_OR_LAND_DEFINED_TEXT);
+      expect(resp.text).toContain(REMOVE_PROPERTY_BOUGHT_ON_OR_AFTER_DATE_TEXT);
+      expect(resp.text).toContain(`${config.UPDATE_AN_OVERSEAS_ENTITY_URL}sign-out?page=${config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE}&amp;${config.JOURNEY_QUERY_PARAM}=${config.JourneyType.remove}`);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
       expect(mockGetApplicationData).toHaveBeenCalledTimes(1);
     });
@@ -64,6 +80,9 @@ describe("Remove sold all land filter controller", () => {
       expect(resp.text).toContain(REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE);
       expect(resp.text).toContain(REMOVE_SERVICE_NAME);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(REMOVE_WHAT_IS_RELEVANT_PROPERTY_OR_LAND_TEXT);
+      expect(resp.text).toContain(REMOVE_RELEVANT_PROPERTY_OR_LAND_DEFINED_TEXT);
+      expect(resp.text).toContain(REMOVE_PROPERTY_BOUGHT_ON_OR_AFTER_DATE_TEXT);
       expect(resp.text).toContain("value=\"1\" checked");
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
       expect(mockGetApplicationData).toHaveBeenCalledTimes(1);
@@ -120,6 +139,7 @@ describe("Remove sold all land filter controller", () => {
       expect(resp.text).toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(ErrorMessages.SELECT_IF_REMOVE_SOLD_ALL_LAND_FILTER);
       expect(resp.text).toContain(REMOVE_SERVICE_NAME);
+      expect(resp.text).toContain(`${config.UPDATE_AN_OVERSEAS_ENTITY_URL}sign-out?page=${config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE}&amp;${config.JOURNEY_QUERY_PARAM}=${config.JourneyType.remove}`);
     });
 
     test("catch error on current page for POST method", async () => {

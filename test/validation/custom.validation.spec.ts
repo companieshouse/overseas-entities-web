@@ -7,6 +7,9 @@ import { MAX_80 } from "../__mocks__/max.length.mock";
 import { getApplicationData } from "../../src/utils/application.data";
 import { Request } from "express";
 import { Session } from '@companieshouse/node-session-handler';
+import { Trust } from "../../src/model/trust.model";
+import { ROUTE_PARAM_TRUST_ID } from "../../src/config/index";
+import { DefaultErrorsSecondNationality } from "../../src/validation/models/second.nationality.error.model";
 
 const public_register_name = MAX_80 + "1";
 const public_register_jurisdiction = MAX_80;
@@ -63,6 +66,57 @@ describe('checkCeasedDateOnOrAfterStartDate', () => {
     expect(() => custom.checkFieldIfRadioButtonSelectedAndFieldsEmpty(false, false, true, errorMsg)).toThrowError(errorMsg);
     expect(custom.checkFieldIfRadioButtonSelectedAndFieldsEmpty(false, false, false, errorMsg)).toBeFalsy();
   });
+});
+
+describe('tests for isUnableToObtainAllTrustInfo', () => {
+  let mockReq = {} as Request;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+
+    mockReq = {
+      session: {} as Session,
+      headers: {},
+      route: '',
+      method: '',
+      body: {},
+    } as Request;
+  });
+
+  test.each([
+    ["Yes", true],
+    ["No", false]
+  ])("when trust in review and unable_to_obtain_all_trust_info is set to %s, should return %s", (notAllInfoFlag, expectedResult) => {
+    const appData = {
+      update: {
+        review_trusts: [{
+          review_status: {
+            in_review: true
+          },
+          unable_to_obtain_all_trust_info: notAllInfoFlag
+        } as Trust]
+      }
+    };
+    (getApplicationData as jest.Mock).mockReturnValue(appData);
+    expect(custom.isUnableToObtainAllTrustInfo(mockReq)).toBe(expectedResult);
+  });
+
+  test.each([
+    ["Yes", true],
+    ["No", false]
+  ])("when new trust and unable_to_obtain_all_trust_info is set to %s, should return %s", (notAllInfoFlag, expectedResult) => {
+    const trustId = "1";
+    mockReq.params = { [ROUTE_PARAM_TRUST_ID]: trustId };
+    const appData = {
+      trusts: [{
+        trust_id: trustId,
+        unable_to_obtain_all_trust_info: notAllInfoFlag
+      } as Trust]
+    };
+    (getApplicationData as jest.Mock).mockReturnValue(appData);
+    expect(custom.isUnableToObtainAllTrustInfo(mockReq)).toBe(expectedResult);
+  });
+
 });
 
 describe('tests for custom Date fields', () => {
@@ -124,11 +178,11 @@ describe('tests for custom Date fields', () => {
   });
 
   test('should throw error for checkSecondNationality nationality and secon nationality longer than 50 characters', () => {
-    expect(() => custom.checkSecondNationality("The amazing republic of Zamunda", "Another amazing republic of Zamunda", { lengthError: errors.lengthError })).toThrowError( errors.lengthError);
+    expect(() => custom.checkSecondNationality("The amazing republic of Zamunda", "Another amazing republic of Zamunda", { lengthError: errors.lengthError } as DefaultErrorsSecondNationality)).toThrowError( errors.lengthError);
   });
 
   test('should throw error for checkSecondNationality when nationality same as second nationality', () => {
-    expect(() => custom.checkSecondNationality("Zamunda", "Zamunda", { sameError: errors.sameError })).toThrowError(errors.sameError);
+    expect(() => custom.checkSecondNationality("Zamunda", "Zamunda", { sameError: errors.sameError } as DefaultErrorsSecondNationality)).toThrowError(errors.sameError);
   });
 
   test("should return truthy value for checkPublicRegisterJurisdictionLength when register field not selected", () => {

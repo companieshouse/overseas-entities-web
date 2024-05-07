@@ -121,9 +121,6 @@ variable "feature_flag_enable_save_and_resume_17102022" {
 variable "feature_flag_enable_roe_update_24112022" {
   type        = string
 }
-variable "feature_flag_enable_roe_remove_24112022" {
-  type        = string
-}
 variable "feature_flag_enable_trusts_web_07112022" {
   type        = string
 }
@@ -140,6 +137,12 @@ variable "feature_flag_enable_update_manage_trusts_29082023" {
   type        = string
 }
 variable "feature_flag_enable_redis_removal_27092023" {
+  type        = string
+}
+variable "feature_flag_enable_cease_trusts_19022024" {
+  type        = string
+}
+variable "feature_flag_enable_relevant_period_26042024" {
   type        = string
 }
 variable "landing_page_url" {

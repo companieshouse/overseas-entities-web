@@ -5,11 +5,13 @@ import { DateTime } from "luxon";
 import { ErrorMessages } from "./error.messages";
 import { ApplicationData, trustType } from "../model";
 import { BeneficialOwnersStatementType } from "../model/beneficial.owner.statement.model";
-import { CONCATENATED_VALUES_SEPARATOR } from "../config";
+import { CONCATENATED_VALUES_SEPARATOR, ROUTE_PARAM_TRUST_ID } from "../config";
 import { getApplicationData } from "../utils/application.data";
 import { FilingDateKey } from '../model/date.model';
 import { DefaultErrorsSecondNationality } from "./models/second.nationality.error.model";
 import { isRemoveJourney } from "../utils/url";
+import { getTrustByIdFromApp } from "../utils/trusts" ;
+import { getTrustInReview, hasTrustsToReview } from "../utils/update/review_trusts";
 
 export const checkFieldIfRadioButtonSelected = (selected: boolean, errMsg: string, value: string = "") => {
   if ( selected && !value.trim() ) {
@@ -70,9 +72,13 @@ export const checkDateIsWithinLast3Months = (errMsg: string, day: string = "", m
 };
 
 export const checkDateValueIsValid = (invalidDateErrMsg: string, dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+  const dayMonthRegex = /^\d{1,2}$/; // string consisting of 1 or 2 digits only
+
   const day = parseInt(dayStr), month = parseInt(monthStr), year = parseInt(yearStr);
+
   if (isNaN(day) || isNaN(month) || isNaN(year) ||
-    day.toString() !== dayStr || month.toString() !== monthStr || year.toString() !== yearStr ||
+    !dayMonthRegex.test(dayStr) || !dayMonthRegex.test(monthStr) ||
+    year.toString() !== yearStr ||
     !DateTime.utc(year, month, day).isValid) {
     throw new Error(invalidDateErrMsg);
   }
@@ -321,6 +327,20 @@ export const checkTrustDate = (dayStr: string = "", monthStr: string = "", yearS
   return true;
 };
 
+export const checkTrustCeasedDate = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+  const dateFieldErrors = {
+    completelyEmptyDateError: ErrorMessages.ENTER_DATE_OF_TRUST_CEASED,
+    noDayAndMonthError: ErrorMessages.DAY_AND_MONTH_OF_CEASED_TRUST,
+    noMonthAndYearError: ErrorMessages.MONTH_AND_YEAR_OF_CEASED_TRUST,
+    noDayAndYearError: ErrorMessages.DAY_AND_YEAR_OF_CEASED_TRUST,
+  };
+
+  checkDateFieldsForErrors(dateFieldErrors, dayStr, monthStr, yearStr);
+  checkAllDateFieldsArePresent(dayStr, monthStr, yearStr) && checkDateValueIsValid(ErrorMessages.INVALID_DATE_OF_CEASED_TRUST, dayStr, monthStr, yearStr);
+  checkDateIsInPastOrToday(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY_OF_CEASED_TRUST, dayStr, monthStr, yearStr);
+  return true;
+};
+
 export const checkHistoricalBOStartDate = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   const dateFieldErrors = {
     completelyEmptyDateError: ErrorMessages.ENTER_START_DATE_HISTORICAL_BO,
@@ -535,6 +555,22 @@ export const checkDatePreviousToFilingDate = (req, dateDay: string, dateMonth: s
     errorMessage);
 };
 
+export const isUnableToObtainAllTrustInfo = (req) => {
+  const appData: ApplicationData = getApplicationData(req.session);
+  let trust;
+  // Check first if the trust is in review.
+  if (hasTrustsToReview(appData)) {
+    trust = getTrustInReview(appData);
+  } else {
+    const trustId = req.params[ROUTE_PARAM_TRUST_ID];
+    trust = getTrustByIdFromApp(appData, trustId);
+  }
+  if (trust?.unable_to_obtain_all_trust_info === "Yes"){
+    return true;
+  }
+  return false;
+};
+
 const hasBeneficialOwners = (appData: ApplicationData) => {
   return (appData.beneficial_owners_individual && appData.beneficial_owners_individual.length > 0) ||
     (appData.beneficial_owners_corporate && appData.beneficial_owners_corporate.length > 0) ||
@@ -661,3 +697,4 @@ export const checkFieldIfRadioButtonSelectedAndFieldsEmpty = (isPrimaryField: bo
     }
   }
 };
+

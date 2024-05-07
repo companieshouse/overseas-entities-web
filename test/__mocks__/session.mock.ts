@@ -1814,6 +1814,11 @@ export const APPLICATION_DATA_CH_REF_UPDATE_MOCK: ApplicationData = {
   [updateType.UpdateKey]: UPDATE_OBJECT_MOCK
 };
 
+export const APPLICATION_DATA_CH_REF_REMOVE_MOCK: ApplicationData = {
+  ...APPLICATION_DATA_CH_REF_UPDATE_MOCK,
+  [IsRemoveKey]: true,
+};
+
 export const FETCH_BO_APPLICATION_DATA_MOCK: ApplicationData = {
   overseas_entity_id: '123',
   transaction_id: '345',
@@ -2026,6 +2031,12 @@ export const APPLICATION_DATA_UPDATE_BO_MOCK_NO_USUAL_ADDRESS: ApplicationData =
 export const APPLICATION_DATA_EMPTY_BO_MOCK: ApplicationData = {
   ...APPLICATION_DATA_UPDATE_BO_MOCK,
   ...APPLICATION_DATA_UPDATE_BO_MOCK["beneficial_owners_individual"] = [ ]
+};
+
+export const APPLICATION_DATA_UPDATE_NO_BO_TRUSTEES_MOCK: ApplicationData = {
+  ...APPLICATION_DATA_UPDATE_BO_MOCK,
+  [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [ BENEFICIAL_OWNER_INDIVIDUAL_NO_TRUSTEE_OBJECT_MOCK ],
+  [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: [ BENEFICIAL_OWNER_OTHER_NO_TRUSTEE_OBJECT_MOCK ]
 };
 
 export const APPLICATION_DATA_MULTIPLE_BO_MOCK: ApplicationData = {

@@ -30,7 +30,11 @@ describe("Remove cannot use this service page", () => {
     expect(resp.text).toContain("https://www.gov.uk/guidance/file-an-overseas-entity-update-statement");
     expect(resp.text).toContain("https://www.gov.uk/contact-companies-house");
     expect(resp.text).toContain(config.REMOVE_SERVICE_NAME);
-    expect(resp.text).toContain(`${config.SIGN_OUT_PAGE}?page=${config.REMOVE_CANNOT_USE_PAGE}`);
+    expect(resp.text).toContain(`${config.UPDATE_AN_OVERSEAS_ENTITY_URL}${config.SIGN_OUT_PAGE}?page=${config.REMOVE_CANNOT_USE_PAGE}`);
     expect(resp.text).toContain(`${config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+    expect(resp.text).toContain("What does 'relevant property or land' mean?");
+    expect(resp.text).toContain("This means property or land in the UK that was bought on or after:");
+    expect(resp.text).toContain("1 January 1999 in England and Wales");
+    expect(resp.text).toContain("What to do next");
   });
 });

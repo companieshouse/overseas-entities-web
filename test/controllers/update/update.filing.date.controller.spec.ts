@@ -41,6 +41,7 @@ import {
   FOUND_REDIRECT_TO,
   PAGE_TITLE_ERROR,
   SERVICE_UNAVAILABLE,
+  UPDATE_DATE_OF_UPDATE_STATEMENT_TEXT,
 } from "../../__mocks__/text.mock";
 
 import { FILING_DATE_REQ_BODY_MOCK } from '../../__mocks__/fields/date.mock';
@@ -93,6 +94,8 @@ describe("Update Filing Date controller", () => {
       expect(resp.text).toContain(BACK_LINK_FOR_UPDATE_FILING_DATE);
       expect(resp.text).toContain(saveAndContinueButtonText);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(UPDATE_DATE_OF_UPDATE_STATEMENT_TEXT);
+      expect(resp.text).toContain('href="test"');
     });
 
     test('renders the update-filing-date page with no update session data', async () => {
@@ -106,6 +109,8 @@ describe("Update Filing Date controller", () => {
       expect(resp.text).toContain(BACK_LINK_FOR_UPDATE_FILING_DATE);
       expect(resp.text).toContain(saveAndContinueButtonText);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(UPDATE_DATE_OF_UPDATE_STATEMENT_TEXT);
+      expect(resp.text).toContain('href="test"');
     });
 
     test('renders the update-filing-date page with update session data', async () => {
@@ -119,6 +124,8 @@ describe("Update Filing Date controller", () => {
       expect(resp.text).toContain(BACK_LINK_FOR_UPDATE_FILING_DATE);
       expect(resp.text).toContain(saveAndContinueButtonText);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(UPDATE_DATE_OF_UPDATE_STATEMENT_TEXT);
+      expect(resp.text).toContain('href="test"');
     });
 
     test('does not fetch private overseas entity data to app data if already exists', async () => {
@@ -132,6 +139,8 @@ describe("Update Filing Date controller", () => {
       expect(resp.text).toContain(BACK_LINK_FOR_UPDATE_FILING_DATE);
       expect(resp.text).toContain(saveAndContinueButtonText);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(UPDATE_DATE_OF_UPDATE_STATEMENT_TEXT);
+      expect(resp.text).toContain('href="test"');
     });
 
     test('catch error when rendering the page', async () => {

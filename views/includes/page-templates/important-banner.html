@@ -1,0 +1,10 @@
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+{% set html %}
+<p class="govuk-body-m">
+You need to provide some information about the overseas entity from the pre-registration period. </p>
+{% include "includes/page-templates/relevant-period.html" %}
+
+{% endset %}
+{{ govukNotificationBanner({
+ html: html
+}) }}

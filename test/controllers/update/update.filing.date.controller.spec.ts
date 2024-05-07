@@ -87,6 +87,7 @@ describe("Update Filing Date controller", () => {
 
   describe("GET tests", () => {
     test('renders the update-filing-date page', async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false);
       const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
 
       expect(resp.status).toEqual(200);
@@ -101,6 +102,7 @@ describe("Update Filing Date controller", () => {
     test('renders the update-filing-date page with no update session data', async () => {
       const mockData = { ...UPDATE_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS, entity_number: 'OE111129' };
       mockGetApplicationData.mockReturnValueOnce(mockData);
+      mockIsActiveFeature.mockReturnValueOnce(false);
 
       const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
 
@@ -116,6 +118,7 @@ describe("Update Filing Date controller", () => {
     test('renders the update-filing-date page with update session data', async () => {
       const mockData = { ...APPLICATION_DATA_MOCK };
       mockGetApplicationData.mockReturnValueOnce(mockData);
+      mockIsActiveFeature.mockReturnValueOnce(false);
 
       const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
 
@@ -131,6 +134,7 @@ describe("Update Filing Date controller", () => {
     test('does not fetch private overseas entity data to app data if already exists', async () => {
       const mockData = { ...APPLICATION_DATA_MOCK };
       mockGetApplicationData.mockReturnValueOnce(mockData);
+      mockIsActiveFeature.mockReturnValueOnce(false);
 
       const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
 

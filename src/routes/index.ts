@@ -517,15 +517,6 @@ router.route(config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL)
   .get(doYouWantToMakeOeChange.get)
   .post(...validator.doYouWantToMakeOeChange, checkValidations, doYouWantToMakeOeChange.post);
 
-router.route(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL)
-  .all(
-    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD),
-    authentication,
-    companyAuthentication,
-    navigation.hasOverseasEntity)
-  .get(ownedLandFilter.get)
-  .post(ownedLandFilter.post);
-
 router.route(config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL)
   .all(
     authentication,
@@ -560,6 +551,15 @@ router.route(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL)
   )
   .get(confirmOverseasEntityDetails.get)
   .post(confirmOverseasEntityDetails.post);
+
+router.route(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD),
+    authentication,
+    companyAuthentication,
+    navigation.hasOverseasEntity)
+  .get(ownedLandFilter.get)
+  .post(ownedLandFilter.post);
 
 router.route(config.OVERSEAS_ENTITY_PRESENTER_URL)
   .all(

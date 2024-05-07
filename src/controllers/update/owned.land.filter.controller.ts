@@ -12,9 +12,10 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(req.session);
 
     return res.render(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE, {
-      backLinkUrl: config.UPDATE_PRESENTER_PAGE,
+      backLinkUrl: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
       templateName: config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE,
       ...appData,
+      dateOfCreation: appData.update?.date_of_creation
     });
   } catch (error) {
     logger.errorRequest(req, error);
@@ -29,9 +30,9 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     // TODO: store ownedLandKey in ApplicationData and turn on questions about the relevant period.
 
     if (ownedLandKey === '1') {
-      return res.redirect(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL); // currently redirects to itself because next page is not built
+      return res.redirect(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL); // redirect to interupt screen
     } else if (ownedLandKey === '0') {
-      return res.redirect(config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL);
+      return res.redirect(config.UPDATE_FILING_DATE_URL);
     }
   } catch (error) {
     logger.errorRequest(req, error);

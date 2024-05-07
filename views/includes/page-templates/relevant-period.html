@@ -1,4 +1,5 @@
 {% set start_date = "28 February 2022" %}
+{% import "includes/date-macros.html" as dateMacros %}
 {% set registration_date = dateMacros.formatDate(dateOfCreation["day"], dateOfCreation["month"], dateOfCreation["year"]) %}
 
 <p class="govuk-body-m">

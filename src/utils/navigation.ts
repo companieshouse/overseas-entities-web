@@ -85,12 +85,7 @@ export const NAVIGATION: Navigation = {
   [config.OVERSEAS_ENTITY_PRESENTER_URL]: {
     currentPage: config.UPDATE_PRESENTER_PAGE,
     previousPage: (appData: ApplicationData, req: Request) => getOverseasEntityPresenterBackLink(req),
-    nextPage: [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE, config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE]
-  },
-  [config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL]: {
-    currentPage: config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL,
-    previousPage: () => config.OVERSEAS_ENTITY_PRESENTER_URL,
-    nextPage: []
+    nextPage: [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE]
   },
   [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL]: {
     currentPage: config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE,
@@ -105,7 +100,12 @@ export const NAVIGATION: Navigation = {
   [config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL]: {
     currentPage: config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
     previousPage: (appData: ApplicationData, req: Request) => getUpdateOrRemoveBackLink(req, config.OVERSEAS_ENTITY_QUERY_URL),
-    nextPage: [config.UPDATE_FILING_DATE_PAGE, config.PRESENTER_URL]
+    nextPage: [config.UPDATE_FILING_DATE_PAGE, config.PRESENTER_URL, config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE]
+  },
+  [config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL]: {
+    currentPage: config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL,
+    previousPage: () => config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
+    nextPage: []
   },
   [config.WHO_IS_MAKING_UPDATE_URL]: {
     currentPage: config.WHO_IS_MAKING_UPDATE_PAGE,

@@ -62,7 +62,7 @@ describe("owned land filter page tests", () => {
       expect(resp.text).toContain(UPDATE_OWNED_LAND_RELEVANT_PERIOD);
       expect(resp.text).not.toContain(RADIO_BUTTON_YES_SELECTED);
       expect(resp.text).not.toContain(RADIO_BUTTON_NO_SELECTED);
-      expect(resp.text).toContain("The relevant period is between <strong>28 February 2022</strong> and <strong>");
+      expect(resp.text).toContain("This overseas entity's pre-registration period is between <strong>28 February 2022</strong> and <strong>");
       expect(resp.text).toContain("1");
       expect(resp.text).toContain("January");
       expect(resp.text).toContain("2011");
@@ -113,7 +113,7 @@ describe("owned land filter page tests", () => {
         .send({ owned_land_relevant_period: "0" });
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL);
+      expect(resp.header.location).toEqual(config.UPDATE_FILING_DATE_URL);
     });
   });
 });

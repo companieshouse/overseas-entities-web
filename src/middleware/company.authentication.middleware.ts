@@ -14,6 +14,8 @@ import { ApplicationData } from "../model";
 import { EntityNumberKey } from "../model/data.types.model";
 import { getTransaction } from "../service/transaction.service";
 import { isRemoveJourney } from "../utils/url";
+import { isActiveFeature } from "../utils/feature.flag";
+import * as config from "../config";
 
 export const companyAuthentication = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -25,6 +27,9 @@ export const companyAuthentication = async (req: Request, res: Response, next: N
     if (isRemoveJourney(req)) {
       logger.debugRequest(req, "Remove journey proceed directly to the presenter page");
       returnURL = `${OVERSEAS_ENTITY_PRESENTER_URL}${JOURNEY_REMOVE_QUERY_PARAM}`;
+    }
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD)) {
+      returnURL = config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL;
     }
 
     if (req.path.endsWith(`/${RESUME}`)) {

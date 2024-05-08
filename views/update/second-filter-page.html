@@ -1,0 +1,63 @@
+{% extends "update-layout.html" %}
+{% import "includes/date-macros.html" as dateMacros %}
+
+{% set title = "Additional Trusts Involved" %}
+{% set start_date = "28 February 2022" %}
+{% set displayRegistrationDate = dateMacros.formatDate(registrationDate["day"], registrationDate["month"], registrationDate["year"]) %}
+{% set registration_date = dateMacros.formatDate(update.date_of_creation["day"], update.date_of_creation["month"], update.date_of_creation["year"]) %}
+{% block pageTitle %}
+{% include "includes/update-page-title.html" %}
+
+{% endblock %}
+
+{% block backLink %}
+{% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        {% include "includes/list/errors.html" %}
+        <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ entity_name }} - {{ entity_number }}</span>
+
+
+        {% include "includes/page-templates/important-banner.html" %}
+        <h1 class="govuk-heading-xl">Information about the overseas entity during the pre-registration period</h1>
+        <h2 class="govuk-heading-xl">Has the overseas entity told us about all registrable beneficial owners, trusts and beneficiaries from this period</h2>
+        <form method="post">
+            <div class="govuk-form-group">
+
+            {{ govukRadios({
+            errorMessage: errors.update.additional_any_trusts_involved if errors,
+            idPrefix: "additional_trusts",
+            name: "additional_any_trusts_involved",
+            fieldset: {
+            legend: {
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--xl"
+            }
+            },
+            items: [
+            {
+            value: "0",
+            text: "Yes" | safe,
+            checked: additional_trusts === "yes"
+            },
+            {
+            value: "1",
+            text: "No – there are some registrable  beneficial owners,trusts or beneficiaries that the overseas entity has not provided information about" | safe,
+            checked: additional_trusts === "no"
+            }
+            ]
+            }) }}
+                {% include "includes/inputs/radio-input.html" %}
+            </div>
+
+
+            {% include "includes/save-and-continue-button.html" %}
+        </form>
+    </div>
+</div>
+
+{% endblock %}

@@ -85,7 +85,12 @@ export const NAVIGATION: Navigation = {
   [config.OVERSEAS_ENTITY_PRESENTER_URL]: {
     currentPage: config.UPDATE_PRESENTER_PAGE,
     previousPage: (appData: ApplicationData, req: Request) => getOverseasEntityPresenterBackLink(req),
-    nextPage: [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE]
+    nextPage: [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE, config.SECOND_FILTER_PAGE]
+  },
+  [config.SECOND_FILTER_PAGE_URL]: {
+    currentPage: config.SECOND_FILTER_PAGE_URL,
+    previousPage: () => config.OVERSEAS_ENTITY_PRESENTER_URL,
+    nextPage: []
   },
   [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL]: {
     currentPage: config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE,

@@ -12,6 +12,8 @@ import { DefaultErrorsSecondNationality } from "./models/second.nationality.erro
 import { isRemoveJourney } from "../utils/url";
 import { getTrustByIdFromApp } from "../utils/trusts" ;
 import { getTrustInReview, hasTrustsToReview } from "../utils/update/review_trusts";
+import { logger } from "../utils/logger";
+import { getConfirmationStatementNextMadeUpToDateAsISoString } from "../service/company.profile.service";
 
 export const checkFieldIfRadioButtonSelected = (selected: boolean, errMsg: string, value: string = "") => {
   if ( selected && !value.trim() ) {
@@ -696,5 +698,27 @@ export const checkFieldIfRadioButtonSelectedAndFieldsEmpty = (isPrimaryField: bo
       return false;
     }
   }
+};
+
+export const checkDateIsBeforeNextMadeUpToDate = async (req, dayStr: string = "", monthStr: string = "", yearStr: string = ""): Promise<boolean> => {
+  const appData: ApplicationData = getApplicationData(req.session);
+  if (!appData.entity_number) {
+    logger.errorRequest(req, "checkDateBeforeNextMadeUpToDate validation - Unable to find entity number in application data.");
+    throw new Error(ErrorMessages.UNABLE_TO_RETRIEVE_ENTITY_NUMBER);
+  }
+
+  const nextMadeUpToDateIsoString = await getConfirmationStatementNextMadeUpToDateAsISoString(req, appData.entity_number);
+  if (!nextMadeUpToDateIsoString) {
+    logger.errorRequest(req, `checkDateBeforeNextMadeUpToDate validation - Unable to find next made up to date for entity ${appData.entity_number}`);
+    throw new Error(ErrorMessages.UNABLE_TO_RETRIEVE_EXPECTED_DATE);
+  }
+  const madeUpToDate = DateTime.fromISO(nextMadeUpToDateIsoString);
+  const userEnteredDate = DateTime.fromISO(`${yearStr}-${monthStr.padStart(2, "0")}-${dayStr.padStart(2, "0")}`);
+
+  if (userEnteredDate.startOf('day') > madeUpToDate.startOf('day')) {
+    const message = ErrorMessages.STATEMENT_DATE_AFTER_MADE_UP_TO_DATE.replace('%s', `${madeUpToDate.day.toString().padStart(2, "0")} ${madeUpToDate.month.toString().padStart(2, "0")} ${madeUpToDate.year}`);
+    throw new Error(message);
+  }
+  return true;
 };
 

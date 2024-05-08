@@ -31,7 +31,7 @@ export const getCompanyProfile = async (
   return response.resource;
 };
 
-export const getConfirmationStatementNextMadeUpToDate = async (req: Request, oeNumber: string): Promise<string | undefined> => {
+export const getConfirmationStatementNextMadeUpToDateAsISoString = async (req: Request, oeNumber: string): Promise<string | undefined> => {
   const companyProfile: CompanyProfile | undefined = await getCompanyProfile(req, oeNumber);
   return companyProfile?.confirmationStatement?.nextMadeUpTo;
 };

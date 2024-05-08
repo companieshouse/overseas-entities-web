@@ -49,7 +49,7 @@ import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.moc
 
 import { NextFunction } from "express";
 import { ErrorMessages } from "../../../src/validation/error.messages";
-import { getConfirmationStatementNextMadeUpToDate } from "../../../src/service/company.profile.service";
+import { getConfirmationStatementNextMadeUpToDateAsISoString } from "../../../src/service/company.profile.service";
 
 const NEXT_MADE_UP_TO_DATE = "2024-03-19";
 
@@ -73,7 +73,7 @@ const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 mockGetApplicationData.mockReturnValue( APPLICATION_DATA_MOCK );
 
-const mockGetConfirmationStatementNextMadeUpToDate = getConfirmationStatementNextMadeUpToDate as jest.Mock;
+const mockGetConfirmationStatementNextMadeUpToDate = getConfirmationStatementNextMadeUpToDateAsISoString as jest.Mock;
 mockGetConfirmationStatementNextMadeUpToDate.mockReturnValue(NEXT_MADE_UP_TO_DATE);
 
 const mockMapDataObjectToFields = mapDataObjectToFields as jest.Mock;

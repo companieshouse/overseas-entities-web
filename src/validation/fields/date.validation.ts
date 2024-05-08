@@ -21,7 +21,8 @@ import {
   checkStartDateBeforeDOB,
   checkFirstDateOnOrAfterSecondDate,
   checkDatePreviousToFilingDate,
-  checkTrustCeasedDate
+  checkTrustCeasedDate,
+  checkDateIsBeforeNextMadeUpToDate
 } from "../custom.validation";
 import { ErrorMessages } from "../error.messages";
 import { conditionalDateValidations, conditionalHistoricalBODateValidations, dateContext, dateContextWithCondition, dateValidations } from "./helper/date.validation.helper";
@@ -151,6 +152,8 @@ export const filing_date_validations = [
     .custom((value, { req }) => checkDateFieldYear(ErrorMessages.YEAR, ErrorMessages.YEAR_LENGTH, req.body["filing_date-day"], req.body["filing_date-month"], req.body["filing_date-year"])),
   body("filing_date-day")
     .custom((value, { req }) => checkDate(req.body["filing_date-day"], req.body["filing_date-month"], req.body["filing_date-year"])),
+  body("filing_date-day")
+    .custom(async (value, { req }) => await checkDateIsBeforeNextMadeUpToDate(req, req.body["filing_date-day"], req.body["filing_date-month"], req.body["filing_date-year"])),
 ];
 
 const dateOfBirthValidationsContext: dateContext = {

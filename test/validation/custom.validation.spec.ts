@@ -1,4 +1,6 @@
 jest.mock('../../src/utils/application.data');
+jest.mock("../../src/service/company.profile.service");
+jest.mock("../../src/utils/logger");
 
 import * as custom from "../../src/validation/custom.validation";
 import { ErrorMessages } from "../../src/validation/error.messages";
@@ -10,6 +12,7 @@ import { Session } from '@companieshouse/node-session-handler';
 import { Trust } from "../../src/model/trust.model";
 import { ROUTE_PARAM_TRUST_ID } from "../../src/config/index";
 import { DefaultErrorsSecondNationality } from "../../src/validation/models/second.nationality.error.model";
+import { getConfirmationStatementNextMadeUpToDateAsISoString } from "../../src/service/company.profile.service";
 
 const public_register_name = MAX_80 + "1";
 const public_register_jurisdiction = MAX_80;
@@ -234,5 +237,45 @@ describe('tests for checkDatePreviousToFilingDate ', () => {
 
     expect(() => custom.checkDatePreviousToFilingDate(mockReq, "3", "8", "2023", ErrorMessages.START_DATE_BEFORE_FILING_DATE))
       .toThrowError(ErrorMessages.START_DATE_BEFORE_FILING_DATE);
+  });
+
+  describe("tests for checkDateIsBeforeNextMadeUpToDate", () => {
+    test("should return true if date is before made up to date", async () => {
+      (getApplicationData as jest.Mock).mockReturnValueOnce({ entity_number: "OE123456" });
+      (getConfirmationStatementNextMadeUpToDateAsISoString as jest.Mock).mockReturnValueOnce("2024-05-19");
+
+      const result = await custom.checkDateIsBeforeNextMadeUpToDate({}, "18", "5", "2024");
+
+      expect(result).toEqual(true);
+    });
+
+    test("should return true if date is on made up to date", async () => {
+      (getApplicationData as jest.Mock).mockReturnValueOnce({ entity_number: "OE123456" });
+      (getConfirmationStatementNextMadeUpToDateAsISoString as jest.Mock).mockReturnValueOnce("2024-05-19");
+
+      const result = await custom.checkDateIsBeforeNextMadeUpToDate({}, "19", "5", "2024");
+
+      expect(result).toEqual(true);
+    });
+
+    test("should throw error if date is after made up to date", async () => {
+      (getApplicationData as jest.Mock).mockReturnValueOnce({ entity_number: "OE123456" });
+      (getConfirmationStatementNextMadeUpToDateAsISoString as jest.Mock).mockReturnValueOnce("2024-05-19");
+
+      await expect(custom.checkDateIsBeforeNextMadeUpToDate({}, "20", "5", "2024")).rejects.toThrowError("The date you provide must be on or before 19 05 2024");
+    });
+
+    test("should throw error if entity number not found", async () => {
+      (getApplicationData as jest.Mock).mockReturnValueOnce({ });
+
+      await expect(custom.checkDateIsBeforeNextMadeUpToDate({}, "18", "5", "2024")).rejects.toThrowError(ErrorMessages.UNABLE_TO_RETRIEVE_ENTITY_NUMBER);
+    });
+
+    test("should throw error if next made up to date not found", async () => {
+      (getApplicationData as jest.Mock).mockReturnValueOnce({ entity_number: "OE123456" });
+      (getConfirmationStatementNextMadeUpToDateAsISoString as jest.Mock).mockReturnValueOnce("");
+
+      await expect(custom.checkDateIsBeforeNextMadeUpToDate({}, "18", "5", "2024")).rejects.toThrowError(ErrorMessages.UNABLE_TO_RETRIEVE_EXPECTED_DATE);
+    });
   });
 });

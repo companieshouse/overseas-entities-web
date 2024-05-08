@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { Session } from "@companieshouse/node-session-handler";
 
-import { logger } from "../../utils/logger";
+import { createAndLogErrorRequest, logger } from "../../utils/logger";
 import * as config from "../../config";
 import { isActiveFeature } from "../../utils/feature.flag";
 import { getApplicationData, setExtraData, mapFieldsToDataObject, mapDataObjectToFields } from "../../utils/application.data";
@@ -10,21 +10,24 @@ import { createOverseasEntity, updateOverseasEntity } from "../../service/overse
 import { OverseasEntityKey, Transactionkey, InputDateKeys } from '../../model/data.types.model';
 import { FilingDateKey, FilingDateKeys } from '../../model/date.model';
 import { ApplicationData } from "../../model/application.model";
+import { getConfirmationStatementNextMadeUpToDate } from "../../service/company.profile.service";
+import { convertIsoDateToInputDate } from "../../utils/date";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const appData = getApplicationData(req.session);
-    const filingDate = appData.update?.[FilingDateKey] ? mapDataObjectToFields(appData.update[FilingDateKey], FilingDateKeys, InputDateKeys) : {};
 
     return res.render(config.UPDATE_FILING_DATE_PAGE, {
       backLinkUrl: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
       templateName: config.UPDATE_FILING_DATE_PAGE,
       ...appData,
-      [FilingDateKey]: filingDate
+      [FilingDateKey]: await getFilingDate(req, appData)
     });
   } catch (error) {
+    console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+    console.log(JSON.stringify(error));
     logger.errorRequest(req, error);
     next(error);
   }
@@ -55,4 +58,21 @@ export const post = async(req: Request, res: Response, next: NextFunction) => {
     logger.errorRequest(req, error);
     next(error);
   }
+};
+
+const getFilingDate = async (req: Request, appData: ApplicationData): Promise<{} | undefined> => {
+  // use date stored in appData if present
+  let filingDate = appData.update?.[FilingDateKey] ? mapDataObjectToFields(appData.update[FilingDateKey], FilingDateKeys, InputDateKeys) : undefined;
+
+  // otherwise use the next made up to date from confirmation statement in company profile
+  if (!filingDate && appData.entity_number) {
+    logger.debugRequest(req, `Getting confirmation statement next made up to date for entity number = ${appData.entity_number}`);
+    const nextMudIsoString = await getConfirmationStatementNextMadeUpToDate(req, appData.entity_number);
+    if (!nextMudIsoString) {
+      throw createAndLogErrorRequest(req, `No confirmation statement next made up to date found on company profile for entity number = ${appData.entity_number}; transaction id = ${appData.transaction_id}`);
+    }
+    const nextMudAsInputDate = convertIsoDateToInputDate(nextMudIsoString);
+    filingDate = mapDataObjectToFields(nextMudAsInputDate, FilingDateKeys, InputDateKeys);
+  }
+  return filingDate;
 };

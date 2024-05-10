@@ -86,7 +86,7 @@ describe("Update Filing Date controller", () => {
   });
 
   describe("GET tests", () => {
-    test('renders the update-filing-date page', async () => {
+    test('renders the update-filing-date page when FEATURE_FLAG_ENABLE_RELEVANT_PERIOD is not active,', async () => {
       mockIsActiveFeature.mockReturnValueOnce(false);
       const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
 
@@ -97,6 +97,14 @@ describe("Update Filing Date controller", () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(UPDATE_DATE_OF_UPDATE_STATEMENT_TEXT);
       expect(resp.text).toContain('href="test"');
+    });
+
+    test('renders the update-filing-date page when FEATURE_FLAG_ENABLE_RELEVANT_PERIOD is active,', async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain("/update-an-overseas-entity/statement-own-land");
     });
 
     test('renders the update-filing-date page with no update session data', async () => {

@@ -149,6 +149,16 @@ describe("Confirm company data", () => {
       expect(resp.header.location).toEqual(config.UPDATE_FILING_DATE_URL);
     });
 
+    test(`redirect to update-filing-date if no BOs when FEATURE_FLAG_ENABLE_RELEVANT_PERIOD is active`, async () => {
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW);
+      mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(true);
+
+      const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL).send({});
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
+    });
+
     test.each([
       ["BO Individual", "review_beneficial_owners_individual", BENEFICIAL_OWNER_INDIVIDUAL_NO_TRUSTEE_OBJECT_MOCK ],
       ["BO Corporate", "review_beneficial_owners_corporate", BENEFICIAL_OWNER_OTHER_NO_TRUSTEE_OBJECT_MOCK ]

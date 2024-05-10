@@ -104,7 +104,7 @@ describe("Update Filing Date controller", () => {
       const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain("/update-an-overseas-entity/statement-own-land");
+      expect(resp.text).toContain("/update-an-overseas-entity/relevant-period-owned-land-filter");
     });
 
     test('renders the update-filing-date page with no update session data', async () => {

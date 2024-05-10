@@ -18,8 +18,9 @@ import {
   RADIO_BUTTON_YES_SELECTED,
   RADIO_BUTTON_NO_SELECTED,
   SERVICE_UNAVAILABLE,
-  UPDATE_OWNED_LAND_RELEVANT_PERIOD,
+  RELEVANT_PERIOD_OWNED_LAND,
   PAGE_NOT_FOUND_TEXT,
+  RELEVANT_PERIOD
 } from "../../__mocks__/text.mock";
 import { APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock";
 import { getApplicationData } from "../../../src/utils/application.data";
@@ -29,7 +30,7 @@ import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/ha
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { yesNoResponse } from "../../../src/model/data.types.model";
-import { OwnedLandKey } from "../../../src/model/owned.land.filter.model";
+import { OwnedLandKey } from "../../../src/model/relevant.period.type.model";
 
 const mockHasUpdatePresenter = hasUpdatePresenter as jest.Mock;
 mockHasUpdatePresenter.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
@@ -59,10 +60,10 @@ describe("owned land filter page tests", () => {
       const resp = await request(app).get(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(UPDATE_OWNED_LAND_RELEVANT_PERIOD);
+      expect(resp.text).toContain(RELEVANT_PERIOD_OWNED_LAND);
       expect(resp.text).not.toContain(RADIO_BUTTON_YES_SELECTED);
       expect(resp.text).not.toContain(RADIO_BUTTON_NO_SELECTED);
-      expect(resp.text).toContain("This overseas entity's pre-registration period is between <strong>28 February 2022</strong> and <strong>");
+      expect(resp.text).toContain(RELEVANT_PERIOD);
       expect(resp.text).toContain("1");
       expect(resp.text).toContain("January");
       expect(resp.text).toContain("2011");

@@ -101,6 +101,7 @@ import {
   updateManageTrustsIndividualsOrEntitiesInvolved,
   updatePaymentFailed,
   updateManageTrustsTellUsAboutTheLegalEntity,
+  relevantPeriodInterrupt,
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -1106,6 +1107,12 @@ router.route(config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL)
   )
   .get(validateStatements, statementValidationErrorsGuard, updateStatementValidationErrors.get)
   .post(validateStatements, ...validator.statementResolution, updateStatementValidationErrors.post);
+
+router.route(config.RELEVANT_PERIOD_INTERRUPT_URL)
+  .all(isFeatureEnabled(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD),
+       authentication,
+       companyAuthentication)
+  .get(relevantPeriodInterrupt.get);
 
 router.get(config.REMOVE_CANNOT_USE_URL, authentication, removeCannotUse.get);
 

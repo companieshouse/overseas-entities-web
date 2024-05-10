@@ -1,0 +1,30 @@
+{% extends "update-layout.html" %}
+
+{% set title = "Before you start" %}
+
+{% block pageTitle %}
+{% include "includes/update-page-title.html" %}
+{% endblock %}
+
+{% block backLink %}
+{% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <div class="interrupt-card">
+            <h1 class="govuk-heading-l">Before you start</h1>
+            <h2 class="govuk-heading-m">Authentication code</h2>
+            <p class="govuk-body">
+                You will need the overseas entity's authentication code to file this update statement.
+            </p>
+            <form method="post">
+                {% include "includes/update-start-goal-button.html" %}
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

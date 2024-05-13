@@ -49,7 +49,7 @@ import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.moc
 
 import { NextFunction } from "express";
 import { ErrorMessages } from "../../../src/validation/error.messages";
-import { getConfirmationStatementNextMadeUpToDateAsISoString } from "../../../src/service/company.profile.service";
+import { getConfirmationStatementNextMadeUpToDateAsIsoString } from "../../../src/service/company.profile.service";
 
 const NEXT_MADE_UP_TO_DATE = "2024-03-19";
 
@@ -73,8 +73,8 @@ const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 mockGetApplicationData.mockReturnValue( APPLICATION_DATA_MOCK );
 
-const mockGetConfirmationStatementNextMadeUpToDate = getConfirmationStatementNextMadeUpToDateAsISoString as jest.Mock;
-mockGetConfirmationStatementNextMadeUpToDate.mockReturnValue(NEXT_MADE_UP_TO_DATE);
+const mockGetConfirmationStatementNextMadeUpToDateAsIsoString = getConfirmationStatementNextMadeUpToDateAsIsoString as jest.Mock;
+mockGetConfirmationStatementNextMadeUpToDateAsIsoString.mockReturnValue(NEXT_MADE_UP_TO_DATE);
 
 const mockMapDataObjectToFields = mapDataObjectToFields as jest.Mock;
 
@@ -94,6 +94,7 @@ describe("Update Filing Date controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetApplicationData.mockReturnValue( APPLICATION_DATA_MOCK );
   });
 
   describe("GET tests", () => {
@@ -151,7 +152,7 @@ describe("Update Filing Date controller", () => {
 
       const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
 
-      expect(mockGetConfirmationStatementNextMadeUpToDate).not.toHaveBeenCalled();
+      expect(mockGetConfirmationStatementNextMadeUpToDateAsIsoString).not.toHaveBeenCalled();
       expect(resp.status).toEqual(200);
     });
 
@@ -165,7 +166,7 @@ describe("Update Filing Date controller", () => {
 
       const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
 
-      expect(mockGetConfirmationStatementNextMadeUpToDate).toHaveBeenCalled();
+      expect(mockGetConfirmationStatementNextMadeUpToDateAsIsoString).toHaveBeenCalled();
       expect(resp.status).toEqual(200);
     });
 
@@ -176,12 +177,12 @@ describe("Update Filing Date controller", () => {
       }
       mockGetApplicationData.mockReturnValueOnce(mockData);
       mockMapDataObjectToFields.mockReturnValueOnce(undefined);
-      mockGetConfirmationStatementNextMadeUpToDate.mockReturnValueOnce(undefined);
+      mockGetConfirmationStatementNextMadeUpToDateAsIsoString.mockReturnValueOnce(undefined);
       mockCreateAndLogErrorRequest.mockReturnValueOnce(new Error("message"));
 
       const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
 
-      expect(mockGetConfirmationStatementNextMadeUpToDate).toHaveBeenCalled();
+      expect(mockGetConfirmationStatementNextMadeUpToDateAsIsoString).toHaveBeenCalled();
       expect(mockCreateAndLogErrorRequest).toHaveBeenCalled();
       expect(resp.status).toEqual(500);
     });
@@ -222,7 +223,7 @@ describe("Update Filing Date controller", () => {
 
     test(`redirect to the ${config.OVERSEAS_ENTITY_PRESENTER_URL} page after a successful creation of transaction and overseas entity`, async () => {
       const mockData = { ...APPLICATION_DATA_MOCK, [Transactionkey]: "", [OverseasEntityKey]: "" };
-      mockGetApplicationData.mockReturnValueOnce(mockData);
+      mockGetApplicationData.mockReturnValue(mockData);
       const resp = await request(app)
         .post(config.UPDATE_FILING_DATE_URL)
         .send({ ...FILING_DATE_REQ_BODY_MOCK });
@@ -247,10 +248,62 @@ describe("Update Filing Date controller", () => {
 
       const resp = await request(app)
         .post(config.UPDATE_FILING_DATE_URL)
-        .send({ filingDateMock });
+        .send(filingDateMock);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ErrorMessages.ENTER_DATE);
+      expect(resp.text).toContain(ERROR_LIST);
+    });
+
+    test(`renders the ${config.UPDATE_FILING_DATE_PAGE} page with error when filing date is after next made up to date`, async () => {
+      const mockData = { ...APPLICATION_DATA_MOCK };
+      mockGetApplicationData.mockReturnValue(mockData);
+
+      const resp = await request(app)
+        .post(config.UPDATE_FILING_DATE_URL)
+        .send({
+          "filing_date-day": "1",
+          "filing_date-month": "4",
+          "filing_date-year": "2024"
+        });
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ErrorMessages.STATEMENT_DATE_AFTER_MADE_UP_TO_DATE.replace("%s", "19 03 2024"));
+      expect(resp.text).toContain(ERROR_LIST);
+    });
+
+    test(`renders the ${config.UPDATE_FILING_DATE_PAGE} page with error when unable to get next made up to date`, async () => {
+      const mockData = { ...APPLICATION_DATA_MOCK };
+      mockGetApplicationData.mockReturnValue(mockData);
+      mockGetConfirmationStatementNextMadeUpToDateAsIsoString.mockResolvedValueOnce(undefined);
+
+      const resp = await request(app)
+        .post(config.UPDATE_FILING_DATE_URL)
+        .send({
+          "filing_date-day": "1",
+          "filing_date-month": "4",
+          "filing_date-year": "2024"
+        });
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ErrorMessages.UNABLE_TO_RETRIEVE_EXPECTED_DATE);
+      expect(resp.text).toContain(ERROR_LIST);
+    });
+
+    test(`renders the ${config.UPDATE_FILING_DATE_PAGE} page with error when unable to get the entity number`, async () => {
+      const mockData = { };
+      mockGetApplicationData.mockReturnValue(mockData);
+
+      const resp = await request(app)
+        .post(config.UPDATE_FILING_DATE_URL)
+        .send({
+          "filing_date-day": "1",
+          "filing_date-month": "4",
+          "filing_date-year": "2024"
+        });
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ErrorMessages.UNABLE_TO_RETRIEVE_ENTITY_NUMBER);
       expect(resp.text).toContain(ERROR_LIST);
     });
 

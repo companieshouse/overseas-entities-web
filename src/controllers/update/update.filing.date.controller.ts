@@ -10,7 +10,7 @@ import { createOverseasEntity, updateOverseasEntity } from "../../service/overse
 import { OverseasEntityKey, Transactionkey, InputDateKeys } from '../../model/data.types.model';
 import { FilingDateKey, FilingDateKeys } from '../../model/date.model';
 import { ApplicationData } from "../../model/application.model";
-import { getConfirmationStatementNextMadeUpToDateAsISoString } from "../../service/company.profile.service";
+import { getConfirmationStatementNextMadeUpToDateAsIsoString } from "../../service/company.profile.service";
 import { convertIsoDateToInputDate } from "../../utils/date";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
@@ -65,7 +65,7 @@ const getFilingDate = async (req: Request, appData: ApplicationData): Promise<{}
   // otherwise use the next made up to date from confirmation statement in company profile
   if (!filingDate && appData.entity_number) {
     logger.debugRequest(req, `Getting confirmation statement next made up to date for entity number = ${appData.entity_number}`);
-    const nextMudIsoString = await getConfirmationStatementNextMadeUpToDateAsISoString(req, appData.entity_number);
+    const nextMudIsoString = await getConfirmationStatementNextMadeUpToDateAsIsoString(req, appData.entity_number);
     if (!nextMudIsoString) {
       throw createAndLogErrorRequest(req, `No confirmation statement next made up to date found on company profile for entity number = ${appData.entity_number}; transaction id = ${appData.transaction_id}`);
     }

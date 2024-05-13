@@ -17,7 +17,7 @@ import {
   COMPANY_PROFILE_WITH_CONFIRMATION_STATEMENT_MOCK_DATA,
   OVER_SEAS_ENTITY_MOCK_DATA,
 } from "../__mocks__/session.mock";
-import { getCompanyProfile, getConfirmationStatementNextMadeUpToDate } from "../../src/service/company.profile.service";
+import { getCompanyProfile, getConfirmationStatementNextMadeUpToDateAsIsoString } from "../../src/service/company.profile.service";
 
 const mockCreateAndLogErrorRequest = createAndLogErrorRequest as jest.Mock;
 mockCreateAndLogErrorRequest.mockReturnValue(ERROR);
@@ -66,7 +66,7 @@ describe(`Get overseas entity profile details service suite`, () => {
     const mockResponse = { httpStatusCode: 200, resource: COMPANY_PROFILE_WITH_CONFIRMATION_STATEMENT_MOCK_DATA };
     mockMakeApiCallWithRetry.mockResolvedValueOnce(mockResponse);
 
-    const response = await getConfirmationStatementNextMadeUpToDate(req, COMPANY_NUMBER);
+    const response = await getConfirmationStatementNextMadeUpToDateAsIsoString(req, COMPANY_NUMBER);
     expect(response).toEqual("2024-08-26");
   });
 
@@ -74,7 +74,7 @@ describe(`Get overseas entity profile details service suite`, () => {
     const mockResponse = { httpStatusCode: 200, resource: OVER_SEAS_ENTITY_MOCK_DATA };
     mockMakeApiCallWithRetry.mockResolvedValueOnce(mockResponse);
 
-    const response = await getConfirmationStatementNextMadeUpToDate(req, COMPANY_NUMBER);
+    const response = await getConfirmationStatementNextMadeUpToDateAsIsoString(req, COMPANY_NUMBER);
     expect(response).toEqual(undefined);
   });
 });

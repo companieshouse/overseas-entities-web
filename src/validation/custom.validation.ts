@@ -13,7 +13,7 @@ import { isRemoveJourney } from "../utils/url";
 import { getTrustByIdFromApp } from "../utils/trusts" ;
 import { getTrustInReview, hasTrustsToReview } from "../utils/update/review_trusts";
 import { logger } from "../utils/logger";
-import { getConfirmationStatementNextMadeUpToDateAsISoString } from "../service/company.profile.service";
+import { getConfirmationStatementNextMadeUpToDateAsIsoString } from "../service/company.profile.service";
 
 export const checkFieldIfRadioButtonSelected = (selected: boolean, errMsg: string, value: string = "") => {
   if ( selected && !value.trim() ) {
@@ -707,12 +707,14 @@ export const checkDateIsBeforeNextMadeUpToDate = async (req, dayStr: string = ""
     throw new Error(ErrorMessages.UNABLE_TO_RETRIEVE_ENTITY_NUMBER);
   }
 
-  const nextMadeUpToDateIsoString = await getConfirmationStatementNextMadeUpToDateAsISoString(req, appData.entity_number);
+  const nextMadeUpToDateIsoString = await getConfirmationStatementNextMadeUpToDateAsIsoString(req, appData.entity_number);
   if (!nextMadeUpToDateIsoString) {
     logger.errorRequest(req, `checkDateBeforeNextMadeUpToDate validation - Unable to find next made up to date for entity ${appData.entity_number}`);
     throw new Error(ErrorMessages.UNABLE_TO_RETRIEVE_EXPECTED_DATE);
   }
+
   const madeUpToDate = DateTime.fromISO(nextMadeUpToDateIsoString);
+  // TODO create a toIsoString()?
   const userEnteredDate = DateTime.fromISO(`${yearStr}-${monthStr.padStart(2, "0")}-${dayStr.padStart(2, "0")}`);
 
   if (userEnteredDate.startOf('day') > madeUpToDate.startOf('day')) {

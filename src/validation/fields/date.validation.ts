@@ -153,7 +153,7 @@ export const filing_date_validations = [
   body("filing_date-day")
     .custom((value, { req }) => checkDate(req.body["filing_date-day"], req.body["filing_date-month"], req.body["filing_date-year"])),
   body("filing_date-day")
-    .custom(async (value, { req }) => await checkDateIsBeforeOrOnNextMadeUpToDate(req, req.body["filing_date-day"], req.body["filing_date-month"], req.body["filing_date-year"])),
+    .custom((value, { req }) => checkDateIsBeforeOrOnNextMadeUpToDate(req, req.body["filing_date-day"], req.body["filing_date-month"], req.body["filing_date-year"])),
 ];
 
 const dateOfBirthValidationsContext: dateContext = {

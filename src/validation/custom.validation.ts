@@ -700,7 +700,7 @@ export const checkFieldIfRadioButtonSelectedAndFieldsEmpty = (isPrimaryField: bo
   }
 };
 
-export const checkDateIsBeforeNextMadeUpToDate = async (req, dayStr: string = "", monthStr: string = "", yearStr: string = ""): Promise<boolean> => {
+export const checkDateIsBeforeOrOnNextMadeUpToDate = async (req, dayStr: string = "", monthStr: string = "", yearStr: string = ""): Promise<boolean> => {
   const appData: ApplicationData = getApplicationData(req.session);
   if (!appData.entity_number) {
     logger.errorRequest(req, "checkDateBeforeNextMadeUpToDate validation - Unable to find entity number in application data.");

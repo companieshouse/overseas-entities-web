@@ -102,6 +102,7 @@ import {
   updatePaymentFailed,
   updateManageTrustsTellUsAboutTheLegalEntity,
   ownedLandFilter,
+  relevantPeriodInterrupt,
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -516,6 +517,15 @@ router.route(config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL)
   )
   .get(doYouWantToMakeOeChange.get)
   .post(...validator.doYouWantToMakeOeChange, checkValidations, doYouWantToMakeOeChange.post);
+
+router.route(config.UPDATE_RELEVANT_PERIOD_INTERRUPT_URL)
+  .all(
+    authentication,
+    companyAuthentication,
+    navigation.hasOverseasEntity
+  )
+  .get(relevantPeriodInterrupt.get)
+  .post(relevantPeriodInterrupt.post);
 
 router.route(config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL)
   .all(

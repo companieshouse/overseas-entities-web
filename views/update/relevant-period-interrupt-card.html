@@ -1,0 +1,46 @@
+{% extends "update-layout.html" %}
+{% import "includes/date-macros.html" as dateMacros %}
+{% set start_date = "28 February 2022" %}
+{% set registration_date = dateMacros.formatDate(dateOfCreation["day"], dateOfCreation["month"], dateOfCreation["year"]) %}
+
+
+{% set title = "New information needed as part of update statement " %}
+
+{% block pageTitle %}
+{% include "includes/update-page-title.html" %}
+{% endblock %}
+
+{% block backLink %}
+{% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <div class="interrupt-card">
+            <h1 class="govuk-heading-l"> New information needed as part of update statement </h1>
+            <p class="govuk-body">
+                You have told us that <strong>{{ entity_name }} </strong> was the registered </p>
+            <p class="govuk-body">
+                As part of this statement,you'll need to tell us if the entity had any of the following during the pre-registration period,that it has not already told us about
+            </p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>Registrable beneficial owner</li>
+                <li>trusts involved in the entity</li>
+            </ul>
+            <p class="govuk-body">
+                This is a new legal .....
+            </p>
+
+            <div class="govuk-inset-text">
+                <p class="govuk-body">
+                    The pre-registration period for <strong>{{ entity_name }}</strong> is between <strong>{{ start_date }}</strong> and <strong>{{ registration_date }}.</strong>
+                </p> </div>
+
+            <form method="post">
+                {% include "includes/update-start-goal-button.html" %}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

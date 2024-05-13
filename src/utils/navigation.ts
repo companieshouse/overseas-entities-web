@@ -92,6 +92,11 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.OVERSEAS_ENTITY_PRESENTER_URL,
     nextPage: [config.WHO_IS_MAKING_UPDATE_URL, config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE]
   },
+  [config.UPDATE_RELEVANT_PERIOD_INTERRUPT_URL]: {
+    currentPage: config.RELEVANT_PERIOD_INTERRUPT_PAGE,
+    previousPage: () => config.UPDATE_RELEVANT_PERIOD_INTERRUPT_URL,
+    nextPage: [config.RELEVANT_PERIOD_INTERRUPT_PAGE]
+  },
   [config.UPDATE_REVIEW_STATEMENT_URL]: {
     currentPage: config.UPDATE_REVIEW_STATEMENT_PAGE,
     previousPage: (appData: ApplicationData, req: Request) => getUpdateReviewStatementBackLink(req),

@@ -18,8 +18,10 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const appData = getApplicationData(req.session);
     const filingDate = appData.update?.[FilingDateKey] ? mapDataObjectToFields(appData.update[FilingDateKey], FilingDateKeys, InputDateKeys) : {};
 
+    const backLinkUrl = !isActiveFeature(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD) ? config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL : config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL;
+
     return res.render(config.UPDATE_FILING_DATE_PAGE, {
-      backLinkUrl: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
+      backLinkUrl: backLinkUrl,
       templateName: config.UPDATE_FILING_DATE_PAGE,
       chsUrl: config.CHS_URL,
       ...appData,

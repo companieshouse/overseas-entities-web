@@ -251,6 +251,8 @@ export const HOME_ADDRESS_LINE1 = "addressLine1";
 export const UPDATE_TRUSTS_ASSOCIATED_ADDED_HEADING = "What you have added so far";
 export const UPDATE_MANAGE_TRUSTS_REVIEWED_HEADING = "What you have reviewed";
 export const UPDATE_DATE_OF_UPDATE_STATEMENT_TEXT = "You can find the update statement date by searching for the entity on the";
+export const RELEVANT_PERIOD = "The pre-registration period for <strong>Overseas Entity Name</strong> is between <strong>28 February 2022</strong> and <strong>";
+export const RELEVANT_PERIOD_OWNED_LAND = "Was the overseas entity a registered owner of UK property or land during the pre-registration period?";
 
 // Remove journey
 export const REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE = "Has the overseas entity disposed of all relevant property or land in the UK?";

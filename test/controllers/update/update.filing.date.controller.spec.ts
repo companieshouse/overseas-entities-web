@@ -90,6 +90,12 @@ mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Respons
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue(true);
 
+const FILING_DATE_FORM_DATA = {
+  "filing_date-day": "1",
+  "filing_date-month": "4",
+  "filing_date-year": "2024"
+};
+
 describe("Update Filing Date controller", () => {
 
   beforeEach(() => {
@@ -261,11 +267,7 @@ describe("Update Filing Date controller", () => {
 
       const resp = await request(app)
         .post(config.UPDATE_FILING_DATE_URL)
-        .send({
-          "filing_date-day": "1",
-          "filing_date-month": "4",
-          "filing_date-year": "2024"
-        });
+        .send(FILING_DATE_FORM_DATA);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ErrorMessages.DATE_AFTER_MADE_UP_TO_DATE.replace("%s", "19 03 2024"));
@@ -279,11 +281,7 @@ describe("Update Filing Date controller", () => {
 
       const resp = await request(app)
         .post(config.UPDATE_FILING_DATE_URL)
-        .send({
-          "filing_date-day": "1",
-          "filing_date-month": "4",
-          "filing_date-year": "2024"
-        });
+        .send(FILING_DATE_FORM_DATA);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ErrorMessages.UNABLE_TO_RETRIEVE_EXPECTED_DATE);
@@ -296,11 +294,7 @@ describe("Update Filing Date controller", () => {
 
       const resp = await request(app)
         .post(config.UPDATE_FILING_DATE_URL)
-        .send({
-          "filing_date-day": "1",
-          "filing_date-month": "4",
-          "filing_date-year": "2024"
-        });
+        .send(FILING_DATE_FORM_DATA);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ErrorMessages.UNABLE_TO_RETRIEVE_ENTITY_NUMBER);

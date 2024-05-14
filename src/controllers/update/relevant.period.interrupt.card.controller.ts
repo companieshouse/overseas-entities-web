@@ -13,7 +13,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(req.session);
 
     return res.render(config.RELEVANT_PERIOD_INTERRUPT_PAGE, {
-      backLinkUrl: config.UPDATE_RELEVANT_PERIOD_INTERRUPT_URL,
+      backLinkUrl: config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL,
       templateName: config.RELEVANT_PERIOD_INTERRUPT_PAGE,
       ...appData, dateOfCreation: getRegistrationDate(appData.update?.date_of_creation as InputDate)
     });
@@ -27,7 +27,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.RELEVANT_PERIOD_INTERRUPT_PAGE}`);
 
-    return res.redirect(config.RELEVANT_PERIOD_INTERRUPT_PAGE); // redirects to itself currently because we don't have the next page
+    return res.redirect(config.RELEVANT_PERIOD_INTERRUPT_PAGE); // redirects to statement 3 page
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

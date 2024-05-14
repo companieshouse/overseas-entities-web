@@ -17,7 +17,7 @@ locals {
 
   # Environment Files
   use_set_environment_files   = var.use_set_environment_files
-  app_environment_filename    = "restricted-word-web.env"
+  app_environment_filename    = "overseas-entities-web.env"
 
   # Secrets
   stack_secrets               = jsondecode(data.vault_generic_secret.stack_secrets.data_json)

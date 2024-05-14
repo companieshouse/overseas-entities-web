@@ -106,7 +106,7 @@ describe("owned land filter page tests", () => {
         .send({ owned_land_relevant_period: "1" });
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
+      expect(resp.header.location).toEqual(config.UPDATE_RELEVANT_PERIOD_INTERRUPT_URL);
     });
     test(`renders the ${config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL} page when no is selected`, async () => {
       const resp = await request(app)

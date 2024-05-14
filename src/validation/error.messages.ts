@@ -178,7 +178,7 @@ export enum ErrorMessages {
   START_DATE_BEFORE_FILING_DATE = "Start date must be before or on the date of the update statement",
   CEASED_DATE_BEFORE_FILING_DATE = "Ceased date must be before or on the date of the update statement",
   RESIGNED_ON_BEFORE_FILING_DATE = "Resigned on date must be before or on the date of the update statement",
-  STATEMENT_DATE_AFTER_MADE_UP_TO_DATE = "The date you provide must be on or before %s",
+  DATE_AFTER_MADE_UP_TO_DATE = "The date you provide must be on or before %s",
 
   // No radio selected
   SELECT_IF_ENTITY_HAS_SOLD_LAND = "Select yes if the entity has disposed of UK property or land since 28 February 2022",

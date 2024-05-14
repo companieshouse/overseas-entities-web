@@ -268,7 +268,7 @@ describe("Update Filing Date controller", () => {
         });
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(ErrorMessages.STATEMENT_DATE_AFTER_MADE_UP_TO_DATE.replace("%s", "19 03 2024"));
+      expect(resp.text).toContain(ErrorMessages.DATE_AFTER_MADE_UP_TO_DATE.replace("%s", "19 03 2024"));
       expect(resp.text).toContain(ERROR_LIST);
     });
 

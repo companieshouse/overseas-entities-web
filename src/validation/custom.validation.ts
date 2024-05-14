@@ -717,7 +717,7 @@ export const checkDateIsBeforeOrOnNextMadeUpToDate = async (req, dayStr: string 
   const userEnteredDate = DateTime.fromISO(`${yearStr}-${monthStr.padStart(2, "0")}-${dayStr.padStart(2, "0")}`);
 
   if (userEnteredDate.startOf('day') > madeUpToDate.startOf('day')) {
-    const message = ErrorMessages.STATEMENT_DATE_AFTER_MADE_UP_TO_DATE.replace('%s', `${madeUpToDate.day.toString().padStart(2, "0")} ${madeUpToDate.month.toString().padStart(2, "0")} ${madeUpToDate.year}`);
+    const message = ErrorMessages.DATE_AFTER_MADE_UP_TO_DATE.replace('%s', `${madeUpToDate.day.toString().padStart(2, "0")} ${madeUpToDate.month.toString().padStart(2, "0")} ${madeUpToDate.year}`);
     throw new Error(message);
   }
   return true;

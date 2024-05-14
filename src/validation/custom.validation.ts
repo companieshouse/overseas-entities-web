@@ -714,7 +714,6 @@ export const checkDateIsBeforeOrOnNextMadeUpToDate = async (req, dayStr: string 
   }
 
   const madeUpToDate = DateTime.fromISO(nextMadeUpToDateIsoString);
-  // TODO create a toIsoString()?
   const userEnteredDate = DateTime.fromISO(`${yearStr}-${monthStr.padStart(2, "0")}-${dayStr.padStart(2, "0")}`);
 
   if (userEnteredDate.startOf('day') > madeUpToDate.startOf('day')) {

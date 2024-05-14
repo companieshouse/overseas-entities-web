@@ -30,7 +30,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     // TODO: store ownedLandKey in ApplicationData and turn on questions about the relevant period.
 
     if (ownedLandKey === '1') {
-      return res.redirect(config.UPDATE_RELEVANT_PERIOD_INTERRUPT_URL); // redirect to interrupt screen
+      return res.redirect(config.UPDATE_RELEVANT_PERIOD_INTERRUPT_URL);
     } else {
       return res.redirect(config.UPDATE_FILING_DATE_URL);
     }

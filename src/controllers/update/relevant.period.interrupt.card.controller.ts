@@ -9,7 +9,7 @@ import { getRegistrationDate } from "../../utils/update/relevant.period";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `${req.method} ${req.route.path}`);
+    logger.debugRequest(req, `GET ${config.RELEVANT_PERIOD_INTERRUPT_PAGE}`);
     const appData: ApplicationData = getApplicationData(req.session);
 
     return res.render(config.RELEVANT_PERIOD_INTERRUPT_PAGE, {
@@ -27,7 +27,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.RELEVANT_PERIOD_INTERRUPT_PAGE}`);
 
-    return res.redirect(config.RELEVANT_PERIOD_INTERRUPT_PAGE); // redirects to statement 3 page
+    return res.redirect(config.UPDATE_RELEVANT_PERIOD_INTERRUPT_URL); // redirects to statement 3 page
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

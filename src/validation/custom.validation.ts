@@ -713,11 +713,11 @@ export const checkDateIsBeforeOrOnNextMadeUpToDate = async (req, dayStr: string,
     throw new Error(ErrorMessages.UNABLE_TO_RETRIEVE_EXPECTED_DATE);
   }
 
-  const madeUpToDate = DateTime.fromISO(nextMadeUpToDateIsoString);
+  const nextMadeUpToDate = DateTime.fromISO(nextMadeUpToDateIsoString);
   const userEnteredDate = DateTime.fromISO(`${yearStr}-${monthStr.padStart(2, "0")}-${dayStr.padStart(2, "0")}`);
 
-  if (userEnteredDate.startOf('day') > madeUpToDate.startOf('day')) {
-    const message = ErrorMessages.DATE_AFTER_MADE_UP_TO_DATE.replace('%s', `${madeUpToDate.day.toString().padStart(2, "0")} ${madeUpToDate.month.toString().padStart(2, "0")} ${madeUpToDate.year}`);
+  if (userEnteredDate.startOf('day') > nextMadeUpToDate.startOf('day')) {
+    const message = ErrorMessages.DATE_AFTER_MADE_UP_TO_DATE.replace('%s', nextMadeUpToDate.toFormat('dd LL yyyy'));
     throw new Error(message);
   }
   return true;

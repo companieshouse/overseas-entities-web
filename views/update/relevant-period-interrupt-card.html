@@ -1,8 +1,4 @@
 {% extends "update-layout.html" %}
-{% import "includes/date-macros.html" as dateMacros %}
-{% set start_date = "28 February 2022" %}
-{% set registration_date = dateMacros.formatDate(dateOfCreation["day"], dateOfCreation["month"], dateOfCreation["year"]) %}
-
 
 {% set title = "New information needed as part of update statement " %}
 
@@ -32,11 +28,9 @@
             <p class="govuk-body">
                 This is a new legal requirement so that we can understand who was involved in the entities that owned UK property or land when the Economic Crime and Transparency Bill came into force (28 February 2022).
             </p>
-
             <div class="govuk-inset-text">
-                <p class="govuk-body">
-                    The pre-registration period for <strong>{{ entity_name }}</strong> is between <strong>{{ start_date }}</strong> and <strong>{{ registration_date }}.</strong>
-                </p> </div>
+                {% include "includes/page-templates/relevant-period.html" %}
+            </div>
 
             <form method="post">
                 {% include "includes/update-start-goal-button.html" %}

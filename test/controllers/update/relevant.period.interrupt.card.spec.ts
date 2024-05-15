@@ -27,7 +27,7 @@ import { companyAuthentication } from "../../../src/middleware/company.authentic
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
-import { UPDATE_RELEVANT_PERIOD_INTERRUPT_URL } from "../../../src/config";
+import { RELEVANT_PERIOD_INTERRUPT_URL } from "../../../src/config";
 
 const mockHasUpdatePresenter = hasUpdatePresenter as jest.Mock;
 mockHasUpdatePresenter.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
@@ -56,7 +56,7 @@ describe("relevant interrupt card page tests", () => {
   describe("GET tests", () => {
     test(`renders the ${config.RELEVANT_PERIOD_INTERRUPT_PAGE} page`, async () => {
       mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
-      const resp = await request(app).get(config.UPDATE_RELEVANT_PERIOD_INTERRUPT_URL);
+      const resp = await request(app).get(config.RELEVANT_PERIOD_INTERRUPT_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(RELEVANT_PERIOD_INTERRUPT_CARD_TITLE);
@@ -68,7 +68,7 @@ describe("relevant interrupt card page tests", () => {
 
     test("catch error when rendering the page", async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-      const resp = await request(app).get(UPDATE_RELEVANT_PERIOD_INTERRUPT_URL);
+      const resp = await request(app).get(RELEVANT_PERIOD_INTERRUPT_URL);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
@@ -76,17 +76,17 @@ describe("relevant interrupt card page tests", () => {
   });
 
   describe("POST tests", () => {
-    test(`renders the ${config.UPDATE_RELEVANT_PERIOD_INTERRUPT_URL} page when yes is selected`, async () => {
+    test(`renders the ${config.RELEVANT_PERIOD_INTERRUPT_URL} page when yes is selected`, async () => {
       const resp = await request(app)
-        .post(config.UPDATE_RELEVANT_PERIOD_INTERRUPT_URL);
+        .post(config.RELEVANT_PERIOD_INTERRUPT_URL);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.UPDATE_RELEVANT_PERIOD_INTERRUPT_URL);
+      expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_INTERRUPT_URL);
     });
     test("catch error when posting the page", async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app)
-        .post(UPDATE_RELEVANT_PERIOD_INTERRUPT_URL);
+        .post(RELEVANT_PERIOD_INTERRUPT_URL);
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });

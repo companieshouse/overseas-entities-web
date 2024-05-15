@@ -107,7 +107,7 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
     nextPage: [config.RELEVANT_PERIOD_INTERRUPT_PAGE]
   },
-  [config.UPDATE_RELEVANT_PERIOD_INTERRUPT_URL]: {
+  [config.RELEVANT_PERIOD_INTERRUPT_URL]: {
     currentPage: config.RELEVANT_PERIOD_INTERRUPT_PAGE,
     previousPage: () => config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL,
     nextPage: [config.RELEVANT_PERIOD_INTERRUPT_PAGE]

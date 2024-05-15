@@ -562,7 +562,7 @@ router.route(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL)
   .get(ownedLandFilter.get)
   .post(ownedLandFilter.post);
 
-router.route(config.UPDATE_RELEVANT_PERIOD_INTERRUPT_URL)
+router.route(config.RELEVANT_PERIOD_INTERRUPT_URL)
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD),
     authentication,

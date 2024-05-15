@@ -101,6 +101,7 @@ import {
   updateManageTrustsIndividualsOrEntitiesInvolved,
   updatePaymentFailed,
   updateManageTrustsTellUsAboutTheLegalEntity,
+  combinedPageForStatements,
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -550,6 +551,14 @@ router.route(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL)
   )
   .get(confirmOverseasEntityDetails.get)
   .post(confirmOverseasEntityDetails.post);
+
+router.route(config.COMBINED_PAGE_FOR_STATEMENTS_URL)
+  .all(
+    authentication,
+    companyAuthentication,
+    navigation.hasOverseasEntity)
+  .get(combinedPageForStatements.get)
+  .post(combinedPageForStatements.post);
 
 router.route(config.OVERSEAS_ENTITY_PRESENTER_URL)
   .all(

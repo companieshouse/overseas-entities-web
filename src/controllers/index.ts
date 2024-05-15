@@ -96,6 +96,7 @@ export * as updateManageTrustsReviewLegalEntities from './update/update.manage.t
 export * as updateManageTrustsIndividualsOrEntitiesInvolved from './update/update.manage.trusts.individuals.or.entities.involved.controller';
 export * as updatePaymentFailed from './update/update.payment.failed.controller';
 export * as updateManageTrustsTellUsAboutTheLegalEntity from './update/update.manage.trusts.tell.us.about.the.legal.entity.controller';
+export * as combinedPageForStatements from './update/combined.page.for.statements.controller';
 
 // REMOVE controllers
 export * as removeSoldAllLandFilter from './update/remove.sold.all.land.filter.controller';

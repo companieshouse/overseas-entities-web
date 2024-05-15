@@ -714,7 +714,7 @@ export const checkDateIsBeforeOrOnNextMadeUpToDate = async (req, dayStr: string,
   }
 
   const nextMadeUpToDate = DateTime.fromISO(nextMadeUpToDateIsoString);
-  const userEnteredDate = DateTime.fromISO(`${yearStr}-${monthStr.padStart(2, "0")}-${dayStr.padStart(2, "0")}`);
+  const userEnteredDate = DateTime.fromObject({ year: Number(yearStr), month: Number(monthStr), day: Number(dayStr) });
 
   if (userEnteredDate.startOf('day') > nextMadeUpToDate.startOf('day')) {
     const message = ErrorMessages.DATE_AFTER_MADE_UP_TO_DATE.replace('%s', nextMadeUpToDate.toFormat('dd LL yyyy'));

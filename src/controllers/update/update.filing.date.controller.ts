@@ -59,10 +59,11 @@ export const post = async(req: Request, res: Response, next: NextFunction) => {
 };
 
 const getFilingDate = async (req: Request, appData: ApplicationData): Promise<{} | undefined> => {
-  // use date stored in appData if present
+  // use date stored in appData if present, indicates that a value has already been entered on this page by user.
   let filingDate = appData.update?.[FilingDateKey] ? mapDataObjectToFields(appData.update[FilingDateKey], FilingDateKeys, InputDateKeys) : undefined;
 
-  // otherwise use the next made up to date from confirmation statement in company profile
+  // otherwise use the next made up to date from confirmation statement in company profile, this is the first visit to the page so they wouldn't
+  //  have already enetered a date, so pre-populate page with the next made up to date. User can then use that or change it to a different date.
   if (!filingDate) {
     if (!appData.entity_number) {
       throw createAndLogErrorRequest(req, `update.filing.controller unable to find entity_number in application data for entity_name ${appData.entity_name}`);

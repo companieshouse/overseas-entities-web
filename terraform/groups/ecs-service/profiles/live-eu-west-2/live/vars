@@ -1,40 +1,8 @@
 environment = "live"
 aws_profile = "live-eu-west-2"
 
-# scaling configs
-desired_task_count = 2 # use multi instance in staging
-
 # service configs
-log_level = "info"
-chs_url = "https://find-and-update.company-information.service.gov.uk"
-piwik_url = "https://matomo.companieshouse.gov.uk/"
-piwik_site_id = "28"
-piwik_start_goal_id = "3"
-piwik_update_start_goal_id = "11"
-piwik_remove_start_goal_id = "15"
+use_set_environment_files = true
 
-# Note that Mesos LIVE config has '//$CDN_HOST' for this
-cdn_host = "d2aolmgtg7n8lp.cloudfront.net" # cdn.ch.gov.uk-3.22.240
-
-cookie_domain = "company-information.service.gov.uk"
-account_local_url = "https://identity.company-information.service.gov.uk"
-show_service_offline_page = "false"
-feature_flag_enable_update_statement_validation_05072023 = "true"
-feature_flag_enable_save_and_resume_17102022 = "true"
-feature_flag_enable_roe_update_24112022 = "true"
-feature_flag_enable_trusts_web_07112022 = "true"
-feature_flag_enable_update_save_and_resume_07032023 = "true"
-feature_flag_enable_update_trusts_30062023 = "true"
-feature_flag_enable_redis_removal_27092023 = "false"
-feature_flag_disable_update_private_data_fetch_28062023 = "false"
-feature_flag_enable_update_manage_trusts_29082023 = "true"
-feature_flag_enable_cease_trusts_19022024 = "true"
-feature_flag_enable_relevant_period_26042024 = "false"
-landing_page_url = "https://www.gov.uk/guidance/register-an-overseas-entity"
-landing_page_starting_new_url = "/register-an-overseas-entity/starting-new"
-payment_fee = "234.00"
-update_landing_page_url = "/update-an-overseas-entity/continue-with-saved-filing"
-remove_landing_page_url = "https://www.gov.uk/guidance/remove-an-overseas-entity"
-update_payment_fee = "234.00"
-vf01_form_download_url = "https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/1095139/OE_VF01.pdf"
-api_url = "https://private-api.companieshouse.gov.uk"
+# Scaling configs
+desired_task_count = 2 # use multi instance in live

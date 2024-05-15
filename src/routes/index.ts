@@ -102,6 +102,7 @@ import {
   updatePaymentFailed,
   updateManageTrustsTellUsAboutTheLegalEntity,
   ownedLandFilter,
+  relevantPeriodInterrupt,
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -560,6 +561,15 @@ router.route(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL)
     navigation.hasOverseasEntity)
   .get(ownedLandFilter.get)
   .post(ownedLandFilter.post);
+
+router.route(config.UPDATE_RELEVANT_PERIOD_INTERRUPT_URL)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD),
+    authentication,
+    companyAuthentication,
+    navigation.hasOverseasEntity)
+  .get(relevantPeriodInterrupt.get)
+  .post(relevantPeriodInterrupt.post);
 
 router.route(config.OVERSEAS_ENTITY_PRESENTER_URL)
   .all(

@@ -104,6 +104,7 @@ import {
   relevantPeriodOwnedLandFilter,
   relevantPeriodInterrupt,
   relevantPeriodCombinedStatements,
+  relevantPeriodReviewStatements,
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -580,6 +581,24 @@ router.route(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
     navigation.hasOverseasEntity)
   .get(relevantPeriodCombinedStatements.get)
   .post(relevantPeriodCombinedStatements.post);
+
+router.route(config.RELEVANT_PERIOD_INTERRUPT_URL)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD),
+    authentication,
+    companyAuthentication,
+    navigation.hasOverseasEntity)
+  .get(relevantPeriodInterrupt.get)
+  .post(relevantPeriodInterrupt.post);
+
+router.route(config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD),
+    authentication,
+    companyAuthentication,
+    navigation.hasOverseasEntity)
+  .get(relevantPeriodReviewStatements.get)
+  .post(relevantPeriodReviewStatements.post);
 
 router.route(config.OVERSEAS_ENTITY_PRESENTER_URL)
   .all(

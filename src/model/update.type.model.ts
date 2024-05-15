@@ -5,6 +5,7 @@ import { yesNoResponse, InputDate } from "./data.types.model";
 import { ManagingOfficerCorporate } from "./managing.officer.corporate.model";
 import { ManagingOfficerIndividual } from "./managing.officer.model";
 import { Trust } from "./trust.model";
+import { RelevantPeriodStatementsType } from "./relevant.period.statment.model";
 
 export const UpdateKey = "update";
 export const RegistrableBeneficialOwnerKey = "registrable_beneficial_owner";
@@ -32,6 +33,9 @@ export interface Update {
   bo_mo_data_fetched?: boolean;
   // Flag for whether a person has become or ceased to be a registrable BO in the update period or not
   registrable_beneficial_owner?: yesNoResponse;
+  confirmation_change_to_BO_info_relevant_period?: RelevantPeriodStatementsType;
+  confirmation_change_to_BO_trusts_relevant_period?: RelevantPeriodStatementsType;
+  confirmation_change_to_BO_beneficiaries_relevant_period?: RelevantPeriodStatementsType;
   review_beneficial_owners_individual?: BeneficialOwnerIndividual[];
   review_beneficial_owners_corporate?: BeneficialOwnerOther[];
   review_beneficial_owners_government_or_public_authority?: BeneficialOwnerGov[];

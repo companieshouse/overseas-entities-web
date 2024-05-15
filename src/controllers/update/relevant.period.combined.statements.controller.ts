@@ -6,6 +6,13 @@ import { ApplicationData } from "../../model";
 import { getApplicationData } from "../../utils/application.data";
 import { getRegistrationDate } from "../../utils/update/relevant.period";
 import { InputDate } from "../../model/data.types.model";
+import {
+  RelevantPeriodStatementsKey,
+  RelevantPeriodStatementsType,
+  RelevantPeriodStatementOne,
+  RelevantPeriodStatementTwo,
+  RelevantPeriodStatementThree
+} from "../../model/relevant.period.statment.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -27,19 +34,18 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE}`);
-    // Should store checked checkbox values in array
-    const pageData = Object.values(req.body.combined_page_for_statements);
-    // Checks for any statement other than 'None of these'
-    const hasSelectedStatement = pageData.some(option => option !== "NONE_OF_THESE");
+    const appData: ApplicationData = getApplicationData(req.session);
+    const statements = req.body[RelevantPeriodStatementsKey];
 
-    if (hasSelectedStatement) {
-      // One or more checkboxes other than 'None of these' was checked
-      return res.redirect(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
+    if (appData.update) {
+      appData.update.confirmation_change_to_BO_info_relevant_period = statements.includes(RelevantPeriodStatementOne) ? RelevantPeriodStatementsType[RelevantPeriodStatementOne] : RelevantPeriodStatementsType["NO_" + RelevantPeriodStatementOne];
+      appData.update.confirmation_change_to_BO_trusts_relevant_period = statements.includes(RelevantPeriodStatementTwo) ? RelevantPeriodStatementsType[RelevantPeriodStatementTwo] : RelevantPeriodStatementsType["NO_" + RelevantPeriodStatementTwo];
+      appData.update.confirmation_change_to_BO_beneficiaries_relevant_period = statements.includes(RelevantPeriodStatementThree) ? RelevantPeriodStatementsType[RelevantPeriodStatementThree] : RelevantPeriodStatementsType["NO_" + RelevantPeriodStatementThree];
     }
-    if (pageData.includes("NONE_OF_THESE")) {
-      // The checkbox 'None of these' was checked
-      return res.redirect(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
-    }
+
+    console.log(appData);
+
+    return res.redirect(config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

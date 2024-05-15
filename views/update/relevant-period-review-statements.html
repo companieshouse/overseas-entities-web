@@ -1,0 +1,99 @@
+{% extends "update-layout.html" %}
+
+{% set title = "Review Statements" %}
+
+{% block pageTitle %}
+{% include "includes/update-page-title.html" %}
+{% endblock %}
+
+{% block backLink %}
+{% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        {% include "includes/list/errors.html" %}
+
+        {% include "includes/page-templates/important-banner.html" %}
+
+        <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ entity_name }} - {{ entity_number }}</span>
+
+        <h1 class="govuk-heading-xl">Review statements for the pre-registration period</h1>
+
+        <p class="govuk-body">
+            These statements are based on the options you selected on the previous screen.
+        </p>
+
+
+        <!-- Statement 1 -->
+        <h2 class="govuk-heading-m">
+            Beneficial owner statement
+        </h2>
+
+        <p class="govuk-body">
+            The entity <b>has reasonable cause</b> to believe that <b>at least one person became or ceased to be a registrable beneficial owner</b> during the pre-registration period, that it has not already provided information about.
+        </p>
+
+        <div class="govuk-inset-text">
+            We’ll ask you to provide information about any additional registrable beneficial owners later in the service.
+        </div>
+
+        {% if update.confirmation_change_to_BO_info_relevant_period === "ceased_to_be_registrable_beneficial_owner" %}
+            <p class="govuk-body">The entity <strong>has reasonable cause</strong> to believe that <strong>at least one person became or ceased to be a registrable beneficial owner</strong> during the pre-registration period, that it has not already provided information about.</p>
+            {{ govukInsetText({
+                text: "We’ll ask you to provide information about any additional beneficial owners later in the service"
+            }) }}
+        {% else %}
+            <p class="govuk-body">The entity has <strong>no reasonable cause</strong> to believe that <strong>anyone became or ceased to be a registrable beneficial owner</strong> during the pre-registration period, that it has not already provided information about.</p>
+        {% endif %}
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+
+        <!-- Statement 2 -->
+        <h2 class="govuk-heading-m">
+            Trusts statement
+        </h2>
+
+        {% if update.confirmation_change_to_BO_trusts_relevant_period === "trust_involved_in_the_oe" %}
+            <p class="govuk-body">The entity <strong>has reasonable cause</strong> to believe that <strong>at least one person became or ceased to be a registrable beneficial owner due to being a trustee of a trust</strong> during the pre-registration period, that it has not already provided information about.</p>
+            {{ govukInsetText({
+                text: "We’ll ask you to provide information about any additional beneficial owners later in the service."
+            }) }}
+        {% else %}
+            <p class="govuk-body">The entity has <strong>no reasonable cause</strong> to believe that there were <strong>any trusts involved</strong> in the overseas entity during the pre-registration period, that it has not already provided information about.</p>
+        {% endif %}
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+        <!-- Statement 3 -->
+        <h2 class="govuk-heading-m">Beneficiaries statement</h2>
+
+        {% if update.confirmation_change_to_BO_beneficiaries_relevant_period === "become_or_ceased_beneficiary_of_a_trust" %}
+            <p class="govuk-body">The entity has <strong>reasonable cause</strong> to believe that <strong>at least one person became or ceased to be a beneficiary of a trust</strong> involved in the overseas entity during the pre-registration period, that it has not already provided information about.</p>
+            {{ govukInsetText({
+                text: "We’ll ask you to provide information about any additional beneficial owners later in the service."
+            }) }}
+        {% else %}
+            <p class="govuk-body">The entity has <strong>no reasonable cause</strong> to believe that <strong>anyone became or ceased to be a beneficiary of a trust</strong> involved in the overseas entity during the pre-registration period, that it has not already provided information about.</p>
+        {% endif %}
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+        {{ govukInsetText({
+            text: "We will show the information you provide in this section on the public Register of Overseas Entities."
+        }) }}
+
+        <form method="post">
+            <div class="govuk-button-group">
+                {{ govukButton({
+                text: "Agree and submit",
+                attributes: {
+                "id": "submit"
+                }
+                }) }}
+                <a href="{{ backLinkUrl }}" class="govuk-link govuk-link--no-visited-state">I need to change the statements</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

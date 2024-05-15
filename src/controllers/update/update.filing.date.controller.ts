@@ -63,7 +63,10 @@ const getFilingDate = async (req: Request, appData: ApplicationData): Promise<{}
   let filingDate = appData.update?.[FilingDateKey] ? mapDataObjectToFields(appData.update[FilingDateKey], FilingDateKeys, InputDateKeys) : undefined;
 
   // otherwise use the next made up to date from confirmation statement in company profile
-  if (!filingDate && appData.entity_number) {
+  if (!filingDate) {
+    if (!appData.entity_number) {
+      throw createAndLogErrorRequest(req, `update.filing.controller unable to find entity_number in application data for entity_name ${appData.entity_name}`);
+    }
     logger.debugRequest(req, `Getting confirmation statement next made up to date for entity number = ${appData.entity_number}`);
     const nextMudIsoString = await getConfirmationStatementNextMadeUpToDateAsIsoString(req, appData.entity_number);
     if (!nextMudIsoString) {

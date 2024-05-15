@@ -193,6 +193,20 @@ describe("Update Filing Date controller", () => {
       expect(resp.status).toEqual(500);
     });
 
+    test('throws error if no entity number is found', async () => {
+      const mockData = { ...APPLICATION_DATA_MOCK };
+      mockData.entity_number = undefined;
+
+      mockGetApplicationData.mockReturnValueOnce(mockData);
+      mockCreateAndLogErrorRequest.mockReturnValueOnce(new Error("message"));
+
+      const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
+
+      expect(mockGetConfirmationStatementNextMadeUpToDateAsIsoString).not.toHaveBeenCalled();
+      expect(mockCreateAndLogErrorRequest).toHaveBeenCalled();
+      expect(resp.status).toEqual(500);
+    });
+
     test('catch error when rendering the page', async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);

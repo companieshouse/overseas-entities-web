@@ -36,24 +36,24 @@ describe("date utils tests", () => {
   test("convertIsoDateToInputDate should return NaN values if input date not in ISO format", () => {
     const convertedDate: InputDate = convertIsoDateToInputDate("26-12-2024");
 
-    expect(convertedDate.day).toEqual("NaN");
-    expect(convertedDate.month).toEqual("NaN");
-    expect(convertedDate.year).toEqual("NaN");
+    expect(convertedDate.day).toEqual("Invalid DateTime");
+    expect(convertedDate.month).toEqual("Invalid DateTime");
+    expect(convertedDate.year).toEqual("Invalid DateTime");
   });
 
   test("convertIsoDateToInputDate should return NaN values if input date is empty", () => {
     const convertedDate: InputDate = convertIsoDateToInputDate("");
 
-    expect(convertedDate.day).toEqual("NaN");
-    expect(convertedDate.month).toEqual("NaN");
-    expect(convertedDate.year).toEqual("NaN");
+    expect(convertedDate.day).toEqual("Invalid DateTime");
+    expect(convertedDate.month).toEqual("Invalid DateTime");
+    expect(convertedDate.year).toEqual("Invalid DateTime");
   });
 
   test("convertIsoDateToInputDate should return NaN values if input date is undefined", () => {
     const convertedDate: InputDate = convertIsoDateToInputDate(undefined as unknown as string);
 
-    expect(convertedDate.day).toEqual("NaN");
-    expect(convertedDate.month).toEqual("NaN");
-    expect(convertedDate.year).toEqual("NaN");
+    expect(convertedDate.day).toEqual("Invalid DateTime");
+    expect(convertedDate.month).toEqual("Invalid DateTime");
+    expect(convertedDate.year).toEqual("Invalid DateTime");
   });
 });

@@ -2,10 +2,11 @@ import express from "express";
 import cookieParser from 'cookie-parser';
 import Redis from 'ioredis';
 import * as nunjucks from "nunjucks";
+import { CsrfProtectionMiddleware } from "@companieshouse/web-security-node";
 import * as path from "path";
 import {
   SessionStore,
-  SessionMiddleware
+  SessionMiddleware,
 } from '@companieshouse/node-session-handler';
 
 import * as config from "./config";
@@ -29,6 +30,7 @@ const nunjucksEnv = nunjucks.configure([
   "views/update/remove",
   "node_modules/govuk-frontend/",
   "node_modules/govuk-frontend/components",
+  "node_modules/@companieshouse/"
 ], {
   autoescape: true,
   express: app,
@@ -61,6 +63,12 @@ const cookieConfig = {
 };
 const sessionStore = new SessionStore(new Redis(`redis://${config.CACHE_SERVER}`));
 app.use(SessionMiddleware(cookieConfig, sessionStore));
+const csrfProtectionMiddleware = CsrfProtectionMiddleware({
+  sessionStore,
+  enabled: true,
+  sessionCookieName: config.COOKIE_NAME
+});
+app.use(csrfProtectionMiddleware);
 
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "html");

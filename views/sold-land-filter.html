@@ -18,7 +18,11 @@
       {% include "includes/list/errors.html" %}
 
       <form method="post">
-
+        {{
+          csrfTokenInput({
+            csrfToken: csrfToken
+          })
+        }}
 
         {{ govukRadios({
           errorMessage: errors.has_sold_land if errors,

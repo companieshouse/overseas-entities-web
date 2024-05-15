@@ -109,7 +109,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_RELEVANT_PERIOD_INTERRUPT_URL]: {
     currentPage: config.RELEVANT_PERIOD_INTERRUPT_PAGE,
-    previousPage: () => config.UPDATE_RELEVANT_PERIOD_INTERRUPT_URL,
+    previousPage: () => config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL,
     nextPage: [config.RELEVANT_PERIOD_INTERRUPT_PAGE]
   },
   [config.WHO_IS_MAKING_UPDATE_URL]: {

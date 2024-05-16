@@ -3,6 +3,8 @@ jest.mock("../../src/utils/logger");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
 
+import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
+
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
@@ -17,12 +19,14 @@ import {
   SERVICE_UNAVAILABLE,
   SOLD_LAND_FILTER_PAGE_TITLE,
 } from "../__mocks__/text.mock";
+
 import { ErrorMessages } from '../../src/validation/error.messages';
 
 import { deleteApplicationData, getApplicationData, setExtraData } from "../../src/utils/application.data";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { logger } from "../../src/utils/logger";
 
+mockCsrfProtectionMiddleware.mockClear();
 const mockDeleteApplicationData = deleteApplicationData as jest.Mock;
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;

@@ -22,10 +22,19 @@ import {
   checkFirstDateOnOrAfterSecondDate,
   checkDatePreviousToFilingDate,
   checkTrustCeasedDate,
-  checkDateIsBeforeOrOnNextMadeUpToDate
+  checkDateIsBeforeOrOnOtherDate,
+  checkDateForFilingDate,
 } from "../custom.validation";
 import { ErrorMessages } from "../error.messages";
 import { conditionalDateValidations, conditionalHistoricalBODateValidations, dateContext, dateContextWithCondition, dateValidations } from "./helper/date.validation.helper";
+import { Request, Response, NextFunction } from "express";
+import { ApplicationData } from "../../model";
+import { getConfirmationStatementNextMadeUpToDateAsIsoString } from "../../service/company.profile.service";
+import { getApplicationData } from "../../utils/application.data";
+import { logger } from "../../utils/logger";
+import { DateTime } from "luxon";
+
+export const NEXT_MADE_UP_TO_ISO_DATE = 'nextMadeUpToIsoDate';
 
 // to prevent more than 1 error reported on the date fields we check if the year is valid before doing some checks.
 // This means that the year check is checked before some others
@@ -143,7 +152,23 @@ export const identity_check_date_validations = [
     .custom((value, { req }) => checkIdentityDate(req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"])),
 ];
 
+export const addNextMadeUpToDateToRequest = async (req: Request, res: Response, next: NextFunction) => {
+  const appData: ApplicationData = getApplicationData(req.session);
+  if (!appData.entity_number) {
+    logger.errorRequest(req, "filing date validation - Unable to find entity number in application data.");
+    return next(new Error(ErrorMessages.UNABLE_TO_RETRIEVE_ENTITY_NUMBER));
+  }
+  const nextMadeUpToDateIsoString = await getConfirmationStatementNextMadeUpToDateAsIsoString(req, appData.entity_number);
+  if (!nextMadeUpToDateIsoString) {
+    logger.errorRequest(req, `filing date validation - Unable to find next made up to date for entity ${appData.entity_number}`);
+    return next(new Error(ErrorMessages.UNABLE_TO_RETRIEVE_EXPECTED_DATE));
+  }
+  req[NEXT_MADE_UP_TO_ISO_DATE] = nextMadeUpToDateIsoString;
+  return next();
+};
+
 export const filing_date_validations = [
+  addNextMadeUpToDateToRequest,
   body("filing_date-day")
     .custom((value, { req }) => checkDateFieldDay(req.body["filing_date-day"], req.body["filing_date-month"], req.body["filing_date-year"])),
   body("filing_date-month")
@@ -151,9 +176,20 @@ export const filing_date_validations = [
   body("filing_date-year")
     .custom((value, { req }) => checkDateFieldYear(ErrorMessages.YEAR, ErrorMessages.YEAR_LENGTH, req.body["filing_date-day"], req.body["filing_date-month"], req.body["filing_date-year"])),
   body("filing_date-day")
-    .custom((value, { req }) => checkDate(req.body["filing_date-day"], req.body["filing_date-month"], req.body["filing_date-year"])),
-  body("filing_date-day")
-    .custom((value, { req }) => checkDateIsBeforeOrOnNextMadeUpToDate(req, req.body["filing_date-day"], req.body["filing_date-month"], req.body["filing_date-year"])),
+    .custom((value, { req }) => {
+      if (checkDateForFilingDate(req.body["filing_date-day"], req.body["filing_date-month"], req.body["filing_date-year"])) {
+        const nextMadeUpToDate = DateTime.fromISO(req[NEXT_MADE_UP_TO_ISO_DATE]);
+        const errorMessage = ErrorMessages.DATE_AFTER_MADE_UP_TO_DATE.replace('%s', nextMadeUpToDate.toFormat('dd LL yyyy'));
+
+        checkDateIsBeforeOrOnOtherDate(
+          req as Request,
+          req.body["filing_date-day"], req.body["filing_date-month"], req.body["filing_date-year"],
+          nextMadeUpToDate.day.toString(), nextMadeUpToDate.month.toString(), nextMadeUpToDate.year.toString(),
+          errorMessage
+        );
+      }
+      return true;
+    })
 ];
 
 const dateOfBirthValidationsContext: dateContext = {

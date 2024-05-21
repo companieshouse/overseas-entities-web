@@ -13,7 +13,7 @@ import { isRemoveJourney } from "../utils/url";
 import { getTrustByIdFromApp } from "../utils/trusts" ;
 import { getTrustInReview, hasTrustsToReview } from "../utils/update/review_trusts";
 import { logger } from "../utils/logger";
-import { getConfirmationStatementNextMadeUpToDateAsIsoString } from "../service/company.profile.service";
+import { Request } from "express";
 
 export const checkFieldIfRadioButtonSelected = (selected: boolean, errMsg: string, value: string = "") => {
   if ( selected && !value.trim() ) {
@@ -167,6 +167,26 @@ export const checkAllDateFields = (dayStr: string = "", monthStr: string = "", y
       checkDateIsInPastOrToday(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY, dayStr, monthStr, yearStr);
     }
   }
+};
+
+export const checkDateForFilingDate = (dayStr: string = "", monthStr: string = "", yearStr: string = ""): boolean => {
+  // to prevent more than 1 error reported on the date fields we first check for multiple empty fields and then check if the year is correct length or missing before doing the date check as a whole.
+  if (!checkMoreThanOneDateFieldIsNotMissing(dayStr, monthStr, yearStr)) {
+    return false;
+  }
+  if (!isYearEitherMissingOrCorrectLength(yearStr)) {
+    return false;
+  }
+  if (!checkDateIsNotCompletelyEmpty(dayStr, monthStr, yearStr)) {
+    return false;
+  }
+  if (!checkAllDateFieldsArePresent(dayStr, monthStr, yearStr)) {
+    return false;
+  }
+  if (!checkDateValueIsValid(ErrorMessages.INVALID_DATE, dayStr, monthStr, yearStr)) {
+    return false;
+  }
+  return checkDateIsInPastOrToday(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY, dayStr, monthStr, yearStr);
 };
 
 export const checkDateFieldDay = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
@@ -700,25 +720,17 @@ export const checkFieldIfRadioButtonSelectedAndFieldsEmpty = (isPrimaryField: bo
   }
 };
 
-export const checkDateIsBeforeOrOnNextMadeUpToDate = async (req, dayStr: string, monthStr: string, yearStr: string): Promise<boolean> => {
-  const appData: ApplicationData = getApplicationData(req.session);
-  if (!appData.entity_number) {
-    logger.errorRequest(req, "checkDateBeforeNextMadeUpToDate validation - Unable to find entity number in application data.");
-    throw new Error(ErrorMessages.UNABLE_TO_RETRIEVE_ENTITY_NUMBER);
+export const checkDateIsBeforeOrOnOtherDate = (req: Request, dayStr: string, monthStr: string, yearStr: string, otherDayStr: string, otherMonthStr: string, otherYearStr: string, errorMessage: string): boolean => {
+  const date = DateTime.fromObject({ year: Number(yearStr), month: Number(monthStr), day: Number(dayStr) });
+  const otherDate = DateTime.fromObject({ year: Number(otherYearStr), month: Number(otherMonthStr), day: Number(otherDayStr) });
+
+  if (!date.isValid || !otherDate.isValid) {
+    logger.errorRequest(req, 'Invalid date found in checkDateIsBeforeOrOnOtherDate');
+    throw new Error(errorMessage);
   }
 
-  const nextMadeUpToDateIsoString = await getConfirmationStatementNextMadeUpToDateAsIsoString(req, appData.entity_number);
-  if (!nextMadeUpToDateIsoString) {
-    logger.errorRequest(req, `checkDateBeforeNextMadeUpToDate validation - Unable to find next made up to date for entity ${appData.entity_number}`);
-    throw new Error(ErrorMessages.UNABLE_TO_RETRIEVE_EXPECTED_DATE);
-  }
-
-  const nextMadeUpToDate = DateTime.fromISO(nextMadeUpToDateIsoString);
-  const userEnteredDate = DateTime.fromObject({ year: Number(yearStr), month: Number(monthStr), day: Number(dayStr) });
-
-  if (userEnteredDate.startOf('day') > nextMadeUpToDate.startOf('day')) {
-    const message = ErrorMessages.DATE_AFTER_MADE_UP_TO_DATE.replace('%s', nextMadeUpToDate.toFormat('dd LL yyyy'));
-    throw new Error(message);
+  if (date.startOf('day') > otherDate.startOf('day')) {
+    throw new Error(errorMessage);
   }
   return true;
 };

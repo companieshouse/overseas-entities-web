@@ -288,7 +288,7 @@ describe("Update Filing Date controller", () => {
       expect(resp.text).toContain(ERROR_LIST);
     });
 
-    test(`renders the ${config.UPDATE_FILING_DATE_PAGE} page with error when unable to get next made up to date`, async () => {
+    test(`renders the service unavailable page when unable to get next made up to date`, async () => {
       const mockData = { ...APPLICATION_DATA_MOCK };
       mockGetApplicationData.mockReturnValue(mockData);
       mockGetConfirmationStatementNextMadeUpToDateAsIsoString.mockResolvedValueOnce(undefined);
@@ -297,12 +297,11 @@ describe("Update Filing Date controller", () => {
         .post(config.UPDATE_FILING_DATE_URL)
         .send(FILING_DATE_FORM_DATA);
 
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(ErrorMessages.UNABLE_TO_RETRIEVE_EXPECTED_DATE);
-      expect(resp.text).toContain(ERROR_LIST);
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
 
-    test(`renders the ${config.UPDATE_FILING_DATE_PAGE} page with error when unable to get the entity number`, async () => {
+    test(`renders the service unavailable page when unable to get the entity number`, async () => {
       const mockData = { };
       mockGetApplicationData.mockReturnValue(mockData);
 
@@ -310,9 +309,8 @@ describe("Update Filing Date controller", () => {
         .post(config.UPDATE_FILING_DATE_URL)
         .send(FILING_DATE_FORM_DATA);
 
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(ErrorMessages.UNABLE_TO_RETRIEVE_ENTITY_NUMBER);
-      expect(resp.text).toContain(ERROR_LIST);
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
 
     test(`catch error on POST action for ${config.UPDATE_FILING_DATE_URL} page`, async () => {

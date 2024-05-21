@@ -7,7 +7,8 @@ import {
   RESUME,
   UPDATE_LANDING_URL,
   OVERSEAS_ENTITY_PRESENTER_URL,
-  JOURNEY_REMOVE_QUERY_PARAM
+  JOURNEY_REMOVE_QUERY_PARAM,
+  RELEVANT_PERIOD_OWNED_LAND_FILTER_URL
 } from '../config';
 import { getApplicationData } from "../utils/application.data";
 import { ApplicationData } from "../model";
@@ -23,13 +24,10 @@ export const companyAuthentication = async (req: Request, res: Response, next: N
 
     const appData: ApplicationData = getApplicationData(req.session);
     let entityNumber: string | undefined = appData?.[EntityNumberKey];
-    let returnURL: string = UPDATE_FILING_DATE_URL;
+    let returnURL = !isActiveFeature(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD) ? UPDATE_FILING_DATE_URL : RELEVANT_PERIOD_OWNED_LAND_FILTER_URL;
     if (isRemoveJourney(req)) {
       logger.debugRequest(req, "Remove journey proceed directly to the presenter page");
       returnURL = `${OVERSEAS_ENTITY_PRESENTER_URL}${JOURNEY_REMOVE_QUERY_PARAM}`;
-    }
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD)) {
-      returnURL = config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL;
     }
 
     if (req.path.endsWith(`/${RESUME}`)) {

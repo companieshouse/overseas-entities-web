@@ -27,7 +27,6 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE}`);
     const ownedLandKey = req.body[OwnedLandKey];
-    // TODO: store ownedLandKey in ApplicationData and turn on questions about the relevant period.
 
     if (ownedLandKey === '1') {
       return res.redirect(config.RELEVANT_PERIOD_INTERRUPT_URL);

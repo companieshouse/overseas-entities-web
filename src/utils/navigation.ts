@@ -100,10 +100,10 @@ export const NAVIGATION: Navigation = {
   [config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL]: {
     currentPage: config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
     previousPage: (appData: ApplicationData, req: Request) => getUpdateOrRemoveBackLink(req, config.OVERSEAS_ENTITY_QUERY_URL),
-    nextPage: [config.UPDATE_FILING_DATE_PAGE, config.PRESENTER_URL, config.COMBINED_PAGE_FOR_STATEMENTS]
+    nextPage: [config.UPDATE_FILING_DATE_PAGE, config.PRESENTER_URL, config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE]
   },
-  [config.COMBINED_PAGE_FOR_STATEMENTS_URL]: {
-    currentPage: config.COMBINED_PAGE_FOR_STATEMENTS_URL,
+  [config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL]: {
+    currentPage: config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL,
     previousPage: () => config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
     nextPage: []
   },

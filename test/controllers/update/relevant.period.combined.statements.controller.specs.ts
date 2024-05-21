@@ -18,7 +18,7 @@ import {
 //   RADIO_BUTTON_YES_SELECTED,
 //   RADIO_BUTTON_NO_SELECTED,
 //   SERVICE_UNAVAILABLE,
-//   COMBINED_PAGE_FOR_STATEMENTS,
+//   RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE,
 //   PAGE_NOT_FOUND_TEXT,
 } from "../../__mocks__/text.mock";
 import { APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock";
@@ -29,7 +29,7 @@ import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/ha
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 // import { yesNoResponse } from "../../../src/model/data.types.model";
-// import { CombinedStatementPageKey } from "../../../src/model/combined.page.for.statements.model";
+// import { CombinedStatementPageKey } from "../../../src/model/relevant.period.combined.statements.model";
 
 const mockHasUpdatePresenter = hasUpdatePresenter as jest.Mock;
 mockHasUpdatePresenter.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
@@ -48,18 +48,18 @@ const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue(true);
 
-describe("Combined Page for Statements tests", () => {
+describe("Combined Statements Page tests", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
   describe("GET tests", () => {
-    test(`renders the ${config.COMBINED_PAGE_FOR_STATEMENTS} page`, async () => {
+    test(`renders the ${config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE} page`, async () => {
       mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
-      const resp = await request(app).get(config.COMBINED_PAGE_FOR_STATEMENTS_URL);
+      const resp = await request(app).get(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(COMBINED_PAGE_FOR_STATEMENTS);
+      expect(resp.text).toContain(RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE);
       expect(resp.text).toContain("The relevant period is between <strong>28 February 2022</strong> and <strong>");
       expect(resp.text).toContain("1");
       expect(resp.text).toContain("January");
@@ -67,22 +67,54 @@ describe("Combined Page for Statements tests", () => {
     });
   });
 
+    test("catch error when rendering the page", async () => {
+      mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      const resp = await request(app).get(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+    test('when feature flag is off, 404 is returned', async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      const resp = await request(app).get(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
+
+      expect(resp.status).toEqual(404);
+      expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
+    });
+  });
+
   describe("POST tests", () => {
-    test(`renders the ${config.COMBINED_PAGE_FOR_STATEMENTS_URL} page when statement1 is selected`, async () => {
+    test(`renders the ${config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL} page when statement1 is selected`, async () => {
       const resp = await request(app)
-        .post(config.UPDATE_ADDITIONAL_TRUSTS_INVOLVED_URL)
+        .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
         .send({ registrable_beneficial_owner: "1" });
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.COMBINED_PAGE_FOR_STATEMENTS_URL);
+      expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
     });
-    test(`renders the ${config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL} page when statement2 is selected`, async () => {
+    test(`renders the ${config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL} page when statement1 is selected`, async () => {
       const resp = await request(app)
-        .post(config.COMBINED_PAGE_FOR_STATEMENTS_URL)
+        .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
         .send({ any_trust_involved: "2" });
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL);
+      expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
+    });
+    test(`renders the ${config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL} page when statement1 is selected`, async () => {
+      const resp = await request(app)
+        .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
+        .send({ beneficiary_of_a_trust_involved: "3" });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
+    });
+    test(`renders the ${config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL} page when none is selected`, async () => {
+      const resp = await request(app)
+        .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
+        .send({ None_of_these: "0" });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.UPDATE_FILING_DATE_URL);
     });
   });
 });

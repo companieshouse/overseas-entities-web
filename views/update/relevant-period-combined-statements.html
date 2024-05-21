@@ -1,6 +1,6 @@
 {% extends "update-layout.html" %}
 {% import "includes/date-macros.html" as dateMacros %}
-{% set title = "Combined Page for Statements" %}
+{% set title = "Combined Statements Page" %}
 
 
 {% block pageTitle %}
@@ -23,8 +23,8 @@
         <form method="post">
         {{ govukCheckboxes({
         errorMessage: errorMessage,
-        idPrefix: "combined_page_for_statements",
-        name: "combined_page_for_statements",
+        idPrefix: "combined_statements_page",
+        name: "combined_statements_page",
         fieldset: {
         legend: {
         text: "The overseas entity has reasonable cause to believe that during the pre-registration period:",
@@ -44,7 +44,7 @@
         },
         {
         value: "ANY_TRUSTS_INVOLVED",
-        text: "There was at least one  <strong>trust involved in the overseas entity</strong>, that it has not already provided information about" | safe,
+        text: "There was at least one person that was a <strong>registrable beneficial owner due to being a trustee of trust</strong>, that the entity has not already provided information about" | safe,
         checked: any_trust_involved
         },
         {
@@ -63,7 +63,6 @@
         }
         ]
         }) }}
-
 
         {% include "includes/save-and-continue-button.html" %}
         </form>

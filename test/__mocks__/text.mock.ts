@@ -276,7 +276,7 @@ export const BEFORE_START_PAGE_LINK_VERIFICATION = "https://www.gov.uk/guidance/
 export const REMOVE_WHAT_IS_RELEVANT_PROPERTY_OR_LAND_TEXT = "What does 'relevant property or land' mean?";
 export const REMOVE_RELEVANT_PROPERTY_OR_LAND_DEFINED_TEXT = "This means property or land in the UK that was bought on or after:";
 export const REMOVE_PROPERTY_BOUGHT_ON_OR_AFTER_DATE_TEXT = "1 January 1999 in England and Wales";
-export const UPDATE_COMBINED_PAGE_FOR_STATEMENTS = "Provide statements for the pre-registration period?";
+export const RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE = "Provide statements for the pre-registration period?";
 
 // Manage Trusts
 export const UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_TITLE = "Review former beneficial owners";

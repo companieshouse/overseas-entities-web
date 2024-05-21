@@ -30,12 +30,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `POST ${config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE}`);
     const combinedStatementPageKey = req.body[CombinedStatementPageKey];
 
-   // if (combinedStatementPageKey === '1') {
-   //   return res.redirect(config.RELEVANT_PERIOD_INTERRUPT_URL); // redirect to interrupt screen
-        return res.redirect(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
-   // } else {
-   //  return res.redirect(config.UPDATE_FILING_DATE_URL);
-   // }
+    return res.redirect(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

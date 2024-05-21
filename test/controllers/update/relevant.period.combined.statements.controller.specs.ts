@@ -14,12 +14,12 @@ import request from "supertest";
 import * as config from "../../../src/config";
 import app from "../../../src/app";
 import {
-//   ANY_MESSAGE_ERROR,
-//   RADIO_BUTTON_YES_SELECTED,
-//   RADIO_BUTTON_NO_SELECTED,
-//   SERVICE_UNAVAILABLE,
-//   RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE,
-//   PAGE_NOT_FOUND_TEXT,
+  ANY_MESSAGE_ERROR,
+  RADIO_BUTTON_YES_SELECTED,
+  RADIO_BUTTON_NO_SELECTED,
+  SERVICE_UNAVAILABLE,
+  RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE,
+  PAGE_NOT_FOUND_TEXT,
 } from "../../__mocks__/text.mock";
 import { APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock";
 import { getApplicationData } from "../../../src/utils/application.data";
@@ -28,8 +28,7 @@ import { companyAuthentication } from "../../../src/middleware/company.authentic
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
-// import { yesNoResponse } from "../../../src/model/data.types.model";
-// import { CombinedStatementPageKey } from "../../../src/model/relevant.period.combined.statements.model";
+import { CombinedStatementPageKey } from "../../../src/model/relevant.period.combined.statements.model";
 
 const mockHasUpdatePresenter = hasUpdatePresenter as jest.Mock;
 mockHasUpdatePresenter.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
@@ -117,4 +116,3 @@ describe("Combined Statements Page tests", () => {
       expect(resp.header.location).toEqual(config.UPDATE_FILING_DATE_URL);
     });
   });
-});

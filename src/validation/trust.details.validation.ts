@@ -13,13 +13,19 @@ import { hasNoBoAssignableToTrust } from "../utils/trusts";
 const setIsTrustToBeCeasedFlagOnBody = () => {
   return (req: Request, _res: Response, next: NextFunction) => {
     try {
+      const isTrustStillInvolved = req.body["stillInvolved"] === "1";
+
+      if (isTrustStillInvolved) {
+        return next();
+      }
+
       if (!isActiveFeature(config.FEATURE_FLAG_ENABLE_CEASE_TRUSTS)) {
         return next();
       }
 
       const appData: ApplicationData = getApplicationData(req.session);
 
-      const isTrustToBeCeased = hasNoBoAssignableToTrust(appData) ? "true" : "false";
+      const isTrustToBeCeased = !isTrustStillInvolved || hasNoBoAssignableToTrust(appData) ? "true" : "false";
       // Create a new object with the updated property
       req.body = { ...req.body, isTrustToBeCeased };
 
@@ -29,6 +35,14 @@ const setIsTrustToBeCeasedFlagOnBody = () => {
       return next(error);
     }
   };
+};
+
+export const checkTrustStillInvolved = (
+  req: Request
+): boolean => {
+  const appData: ApplicationData = getApplicationData(req.session);
+
+  return !hasNoBoAssignableToTrust(appData);
 };
 
 export const trustDetails = [
@@ -55,11 +69,15 @@ export const reviewTrustDetails = [
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.NAME_INVALID_CHARACTERS_TRUST)
     .isLength({ max: 160 }).withMessage(ErrorMessages.MAX_NAME_LENGTH_TRUST),
 
+  body("stillInvolved")
+    .if((value, { req }) => checkTrustStillInvolved(req))
+    .not().isEmpty().withMessage(ErrorMessages.TRUST_STILL_INVOLVED),
+
   body("beneficialOwnersIds")
     .if(body("isTrustToBeCeased").not().equals("true"))
     .not().isEmpty().withMessage(ErrorMessages.TRUST_INVOLVED_BOS),
 
-  // trustCeasedDateValidations are conditional and will run if "isTrustToBeCeased" == "true"
+  // trustCeasedDateValidations are conditional and will only run if the trust is being ceased
   ...trustCeasedDateValidations,
 
   body("hasAllInfo")

@@ -78,6 +78,7 @@ export const mapTrustData = (trustData: TrustData, appData: ApplicationData) => 
     creation_date_day: dateOfBirth?.day ?? "",
     creation_date_month: dateOfBirth?.month ?? "",
     creation_date_year: dateOfBirth?.year ?? "",
+    trust_still_involved_in_overseas_entity: trustData.stillInvolvedInOverseasEntityIndicator ? "Yes" : "No",
     unable_to_obtain_all_trust_info: trustData.unableToObtainAllTrustInfoIndicator ? "Yes" : "No",
     INDIVIDUALS: [],
     CORPORATES: [],

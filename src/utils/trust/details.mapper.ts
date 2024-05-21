@@ -19,6 +19,19 @@ const mapDetailToPage = (
     trustData = getTrustByIdFromApp(appData, trustId);
   }
 
+  let stillInvolvedInOverseasEntity: string;
+  switch (trustData.trust_still_involved_in_overseas_entity) {
+      case "Yes":
+        stillInvolvedInOverseasEntity = "1";
+        break;
+      case "No":
+        stillInvolvedInOverseasEntity = "0";
+        break;
+      default:
+        stillInvolvedInOverseasEntity = ""; // forces user to enter a value on new trust
+        break;
+  }
+
   const trustBoIds: string[] =
     [
       ...appData[BeneficialOwnerIndividualKey] ?? [],
@@ -51,13 +64,15 @@ const mapDetailToPage = (
     ceasedDateYear: trustData.ceased_date_year,
     hasAllInfo: unableToObtainAllTrustInfo,
     beneficialOwnersIds: trustBoIds,
+    stillInvolved: stillInvolvedInOverseasEntity,
   };
 };
 
 //  to session mapping
 const mapDetailToSession = (
   formData: Page.TrustDetailsForm,
-  isTrustToBeCeased: boolean
+  isTrustToBeCeased: boolean,
+  isTrustStillInvolved: boolean
 ): Trust => {
   const data = formData;
 
@@ -67,9 +82,10 @@ const mapDetailToSession = (
     creation_date_day: data.createdDateDay,
     creation_date_month: data.createdDateMonth,
     creation_date_year: data.createdDateYear,
-    ceased_date_day: isTrustToBeCeased ? data.ceasedDateDay : undefined,
-    ceased_date_month: isTrustToBeCeased ? data.ceasedDateMonth : undefined,
-    ceased_date_year: isTrustToBeCeased ? data.ceasedDateYear : undefined,
+    ceased_date_day: isTrustToBeCeased || !isTrustStillInvolved ? data.ceasedDateDay : undefined,
+    ceased_date_month: isTrustToBeCeased || !isTrustStillInvolved ? data.ceasedDateMonth : undefined,
+    ceased_date_year: isTrustToBeCeased || !isTrustStillInvolved ? data.ceasedDateYear : undefined,
+    trust_still_involved_in_overseas_entity: isTrustStillInvolved ? "Yes" : "No",
     unable_to_obtain_all_trust_info: (data.hasAllInfo === "0") ? "Yes" : "No",
   };
 };

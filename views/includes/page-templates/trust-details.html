@@ -76,6 +76,59 @@
         {% include "includes/inputs/date-input.html" %}
       {% endif %}
 
+      {% if not isTrustToBeCeased %}
+        {% set stillInvolvedCeasedDateHtml %}
+          {% set fieldParam = {
+            name: 'ceasedDate',
+            label: 'When did this trust stop being associated with the overseas entity?',
+            hint: "For example, 27 3 2007. This trust's information must be correct to this date.",
+            error: errors.ceasedDate if errors,
+            value: {
+              'Day': formData.ceasedDateDay,
+              'Month': formData.ceasedDateMonth,
+              'Year': formData.ceasedDateYear
+            }
+          } %}
+          {% include "includes/inputs/date-input.html" %}
+        {% endset %}
+    
+
+        {{ govukRadios({
+          errorMessage: errors.stillInvolved if errors,
+          classes: "govuk-radios",
+          idPrefix: "stillInvolved",
+          name: "stillInvolved",
+          fieldset: {
+            legend: {
+              text: 'Is the trust still involved in the overseas entity?',
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          items: [
+            {
+              value: 1,
+              text: "Yes",
+              checked: formData.stillInvolved == 1,
+              attributes: {
+                "data-event-id": "stillInvolved-yes-radio-option"
+              }
+            },
+            {
+              value: 0,
+              text: "No",
+              checked: formData.stillInvolved == 0,
+              attributes: {
+                "data-event-id": "stillInvolved-no-radio-option"
+              },
+              conditional: {
+                html: stillInvolvedCeasedDateHtml
+              }
+            }
+          ]
+        }) }}
+      {% endif %}
+      
       {% set boItems = [] %}
       {% set beneficialOwnersIds = formData.beneficialOwnersIds if formData.beneficialOwnersIds else [] %}
       {% for bo in pageData.beneficialOwners %}

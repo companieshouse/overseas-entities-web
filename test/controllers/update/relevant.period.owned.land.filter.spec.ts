@@ -30,7 +30,7 @@ import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/ha
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { yesNoResponse } from "../../../src/model/data.types.model";
-import { OwnedLandKey } from "../../../src/model/relevant.period.type.model";
+import { OwnedLandKey } from "../../../src/model/update.type.model";
 
 const mockHasUpdatePresenter = hasUpdatePresenter as jest.Mock;
 mockHasUpdatePresenter.mockImplementation((req: Request, res: Response, next: NextFunction) => next());

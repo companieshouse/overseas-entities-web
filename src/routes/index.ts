@@ -101,7 +101,7 @@ import {
   updateManageTrustsIndividualsOrEntitiesInvolved,
   updatePaymentFailed,
   updateManageTrustsTellUsAboutTheLegalEntity,
-  ownedLandFilter,
+  relevantPeriodOwnedLandFilter,
   relevantPeriodInterrupt,
 } from "../controllers";
 
@@ -559,8 +559,8 @@ router.route(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL)
     authentication,
     companyAuthentication,
     navigation.hasOverseasEntity)
-  .get(ownedLandFilter.get)
-  .post(ownedLandFilter.post);
+  .get(relevantPeriodOwnedLandFilter.get)
+  .post(relevantPeriodOwnedLandFilter.post);
 
 router.route(config.RELEVANT_PERIOD_INTERRUPT_URL)
   .all(

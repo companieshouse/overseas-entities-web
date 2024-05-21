@@ -14,6 +14,7 @@ import { getTrustByIdFromApp } from "../utils/trusts" ;
 import { getTrustInReview, hasTrustsToReview } from "../utils/update/review_trusts";
 import { logger } from "../utils/logger";
 import { Request } from "express";
+import { InputDate } from "../model/data.types.model";
 
 export const checkFieldIfRadioButtonSelected = (selected: boolean, errMsg: string, value: string = "") => {
   if ( selected && !value.trim() ) {
@@ -720,17 +721,17 @@ export const checkFieldIfRadioButtonSelectedAndFieldsEmpty = (isPrimaryField: bo
   }
 };
 
-export function checkDateIsBeforeOrOnOtherDate(req: Request, dayStr: string, monthStr: string, yearStr: string, otherDayStr: string, otherMonthStr: string, otherYearStr: string, errorMessage: string): boolean {
-  const date = DateTime.fromObject({ year: Number(yearStr), month: Number(monthStr), day: Number(dayStr) });
-  const otherDate = DateTime.fromObject({ year: Number(otherYearStr), month: Number(otherMonthStr), day: Number(otherDayStr) });
+export const checkDateIsBeforeOrOnOtherDate = (req: Request, date: InputDate, otherDate: InputDate, errorMessage: string): boolean => {
+  const dateTime = DateTime.fromObject({ year: Number(date.year), month: Number(date.month), day: Number(date.day) });
+  const otherDateTime = DateTime.fromObject({ year: Number(otherDate.year), month: Number(otherDate.month), day: Number(otherDate.day) });
 
-  if (!date.isValid || !otherDate.isValid) {
+  if (!dateTime.isValid || !otherDateTime.isValid) {
     logger.errorRequest(req, 'Invalid date found in checkDateIsBeforeOrOnOtherDate');
     throw new Error(errorMessage);
   }
 
-  if (date.startOf('day') > otherDate.startOf('day')) {
+  if (dateTime.startOf('day') > otherDateTime.startOf('day')) {
     throw new Error(errorMessage);
   }
   return true;
-}
+};

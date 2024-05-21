@@ -240,27 +240,27 @@ describe('tests for checkDatePreviousToFilingDate ', () => {
 
   describe("tests for checkDateIsBeforeOrOnOtherDate", () => {
     test("should return true if date is before other date", () => {
-      const result = custom.checkDateIsBeforeOrOnOtherDate(mockReq, "17", "05", "2024", "18", "5", "2024", "error");
+      const result = custom.checkDateIsBeforeOrOnOtherDate(mockReq, { day: "17", month: "05", year: "2024" }, { day: "18", month: "5", year: "2024" }, "error");
       expect(result).toEqual(true);
     });
 
     test("should return true if date is on other date", () => {
-      const result = custom.checkDateIsBeforeOrOnOtherDate(mockReq, "18", "05", "2024", "18", "5", "2024", "error");
+      const result = custom.checkDateIsBeforeOrOnOtherDate(mockReq, { day: "18", month: "05", year: "2024" }, { day: "18", month: "5", year: "2024" }, "error");
       expect(result).toEqual(true);
     });
 
     test("should throw error if date is after made up to date", () => {
-      expect(() => custom.checkDateIsBeforeOrOnOtherDate(mockReq, "19", "05", "2024", "18", "5", "2024", "error"))
+      expect(() => custom.checkDateIsBeforeOrOnOtherDate(mockReq, { day: "19", month: "05", year: "2024" }, { day: "18", month: "5", year: "2024" }, "error"))
         .toThrowError("error");
     });
 
     test("should throw error if date is invalid", () => {
-      expect(() => custom.checkDateIsBeforeOrOnOtherDate(mockReq, "", "05", "2024", "18", "5", "2024", "error"))
+      expect(() => custom.checkDateIsBeforeOrOnOtherDate(mockReq, { day: "", month: "05", year: "2024" }, { day: "18", month: "5", year: "2024" }, "error"))
         .toThrowError("error");
     });
 
     test("should throw error if other date is invalid", () => {
-      expect(() => custom.checkDateIsBeforeOrOnOtherDate(mockReq, "17", "05", "2024", "18", "", "2024", "error"))
+      expect(() => custom.checkDateIsBeforeOrOnOtherDate(mockReq, { day: "17", month: "05", year: "2024" }, { day: "18", month: "", year: "2024" }, "error"))
         .toThrowError("error");
     });
 

@@ -183,8 +183,8 @@ export const filing_date_validations = [
 
         checkDateIsBeforeOrOnOtherDate(
           req as Request,
-          req.body["filing_date-day"], req.body["filing_date-month"], req.body["filing_date-year"],
-          nextMadeUpToDate.day.toString(), nextMadeUpToDate.month.toString(), nextMadeUpToDate.year.toString(),
+          { day: req.body["filing_date-day"], month: req.body["filing_date-month"], year: req.body["filing_date-year"] },
+          { day: nextMadeUpToDate.day.toString(), month: nextMadeUpToDate.month.toString(), year: nextMadeUpToDate.year.toString() },
           errorMessage
         );
       }

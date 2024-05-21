@@ -66,7 +66,7 @@ const getFilingDate = async (req: Request, appData: ApplicationData): Promise<{}
   //  have already enetered a date, so pre-populate page with the next made up to date. User can then use that or change it to a different date.
   if (!filingDate) {
     if (!appData.entity_number) {
-      throw createAndLogErrorRequest(req, `update.filing.controller unable to find entity_number in application data for entity_name ${appData.entity_name}`);
+      throw createAndLogErrorRequest(req, `update.filing.date.controller unable to find entity_number in application data for entity_name ${appData.entity_name}`);
     }
     logger.debugRequest(req, `Getting confirmation statement next made up to date for entity number = ${appData.entity_number}`);
     const nextMudIsoString = await getConfirmationStatementNextMadeUpToDateAsIsoString(req, appData.entity_number);

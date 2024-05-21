@@ -720,7 +720,7 @@ export const checkFieldIfRadioButtonSelectedAndFieldsEmpty = (isPrimaryField: bo
   }
 };
 
-export const checkDateIsBeforeOrOnOtherDate = (req: Request, dayStr: string, monthStr: string, yearStr: string, otherDayStr: string, otherMonthStr: string, otherYearStr: string, errorMessage: string): boolean => {
+export function checkDateIsBeforeOrOnOtherDate(req: Request, dayStr: string, monthStr: string, yearStr: string, otherDayStr: string, otherMonthStr: string, otherYearStr: string, errorMessage: string): boolean {
   const date = DateTime.fromObject({ year: Number(yearStr), month: Number(monthStr), day: Number(dayStr) });
   const otherDate = DateTime.fromObject({ year: Number(otherYearStr), month: Number(otherMonthStr), day: Number(otherDayStr) });
 
@@ -733,5 +733,4 @@ export const checkDateIsBeforeOrOnOtherDate = (req: Request, dayStr: string, mon
     throw new Error(errorMessage);
   }
   return true;
-};
-
+}

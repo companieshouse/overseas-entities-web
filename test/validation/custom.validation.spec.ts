@@ -265,4 +265,53 @@ describe('tests for checkDatePreviousToFilingDate ', () => {
     });
 
   });
+
+  describe("tests for checkDateForFilingDate", () => {
+    test("should return true if date is not in the future", () => {
+      const result = custom.checkDateForFilingDate("17", "05", "2024");
+      expect(result).toEqual(true);
+    });
+
+    test("should return true if date is today", () => {
+      const today = DateTime.now();
+      const result = custom.checkDateForFilingDate(today.day.toString(), today.month.toString(), today.year.toString());
+      expect(result).toEqual(true);
+    });
+
+    test("should throw error if date is in future", () => {
+      const today = DateTime.now();
+      const future = today.plus({ days: 1 }); // Add one day
+      expect(() => custom.checkDateForFilingDate(future.day.toString(), future.month.toString(), future.year.toString())).toThrowError();
+    });
+
+    test("should return false if more than one date part is missing", () => {
+      expect(custom.checkDateForFilingDate("", "5", "")).toEqual(false);
+    });
+
+    test("should return false if year is incorrect length", () => {
+      expect(custom.checkDateForFilingDate("3", "5", "202")).toEqual(false);
+    });
+
+    test("should return false if year is missing", () => {
+      expect(custom.checkDateForFilingDate("3", "5", "")).toEqual(false);
+    });
+
+    test("should return false if date is empty", () => {
+      expect(custom.checkDateForFilingDate("", "", "")).toEqual(false);
+    });
+
+    test("should return false if day is empty", () => {
+      expect(custom.checkDateForFilingDate("", "5", "2024")).toEqual(false);
+    });
+
+    test("should return false if month is empty", () => {
+      expect(custom.checkDateForFilingDate("2", "", "2024")).toEqual(false);
+    });
+
+    test("should throw error if date is invalid", () => {
+      expect(() => custom.checkDateForFilingDate("200", "5", "2024")).toThrowError();
+      expect(() => custom.checkDateForFilingDate("2", "55", "2024")).toThrowError();
+      expect(() => custom.checkDateForFilingDate("31", "02", "2024")).toThrowError();
+    });
+  });
 });

@@ -22,9 +22,9 @@
 
         <form method="post">
         {{ govukCheckboxes({
-        errorMessage: errorMessage,
-        idPrefix: "combined_statements_page",
-        name: "combined_statements_page",
+        errorMessage: errors.combined_page_for_statements if errors,
+        idPrefix: "combined_page_for_statements",
+        name: "combined_page_for_statements",
         fieldset: {
         legend: {
         text: "The overseas entity has reasonable cause to believe that during the pre-registration period:",
@@ -34,7 +34,7 @@
         },
         hint: {
         text: "Select all that apply"
-        },
+        }, 
         items:
         [
         {
@@ -44,7 +44,7 @@
         },
         {
         value: "ANY_TRUSTS_INVOLVED",
-        text: "There was at least one person that was a <strong>registrable beneficial owner due to being a trustee of trust</strong>, that the entity has not already provided information about" | safe,
+        text: "There was at least one person that was a <strong>registrable beneficial owner due to being a trustee of a trust</strong>, that the entity has not already provided information about" | safe,
         checked: any_trust_involved
         },
         {

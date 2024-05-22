@@ -552,7 +552,7 @@ router.route(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL)
   .get(confirmOverseasEntityDetails.get)
   .post(confirmOverseasEntityDetails.post);
 
-  router.route(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
+router.route(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD),
     authentication,

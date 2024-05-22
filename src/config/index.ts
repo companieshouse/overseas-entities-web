@@ -144,6 +144,7 @@ export const UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_PAGE = 'update-manage-tr
 export const UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE = 'update-manage-trusts-tell-us-about-the-legal-entity';
 export const UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE = 'update-manage-trusts-individuals-or-entities-involved';
 export const UPDATE_STATEMENT_VALIDATION_ERRORS_PAGE = "update-statement-validation-errors";
+export const REVIEW_COMBINED_STATEMENTS = "review-combined-statements";
 
 // REMOVE TEMPLATES
 export const REMOVE_SOLD_ALL_LAND_FILTER_PAGE = "remove-sold-all-land-filter";

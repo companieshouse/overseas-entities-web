@@ -170,7 +170,7 @@ export const checkAllDateFields = (dayStr: string = "", monthStr: string = "", y
   }
 };
 
-export const checkDateForFilingDate = (dayStr: string = "", monthStr: string = "", yearStr: string = ""): boolean => {
+export const checkFilingDate = (dayStr: string = "", monthStr: string = "", yearStr: string = ""): boolean => {
   // to prevent more than 1 error reported on the date fields we first check for multiple empty fields and then check if the year is correct length or missing before doing the date check as a whole.
   if (!checkMoreThanOneDateFieldIsNotMissing(dayStr, monthStr, yearStr)) {
     return false;

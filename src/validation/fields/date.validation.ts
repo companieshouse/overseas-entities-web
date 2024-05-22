@@ -23,7 +23,7 @@ import {
   checkDatePreviousToFilingDate,
   checkTrustCeasedDate,
   checkDateIsBeforeOrOnOtherDate,
-  checkDateForFilingDate,
+  checkFilingDate,
 } from "../custom.validation";
 import { ErrorMessages } from "../error.messages";
 import { conditionalDateValidations, conditionalHistoricalBODateValidations, dateContext, dateContextWithCondition, dateValidations } from "./helper/date.validation.helper";
@@ -177,7 +177,7 @@ export const filing_date_validations = [
     .custom((value, { req }) => checkDateFieldYear(ErrorMessages.YEAR, ErrorMessages.YEAR_LENGTH, req.body["filing_date-day"], req.body["filing_date-month"], req.body["filing_date-year"])),
   body("filing_date-day")
     .custom((value, { req }) => {
-      if (checkDateForFilingDate(req.body["filing_date-day"], req.body["filing_date-month"], req.body["filing_date-year"])) {
+      if (checkFilingDate(req.body["filing_date-day"], req.body["filing_date-month"], req.body["filing_date-year"])) {
         const nextMadeUpToDate = DateTime.fromISO(req[NEXT_MADE_UP_TO_ISO_DATE]);
         const errorMessage = ErrorMessages.DATE_AFTER_MADE_UP_TO_DATE.replace('%s', nextMadeUpToDate.toFormat('dd LL yyyy'));
 

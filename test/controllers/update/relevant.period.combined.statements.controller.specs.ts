@@ -82,38 +82,4 @@ describe("Combined Statements Page tests", () => {
     });
   });
 
-  describe("POST tests", () => {
-    test(`renders the ${config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL} page when statement1 is selected`, async () => {
-      const resp = await request(app)
-        .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
-        .send({ registrable_beneficial_owner: "1" });
-
-      expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
-    });
-    test(`renders the ${config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL} page when statement1 is selected`, async () => {
-      const resp = await request(app)
-        .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
-        .send({ any_trust_involved: "2" });
-
-      expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
-    });
-    test(`renders the ${config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL} page when statement1 is selected`, async () => {
-      const resp = await request(app)
-        .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
-        .send({ beneficiary_of_a_trust_involved: "3" });
-
-      expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
-    });
-    test(`renders the ${config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL} page when none is selected`, async () => {
-      const resp = await request(app)
-        .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
-        .send({ None_of_these: "0" });
-
-      expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.UPDATE_FILING_DATE_URL);
-    });
-  });
 

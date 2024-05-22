@@ -25,10 +25,6 @@ import { APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock";
 import { getApplicationData } from "../../../src/utils/application.data";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
-import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
-import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
-import { isActiveFeature } from "../../../src/utils/feature.flag";
-import { CombinedStatementPageKey } from "../../../src/model/update.type.model";
 
 const mockHasUpdatePresenter = hasUpdatePresenter as jest.Mock;
 mockHasUpdatePresenter.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
@@ -56,16 +52,14 @@ describe("Combined Statements Page tests", () => {
     test(`renders the ${config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE} page`, async () => {
       mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
       const resp = await request(app).get(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
-
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE);
-      expect(resp.text).toContain("The relevant period is between <strong>28 February 2022</strong> and <strong>");
+      expect(resp.text).toContain(RELEVANT_PERIOD_COMBINED_STATEMENTS_TEXT);
+      expect(resp.text).toContain(RELEVANT_PERIOD);
       expect(resp.text).toContain("1");
       expect(resp.text).toContain("January");
       expect(resp.text).toContain("2011");
     });
-  });
-
     test("catch error when rendering the page", async () => {
       mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
@@ -81,5 +75,6 @@ describe("Combined Statements Page tests", () => {
       expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
     });
   });
+
 
 

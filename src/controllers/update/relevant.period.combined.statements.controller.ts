@@ -28,7 +28,6 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE}`);
-    const combinedStatementPageKey = req.body[CombinedStatementPageKey];
     return res.redirect(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
   } catch (error) {
     logger.errorRequest(req, error);

@@ -255,6 +255,8 @@ export const RELEVANT_PERIOD = "The pre-registration period for <strong>Overseas
 export const RELEVANT_PERIOD_OWNED_LAND = "Was the overseas entity a registered owner of UK property or land during the pre-registration period?";
 export const RELEVANT_PERIOD_INTERRUPT_CARD_TITLE = "New information needed as part of this update statement";
 export const RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE = "Provide statements for the pre-registration period?";
+export const RELEVANT_PERIOD_COMBINED_STATEMENTS_TEXT = "The overseas entity has reasonable cause to believe that during the pre-registration period:"
+
 
 // Remove journey
 export const REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE = "Has the overseas entity disposed of all relevant property or land in the UK?";

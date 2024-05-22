@@ -7,6 +7,12 @@
     <br> <p class="govuk-body">You can add more later.</p> <br>
 
     <form class="form" method="post">
+      {{
+        csrfTokenInput({
+          csrfToken: csrfToken
+        })
+      }}
+      
       {% set legalEntityHtml %}
       <br>
       {% set fieldParam = {

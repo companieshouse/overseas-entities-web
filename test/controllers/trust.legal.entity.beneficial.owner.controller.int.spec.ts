@@ -11,6 +11,7 @@ jest.mock('../../src/utils/feature.flag');
 jest.mock('../../src/middleware/service.availability.middleware');
 jest.mock('../../src/utils/url');
 
+import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
 import { NextFunction } from "express";
 import app from "../../src/app";
 import { TRUST_ENTRY_URL, TRUST_ENTRY_WITH_PARAMS_URL, TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE, TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL, TRUST_INVOLVED_URL } from "../../src/config";
@@ -30,6 +31,7 @@ import { isActiveFeature } from '../../src/utils/feature.flag';
 import { serviceAvailabilityMiddleware } from '../../src/middleware/service.availability.middleware';
 import { getUrlWithParamsToPath } from '../../src/utils/url';
 
+mockCsrfProtectionMiddleware.mockClear();
 const MOCKED_URL = "MOCKED_URL";
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 const mockIsActiveFeature = isActiveFeature as jest.Mock;

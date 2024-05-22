@@ -7,6 +7,11 @@
     <br> <p class="govuk-body">You can add more later.</p> <br>
 
     <form class="form" method="post">
+      {{
+        csrfTokenInput({
+          csrfToken: csrfToken
+        })
+      }}
 
     {% set date_classes_year = "govuk-input--width-4 govuk-input" %}
     {% set date_classes_month = "govuk-input--width-2 govuk-input" %}

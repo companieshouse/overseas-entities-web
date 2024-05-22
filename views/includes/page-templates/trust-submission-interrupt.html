@@ -28,6 +28,11 @@
     </p>
 
     <form class="form" method="post">
+      {{
+        csrfTokenInput({
+          csrfToken: csrfToken
+        })
+      }}
       {{ govukButton({
         text: "Continue",
         attributes: {

@@ -19,6 +19,11 @@
     <h1 class="govuk-heading-xl">{{ title }}</h1>
 
     <form method="post">
+      {{
+        csrfTokenInput({
+          csrfToken: csrfToken
+        })
+      }}
 
       {{ govukInput({
         errorMessage: errors.entity_name if errors,

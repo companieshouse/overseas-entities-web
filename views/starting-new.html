@@ -17,6 +17,11 @@
       {% include "includes/list/errors.html" %}
 
       <form method="post">
+        {{
+          csrfTokenInput({
+            csrfToken: csrfToken
+          })
+        }}
 
         {{ govukRadios({
           errorMessage: errors.continue_saved_application if errors,

@@ -5,6 +5,7 @@ import { ErrorMessages } from "../../src/validation/error.messages";
 jest.mock("ioredis");
 jest.mock("../../src/utils/logger");
 
+import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
 import { isActiveFeature } from "../../src/utils/feature.flag";
@@ -26,6 +27,8 @@ import {
 } from "../__mocks__/text.mock";
 
 import { createAndLogErrorRequest, logger } from '../../src/utils/logger';
+
+mockCsrfProtectionMiddleware.mockClear();
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );

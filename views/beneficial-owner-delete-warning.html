@@ -27,6 +27,11 @@
       }) }}
 
       <form method="post">
+        {{
+          csrfTokenInput({
+            csrfToken: csrfToken
+          })
+        }}
 
         {{ govukRadios({
           errorMessage: errors.delete_beneficial_owners if errors,

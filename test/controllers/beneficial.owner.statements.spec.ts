@@ -7,7 +7,7 @@ jest.mock('../../src/utils/feature.flag');
 jest.mock('../../src/middleware/service.availability.middleware');
 jest.mock("../../src/utils/url");
 import { describe, expect, test, beforeEach, jest } from "@jest/globals";
-
+import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
 import request from "supertest";
 import { NextFunction, Request, Response } from "express";
 
@@ -44,6 +44,7 @@ import { isActiveFeature } from "../../src/utils/feature.flag";
 import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
 import { getUrlWithParamsToPath } from "../../src/utils/url";
 
+mockCsrfProtectionMiddleware.mockClear();
 const mockHasEntityMiddleware = hasEntity as jest.Mock;
 mockHasEntityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 

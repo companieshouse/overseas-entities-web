@@ -16,6 +16,11 @@
     {% endif %}
 
     <form class="form" method="post">
+      {{
+        csrfTokenInput({
+          csrfToken: csrfToken
+        })
+      }}
       {% include "includes/inputs/fields/name-input.html" %}
 
       {% include "includes/inputs/address/principal-address-input.html" %}

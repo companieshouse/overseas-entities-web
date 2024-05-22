@@ -14,6 +14,7 @@ jest.mock('../../src/utils/trusts');
 jest.mock("../../src/utils/feature.flag");
 jest.mock("../../src/utils/url");
 
+import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
 import { Params } from 'express-serve-static-core';
 import { constants } from 'http2';
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
@@ -59,6 +60,7 @@ import { ErrorMessages } from "../../src/validation/error.messages";
 import { isActiveFeature } from "../../src/utils/feature.flag";
 import { getUrlWithParamsToPath } from "../../src/utils/url";
 
+mockCsrfProtectionMiddleware.mockClear();
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue(false);
 

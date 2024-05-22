@@ -13,6 +13,11 @@
     {% endif %}
 
     <form class="form" method="post">
+      {{
+        csrfTokenInput({
+          csrfToken: csrfToken
+        })
+      }}
       {% include "includes/page-templates/managing-officer-names.html"%}
       {% include "includes/inputs/date/date-of-birth-input.html" %}
 

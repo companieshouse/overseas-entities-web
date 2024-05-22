@@ -60,6 +60,11 @@
 
       <br>
       <form method="post">
+        {{
+          csrfTokenInput({
+            csrfToken: csrfToken
+          })
+        }}
         <div class="govuk-button-group">
           {{ govukButton({
             text: "Continue to payment",

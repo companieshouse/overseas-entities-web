@@ -32,6 +32,12 @@
     <br> <p class="govuk-body">You can add more later.</p> <br>
 
     <form class="form" method="post">
+      {{
+        csrfTokenInput({
+          csrfToken: csrfToken
+        })
+      }}
+      
       <input type="hidden" name="trusteeId" value="{{ trusteeId }}"/>
 
       {% set date_classes_day = "govuk-input--width-2 govuk-input" %}

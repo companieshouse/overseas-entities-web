@@ -47,6 +47,12 @@
     {% endif %}
 
     <form method="post">
+      {{
+        csrfTokenInput({
+          csrfToken: csrfToken
+        })
+      }}
+
       {% if entity_number %}
         {% set fieldParam = {
           name: 'entity_name',

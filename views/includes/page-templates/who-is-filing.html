@@ -4,6 +4,12 @@
     {% include "includes/list/errors.html" %}
 
     <form method="post">
+      {{
+        csrfTokenInput({
+          csrfToken: csrfToken
+        })
+      }}
+      
       {% set fieldParam = {
         name: 'who_is_registering',
         error: errors.who_is_registering if errors,

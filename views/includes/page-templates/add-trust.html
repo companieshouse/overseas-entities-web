@@ -82,6 +82,12 @@
       }}
       {% endfor %}
       <form method="post">
+        {{
+          csrfTokenInput({
+            csrfToken: csrfToken
+          })
+        }}
+        
         {% set fieldParam = {
           label: pageParams.subtitle,
           name: 'addTrust',

@@ -170,6 +170,12 @@
       {% endif %}
 
       <form class="form" method="post">
+        {{
+          csrfTokenInput({
+            csrfToken: csrfToken
+          })
+        }}
+
         {% set fieldParam = {
           name: 'typeOfTrustee',
           label: 'Which type of individual or entity do you want to add to this trust?',

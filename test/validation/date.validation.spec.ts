@@ -642,7 +642,7 @@ describe("addNextMadeUpToDateToRequest tests", () => {
   test("test addNextMadeUpToDateToRequest sends error to next function when entity number missing", async () => {
     mockGetApplicationData.mockReturnValueOnce({ });
     await addNextMadeUpToDateToRequest(mockReq, mockRes, mockNext);
-    expect(mockErrorLogger.mock.calls[0][1]).toContain("filing date validation - Unable to find entity number in application data.");
+    expect(mockErrorLogger.mock.calls[0][1]).toContain("addNextMadeUpToDateToRequest - Unable to find entity number in application data.");
     expect(mockNext).toBeCalledWith(expect.objectContaining({ 'message': ErrorMessages.UNABLE_TO_RETRIEVE_ENTITY_NUMBER }));
   });
 
@@ -652,7 +652,7 @@ describe("addNextMadeUpToDateToRequest tests", () => {
     });
     mockGetConfirmationStatementNextMadeUpToDateAsIsoString.mockReturnValueOnce(undefined);
     await addNextMadeUpToDateToRequest(mockReq, mockRes, mockNext);
-    expect(mockErrorLogger.mock.calls[0][1]).toContain("filing date validation - Unable to find next made up to date for entity 123456");
+    expect(mockErrorLogger.mock.calls[0][1]).toContain("addNextMadeUpToDateToRequest - Unable to find next made up to date for entity 123456");
     expect(mockNext).toBeCalledWith(expect.objectContaining({ 'message': ErrorMessages.UNABLE_TO_RETRIEVE_EXPECTED_DATE }));
   });
 });

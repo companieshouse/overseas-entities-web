@@ -5,7 +5,7 @@ import * as config from "../../config";
 import { ApplicationData } from "../../model";
 import { getApplicationData } from "../../utils/application.data";
 import { getRegistrationDate } from "../../utils/update/relevant.period";
-import { CombinedStatementPageKey } from "../../model/relevant.period.combined.statements.model";
+import { CombinedStatementPageKey } from "../../model/update.type.model";
 import { InputDate } from "../../model/data.types.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {

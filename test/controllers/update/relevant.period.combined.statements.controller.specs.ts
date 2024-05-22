@@ -59,6 +59,7 @@ describe("Combined Statements Page tests", () => {
       expect(resp.text).toContain("1");
       expect(resp.text).toContain("January");
       expect(resp.text).toContain("2011");
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
     });
     test("catch error when rendering the page", async () => {
       mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });

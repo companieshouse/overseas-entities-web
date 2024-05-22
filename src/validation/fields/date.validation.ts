@@ -155,12 +155,12 @@ export const identity_check_date_validations = [
 export const addNextMadeUpToDateToRequest = async (req: Request, res: Response, next: NextFunction) => {
   const appData: ApplicationData = getApplicationData(req.session);
   if (!appData.entity_number) {
-    logger.errorRequest(req, "filing date validation - Unable to find entity number in application data.");
+    logger.errorRequest(req, "addNextMadeUpToDateToRequest - Unable to find entity number in application data.");
     return next(new Error(ErrorMessages.UNABLE_TO_RETRIEVE_ENTITY_NUMBER));
   }
   const nextMadeUpToDateIsoString = await getConfirmationStatementNextMadeUpToDateAsIsoString(req, appData.entity_number);
   if (!nextMadeUpToDateIsoString) {
-    logger.errorRequest(req, `filing date validation - Unable to find next made up to date for entity ${appData.entity_number}`);
+    logger.errorRequest(req, `addNextMadeUpToDateToRequest - Unable to find next made up to date for entity ${appData.entity_number}`);
     return next(new Error(ErrorMessages.UNABLE_TO_RETRIEVE_EXPECTED_DATE));
   }
   req[NEXT_MADE_UP_TO_ISO_DATE] = nextMadeUpToDateIsoString;

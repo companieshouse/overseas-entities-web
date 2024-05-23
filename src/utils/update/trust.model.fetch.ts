@@ -71,6 +71,9 @@ const retrieveTrusts = async (req: Request, appData: ApplicationData) => {
 
 export const mapTrustData = (trustData: TrustData, appData: ApplicationData) => {
   const dateOfBirth = mapInputDate(trustData.creationDate);
+
+  const stillInvolved = trustData.trustStillInvolvedInOverseasEntityIndicator ? (trustData.trustStillInvolvedInOverseasEntityIndicator ? "Yes" : "No") : "";
+
   const trust: Trust = {
     trust_id: (((appData.update?.review_trusts ?? []).length) + 1).toString(),
     ch_reference: trustData.hashedTrustId,
@@ -78,7 +81,7 @@ export const mapTrustData = (trustData: TrustData, appData: ApplicationData) => 
     creation_date_day: dateOfBirth?.day ?? "",
     creation_date_month: dateOfBirth?.month ?? "",
     creation_date_year: dateOfBirth?.year ?? "",
-    trust_still_involved_in_overseas_entity: trustData.stillInvolvedInOverseasEntityIndicator ? "Yes" : "No",
+    trust_still_involved_in_overseas_entity: stillInvolved,
     unable_to_obtain_all_trust_info: trustData.unableToObtainAllTrustInfoIndicator ? "Yes" : "No",
     INDIVIDUALS: [],
     CORPORATES: [],

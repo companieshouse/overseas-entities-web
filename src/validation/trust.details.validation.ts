@@ -53,6 +53,10 @@ export const trustDetails = [
 
   ...trustCreatedDateValidations,
 
+  body("stillInvolved")
+    .if((value, { req }) => checkTrustStillInvolved(req))
+    .not().isEmpty().withMessage(ErrorMessages.TRUST_STILL_INVOLVED),
+
   body("beneficialOwnersIds")
     .not().isEmpty().withMessage(ErrorMessages.TRUST_INVOLVED_BOS),
 

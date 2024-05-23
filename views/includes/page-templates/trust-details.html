@@ -92,7 +92,6 @@
           {% include "includes/inputs/date-input.html" %}
         {% endset %}
     
-
         {{ govukRadios({
           errorMessage: errors.stillInvolved if errors,
           classes: "govuk-radios",
@@ -107,17 +106,17 @@
           },
           items: [
             {
-              value: 1,
-              text: "Yes",
-              checked: formData.stillInvolved == 1,
+              value: '1',
+              text: 'Yes',
+              checked: formData.stillInvolved == '1',
               attributes: {
                 "data-event-id": "stillInvolved-yes-radio-option"
               }
             },
             {
-              value: 0,
-              text: "No",
-              checked: formData.stillInvolved == 0,
+              value: '0',
+              text: 'No',
+              checked: formData.stillInvolved == '0',
               attributes: {
                 "data-event-id": "stillInvolved-no-radio-option"
               },

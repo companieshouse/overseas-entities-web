@@ -36,11 +36,8 @@
         {% endif %}
 
         <form method="post">
-          {{
-            csrfTokenInput({
-              csrfToken: csrfToken
-            })
-          }}
+
+          {% include 'includes/csrf_token.html' %}
 
             {{ govukRadios({
           errorMessage: errors.beneficial_owners_statement if errors,

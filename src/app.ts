@@ -28,9 +28,9 @@ const nunjucksEnv = nunjucks.configure([
   "views",
   "views/update",
   "views/update/remove",
-  "node_modules/govuk-frontend/",
+  "node_modules/govuk-frontend",
   "node_modules/govuk-frontend/components",
-  "node_modules/@companieshouse/"
+  "node_modules/@companieshouse"
 ], {
   autoescape: true,
   express: app,
@@ -63,6 +63,8 @@ const cookieConfig = {
 };
 const sessionStore = new SessionStore(new Redis(`redis://${config.CACHE_SERVER}`));
 app.use(SessionMiddleware(cookieConfig, sessionStore));
+
+// TODO This will be enabled to true once Update and Remove journeys are completed
 
 const csrfProtectionMiddleware = CsrfProtectionMiddleware({
   sessionStore,

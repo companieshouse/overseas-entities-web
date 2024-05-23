@@ -36,11 +36,7 @@
     {% include "includes/list/errors.html" %}
 
     <form method="post">
-      {{
-        csrfTokenInput({
-          csrfToken: csrfToken
-        })
-      }}
+      {% include 'includes/csrf_token.html' %}
 
       {# Need to have hidden fields for the journey and saveAndResume values so that when the template gets rendered by the validation middleware, #}
       {#   the journey and saveAndResume values are not lost and passed back into the template for rendering #}

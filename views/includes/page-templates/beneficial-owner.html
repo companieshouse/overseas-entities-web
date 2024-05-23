@@ -9,11 +9,8 @@
     {% include "includes/managing-officer-details-summary.html" %}
 
     <form method="post">
-      {{
-        csrfTokenInput({
-          csrfToken: csrfToken
-        })
-      }}
+      
+      {% include 'includes/csrf_token.html' %}
       
       {% include "includes/beneficial-owner-type-add-radios.html" %}
 

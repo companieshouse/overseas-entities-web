@@ -4,11 +4,8 @@
     {% include "includes/list/errors.html" %}
 
     <form method="post">
-      {{
-        csrfTokenInput({
-          csrfToken: csrfToken
-        })
-      }}
+
+      {% include 'includes/csrf_token.html' %}
       
       {{ govukRadios({
         errorMessage: errors.is_secure_register if errors,

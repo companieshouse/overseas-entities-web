@@ -30,11 +30,9 @@
     <p class="govuk-caption-l govuk-!-margin-bottom-8">{{ pageParams.subtitle }}</p>
 
     <form class="form" method="post">
-      {{
-        csrfTokenInput({
-          csrfToken: csrfToken
-        })
-      }}
+
+      {% include 'includes/csrf_token.html' %}
+      
       {% set fieldParam = {
         name: 'name',
         label: 'What is the name of the trust?',

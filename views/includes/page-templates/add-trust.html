@@ -82,11 +82,8 @@
       }}
       {% endfor %}
       <form method="post">
-        {{
-          csrfTokenInput({
-            csrfToken: csrfToken
-          })
-        }}
+
+        {% include 'includes/csrf_token.html' %}
         
         {% set fieldParam = {
           label: pageParams.subtitle,

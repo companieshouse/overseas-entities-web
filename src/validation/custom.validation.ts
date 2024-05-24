@@ -12,6 +12,9 @@ import { DefaultErrorsSecondNationality } from "./models/second.nationality.erro
 import { isRemoveJourney } from "../utils/url";
 import { getTrustByIdFromApp } from "../utils/trusts" ;
 import { getTrustInReview, hasTrustsToReview } from "../utils/update/review_trusts";
+import { logger } from "../utils/logger";
+import { Request } from "express";
+import { InputDate } from "../model/data.types.model";
 
 export const checkFieldIfRadioButtonSelected = (selected: boolean, errMsg: string, value: string = "") => {
   if ( selected && !value.trim() ) {
@@ -165,6 +168,26 @@ export const checkAllDateFields = (dayStr: string = "", monthStr: string = "", y
       checkDateIsInPastOrToday(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY, dayStr, monthStr, yearStr);
     }
   }
+};
+
+export const checkFilingDate = (dayStr: string = "", monthStr: string = "", yearStr: string = ""): boolean => {
+  // to prevent more than 1 error reported on the date fields we first check for multiple empty fields and then check if the year is correct length or missing before doing the date check as a whole.
+  if (!checkMoreThanOneDateFieldIsNotMissing(dayStr, monthStr, yearStr)) {
+    return false;
+  }
+  if (!isYearEitherMissingOrCorrectLength(yearStr)) {
+    return false;
+  }
+  if (!checkDateIsNotCompletelyEmpty(dayStr, monthStr, yearStr)) {
+    return false;
+  }
+  if (!checkAllDateFieldsArePresent(dayStr, monthStr, yearStr)) {
+    return false;
+  }
+  if (!checkDateValueIsValid(ErrorMessages.INVALID_DATE, dayStr, monthStr, yearStr)) {
+    return false;
+  }
+  return checkDateIsInPastOrToday(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY, dayStr, monthStr, yearStr);
 };
 
 export const checkDateFieldDay = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
@@ -698,3 +721,17 @@ export const checkFieldIfRadioButtonSelectedAndFieldsEmpty = (isPrimaryField: bo
   }
 };
 
+export const checkDateIsBeforeOrOnOtherDate = (req: Request, date: InputDate, otherDate: InputDate, errorMessage: string): boolean => {
+  const dateTime = DateTime.fromObject({ year: Number(date.year), month: Number(date.month), day: Number(date.day) });
+  const otherDateTime = DateTime.fromObject({ year: Number(otherDate.year), month: Number(otherDate.month), day: Number(otherDate.day) });
+
+  if (!dateTime.isValid || !otherDateTime.isValid) {
+    logger.errorRequest(req, 'Invalid date found in checkDateIsBeforeOrOnOtherDate');
+    throw new Error(errorMessage);
+  }
+
+  if (dateTime.startOf('day') > otherDateTime.startOf('day')) {
+    throw new Error(errorMessage);
+  }
+  return true;
+};

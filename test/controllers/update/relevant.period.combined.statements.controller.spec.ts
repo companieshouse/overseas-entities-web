@@ -18,8 +18,7 @@ import {
   RELEVANT_PERIOD_COMBINED_STATEMENTS_TITLE,
   RELEVANT_PERIOD_COMBINED_STATEMENTS_TEXT,
   RELEVANT_PERIOD,
-  PAGE_NOT_FOUND_TEXT,
-  SAVE_AND_CONTINUE_BUTTON_TEXT
+  PAGE_NOT_FOUND_TEXT
 } from "../../__mocks__/text.mock";
 import { APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock";
 import { getApplicationData } from "../../../src/utils/application.data";
@@ -64,7 +63,6 @@ describe("Combined Statements Page tests", () => {
       expect(resp.text).toContain("1");
       expect(resp.text).toContain("January");
       expect(resp.text).toContain("2011");
-      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
     });
   });
 

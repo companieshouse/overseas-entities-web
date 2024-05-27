@@ -14,9 +14,6 @@ import request from "supertest";
 import * as config from "../../../src/config";
 import app from "../../../src/app";
 import {
-  testEntityName
-} from "../../__mocks__/update.entity.mocks";
-import {
   SERVICE_UNAVAILABLE,
   RELEVANT_PERIOD_COMBINED_STATEMENTS_TITLE,
   RELEVANT_PERIOD_COMBINED_STATEMENTS_TEXT,
@@ -64,7 +61,7 @@ describe("Combined Statements Page tests", () => {
       expect(resp.text).toContain(RELEVANT_PERIOD_COMBINED_STATEMENTS_TITLE);
       expect(resp.text).toContain(RELEVANT_PERIOD_COMBINED_STATEMENTS_TEXT);
       expect(resp.text).toContain(RELEVANT_PERIOD);
-      expect(resp.text).toContain(testEntityName);
+      expect(resp.text).toContain("testEntity");
       expect(resp.text).toContain("1");
       expect(resp.text).toContain("January");
       expect(resp.text).toContain("2011");

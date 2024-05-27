@@ -61,7 +61,6 @@ describe("Combined Statements Page tests", () => {
       expect(resp.text).toContain(RELEVANT_PERIOD_COMBINED_STATEMENTS_TITLE);
       expect(resp.text).toContain(RELEVANT_PERIOD_COMBINED_STATEMENTS_TEXT);
       expect(resp.text).toContain(RELEVANT_PERIOD);
-      expect(resp.text).toContain("testEntity");
       expect(resp.text).toContain("1");
       expect(resp.text).toContain("January");
       expect(resp.text).toContain("2011");

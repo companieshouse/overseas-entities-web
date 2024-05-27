@@ -14,11 +14,14 @@ import request from "supertest";
 import * as config from "../../../src/config";
 import app from "../../../src/app";
 import {
+  testEntityName
+} from "../../__mocks__/update.entity.mocks";
+import {
   SERVICE_UNAVAILABLE,
   RELEVANT_PERIOD_COMBINED_STATEMENTS_TITLE,
   RELEVANT_PERIOD_COMBINED_STATEMENTS_TEXT,
   PAGE_NOT_FOUND_TEXT,
-  SAVE_AND_CONTINUE_BUTTON_TEXT,
+  SAVE_AND_CONTINUE_BUTTON_TEXT
 } from "../../__mocks__/text.mock";
 import { APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock";
 import { getApplicationData } from "../../../src/utils/application.data";
@@ -55,6 +58,7 @@ describe("Combined Statements Page tests", () => {
     test(`renders the ${config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE} page`, async () => {
       mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
       const resp = await request(app).get(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
+
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(RELEVANT_PERIOD_COMBINED_STATEMENTS_TITLE);
       expect(resp.text).toContain(RELEVANT_PERIOD_COMBINED_STATEMENTS_TEXT);

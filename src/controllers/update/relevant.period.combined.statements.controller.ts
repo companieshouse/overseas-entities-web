@@ -3,9 +3,9 @@ import { NextFunction, Request, Response } from "express";
 import { logger } from "../../utils/logger";
 import * as config from "../../config";
 import { ApplicationData } from "../../model";
-import { getApplicationData } from "../../utils/application.data";
+import { getApplicationData, setExtraData } from "../../utils/application.data";
 import { getRegistrationDate } from "../../utils/update/relevant.period";
-import { InputDate } from "../../model/data.types.model";
+import { InputDate, OverseasEntityKey, Transactionkey } from "../../model/data.types.model";
 import {
   RelevantPeriodStatementsKey,
   RelevantPeriodStatementOneKey,
@@ -15,6 +15,10 @@ import {
   RelevantPeriodStatementTwo,
   RelevantPeriodStatementThree
 } from "../../model/relevant.period.statment.model";
+import { saveAndContinue } from "../../utils/save.and.continue";
+import { Session } from "@companieshouse/node-session-handler";
+import { postTransaction } from "../../service/transaction.service";
+import { createOverseasEntity } from "../../service/overseas.entities.service";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -33,11 +37,19 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
+export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE}`);
-    const appData: ApplicationData = getApplicationData(req.session);
+    const session = req.session as Session;
+
+    const appData: ApplicationData = getApplicationData(session);
     const statements = req.body[RelevantPeriodStatementsKey];
+
+    if (!appData[Transactionkey]) {
+      const transactionID = await postTransaction(req, session);
+      appData[Transactionkey] = transactionID;
+      appData[OverseasEntityKey] = await createOverseasEntity(req, session, transactionID, true);
+    }
 
     if (appData.update) {
       appData.update.ceased_to_be_registrable_beneficial_owner = statements.includes(RelevantPeriodStatementOneKey) ? RelevantPeriodStatementOne.YES : RelevantPeriodStatementOne.NO;
@@ -45,7 +57,9 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
       appData.update.become_or_ceased_beneficiary_of_a_trust = statements.includes(RelevantPeriodStatementThreeKey) ? RelevantPeriodStatementThree.YES : RelevantPeriodStatementThree.NO;
     }
 
-    console.log(appData);
+    setExtraData(session, appData);
+
+    await saveAndContinue(req, session, false);
 
     return res.redirect(config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL);
   } catch (error) {

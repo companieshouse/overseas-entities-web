@@ -8,7 +8,9 @@ import { getRegistrationDate } from "../../utils/update/relevant.period";
 import { InputDate } from "../../model/data.types.model";
 import {
   RelevantPeriodStatementsKey,
-  RelevantPeriodStatementsType,
+  RelevantPeriodStatementOneKey,
+  RelevantPeriodStatementTwoKey,
+  RelevantPeriodStatementThreeKey,
   RelevantPeriodStatementOne,
   RelevantPeriodStatementTwo,
   RelevantPeriodStatementThree
@@ -38,9 +40,9 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     const statements = req.body[RelevantPeriodStatementsKey];
 
     if (appData.update) {
-      appData.update.confirmation_change_to_BO_info_relevant_period = statements.includes(RelevantPeriodStatementOne) ? RelevantPeriodStatementsType[RelevantPeriodStatementOne] : RelevantPeriodStatementsType["NO_" + RelevantPeriodStatementOne];
-      appData.update.confirmation_change_to_BO_trusts_relevant_period = statements.includes(RelevantPeriodStatementTwo) ? RelevantPeriodStatementsType[RelevantPeriodStatementTwo] : RelevantPeriodStatementsType["NO_" + RelevantPeriodStatementTwo];
-      appData.update.confirmation_change_to_BO_beneficiaries_relevant_period = statements.includes(RelevantPeriodStatementThree) ? RelevantPeriodStatementsType[RelevantPeriodStatementThree] : RelevantPeriodStatementsType["NO_" + RelevantPeriodStatementThree];
+      appData.update.ceased_to_be_registrable_beneficial_owner = statements.includes(RelevantPeriodStatementOneKey) ? RelevantPeriodStatementOne.YES : RelevantPeriodStatementOne.NO;
+      appData.update.trust_involved_in_the_oe = statements.includes(RelevantPeriodStatementTwoKey) ? RelevantPeriodStatementTwo.YES : RelevantPeriodStatementTwo.NO;
+      appData.update.become_or_ceased_beneficiary_of_a_trust = statements.includes(RelevantPeriodStatementThreeKey) ? RelevantPeriodStatementThree.YES : RelevantPeriodStatementThree.NO;
     }
 
     console.log(appData);

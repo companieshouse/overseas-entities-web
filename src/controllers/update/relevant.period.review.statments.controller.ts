@@ -27,7 +27,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.RELEVANT_PERIOD_REVIEW_STATEMENTS_PAGE}`);
-    return res.redirect(config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL);
+    return res.redirect(config.UPDATE_FILING_DATE_URL);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

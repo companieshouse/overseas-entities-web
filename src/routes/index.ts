@@ -101,6 +101,8 @@ import {
   updateManageTrustsIndividualsOrEntitiesInvolved,
   updatePaymentFailed,
   updateManageTrustsTellUsAboutTheLegalEntity,
+  relevantPeriodOwnedLandFilter,
+  relevantPeriodInterrupt,
   relevantPeriodCombinedStatements,
 } from "../controllers";
 
@@ -551,6 +553,24 @@ router.route(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL)
   )
   .get(confirmOverseasEntityDetails.get)
   .post(confirmOverseasEntityDetails.post);
+
+router.route(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD),
+    authentication,
+    companyAuthentication,
+    navigation.hasOverseasEntity)
+  .get(relevantPeriodOwnedLandFilter.get)
+  .post(relevantPeriodOwnedLandFilter.post);
+
+router.route(config.RELEVANT_PERIOD_INTERRUPT_URL)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD),
+    authentication,
+    companyAuthentication,
+    navigation.hasOverseasEntity)
+  .get(relevantPeriodInterrupt.get)
+  .post(relevantPeriodInterrupt.post);
 
 router.route(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
   .all(

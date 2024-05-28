@@ -13,7 +13,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(req.session);
 
     return res.render(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE, {
-      backLinkUrl: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
+      backLinkUrl: config.RELEVANT_PERIOD_INTERRUPT_PAGE,
       templateName: config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE,
       ...appData,
       dateOfCreation: getRegistrationDate(appData.update?.date_of_creation as InputDate)
@@ -27,13 +27,23 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE}`);
-    const checkboxArray = req.body.combined_page_for_statements; // Should store checked checkbox values in array
-    if (checkboxArray.length > 0) {
+    // Should store checked checkbox values in array
+    const pageData = Object.values(req.body.combined_page_for_statements);
+    // Checks for any statement other than 'None of these'
+    const hasSelectedStatement = pageData.some(option => option !== "NONE_OF_THESE");
+
+    if (hasSelectedStatement) {
+      // One or more checkboxes other than 'None of these' was checked
       return res.redirect(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
-    } else {
+    } 
+    if (pageData.includes("NONE_OF_THESE")) {
+      // The checkbox 'None of these' was checked
+      return res.redirect(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
+    } 
+    /* else {
       logger.error("No checkbox was checked");
       throw new Error("Select the statements that apply or select 'None of these'");
-    }
+    } */
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

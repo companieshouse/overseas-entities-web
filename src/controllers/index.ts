@@ -96,6 +96,8 @@ export * as updateManageTrustsReviewLegalEntities from './update/update.manage.t
 export * as updateManageTrustsIndividualsOrEntitiesInvolved from './update/update.manage.trusts.individuals.or.entities.involved.controller';
 export * as updatePaymentFailed from './update/update.payment.failed.controller';
 export * as updateManageTrustsTellUsAboutTheLegalEntity from './update/update.manage.trusts.tell.us.about.the.legal.entity.controller';
+export * as relevantPeriodOwnedLandFilter from './update/relevant.period.owned.land.filter.controller';
+export * as relevantPeriodInterrupt from './update/relevant.period.interrupt.card.controller';
 export * as relevantPeriodCombinedStatements from './update/relevant.period.combined.statements.controller';
 
 // REMOVE controllers

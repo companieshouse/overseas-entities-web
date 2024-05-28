@@ -10,6 +10,8 @@ export const UpdateKey = "update";
 export const RegistrableBeneficialOwnerKey = "registrable_beneficial_owner";
 export const NoChangeKey = "no_change";
 export const ReviewTrustKey = "review_trusts";
+export const OwnedLandKey = "owned_land_relevant_period";
+export const CombinedStatementPageKey = "relevant_period_combined_statements";
 
 export const UpdateKeys: string[] = [
   "date_of_creation",

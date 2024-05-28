@@ -13,7 +13,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(req.session);
 
     return res.render(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE, {
-      backLinkUrl: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
+      backLinkUrl: config.RELEVANT_PERIOD_INTERRUPT_PAGE,
       templateName: config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE,
       ...appData,
       dateOfCreation: getRegistrationDate(appData.update?.date_of_creation as InputDate)

@@ -33,6 +33,7 @@
             </div>
 
             <form method="post">
+                {% include "includes/csrf_token.html" %}
                 {% include "includes/update-start-goal-button.html" %}
             </form>
         </div>

@@ -4,6 +4,7 @@ jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock("../../../src/utils/feature.flag" );
 
+import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import { NextFunction, Request, Response } from "express";
 import { expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
@@ -23,6 +24,7 @@ import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.a
 import { logger } from "../../../src/utils/logger";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 
+mockCsrfProtectionMiddleware.mockClear();
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue(true);
 

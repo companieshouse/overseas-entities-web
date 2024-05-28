@@ -13,6 +13,7 @@ jest.mock("../../../src/service/private.overseas.entity.details");
 jest.mock("../../../src/service/overseas.entities.service");
 jest.mock("../../../src/utils/date");
 
+import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import { logger } from "../../../src/utils/logger";
@@ -35,6 +36,7 @@ import { OverseasEntityKey, Transactionkey } from "../../../src/model/data.types
 import { ErrorMessages } from "../../../src/validation/error.messages";
 import { getTodaysDate } from "../../../src/utils/date";
 
+mockCsrfProtectionMiddleware.mockClear();
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;

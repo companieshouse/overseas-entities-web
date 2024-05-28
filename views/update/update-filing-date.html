@@ -18,6 +18,7 @@
     <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ entity_name }} - {{ entity_number }}</span>
     <h1 class="govuk-heading-xl">{{ title }}</h1>
     <form method="post">
+      {% include "includes/csrf_token.html" %}
       <p class="govuk-body">All the information in this update statement must be correct on this date.
       Verification checks must be completed no more than 3 months before the statement date.</p>
 

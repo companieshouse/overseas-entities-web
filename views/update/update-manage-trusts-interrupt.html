@@ -32,6 +32,7 @@
       </ul>
       
       <form method="post">
+        {% include "includes/csrf_token.html" %}
         {% include "includes/save-and-continue-button.html" %}
       </form>
     </div>

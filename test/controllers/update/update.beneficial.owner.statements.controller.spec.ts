@@ -10,7 +10,7 @@ jest.mock('../../../src/utils/feature.flag');
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
 import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
-
+import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
@@ -44,7 +44,7 @@ import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { TrustKey } from "../../../src/model/trust.model";
 
 mockRemoveJourneyMiddleware.mockClear();
-
+mockCsrfProtectionMiddleware.mockClear();
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
 const mockHasOverseasEntity = hasOverseasEntity as jest.Mock;

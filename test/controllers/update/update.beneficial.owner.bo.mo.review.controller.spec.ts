@@ -7,6 +7,7 @@ jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
 jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/utils/feature.flag');
 
+import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
@@ -31,6 +32,7 @@ import { logger } from "../../../src/utils/logger";
 import { UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_TITLE } from "../../__mocks__/text.mock";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 
+mockCsrfProtectionMiddleware.mockClear();
 const mockHasUpdatePresenter = hasUpdatePresenter as jest.Mock;
 mockHasUpdatePresenter.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 

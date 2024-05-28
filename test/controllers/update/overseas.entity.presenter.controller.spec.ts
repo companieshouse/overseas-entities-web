@@ -7,6 +7,7 @@ jest.mock('../../../src/utils/save.and.continue');
 jest.mock('../../../src/service/transaction.service');
 jest.mock('../../../src/service/overseas.entities.service');
 
+import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
@@ -56,6 +57,7 @@ import { IsRemoveKey, OverseasEntityKey, Transactionkey } from '../../../src/mod
 import { createOverseasEntity } from "../../../src/service/overseas.entities.service";
 import { postTransaction } from "../../../src/service/transaction.service";
 
+mockCsrfProtectionMiddleware.mockClear();
 const mockGetApplicationData = getApplicationData as jest.Mock;
 mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
 

@@ -11,7 +11,7 @@ jest.mock('../../../src/middleware/navigation/update/has.overseas.entity.middlew
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
 import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
-
+import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import * as config from "../../../src/config";
 import app from "../../../src/app";
 import request from "supertest";
@@ -51,7 +51,7 @@ import { NextFunction } from "express";
 import { ErrorMessages } from "../../../src/validation/error.messages";
 
 mockRemoveJourneyMiddleware.mockClear();
-
+mockCsrfProtectionMiddleware.mockClear();
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockHasOverseasEntity = hasOverseasEntity as jest.Mock;
 mockHasOverseasEntity.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );

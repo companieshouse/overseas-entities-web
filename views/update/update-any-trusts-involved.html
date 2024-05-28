@@ -15,6 +15,7 @@
     <div class="govuk-grid-column-two-thirds">
       {% include "includes/list/errors.html" %}
       <form method="post">
+        {% include "includes/csrf_token.html" %}
         {{ govukRadios({
           errorMessage: errors.any_trusts_involved if errors,
           idPrefix: "any_trusts_involved",

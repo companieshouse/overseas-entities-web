@@ -4,6 +4,7 @@ jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock("../../../src/utils/url");
 
+import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import { ErrorMessages } from "../../../src/validation/error.messages";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
@@ -26,6 +27,7 @@ import { NextFunction, Request, Response } from "express";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { getPreviousPageUrl, isRemoveJourney } from "../../../src/utils/url";
 
+mockCsrfProtectionMiddleware.mockClear();
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );

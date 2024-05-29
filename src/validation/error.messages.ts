@@ -215,7 +215,7 @@ export enum ErrorMessages {
   SELECT_DO_YOU_WANT_TO_MAKE_CHANGES_UPDATE_STATEMENT = "Select yes if all the information in this update statement is correct",
   SELECT_DO_YOU_WANT_TO_MAKE_CHANGES_REMOVE_STATEMENT = "Select yes if all the information in this application is correct",
   SELECT_UPDATE_STATEMENT_VALIDATION_RESOLUTION = "Select if you want to change your statements or change the information provided in this update",
-  SELECT_IF_REMOVE_SOLD_ALL_LAND_FILTER = "Select yes if the entity has disposed of all its property or land in the UK",
+  SELECT_IF_REMOVE_SOLD_ALL_LAND_FILTER = "Select yes if the overseas entity has disposed of all relevant property or land in the UK",
   SELECT_REMOVE_DO_YOU_WANT_TO_MAKE_OE_CHANGE = "Select yes if you need to make any changes to this overseas entity before it is removed",
   SELECT_TO_CONFIRM_REMOVE_STATEMENT = "Select the removal statement",
 

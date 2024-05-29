@@ -8,6 +8,7 @@ jest.mock('../../../src/service/transaction.service');
 jest.mock('../../../src/service/overseas.entities.service');
 jest.mock("../../../src/utils/feature.flag" );
 jest.mock('../../../src/middleware/navigation/update/has.overseas.entity.middleware');
+jest.mock("../../../src/service/company.profile.service");
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
 import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
@@ -16,13 +17,13 @@ import * as config from "../../../src/config";
 import app from "../../../src/app";
 import request from "supertest";
 import { beforeEach, jest, test, describe } from "@jest/globals";
-import { logger } from "../../../src/utils/logger";
+import { createAndLogErrorRequest, logger } from "../../../src/utils/logger";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { createOverseasEntity, updateOverseasEntity } from "../../../src/service/overseas.entities.service";
 import { postTransaction } from "../../../src/service/transaction.service";
-import { getApplicationData } from "../../../src/utils/application.data";
+import { getApplicationData, mapDataObjectToFields } from "../../../src/utils/application.data";
 import { OverseasEntityKey, Transactionkey } from '../../../src/model/data.types.model';
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { hasOverseasEntity } from "../../../src/middleware/navigation/update/has.overseas.entity.middleware";
@@ -49,10 +50,16 @@ import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.moc
 
 import { NextFunction } from "express";
 import { ErrorMessages } from "../../../src/validation/error.messages";
+import { getConfirmationStatementNextMadeUpToDateAsIsoString } from "../../../src/service/company.profile.service";
+
+const NEXT_MADE_UP_TO_DATE = "2024-03-19";
 
 mockRemoveJourneyMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
+
+const mockCreateAndLogErrorRequest = createAndLogErrorRequest as jest.Mock;
+
 const mockHasOverseasEntity = hasOverseasEntity as jest.Mock;
 mockHasOverseasEntity.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
@@ -67,6 +74,11 @@ const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 mockGetApplicationData.mockReturnValue( APPLICATION_DATA_MOCK );
 
+const mockGetConfirmationStatementNextMadeUpToDateAsIsoString = getConfirmationStatementNextMadeUpToDateAsIsoString as jest.Mock;
+mockGetConfirmationStatementNextMadeUpToDateAsIsoString.mockReturnValue(NEXT_MADE_UP_TO_DATE);
+
+const mockMapDataObjectToFields = mapDataObjectToFields as jest.Mock;
+
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
@@ -79,10 +91,17 @@ mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Respons
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue(true);
 
+const FILING_DATE_FORM_DATA = {
+  "filing_date-day": "1",
+  "filing_date-month": "4",
+  "filing_date-year": "2024"
+};
+
 describe("Update Filing Date controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetApplicationData.mockReturnValue( APPLICATION_DATA_MOCK );
   });
 
   describe("GET tests", () => {
@@ -155,6 +174,60 @@ describe("Update Filing Date controller", () => {
       expect(resp.text).toContain('href="test"');
     });
 
+    test('does not get next made up to date if filing date already present in application data', async () => {
+      mockMapDataObjectToFields.mockReturnValueOnce({ "filing_date-day": "1", "filing_date-month": "1", "filing_date-year": "2022" });
+
+      const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
+
+      expect(mockGetConfirmationStatementNextMadeUpToDateAsIsoString).not.toHaveBeenCalled();
+      expect(resp.status).toEqual(200);
+    });
+
+    test('gets next made up to date if filing date not already present in application data', async () => {
+      const mockData = { ...APPLICATION_DATA_MOCK };
+      if (mockData.update) {
+        mockData.update.filing_date = undefined;
+      }
+      mockGetApplicationData.mockReturnValueOnce(mockData);
+      mockMapDataObjectToFields.mockReturnValueOnce(undefined);
+
+      const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
+
+      expect(mockGetConfirmationStatementNextMadeUpToDateAsIsoString).toHaveBeenCalled();
+      expect(resp.status).toEqual(200);
+    });
+
+    test('throws error if no next made up to date is found', async () => {
+      const mockData = { ...APPLICATION_DATA_MOCK };
+      if (mockData.update) {
+        mockData.update.filing_date = undefined;
+      }
+      mockGetApplicationData.mockReturnValueOnce(mockData);
+      mockMapDataObjectToFields.mockReturnValueOnce(undefined);
+      mockGetConfirmationStatementNextMadeUpToDateAsIsoString.mockReturnValueOnce(undefined);
+      mockCreateAndLogErrorRequest.mockReturnValueOnce(new Error("message"));
+
+      const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
+
+      expect(mockGetConfirmationStatementNextMadeUpToDateAsIsoString).toHaveBeenCalled();
+      expect(mockCreateAndLogErrorRequest).toHaveBeenCalled();
+      expect(resp.status).toEqual(500);
+    });
+
+    test('throws error if no entity number is found', async () => {
+      const mockData = { ...APPLICATION_DATA_MOCK };
+      mockData.entity_number = undefined;
+
+      mockGetApplicationData.mockReturnValueOnce(mockData);
+      mockCreateAndLogErrorRequest.mockReturnValueOnce(new Error("message"));
+
+      const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
+
+      expect(mockGetConfirmationStatementNextMadeUpToDateAsIsoString).not.toHaveBeenCalled();
+      expect(mockCreateAndLogErrorRequest).toHaveBeenCalled();
+      expect(resp.status).toEqual(500);
+    });
+
     test('catch error when rendering the page', async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
@@ -191,7 +264,7 @@ describe("Update Filing Date controller", () => {
 
     test(`redirect to the ${config.OVERSEAS_ENTITY_PRESENTER_URL} page after a successful creation of transaction and overseas entity`, async () => {
       const mockData = { ...APPLICATION_DATA_MOCK, [Transactionkey]: "", [OverseasEntityKey]: "" };
-      mockGetApplicationData.mockReturnValueOnce(mockData);
+      mockGetApplicationData.mockReturnValue(mockData);
       const resp = await request(app)
         .post(config.UPDATE_FILING_DATE_URL)
         .send({ ...FILING_DATE_REQ_BODY_MOCK });
@@ -216,11 +289,49 @@ describe("Update Filing Date controller", () => {
 
       const resp = await request(app)
         .post(config.UPDATE_FILING_DATE_URL)
-        .send({ filingDateMock });
+        .send(filingDateMock);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ErrorMessages.ENTER_DATE);
       expect(resp.text).toContain(ERROR_LIST);
+    });
+
+    test(`renders the ${config.UPDATE_FILING_DATE_PAGE} page with error when filing date is after next made up to date`, async () => {
+      const mockData = { ...APPLICATION_DATA_MOCK };
+      mockGetApplicationData.mockReturnValue(mockData);
+
+      const resp = await request(app)
+        .post(config.UPDATE_FILING_DATE_URL)
+        .send(FILING_DATE_FORM_DATA);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ErrorMessages.DATE_AFTER_MADE_UP_TO_DATE.replace("%s", "19 03 2024"));
+      expect(resp.text).toContain(ERROR_LIST);
+    });
+
+    test(`renders the service unavailable page when unable to get next made up to date`, async () => {
+      const mockData = { ...APPLICATION_DATA_MOCK };
+      mockGetApplicationData.mockReturnValue(mockData);
+      mockGetConfirmationStatementNextMadeUpToDateAsIsoString.mockResolvedValueOnce(undefined);
+
+      const resp = await request(app)
+        .post(config.UPDATE_FILING_DATE_URL)
+        .send(FILING_DATE_FORM_DATA);
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+
+    test(`renders the service unavailable page when unable to get the entity number`, async () => {
+      const mockData = { };
+      mockGetApplicationData.mockReturnValue(mockData);
+
+      const resp = await request(app)
+        .post(config.UPDATE_FILING_DATE_URL)
+        .send(FILING_DATE_FORM_DATA);
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
 
     test(`catch error on POST action for ${config.UPDATE_FILING_DATE_URL} page`, async () => {

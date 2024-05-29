@@ -1586,6 +1586,16 @@ export const OVER_SEAS_ENTITY_MOCK_DATA: CompanyProfile = {
   links: {} as Links
 };
 
+export const COMPANY_PROFILE_WITH_CONFIRMATION_STATEMENT_MOCK_DATA: CompanyProfile = {
+  ...OVER_SEAS_ENTITY_MOCK_DATA,
+  confirmationStatement: {
+    nextDue: "2024-08-12",
+    nextMadeUpTo: "2024-08-26",
+    overdue: false,
+    lastMadeUpTo: "2023-08-12"
+  }
+};
+
 export const MANAGING_OFFICER_MOCK_MAP_DATA: CompanyOfficer = {
   address: {
     premises: "1 Acme Road",

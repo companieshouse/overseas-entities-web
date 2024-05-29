@@ -1,0 +1,72 @@
+{% extends "update-layout.html" %}
+
+{% set title = "Owned land filter" %}
+
+
+{% block pageTitle %}
+{% include "includes/update-page-title.html" %}
+{% endblock %}
+
+{% block backLink %}
+{% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        {% include "includes/list/errors.html" %}
+
+        {% include "includes/page-templates/important-banner.html" %}
+
+        <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ entity_name }} - {{ entity_number }}</span>
+
+        <h1 class="govuk-heading-xl">Was the overseas entity a registered owner of UK property or land during the pre-registration period?</h1>
+
+        <form method="post">
+
+            {{ govukRadios({
+            errorMessage: errors.update.owned.land.filter if errors,
+            idPrefix: "owned_land_relevant_period",
+            name: "owned_land_relevant_period",
+            fieldset: {
+            legend: {
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--xl"
+            }
+            },
+            items: [
+            {
+            value: 1,
+            text: "Yes",
+            checked: owned_land_relevant_period === 1
+            },
+            {
+            value: 0,
+            text: "No",
+            checked: owned_land_relevant_period === 0
+            }
+            ]
+            }) }}
+
+
+            {% set myHtmlVariable = "
+            <p class=\"govuk-body\">The pre-registration period is different for every overseas entity. It's between 28 February 2022 and either:</p>
+            <ul class=\"govuk-list govuk-list--bullet\">
+                <li>the end of the transition period (31 January 2023), or</li>
+                <li>the entity's registration date, if it registered before 31 January 2023</li>
+            </ul>
+            <p class=\"govuk-body\">If the overseas entity was the registered owner of UK property or land during this period, you may need to provide additional information as part of this filing.</p>
+            <p class=\"govuk-body\">This is a legal requirement so we can understand who was involved in the entities that owned UK property or land from the date the Economic Crime and Transparency Bill came into force (28 February 2022).</p>
+            <p class=\"govuk-body\"><a class=\"govuk-link\" href=\"#\">Find out more about what information you may need to provide.</a></p>" %}
+
+            {{ govukDetails({
+            summaryText: "What does 'pre-registration period' mean?",
+            html: myHtmlVariable
+            }) }}
+
+            {% include "includes/continue-button.html" %}
+        </form>
+    </div>
+</div>
+
+{% endblock %}

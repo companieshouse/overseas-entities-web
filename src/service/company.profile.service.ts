@@ -30,3 +30,8 @@ export const getCompanyProfile = async (
   logger.debugRequest(req, `Overseas Entity Retrieved - ${infoMsg}`);
   return response.resource;
 };
+
+export const getConfirmationStatementNextMadeUpToDateAsIsoString = async (req: Request, oeNumber: string): Promise<string | undefined> => {
+  const companyProfile: CompanyProfile | undefined = await getCompanyProfile(req, oeNumber);
+  return companyProfile?.confirmationStatement?.nextMadeUpTo;
+};

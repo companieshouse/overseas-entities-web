@@ -54,6 +54,10 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     if (isRemoveJourney(req)) {
       return res.redirect(`${config.OVERSEAS_ENTITY_PRESENTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
     }
+
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD)) {
+      return res.redirect(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
+    }
     return res.redirect(config.UPDATE_FILING_DATE_URL);
   } catch (errors) {
     logger.errorRequest(req, errors);

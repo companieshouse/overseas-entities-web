@@ -28,28 +28,87 @@ variable "docker_registry" {
 # Service performance and scaling configs
 # ------------------------------------------------------------------------------
 variable "desired_task_count" {
-  type = number
+  type        = number
   description = "The desired ECS task count for this service"
-  default = 1 # defaulted low for dev environments, override for production
+  default     = 1 # defaulted low for dev environments, override for production
 }
 variable "required_cpus" {
-  type = number
+  type        = number
   description = "The required cpu resource for this service. 1024 here is 1 vCPU"
-  default = 128 # defaulted low for dev environments, override for production
+  default     = 256 # defaulted low for dev environments, override for production
 }
 variable "required_memory" {
-  type = number
+  type        = number
   description = "The required memory for this service"
-  default = 256 # defaulted low for node service in dev environments, override for production
+  default     = 512 # defaulted low for node service in dev environments, override for production
 }
+
+variable "max_task_count" {
+  type        = number
+  description = "The maximum number of tasks for this service."
+  default     = 3
+}
+
+variable "use_fargate" {
+  type        = bool
+  description = "If true, sets the required capabilities for all containers in the task definition to use FARGATE, false uses EC2"
+  default     = true
+}
+variable "use_capacity_provider" {
+  type        = bool
+  description = "Whether to use a capacity provider instead of setting a launch type for the service"
+  default     = true
+}
+variable "service_autoscale_enabled" {
+  type        = bool
+  description = "Whether to enable service autoscaling, including scheduled autoscaling"
+  default     = true
+}
+variable "service_autoscale_target_value_cpu" {
+  type        = number
+  description = "Target CPU percentage for the ECS Service to autoscale on"
+  default     = 50 # 100 disables autoscaling using CPU as a metric
+}
+variable "service_scaledown_schedule" {
+  type        = string
+  description = "The schedule to use when scaling down the number of tasks to zero."
+  # Typically used to stop all tasks in a service to save resource costs overnight.
+  # E.g. a value of '55 19 * * ? *' would be Mon-Sun 7:55pm.  An empty string indicates that no schedule should be created.
+
+  default     = ""
+}
+variable "service_scaleup_schedule" {
+  type        = string
+  description = "The schedule to use when scaling up the number of tasks to their normal desired level."
+  # Typically used to start all tasks in a service after it has been shutdown overnight.
+  # E.g. a value of '5 6 * * ? *' would be Mon-Sun 6:05am.  An empty string indicates that no schedule should be created.
+
+  default     = ""
+}
+
+# ----------------------------------------------------------------------
+# Cloudwatch alerts
+# ----------------------------------------------------------------------
+variable "cloudwatch_alarms_enabled" {
+  description = "Whether to create a standard set of cloudwatch alarms for the service.  Requires an SNS topic to have already been created for the stack."
+  type        = bool
+  default     = true
+}
+
 
 # ------------------------------------------------------------------------------
 # Service environment variable configs
 # ------------------------------------------------------------------------------
-variable "log_level" {
-  default     = "info"
+variable "ssm_version_prefix" {
   type        = string
-  description = "The log level for services to use: trace, debug, info or error"
+  description = "String to use as a prefix to the names of the variables containing variables and secrets version."
+  default     = "SSM_VERSION_"
+}
+
+variable "use_set_environment_files" {
+  type        = bool
+  default     = false
+  description = "Toggle default global and shared  environment files"
 }
 
 variable "overseas_entities_web_version" {
@@ -57,112 +116,3 @@ variable "overseas_entities_web_version" {
   description = "The version of the overseas entities web container to run."
 }
 
-variable "chs_url" {
-  type        = string
-}
-variable "cdn_host" {
-  type        = string
-}
-variable "account_local_url" {
-  type        = string
-}
-
-variable "piwik_url" {
-  type        = string
-}
-variable "piwik_site_id" {
-  type        = string
-}
-variable "redirect_uri" {
-  type        = string
-  default     = "/"
-}
-variable "cache_pool_size" {
-  type        = string
-  default     = "8"
-}
-
-variable "cookie_domain" {
-  type        = string
-}
-variable "cookie_name" {
-  type        = string
-  default     = "__SID"
-}
-variable "cookie_secure_only" {
-  type        = string
-  default     = "0"
-}
-variable "default_session_expiration" {
-  type        = string
-  default     = "3600"
-}
-variable "show_service_offline_page" {
-  type        = string
-}
-variable "api_url" {
-  type        = string
-}
-variable "piwik_start_goal_id" {
-  type        = string
-}
-variable "piwik_update_start_goal_id" {
-  type        = string
-}
-variable "piwik_remove_start_goal_id" {
-  type        = string
-}
-variable "feature_flag_enable_update_statement_validation_05072023" {
-  type        = string
-}
-variable "feature_flag_enable_save_and_resume_17102022" {
-  type        = string
-}
-variable "feature_flag_enable_roe_update_24112022" {
-  type        = string
-}
-variable "feature_flag_enable_trusts_web_07112022" {
-  type        = string
-}
-variable "feature_flag_enable_update_save_and_resume_07032023" {
-  type        = string
-}
-variable "feature_flag_enable_update_trusts_30062023" {
-  type        = string
-}
-variable "feature_flag_disable_update_private_data_fetch_28062023" {
-  type        = string
-}
-variable "feature_flag_enable_update_manage_trusts_29082023" {
-  type        = string
-}
-variable "feature_flag_enable_redis_removal_27092023" {
-  type        = string
-}
-variable "feature_flag_enable_cease_trusts_19022024" {
-  type        = string
-}
-variable "feature_flag_enable_relevant_period_26042024" {
-  type        = string
-}
-variable "landing_page_url" {
-  type        = string
-}
-variable "landing_page_starting_new_url" {
-  type        = string
-}
-variable "payment_fee" {
-  type        = string
-}
-variable "update_landing_page_url" {
-  type        = string
-}
-variable "remove_landing_page_url" {
-  type        = string
-}
-variable "update_payment_fee" {
-  type        = string
-}
-variable "vf01_form_download_url" {
-  type        = string
-}

@@ -1,4 +1,6 @@
 jest.mock('../../src/utils/application.data');
+jest.mock("../../src/service/company.profile.service");
+jest.mock("../../src/utils/logger");
 
 import * as custom from "../../src/validation/custom.validation";
 import { ErrorMessages } from "../../src/validation/error.messages";
@@ -234,5 +236,82 @@ describe('tests for checkDatePreviousToFilingDate ', () => {
 
     expect(() => custom.checkDatePreviousToFilingDate(mockReq, "3", "8", "2023", ErrorMessages.START_DATE_BEFORE_FILING_DATE))
       .toThrowError(ErrorMessages.START_DATE_BEFORE_FILING_DATE);
+  });
+
+  describe("tests for checkDateIsBeforeOrOnOtherDate", () => {
+    test("should return true if date is before other date", () => {
+      const result = custom.checkDateIsBeforeOrOnOtherDate(mockReq, { day: "17", month: "05", year: "2024" }, { day: "18", month: "5", year: "2024" }, "error");
+      expect(result).toEqual(true);
+    });
+
+    test("should return true if date is on other date", () => {
+      const result = custom.checkDateIsBeforeOrOnOtherDate(mockReq, { day: "18", month: "05", year: "2024" }, { day: "18", month: "5", year: "2024" }, "error");
+      expect(result).toEqual(true);
+    });
+
+    test("should throw error if date is after made up to date", () => {
+      expect(() => custom.checkDateIsBeforeOrOnOtherDate(mockReq, { day: "19", month: "05", year: "2024" }, { day: "18", month: "5", year: "2024" }, "error"))
+        .toThrowError("error");
+    });
+
+    test("should throw error if date is invalid", () => {
+      expect(() => custom.checkDateIsBeforeOrOnOtherDate(mockReq, { day: "", month: "05", year: "2024" }, { day: "18", month: "5", year: "2024" }, "error"))
+        .toThrowError("error");
+    });
+
+    test("should throw error if other date is invalid", () => {
+      expect(() => custom.checkDateIsBeforeOrOnOtherDate(mockReq, { day: "17", month: "05", year: "2024" }, { day: "18", month: "", year: "2024" }, "error"))
+        .toThrowError("error");
+    });
+
+  });
+
+  describe("tests for checkFilingDate", () => {
+    test("should return true if date is not in the future", () => {
+      const result = custom.checkFilingDate("17", "05", "2024");
+      expect(result).toEqual(true);
+    });
+
+    test("should return true if date is today", () => {
+      const today = DateTime.now();
+      const result = custom.checkFilingDate(today.day.toString(), today.month.toString(), today.year.toString());
+      expect(result).toEqual(true);
+    });
+
+    test("should throw error if date is in future", () => {
+      const today = DateTime.now();
+      const future = today.plus({ days: 1 }); // Add one day
+      expect(() => custom.checkFilingDate(future.day.toString(), future.month.toString(), future.year.toString())).toThrowError();
+    });
+
+    test("should return false if more than one date part is missing", () => {
+      expect(custom.checkFilingDate("", "5", "")).toEqual(false);
+    });
+
+    test("should return false if year is incorrect length", () => {
+      expect(custom.checkFilingDate("3", "5", "202")).toEqual(false);
+    });
+
+    test("should return false if year is missing", () => {
+      expect(custom.checkFilingDate("3", "5", "")).toEqual(false);
+    });
+
+    test("should return false if date is empty", () => {
+      expect(custom.checkFilingDate("", "", "")).toEqual(false);
+    });
+
+    test("should return false if day is empty", () => {
+      expect(custom.checkFilingDate("", "5", "2024")).toEqual(false);
+    });
+
+    test("should return false if month is empty", () => {
+      expect(custom.checkFilingDate("2", "", "2024")).toEqual(false);
+    });
+
+    test("should throw error if date is invalid", () => {
+      expect(() => custom.checkFilingDate("200", "5", "2024")).toThrowError();
+      expect(() => custom.checkFilingDate("2", "55", "2024")).toThrowError();
+      expect(() => custom.checkFilingDate("31", "02", "2024")).toThrowError();
+    });
   });
 });

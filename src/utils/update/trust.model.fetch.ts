@@ -71,8 +71,7 @@ const retrieveTrusts = async (req: Request, appData: ApplicationData) => {
 
 export const mapTrustData = (trustData: TrustData, appData: ApplicationData) => {
   const dateOfBirth = mapInputDate(trustData.creationDate);
-
-  const stillInvolved = trustData.trustStillInvolvedInOverseasEntityIndicator ? (trustData.trustStillInvolvedInOverseasEntityIndicator ? "Yes" : "No") : "";
+  const stillInvolved = trustData.trustStillInvolvedInOverseasEntityIndicator ? (trustData.trustStillInvolvedInOverseasEntityIndicator === "1" ? "Yes" : "No") : "";
 
   const trust: Trust = {
     trust_id: (((appData.update?.review_trusts ?? []).length) + 1).toString(),

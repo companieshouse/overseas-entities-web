@@ -1538,6 +1538,7 @@ export const TRUST: Trust = {
   creation_date_day: "31",
   creation_date_month: "12",
   creation_date_year: "1999",
+  trust_still_involved_in_overseas_entity: "Yes",
   unable_to_obtain_all_trust_info: "No"
 };
 
@@ -1547,6 +1548,7 @@ export const TRUST_NO_NAME: Trust = {
   creation_date_day: "31",
   creation_date_month: "12",
   creation_date_year: "1999",
+  trust_still_involved_in_overseas_entity: "Yes",
   unable_to_obtain_all_trust_info: "No"
 };
 
@@ -1556,6 +1558,7 @@ export const TRUST_NO_DATE: Trust = {
   creation_date_day: "",
   creation_date_month: "",
   creation_date_year: "",
+  trust_still_involved_in_overseas_entity: "Yes",
   unable_to_obtain_all_trust_info: "No"
 };
 
@@ -1565,6 +1568,7 @@ export const TRUST_PARTIAL_DATE: Trust = {
   creation_date_day: "31",
   creation_date_month: "",
   creation_date_year: "1999",
+  trust_still_involved_in_overseas_entity: "Yes",
   unable_to_obtain_all_trust_info: "No"
 };
 
@@ -1676,6 +1680,7 @@ export const TRUST_WITH_ID: Trust = {
   creation_date_day: "31",
   creation_date_month: "12",
   creation_date_year: "1999",
+  trust_still_involved_in_overseas_entity: "Yes",
   unable_to_obtain_all_trust_info: "No"
 };
 

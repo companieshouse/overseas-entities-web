@@ -23,6 +23,7 @@ describe('Trust Details page Mapper Service', () => {
     creation_date_day: '99',
     creation_date_month: '88',
     creation_date_year: '2077',
+    trust_still_involved_in_overseas_entity: 'No',
     unable_to_obtain_all_trust_info: 'Yes',
   };
   const mockTrust2 = {
@@ -31,6 +32,7 @@ describe('Trust Details page Mapper Service', () => {
     creation_date_day: '10',
     creation_date_month: '11',
     creation_date_year: '2077',
+    trust_still_involved_in_overseas_entity: 'Yes',
     unable_to_obtain_all_trust_info: 'No',
   };
   const mockBoIndividual1 = {
@@ -65,7 +67,7 @@ describe('Trust Details page Mapper Service', () => {
   });
 
   describe('To Page mapper methods tests', () => {
-    test('mapDetailToPage should return object (verify mapping of hasAllInfo when false)', () => {
+    test('mapDetailToPage should return object (verify mapping of hasAllInfo and stillInvolved when false)', () => {
       expect(mapDetailToPage(mockAppData, mockTrust1.trust_id, false)).toEqual({
         trustId: mockTrust1.trust_id,
         name: mockTrust1.trust_name,
@@ -76,10 +78,11 @@ describe('Trust Details page Mapper Service', () => {
           mockBoIndividual1.id,
           mockBoOle1.id,
         ],
+        stillInvolved: '0',
         hasAllInfo: '0',
       });
     });
-    test('mapDetailToPage should return object (verify mapping of hasAllInfo when true)', () => {
+    test('mapDetailToPage should return object (verify mapping of hasAllInfo and stillInvolved when true)', () => {
       expect(mapDetailToPage(mockAppData, mockTrust2.trust_id, false)).toEqual({
         trustId: mockTrust2.trust_id,
         name: mockTrust2.trust_name,
@@ -89,6 +92,7 @@ describe('Trust Details page Mapper Service', () => {
         beneficialOwnersIds: [
           mockBoIndividual1.id,
         ],
+        stillInvolved: '1',
         hasAllInfo: '1',
       });
     });
@@ -105,6 +109,7 @@ describe('Trust Details page Mapper Service', () => {
       createdDateDay: '99',
       createdDateMonth: '88',
       createdDateYear: '2077',
+      stillInvolved: '0',
       hasAllInfo: '1',
     } as Page.TrustDetailsForm;
 
@@ -114,6 +119,7 @@ describe('Trust Details page Mapper Service', () => {
       createdDateDay: '99',
       createdDateMonth: '88',
       createdDateYear: '2077',
+      stillInvolved: '1',
       hasAllInfo: '0',
     } as Page.TrustDetailsForm;
 
@@ -126,11 +132,12 @@ describe('Trust Details page Mapper Service', () => {
       ceasedDateDay: '15',
       ceasedDateMonth: '04',
       ceasedDateYear: '2022',
+      stillInvolved: '1',
       hasAllInfo: '0',
     } as Page.TrustDetailsForm;
 
-    test('mapDetailToSession should return object (verify mapping of unable_to_obtain_all_trust_info when false)', () => {
-      expect(mapDetailToSession(mockFormData, false)).toEqual({
+    test('mapDetailToSession should return object (verify mapping of unable_to_obtain_all_trust_info and trust_still_involved_in_overseas_entity when false)', () => {
+      expect(mapDetailToSession(mockFormData, false, false)).toEqual({
         trust_id: mockFormData.trustId,
         trust_name: mockFormData.name,
         creation_date_day: mockFormData.createdDateDay,
@@ -139,12 +146,13 @@ describe('Trust Details page Mapper Service', () => {
         ceased_date_day: undefined,
         ceased_date_month: undefined,
         ceased_date_year: undefined,
+        trust_still_involved_in_overseas_entity: "No",
         unable_to_obtain_all_trust_info: "No",
       });
     });
 
-    test('mapDetailToSession should return object (verify mapping of unable_to_obtain_all_trust_info when true)', () => {
-      expect(mapDetailToSession(mockFormData2, false)).toEqual({
+    test('mapDetailToSession should return object (verify mapping of unable_to_obtain_all_trust_info and trust_still_involved_in_overseas_entity when true)', () => {
+      expect(mapDetailToSession(mockFormData2, false, true)).toEqual({
         trust_id: mockFormData2.trustId,
         trust_name: mockFormData2.name,
         creation_date_day: mockFormData2.createdDateDay,
@@ -153,12 +161,13 @@ describe('Trust Details page Mapper Service', () => {
         ceased_date_day: undefined,
         ceased_date_month: undefined,
         ceased_date_year: undefined,
+        trust_still_involved_in_overseas_entity: "Yes",
         unable_to_obtain_all_trust_info: "Yes",
       });
     });
 
     test('mapDetailToSession should return object including ceased date', () => {
-      expect(mapDetailToSession(mockFormData3, true)).toEqual({
+      expect(mapDetailToSession(mockFormData3, true, true)).toEqual({
         trust_id: mockFormData3.trustId,
         trust_name: mockFormData3.name,
         creation_date_day: mockFormData3.createdDateDay,
@@ -167,6 +176,7 @@ describe('Trust Details page Mapper Service', () => {
         ceased_date_day: mockFormData3.ceasedDateDay,
         ceased_date_month: mockFormData3.ceasedDateMonth,
         ceased_date_year: mockFormData3.ceasedDateYear,
+        trust_still_involved_in_overseas_entity: "Yes",
         unable_to_obtain_all_trust_info: "Yes",
       });
     });

@@ -106,7 +106,6 @@ describe('Update - Manage Trusts - Review the trust', () => {
       expect(resp.text).toContain(saveAndContinueButtonText);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).not.toContain(TRUST_NOT_ASSOCIATED_WITH_BENEFICIAL_OWNER_TEXT);
-      expect(resp.text).not.toContain(TRUST_CEASED_DATE_TEXT);
     });
 
     test('when manage trusts feature flag is on, cease trusts flag is off, ceased date not displayed when no associated BOs', async () => {
@@ -185,6 +184,7 @@ describe('Update - Manage Trusts - Review the trust', () => {
         .send({
           name: 'Updated Trust name',
           beneficialOwnersIds: ['45e4283c-6b05-42da-ac9d-1f7bf9fe9c85'],
+          stillInvolved: '1',
           hasAllInfo: '0',
           trustId: '1'
         });
@@ -227,6 +227,9 @@ describe('Update - Manage Trusts - Review the trust', () => {
 
     test(`renders the update-manage-trusts-review-the-trust page with error messages`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockIsActiveFeature.mockReturnValueOnce(true);
+
       const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);
 
       expect(resp.status).toEqual(200);
@@ -234,8 +237,8 @@ describe('Update - Manage Trusts - Review the trust', () => {
       expect(resp.text).toContain(ERROR_LIST);
       expect(resp.text).toContain(ErrorMessages.TRUST_NAME_2);
       expect(resp.text).toContain(ErrorMessages.TRUST_INVOLVED_BOS);
+      expect(resp.text).toContain(ErrorMessages.TRUST_STILL_INVOLVED);
       expect(resp.text).toContain(ErrorMessages.TRUST_HAS_ALL_INFO);
-      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE_OF_TRUST_CEASED);
       expect(mockUpdateTrustInReviewList).not.toHaveBeenCalled();
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });

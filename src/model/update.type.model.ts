@@ -18,6 +18,9 @@ export const UpdateKeys: string[] = [
   "date_of_creation",
   "bo_mo_data_fetched",
   "registrable_beneficial_owner",
+  "change_bo_relevant_period",
+  "trustee_involved_relevant_period",
+  "change_beneficiary_relevant_period",
   "review_beneficial_owners_individual",
   "review_beneficial_owners_corporate",
   "review_beneficial_owners_government_or_public_authority",
@@ -33,9 +36,9 @@ export interface Update {
   bo_mo_data_fetched?: boolean;
   // Flag for whether a person has become or ceased to be a registrable BO in the update period or not
   registrable_beneficial_owner?: yesNoResponse;
-  ceased_to_be_registrable_beneficial_owner?: RelevantPeriodStatementOne;
-  trust_involved_in_the_oe?: RelevantPeriodStatementTwo;
-  become_or_ceased_beneficiary_of_a_trust?: RelevantPeriodStatementThree;
+  change_bo_relevant_period?: RelevantPeriodStatementOne;
+  trustee_involved_relevant_period?: RelevantPeriodStatementTwo;
+  change_beneficiary_relevant_period?: RelevantPeriodStatementThree;
   review_beneficial_owners_individual?: BeneficialOwnerIndividual[];
   review_beneficial_owners_corporate?: BeneficialOwnerOther[];
   review_beneficial_owners_government_or_public_authority?: BeneficialOwnerGov[];

@@ -1,20 +1,20 @@
 
 export const RelevantPeriodStatementsKey = "combined_statements_page";
-export const RelevantPeriodStatementOneKey = "CEASED_TO_BE_REGISTRABLE_BENEFICIAL_OWNER";
-export const RelevantPeriodStatementTwoKey = "TRUST_INVOLVED_IN_THE_OE";
-export const RelevantPeriodStatementThreeKey = "BECOME_OR_CEASED_BENEFICIARY_OF_A_TRUST";
+export const RelevantPeriodStatementOneKey = "change_bo_relevant_period";
+export const RelevantPeriodStatementTwoKey = "trustee_involved_relevant_period";
+export const RelevantPeriodStatementThreeKey = "change_beneficiary_relevant_period";
 
 export enum RelevantPeriodStatementOne {
-  YES = "CEASED_TO_BE_REGISTRABLE_BENEFICIAL_OWNER",
-  NO = "NO_CEASED_TO_BE_REGISTRABLE_BENEFICIAL_OWNER"
+  YES = "CHANGE_BO_RELEVANT_PERIOD",
+  NO = "NO_CHANGE_BO_RELEVANT_PERIOD"
 }
 
 export enum RelevantPeriodStatementTwo {
-  YES = "TRUST_INVOLVED_IN_THE_OE",
-  NO = "NO_TRUST_INVOLVED_IN_THE_OE"
+  YES = "TRUSTEE_INVOLVED_RELEVANT_PERIOD",
+  NO = "NO_TRUSTEE_INVOLVED_RELEVANT_PERIOD"
 }
 
 export enum RelevantPeriodStatementThree {
-  YES = "BECOME_OR_CEASED_BENEFICIARY_OF_A_TRUST",
-  NO = "NO_BECOME_OR_CEASED_BENEFICIARY_OF_A_TRUST"
+  YES = "CHANGE_BENEFICIARY_RELEVANT_PERIOD",
+  NO = "NO_CHANGE_BENEFICIARY_RELEVANT_PERIOD"
 }

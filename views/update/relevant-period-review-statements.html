@@ -31,7 +31,7 @@
             Beneficial owner statement
         </h2>
 
-        {% if update.relevant_period_beneficial_owner === "CEASED_TO_BE_REGISTRABLE_BENEFICIAL_OWNER" %}
+        {% if update.change_bo_relevant_period === "CHANGE_BO_RELEVANT_PERIOD" %}
             <p class="govuk-body">The entity <strong>has reasonable cause</strong> to believe that <strong>at least one person became or ceased to be a registrable beneficial owner</strong> during the pre-registration period, that it has not already provided information about.</p>
             {{ govukInsetText({
                 text: "We’ll ask you to provide information about any additional beneficial owners later in the service"
@@ -47,7 +47,7 @@
             Trusts statement
         </h2>
 
-        {% if update.relevant_period_trust_involved === "TRUST_INVOLVED_IN_THE_OE" %}
+        {% if update.trustee_involved_relevant_period === "TRUSTEE_INVOLVED_RELEVANT_PERIOD" %}
             <p class="govuk-body">The entity <strong>has reasonable cause</strong> to believe that <strong>at least one person became or ceased to be a registrable beneficial owner due to being a trustee of a trust</strong> during the pre-registration period, that it has not already provided information about.</p>
             {{ govukInsetText({
                 text: "We’ll ask you to provide information about any additional beneficial owners later in the service."
@@ -60,7 +60,7 @@
         <!-- Statement 3 -->
         <h2 class="govuk-heading-m">Beneficiaries statement</h2>
 
-        {% if update.relevant_period_trust_beneficiary === "BECOME_OR_CEASED_BENEFICIARY_OF_A_TRUST" %}
+        {% if update.change_beneficiary_relevant_period === "CHANGE_BENEFICIARY_RELEVANT_PERIOD" %}
             <p class="govuk-body">The entity has <strong>reasonable cause</strong> to believe that <strong>at least one person became or ceased to be a beneficiary of a trust</strong> involved in the overseas entity during the pre-registration period, that it has not already provided information about.</p>
             {{ govukInsetText({
                 text: "We’ll ask you to provide information about any additional beneficial owners later in the service."

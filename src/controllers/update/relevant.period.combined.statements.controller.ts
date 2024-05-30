@@ -19,6 +19,7 @@ import { saveAndContinue } from "../../utils/save.and.continue";
 import { Session } from "@companieshouse/node-session-handler";
 import { postTransaction } from "../../service/transaction.service";
 import { createOverseasEntity } from "../../service/overseas.entities.service";
+import { isActiveFeature } from "../../utils/feature.flag";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -45,21 +46,20 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(session);
     const statements = req.body[RelevantPeriodStatementsKey];
 
-    if (!appData[Transactionkey]) {
-      const transactionID = await postTransaction(req, session);
-      appData[Transactionkey] = transactionID;
-      appData[OverseasEntityKey] = await createOverseasEntity(req, session, transactionID, true);
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_SAVE_AND_RESUME)) {
+      if (!appData[Transactionkey]) {
+        const transactionID = await postTransaction(req, session);
+        appData[Transactionkey] = transactionID;
+        appData[OverseasEntityKey] = await createOverseasEntity(req, session, transactionID, true);
+      }
+      if (appData.update) {
+        appData.update[RelevantPeriodStatementOneKey] = statements.includes(RelevantPeriodStatementOneKey) ? RelevantPeriodStatementOne.YES : RelevantPeriodStatementOne.NO;
+        appData.update[RelevantPeriodStatementTwoKey] = statements.includes(RelevantPeriodStatementTwoKey) ? RelevantPeriodStatementTwo.YES : RelevantPeriodStatementTwo.NO;
+        appData.update[RelevantPeriodStatementThreeKey] = statements.includes(RelevantPeriodStatementThreeKey) ? RelevantPeriodStatementThree.YES : RelevantPeriodStatementThree.NO;
+      }
+      setExtraData(session, appData);
+      await saveAndContinue(req, session, false);
     }
-
-    if (appData.update) {
-      appData.update.ceased_to_be_registrable_beneficial_owner = statements.includes(RelevantPeriodStatementOneKey) ? RelevantPeriodStatementOne.YES : RelevantPeriodStatementOne.NO;
-      appData.update.trust_involved_in_the_oe = statements.includes(RelevantPeriodStatementTwoKey) ? RelevantPeriodStatementTwo.YES : RelevantPeriodStatementTwo.NO;
-      appData.update.become_or_ceased_beneficiary_of_a_trust = statements.includes(RelevantPeriodStatementThreeKey) ? RelevantPeriodStatementThree.YES : RelevantPeriodStatementThree.NO;
-    }
-
-    setExtraData(session, appData);
-
-    await saveAndContinue(req, session, false);
 
     return res.redirect(config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL);
   } catch (error) {

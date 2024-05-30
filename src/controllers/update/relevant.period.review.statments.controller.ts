@@ -4,6 +4,8 @@ import { logger } from "../../utils/logger";
 import * as config from "../../config";
 import { ApplicationData } from "../../model";
 import { getApplicationData } from "../../utils/application.data";
+import { getRegistrationDate } from "../../utils/update/relevant.period";
+import { InputDate } from "../../model/data.types.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -16,7 +18,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       backLinkUrl: config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL,
       templateName: config.RELEVANT_PERIOD_REVIEW_STATEMENTS_PAGE,
       ...appData,
-      dateOfCreation: appData.update?.date_of_creation
+      dateOfCreation: getRegistrationDate(appData.update?.date_of_creation as InputDate)
     });
   } catch (error) {
     logger.errorRequest(req, error);

@@ -546,7 +546,7 @@ router.route(config.UPDATE_SIGN_OUT_URL)
   .get(updateSignOut.get)
   .post(...validator.signOut, checkValidations, updateSignOut.post);
 
-  router.route(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL)
+router.route(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL)
   .all(
     authentication,
     navigation.hasOverseasEntity

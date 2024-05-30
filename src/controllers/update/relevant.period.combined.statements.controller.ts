@@ -35,11 +35,11 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     if (hasSelectedStatement) {
       // One or more checkboxes other than 'None of these' was checked
       return res.redirect(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
-    } 
+    }
     if (pageData.includes("NONE_OF_THESE")) {
       // The checkbox 'None of these' was checked
       return res.redirect(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
-    } 
+    }
     /* else {
       logger.error("No checkbox was checked");
       throw new Error("Select the statements that apply or select 'None of these'");

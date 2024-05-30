@@ -95,7 +95,8 @@ export const SIGN_OUT_PAGE = "sign-out";
 export const STARTING_NEW_PAGE = "starting-new";
 export const PAYMENT_FAILED_PAGE = "payment-failed";
 export const RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE = "relevant-period-combined-statements";
-
+export const RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE = "relevant-period-owned-land-filter";
+export const RELEVANT_PERIOD_INTERRUPT_PAGE = "relevant-period-interrupt-card";
 export const TRUST_DETAILS_PAGE = "trust-details";
 export const TRUST_INVOLVED_PAGE = "trust-involved";
 export const TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE = "trust-historical-beneficial-owner";
@@ -144,7 +145,6 @@ export const UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_PAGE = 'update-manage-tr
 export const UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE = 'update-manage-trusts-tell-us-about-the-legal-entity';
 export const UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE = 'update-manage-trusts-individuals-or-entities-involved';
 export const UPDATE_STATEMENT_VALIDATION_ERRORS_PAGE = "update-statement-validation-errors";
-export const REVIEW_COMBINED_STATEMENTS = "review-combined-statements";
 
 // REMOVE TEMPLATES
 export const REMOVE_SOLD_ALL_LAND_FILTER_PAGE = "remove-sold-all-land-filter";
@@ -308,6 +308,8 @@ export const UPDATE_TRUSTS_SUBMIT_BY_PAPER_URL = UPDATE_AN_OVERSEAS_ENTITY_URL +
 export const UPDATE_ANY_TRUSTS_INVOLVED_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + UPDATE_ANY_TRUSTS_INVOLVED_PAGE;
 export const UPDATE_STATEMENT_VALIDATION_ERRORS_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + UPDATE_STATEMENT_VALIDATION_ERRORS_PAGE;
 export const UPDATE_PAYMENT_FAILED_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + PAYMENT_FAILED_PAGE;
+export const RELEVANT_PERIOD_OWNED_LAND_FILTER_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE;
+export const RELEVANT_PERIOD_INTERRUPT_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + RELEVANT_PERIOD_INTERRUPT_PAGE;
 export const RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE;
 
 // REMOVE overseas entity routes

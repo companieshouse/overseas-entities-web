@@ -9,3 +9,11 @@ export const getTodaysDate = (): InputDate => {
     year: "" + now.year
   };
 };
+
+export const convertIsoDateToInputDate = (isoDateString: string): InputDate => {
+  const parsedDate = DateTime.fromISO(isoDateString);
+  const day = parsedDate.toFormat('dd'); // Ensure two-digit day
+  const month = parsedDate.toFormat('LL'); // Ensure two-digit month
+  const year = parsedDate.toFormat('yyyy');
+  return { day, month, year };
+};

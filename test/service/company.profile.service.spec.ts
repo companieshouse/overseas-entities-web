@@ -14,8 +14,10 @@ import {
   ERROR,
   fnGetCompanyNameGetOE,
   getSessionRequestWithExtraData,
+  COMPANY_PROFILE_WITH_CONFIRMATION_STATEMENT_MOCK_DATA,
+  OVER_SEAS_ENTITY_MOCK_DATA,
 } from "../__mocks__/session.mock";
-import { getCompanyProfile } from "../../src/service/company.profile.service";
+import { getCompanyProfile, getConfirmationStatementNextMadeUpToDateAsIsoString } from "../../src/service/company.profile.service";
 
 const mockCreateAndLogErrorRequest = createAndLogErrorRequest as jest.Mock;
 mockCreateAndLogErrorRequest.mockReturnValue(ERROR);
@@ -24,6 +26,7 @@ const mockMakeApiCallWithRetry = makeApiCallWithRetry as jest.Mock;
 
 const session = getSessionRequestWithExtraData();
 const req: Request = { session } as Request;
+
 describe(`Get overseas entity profile details service suite`, () => {
   beforeEach (() => {
     jest.clearAllMocks();
@@ -57,5 +60,21 @@ describe(`Get overseas entity profile details service suite`, () => {
 
     await expect(getCompanyProfile(req, COMPANY_NUMBER)).rejects.toThrow(ERROR);
     expect(mockCreateAndLogErrorRequest).toHaveBeenCalled();
+  });
+
+  test('getConfirmationStatementNextMadeUpToDate should return the next made up to date', async () => {
+    const mockResponse = { httpStatusCode: 200, resource: COMPANY_PROFILE_WITH_CONFIRMATION_STATEMENT_MOCK_DATA };
+    mockMakeApiCallWithRetry.mockResolvedValueOnce(mockResponse);
+
+    const response = await getConfirmationStatementNextMadeUpToDateAsIsoString(req, COMPANY_NUMBER);
+    expect(response).toEqual("2024-08-26");
+  });
+
+  test('getConfirmationStatementNextMadeUpToDate should return undefined if the next made up to date is not present', async () => {
+    const mockResponse = { httpStatusCode: 200, resource: OVER_SEAS_ENTITY_MOCK_DATA };
+    mockMakeApiCallWithRetry.mockResolvedValueOnce(mockResponse);
+
+    const response = await getConfirmationStatementNextMadeUpToDateAsIsoString(req, COMPANY_NUMBER);
+    expect(response).toEqual(undefined);
   });
 });

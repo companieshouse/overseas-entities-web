@@ -254,6 +254,8 @@ export const UPDATE_DATE_OF_UPDATE_STATEMENT_TEXT = "You can find the update sta
 export const RELEVANT_PERIOD = "The pre-registration period for <strong>Overseas Entity Name</strong> is between <strong>28 February 2022</strong> and <strong>";
 export const RELEVANT_PERIOD_OWNED_LAND = "Was the overseas entity a registered owner of UK property or land during the pre-registration period?";
 export const RELEVANT_PERIOD_INTERRUPT_CARD_TITLE = "New information needed as part of this update statement";
+export const RELEVANT_PERIOD_COMBINED_STATEMENTS_TITLE = "Provide statements for the pre-registration period";
+export const RELEVANT_PERIOD_COMBINED_STATEMENTS_TEXT = "The overseas entity has reasonable cause to believe that during the pre-registration period:";
 
 // Remove journey
 export const REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE = "Has the overseas entity disposed of all relevant property or land in the UK?";
@@ -279,6 +281,7 @@ export const BEFORE_START_PAGE_LINK_VERIFICATION = "https://www.gov.uk/guidance/
 export const REMOVE_WHAT_IS_RELEVANT_PROPERTY_OR_LAND_TEXT = "What does 'relevant property or land' mean?";
 export const REMOVE_RELEVANT_PROPERTY_OR_LAND_DEFINED_TEXT = "This means property or land in the UK that was bought on or after:";
 export const REMOVE_PROPERTY_BOUGHT_ON_OR_AFTER_DATE_TEXT = "1 January 1999 in England and Wales";
+export const RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE = "Provide statements for the pre-registration period?";
 
 // Manage Trusts
 export const UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_TITLE = "Review former beneficial owners";

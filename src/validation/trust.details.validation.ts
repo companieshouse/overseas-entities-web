@@ -13,9 +13,7 @@ import { hasNoBoAssignableToTrust } from "../utils/trusts";
 const setIsTrustToBeCeasedFlagOnBody = () => {
   return (req: Request, _res: Response, next: NextFunction) => {
     try {
-      const isTrustStillInvolved = req.body["stillInvolved"] === "1";
-
-      if (isTrustStillInvolved) {
+      if (req.body["stillInvolved"] === "1") {
         return next();
       }
 
@@ -25,7 +23,7 @@ const setIsTrustToBeCeasedFlagOnBody = () => {
 
       const appData: ApplicationData = getApplicationData(req.session);
 
-      const isTrustToBeCeased = !isTrustStillInvolved || hasNoBoAssignableToTrust(appData) ? "true" : "false";
+      const isTrustToBeCeased = req.body["stillInvolved"] === "0" || hasNoBoAssignableToTrust(appData) ? "true" : "false";
       // Create a new object with the updated property
       req.body = { ...req.body, isTrustToBeCeased };
 

@@ -75,6 +75,7 @@ const mapDetailToSession = (
   isTrustStillInvolved: boolean
 ): Trust => {
   const data = formData;
+  const setCeasedDate: boolean = isTrustToBeCeased || !isTrustStillInvolved;
 
   return {
     trust_id: data.trustId,
@@ -82,9 +83,9 @@ const mapDetailToSession = (
     creation_date_day: data.createdDateDay,
     creation_date_month: data.createdDateMonth,
     creation_date_year: data.createdDateYear,
-    ceased_date_day: isTrustToBeCeased || !isTrustStillInvolved ? data.ceasedDateDay : undefined,
-    ceased_date_month: isTrustToBeCeased || !isTrustStillInvolved ? data.ceasedDateMonth : undefined,
-    ceased_date_year: isTrustToBeCeased || !isTrustStillInvolved ? data.ceasedDateYear : undefined,
+    ceased_date_day: setCeasedDate ? data.ceasedDateDay : undefined,
+    ceased_date_month: setCeasedDate ? data.ceasedDateMonth : undefined,
+    ceased_date_year: setCeasedDate ? data.ceasedDateYear : undefined,
     trust_still_involved_in_overseas_entity: isTrustStillInvolved ? "Yes" : "No",
     unable_to_obtain_all_trust_info: (data.hasAllInfo === "0") ? "Yes" : "No",
   };

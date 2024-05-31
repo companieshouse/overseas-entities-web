@@ -104,6 +104,8 @@ describe('Update - Manage Trusts - Review the trust', () => {
       expect(resp.text).toContain("Review the trust");
       expect(resp.text).toContain(UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
       expect(resp.text).toContain(saveAndContinueButtonText);
+      expect(resp.text).toContain(TRUST_CEASED_DATE_TEXT);
+      expect(resp.text).toContain("Is the trust still involved in the overseas entity?");
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).not.toContain(TRUST_NOT_ASSOCIATED_WITH_BENEFICIAL_OWNER_TEXT);
     });
@@ -243,7 +245,7 @@ describe('Update - Manage Trusts - Review the trust', () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-    test(`renders the update-manage-trusts-review-the-trust page with missing ceased date error message`, async () => {
+    test(`renders the update-manage-trusts-review-the-trust page with missing ceased date error message when no eligible BOs`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS in trust.details.validation
 
@@ -251,6 +253,26 @@ describe('Update - Manage Trusts - Review the trust', () => {
       mockGetApplicationData.mockReturnValue(appDataWithNoTrustNocBOs);
 
       const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_REVIEW_THE_TRUST);
+      expect(resp.text).toContain(ERROR_LIST);
+      expect(resp.text).toContain(ErrorMessages.TRUST_NAME_2);
+      expect(resp.text).not.toContain(ErrorMessages.TRUST_INVOLVED_BOS);
+      expect(resp.text).toContain(ErrorMessages.TRUST_HAS_ALL_INFO);
+      expect(resp.text).toContain(ErrorMessages.ENTER_DATE_OF_TRUST_CEASED);
+      expect(mockUpdateTrustInReviewList).not.toHaveBeenCalled();
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+    });
+
+    test(`renders the update-manage-trusts-review-the-trust page with missing ceased date error message when eligible BOs and no longer involved but date not entered`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS in trust.details.validation
+
+      // use app data with trust associated BOs
+      mockGetApplicationData.mockReturnValue(appDataWithReviewTrust);
+
+      const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL).send({ stillInvolved: "0" });
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_REVIEW_THE_TRUST);
@@ -367,7 +389,7 @@ describe('Update - Manage Trusts - Review the trust', () => {
         },
         ErrorMessages.TRUST_CEASED_DATE_BEFORE_CREATED_DATE
       ]
-    ])(`renders the update-manage-trusts-review-the-trust page with %s`, async (_, formData, errorMessage) => {
+    ])(`renders the update-manage-trusts-review-the-trust page when no BOs have Trust nature of controls with %s`, async (_, formData, errorMessage) => {
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS in trust.details.validation
 
@@ -382,6 +404,127 @@ describe('Update - Manage Trusts - Review the trust', () => {
       expect(resp.text).toContain(UPDATE_REVIEW_THE_TRUST);
       expect(resp.text).toContain(ERROR_LIST);
       expect(resp.text).not.toContain(ErrorMessages.TRUST_INVOLVED_BOS);
+      expect(resp.text).toContain(errorMessage);
+    });
+
+    // Test the trust ceased date validation combinations
+    test.each([
+      [
+        "missing ceased date DAY error message",
+        {
+          ceasedDateMonth: "11",
+          ceasedDateYear: "2021",
+        },
+        ErrorMessages.DAY_OF_CEASED_TRUST
+      ],
+      [
+        "missing ceased date MONTH error message",
+        {
+          ceasedDateDay: "11",
+          ceasedDateYear: "2021"
+        },
+        ErrorMessages.MONTH_OF_CEASED_TRUST
+      ],
+      [
+        "missing ceased date YEAR error message",
+        {
+          ceasedDateDay: "11",
+          ceasedDateMonth: "5"
+        },
+        ErrorMessages.YEAR_OF_CEASED_TRUST
+      ],
+      [
+        "invalid ceased date YEAR length error message",
+        {
+          ceasedDateDay: "11",
+          ceasedDateMonth: "5",
+          ceasedDateYear: "21"
+        },
+        ErrorMessages.YEAR_LENGTH_OF_CEASED_TRUST
+      ],
+      [
+        "invalid ceased date DAY length error message",
+        {
+          ceasedDateDay: "111",
+          ceasedDateMonth: "5",
+          ceasedDateYear: "21"
+        },
+        ErrorMessages.DAY_LENGTH_OF_CEASED_TRUST
+      ],
+      [
+        "invalid ceased date MONTH length error message",
+        {
+          ceasedDateDay: "11",
+          ceasedDateMonth: "544",
+          ceasedDateYear: "21"
+        },
+        ErrorMessages.MONTH_LENGTH_OF_CEASED_TRUST
+      ],
+      [
+        "invalid ceased date error message",
+        {
+          ceasedDateDay: "31",
+          ceasedDateMonth: "2",
+          ceasedDateYear: "2023"
+        },
+        ErrorMessages.INVALID_DATE_OF_CEASED_TRUST
+      ],
+      [
+        "future ceased date error message",
+        {
+          ceasedDateDay: "11",
+          ceasedDateMonth: "2",
+          ceasedDateYear: "9024"
+        },
+        ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY_OF_CEASED_TRUST
+      ],
+      [
+        "day and month ceased date missing error message",
+        {
+          ceasedDateYear: "2023"
+        },
+        ErrorMessages.DAY_AND_MONTH_OF_CEASED_TRUST
+      ],
+      [
+        "month and year ceased date missing error message",
+        {
+          ceasedDateDay: "23"
+        },
+        ErrorMessages.MONTH_AND_YEAR_OF_CEASED_TRUST
+      ],
+      [
+        "day and year ceased date missing error message",
+        {
+          ceasedDateMonth: "11"
+        },
+        ErrorMessages.DAY_AND_YEAR_OF_CEASED_TRUST
+      ],
+      [
+        "ceased date must not be before creation date error message",
+        {
+          createdDateDay: "11",
+          createdDateMonth: "2",
+          createdDateYear: "2000",
+          ceasedDateDay: "10",
+          ceasedDateMonth: "2",
+          ceasedDateYear: "2000"
+        },
+        ErrorMessages.TRUST_CEASED_DATE_BEFORE_CREATED_DATE
+      ]
+    ])(`renders the update-manage-trusts-review-the-trust page when trust no longer involved with the OE with %s`, async (_, formData, errorMessage) => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS in trust.details.validation
+
+      // use app data with trust associated BOs
+      mockGetApplicationData.mockReturnValue(appDataWithReviewTrust);
+
+      const resp = await request(app)
+        .post(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL)
+        .send({ ...formData, stillInvolved: "0" }); // Trust marked as no longer involved with the OE, so the ceased date error should appear on the page
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_REVIEW_THE_TRUST);
+      expect(resp.text).toContain(ERROR_LIST);
       expect(resp.text).toContain(errorMessage);
     });
 

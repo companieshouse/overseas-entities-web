@@ -20,19 +20,22 @@ describe('Trust Details page Mapper Service', () => {
   const mockTrust1 = {
     trust_id: '999',
     trust_name: 'dummyName',
-    creation_date_day: '99',
-    creation_date_month: '88',
-    creation_date_year: '2077',
-    trust_still_involved_in_overseas_entity: 'No',
+    creation_date_day: '01',
+    creation_date_month: '02',
+    creation_date_year: '2001',
+    trust_still_involved_in_overseas_entity: 'Yes',
     unable_to_obtain_all_trust_info: 'Yes',
   };
   const mockTrust2 = {
     trust_id: '2000',
     trust_name: 'dummyName2',
-    creation_date_day: '10',
+    creation_date_day: '03',
     creation_date_month: '11',
-    creation_date_year: '2077',
-    trust_still_involved_in_overseas_entity: 'Yes',
+    creation_date_year: '20014',
+    ceased_date_day: '17',
+    ceased_date_month: '12',
+    ceased_date_year: '2015',
+    trust_still_involved_in_overseas_entity: 'No',
     unable_to_obtain_all_trust_info: 'No',
   };
   const mockBoIndividual1 = {
@@ -67,7 +70,7 @@ describe('Trust Details page Mapper Service', () => {
   });
 
   describe('To Page mapper methods tests', () => {
-    test('mapDetailToPage should return object (verify mapping of hasAllInfo and stillInvolved when false)', () => {
+    test('mapDetailToPage should return object (verify mapping of hasAllInfo when false and stillInvolved when true)', () => {
       expect(mapDetailToPage(mockAppData, mockTrust1.trust_id, false)).toEqual({
         trustId: mockTrust1.trust_id,
         name: mockTrust1.trust_name,
@@ -78,21 +81,24 @@ describe('Trust Details page Mapper Service', () => {
           mockBoIndividual1.id,
           mockBoOle1.id,
         ],
-        stillInvolved: '0',
+        stillInvolved: '1',
         hasAllInfo: '0',
       });
     });
-    test('mapDetailToPage should return object (verify mapping of hasAllInfo and stillInvolved when true)', () => {
+    test('mapDetailToPage should return object (verify mapping of hasAllInfo when true and stillInvolved when false)', () => {
       expect(mapDetailToPage(mockAppData, mockTrust2.trust_id, false)).toEqual({
         trustId: mockTrust2.trust_id,
         name: mockTrust2.trust_name,
         createdDateDay: mockTrust2.creation_date_day,
         createdDateMonth: mockTrust2.creation_date_month,
         createdDateYear: mockTrust2.creation_date_year,
+        ceasedDateDay: mockTrust2.ceased_date_day,
+        ceasedDateMonth: mockTrust2.ceased_date_month,
+        ceasedDateYear: mockTrust2.ceased_date_year,
         beneficialOwnersIds: [
           mockBoIndividual1.id,
         ],
-        stillInvolved: '1',
+        stillInvolved: '0',
         hasAllInfo: '1',
       });
     });
@@ -106,9 +112,12 @@ describe('Trust Details page Mapper Service', () => {
     const mockFormData = {
       trustId: '999',
       name: 'dummyName',
-      createdDateDay: '99',
-      createdDateMonth: '88',
-      createdDateYear: '2077',
+      createdDateDay: '01',
+      createdDateMonth: '02',
+      createdDateYear: '2001',
+      ceasedDateDay: '15',
+      ceasedDateMonth: '04',
+      ceasedDateYear: '2022',
       stillInvolved: '0',
       hasAllInfo: '1',
     } as Page.TrustDetailsForm;
@@ -116,9 +125,9 @@ describe('Trust Details page Mapper Service', () => {
     const mockFormData2 = {
       trustId: '999',
       name: 'dummyName',
-      createdDateDay: '99',
-      createdDateMonth: '88',
-      createdDateYear: '2077',
+      createdDateDay: '05',
+      createdDateMonth: '12',
+      createdDateYear: '2020',
       stillInvolved: '1',
       hasAllInfo: '0',
     } as Page.TrustDetailsForm;
@@ -126,9 +135,9 @@ describe('Trust Details page Mapper Service', () => {
     const mockFormData3 = {
       trustId: '999',
       name: 'dummyName',
-      createdDateDay: '99',
-      createdDateMonth: '88',
-      createdDateYear: '2077',
+      createdDateDay: '10',
+      createdDateMonth: '08',
+      createdDateYear: '2009',
       ceasedDateDay: '15',
       ceasedDateMonth: '04',
       ceasedDateYear: '2022',
@@ -143,9 +152,9 @@ describe('Trust Details page Mapper Service', () => {
         creation_date_day: mockFormData.createdDateDay,
         creation_date_month: mockFormData.createdDateMonth,
         creation_date_year: mockFormData.createdDateYear,
-        ceased_date_day: undefined,
-        ceased_date_month: undefined,
-        ceased_date_year: undefined,
+        ceased_date_day: mockFormData.ceasedDateDay,
+        ceased_date_month: mockFormData.ceasedDateMonth,
+        ceased_date_year: mockFormData.ceasedDateYear,
         trust_still_involved_in_overseas_entity: "No",
         unable_to_obtain_all_trust_info: "No",
       });
@@ -166,7 +175,7 @@ describe('Trust Details page Mapper Service', () => {
       });
     });
 
-    test('mapDetailToSession should return object including ceased date', () => {
+    test('mapDetailToSession should return object including ceased date when trust is to be ceased is true', () => {
       expect(mapDetailToSession(mockFormData3, true, true)).toEqual({
         trust_id: mockFormData3.trustId,
         trust_name: mockFormData3.name,
@@ -177,6 +186,21 @@ describe('Trust Details page Mapper Service', () => {
         ceased_date_month: mockFormData3.ceasedDateMonth,
         ceased_date_year: mockFormData3.ceasedDateYear,
         trust_still_involved_in_overseas_entity: "Yes",
+        unable_to_obtain_all_trust_info: "Yes",
+      });
+    });
+
+    test('mapDetailToSession should return object including ceased date when trust still involved is false', () => {
+      expect(mapDetailToSession(mockFormData3, false, false)).toEqual({
+        trust_id: mockFormData3.trustId,
+        trust_name: mockFormData3.name,
+        creation_date_day: mockFormData3.createdDateDay,
+        creation_date_month: mockFormData3.createdDateMonth,
+        creation_date_year: mockFormData3.createdDateYear,
+        ceased_date_day: mockFormData3.ceasedDateDay,
+        ceased_date_month: mockFormData3.ceasedDateMonth,
+        ceased_date_year: mockFormData3.ceasedDateYear,
+        trust_still_involved_in_overseas_entity: "No",
         unable_to_obtain_all_trust_info: "Yes",
       });
     });

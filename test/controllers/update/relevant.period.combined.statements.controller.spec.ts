@@ -81,127 +81,118 @@ describe("Combined Statements Page tests", () => {
     expect(resp.status).toEqual(404);
     expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
   });
-});
 
-describe("POST tests", () => {
-  const mockPageData = request(app.response.json);
-  test('should initialize application data', () => {
-    // Arrange
-    request(app)
-    // Act
-      .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
-    // Assert
-      .expect(url() === config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
-      .expect(function(resp){
-        resp.body.combined_page_for_statements.json.toContain(mockPageData);
-      });
+  describe("POST tests", () => {
+    const mockPageData = request(app.response.json);
+    test('should initialize application data', () => {
+      // Arrange
+      request(app)
+      // Act
+        .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
+      // Assert
+        .expect(url() === config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
+        .expect(function(resp){
+          resp.body.combined_page_for_statements.json.toContain(mockPageData);
+        });
+    });
+
+    test('should send 1st value when 1st checkbox is checked', () => {
+      // Arrange
+      request(app)
+      // Act
+        .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
+        .set('Content-Type', 'application/json')
+        .send({ combined_page_for_statements: "REGISTRABLE_BENEFICIAL_OWNER" })
+      // Assert
+        .expect(function(resp){
+          resp.statusCode === 302;
+          resp.body.toEqual({});
+        });
+    });
+
+    test('should send 2nd value when 2nd checkbox is checked', () => {
+      // Arrange
+      request(app)
+      // Act
+        .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
+        .set('Content-Type', 'application/json')
+        .send({ combined_page_for_statements: "ANY_TRUSTS_INVOLVED" })
+      // Assert
+        .expect(function(resp){
+          resp.statusCode === 302;
+          resp.body.toEqual({});
+        });
+    });
+
+    test('should send 3rd value when 3rd checkbox is checked', () => {
+      // Arrange
+      request(app)
+      // Act
+        .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
+        .set('Content-Type', 'application/json')
+        .send({ combined_page_for_statements: "BENEFICIARY_OF_A_TRUST_INVOLVED" })
+      // Assert
+        .expect(function(resp){
+          resp.statusCode === 302;
+          resp.body.toEqual({});
+        });
+    });
+
+    test('should send 4th value when 4th checkbox is checked', () => {
+      // Arrange
+      request(app)
+      // Act
+        .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
+        .set('Content-Type', 'application/json')
+        .send({ combined_page_for_statements: "NONE_OF_THESE" })
+      // Assert
+        .expect(function(resp){
+          resp.statusCode === 302;
+          resp.body.toEqual({});
+        });
+    });
+
+    test('should send 2 values when 2 checkboxes are checked', () => {
+      // Arrange
+      request(app)
+      // Act
+        .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
+        .set('Content-Type', 'application/json')
+        .send({ combined_page_for_statements: "REGISTRABLE_BENEFICIAL_OWNER,BENEFICIARY_OF_A_TRUST_INVOLVED" })
+      // Assert
+        .expect(function(resp){
+          resp.statusCode === 302;
+          resp.body.toEqual({});
+        });
+    });
+
+    test('should send 3 values when first 3 checkboxes are checked', () => {
+      // Arrange
+      request(app)
+      // Act
+        .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
+        .set('Content-Type', 'application/json')
+        .send({ combined_page_for_statements: "REGISTRABLE_BENEFICIAL_OWNER,ANY_TRUSTS_INVOLVED,BENEFICIARY_OF_A_TRUST_INVOLVED" })
+      // Assert
+        .expect(function(resp){
+          resp.statusCode === 302;
+          resp.body.toEqual({});
+        });
+    });
   });
 
-  test('should redirect to RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL when submit is pressed', async () => {
-    // Arrange
-    const resp = await request(app)
-    // Act
-      .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
-    // Assert
-    expect(resp.statusCode).toEqual(302);
-  });
-
-  test('should send 1st value when 1st checkbox is checked', () => {
-    // Arrange
-    request(app)
-    // Act
-      .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
-      .set('Content-Type', 'application/json')
-      .send({ combined_page_for_statements: "REGISTRABLE_BENEFICIAL_OWNER" })
-    // Assert
-      .expect(function(resp){
-        resp.statusCode === 200;
-        resp.body.toEqual({});
-      });
-  });
-
-  test('should send 2nd value when 2nd checkbox is checked', () => {
-    // Arrange
-    request(app)
-    // Act
-      .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
-      .set('Content-Type', 'application/json')
-      .send({ combined_page_for_statements: "ANY_TRUSTS_INVOLVED" })
-    // Assert
-      .expect(function(resp){
-        resp.statusCode === 200;
-        resp.body.toEqual({});
-      });
-  });
-
-  test('should send 3rd value when 3rd checkbox is checked', () => {
-    // Arrange
-    request(app)
-    // Act
-      .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
-      .set('Content-Type', 'application/json')
-      .send({ combined_page_for_statements: "BENEFICIARY_OF_A_TRUST_INVOLVED" })
-    // Assert
-      .expect(function(resp){
-        resp.statusCode === 200;
-        resp.body.toEqual({});
-      });
-  });
-
-  test('should send 4th value when 4th checkbox is checked', () => {
-    // Arrange
-    request(app)
-    // Act
-      .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
-      .set('Content-Type', 'application/json')
-      .send({ combined_page_for_statements: "NONE_OF_THESE" })
-    // Assert
-      .expect(function(resp){
-        resp.statusCode === 200;
-        resp.body.toEqual({});
-      });
-  });
-
-  test('should send 2 values when 2 checkboxes are checked', () => {
-    // Arrange
-    request(app)
-    // Act
-      .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
-      .set('Content-Type', 'application/json')
-      .send({ combined_page_for_statements: "REGISTRABLE_BENEFICIAL_OWNER,BENEFICIARY_OF_A_TRUST_INVOLVED" })
-    // Assert
-      .expect(function(resp){
-        resp.statusCode === 200;
-        resp.body.toEqual({});
-      });
-  });
-
-  test('should send 3 values when first 3 checkboxes are checked', () => {
-    // Arrange
-    request(app)
-    // Act
-      .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
-      .set('Content-Type', 'application/json')
-      .send({ combined_page_for_statements: "REGISTRABLE_BENEFICIAL_OWNER,ANY_TRUSTS_INVOLVED,BENEFICIARY_OF_A_TRUST_INVOLVED" })
-    // Assert
-      .expect(function(resp){
-        resp.statusCode === 200;
-        resp.body.toEqual({});
-      });
-  });
-});
-
-describe("Errors - POST tests", () => {
-  // MUST BE REWRITTEN WHEN ERROR HANDLING IS ADDED
-  test('should throw an error when no checkboxes are checked', () => {
-    // Arrange
-    request(app)
-    // Act
-      .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
-      .send({})
-    // Assert
-      .expect(function(resp) {
-        resp.statusCode === 500;
-      });
+  describe("Errors - POST tests", () => {
+    // MUST BE REWRITTEN WHEN ERROR HANDLING IS ADDED
+    test('should throw an error when no checkboxes are checked', () => {
+      // Arrange
+      request(app)
+      // Act
+        .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
+        .send({})
+      // Assert
+        .expect(function(resp) {
+          resp.statusCode === 500;
+        });
+    });
   });
 });

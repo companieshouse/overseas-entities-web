@@ -1,9 +1,3 @@
-import {
-  ChangeBeneficiaryRelevantPeriodKey, ChangeBeneficiaryRelevantPeriodType,
-  ChangeBoRelevantPeriodKey, ChangeBoRelevantPeriodType,
-  TrusteeInvolvedRelevantPeriodKey, TrusteeInvolvedRelevantPeriodType
-} from "../../../src/model/relevant.period.statment.model";
-
 jest.mock("ioredis");
 jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/middleware/authentication.middleware');
@@ -40,8 +34,6 @@ import { companyAuthentication } from "../../../src/middleware/company.authentic
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
-import { yesNoResponse } from "../../../src/model/data.types.model";
-import { OwnedLandKey } from "../../../src/model/update.type.model";
 
 const mockHasUpdatePresenter = hasUpdatePresenter as jest.Mock;
 mockHasUpdatePresenter.mockImplementation((req: Request, res: Response, next: NextFunction) => next());

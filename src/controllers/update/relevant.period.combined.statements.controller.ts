@@ -8,12 +8,12 @@ import { getRegistrationDate } from "../../utils/update/relevant.period";
 import { InputDate, OverseasEntityKey, Transactionkey } from "../../model/data.types.model";
 import {
   RelevantPeriodStatementsKey,
-  RelevantPeriodStatementOneKey,
-  RelevantPeriodStatementTwoKey,
-  RelevantPeriodStatementThreeKey,
-  RelevantPeriodStatementOne,
-  RelevantPeriodStatementTwo,
-  RelevantPeriodStatementThree
+  ChangeBoRelevantPeriodKey,
+  TrusteeInvolvedRelevantPeriodKey,
+  ChangeBeneficiaryRelevantPeriodKey,
+  ChangeBoRelevantPeriodType,
+  TrusteeInvolvedRelevantPeriodType,
+  ChangeBeneficiaryRelevantPeriodType
 } from "../../model/relevant.period.statment.model";
 import { saveAndContinue } from "../../utils/save.and.continue";
 import { Session } from "@companieshouse/node-session-handler";
@@ -53,9 +53,9 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         appData[OverseasEntityKey] = await createOverseasEntity(req, session, transactionID, true);
       }
       if (appData.update) {
-        appData.update[RelevantPeriodStatementOneKey] = statements.includes(RelevantPeriodStatementOneKey) ? RelevantPeriodStatementOne.YES : RelevantPeriodStatementOne.NO;
-        appData.update[RelevantPeriodStatementTwoKey] = statements.includes(RelevantPeriodStatementTwoKey) ? RelevantPeriodStatementTwo.YES : RelevantPeriodStatementTwo.NO;
-        appData.update[RelevantPeriodStatementThreeKey] = statements.includes(RelevantPeriodStatementThreeKey) ? RelevantPeriodStatementThree.YES : RelevantPeriodStatementThree.NO;
+        appData.update[ChangeBoRelevantPeriodKey] = statements.includes(ChangeBoRelevantPeriodKey) ? ChangeBoRelevantPeriodType.YES : ChangeBoRelevantPeriodType.NO;
+        appData.update[TrusteeInvolvedRelevantPeriodKey] = statements.includes(TrusteeInvolvedRelevantPeriodKey) ? TrusteeInvolvedRelevantPeriodType.YES : TrusteeInvolvedRelevantPeriodType.NO;
+        appData.update[ChangeBeneficiaryRelevantPeriodKey] = statements.includes(ChangeBeneficiaryRelevantPeriodKey) ? ChangeBeneficiaryRelevantPeriodType.YES : ChangeBeneficiaryRelevantPeriodType.NO;
       }
       setExtraData(session, appData);
       await saveAndContinue(req, session, false);

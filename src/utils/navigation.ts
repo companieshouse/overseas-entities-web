@@ -120,7 +120,7 @@ export const NAVIGATION: Navigation = {
   [config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL]: {
     currentPage: config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL,
     previousPage: () => config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL,
-    nextPage: []
+    nextPage: [config.UPDATE_FILING_DATE_URL]
   },
   [config.WHO_IS_MAKING_UPDATE_URL]: {
     currentPage: config.WHO_IS_MAKING_UPDATE_PAGE,

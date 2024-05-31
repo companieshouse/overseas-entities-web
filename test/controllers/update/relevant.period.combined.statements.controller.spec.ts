@@ -6,6 +6,7 @@ jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/feature.flag');
+jest.mock('../../../src/service/overseas.entities.service');
 
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
@@ -28,7 +29,7 @@ import { companyAuthentication } from "../../../src/middleware/company.authentic
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
-// import { CombinedStatementPageKey } from "../../../src/model/update.type.model";
+import { updateOverseasEntity } from "../../../src/service/overseas.entities.service";
 
 const mockHasUpdatePresenter = hasUpdatePresenter as jest.Mock;
 mockHasUpdatePresenter.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
@@ -46,6 +47,8 @@ const mockGetApplicationData = getApplicationData as jest.Mock;
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue(true);
+
+const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
 
 describe("Combined Statements Page tests", () => {
 
@@ -84,36 +87,37 @@ describe("Combined Statements Page tests", () => {
 });
 
 describe("POST tests", () => {
-  test(`renders the ${config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL} page when 1st statement is checked`, async () => {
+  test(`renders the ${config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL} page when 1st statement is checked`, async () => {
+    mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
     const resp = await request(app)
       .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
-      .send({ combined_page_for_statements: "REGISTRABLE_BENEFICIAL_OWNER" });
+      .send({ combined_page_for_statements: "change_bo_relevant_period" });
 
     expect(resp.status).toEqual(302);
-    expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
+    expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL);
   });
-  test(`renders the ${config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL} page when 2nd statement is checked`, async () => {
+  test(`renders the ${config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL} page when 2nd statement is checked`, async () => {
     const resp = await request(app)
       .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
-      .send({ combined_page_for_statements: "ANY_TRUSTS_INVOLVED" });
+      .send({ combined_page_for_statements: "trustee_involved_relevant_period" });
 
     expect(resp.status).toEqual(302);
-    expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
+    expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL);
   });
-  test(`renders the ${config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL} page when 3rd statement is checked`, async () => {
+  test(`renders the ${config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL} page when 3rd statement is checked`, async () => {
     const resp = await request(app)
       .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
-      .send({ combined_page_for_statements: "BENEFICIARY_OF_A_TRUST_INVOLVED" });
+      .send({ combined_page_for_statements: "change_beneficiary_relevant_period" });
 
     expect(resp.status).toEqual(302);
-    expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
+    expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL);
   });
-  test(`renders the ${config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL} page when 'none of these' is checked`, async () => {
+  test(`renders the ${config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL} page when 'none of these' is checked`, async () => {
     const resp = await request(app)
       .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
-      .send({ combined_page_for_statements: "NONE_OF_THESE" });
+      .send({ combined_page_for_statements: "none_of_these" });
 
     expect(resp.status).toEqual(302);
-    expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
+    expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL);
   });
 });

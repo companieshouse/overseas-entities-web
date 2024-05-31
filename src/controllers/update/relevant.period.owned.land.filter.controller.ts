@@ -4,7 +4,7 @@ import { logger } from "../../utils/logger";
 import * as config from "../../config";
 import { ApplicationData } from "../../model";
 import { getApplicationData } from "../../utils/application.data";
-import { OwnedLandKey } from "../../model/relevant.period.type.model";
+import { OwnedLandKey } from "../../model/update.type.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -27,10 +27,9 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE}`);
     const ownedLandKey = req.body[OwnedLandKey];
-    // TODO: store ownedLandKey in ApplicationData and turn on questions about the relevant period.
 
     if (ownedLandKey === '1') {
-      return res.redirect(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL); // redirect to interrupt screen
+      return res.redirect(config.RELEVANT_PERIOD_INTERRUPT_URL);
     } else {
       return res.redirect(config.UPDATE_FILING_DATE_URL);
     }

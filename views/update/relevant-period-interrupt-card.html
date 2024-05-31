@@ -1,0 +1,41 @@
+{% extends "update-layout.html" %}
+
+{% set title = "New information needed as part of update statement " %}
+
+{% block pageTitle %}
+{% include "includes/update-page-title.html" %}
+{% endblock %}
+
+{% block backLink %}
+{% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <div class="interrupt-card">
+            <h1 class="govuk-heading-l"> New information needed as part of this update statement </h1>
+            <p class="govuk-body">
+                You've told us that <strong>{{ entity_name }} </strong> was the registered owner of UK property or land during the pre-registration period. </p>
+            <p class="govuk-body">
+                As part of this update statement, you'll need to tell us if the entity had any of the following during the pre-registration period, that it has not already told us about:
+            </p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>registrable beneficial owners</li>
+                <li>trusts involved in the entity</li>
+                <li>beneficiaries of a trust involved in the entity</li>
+            </ul>
+            <p class="govuk-body">
+                This is a new legal requirement so that we can understand who was involved in the entities that owned UK property or land when the Economic Crime and Transparency Bill came into force (28 February 2022).
+            </p>
+            <div class="govuk-inset-text">
+                {% include "includes/page-templates/relevant-period.html" %}
+            </div>
+
+            <form method="post">
+                {% include "includes/update-start-goal-button.html" %}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

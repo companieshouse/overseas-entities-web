@@ -35,6 +35,8 @@ export enum ErrorMessages {
   LEGAL_ENTITY_BO_NAME = "Enter its name",
   ENTITY_CORRESPONDENCE_ADDRESS = "Enter their correspondence address",
   START_DATE_MUST_BE_AFTER_DOB = "Start date must be on or after date of birth",
+  UNABLE_TO_RETRIEVE_ENTITY_NUMBER = "Unable to retrieve entity number",
+  UNABLE_TO_RETRIEVE_EXPECTED_DATE = "Unable to retrieve the entity's expected date",
 
   // Public Register
   PUBLIC_REGISTER_NAME = "Enter the name of the register",
@@ -177,6 +179,7 @@ export enum ErrorMessages {
   START_DATE_BEFORE_FILING_DATE = "Start date must be before or on the date of the update statement",
   CEASED_DATE_BEFORE_FILING_DATE = "Ceased date must be before or on the date of the update statement",
   RESIGNED_ON_BEFORE_FILING_DATE = "Resigned on date must be before or on the date of the update statement",
+  DATE_AFTER_MADE_UP_TO_DATE = "The date you provide must be on or before %s",
 
   // No radio selected
   SELECT_IF_ENTITY_HAS_SOLD_LAND = "Select yes if the entity has disposed of UK property or land since 28 February 2022",
@@ -213,7 +216,7 @@ export enum ErrorMessages {
   SELECT_DO_YOU_WANT_TO_MAKE_CHANGES_UPDATE_STATEMENT = "Select yes if all the information in this update statement is correct",
   SELECT_DO_YOU_WANT_TO_MAKE_CHANGES_REMOVE_STATEMENT = "Select yes if all the information in this application is correct",
   SELECT_UPDATE_STATEMENT_VALIDATION_RESOLUTION = "Select if you want to change your statements or change the information provided in this update",
-  SELECT_IF_REMOVE_SOLD_ALL_LAND_FILTER = "Select yes if the entity has disposed of all its property or land in the UK",
+  SELECT_IF_REMOVE_SOLD_ALL_LAND_FILTER = "Select yes if the overseas entity has disposed of all relevant property or land in the UK",
   SELECT_REMOVE_DO_YOU_WANT_TO_MAKE_OE_CHANGE = "Select yes if you need to make any changes to this overseas entity before it is removed",
   SELECT_TO_CONFIRM_REMOVE_STATEMENT = "Select the removal statement",
 

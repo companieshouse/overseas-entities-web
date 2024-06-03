@@ -6,6 +6,7 @@ import { ApplicationData } from "../../model";
 import { getApplicationData } from "../../utils/application.data";
 import { getRegistrationDate } from "../../utils/update/relevant.period";
 import { InputDate } from "../../model/data.types.model";
+import { CombinedStatementPageKey } from "../../model/update.type.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -28,9 +29,9 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE}`);
     // Should store checked checkbox values in array
-    const pageData = Object.values(req.body.combined_page_for_statements);
+    const pageData = req.body[CombinedStatementPageKey];
     // Checks for any statement other than 'None of these'
-    const hasSelectedStatement = pageData.some(option => option !== "NONE_OF_THESE");
+    const hasSelectedStatement = !pageData.includes("NONE_OF_THESE");
 
     if (hasSelectedStatement) {
       // One or more checkboxes other than 'None of these' was checked

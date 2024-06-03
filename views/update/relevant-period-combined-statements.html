@@ -23,8 +23,8 @@
         <form method="post">
         {{ govukCheckboxes({
         errorMessage: errors.combined_page_for_statements if errors,
-        idPrefix: "combined_page_for_statements",
-        name: "combined_page_for_statements",
+        idPrefix: "relevant_period_combined_statements",
+        name: "relevant_period_combined_statements",
         fieldset: {
         legend: {
         text: "The overseas entity has reasonable cause to believe that during the pre-registration period:",
@@ -34,7 +34,7 @@
         },
         hint: {
         text: "Select all that apply"
-        }, 
+        },
         items:
         [
         {

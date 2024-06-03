@@ -83,6 +83,7 @@
             label: 'When did this trust stop being associated with the overseas entity?',
             hint: "For example, 27 3 2007. This trust's information must be correct to this date.",
             error: errors.ceasedDate if errors,
+            classes: "govuk-fieldset__legend--s",
             value: {
               'Day': formData.ceasedDateDay,
               'Month': formData.ceasedDateMonth,

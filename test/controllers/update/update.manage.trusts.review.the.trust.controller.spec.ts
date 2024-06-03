@@ -179,6 +179,112 @@ describe('Update - Manage Trusts - Review the trust', () => {
   });
 
   describe('POST tests', () => {
+
+    const ceasedDateScenarioFixtures = [
+      [
+        "missing ceased date DAY error message",
+        {
+          ceasedDateMonth: "11",
+          ceasedDateYear: "2021"
+        },
+        ErrorMessages.DAY_OF_CEASED_TRUST
+      ],
+      [
+        "missing ceased date MONTH error message",
+        {
+          ceasedDateDay: "11",
+          ceasedDateYear: "2021"
+        },
+        ErrorMessages.MONTH_OF_CEASED_TRUST
+      ],
+      [
+        "missing ceased date YEAR error message",
+        {
+          ceasedDateDay: "11",
+          ceasedDateMonth: "5"
+        },
+        ErrorMessages.YEAR_OF_CEASED_TRUST
+      ],
+      [
+        "invalid ceased date YEAR length error message",
+        {
+          ceasedDateDay: "11",
+          ceasedDateMonth: "5",
+          ceasedDateYear: "21"
+        },
+        ErrorMessages.YEAR_LENGTH_OF_CEASED_TRUST
+      ],
+      [
+        "invalid ceased date DAY length error message",
+        {
+          ceasedDateDay: "111",
+          ceasedDateMonth: "5",
+          ceasedDateYear: "21"
+        },
+        ErrorMessages.DAY_LENGTH_OF_CEASED_TRUST
+      ],
+      [
+        "invalid ceased date MONTH length error message",
+        {
+          ceasedDateDay: "11",
+          ceasedDateMonth: "544",
+          ceasedDateYear: "21"
+        },
+        ErrorMessages.MONTH_LENGTH_OF_CEASED_TRUST
+      ],
+      [
+        "invalid ceased date error message",
+        {
+          ceasedDateDay: "31",
+          ceasedDateMonth: "2",
+          ceasedDateYear: "2023"
+        },
+        ErrorMessages.INVALID_DATE_OF_CEASED_TRUST
+      ],
+      [
+        "future ceased date error message",
+        {
+          ceasedDateDay: "11",
+          ceasedDateMonth: "2",
+          ceasedDateYear: "9024"
+        },
+        ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY_OF_CEASED_TRUST
+      ],
+      [
+        "day and month ceased date missing error message",
+        {
+          ceasedDateYear: "2023"
+        },
+        ErrorMessages.DAY_AND_MONTH_OF_CEASED_TRUST
+      ],
+      [
+        "month and year ceased date missing error message",
+        {
+          ceasedDateDay: "23"
+        },
+        ErrorMessages.MONTH_AND_YEAR_OF_CEASED_TRUST
+      ],
+      [
+        "day and year ceased date missing error message",
+        {
+          ceasedDateMonth: "11"
+        },
+        ErrorMessages.DAY_AND_YEAR_OF_CEASED_TRUST
+      ],
+      [
+        "ceased date must not be before creation date error message",
+        {
+          createdDateDay: "11",
+          createdDateMonth: "2",
+          createdDateYear: "2000",
+          ceasedDateDay: "10",
+          ceasedDateMonth: "2",
+          ceasedDateYear: "2000"
+        },
+        ErrorMessages.TRUST_CEASED_DATE_BEFORE_CREATED_DATE
+      ]
+    ];
+
     test('when update manage trusts feature flag is on, redirect to review former bo page', async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
 
@@ -285,111 +391,8 @@ describe('Update - Manage Trusts - Review the trust', () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-    // Test the trust ceased date validation combinations
-    test.each([
-      [
-        "missing ceased date DAY error message",
-        {
-          ceasedDateMonth: "11",
-          ceasedDateYear: "2021"
-        },
-        ErrorMessages.DAY_OF_CEASED_TRUST
-      ],
-      [
-        "missing ceased date MONTH error message",
-        {
-          ceasedDateDay: "11",
-          ceasedDateYear: "2021"
-        },
-        ErrorMessages.MONTH_OF_CEASED_TRUST
-      ],
-      [
-        "missing ceased date YEAR error message",
-        {
-          ceasedDateDay: "11",
-          ceasedDateMonth: "5"
-        },
-        ErrorMessages.YEAR_OF_CEASED_TRUST
-      ],
-      [
-        "invalid ceased date YEAR length error message",
-        {
-          ceasedDateDay: "11",
-          ceasedDateMonth: "5",
-          ceasedDateYear: "21"
-        },
-        ErrorMessages.YEAR_LENGTH_OF_CEASED_TRUST
-      ],
-      [
-        "invalid ceased date DAY length error message",
-        {
-          ceasedDateDay: "111",
-          ceasedDateMonth: "5",
-          ceasedDateYear: "21"
-        },
-        ErrorMessages.DAY_LENGTH_OF_CEASED_TRUST
-      ],
-      [
-        "invalid ceased date MONTH length error message",
-        {
-          ceasedDateDay: "11",
-          ceasedDateMonth: "544",
-          ceasedDateYear: "21"
-        },
-        ErrorMessages.MONTH_LENGTH_OF_CEASED_TRUST
-      ],
-      [
-        "invalid ceased date error message",
-        {
-          ceasedDateDay: "31",
-          ceasedDateMonth: "2",
-          ceasedDateYear: "2023"
-        },
-        ErrorMessages.INVALID_DATE_OF_CEASED_TRUST
-      ],
-      [
-        "future ceased date error message",
-        {
-          ceasedDateDay: "11",
-          ceasedDateMonth: "2",
-          ceasedDateYear: "9024"
-        },
-        ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY_OF_CEASED_TRUST
-      ],
-      [
-        "day and month ceased date missing error message",
-        {
-          ceasedDateYear: "2023"
-        },
-        ErrorMessages.DAY_AND_MONTH_OF_CEASED_TRUST
-      ],
-      [
-        "month and year ceased date missing error message",
-        {
-          ceasedDateDay: "23"
-        },
-        ErrorMessages.MONTH_AND_YEAR_OF_CEASED_TRUST
-      ],
-      [
-        "day and year ceased date missing error message",
-        {
-          ceasedDateMonth: "11"
-        },
-        ErrorMessages.DAY_AND_YEAR_OF_CEASED_TRUST
-      ],
-      [
-        "ceased date must not be before creation date error message",
-        {
-          createdDateDay: "11",
-          createdDateMonth: "2",
-          createdDateYear: "2000",
-          ceasedDateDay: "10",
-          ceasedDateMonth: "2",
-          ceasedDateYear: "2000"
-        },
-        ErrorMessages.TRUST_CEASED_DATE_BEFORE_CREATED_DATE
-      ]
-    ])(`renders the update-manage-trusts-review-the-trust page when no BOs have Trust nature of controls with %s`, async (_, formData, errorMessage) => {
+    // Test the trust ceased date validation combinations when no BOs have Trust nature of controls
+    test.each(ceasedDateScenarioFixtures)(`renders the update-manage-trusts-review-the-trust page when no BOs have Trust nature of controls with %s`, async (_, formData, errorMessage) => {
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS in trust.details.validation
 
@@ -407,111 +410,8 @@ describe('Update - Manage Trusts - Review the trust', () => {
       expect(resp.text).toContain(errorMessage);
     });
 
-    // Test the trust ceased date validation combinations
-    test.each([
-      [
-        "missing ceased date DAY error message",
-        {
-          ceasedDateMonth: "11",
-          ceasedDateYear: "2021",
-        },
-        ErrorMessages.DAY_OF_CEASED_TRUST
-      ],
-      [
-        "missing ceased date MONTH error message",
-        {
-          ceasedDateDay: "11",
-          ceasedDateYear: "2021"
-        },
-        ErrorMessages.MONTH_OF_CEASED_TRUST
-      ],
-      [
-        "missing ceased date YEAR error message",
-        {
-          ceasedDateDay: "11",
-          ceasedDateMonth: "5"
-        },
-        ErrorMessages.YEAR_OF_CEASED_TRUST
-      ],
-      [
-        "invalid ceased date YEAR length error message",
-        {
-          ceasedDateDay: "11",
-          ceasedDateMonth: "5",
-          ceasedDateYear: "21"
-        },
-        ErrorMessages.YEAR_LENGTH_OF_CEASED_TRUST
-      ],
-      [
-        "invalid ceased date DAY length error message",
-        {
-          ceasedDateDay: "111",
-          ceasedDateMonth: "5",
-          ceasedDateYear: "21"
-        },
-        ErrorMessages.DAY_LENGTH_OF_CEASED_TRUST
-      ],
-      [
-        "invalid ceased date MONTH length error message",
-        {
-          ceasedDateDay: "11",
-          ceasedDateMonth: "544",
-          ceasedDateYear: "21"
-        },
-        ErrorMessages.MONTH_LENGTH_OF_CEASED_TRUST
-      ],
-      [
-        "invalid ceased date error message",
-        {
-          ceasedDateDay: "31",
-          ceasedDateMonth: "2",
-          ceasedDateYear: "2023"
-        },
-        ErrorMessages.INVALID_DATE_OF_CEASED_TRUST
-      ],
-      [
-        "future ceased date error message",
-        {
-          ceasedDateDay: "11",
-          ceasedDateMonth: "2",
-          ceasedDateYear: "9024"
-        },
-        ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY_OF_CEASED_TRUST
-      ],
-      [
-        "day and month ceased date missing error message",
-        {
-          ceasedDateYear: "2023"
-        },
-        ErrorMessages.DAY_AND_MONTH_OF_CEASED_TRUST
-      ],
-      [
-        "month and year ceased date missing error message",
-        {
-          ceasedDateDay: "23"
-        },
-        ErrorMessages.MONTH_AND_YEAR_OF_CEASED_TRUST
-      ],
-      [
-        "day and year ceased date missing error message",
-        {
-          ceasedDateMonth: "11"
-        },
-        ErrorMessages.DAY_AND_YEAR_OF_CEASED_TRUST
-      ],
-      [
-        "ceased date must not be before creation date error message",
-        {
-          createdDateDay: "11",
-          createdDateMonth: "2",
-          createdDateYear: "2000",
-          ceasedDateDay: "10",
-          ceasedDateMonth: "2",
-          ceasedDateYear: "2000"
-        },
-        ErrorMessages.TRUST_CEASED_DATE_BEFORE_CREATED_DATE
-      ]
-    ])(`renders the update-manage-trusts-review-the-trust page when trust no longer involved with the OE with %s`, async (_, formData, errorMessage) => {
+    // Test the trust ceased date validation combinations when trust no longer involved with the OE
+    test.each(ceasedDateScenarioFixtures)(`renders the update-manage-trusts-review-the-trust page when trust no longer involved with the OE with %s`, async (_, formData, errorMessage) => {
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS in trust.details.validation
 

@@ -132,6 +132,7 @@ describe('Trust Details page Mapper Service', () => {
       hasAllInfo: '0',
     } as Page.TrustDetailsForm;
 
+    // Example form data when trust is being ceased due to no assignable BOs:
     const mockFormData3 = {
       trustId: '999',
       name: 'dummyName',
@@ -145,8 +146,33 @@ describe('Trust Details page Mapper Service', () => {
       hasAllInfo: '0',
     } as Page.TrustDetailsForm;
 
-    test('mapDetailToSession should return object (verify mapping of unable_to_obtain_all_trust_info and trust_still_involved_in_overseas_entity when false)', () => {
-      expect(mapDetailToSession(mockFormData, false, false)).toEqual({
+    // Example form data when trust is being ceased due to user selecting "No" to the "still involved?" question:
+    const mockFormData4 = {
+      trustId: '999',
+      name: 'dummyName',
+      createdDateDay: '10',
+      createdDateMonth: '08',
+      createdDateYear: '2009',
+      ceasedDateDay: '15',
+      ceasedDateMonth: '04',
+      ceasedDateYear: '2022',
+      stillInvolved: '0',
+      hasAllInfo: '0',
+    } as Page.TrustDetailsForm;
+
+    // Example form data when there is no user response to the "still involved?" question:
+    const mockFormData5 = {
+      trustId: '999',
+      name: 'dummyName',
+      createdDateDay: '05',
+      createdDateMonth: '12',
+      createdDateYear: '2020',
+      stillInvolved: null as unknown as String,
+      hasAllInfo: '0',
+    } as Page.TrustDetailsForm;
+
+    test('mapDetailToSession should return object (verify mappings when no BOs assignable to trust and trust no longer involved in the OE)', () => {
+      expect(mapDetailToSession(mockFormData, false)).toEqual({
         trust_id: mockFormData.trustId,
         trust_name: mockFormData.name,
         creation_date_day: mockFormData.createdDateDay,
@@ -160,8 +186,8 @@ describe('Trust Details page Mapper Service', () => {
       });
     });
 
-    test('mapDetailToSession should return object (verify mapping of unable_to_obtain_all_trust_info and trust_still_involved_in_overseas_entity when true)', () => {
-      expect(mapDetailToSession(mockFormData2, false, true)).toEqual({
+    test('mapDetailToSession should return object (verify mappings when no BOs assignable to trust and trust is still involved in the OE)', () => {
+      expect(mapDetailToSession(mockFormData2, false)).toEqual({
         trust_id: mockFormData2.trustId,
         trust_name: mockFormData2.name,
         creation_date_day: mockFormData2.createdDateDay,
@@ -175,8 +201,8 @@ describe('Trust Details page Mapper Service', () => {
       });
     });
 
-    test('mapDetailToSession should return object including ceased date when trust is to be ceased is true', () => {
-      expect(mapDetailToSession(mockFormData3, true, true)).toEqual({
+    test('mapDetailToSession should return object including ceased date when trust is being ceased due to no assignable BOs', () => {
+      expect(mapDetailToSession(mockFormData3, true)).toEqual({
         trust_id: mockFormData3.trustId,
         trust_name: mockFormData3.name,
         creation_date_day: mockFormData3.createdDateDay,
@@ -190,17 +216,32 @@ describe('Trust Details page Mapper Service', () => {
       });
     });
 
-    test('mapDetailToSession should return object including ceased date when trust still involved is false', () => {
-      expect(mapDetailToSession(mockFormData3, false, false)).toEqual({
-        trust_id: mockFormData3.trustId,
-        trust_name: mockFormData3.name,
-        creation_date_day: mockFormData3.createdDateDay,
-        creation_date_month: mockFormData3.createdDateMonth,
-        creation_date_year: mockFormData3.createdDateYear,
-        ceased_date_day: mockFormData3.ceasedDateDay,
-        ceased_date_month: mockFormData3.ceasedDateMonth,
-        ceased_date_year: mockFormData3.ceasedDateYear,
+    test('mapDetailToSession should return object including ceased date when trust is being ceased due to user "still involved?" question response', () => {
+      expect(mapDetailToSession(mockFormData4, false)).toEqual({
+        trust_id: mockFormData4.trustId,
+        trust_name: mockFormData4.name,
+        creation_date_day: mockFormData4.createdDateDay,
+        creation_date_month: mockFormData4.createdDateMonth,
+        creation_date_year: mockFormData4.createdDateYear,
+        ceased_date_day: mockFormData4.ceasedDateDay,
+        ceased_date_month: mockFormData4.ceasedDateMonth,
+        ceased_date_year: mockFormData4.ceasedDateYear,
         trust_still_involved_in_overseas_entity: "No",
+        unable_to_obtain_all_trust_info: "Yes",
+      });
+    });
+
+    test('mapDetailToSession should return object (verify mappings when there is no user response to the "still involved?" question)', () => {
+      expect(mapDetailToSession(mockFormData5, false)).toEqual({
+        trust_id: mockFormData5.trustId,
+        trust_name: mockFormData5.name,
+        creation_date_day: mockFormData5.createdDateDay,
+        creation_date_month: mockFormData5.createdDateMonth,
+        creation_date_year: mockFormData5.createdDateYear,
+        ceased_date_day: undefined,
+        ceased_date_month: undefined,
+        ceased_date_year: undefined,
+        trust_still_involved_in_overseas_entity: null,
         unable_to_obtain_all_trust_info: "Yes",
       });
     });

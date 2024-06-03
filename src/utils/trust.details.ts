@@ -159,11 +159,8 @@ export const postTrustDetails = async (req: Request, res: Response, next: NextFu
       return res.render(pageProps.templateName, pageProps);
     }
 
-    const isTrustToBeCeased = hasNoBoAssignableToTrust(appData);
-    const isTrustStillInvolved = formData.stillInvolved !== "0";
-
     //  map form data to session trust data
-    const details = mapperDetails.mapDetailToSession(req.body, isTrustToBeCeased, isTrustStillInvolved);
+    const details = mapperDetails.mapDetailToSession(req.body, hasNoBoAssignableToTrust(appData));
     if (!details.trust_id) {
       details.trust_id = mapperDetails.generateTrustId(appData);
     }

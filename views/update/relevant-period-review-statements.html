@@ -50,7 +50,7 @@
         {% if update.trustee_involved_relevant_period === "TRUSTEE_INVOLVED_RELEVANT_PERIOD" %}
             <p class="govuk-body">The entity <strong>has reasonable cause</strong> to believe that <strong>at least one person became or ceased to be a registrable beneficial owner due to being a trustee of a trust</strong> during the pre-registration period, that it has not already provided information about.</p>
             {{ govukInsetText({
-                text: "We’ll ask you to provide information about any additional beneficial owners later in the service."
+                text: "We’ll ask you to provide information about any additional trusts later in the service."
             }) }}
         {% else %}
             <p class="govuk-body">The entity has <strong>no reasonable cause</strong> to believe that there were <strong>any trusts involved</strong> in the overseas entity during the pre-registration period, that it has not already provided information about.</p>
@@ -61,9 +61,9 @@
         <h2 class="govuk-heading-m">Beneficiaries statement</h2>
 
         {% if update.change_beneficiary_relevant_period === "CHANGE_BENEFICIARY_RELEVANT_PERIOD" %}
-            <p class="govuk-body">The entity has <strong>reasonable cause</strong> to believe that <strong>at least one person became or ceased to be a beneficiary of a trust</strong> involved in the overseas entity during the pre-registration period, that it has not already provided information about.</p>
+            <p class="govuk-body">The entity <strong>has reasonable cause</strong> to believe that <strong>at least one person became or ceased to be a beneficiary of a trust</strong> involved in the overseas entity during the pre-registration period, that it has not already provided information about.</p>
             {{ govukInsetText({
-                text: "We’ll ask you to provide information about any additional beneficial owners later in the service."
+                text: "We’ll ask you to provide information about any additional beneficiaries later in the service."
             }) }}
         {% else %}
             <p class="govuk-body">The entity has <strong>no reasonable cause</strong> to believe that <strong>anyone became or ceased to be a beneficiary of a trust</strong> involved in the overseas entity during the pre-registration period, that it has not already provided information about.</p>

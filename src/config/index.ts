@@ -96,6 +96,7 @@ export const STARTING_NEW_PAGE = "starting-new";
 export const PAYMENT_FAILED_PAGE = "payment-failed";
 export const RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE = "relevant-period-owned-land-filter";
 export const RELEVANT_PERIOD_INTERRUPT_PAGE = "relevant-period-interrupt-card";
+export const RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE = "relevant-period-combined-statements";
 export const TRUST_DETAILS_PAGE = "trust-details";
 export const TRUST_INVOLVED_PAGE = "trust-involved";
 export const TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE = "trust-historical-beneficial-owner";
@@ -309,6 +310,7 @@ export const UPDATE_STATEMENT_VALIDATION_ERRORS_URL = UPDATE_AN_OVERSEAS_ENTITY_
 export const UPDATE_PAYMENT_FAILED_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + PAYMENT_FAILED_PAGE;
 export const RELEVANT_PERIOD_OWNED_LAND_FILTER_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE;
 export const RELEVANT_PERIOD_INTERRUPT_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + RELEVANT_PERIOD_INTERRUPT_PAGE;
+export const RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE;
 
 // REMOVE overseas entity routes
 export const REMOVE_SECTION = "remove/";

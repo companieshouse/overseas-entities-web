@@ -98,6 +98,7 @@ export * as updatePaymentFailed from './update/update.payment.failed.controller'
 export * as updateManageTrustsTellUsAboutTheLegalEntity from './update/update.manage.trusts.tell.us.about.the.legal.entity.controller';
 export * as relevantPeriodOwnedLandFilter from './update/relevant.period.owned.land.filter.controller';
 export * as relevantPeriodInterrupt from './update/relevant.period.interrupt.card.controller';
+export * as relevantPeriodCombinedStatements from './update/relevant.period.combined.statements.controller';
 
 // REMOVE controllers
 export * as removeSoldAllLandFilter from './update/remove.sold.all.land.filter.controller';

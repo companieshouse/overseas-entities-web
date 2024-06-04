@@ -171,7 +171,7 @@ describe('Trust Details page Mapper Service', () => {
       hasAllInfo: '0',
     } as Page.TrustDetailsForm;
 
-    // Example form data when "still involved?" question is not present on the form:
+    // Example form data when the "still involved?" question is not present on the form:
     const mockFormData6 = {
       trustId: '999',
       name: 'dummyName',

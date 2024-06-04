@@ -20,7 +20,7 @@
         <h1 class="govuk-heading-xl">Provide statements for the pre-registration period</h1>
         <form method="post">
         {{ govukCheckboxes({
-        errorMessage: errors.combined_page_for_statements if errors,
+        errorMessage: errors.relevant_period_combined_statements if errors,
         idPrefix: "relevant_period_combined_statements",
         name: "relevant_period_combined_statements",
         fieldset: {

@@ -68,6 +68,8 @@ import { checkEntityRequiresTrusts, getTrustLandingUrl } from '../../../src/util
 import { hasTrustsToReview, moveReviewableTrustsIntoReview, resetReviewStatusOnAllTrustsToBeReviewed } from '../../../src/utils/update/review_trusts';
 import { retrieveTrustData } from "../../../src/utils/update/trust.model.fetch";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
+import { getRegistrationDate } from "../../utils/update/relevant.period";
+import { InputDate } from "../../model/data.types.model";
 
 mockRemoveJourneyMiddleware.mockClear();
 
@@ -206,6 +208,26 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+
+    describe("Change of BO Relevant Period to review", () => {
+      test.each([
+        ['change_bo_relevant_period', "change_bo_relevant_period", BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK, RelevantPeriodStatementsKey],
+        ['review-beneficial-owner-other', "review_beneficial_owners_corporate", BENEFICIAL_OWNER_OTHER_OBJECT_MOCK, BeneficialOwnerOtherKey],
+        ['review-beneficial-owner-gov', "review_beneficial_owners_government_or_public_authority", BENEFICIAL_OWNER_GOV_OBJECT_MOCK, BeneficialOwnerGovKey],
+        ['review-individual-managing-officer', "review_managing_officers_individual", MANAGING_OFFICER_OBJECT_MOCK, ManagingOfficerKey],
+        ['review-managing-officer-corporate', "review_managing_officers_corporate", MANAGING_OFFICER_CORPORATE_OBJECT_MOCK, ManagingOfficerCorporateKey]
+      ])(`redirects to %s review page`, async (reviewType, key, mockObject, appDataBoKey) => {
+        appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
+        appData[UpdateKey] = { [key]: [mockObject] };
+
+        mockGetApplicationData.mockReturnValueOnce(appData);
+
+        const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+        expect(resp.status).toEqual(302);
+        expect(resp.text).toContain("Found. Redirecting to /update-an-overseas-entity/" + reviewType + "?index=0");
+        appData[appDataBoKey] = []; // clear popped review data as data propogates to further tests
+      });
     });
   });
 

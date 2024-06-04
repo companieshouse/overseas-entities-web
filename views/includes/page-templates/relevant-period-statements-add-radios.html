@@ -1,0 +1,40 @@
+{% set start_date = "28 February 2022" %}
+{% import "includes/date-macros.html" as dateMacros %}
+{% set registration_date = dateMacros.formatDate(dateOfCreation["day"], dateOfCreation["month"], dateOfCreation["year"]) %}
+
+<h4 class="govuk-heading-m">For the pre-registration period</h4>
+<div class="govuk-inset-text">
+    <p>Based on the pre-registration statement you provided earlier in this service, you also need to tell us about any registrable beneficial owners from this period, that the entity has not already told us about.</p>
+    <p class="govuk-body-m">
+        The pre-registration period for {{ entity_name }} is between <strong>{{ start_date }}</strong> and <strong>{{ registration_date.trim() }}.</strong>
+    </p>
+</div>
+
+{{ govukRadios({
+    errorMessage: errors.update.relevant.period.statements if errors,
+    idPrefix: "relevant_period_statements",
+    name: "relevant_period_statements",
+    fieldset: {
+    legend: {
+    isPageHeading: true,
+    classes: "govuk-fieldset__legend--xl"
+    }
+    },
+    items: [
+    {
+    value: "individualOwner",
+    text: "Individual beneficial owner",
+    checked: individualOwner === individualOwner
+    },
+    {
+    value: "otherLegalOwner",
+    text: "Other legal entity beneficial owner",
+    checked: otherLegalOwner === otherLegalOwner
+    },
+    {
+    value: "governmentOrPublicOwner",
+    text: "Government or public authority beneficial owner",
+    checked: governmentOrPublicOwner === governmentOrPublicOwner
+    }
+]
+}) }}

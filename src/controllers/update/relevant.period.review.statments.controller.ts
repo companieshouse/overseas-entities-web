@@ -11,9 +11,6 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `GET ${config.RELEVANT_PERIOD_REVIEW_STATEMENTS_PAGE}`);
     const appData: ApplicationData = getApplicationData(req.session);
-    if (appData.update) {
-      console.log(appData);
-    }
     return res.render(config.RELEVANT_PERIOD_REVIEW_STATEMENTS_PAGE, {
       backLinkUrl: config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL,
       templateName: config.RELEVANT_PERIOD_REVIEW_STATEMENTS_PAGE,

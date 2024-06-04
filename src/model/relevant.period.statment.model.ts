@@ -1,5 +1,5 @@
 
-export const RelevantPeriodStatementsKey = "combined_page_for_statements";
+export const RelevantPeriodStatementsKey = "relevant_period_combined_statements";
 export const ChangeBoRelevantPeriodKey = "change_bo_relevant_period";
 export const TrusteeInvolvedRelevantPeriodKey = "trustee_involved_relevant_period";
 export const ChangeBeneficiaryRelevantPeriodKey = "change_beneficiary_relevant_period";

@@ -44,6 +44,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const session = req.session as Session;
 
     const appData: ApplicationData = getApplicationData(session);
+    // Store checked checkbox values in array
     const statements = req.body[RelevantPeriodStatementsKey];
 
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_SAVE_AND_RESUME)) {

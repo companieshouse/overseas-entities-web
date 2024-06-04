@@ -2,7 +2,6 @@
 {% import "includes/date-macros.html" as dateMacros %}
 {% set title = "Combined Statements Page" %}
 
-
 {% block pageTitle %}
 {% include "includes/update-page-title.html" %}
 {% endblock %}
@@ -19,12 +18,11 @@
         <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ entity_name }} - {{ entity_number }}</span>
 
         <h1 class="govuk-heading-xl">Provide statements for the pre-registration period</h1>
-
         <form method="post">
         {{ govukCheckboxes({
-        errorMessage: errors.combined_page_for_statements if errors,
-        idPrefix: "combined_page_for_statements",
-        name: "combined_page_for_statements",
+        errorMessage: errors.relevant_period_combined_statements if errors,
+        idPrefix: "relevant_period_combined_statements",
+        name: "relevant_period_combined_statements",
         fieldset: {
         legend: {
         text: "The overseas entity has reasonable cause to believe that during the pre-registration period:",

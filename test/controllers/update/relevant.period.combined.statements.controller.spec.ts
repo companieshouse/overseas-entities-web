@@ -11,7 +11,6 @@ jest.mock('../../../src/service/overseas.entities.service');
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
-
 import * as config from "../../../src/config";
 import app from "../../../src/app";
 import {
@@ -74,6 +73,7 @@ describe("Combined Statements Page tests", () => {
     expect(resp.status).toEqual(500);
     expect(resp.text).toContain(SERVICE_UNAVAILABLE);
   });
+
   test('when feature flag is off, 404 is returned', async () => {
     mockIsActiveFeature.mockReturnValueOnce(false);
     const resp = await request(app).get(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
@@ -88,33 +88,38 @@ describe("POST tests", () => {
     mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
     const resp = await request(app)
       .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
-      .send({ combined_page_for_statements: "change_bo_relevant_period" });
+      .send({ relevant_period_combined_statements: "change_bo_relevant_period" });
 
     expect(resp.status).toEqual(302);
     expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL);
   });
-  test(`renders the ${config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL} page when 2nd statement is checked`, async () => {
-    const resp = await request(app)
-      .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
-      .send({ combined_page_for_statements: "trustee_involved_relevant_period" });
 
+  test('should send redirect when anything is sent', async () => {
+    // Arrange
+    const resp = await request(app)
+      // Act
+      .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
+      .send({ relevant_period_combined_statements: "ANYTHING" });
+
+    // Assert
     expect(resp.status).toEqual(302);
     expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL);
   });
-  test(`renders the ${config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL} page when 3rd statement is checked`, async () => {
-    const resp = await request(app)
-      .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
-      .send({ combined_page_for_statements: "change_beneficiary_relevant_period" });
 
-    expect(resp.status).toEqual(302);
-    expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL);
+  test('when feature flag is off, 404 is returned', async () => {
+    mockIsActiveFeature.mockReturnValueOnce(false);
+    const resp = await request(app).post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
+
+    expect(resp.status).toEqual(404);
+    expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
   });
-  test(`renders the ${config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL} page when 'none of these' is checked`, async () => {
-    const resp = await request(app)
-      .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
-      .send({ combined_page_for_statements: "none_of_these" });
 
-    expect(resp.status).toEqual(302);
-    expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL);
+  test('page throws an error', async () => {
+    // Arrange
+    const resp = await request(app)
+      // Act
+      .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
+    // Assert
+    expect(resp.status).toEqual(500);
   });
 });

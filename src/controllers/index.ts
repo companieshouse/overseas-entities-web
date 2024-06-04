@@ -99,6 +99,7 @@ export * as updateManageTrustsTellUsAboutTheLegalEntity from './update/update.ma
 export * as relevantPeriodOwnedLandFilter from './update/relevant.period.owned.land.filter.controller';
 export * as relevantPeriodInterrupt from './update/relevant.period.interrupt.card.controller';
 export * as relevantPeriodCombinedStatements from './update/relevant.period.combined.statements.controller';
+export * as relevantPeriodReviewStatements from './update/relevant.period.review.statments.controller';
 
 // REMOVE controllers
 export * as removeSoldAllLandFilter from './update/remove.sold.all.land.filter.controller';

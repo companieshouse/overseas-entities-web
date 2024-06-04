@@ -28,6 +28,7 @@ export const TRUST_DETAILS_TEXTS = {
 type TrustDetailPageProperties = {
   backLinkUrl: string;
   templateName: string;
+  isUpdate: boolean;
   isReview?: boolean,
   pageParams: {
     title: string;
@@ -69,6 +70,7 @@ const getPageProperties = (
       beneficialOwners: boAvailableForTrust,
     },
     formData,
+    isUpdate,
     isReview,
     isFeatureFlagCeaseTrustsEnabled: isActiveFeature(config.FEATURE_FLAG_ENABLE_CEASE_TRUSTS),
     errors,

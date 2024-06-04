@@ -75,7 +75,7 @@ const mapDetailToSession = (
   let stillInvolved = (formData.stillInvolved === "1") ? "Yes" : "No";
 
   // If a boolean value isn't receieved from the web form (it could be null or undefined, e.g. if question not displayed), need to set null
-  if (formData.stillInvolved === null) {
+  if (formData.stillInvolved === null || formData.stillInvolved === undefined) {
     stillInvolved = null as unknown as string;
   }
 

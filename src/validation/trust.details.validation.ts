@@ -35,12 +35,12 @@ const setIsTrustToBeCeasedFlagOnBody = () => {
   };
 };
 
-export const checkTrustStillInvolved = (
-  req: Request
-): boolean => {
+export const checkTrustStillInvolved = (req: Request): boolean => {
   const appData: ApplicationData = getApplicationData(req.session);
 
-  return !hasNoBoAssignableToTrust(appData);
+  const isUpdateOrRemove: boolean = appData.entity_number !== undefined;
+
+  return !hasNoBoAssignableToTrust(appData) && isUpdateOrRemove;
 };
 
 export const trustDetails = [

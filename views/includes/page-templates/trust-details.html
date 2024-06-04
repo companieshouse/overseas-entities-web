@@ -76,7 +76,9 @@
         {% include "includes/inputs/date-input.html" %}
       {% endif %}
 
-      {% if not isTrustToBeCeased %}
+      {% set isUpdateOrRemoveJourney = (isUpdate or journey === "remove") %}
+
+      {% if not isTrustToBeCeased and isUpdateOrRemoveJourney %}
         {% set stillInvolvedCeasedDateHtml %}
           {% set fieldParam = {
             name: 'ceasedDate',
@@ -128,7 +130,7 @@
           ]
         }) }}
       {% endif %}
-      
+
       {% set boItems = [] %}
       {% set beneficialOwnersIds = formData.beneficialOwnersIds if formData.beneficialOwnersIds else [] %}
       {% for bo in pageData.beneficialOwners %}

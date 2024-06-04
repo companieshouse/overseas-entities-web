@@ -171,6 +171,17 @@ describe('Trust Details page Mapper Service', () => {
       hasAllInfo: '0',
     } as Page.TrustDetailsForm;
 
+    // Example form data when "still involved?" question is not present on the form:
+    const mockFormData6 = {
+      trustId: '999',
+      name: 'dummyName',
+      createdDateDay: '05',
+      createdDateMonth: '12',
+      createdDateYear: '2020',
+      stillInvolved: undefined as unknown as String,
+      hasAllInfo: '0',
+    } as Page.TrustDetailsForm;
+
     test('mapDetailToSession should return object (verify mappings when no BOs assignable to trust and trust no longer involved in the OE)', () => {
       expect(mapDetailToSession(mockFormData, false)).toEqual({
         trust_id: mockFormData.trustId,
@@ -238,6 +249,21 @@ describe('Trust Details page Mapper Service', () => {
         creation_date_day: mockFormData5.createdDateDay,
         creation_date_month: mockFormData5.createdDateMonth,
         creation_date_year: mockFormData5.createdDateYear,
+        ceased_date_day: undefined,
+        ceased_date_month: undefined,
+        ceased_date_year: undefined,
+        trust_still_involved_in_overseas_entity: null,
+        unable_to_obtain_all_trust_info: "Yes",
+      });
+    });
+
+    test('mapDetailToSession should return object (verify mappings when "still involved?" question is not present, i.e. on registration journey)', () => {
+      expect(mapDetailToSession(mockFormData6, false)).toEqual({
+        trust_id: mockFormData6.trustId,
+        trust_name: mockFormData6.name,
+        creation_date_day: mockFormData6.createdDateDay,
+        creation_date_month: mockFormData6.createdDateMonth,
+        creation_date_year: mockFormData6.createdDateYear,
         ceased_date_day: undefined,
         ceased_date_month: undefined,
         ceased_date_year: undefined,

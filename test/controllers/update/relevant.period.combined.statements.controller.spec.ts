@@ -72,6 +72,7 @@ describe("Combined Statements Page tests", () => {
     expect(resp.status).toEqual(500);
     expect(resp.text).toContain(SERVICE_UNAVAILABLE);
   });
+
   test('when feature flag is off, 404 is returned', async () => {
     mockIsActiveFeature.mockReturnValueOnce(false);
     const resp = await request(app).get(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
@@ -83,55 +84,54 @@ describe("Combined Statements Page tests", () => {
   describe("POST tests", () => {
     test('page throws an error', async () => {
       // Arrange
-      await request(app)
+      const resp = await request(app)
       // Act
-        .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
+        .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
       // Assert
-        .expect(function(resp){
-          resp.statusCode === 500;
-        });
+      expect(resp.status).toEqual(500);
     });
 
     test('should send 1st value when 1st checkbox is checked', async () => {
       // Arrange
-      await request(app)
+      const resp = await request(app)
       // Act
         .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
-        .set('Content-Type', 'application/json')
-        .send({ relevant_period_combined_statements: "REGISTRABLE_BENEFICIAL_OWNER" })
+        .send({ relevant_period_combined_statements: "REGISTRABLE_BENEFICIAL_OWNER" });
+
       // Assert
-        .expect(function(resp){
-          resp.statusCode === 302;
-          resp.headers.location.includes(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
-        });
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
     });
 
     test('should send redirect when anything is sent', async () => {
       // Arrange
-      await request(app)
+      const resp = await request(app)
         // Act
         .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
-        .set('Content-Type', 'application/json')
-        .send({ relevant_period_combined_statements: "ANYTHING" })
-        // Assert
-        .expect(function(resp){
-          resp.statusCode === 302;
-          resp.headers.location.includes(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
-        });
+        .send({ relevant_period_combined_statements: "ANYTHING" });
+
+      // Assert
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
     });
 
     test('should send 1st value when 1st checkbox is checked', async () => {
       // Arrange
-      await request(app)
+      const resp = await request(app)
         // Act
         .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
-        .set('Content-Type', 'application/json')
-        .send({ relevant_period_combined_statements: "NONE_OF_THESE" })
-        // Assert
-        .expect(function(resp){
-          resp.statusCode === 302;
-          resp.headers.location.includes(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
-        });
+        .send({ relevant_period_combined_statements: "NONE_OF_THESE" });
+
+      // Assert
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
+    });
+    test('when feature flag is off, 404 is returned', async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      const resp = await request(app).post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
+
+      expect(resp.status).toEqual(404);
+      expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
     });
   });
 });

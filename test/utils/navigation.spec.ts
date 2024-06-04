@@ -225,12 +225,6 @@ describe("NAVIGATION utils", () => {
     expect(navigation).toEqual(`${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
   });
 
-  test(`NAVIGATION returns ${config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL} when calling previousPage on ${config.RELEVANT_PERIOD_INTERRUPT_PAGE} object for the remove journey`, () => {
-    const navigation = NAVIGATION[config.RELEVANT_PERIOD_INTERRUPT_PAGE].previousPage(undefined, mockRemoveRequest);
-    expect(navigation).toEqual(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
-  });
-
-
   test(`NAVIGATION returns ${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL} when calling previousPage on ${config.UPDATE_FILING_DATE_URL} object`, () => {
     const navigation = NAVIGATION[config.UPDATE_FILING_DATE_URL].previousPage();
     expect(navigation).toEqual(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);

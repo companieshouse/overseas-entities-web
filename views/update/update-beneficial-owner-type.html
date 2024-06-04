@@ -1,25 +1,25 @@
 {% extends "update-layout.html" %}
 
 {% set bos = [{
-value: "individualOwner",
-text: "Individual beneficial owner"
-},
-{
-value: "otherLegalOwner",
-text: "Other legal entity beneficial owner"
-},
-{
-value: "governmentOrPublicOwner",
-text: "Government or public authority beneficial owner"
-},
-{
-value: "individualOfficer",
-text: "Individual managing officer"
-},
-{
-value: "corporateOfficer",
-text: "Corporate managing officer"
-}]
+    value: "individualOwner",
+    text: "Individual beneficial owner"
+  },
+  {
+    value: "otherLegalOwner",
+    text: "Other legal entity beneficial owner"
+  },
+  {
+    value: "governmentOrPublicOwner",
+    text: "Government or public authority beneficial owner"
+  },
+  {
+    value: "individualOfficer",
+    text: "Individual managing officer"
+  },
+  {
+    value: "corporateOfficer",
+    text: "Corporate managing officer"
+  }]
 %}
 
 {% set beneficial_owners_statement = "ALL_IDENTIFIED_ALL_DETAILS" %}
@@ -32,22 +32,22 @@ text: "Corporate managing officer"
 {% set entity_number = entity_number %}
 
 {% if not errors %}
-{% set hasBeneficialOwners = (beneficial_owners_individual and beneficial_owners_individual.length > 0)
-or (beneficial_owners_corporate and beneficial_owners_corporate.length > 0)
-or (beneficial_owners_government_or_public_authority and beneficial_owners_government_or_public_authority.length > 0)
-%}
+  {% set hasBeneficialOwners = (beneficial_owners_individual and beneficial_owners_individual.length > 0)
+    or (beneficial_owners_corporate and beneficial_owners_corporate.length > 0)
+    or (beneficial_owners_government_or_public_authority and beneficial_owners_government_or_public_authority.length > 0)
+  %}
 
-{% set hasManagingOfficers = (managing_officers_individual and managing_officers_individual.length > 0)
-or (managing_officers_corporate and managing_officers_corporate.length > 0)
-%}
+  {% set hasManagingOfficers = (managing_officers_individual and managing_officers_individual.length > 0)
+    or (managing_officers_corporate and managing_officers_corporate.length > 0)
+  %}
 {% endif %}
 
 {% block pageTitle %}
-{% include "includes/update-page-title.html" %}
+  {% include "includes/update-page-title.html" %}
 {% endblock %}
 
 {% block backLink %}
-{% include "includes/back-link.html" %}
+  {% include "includes/back-link.html" %}
 {% endblock %}
 
 {% set beneficialOwnerIndividualUrl = OE_CONFIGS.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL %}
@@ -61,33 +61,33 @@ or (managing_officers_corporate and managing_officers_corporate.length > 0)
 
 {% block content %}
 
-<div class="govuk-grid-row govuk-body">
-  <div class="govuk-grid-column-two-thirds">
+  <div class="govuk-grid-row govuk-body">
+    <div class="govuk-grid-column-two-thirds">
 
-    {% include "includes/list/errors.html" %}
+      {% include "includes/list/errors.html" %}
 
-    <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ entity_name }} - {{ entity_number }}</span>
-    <h1 class="govuk-heading-xl govuk-!-margin-0">{{ title }}</h1>
-    <br/>
+      <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ entity_name }} - {{ entity_number }}</span>
+      <h1 class="govuk-heading-xl govuk-!-margin-0">{{ title }}</h1>
+      <br/>
 
-    {% include "includes/managing-officer-details-summary.html" %}
+      {% include "includes/managing-officer-details-summary.html" %}
 
   </div>
 
   {% if hasExistingBosMos %}
-  <div class="govuk-grid-column-two-thirds">
-    <br/>
-    {% include "includes/list/update-review-bo-mo.html" %}
-    <br/>
-  </div>
+    <div class="govuk-grid-column-two-thirds">
+      <br/>
+        {% include "includes/list/update-review-bo-mo.html" %}
+      <br/>
+    </div>
   {% endif %}
 
   {% if hasBeneficialOwners or hasManagingOfficers %}
-  <div class="govuk-grid-column-two-thirds">
-    <br/>
-    {% include "includes/list/update-added-bo-mo.html" %}
-    <br/>
-  </div>
+    <div class="govuk-grid-column-two-thirds">
+      <br/>
+        {% include "includes/list/update-added-bo-mo.html" %}
+      <br/>
+    </div>
   {% endif %}
 
   <div class="govuk-grid-column-two-thirds">
@@ -101,18 +101,18 @@ or (managing_officers_corporate and managing_officers_corporate.length > 0)
       <button class="govuk-button govuk-button--secondary" data-module="govuk-button" id="noMoreToAdd" formaction="{{ noMoreToAddButtonAction }}" >No more <span class="govuk-visually-hidden"> {{ hiddenTextValue }} </span> to add </button>
 
       <!-- Hidden input, needed to submit the beneficial owners statement -->
-      {{ govukInput({
-      label: {
-      text: "Hidden input, needed to submit the beneficial owners statement",
-      classes: "govuk-visually-hidden"
-      },
-      id: "beneficial_owners_statement",
-      value: beneficial_owners_statement,
-      name: "beneficial_owners_statement",
-      classes: "govuk-visually-hidden"
-      }) }}
-    </form>
-  </div>
+        {{ govukInput({
+          label: {
+            text: "Hidden input, needed to submit the beneficial owners statement",
+            classes: "govuk-visually-hidden"
+          },
+          id: "beneficial_owners_statement",
+          value: beneficial_owners_statement,
+          name: "beneficial_owners_statement",
+          classes: "govuk-visually-hidden"
+        }) }}
+      </form>
+    </div>
 
 </div>
 {% endblock %}

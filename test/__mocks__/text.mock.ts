@@ -254,6 +254,14 @@ export const UPDATE_DATE_OF_UPDATE_STATEMENT_TEXT = "You can find the update sta
 export const RELEVANT_PERIOD = "The pre-registration period for <strong>Overseas Entity Name</strong> is between <strong>28 February 2022</strong> and <strong>";
 export const RELEVANT_PERIOD_OWNED_LAND = "Was the overseas entity a registered owner of UK property or land during the pre-registration period?";
 export const RELEVANT_PERIOD_INTERRUPT_CARD_TITLE = "New information needed as part of this update statement";
+export const RELEVANT_PERIOD_COMBINED_STATEMENTS_TITLE = "Provide statements for the pre-registration period";
+export const RELEVANT_PERIOD_COMBINED_STATEMENTS_TEXT = "The overseas entity has reasonable cause to believe that during the pre-registration period:";
+export const RELEVANT_PERIOD_CHANGE_BO = "at least one person became or ceased to be a registrable beneficial owner";
+export const RELEVANT_PERIOD_NO_CHANGE_BO = "anyone became or ceased to be a registrable beneficial owner";
+export const RELEVANT_PERIOD_TRUSTEE_INVOLVED = "at least one person became or ceased to be a registrable beneficial owner due to being a trustee of a trust";
+export const RELEVANT_PERIOD_NO_TRUSTEE_INVOLVED = "any trusts involved";
+export const RELEVANT_PERIOD_CHANGE_BENEFICIARY = "at least one person became or ceased to be a beneficiary of a trust";
+export const RELEVANT_PERIOD_NO_CHANGE_BENEFICIARY = "anyone became or ceased to be a beneficiary of a trust";
 
 // Remove journey
 export const REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE = "Has the overseas entity disposed of all relevant property or land in the UK?";

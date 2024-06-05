@@ -11,6 +11,7 @@ jest.mock('../../src/utils/feature.flag');
 jest.mock('../../src/middleware/service.availability.middleware');
 jest.mock('../../src/utils/url');
 
+import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction } from "express";
 import request from "supertest";
@@ -33,6 +34,7 @@ import { isActiveFeature } from '../../src/utils/feature.flag';
 import { serviceAvailabilityMiddleware } from '../../src/middleware/service.availability.middleware';
 import { getUrlWithParamsToPath } from '../../src/utils/url';
 
+mockCsrfProtectionMiddleware.mockClear();
 const MOCKED_URL = "MOCKED_URL";
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 const mockIsActiveFeature = isActiveFeature as jest.Mock;

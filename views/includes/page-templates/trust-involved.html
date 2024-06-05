@@ -170,6 +170,8 @@
       {% endif %}
 
       <form class="form" method="post">
+        {% include "includes/csrf_token.html" %}
+
         {% set fieldParam = {
           name: 'typeOfTrustee',
           label: 'Which type of individual or entity do you want to add to this trust?',

@@ -36,6 +36,7 @@
         {% endif %}
 
         <form method="post">
+          {% include "includes/csrf_token.html" %}
 
             {{ govukRadios({
           errorMessage: errors.beneficial_owners_statement if errors,

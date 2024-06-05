@@ -12,6 +12,7 @@ jest.mock("../../src/utils/url");
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
 import mockRemoveJourneyMiddleware from "../__mocks__/remove.journey.middleware.mock";
+import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
 
 import { NextFunction, Request, Response } from "express";
 import { describe, expect, jest, test, beforeEach } from "@jest/globals";
@@ -120,6 +121,7 @@ import { TrustKey } from "../../src/model/trust.model";
 import { isActiveFeature } from "../../src/utils/feature.flag";
 import { getUrlWithParamsToPath } from "../../src/utils/url";
 
+mockCsrfProtectionMiddleware.mockClear();
 mockRemoveJourneyMiddleware.mockClear();
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;

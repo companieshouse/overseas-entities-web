@@ -7,7 +7,7 @@
       <p class="govuk-caption-l govuk-!-margin-bottom-8">The agent’s details must match the information used to request the agent assurance code.</p>
 
       <form method="post">
-
+        {% include "includes/csrf_token.html" %}
         {% set identityDateLabelText = "When did the agent complete the verification checks?" %}
         {% include "includes/inputs/date/identity-date-input.html" %}
 

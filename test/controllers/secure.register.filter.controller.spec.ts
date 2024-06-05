@@ -6,6 +6,7 @@ jest.mock('../../src/middleware/navigation/has.sold.land.middleware');
 jest.mock("../../src/middleware/service.availability.middleware");
 jest.mock("../../src/middleware/navigation/remove/remove.journey.middleware");
 
+import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
@@ -34,6 +35,7 @@ import { logger } from "../../src/utils/logger";
 import { hasSoldLand } from "../../src/middleware/navigation/has.sold.land.middleware";
 import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
 
+mockCsrfProtectionMiddleware.mockClear();
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 

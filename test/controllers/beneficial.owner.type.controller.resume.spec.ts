@@ -7,6 +7,7 @@ jest.mock("../../src/utils/feature.flag" );
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
 import mockRemoveJourneyMiddleware from "../__mocks__/remove.journey.middleware.mock";
+import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
 
 import { describe, expect, test, beforeEach, jest } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
@@ -24,6 +25,7 @@ import { isActiveFeature } from "../../src/utils/feature.flag";
 import { EntityNumberKey } from '../../src/model/data.types.model';
 import { TrustKey } from '../../src/model/trust.model';
 
+mockCsrfProtectionMiddleware.mockClear();
 mockRemoveJourneyMiddleware.mockClear();
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;

@@ -14,6 +14,7 @@
     {% endif %}
 
     <form method="post">
+      {% include "includes/csrf_token.html" %} 
       {% include "includes/inputs/fields/first-name-input.html" %}
 
       {% set hintLastNameText = "This is also known as your family name." %}

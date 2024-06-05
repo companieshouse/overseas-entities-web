@@ -13,6 +13,7 @@ jest.mock('../../src/utils/trusts');
 jest.mock('../../src/utils/feature.flag');
 jest.mock('../../src/utils/url');
 
+import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
 import { constants } from 'http2';
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
@@ -46,6 +47,7 @@ import { getFormerTrusteesFromTrust, getIndividualTrusteesFromTrust } from '../.
 import { isActiveFeature } from '../../src/utils/feature.flag';
 import { getUrlWithParamsToPath } from '../../src/utils/url';
 
+mockCsrfProtectionMiddleware.mockClear();
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue(false);
 

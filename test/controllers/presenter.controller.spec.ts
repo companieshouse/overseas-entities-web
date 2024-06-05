@@ -7,6 +7,7 @@ jest.mock('../../src/utils/feature.flag');
 jest.mock('../../src/middleware/service.availability.middleware');
 jest.mock("../../src/utils/url");
 
+import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
@@ -56,6 +57,7 @@ import { getUrlWithParamsToPath } from "../../src/utils/url";
 
 const MOCKED_PAGE_URL = "/MOCKED_PAGE";
 
+mockCsrfProtectionMiddleware.mockClear();
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
 const mockHasOverseasNameMiddleware = hasOverseasName as jest.Mock;

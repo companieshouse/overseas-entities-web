@@ -7,6 +7,7 @@ export const PORT = getEnvironmentValue("PORT", "3000");
 export const CDN_HOST = getEnvironmentValue("CDN_HOST");
 export const COOKIE_SECRET = getEnvironmentValue("COOKIE_SECRET");
 export const COOKIE_DOMAIN = getEnvironmentValue("COOKIE_DOMAIN");
+export const COOKIE_NAME = getEnvironmentValue("COOKIE_NAME");
 export const DEFAULT_SESSION_EXPIRATION = getEnvironmentValue("DEFAULT_SESSION_EXPIRATION", "3600");
 export const CACHE_SERVER = getEnvironmentValue("CACHE_SERVER");
 export const PAYMENTS_API_URL = getEnvironmentValue("PAYMENTS_API_URL");

@@ -9,6 +9,7 @@ jest.mock("../../src/middleware/is.feature.enabled.middleware", () => ({
 jest.mock('../../src/utils/feature.flag');
 jest.mock('../../src/utils/url');
 
+import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
@@ -28,6 +29,7 @@ import { isActiveFeature } from "../../src/utils/feature.flag";
 import { getUrlWithParamsToPath } from "../../src/utils/url";
 import { REGISTER_AN_OVERSEAS_ENTITY_URL } from "../../src/config";
 
+mockCsrfProtectionMiddleware.mockClear();
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue(false);
 

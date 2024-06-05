@@ -6,7 +6,9 @@
     <h1 class="govuk-heading-xl govuk-!-margin-0">{{ pageParams.title }}</h1>
     <br> <p class="govuk-body">You can add more later.</p> <br>
 
-    <form class="form" method="post">
+    <form class="form" method="post"> 
+      {% include "includes/csrf_token.html" %}
+
       {% set legalEntityHtml %}
       <br>
       {% set fieldParam = {

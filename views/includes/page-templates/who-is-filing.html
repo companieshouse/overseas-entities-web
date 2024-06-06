@@ -4,6 +4,8 @@
     {% include "includes/list/errors.html" %}
 
     <form method="post">
+      {% include "includes/csrf_token.html" %}
+      
       {% set fieldParam = {
         name: 'who_is_registering',
         error: errors.who_is_registering if errors,

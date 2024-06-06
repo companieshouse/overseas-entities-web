@@ -110,7 +110,17 @@ export const NAVIGATION: Navigation = {
   [config.RELEVANT_PERIOD_INTERRUPT_URL]: {
     currentPage: config.RELEVANT_PERIOD_INTERRUPT_PAGE,
     previousPage: () => config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL,
-    nextPage: [config.RELEVANT_PERIOD_INTERRUPT_PAGE]
+    nextPage: [config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE]
+  },
+  [config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL]: {
+    currentPage: config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE,
+    previousPage: () => config.RELEVANT_PERIOD_INTERRUPT_URL,
+    nextPage: [config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL]
+  },
+  [config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL]: {
+    currentPage: config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL,
+    previousPage: () => config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL,
+    nextPage: [config.UPDATE_FILING_DATE_URL]
   },
   [config.WHO_IS_MAKING_UPDATE_URL]: {
     currentPage: config.WHO_IS_MAKING_UPDATE_PAGE,

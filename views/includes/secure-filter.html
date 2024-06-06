@@ -4,6 +4,7 @@
     {% include "includes/list/errors.html" %}
 
     <form method="post">
+      {% include "includes/csrf_token.html" %}    
       {{ govukRadios({
         errorMessage: errors.is_secure_register if errors,
         classes: "govuk-radios--inline",

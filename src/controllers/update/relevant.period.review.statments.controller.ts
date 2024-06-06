@@ -4,18 +4,16 @@ import { logger } from "../../utils/logger";
 import * as config from "../../config";
 import { ApplicationData } from "../../model";
 import { getApplicationData } from "../../utils/application.data";
-import { OwnedLandKey } from "../../model/update.type.model";
 import { getRegistrationDate } from "../../utils/update/relevant.period";
 import { InputDate } from "../../model/data.types.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `GET ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE}`);
+    logger.debugRequest(req, `GET ${config.RELEVANT_PERIOD_REVIEW_STATEMENTS_PAGE}`);
     const appData: ApplicationData = getApplicationData(req.session);
-
-    return res.render(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE, {
-      backLinkUrl: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
-      templateName: config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE,
+    return res.render(config.RELEVANT_PERIOD_REVIEW_STATEMENTS_PAGE, {
+      backLinkUrl: config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL,
+      templateName: config.RELEVANT_PERIOD_REVIEW_STATEMENTS_PAGE,
       ...appData,
       dateOfCreation: getRegistrationDate(appData.update?.date_of_creation as InputDate)
     });
@@ -27,14 +25,8 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `POST ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE}`);
-    const ownedLandKey = req.body[OwnedLandKey];
-
-    if (ownedLandKey === '1') {
-      return res.redirect(config.RELEVANT_PERIOD_INTERRUPT_URL);
-    } else {
-      return res.redirect(config.UPDATE_FILING_DATE_URL);
-    }
+    logger.debugRequest(req, `POST ${config.RELEVANT_PERIOD_REVIEW_STATEMENTS_PAGE}`);
+    return res.redirect(config.UPDATE_FILING_DATE_URL);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

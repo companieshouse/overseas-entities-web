@@ -31,7 +31,9 @@
     <h1 class="govuk-heading-xl govuk-!-margin-0">{{ pageTitle }}</h1>
     <br> <p class="govuk-body">You can add more later.</p> <br>
 
-    <form class="form" method="post">
+    <form class="form" method="post"> 
+      {% include "includes/csrf_token.html" %}
+
       <input type="hidden" name="trusteeId" value="{{ trusteeId }}"/>
 
       {% set date_classes_day = "govuk-input--width-2 govuk-input" %}

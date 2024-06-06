@@ -5,7 +5,8 @@
 
     <h1 class="govuk-heading-xl">{{ title }}</h1>
 
-    <form method="post">
+    <form method="post"> 
+      {% include "includes/csrf_token.html" %}
       {% set identityDateLabelText = "When did the agent complete the verification checks? (optional)" %}
       {% include "includes/inputs/date/identity-date-input.html" %}
 

@@ -10,6 +10,7 @@ jest.mock('../../../src/middleware/navigation/update/is.in.change.journey.middle
 jest.mock('../../../src/middleware/navigation/update/manage.trusts.middleware');
 jest.mock('../../../src/middleware/navigation/update/has.beneficial.owners.or.managing.officers.update.middleware');
 
+import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import { beforeEach, jest, test, describe } from '@jest/globals';
 import request from 'supertest';
 import { NextFunction } from 'express';
@@ -116,6 +117,7 @@ const getAppDataWithReviewTrust = (corporates) => ({
   update: { review_trusts: [getReviewTrust(corporates)] },
 } as ApplicationData);
 
+mockCsrfProtectionMiddleware.mockClear();
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 

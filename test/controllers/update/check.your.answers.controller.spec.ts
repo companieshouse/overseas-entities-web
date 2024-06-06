@@ -12,6 +12,7 @@ jest.mock("../../../src/utils/feature.flag");
 jest.mock('../../../src/middleware/statement.validation.middleware');
 jest.mock("../../../src/utils/date");
 
+import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import { logger } from "../../../src/utils/logger";
@@ -128,6 +129,7 @@ import { ADDRESS } from "../../__mocks__/fields/address.mock";
 import { BeneficialOwnerOtherKey } from "../../../src/model/beneficial.owner.other.model";
 import { getTodaysDate } from "../../../src/utils/date";
 
+mockCsrfProtectionMiddleware.mockClear();
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;

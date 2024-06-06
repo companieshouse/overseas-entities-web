@@ -330,6 +330,7 @@
 
       <br>
       <form method="post">
+        {% include "includes/csrf_token.html" %}
         {{ govukRadios({
           errorMessage: errors.no_change_review_statement if errors,
           classes: "govuk-radios--inline",

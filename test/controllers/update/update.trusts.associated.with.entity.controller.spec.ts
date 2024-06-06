@@ -5,6 +5,7 @@ jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 
+import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import { beforeEach, jest, test, describe } from '@jest/globals';
 import request from 'supertest';
 import { NextFunction } from 'express';
@@ -29,6 +30,7 @@ import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.moc
 import { Trust, TrustKey } from '../../../src/model/trust.model';
 import { wordCount } from '../../utils/test.utils';
 
+mockCsrfProtectionMiddleware.mockClear();
 const mockGetApplicationData = getApplicationData as jest.Mock;
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;

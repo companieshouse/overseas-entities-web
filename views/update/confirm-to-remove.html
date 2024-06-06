@@ -12,6 +12,7 @@
       {% include "includes/list/errors.html" %}
 
       <form method="post">
+        {% include "includes/csrf_token.html" %}
         {{ govukRadios({
           errorMessage: errors.do_you_want_to_remove if errors,
           classes: "govuk-radios",

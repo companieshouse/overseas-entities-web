@@ -11,6 +11,7 @@ jest.mock('../../../src/utils/trust/common.trust.data.mapper');
 jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 
+import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import { constants } from 'http2';
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
@@ -35,6 +36,7 @@ import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.a
 import { isActiveFeature } from '../../../src/utils/feature.flag';
 import { ErrorMessages } from '../../../src/validation/error.messages';
 
+mockCsrfProtectionMiddleware.mockClear();
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 

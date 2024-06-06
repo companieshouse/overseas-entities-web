@@ -9,6 +9,7 @@ jest.mock("../../../src/utils/update/beneficial_owners_managing_officers_data_fe
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
 import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
+import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 
 import * as config from "../../../src/config";
 import app from "../../../src/app";
@@ -37,7 +38,7 @@ const invalidOENUmberError = "OE number must be &quot;OE&quot; followed by 6 dig
 const notFoundOENumberError = "An Overseas Entity with OE number &quot;" + testOENumber + "&quot; was not found";
 
 mockRemoveJourneyMiddleware.mockClear();
-
+mockCsrfProtectionMiddleware.mockClear();
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetExtraData = setExtraData as jest.Mock;

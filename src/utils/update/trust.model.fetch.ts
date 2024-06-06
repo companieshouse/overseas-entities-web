@@ -71,7 +71,13 @@ const retrieveTrusts = async (req: Request, appData: ApplicationData) => {
 
 export const mapTrustData = (trustData: TrustData, appData: ApplicationData) => {
   const dateOfBirth = mapInputDate(trustData.creationDate);
-  const stillInvolved = trustData.trustStillInvolvedInOverseasEntityIndicator ? (trustData.trustStillInvolvedInOverseasEntityIndicator === "1" ? "Yes" : "No") : "";
+
+  let stillInvolved = trustData.trustStillInvolvedInOverseasEntityIndicator === "1" ? "Yes" : "No";
+
+  // If 'trustStillInvolvedInOverseasEntityIndicator' isn't set (could be null or undefined), need to set an empty string
+  if (!trustData.trustStillInvolvedInOverseasEntityIndicator) {
+    stillInvolved = "";
+  }
 
   const trust: Trust = {
     trust_id: (((appData.update?.review_trusts ?? []).length) + 1).toString(),

@@ -94,7 +94,10 @@
     <form method="post">
       {% include "includes/csrf_token.html" %}
       {% include "includes/beneficial-owner-type-add-radios.html" %}
-
+      {% if update.change_bo_relevant_period === "CHANGE_BO_RELEVANT_PERIOD" %}
+      <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+      {% include "includes/page-templates/relevant-period-statements-add-radios.html" %}
+      {% endif %}
       <button class="govuk-button" data-module="govuk-button" id="add" formaction="{{ addButtonAction }}" >Add<span class="govuk-visually-hidden"> {{ whatToAdd }} </span></button>
       <button class="govuk-button govuk-button--secondary" data-module="govuk-button" id="noMoreToAdd" formaction="{{ noMoreToAddButtonAction }}" >No more <span class="govuk-visually-hidden"> {{ hiddenTextValue }} </span> to add </button>
 

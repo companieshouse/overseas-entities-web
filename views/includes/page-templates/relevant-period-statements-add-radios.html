@@ -1,0 +1,34 @@
+<h4 class="govuk-heading-m">For the pre-registration period</h4>
+<div class="govuk-inset-text">
+    <p>Based on the pre-registration statement you provided earlier in this service, you also need to tell us about any registrable beneficial owners from this period, that the entity has not already told us about.</p>
+    {% include "includes/page-templates/relevant-period.html" %}
+</div>
+
+{{ govukRadios({
+    errorMessage: errors.beneficial_owner_type if errors,
+    idPrefix: "beneficial_owner_type",
+    name: "beneficial_owner_type",
+    fieldset: {
+    legend: {
+    isPageHeading: true,
+    classes: "govuk-fieldset__legend--xl"
+    }
+    },
+    items: [
+    {
+    value: "individualOwner",
+    text: "Individual beneficial owner",
+    checked: individualOwner === individualOwner
+    },
+    {
+    value: "otherLegalOwner",
+    text: "Other legal entity beneficial owner",
+    checked: otherLegalOwner === otherLegalOwner
+    },
+    {
+    value: "governmentOrPublicOwner",
+    text: "Government or public authority beneficial owner",
+    checked: governmentOrPublicOwner === governmentOrPublicOwner
+    }
+]
+}) }}

@@ -22,6 +22,8 @@ import { checkEntityRequiresTrusts, getTrustLandingUrl } from "../../utils/trust
 import { retrieveTrustData } from "../../utils/update/trust.model.fetch";
 import { saveAndContinue } from "../../utils/save.and.continue";
 import { Session } from "@companieshouse/node-session-handler";
+import { getRegistrationDate } from "../../utils/update/relevant.period";
+import { InputDate } from "../../model/data.types.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -54,7 +56,8 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       templateName: config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
       ...appData,
       hasExistingBosMos,
-      hasNewlyAddedBosMos
+      hasNewlyAddedBosMos,
+      dateOfCreation: getRegistrationDate(appData.update?.date_of_creation as InputDate)
     });
   } catch (error) {
     logger.errorRequest(req, error);

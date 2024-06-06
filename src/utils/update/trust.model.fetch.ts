@@ -75,7 +75,7 @@ export const mapTrustData = (trustData: TrustData, appData: ApplicationData) => 
   let stillInvolved = trustData.trustStillInvolvedInOverseasEntityIndicator === "1" ? "Yes" : "No";
 
   // If 'trustStillInvolvedInOverseasEntityIndicator' isn't set (could be null or undefined), need to set an empty string
-  if (!trustData.trustStillInvolvedInOverseasEntityIndicator) {
+  if (trustData.trustStillInvolvedInOverseasEntityIndicator === null || trustData.trustStillInvolvedInOverseasEntityIndicator === undefined) {
     stillInvolved = "";
   }
 

@@ -11,6 +11,7 @@ import { saveAndContinue } from "../utils/save.and.continue";
 import { getUrlWithParamsToPath } from "../utils/url";
 import { isActiveFeature } from "./feature.flag";
 import { containsTrustData, getTrustArray } from "./trusts";
+import {FEATURE_FLAG_ENABLE_REDIS_REMOVAL} from "../config";
 
 export const getBeneficialOwnerStatements = (req: Request, res: Response, next: NextFunction, registrationFlag: boolean, noChangeBackLink?: string) => {
   try {
@@ -27,7 +28,7 @@ export const getBeneficialOwnerStatements = (req: Request, res: Response, next: 
       noChangeFlag = true;
     } else {
       statementValidationFlag = isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION);
-      backLinkUrl = getChangeBackLinkUrl(registrationFlag, statementValidationFlag, appData);
+      backLinkUrl = getChangeBackLinkUrl(registrationFlag, statementValidationFlag, appData, req);
       templateName = config.BENEFICIAL_OWNER_STATEMENTS_PAGE;
     }
     return res.render(templateName, {
@@ -46,14 +47,18 @@ export const getBeneficialOwnerStatements = (req: Request, res: Response, next: 
   }
 };
 
-const getChangeBackLinkUrl = (registrationFlag: boolean, statementValidationFlag: boolean, appData: ApplicationData) => {
+const getChangeBackLinkUrl = (registrationFlag: boolean, statementValidationFlag: boolean, appData: ApplicationData, req: Request) => {
+  let backLinkUrl: string = config.ENTITY_URL;
   if (registrationFlag) {
-    return config.ENTITY_URL;
+    if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+      backLinkUrl = getUrlWithParamsToPath(config.ENTITY_WITH_PARAMS_URL, req);
+    }
   } else {
     const containsTrusts = isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS) && containsTrustData(getTrustArray(appData));
     const noTrustsUrl = statementValidationFlag ? config.UPDATE_BENEFICIAL_OWNER_TYPE_URL : config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL;
-    return containsTrusts ? config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL : noTrustsUrl;
+    backLinkUrl = containsTrusts ? config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL : noTrustsUrl;
   }
+  return backLinkUrl;
 };
 
 export const postBeneficialOwnerStatements = async (req: Request, res: Response, next: NextFunction, registrationFlag: boolean, noChangeRedirectUrl?: string) => {

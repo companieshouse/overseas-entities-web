@@ -6,10 +6,13 @@ import { isActiveFeature } from "./feature.flag";
 import { getUrlWithParamsToPath, isRemoveJourney } from "./url";
 import { Request } from "express";
 
-export const getEntityBackLink = (data: ApplicationData): string => {
-  return data?.who_is_registering === WhoIsRegisteringType.AGENT
-    ? config.DUE_DILIGENCE_URL
-    : config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL;
+export const getEntityBackLink = (data: ApplicationData, req: Request): string => {
+  let backLinkUrl: string = data?.who_is_registering === WhoIsRegisteringType.AGENT ? config.DUE_DILIGENCE_URL : config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL;
+  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+    backLinkUrl = backLinkUrl === config.DUE_DILIGENCE_URL ? config.DUE_DILIGENCE_WITH_PARAMS_URL : config.OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_PARAMS_URL;
+    return getUrlWithParamsToPath(backLinkUrl, req);
+  }
+  return backLinkUrl;
 };
 
 export const getSoldLandFilterBackLink = (): string => {

@@ -21,7 +21,7 @@
         {% if update.change_bo_relevant_period === "CHANGE_BO_RELEVANT_PERIOD" %}
         <p class="govuk-body">The entity <strong>has reasonable cause</strong> to believe that <strong>at least one person became or ceased to be a registrable beneficial owner</strong> during the pre-registration period, that it has not already provided information about.</p>
         {{ govukInsetText({
-        text: "We’ll ask you to provide information about any additional beneficial owners later in the service"
+        text: "We’ll ask you to provide information about any additional registrable beneficial owners later in the service"
         }) }}
         {% else %}
         <p class="govuk-body">The entity has <strong>no reasonable cause</strong> to believe that <strong>anyone became or ceased to be a registrable beneficial owner</strong> during the pre-registration period, that it has not already provided information about.</p>
@@ -58,13 +58,16 @@
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
         {{ govukInsetText({
-        text: "We will show the information you provide in this section on the public Register of Overseas Entities."
+        html: '
+        <h2 class="govuk-heading-m">What information we’ll show on the public register</h2>
+        <p class="govuk-body">We will show the information you provide in this section on the public Register of Overseas Entities.</p>
+        '
         }) }}
 
         <form method="post">
             <div class="govuk-button-group">
                 {{ govukButton({
-                text: "Agree and submit",
+                text: "Agree and continue",
                 attributes: {
                 "id": "submit"
                 }

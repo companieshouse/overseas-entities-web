@@ -33,7 +33,7 @@ export interface Trust {
   ceased_date_day?: string;
   ceased_date_month?: string;
   ceased_date_year?: string;
-  trust_still_involved_in_overseas_entity: string; // May not be relevant in some cases so yesNoResponse cannot be used
+  trust_still_involved_in_overseas_entity?: string; // May not be relevant in some cases so yesNoResponse cannot be used
   unable_to_obtain_all_trust_info: string; // "Yes" or "No" required on the spreadsheet solution so we can NOT use yesNoResponse
   INDIVIDUALS?: TrustIndividual[];
   HISTORICAL_BO?: TrustHistoricalBeneficialOwner[];

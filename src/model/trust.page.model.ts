@@ -12,7 +12,7 @@ type TrustDetailsForm = {
   ceasedDateDay?: string;
   ceasedDateMonth?: string;
   ceasedDateYear?: string;
-  stillInvolved: string;
+  stillInvolved?: string;
   beneficialOwnersIds: string[];
   hasAllInfo: string;
 };

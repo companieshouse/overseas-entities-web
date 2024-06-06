@@ -9,7 +9,7 @@
         <h1 class="govuk-heading-xl">Was the overseas entity a registered owner of UK property or land during the pre-registration period?</h1>
 
         <form method="post">
-
+            {% include "includes/csrf_token.html" %}
             {{ govukRadios({
             errorMessage: errors.update.owned.land.filter if errors,
             idPrefix: "owned_land_relevant_period",

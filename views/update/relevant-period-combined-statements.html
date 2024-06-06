@@ -1,0 +1,70 @@
+{% extends "update-layout.html" %}
+{% import "includes/date-macros.html" as dateMacros %}
+{% set title = "Combined Statements Page" %}
+
+{% block pageTitle %}
+{% include "includes/update-page-title.html" %}
+{% endblock %}
+
+{% block backLink %}
+{% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        {% include "includes/list/errors.html" %}
+        {% include "includes/page-templates/important-banner.html" %}
+        <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ entity_name }} - {{ entity_number }}</span>
+
+        <h1 class="govuk-heading-xl">Provide statements for the pre-registration period</h1>
+        <form method="post">
+            {% include "includes/csrf_token.html" %}
+            {{ govukCheckboxes({
+            errorMessage: errors.relevant_period_combined_statements if errors,
+            idPrefix: "relevant_period_combined_statements",
+            name: "relevant_period_combined_statements",
+            fieldset: {
+            legend: {
+            text: "The overseas entity has reasonable cause to believe that during the pre-registration period:",
+            isPageHeading: false,
+            classes: "govuk-fieldset__legend--s"
+            }
+            },
+            hint: {
+            text: "Select all that apply"
+            },
+            items:
+            [
+            {
+            value: "change_bo_relevant_period",
+            text: "At least one person became or ceased to be a <strong>registrable beneficial owner</strong> that it has not already provided information about" | safe,
+            checked: update.change_bo_relevant_period === "CHANGE_BO_RELEVANT_PERIOD"
+            },
+            {
+            value: "trustee_involved_relevant_period",
+            text: "There was at least one person that was a <strong>registrable beneficial owner due to being a trustee of a trust</strong>, that the entity has not already provided information about" | safe,
+            checked: update.trustee_involved_relevant_period === "TRUSTEE_INVOLVED_RELEVANT_PERIOD"
+            },
+            {
+            value: "change_beneficiary_relevant_period",
+            text: "At least one person became or ceased to be a  <strong>beneficiary of a trust</strong>, involved in the overseas entity, that it has not already provided information about" | safe,
+            checked: update.change_beneficiary_relevant_period === "CHANGE_BENEFICIARY_RELEVANT_PERIOD"
+            },
+            {
+            divider: "or"
+            },
+            {
+            value: "none_of_these",
+            text: "<strong>None of these</strong>– the information provided at registration was the same throughout the pre-registration period" | safe,
+            behaviour: "exclusive"
+            }
+            ]
+            }) }}
+
+            {% include "includes/save-and-continue-button.html" %}
+        </form>
+    </div>
+</div>
+
+{% endblock %}

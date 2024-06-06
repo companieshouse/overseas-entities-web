@@ -15,3 +15,4 @@ export * as overseasEntityDueDiligenceType from "./overseas.entity.due.diligence
 export * as trusteeType from "./trustee.type.model";
 export * as updateType from "./update.type.model";
 export * as removeType from "./remove.type.model";
+export * as relevantPeriodType from "./relevant.period.statment.model";

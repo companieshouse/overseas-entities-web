@@ -27,7 +27,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.RELEVANT_PERIOD_INTERRUPT_PAGE}`);
 
-    return res.redirect(config.RELEVANT_PERIOD_INTERRUPT_URL); // redirects to statement 3 page
+    return res.redirect(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL); // redirects to statement 3 page
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

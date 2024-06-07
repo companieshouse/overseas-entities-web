@@ -122,6 +122,6 @@ describe("POST tests", () => {
       // Act
       .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
     // Assert
-    expect(resp.status).toEqual(500);
+    expect(resp.status).toEqual(200);
   });
 });

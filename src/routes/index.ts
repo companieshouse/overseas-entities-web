@@ -580,7 +580,7 @@ router.route(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
     companyAuthentication,
     navigation.hasOverseasEntity)
   .get(relevantPeriodCombinedStatements.get)
-  .post(relevantPeriodCombinedStatements.post);
+  .post(...validator.relevantPeriodCombinedStatements, checkValidations, relevantPeriodCombinedStatements.post);
 
 router.route(config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL)
   .all(

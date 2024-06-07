@@ -218,6 +218,7 @@ export enum ErrorMessages {
   SELECT_IF_REMOVE_SOLD_ALL_LAND_FILTER = "Select yes if the overseas entity has disposed of all relevant property or land in the UK",
   SELECT_REMOVE_DO_YOU_WANT_TO_MAKE_OE_CHANGE = "Select yes if you need to make any changes to this overseas entity before it is removed",
   SELECT_TO_CONFIRM_REMOVE_STATEMENT = "Select the removal statement",
+  SELECT_RELEVANT_STATEMENTS_OR_NONE_OF_THESE = "Select the relevant statements for the pre-registration period, or select ‘None of these’.",
 
   // MAX Lengths
   MAX_FIRST_NAME_LENGTH = "First name must be 50 characters or less",

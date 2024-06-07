@@ -20,7 +20,8 @@ import {
   SERVICE_UNAVAILABLE,
   RELEVANT_PERIOD_OWNED_LAND,
   PAGE_NOT_FOUND_TEXT,
-  RELEVANT_PERIOD
+  RELEVANT_PERIOD,
+  ERROR_LIST
 } from "../../__mocks__/text.mock";
 import { APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock";
 import { getApplicationData } from "../../../src/utils/application.data";
@@ -116,5 +117,17 @@ describe("owned land filter page tests", () => {
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.UPDATE_FILING_DATE_URL);
     });
+    test(`renders the ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL} page when no radios are selected`, async () => {
+      const resp = await request(app)
+        .post(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL)
+        .send({ owned_land_relevant_period: "" });
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ERROR_LIST);
+      expect(resp.text).toContain("Select yes if the overseas entity was the registered owner of UK land during the pre-registration period.");
+      expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
+    });
+
+    
   });
 });

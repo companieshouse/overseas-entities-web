@@ -122,6 +122,7 @@ describe('Update - Trusts - Tell us about the trust', () => {
         createdDateMonth: '7',
         createdDateYear: '2023',
         beneficialOwnersIds: '45e4283c-6b05-42da-ac9d-1f7bf9fe9c85',
+        stillInvolved: '1',
         hasAllInfo: '0',
         trustId: ''
       });

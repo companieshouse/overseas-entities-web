@@ -83,6 +83,7 @@ export enum ErrorMessages {
   TRUST_CORPORATE_CORRESPONDENCE_ADDRESS_LENGTH = "Corporate correspondence address must be 50 characters or less",
   TRUST_INVOLVED_INVALID = 'Select which type of individual or entity you want to add',
   TRUST_HAS_ALL_INFO = 'Select yes if the entity has all the required information about the trust',
+  TRUST_STILL_INVOLVED = 'Select yes if the trust is still involved in the overseas entity',
   TRUST_INVOLVED_BOS = 'Select the beneficial owners which are involved in the trust',
   TRUST_INDIVIDUAL_ROLE = "Select their role within the trust",
   TRUST_INDIVIDUAL_ROLE_INDIVIDUAL_BO = TRUST_INDIVIDUAL_ROLE,

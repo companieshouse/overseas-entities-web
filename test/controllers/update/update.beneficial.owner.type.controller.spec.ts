@@ -58,7 +58,6 @@ import {
   UPDATE_BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
   UPDATE_MANAGING_OFFICER_OBJECT_MOCK,
   UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
-  APPLICATION_DATA_MOCK,
   UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE
 } from '../../__mocks__/session.mock';
 import { BeneficialOwnersStatementType, BeneficialOwnerStatementKey } from '../../../src/model/beneficial.owner.statement.model';
@@ -214,9 +213,10 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
 
     test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} page with first statements selected`, async () => {
-      mockGetApplicationData.mockReturnValue( { ...APPLICATION_DATA_MOCK,
-        update: UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE });
+      appData = UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE;
+      appData[BeneficialOwnerStatementKey] = BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS;
 
+      mockGetApplicationData.mockReturnValueOnce(appData);
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
 
       expect(resp.status).toEqual(200);
@@ -226,7 +226,6 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.text).toContain("January");
       expect(resp.text).toContain("2011");
     });
-  });
   });
 
   describe("POST Submit tests", () => {

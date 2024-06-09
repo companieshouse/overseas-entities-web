@@ -262,6 +262,9 @@ export const RELEVANT_PERIOD_TRUSTEE_INVOLVED = "at least one person became or c
 export const RELEVANT_PERIOD_NO_TRUSTEE_INVOLVED = "any trusts involved";
 export const RELEVANT_PERIOD_CHANGE_BENEFICIARY = "at least one person became or ceased to be a beneficiary of a trust";
 export const RELEVANT_PERIOD_NO_CHANGE_BENEFICIARY = "anyone became or ceased to be a beneficiary of a trust";
+export const RELEVANT_PERIOD_INDIVIDUAL_BENEFICIAL_OWNER = "Individual beneficial owner";
+export const RELEVANT_PERIOD_OTHER_LEGAL_ENTITY = "Other legal entity beneficial owner";
+export const RELEVANT_PERIOD_GOVERNMENT = "Government or public authority beneficial owner";
 
 // Remove journey
 export const REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE = "Has the overseas entity disposed of all relevant property or land in the UK?";

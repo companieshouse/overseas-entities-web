@@ -39,7 +39,9 @@ import {
   BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_MO,
   REVIEWED_BENEFICIAL_OWNER_MANAGING_OFFICER_TABLE_HEADING,
   NEWLY_ADDED_BENEFICIAL_OWNERS_SUMMARY_TABLE_HEADING,
-  MESSAGE_ERROR
+  MESSAGE_ERROR,
+  RELEVANT_PERIOD_INDIVIDUAL_BENEFICIAL_OWNER,
+  RELEVANT_PERIOD
 } from '../../__mocks__/text.mock';
 import {
   ERROR,
@@ -55,7 +57,9 @@ import {
   UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
   UPDATE_BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
   UPDATE_MANAGING_OFFICER_OBJECT_MOCK,
-  UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK
+  UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
+  APPLICATION_DATA_MOCK,
+  UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE
 } from '../../__mocks__/session.mock';
 import { BeneficialOwnersStatementType, BeneficialOwnerStatementKey } from '../../../src/model/beneficial.owner.statement.model';
 import { ManagingOfficerKey } from '../../../src/model/managing.officer.model';
@@ -208,6 +212,21 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
+
+    test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} page with first statements selected`, async () => {
+      mockGetApplicationData.mockReturnValue( { ...APPLICATION_DATA_MOCK,
+        update: UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE });
+
+      const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(RELEVANT_PERIOD_INDIVIDUAL_BENEFICIAL_OWNER);
+      expect(resp.text).toContain(RELEVANT_PERIOD);
+      expect(resp.text).toContain("1");
+      expect(resp.text).toContain("January");
+      expect(resp.text).toContain("2011");
+    });
+  });
   });
 
   describe("POST Submit tests", () => {

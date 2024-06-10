@@ -18,11 +18,10 @@ const checkRelevantPeriodDates = (dateOfCreation: InputDate): InputDate => {
   const endOfPeriodDate = new Date(`${endOfPeriod.year}-${endOfPeriod.month}-${endOfPeriod.day}`);
   const beginDate = new Date(`${startDate.year}-${startDate.month}-${startDate.day}`);
 
-  if (registrationDate < beginDate && registrationDate > endOfPeriodDate) {
-    return endOfPeriod;
+  if (registrationDate >= beginDate && registrationDate <= endOfPeriodDate) {
+    return dateOfCreation;
   }
-
-  return dateOfCreation;
+  return endOfPeriod;
 };
 
 export const getRegistrationDate = (dateOfCreation: InputDate): InputDate => {

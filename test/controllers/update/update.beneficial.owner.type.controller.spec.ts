@@ -59,8 +59,7 @@ import {
   UPDATE_MANAGING_OFFICER_OBJECT_MOCK,
   UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
   UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE,
-  UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE,
-  APPLICATION_DATA_MOCK
+  UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE
 } from '../../__mocks__/session.mock';
 import { BeneficialOwnersStatementType, BeneficialOwnerStatementKey } from '../../../src/model/beneficial.owner.statement.model';
 import { ManagingOfficerKey } from '../../../src/model/managing.officer.model';
@@ -219,7 +218,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       appData[UpdateKey] = UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE;
 
       mockGetApplicationData.mockReturnValueOnce(appData);
-      const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL)
+      const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(RELEVANT_PERIOD_INDIVIDUAL_BENEFICIAL_OWNER);
       expect(resp.text).toContain(RELEVANT_PERIOD);
@@ -233,7 +232,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       appData[UpdateKey] = UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE;
 
       mockGetApplicationData.mockReturnValueOnce(appData);
-      const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL)
+      const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).not.toContain(RELEVANT_PERIOD_INDIVIDUAL_BENEFICIAL_OWNER);
       expect(resp.text).toContain(RELEVANT_PERIOD);

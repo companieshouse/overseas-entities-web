@@ -58,7 +58,8 @@ import {
   UPDATE_BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
   UPDATE_MANAGING_OFFICER_OBJECT_MOCK,
   UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
-  UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE
+  UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE,
+  APPLICATION_DATA_MOCK
 } from '../../__mocks__/session.mock';
 import { BeneficialOwnersStatementType, BeneficialOwnerStatementKey } from '../../../src/model/beneficial.owner.statement.model';
 import { ManagingOfficerKey } from '../../../src/model/managing.officer.model';
@@ -72,6 +73,7 @@ import { checkEntityRequiresTrusts, getTrustLandingUrl } from '../../../src/util
 import { hasTrustsToReview, moveReviewableTrustsIntoReview, resetReviewStatusOnAllTrustsToBeReviewed } from '../../../src/utils/update/review_trusts';
 import { retrieveTrustData } from "../../../src/utils/update/trust.model.fetch";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
+import { ChangeBoRelevantPeriodKey } from '../../../src/model/relevant.period.statement.model';
 
 mockRemoveJourneyMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
@@ -212,9 +214,9 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
 
-    test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} page with first statements selected`, async () => {
+    test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} page with first statement selected`, async () => {
       appData = UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE;
-      appData[BeneficialOwnerStatementKey] = BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS;
+      appData[ChangeBoRelevantPeriodKey] = ChangeBoRelevantPeriodType.CHANGE_BO_RELEVANT_PERIOD.YES;
 
       mockGetApplicationData.mockReturnValueOnce(appData);
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);

@@ -26,10 +26,10 @@ const checkRelevantPeriodDates = (dateOfCreation: InputDate): InputDate => {
 
 export const getRegistrationDate = (dateOfCreation: InputDate): InputDate => {
   try {
-    checkDateValueIsValid("Registration date does not exist.", endOfPeriod.day, endOfPeriod.month, endOfPeriod.year);
-    return checkRelevantPeriodDates(endOfPeriod);
+    checkDateValueIsValid("Registration date does not exist.", dateOfCreation.day, dateOfCreation.month, dateOfCreation.year);
+    return checkRelevantPeriodDates(dateOfCreation);
   } catch (error) {
     logger.info(error);
-    return dateOfCreation;
+    return endOfPeriod;
   }
 };

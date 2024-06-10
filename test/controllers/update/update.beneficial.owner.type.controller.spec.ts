@@ -58,7 +58,9 @@ import {
   UPDATE_BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
   UPDATE_MANAGING_OFFICER_OBJECT_MOCK,
   UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
-  UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE
+  UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE,
+  UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE,
+  APPLICATION_DATA_MOCK
 } from '../../__mocks__/session.mock';
 import { BeneficialOwnersStatementType, BeneficialOwnerStatementKey } from '../../../src/model/beneficial.owner.statement.model';
 import { ManagingOfficerKey } from '../../../src/model/managing.officer.model';
@@ -72,7 +74,6 @@ import { checkEntityRequiresTrusts, getTrustLandingUrl } from '../../../src/util
 import { hasTrustsToReview, moveReviewableTrustsIntoReview, resetReviewStatusOnAllTrustsToBeReviewed } from '../../../src/utils/update/review_trusts';
 import { retrieveTrustData } from "../../../src/utils/update/trust.model.fetch";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
-import { UpdateKey } from '../../../src/model/update.type.model';
 
 mockRemoveJourneyMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
@@ -214,18 +215,28 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
 
     test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} page with first statement selected`, async () => {
-      appData = UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE;
-      appData[UpdateKey] = ChangeBoRelevantPeriodType.CHANGE_BO_RELEVANT_PERIOD.YES;
+      appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
+      appData[UpdateKey] = UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE;
 
       mockGetApplicationData.mockReturnValueOnce(appData);
-      const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
-
+      const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL)
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(RELEVANT_PERIOD_INDIVIDUAL_BENEFICIAL_OWNER);
       expect(resp.text).toContain(RELEVANT_PERIOD);
       expect(resp.text).toContain("1");
       expect(resp.text).toContain("January");
       expect(resp.text).toContain("2011");
+    });
+
+    test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} page with first statement de-selected`, async () => {
+      appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
+      appData[UpdateKey] = UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE;
+
+      mockGetApplicationData.mockReturnValueOnce(appData);
+      const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL)
+      expect(resp.status).toEqual(200);
+      expect(resp.text).not.toContain(RELEVANT_PERIOD_INDIVIDUAL_BENEFICIAL_OWNER);
+      expect(resp.text).toContain(RELEVANT_PERIOD);
     });
   });
 

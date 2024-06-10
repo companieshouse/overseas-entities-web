@@ -72,7 +72,7 @@ import { checkEntityRequiresTrusts, getTrustLandingUrl } from '../../../src/util
 import { hasTrustsToReview, moveReviewableTrustsIntoReview, resetReviewStatusOnAllTrustsToBeReviewed } from '../../../src/utils/update/review_trusts';
 import { retrieveTrustData } from "../../../src/utils/update/trust.model.fetch";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
-import { ChangeBoRelevantPeriodKey } from '../../../src/model/relevant.period.statement.model';
+import { UpdateKey } from '../../../src/model/update.type.model';
 
 mockRemoveJourneyMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
@@ -215,7 +215,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
     test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} page with first statement selected`, async () => {
       appData = UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE;
-      appData[ChangeBoRelevantPeriodKey] = ChangeBoRelevantPeriodType.CHANGE_BO_RELEVANT_PERIOD.YES;
+      appData[UpdateKey] = ChangeBoRelevantPeriodType.CHANGE_BO_RELEVANT_PERIOD.YES;
 
       mockGetApplicationData.mockReturnValueOnce(appData);
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);

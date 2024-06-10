@@ -5,7 +5,7 @@ import {
   FEATURE_FLAG_ENABLE_REDIS_REMOVAL,
   WHO_IS_MAKING_FILING_URL,
   ENTITY_URL,
-  ENTITY_WITH_PARAMS_URL, PRESENTER_URL
+  ENTITY_WITH_PARAMS_URL
 } from "../config";
 
 import { getDueDiligencePage, postDueDiligencePage } from "../utils/due.diligence";
@@ -15,7 +15,7 @@ import * as config from "../config";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   let backLinkUrl: string = WHO_IS_MAKING_FILING_URL;
-  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+  if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
     backLinkUrl = getUrlWithParamsToPath(config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL, req);
   }
   getDueDiligencePage(req, res, next, DUE_DILIGENCE_PAGE, backLinkUrl);

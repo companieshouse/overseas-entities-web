@@ -11,7 +11,6 @@ import { saveAndContinue } from "../utils/save.and.continue";
 import { getUrlWithParamsToPath } from "../utils/url";
 import { isActiveFeature } from "./feature.flag";
 import { containsTrustData, getTrustArray } from "./trusts";
-import {FEATURE_FLAG_ENABLE_REDIS_REMOVAL} from "../config";
 
 export const getBeneficialOwnerStatements = (req: Request, res: Response, next: NextFunction, registrationFlag: boolean, noChangeBackLink?: string) => {
   try {
@@ -50,7 +49,7 @@ export const getBeneficialOwnerStatements = (req: Request, res: Response, next: 
 const getChangeBackLinkUrl = (registrationFlag: boolean, statementValidationFlag: boolean, appData: ApplicationData, req: Request) => {
   let backLinkUrl: string = config.ENTITY_URL;
   if (registrationFlag) {
-    if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       backLinkUrl = getUrlWithParamsToPath(config.ENTITY_WITH_PARAMS_URL, req);
     }
   } else {

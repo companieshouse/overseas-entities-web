@@ -258,8 +258,8 @@ export const RELEVANT_PERIOD_COMBINED_STATEMENTS_TITLE = "Provide statements for
 export const RELEVANT_PERIOD_COMBINED_STATEMENTS_TEXT = "The overseas entity has reasonable cause to believe that during the pre-registration period:";
 export const RELEVANT_PERIOD_CHANGE_BO = "at least one person became or ceased to be a registrable beneficial owner";
 export const RELEVANT_PERIOD_NO_CHANGE_BO = "anyone became or ceased to be a registrable beneficial owner";
-export const RELEVANT_PERIOD_TRUSTEE_INVOLVED = "at least one person became or ceased to be a registrable beneficial owner due to being a trustee of a trust";
-export const RELEVANT_PERIOD_NO_TRUSTEE_INVOLVED = "any trusts involved";
+export const RELEVANT_PERIOD_TRUSTEE_INVOLVED = "at least one person was a registrable beneficial owner due to being a trustee of a trust";
+export const RELEVANT_PERIOD_NO_TRUSTEE_INVOLVED = "anyone was a registrable beneficial owner due to being a trustee of a trust";
 export const RELEVANT_PERIOD_CHANGE_BENEFICIARY = "at least one person became or ceased to be a beneficiary of a trust";
 export const RELEVANT_PERIOD_NO_CHANGE_BENEFICIARY = "anyone became or ceased to be a beneficiary of a trust";
 

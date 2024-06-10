@@ -16,7 +16,9 @@ const get = (
 ): void => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const backLinkUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) ? getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req) : config.BENEFICIAL_OWNER_TYPE_URL;
+    const backLinkUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
+      ? getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req)
+      : config.BENEFICIAL_OWNER_TYPE_URL;
     const pageProps = {
       backLinkUrl,
       templateName: config.TRUST_INTERRUPT_PAGE,

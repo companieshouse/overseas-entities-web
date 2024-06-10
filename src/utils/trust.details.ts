@@ -60,7 +60,7 @@ const getPageProperties = (
   ];
 
   return {
-    backLinkUrl: getBackLinkUrl(isUpdate, appData, isReview),
+    backLinkUrl: getBackLinkUrl(isUpdate, appData, req, isReview),
     templateName: getPageTemplate(isUpdate, isReview),
     pageParams: {
       title: isReview ? TRUST_DETAILS_TEXTS.review_title : TRUST_DETAILS_TEXTS.title,
@@ -206,19 +206,23 @@ export const postTrustDetails = async (req: Request, res: Response, next: NextFu
   }
 };
 
-const getBackLinkUrl = (isUpdate: boolean, appData: ApplicationData, isReview?: boolean) => {
+const getBackLinkUrl = (isUpdate: boolean, appData: ApplicationData, req: Request, isReview?: boolean) => {
   let backLinkUrl: string;
-  if (isUpdate){
+  if (isUpdate) {
     backLinkUrl = config.UPDATE_TRUSTS_SUBMISSION_INTERRUPT_URL;
 
     if (containsTrustData(getTrustArray(appData))) {
       backLinkUrl = `${config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL}`;
     }
   } else {
-    backLinkUrl = `${config.TRUST_ENTRY_URL + config.TRUST_INTERRUPT_URL}`;
+    backLinkUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
+      ? getUrlWithParamsToPath(config.TRUST_ENTRY_WITH_PARAMS_URL, req)
+      : config.TRUST_ENTRY_URL + config.TRUST_INTERRUPT_URL;
 
     if (containsTrustData(getTrustArray(appData))) {
-      backLinkUrl = `${config.TRUST_ENTRY_URL + config.ADD_TRUST_URL}`;
+      backLinkUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
+        ? getUrlWithParamsToPath(config.TRUST_ENTRY_WITH_PARAMS_URL, req)
+        : config.TRUST_ENTRY_URL + config.ADD_TRUST_URL;
     }
   }
 

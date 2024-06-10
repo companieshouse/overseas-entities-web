@@ -45,7 +45,7 @@ const getPageProperties = (
 
   return {
     templateName: getPageTemplate(isUpdate),
-    backLinkUrl: getBackLinkUrl(isUpdate),
+    backLinkUrl: getBackLinkUrl(isUpdate, req),
     pageData: {
       trustData: getTrustArray(appData)
     },
@@ -116,7 +116,7 @@ export const postTrusts = (
       const newTrustId = generateTrustId(appData);
       return res.redirect(`${newTrustPage(isUpdate, req)}/${newTrustId}`);
     } else {
-      return res.redirect(nextPage(isUpdate));
+      return res.redirect(nextPage(isUpdate, req));
     }
   } catch (error) {
     logger.errorRequest(req, error);
@@ -135,15 +135,17 @@ const newTrustPage = (isUpdate: boolean, req: Request) => {
   }
 };
 
-const nextPage = (isUpdate: boolean) => {
-  if (isUpdate){
+const nextPage = (isUpdate: boolean, req: Request) => {
+  if (isUpdate) {
     return (
       isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION)
         ? config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL
         : config.UPDATE_CHECK_YOUR_ANSWERS_URL
     );
   } else {
-    return config.CHECK_YOUR_ANSWERS_URL;
+    return isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
+      ? getUrlWithParamsToPath(config.CHECK_YOUR_ANSWERS_WITH_PARAMS_URL, req)
+      : config.CHECK_YOUR_ANSWERS_URL;
   }
 };
 
@@ -155,11 +157,13 @@ const getPageTemplate = (isUpdate: boolean) => {
   }
 };
 
-const getBackLinkUrl = (isUpdate: boolean) => {
+const getBackLinkUrl = (isUpdate: boolean, req: Request) => {
   if (isUpdate){
     return config.UPDATE_BENEFICIAL_OWNER_TYPE_URL;
   } else {
-    return config.BENEFICIAL_OWNER_TYPE_URL;
+    return isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
+      ? getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req)
+      : config.BENEFICIAL_OWNER_TYPE_URL;
   }
 };
 

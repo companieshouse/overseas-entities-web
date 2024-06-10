@@ -2,6 +2,11 @@ import { InputDate } from "../../model/data.types.model";
 import { checkDateValueIsValid } from "../../validation/custom.validation";
 import { logger } from "../../utils/logger";
 
+const startDate: InputDate = {
+  day: "28",
+  month: "02",
+  year: "2022"
+};
 const endOfPeriod: InputDate = {
   day: "31",
   month: "01",
@@ -11,7 +16,9 @@ const endOfPeriod: InputDate = {
 const checkRelevantPeriodDates = (dateOfCreation: InputDate): InputDate => {
   const registrationDate = new Date(`${dateOfCreation.year}-${dateOfCreation.month}-${dateOfCreation.day}`);
   const endOfPeriodDate = new Date(`${endOfPeriod.year}-${endOfPeriod.month}-${endOfPeriod.day}`);
-  if (registrationDate > endOfPeriodDate) {
+  const beginDate = new Date(`${startDate.year}-${startDate.month}-${startDate.day}`);
+
+  if (registrationDate < beginDate && registrationDate > endOfPeriodDate) {
     return endOfPeriod;
   }
 
@@ -20,10 +27,10 @@ const checkRelevantPeriodDates = (dateOfCreation: InputDate): InputDate => {
 
 export const getRegistrationDate = (dateOfCreation: InputDate): InputDate => {
   try {
-    checkDateValueIsValid("Registration date does not exist.", dateOfCreation.day, dateOfCreation.month, dateOfCreation.year);
-    return checkRelevantPeriodDates(dateOfCreation);
+    checkDateValueIsValid("Registration date does not exist.", endOfPeriod.day, endOfPeriod.month, endOfPeriod.year);
+    return checkRelevantPeriodDates(endOfPeriod);
   } catch (error) {
     logger.info(error);
-    return endOfPeriod;
+    return dateOfCreation;
   }
 };

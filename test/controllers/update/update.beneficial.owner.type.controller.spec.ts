@@ -58,8 +58,7 @@ import {
   UPDATE_BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
   UPDATE_MANAGING_OFFICER_OBJECT_MOCK,
   UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
-  UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE,
-  APPLICATION_DATA_MOCK
+  UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE
 } from '../../__mocks__/session.mock';
 import { BeneficialOwnersStatementType, BeneficialOwnerStatementKey } from '../../../src/model/beneficial.owner.statement.model';
 import { ManagingOfficerKey } from '../../../src/model/managing.officer.model';

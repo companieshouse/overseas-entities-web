@@ -65,7 +65,7 @@ describe("relevant interrupt card page tests", () => {
       expect(resp.text).toContain(RELEVANT_PERIOD);
       expect(resp.text).toContain("1");
       expect(resp.text).toContain("January");
-      expect(resp.text).toContain("2011");
+      expect(resp.text).toContain("2023");
     });
 
     test("catch error when rendering the page", async () => {

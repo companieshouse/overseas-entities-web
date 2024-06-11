@@ -70,7 +70,7 @@ describe("owned land filter page tests", () => {
       expect(resp.text).toContain(RELEVANT_PERIOD);
       expect(resp.text).toContain("1");
       expect(resp.text).toContain("January");
-      expect(resp.text).toContain("2011");
+      expect(resp.text).toContain("2023");
     });
 
     test(`renders the ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE} page with radios selected to ${yesNoResponse.Yes}`, async () => {

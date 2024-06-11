@@ -17,6 +17,7 @@
       {% include "includes/list/errors.html" %}
 
       <form method="post">
+        {% include "includes/csrf_token.html" %}
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-3">Is the overseas entity currently listed on any land registry records as the registered owner of property or land in the UK?</h1>
         <p class="govuk-hint">This includes land titles held at HM Land Registry (for England and Wales), the Land Register of Scotland, and the Land Registry for Northern Ireland.</p>
     

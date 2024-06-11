@@ -25,6 +25,7 @@
     {% include "includes/ceased-date-details-summary-review-bo.html" %}
 
     <form method="post">
+      {% include "includes/csrf_token.html" %}
       <input type="hidden" name="id" value="{{ id }}" />
       <input type="hidden" name="ch_reference" value="{{ ch_reference }}" />
 

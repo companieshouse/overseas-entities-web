@@ -19,6 +19,19 @@ const mapDetailToPage = (
     trustData = getTrustByIdFromApp(appData, trustId);
   }
 
+  let stillInvolvedInOverseasEntity: string;
+  switch (trustData.trust_still_involved_in_overseas_entity) {
+      case "Yes":
+        stillInvolvedInOverseasEntity = "1";
+        break;
+      case "No":
+        stillInvolvedInOverseasEntity = "0";
+        break;
+      default:
+        stillInvolvedInOverseasEntity = ""; // forces user to enter a value on new trust
+        break;
+  }
+
   const trustBoIds: string[] =
     [
       ...appData[BeneficialOwnerIndividualKey] ?? [],
@@ -51,26 +64,34 @@ const mapDetailToPage = (
     ceasedDateYear: trustData.ceased_date_year,
     hasAllInfo: unableToObtainAllTrustInfo,
     beneficialOwnersIds: trustBoIds,
+    stillInvolved: stillInvolvedInOverseasEntity,
   };
 };
 
-//  to session mapping
 const mapDetailToSession = (
   formData: Page.TrustDetailsForm,
-  isTrustToBeCeased: boolean
+  hasNoBoAssignableToTrust: boolean
 ): Trust => {
-  const data = formData;
+  let stillInvolved = (formData.stillInvolved === "1") ? "Yes" : "No";
+
+  // If a boolean value isn't receieved from the web form (it could be null or undefined, e.g. if question not displayed), need to set null
+  if (formData.stillInvolved === null || formData.stillInvolved === undefined) {
+    stillInvolved = null as unknown as string;
+  }
+
+  const isTrustToBeCeased = hasNoBoAssignableToTrust || stillInvolved === "No";
 
   return {
-    trust_id: data.trustId,
-    trust_name: data.name,
-    creation_date_day: data.createdDateDay,
-    creation_date_month: data.createdDateMonth,
-    creation_date_year: data.createdDateYear,
-    ceased_date_day: isTrustToBeCeased ? data.ceasedDateDay : undefined,
-    ceased_date_month: isTrustToBeCeased ? data.ceasedDateMonth : undefined,
-    ceased_date_year: isTrustToBeCeased ? data.ceasedDateYear : undefined,
-    unable_to_obtain_all_trust_info: (data.hasAllInfo === "0") ? "Yes" : "No",
+    trust_id: formData.trustId,
+    trust_name: formData.name,
+    creation_date_day: formData.createdDateDay,
+    creation_date_month: formData.createdDateMonth,
+    creation_date_year: formData.createdDateYear,
+    ceased_date_day: isTrustToBeCeased ? formData.ceasedDateDay : undefined,
+    ceased_date_month: isTrustToBeCeased ? formData.ceasedDateMonth : undefined,
+    ceased_date_year: isTrustToBeCeased ? formData.ceasedDateYear : undefined,
+    trust_still_involved_in_overseas_entity: stillInvolved,
+    unable_to_obtain_all_trust_info: (formData.hasAllInfo === "0") ? "Yes" : "No",
   };
 };
 

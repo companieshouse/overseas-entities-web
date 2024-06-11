@@ -8,6 +8,7 @@ jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/feature.flag');
 jest.mock('../../../src/service/overseas.entities.service');
 
+import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
@@ -29,6 +30,7 @@ import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/ha
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 
+mockCsrfProtectionMiddleware.mockClear();
 const mockHasUpdatePresenter = hasUpdatePresenter as jest.Mock;
 mockHasUpdatePresenter.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 

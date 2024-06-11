@@ -68,6 +68,7 @@
     </div>
 
     <form method="post">
+      {% include "includes/csrf_token.html" %}
       {{ govukRadios({
         errorMessage: errors.statement_resolution if errors,
         classes: "govuk-radios",

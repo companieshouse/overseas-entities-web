@@ -6,7 +6,7 @@ jest.mock('../../../src/utils/application.data');
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
 import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
-
+import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
@@ -33,7 +33,7 @@ import { RemoveKey } from "../../../src/model/remove.type.model";
 import { HasSoldAllLandKey } from "../../../src/model/data.types.model";
 
 mockRemoveJourneyMiddleware.mockClear();
-
+mockCsrfProtectionMiddleware.mockClear();
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => {
   // Add userEmail to res.locals to make sign-out url appear

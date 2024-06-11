@@ -66,6 +66,7 @@ describe("Test fetching and mapping of Trust data", () => {
       creation_date_year: "2020",
       trust_id: "1",
       trust_name: "Test Trust",
+      trust_still_involved_in_overseas_entity: "Yes",
       unable_to_obtain_all_trust_info: "No",
       INDIVIDUALS: [],
       CORPORATES: [],
@@ -78,6 +79,7 @@ describe("Test fetching and mapping of Trust data", () => {
       creation_date_year: "2020",
       trust_id: "2",
       trust_name: "Test Trust 2",
+      trust_still_involved_in_overseas_entity: "No",
       unable_to_obtain_all_trust_info: "Yes",
       INDIVIDUALS: [],
       CORPORATES: [],
@@ -117,6 +119,7 @@ describe("Test fetching and mapping of Trust data", () => {
         hashedTrustId: "87654321",
         creationDate: "2010-01-01",
         ceasedDate: "",
+        trustStillInvolvedInOverseasEntityIndicator: "0",
         unableToObtainAllTrustInfoIndicator: true
       }
     ]);
@@ -135,6 +138,7 @@ describe("Test fetching and mapping of Trust data", () => {
       "creation_date_year": "2010",
       "trust_id": "1",
       "trust_name": "Test Trust A",
+      "trust_still_involved_in_overseas_entity": "No",
       "unable_to_obtain_all_trust_info": "Yes",
       "CORPORATES": [],
       "HISTORICAL_BO": [],
@@ -199,6 +203,7 @@ describe("Test fetching and mapping of Trust data", () => {
       creation_date_day: "",
       creation_date_month: "",
       creation_date_year: "",
+      trust_still_involved_in_overseas_entity: trustData.trustStillInvolvedInOverseasEntityIndicator ? "Yes" : "No",
       unable_to_obtain_all_trust_info: trustData.unableToObtainAllTrustInfoIndicator ? "Yes" : "No",
       INDIVIDUALS: [],
       CORPORATES: [],
@@ -637,6 +642,7 @@ describe("Test fetching and mapping of Trust data", () => {
               creation_date_day: "1",
               creation_date_month: "1",
               creation_date_year: "2020",
+              trust_still_involved_in_overseas_entity: "Yes",
               unable_to_obtain_all_trust_info: "No"
             }
           ]
@@ -666,6 +672,7 @@ describe("Test fetching and mapping of Trust data", () => {
             creation_date_day: "1",
             creation_date_month: "1",
             creation_date_year: "2020",
+            trust_still_involved_in_overseas_entity: "Yes",
             unable_to_obtain_all_trust_info: "No"
           }
         ]
@@ -686,6 +693,7 @@ describe("Test fetching and mapping of Trust data", () => {
       creation_date_day: "1",
       creation_date_month: "1",
       creation_date_year: "2020",
+      trust_still_involved_in_overseas_entity: "Yes",
       unable_to_obtain_all_trust_info: "No"
     };
     const trusteeData: IndividualTrusteeData = {
@@ -734,6 +742,7 @@ describe("Test fetching and mapping of Trust data", () => {
     trust_id: "1",
     ch_reference: "12345678",
     trust_name: "Test Trust",
+    trust_still_involved_in_overseas_entity: "Yes",
     unable_to_obtain_all_trust_info: "No",
     creation_date_day: "1",
     creation_date_month: "1",

@@ -13,6 +13,7 @@ jest.mock('../../../src/utils/feature.flag');
 jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 
+import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import { constants } from "http2";
 import { beforeEach, describe, expect, jest, test } from "@jest/globals";
 import { NextFunction, Request, Response } from "express";
@@ -52,6 +53,7 @@ import { companyAuthentication } from "../../../src/middleware/company.authentic
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 
+mockCsrfProtectionMiddleware.mockClear();
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 

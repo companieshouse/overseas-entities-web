@@ -160,6 +160,7 @@ describe("Trusts Middleware tests", () => {
           {
             trust_id: "1",
             trust_name: "test",
+            trust_still_involved_in_overseas_entity: "test",
             unable_to_obtain_all_trust_info: "test",
             creation_date_day: "20",
             creation_date_month: "12",

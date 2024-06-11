@@ -6,6 +6,7 @@ jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/middleware/navigation/update/has.given.valid.bo.mo.details.middleware');
 
+import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
@@ -43,6 +44,7 @@ import { UPDATE_MANAGING_OFFICER_OBJECT_MOCK } from "../../__mocks__/session.moc
 import { MO_IND_ID_URL } from "../../__mocks__/session.mock";
 import { MO_CORP_ID_URL } from "../../__mocks__/session.mock";
 
+mockCsrfProtectionMiddleware.mockClear();
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 

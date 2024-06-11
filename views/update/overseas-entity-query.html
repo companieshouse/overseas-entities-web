@@ -16,6 +16,7 @@
       <h1 class="govuk-heading-xl">{{ title }}</h1>
       {% include "includes/list/errors.html" %}
       <form method="post">
+        {% include "includes/csrf_token.html" %}
         {{ govukInput
           ({
             label: {

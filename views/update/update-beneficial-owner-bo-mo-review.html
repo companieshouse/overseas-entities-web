@@ -30,7 +30,8 @@
       <br/>
 
       <form method="post">
-       {% include "includes/continue-button.html" %}
+        {% include "includes/csrf_token.html" %}
+        {% include "includes/continue-button.html" %}
       </form>
 
     </div>

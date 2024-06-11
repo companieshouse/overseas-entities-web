@@ -17,6 +17,7 @@
       {% include "includes/list/errors.html" %}
 
       <form method="post">
+        {% include "includes/csrf_token.html" %}
         {{ govukRadios({
           errorMessage: errors.has_sold_all_land if errors,
           classes: "govuk-radios",

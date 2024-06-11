@@ -16,6 +16,7 @@ jest.mock('../../../src/utils/save.and.continue');
 // import remove journey middleware mock before app to prevent real function being used instead of mock
 import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
 
+import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import { describe, expect, test, beforeEach, jest } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
@@ -70,7 +71,7 @@ import { retrieveTrustData } from "../../../src/utils/update/trust.model.fetch";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
 
 mockRemoveJourneyMiddleware.mockClear();
-
+mockCsrfProtectionMiddleware.mockClear();
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 

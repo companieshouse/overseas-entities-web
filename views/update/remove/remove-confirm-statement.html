@@ -17,6 +17,7 @@
       {% include "includes/list/errors.html" %}
 
       <form class="form" method="post">
+        {% include "includes/csrf_token.html" %}
         <span class="govuk-caption-l">{{ entity_name }} - {{ entity_number }}</span>
         {{ govukCheckboxes({
           errorMessage: errors.removal_confirmation if errors,

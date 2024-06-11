@@ -38,7 +38,7 @@ const setIsTrustToBeCeasedFlagOnBody = () => {
 export const checkTrustStillInvolved = (req: Request): boolean => {
   const appData: ApplicationData = getApplicationData(req.session);
 
-  const isUpdateOrRemove: boolean = appData.entity_number !== undefined;
+  const isUpdateOrRemove: boolean = !!appData.entity_number;
 
   return !hasNoBoAssignableToTrust(appData) && isUpdateOrRemove;
 };

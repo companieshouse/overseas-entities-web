@@ -8,8 +8,8 @@ import { OwnedLandKey } from "../../model/update.type.model";
 import { getRegistrationDate } from "../../utils/update/relevant.period";
 import { InputDate } from "../../model/data.types.model";
 
-const getMethod : string = "GET";
-const postMethod : string = "POST";
+const getMethod: string = "GET";
+const postMethod: string = "POST";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -47,7 +47,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 };
 
 function beforeRender(req: Request, res: Response, method: String) {
-    logger.debugRequest(req, `${method} ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE}`);
+  logger.debugRequest(req, `${method} ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE}`);
 }
 
 function createOwnedLandError(): any {

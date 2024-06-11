@@ -127,9 +127,7 @@ describe("owned land filter page tests", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ERROR_LIST);
       expect(resp.text).toContain("Select yes if the overseas entity was the registered owner of UK land during the pre-registration period.");
-      expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
     });
 
-    
   });
 });

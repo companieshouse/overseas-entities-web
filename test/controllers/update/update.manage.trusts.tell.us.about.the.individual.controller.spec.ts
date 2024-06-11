@@ -204,6 +204,10 @@ describe('Update - Manage Trusts - Review individuals', () => {
         dateBecameIPDay: '2',
         dateBecameIPMonth: '8',
         dateBecameIPYear: '2023',
+        stillInvolved: '0',
+        ceasedDateDay: '21',
+        ceasedDateMonth: '10',
+        ceasedDateYear: '2023'
       };
 
       const expectedTrustee = {
@@ -237,6 +241,10 @@ describe('Update - Manage Trusts - Review individuals', () => {
         sa_address_region: 'Service New County',
         sa_address_country: 'Service New Country',
         sa_address_postal_code: 'Service NE994WS',
+        still_involved: '0',
+        ceased_date_day: '21',
+        ceased_date_month: '10',
+        ceased_date_year: '2023',
       };
 
       const trustInReview = {
@@ -272,6 +280,10 @@ describe('Update - Manage Trusts - Review individuals', () => {
           sa_address_postal_code: 'Existing service postcode',
           sa_address_po_box: '',
           is_service_address_same_as_usual_residential_address: yesNoResponse.No,
+          still_involved: '0',
+          ceased_date_day: '21',
+          ceased_date_month: '10',
+          ceased_date_year: '2023',
         }]
       };
 
@@ -334,6 +346,10 @@ describe('Update - Manage Trusts - Review individuals', () => {
         dateBecameIPDay: '2',
         dateBecameIPMonth: '8',
         dateBecameIPYear: '2023',
+        stillInvolved: '1',
+        ceasedDateDay: '',
+        ceasedDateMonth: '',
+        ceasedDateYear: ''
       };
 
       const expectedTrustee = {
@@ -366,6 +382,10 @@ describe('Update - Manage Trusts - Review individuals', () => {
         sa_address_postal_code: '',
         sa_address_care_of: '',
         sa_address_po_box: '',
+        still_involved: '1',
+        ceased_date_day: '',
+        ceased_date_month: '',
+        ceased_date_year: '',
       };
 
       const existingTrustee = {

@@ -72,6 +72,10 @@ type IndividualTrusteesFormCommon = {
   dateBecameIPDay?: string,
   dateBecameIPMonth?: string,
   dateBecameIPYear?: string,
+  stillInvolved?: string,
+  ceasedDateDay?: string,
+  ceasedDateMonth?: string,
+  ceasedDateYear?: string,
 };
 
 interface TrustHistoricalBeneficialOwnerFormLegal extends TrustHistoricalBeneficialOwnerFormCommon {

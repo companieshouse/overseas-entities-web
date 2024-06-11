@@ -34,7 +34,8 @@ const getPageProperties = (trust, formData, trustee: TrustIndividual, errors?: F
     },
     formData,
     errors,
-    uneditableDOB: trustee?.ch_references ? true : false
+    uneditableDOB: trustee?.ch_references ? true : false,
+    isUpdate: true // this is an update controller so we are safe to say that isUpdate is true
   };
 };
 
@@ -50,7 +51,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     const formData = trustee ? mapIndividualTrusteeFromSessionToPage(trustee) : {};
 
-    return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE, getPageProperties(trust, formData, trustee));
+    return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE, getPageProperties(trust, formData, trustee, ));
   } catch (error) {
     next(error);
   }
@@ -66,6 +67,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     const errorList = validationResult(req);
     const formData: IndividualTrusteesFormCommon = req.body as IndividualTrusteesFormCommon;
+    console.log("****************** " + JSON.stringify(formData, null, 2));
 
     if (!errorList.isEmpty()) {
       const trustee = getTrustee(trust, trusteeId, TrusteeType.INDIVIDUAL) as IndividualTrustee;
@@ -86,6 +88,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       const trustee = mapIndividualTrusteeToSession(formData);
       trust.INDIVIDUALS?.push(trustee);
     }
+
+    console.log(" &&&&&&&&&&&&&&&&&&&&&&&& " + JSON.stringify(trust.INDIVIDUALS, null, 2));
 
     setExtraData(req.session, appData);
     await saveAndContinue(req, req.session as Session, false);

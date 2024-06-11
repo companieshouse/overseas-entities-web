@@ -33,6 +33,10 @@ export const mapIndividualTrusteeToSession = (
     is_service_address_same_as_usual_residential_address: (formData.is_service_address_same_as_usual_residential_address) ? Number(formData.is_service_address_same_as_usual_residential_address) : 0,
     sa_address_care_of: '',
     sa_address_po_box: '',
+    still_involved: formData.stillInvolved,
+    ceased_date_day: formData.stillInvolved === "0" ? formData.ceasedDateDay : "",
+    ceased_date_month: formData.stillInvolved === "0" ? formData.ceasedDateMonth : "",
+    ceased_date_year: formData.stillInvolved === "0" ? formData.ceasedDateYear : "",
   };
 
   let interestedPersonData = {};
@@ -111,6 +115,10 @@ export const mapIndividualTrusteeFromSessionToPage = (
     service_address_county: trustee.sa_address_region,
     service_address_country: trustee.sa_address_country,
     service_address_postcode: trustee.sa_address_postal_code,
+    stillInvolved: trustee.still_involved,
+    ceasedDateDay: trustee.ceased_date_day,
+    ceasedDateMonth: trustee.ceased_date_month,
+    ceasedDateYear: trustee.ceased_date_year
   };
 
   if (trustee.type === RoleWithinTrustType.INTERESTED_PERSON){

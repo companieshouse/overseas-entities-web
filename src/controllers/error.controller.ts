@@ -11,6 +11,12 @@ const pageNotFound = (req: Request, res: Response) => {
   });
 };
 
+/**
+ * This handler catches any CSRF errors thrown within the application.
+ * If it is not a CSRF, the error is passed to the next error handler.
+ * If it is a CSRF error, it responds with a 403 forbidden status and renders the CSRF error.
+ */
+
 const csrfErrorHandler = (err: CsrfError | Error, req: Request, res: Response, next: NextFunction) => {
   const isRegistration: boolean = req.path.startsWith(config.LANDING_URL);
   // Handle non-CSRF Errors immediately

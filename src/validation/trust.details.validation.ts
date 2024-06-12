@@ -44,6 +44,9 @@ export const checkTrustStillInvolved = (req: Request): boolean => {
 };
 
 export const trustDetails = [
+  // Need to set this flag so it can be checked in the other validators
+  setIsTrustToBeCeasedFlagOnBody(),
+
   body("name")
     .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.TRUST_NAME_2)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.NAME_INVALID_CHARACTERS_TRUST)
@@ -57,6 +60,9 @@ export const trustDetails = [
 
   body("beneficialOwnersIds")
     .not().isEmpty().withMessage(ErrorMessages.TRUST_INVOLVED_BOS),
+
+  // trustCeasedDateValidations are conditional and will only run if the trust is being ceased
+  ...trustCeasedDateValidations,
 
   body("hasAllInfo")
     .not().isEmpty().withMessage(ErrorMessages.TRUST_HAS_ALL_INFO)

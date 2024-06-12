@@ -6,6 +6,7 @@ jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/trust/common.trust.data.mapper');
 
+import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import { beforeEach, jest, test, describe } from '@jest/globals';
 import request from 'supertest';
 import { NextFunction } from 'express';
@@ -26,6 +27,7 @@ import { APPLICATION_DATA_MOCK, TRUST_WITH_ID } from '../../__mocks__/session.mo
 import { PAGE_TITLE_ERROR, PAGE_NOT_FOUND_TEXT, TRUST_INVOLVED_TITLE } from '../../__mocks__/text.mock';
 import { mapCommonTrustDataToPage } from '../../../src/utils/trust/common.trust.data.mapper';
 
+mockCsrfProtectionMiddleware.mockClear();
 const mockGetApplicationData = getApplicationData as jest.Mock;
 mockGetApplicationData.mockReturnValue( APPLICATION_DATA_MOCK );
 

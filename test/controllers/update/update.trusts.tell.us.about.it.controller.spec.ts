@@ -6,6 +6,7 @@ jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/save.and.continue');
 
+import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import { beforeEach, jest, test, describe } from '@jest/globals';
 import request from 'supertest';
 import { NextFunction } from 'express';
@@ -29,6 +30,7 @@ import { PAGE_TITLE_ERROR, PAGE_NOT_FOUND_TEXT, UPDATE_TELL_US_ABOUT_TRUST_HEADI
 import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.mock';
 import { saveAndContinue } from '../../../src/utils/save.and.continue';
 
+mockCsrfProtectionMiddleware.mockClear();
 const mockGetApplicationData = getApplicationData as jest.Mock;
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
@@ -120,6 +122,7 @@ describe('Update - Trusts - Tell us about the trust', () => {
         createdDateMonth: '7',
         createdDateYear: '2023',
         beneficialOwnersIds: '45e4283c-6b05-42da-ac9d-1f7bf9fe9c85',
+        stillInvolved: '1',
         hasAllInfo: '0',
         trustId: ''
       });

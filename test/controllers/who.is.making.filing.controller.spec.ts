@@ -7,6 +7,7 @@ jest.mock('../../src/middleware/navigation/has.presenter.middleware');
 jest.mock('../../src/middleware/service.availability.middleware');
 jest.mock("../../src/utils/url");
 
+import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
@@ -33,6 +34,7 @@ import { isActiveFeature } from "../../src/utils/feature.flag";
 import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
 import { getUrlWithParamsToPath } from "../../src/utils/url";
 
+mockCsrfProtectionMiddleware.mockClear();
 const mockHasPresenterMiddleware = hasPresenter as jest.Mock;
 mockHasPresenterMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 

@@ -19,6 +19,7 @@
       {% include "includes/list/errors.html" %}
 
       <form method="post">
+        {% include "includes/csrf_token.html" %}
         {{ govukRadios({
           errorMessage: errors.continue_saved_filing if errors,
           classes: "govuk-radios",

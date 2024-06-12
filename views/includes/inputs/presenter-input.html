@@ -7,6 +7,7 @@
     <p class="govuk-caption-m govuk-!-margin-bottom-4">We’ll use this if we need more information about the {{ submission }}.</p>
 
     <form method="post">
+      {% include "includes/csrf_token.html" %}
 
       {{ govukInput({
         errorMessage: errors.full_name if errors,

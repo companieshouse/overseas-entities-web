@@ -12,7 +12,7 @@ jest.mock('../../../src/middleware/navigation/update/has.beneficial.owners.or.ma
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
 import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
-
+import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import { beforeEach, jest, test, describe } from '@jest/globals';
 import request from 'supertest';
 import { NextFunction } from 'express';
@@ -34,7 +34,7 @@ import { TrusteeType } from '../../../src/model/trustee.type.model';
 import { saveAndContinue } from '../../../src/utils/save.and.continue';
 
 mockRemoveJourneyMiddleware.mockClear();
-
+mockCsrfProtectionMiddleware.mockClear();
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 

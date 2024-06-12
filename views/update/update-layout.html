@@ -20,12 +20,14 @@
 {% from "govuk/components/select/macro.njk"              import govukSelect %}
 {% from "govuk/components/warning-text/macro.njk"        import govukWarningText %}
 {% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+{% from "web-security-node/components/csrf-token-input/macro.njk" import csrfTokenInput %}
 
 {% block head %}
 
   <!--[if !IE 8]><!-->
   <link rel="stylesheet" type="text/css" media="all" href="//{{CDN_HOST}}/stylesheets/govuk-frontend/v4.6.0/govuk-frontend-4.6.0.min.css" />
   <link rel="stylesheet" type="text/css" media="all" href="//{{CDN_HOST}}/stylesheets/services/overseas-entities/application.css"  />
+  {% include "includes/styles.html" %}
   <!--<![endif]-->
 
   <link rel="SHORTCUT ICON" href="//{{CDN_HOST}}/images/favicon.ico" />

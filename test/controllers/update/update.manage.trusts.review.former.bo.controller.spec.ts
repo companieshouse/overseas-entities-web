@@ -6,6 +6,7 @@ jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/save.and.continue');
 
+import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import { beforeEach, jest, test, describe } from '@jest/globals';
 import request from 'supertest';
 import { NextFunction } from 'express';
@@ -71,6 +72,7 @@ const appDataWithReviewTrust = {
   }
 } as ApplicationData;
 
+mockCsrfProtectionMiddleware.mockClear();
 const mockGetApplicationData = getApplicationData as jest.Mock;
 mockGetApplicationData.mockReturnValue(appDataWithReviewTrust);
 

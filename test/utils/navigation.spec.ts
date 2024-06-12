@@ -254,6 +254,12 @@ describe("NAVIGATION utils", () => {
     expect(navigation).toEqual(config.RELEVANT_PERIOD_INTERRUPT_URL);
   });
 
+  test(`NAVIGATION returns ${config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL} when calling previousPage on ${config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL} object`, () => {
+    const mockRequest = { query: {} } as Request;
+    const navigation = NAVIGATION[config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL].previousPage(undefined, mockRequest);
+    expect(navigation).toEqual(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
+  });
+
   test(`NAVIGATION returns ${config.UPDATE_INTERRUPT_CARD_URL} when calling previousPage on ${config.OVERSEAS_ENTITY_QUERY_URL} object`, () => {
     const mockRequest = { query: {} } as Request;
     const navigation = NAVIGATION[config.OVERSEAS_ENTITY_QUERY_URL].previousPage(undefined, mockRequest);

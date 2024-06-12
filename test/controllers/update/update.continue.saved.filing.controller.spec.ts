@@ -3,6 +3,7 @@ jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 
+import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
@@ -20,6 +21,7 @@ import { authentication } from "../../../src/middleware/authentication.middlewar
 import { logger } from "../../../src/utils/logger";
 import { REMOVE_LANDING_PAGE_URL, REMOVE_SERVICE_NAME, UPDATE_SERVICE_NAME } from "../../../src/config";
 
+mockCsrfProtectionMiddleware.mockClear();
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;

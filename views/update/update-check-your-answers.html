@@ -256,6 +256,7 @@
 
       <br>
       <form method="post">
+        {% include "includes/csrf_token.html" %}
         <div class="govuk-button-group">
           {{ govukButton({
             text: "Continue to payment",

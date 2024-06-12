@@ -19,50 +19,50 @@
 
         <h1 class="govuk-heading-xl">Provide statements for the pre-registration period</h1>
         <form method="post">
-        {{ govukCheckboxes({
-        errorMessage: errors.relevant_period_combined_statements if errors,
-        idPrefix: "relevant_period_combined_statements",
-        name: "relevant_period_combined_statements",
-        fieldset: {
-        legend: {
-        text: "The overseas entity has reasonable cause to believe that during the pre-registration period:",
-        isPageHeading: false,
-        classes: "govuk-fieldset__legend--s"
-        }
-        },
-        hint: {
-        text: "Select all that apply"
-        },
-        items:
-        [
-        {
-        value: "REGISTRABLE_BENEFICIAL_OWNER",
-        text: "At least one person became or ceased to be a <strong>registrable beneficial owner</strong> that it has not already provided information about" | safe,
-        checked: registrable_beneficial_owner
-        },
-        {
-        value: "ANY_TRUSTS_INVOLVED",
-        text: "There was at least one person that was a <strong>registrable beneficial owner due to being a trustee of a trust</strong>, that the entity has not already provided information about" | safe,
-        checked: any_trust_involved
-        },
-        {
-        value: "BENEFICIARY_OF_A_TRUST_INVOLVED",
-        text: "At least one person became or ceased to be a  <strong>beneficiary of a trust</strong>, involved in the overseas entity, that it has not already provided information about" | safe,
-        checked: beneficiary_of_a_trust_involved
-        },
-        {
-        divider: "or"
-        },
-        {
-        value: "NONE_OF_THESE",
-        text: "<strong>None of these</strong>– the information provided at registration was the same throughout the pre-registration period" | safe,
-        checked: None_of_these,
-        behaviour: "exclusive"
-        }
-        ]
-        }) }}
+            {% include "includes/csrf_token.html" %}
+            {{ govukCheckboxes({
+            errorMessage: errors.relevant_period_combined_statements if errors,
+            idPrefix: "relevant_period_combined_statements",
+            name: "relevant_period_combined_statements",
+            fieldset: {
+            legend: {
+            text: "The overseas entity has reasonable cause to believe that during the pre-registration period:",
+            isPageHeading: false,
+            classes: "govuk-fieldset__legend--s"
+            }
+            },
+            hint: {
+            text: "Select all that apply"
+            },
+            items:
+            [
+            {
+            value: "change_bo_relevant_period",
+            text: "At least one person became or ceased to be a <strong>registrable beneficial owner</strong> that it has not already provided information about" | safe,
+            checked: update.change_bo_relevant_period === "CHANGE_BO_RELEVANT_PERIOD"
+            },
+            {
+            value: "trustee_involved_relevant_period",
+            text: "There was at least one person that was a <strong>registrable beneficial owner due to being a trustee of a trust</strong>, that the entity has not already provided information about" | safe,
+            checked: update.trustee_involved_relevant_period === "TRUSTEE_INVOLVED_RELEVANT_PERIOD"
+            },
+            {
+            value: "change_beneficiary_relevant_period",
+            text: "At least one person became or ceased to be a  <strong>beneficiary of a trust</strong>, involved in the overseas entity, that it has not already provided information about" | safe,
+            checked: update.change_beneficiary_relevant_period === "CHANGE_BENEFICIARY_RELEVANT_PERIOD"
+            },
+            {
+            divider: "or"
+            },
+            {
+            value: "none_of_these",
+            text: "<strong>None of these</strong>– the information provided at registration was the same throughout the pre-registration period" | safe,
+            behaviour: "exclusive"
+            }
+            ]
+            }) }}
 
-        {% include "includes/save-and-continue-button.html" %}
+            {% include "includes/save-and-continue-button.html" %}
         </form>
     </div>
 </div>

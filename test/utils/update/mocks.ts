@@ -235,12 +235,14 @@ export const FETCH_TRUST_DATA_MOCK: TrustData[] = [
     hashedTrustId: "12345678",
     trustName: "Test Trust",
     creationDate: "2020-01-01",
+    trustStillInvolvedInOverseasEntityIndicator: "1",
     unableToObtainAllTrustInfoIndicator: false
   },
   {
     hashedTrustId: "87654321",
     trustName: "Test Trust 2",
     creationDate: "2020-02-02",
+    trustStillInvolvedInOverseasEntityIndicator: "0",
     unableToObtainAllTrustInfoIndicator: true
   }
 ];
@@ -250,6 +252,7 @@ export const FETCH_TRUST_DATA_MOCK_WITHOUT_CHIPS_REFERENCE: TrustData =
     hashedTrustId: "",
     trustName: "Test Trust",
     creationDate: "2020-01-01",
+    trustStillInvolvedInOverseasEntityIndicator: "1",
     unableToObtainAllTrustInfoIndicator: false
   };
 

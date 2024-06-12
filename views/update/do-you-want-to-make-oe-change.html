@@ -28,6 +28,7 @@
     <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ entity_name }} - {{ entity_number }}</span>
 
     <form method="post">
+      {% include "includes/csrf_token.html" %}
       {{ govukRadios({
         errorMessage: errors.no_change if errors,
         classes: "govuk-radios--inline",

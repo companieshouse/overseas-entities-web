@@ -2,6 +2,7 @@ jest.mock("ioredis");
 jest.mock("../../src/utils/logger");
 jest.mock('../../src/middleware/authentication.middleware');
 
+import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
@@ -18,6 +19,7 @@ import { ErrorMessages } from '../../src/validation/error.messages';
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { logger } from "../../src/utils/logger";
 
+mockCsrfProtectionMiddleware.mockClear();
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 

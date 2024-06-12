@@ -9,7 +9,7 @@ jest.mock('../../../src/utils/save.and.continue');
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
 import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
-
+import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import * as config from "../../../src/config";
 import { getApplicationData, mapDataObjectToFields, prepareData } from "../../../src/utils/application.data";
 import {
@@ -39,7 +39,7 @@ import { ErrorMessages } from "../../../src/validation/error.messages";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
 
 mockRemoveJourneyMiddleware.mockClear();
-
+mockCsrfProtectionMiddleware.mockClear();
 const mockHasUpdatePresenter = hasUpdatePresenter as jest.Mock;
 mockHasUpdatePresenter.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 

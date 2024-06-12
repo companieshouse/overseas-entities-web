@@ -28,6 +28,7 @@ export const TRUST_DETAILS_TEXTS = {
 type TrustDetailPageProperties = {
   backLinkUrl: string;
   templateName: string;
+  isUpdate: boolean;
   isReview?: boolean,
   pageParams: {
     title: string;
@@ -69,6 +70,7 @@ const getPageProperties = (
       beneficialOwners: boAvailableForTrust,
     },
     formData,
+    isUpdate,
     isReview,
     isFeatureFlagCeaseTrustsEnabled: isActiveFeature(config.FEATURE_FLAG_ENABLE_CEASE_TRUSTS),
     errors,
@@ -159,9 +161,8 @@ export const postTrustDetails = async (req: Request, res: Response, next: NextFu
       return res.render(pageProps.templateName, pageProps);
     }
 
-    const isTrustToBeCeased = hasNoBoAssignableToTrust(appData);
     //  map form data to session trust data
-    const details = mapperDetails.mapDetailToSession(req.body, isTrustToBeCeased);
+    const details = mapperDetails.mapDetailToSession(req.body, hasNoBoAssignableToTrust(appData));
     if (!details.trust_id) {
       details.trust_id = mapperDetails.generateTrustId(appData);
     }

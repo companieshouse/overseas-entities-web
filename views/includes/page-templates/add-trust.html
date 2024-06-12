@@ -82,6 +82,8 @@
       }}
       {% endfor %}
       <form method="post">
+        {% include "includes/csrf_token.html" %}
+        
         {% set fieldParam = {
           label: pageParams.subtitle,
           name: 'addTrust',

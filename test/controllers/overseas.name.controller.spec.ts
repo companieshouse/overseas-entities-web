@@ -8,6 +8,7 @@ jest.mock('../../src/utils/feature.flag');
 jest.mock('../../src/middleware/service.availability.middleware');
 jest.mock("../../src/utils/url");
 
+import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
@@ -48,6 +49,7 @@ import { isActiveFeature } from "../../src/utils/feature.flag";
 import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
 import { getUrlWithParamsToPath, getUrlWithTransactionIdAndSubmissionId, transactionIdAndSubmissionIdExistInRequest } from "../../src/utils/url";
 
+mockCsrfProtectionMiddleware.mockClear();
 const mockTransactionService = postTransaction as jest.Mock;
 mockTransactionService.mockReturnValue( TRANSACTION_ID );
 

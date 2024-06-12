@@ -8,7 +8,7 @@ jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
 import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
-
+import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
@@ -40,7 +40,7 @@ import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../../src/model/wh
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
 
 mockRemoveJourneyMiddleware.mockClear();
-
+mockCsrfProtectionMiddleware.mockClear();
 const mockHasUpdatePresenter = hasUpdatePresenter as jest.Mock;
 mockHasUpdatePresenter.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 

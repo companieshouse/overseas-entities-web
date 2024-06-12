@@ -37,7 +37,8 @@ import {
   trustType,
   dueDiligenceType,
   updateType,
-  removeType
+  removeType,
+  relevantPeriodType
 } from "../../src/model";
 import {
   EntityNameKey,
@@ -1396,6 +1397,20 @@ export const UPDATE_OBJECT_MOCK_REVIEW_BO_OTHER_MODEL: updateType.Update = {
   review_beneficial_owners_corporate: [UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK]
 };
 
+export const UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE: updateType.Update = {
+  ...UPDATE_OBJECT_MOCK,
+  change_bo_relevant_period: relevantPeriodType.ChangeBoRelevantPeriodType.YES,
+  trustee_involved_relevant_period: relevantPeriodType.TrusteeInvolvedRelevantPeriodType.YES,
+  change_beneficiary_relevant_period: relevantPeriodType.ChangeBeneficiaryRelevantPeriodType.YES
+};
+
+export const UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE: updateType.Update = {
+  ...UPDATE_OBJECT_MOCK,
+  change_bo_relevant_period: relevantPeriodType.ChangeBoRelevantPeriodType.NO,
+  trustee_involved_relevant_period: relevantPeriodType.TrusteeInvolvedRelevantPeriodType.NO,
+  change_beneficiary_relevant_period: relevantPeriodType.ChangeBeneficiaryRelevantPeriodType.NO
+};
+
 export const PAYMENT_OBJECT_MOCK: CreatePaymentRequest = {
   redirectUri: PAYMENT_WITH_TRANSACTION_URL,
   reference: `${REFERENCE}_${TRANSACTION_ID}`,
@@ -1538,6 +1553,7 @@ export const TRUST: Trust = {
   creation_date_day: "31",
   creation_date_month: "12",
   creation_date_year: "1999",
+  trust_still_involved_in_overseas_entity: "Yes",
   unable_to_obtain_all_trust_info: "No"
 };
 
@@ -1547,6 +1563,7 @@ export const TRUST_NO_NAME: Trust = {
   creation_date_day: "31",
   creation_date_month: "12",
   creation_date_year: "1999",
+  trust_still_involved_in_overseas_entity: "Yes",
   unable_to_obtain_all_trust_info: "No"
 };
 
@@ -1556,6 +1573,7 @@ export const TRUST_NO_DATE: Trust = {
   creation_date_day: "",
   creation_date_month: "",
   creation_date_year: "",
+  trust_still_involved_in_overseas_entity: "Yes",
   unable_to_obtain_all_trust_info: "No"
 };
 
@@ -1565,6 +1583,7 @@ export const TRUST_PARTIAL_DATE: Trust = {
   creation_date_day: "31",
   creation_date_month: "",
   creation_date_year: "1999",
+  trust_still_involved_in_overseas_entity: "Yes",
   unable_to_obtain_all_trust_info: "No"
 };
 
@@ -1686,6 +1705,7 @@ export const TRUST_WITH_ID: Trust = {
   creation_date_day: "31",
   creation_date_month: "12",
   creation_date_year: "1999",
+  trust_still_involved_in_overseas_entity: "Yes",
   unable_to_obtain_all_trust_info: "No"
 };
 

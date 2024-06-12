@@ -1,0 +1,78 @@
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        {% include "includes/list/errors.html" %}
+
+        {% include "includes/page-templates/important-banner.html" %}
+
+        <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ entity_name }} - {{ entity_number }}</span>
+
+        <h1 class="govuk-heading-xl">Review statements for the pre-registration period</h1>
+
+        <p class="govuk-body">
+            These statements are based on the options you selected on the previous screen.
+        </p>
+
+
+        <!-- Statement 1 -->
+        <h2 class="govuk-heading-m">
+            Beneficial owner statement
+        </h2>
+
+        {% if update.change_bo_relevant_period === "CHANGE_BO_RELEVANT_PERIOD" %}
+            <p class="govuk-body">The entity <strong>has reasonable cause</strong> to believe that <strong>at least one person became or ceased to be a registrable beneficial owner</strong> during the pre-registration period, that it has not already provided information about.</p>
+            {{ govukInsetText({
+                text: "We’ll ask you to provide information about any additional registrable beneficial owners later in the service"
+            }) }}
+        {% else %}
+            <p class="govuk-body">The entity has <strong>no reasonable cause</strong> to believe that <strong>anyone became or ceased to be a registrable beneficial owner</strong> during the pre-registration period, that it has not already provided information about.</p>
+        {% endif %}
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+
+        <!-- Statement 2 -->
+        <h2 class="govuk-heading-m">Trusts statement</h2>
+
+        {% if update.trustee_involved_relevant_period === "TRUSTEE_INVOLVED_RELEVANT_PERIOD" %}
+            <p class="govuk-body">The entity <strong>has reasonable cause</strong> to believe that <strong>at least one person was a registrable beneficial owner due to being a trustee of a trust</strong> during the pre-registration period, that the entity has not already provided information about.</p>
+            {{ govukInsetText({
+                text: "We’ll ask you to provide information about any additional registrable beneficial owners, and any trusts they were a trustee of, later in the service."
+            }) }}
+        {% else %}
+            <p class="govuk-body">The entity has <strong>no reasonable cause</strong> to believe that <strong>anyone was a registrable beneficial owner due to being a trustee of a trust</strong> during the pre-registration period, that it has not already provided information about.</p>
+        {% endif %}
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+        <!-- Statement 3 -->
+        <h2 class="govuk-heading-m">Beneficiaries statement</h2>
+
+        {% if update.change_beneficiary_relevant_period === "CHANGE_BENEFICIARY_RELEVANT_PERIOD" %}
+            <p class="govuk-body">The entity <strong>has reasonable cause</strong> to believe that <strong>at least one person became or ceased to be a beneficiary of a trust</strong> involved in the overseas entity during the pre-registration period, that it has not already provided information about.</p>
+            {{ govukInsetText({
+                text: "We’ll ask you to provide information about any additional beneficiaries of a trust later in the service."
+            }) }}
+        {% else %}
+            <p class="govuk-body">The entity has <strong>no reasonable cause</strong> to believe that <strong>anyone became or ceased to be a beneficiary of a trust</strong> involved in the overseas entity during the pre-registration period, that it has not already provided information about.</p>
+        {% endif %}
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+        {{ govukInsetText({
+            html: '
+            <h2 class="govuk-heading-m">What information we’ll show on the public register</h2>
+            <p class="govuk-body">We will show the information you provide in this section on the public Register of Overseas Entities.</p>
+            '
+        }) }}
+
+        <form method="post">
+            {% include "includes/csrf_token.html" %}
+            <div class="govuk-button-group">
+                {{ govukButton({
+                text: "Agree and continue",
+                attributes: {
+                "id": "submit"
+                }
+                }) }}
+                <a href="{{ backLinkUrl }}" class="govuk-link govuk-link--no-visited-state">I need to change the statements</a>
+            </div>
+        </form>
+    </div>
+</div>

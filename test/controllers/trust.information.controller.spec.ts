@@ -4,6 +4,7 @@ jest.mock("../../src/utils/application.data");
 jest.mock('../../src/utils/save.and.continue');
 jest.mock('../../src/middleware/navigation/has.beneficial.owners.or.managing.officers.middleware');
 
+import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
@@ -42,6 +43,7 @@ import {
 } from "../__mocks__/validation.mock";
 import { trustType } from '../../src/model';
 
+mockCsrfProtectionMiddleware.mockClear();
 const mockHasBOsOrMOsMiddleware = hasBOsOrMOs as jest.Mock;
 mockHasBOsOrMOsMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 

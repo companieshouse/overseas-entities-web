@@ -14,6 +14,7 @@ jest.mock('../../src/utils/url');
 jest.mock('../../src/middleware/service.availability.middleware');
 jest.mock('../../src/utils/update/review_trusts');
 
+import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
 import { constants } from 'http2';
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
@@ -43,6 +44,7 @@ import { getUrlWithParamsToPath } from '../../src/utils/url';
 import { serviceAvailabilityMiddleware } from '../../src/middleware/service.availability.middleware';
 import { getTrustInReview, hasTrustsToReview } from '../../src/utils/update/review_trusts';
 
+mockCsrfProtectionMiddleware.mockClear();
 const MOCKED_URL = TRUST_ENTRY_WITH_PARAMS_URL + "MOCKED_URL";
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;

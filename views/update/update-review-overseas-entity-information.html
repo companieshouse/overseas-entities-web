@@ -18,6 +18,7 @@
     <p class="govuk-body">We'll show you the information we hold about the overseas entity.</p>
     <p class="govuk-body govuk-!-margin-bottom-7">You'll need to check the information is correct, and update it if needed.</p>
     <form method="post">
+      {% include "includes/csrf_token.html" %}
       {% include "includes/continue-button.html" %}
     </form>
   </div>

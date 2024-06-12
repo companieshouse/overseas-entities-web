@@ -38,7 +38,7 @@ const setIsTrustToBeCeasedFlagOnBody = () => {
 export const checkTrustStillInvolved = (req: Request): boolean => {
   const appData: ApplicationData = getApplicationData(req.session);
 
-  const isUpdateOrRemove: boolean = appData.entity_number !== undefined;
+  const isUpdateOrRemove: boolean = !!appData.entity_number;
 
   return !hasNoBoAssignableToTrust(appData) && isUpdateOrRemove;
 };
@@ -63,7 +63,7 @@ export const trustDetails = [
 ];
 
 export const reviewTrustDetails = [
-  // need to set this flag so it can be checked in the other validators
+  // Need to set this flag so it can be checked in the other validators
   setIsTrustToBeCeasedFlagOnBody(),
 
   body("name")

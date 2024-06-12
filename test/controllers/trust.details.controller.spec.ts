@@ -546,5 +546,41 @@ describe('Trust Details controller', () => {
       expect(resp.text).toContain(pageUrl); // TODO update when backlinks are implemented
       expect(resp.text).toContain(ErrorMessages.NAME_INVALID_CHARACTERS_TRUST);
     });
+
+    test("successful POST submission to same page with a missing (equivalent to 'undefined') entity number does not raise an error for the 'still involved' trust question", async () => {
+      mockGetApplicationData.mockReturnValue({});
+
+      (mapDetailToSession as jest.Mock).mockReturnValue({
+        trust_id: mockTrust2Data.trust_id,
+      });
+
+      const resp = await request(app)
+        .post(pageWithParamsUrl)
+        .send({
+          name: "dummyName"
+        });
+
+      expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
+      expect(resp.text).toContain(pageUrl); // TODO update when backlinks are implemented
+      expect(resp.text).not.toContain(ErrorMessages.TRUST_STILL_INVOLVED);
+    });
+
+    test("successful POST submission to same page with a null entity number (simulating a resumed registration) does not raise an error for the 'still involved' trust question", async () => {
+      mockGetApplicationData.mockReturnValue({ entity_number: null });
+
+      (mapDetailToSession as jest.Mock).mockReturnValue({
+        trust_id: mockTrust2Data.trust_id,
+      });
+
+      const resp = await request(app)
+        .post(pageWithParamsUrl)
+        .send({
+          name: "dummyName"
+        });
+
+      expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
+      expect(resp.text).toContain(pageUrl); // TODO update when backlinks are implemented
+      expect(resp.text).not.toContain(ErrorMessages.TRUST_STILL_INVOLVED);
+    });
   });
 });

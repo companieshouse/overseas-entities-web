@@ -63,7 +63,7 @@ export const trustDetails = [
 ];
 
 export const reviewTrustDetails = [
-  // need to set this flag so it can be checked in the other validators
+  // Need to set this flag so it can be checked in the other validators
   setIsTrustToBeCeasedFlagOnBody(),
 
   body("name")

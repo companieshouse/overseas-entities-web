@@ -31,7 +31,7 @@ import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/ha
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { yesNoResponse } from "../../../src/model/data.types.model";
-import { OwnedLandKey } from "../../../src/model/update.type.model";
+import { OwnedLandKey, UpdateKey } from "../../../src/model/update.type.model";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockHasUpdatePresenter = hasUpdatePresenter as jest.Mock;
@@ -98,6 +98,22 @@ describe("owned land filter page tests", () => {
 
       expect(resp.status).toEqual(404);
       expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
+    });
+    test(`renders the ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE} page with banner when registration date is equal to 29 february 2022.`, async () => {
+      mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK, [UpdateKey]: { date_of_creation: { day: "29", month: "02", year: "2022" } } });
+      const resp = await request(app).get(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain("29");
+      expect(resp.text).toContain("February");
+      expect(resp.text).toContain("2022");
+    });
+    test(`renders the ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE} page page with banner when registration date is equal to 30 January 2023.`, async () => {
+      mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK, [UpdateKey]: { date_of_creation: { day: "30", month: "01", year: "2023" } } });
+      const resp = await request(app).get(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain("30");
+      expect(resp.text).toContain("January");
+      expect(resp.text).toContain("2022");
     });
   });
 

@@ -32,7 +32,9 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     if (!beneficialOwnerStatement || !BeneficialOwnersStatementTypes.includes(beneficialOwnerStatement)) {
       throw createAndLogErrorRequest(req, "Beneficial Owner Statement type not included or incorrect");
     }
-    const backLinkUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) ? getUrlWithParamsToPath(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL, req) : config.BENEFICIAL_OWNER_STATEMENTS_URL;
+    const backLinkUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
+      ? getUrlWithParamsToPath(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL, req)
+      : config.BENEFICIAL_OWNER_STATEMENTS_URL;
     return res.render(config.BENEFICIAL_OWNER_DELETE_WARNING_PAGE, {
       backLinkUrl,
       templateName: config.BENEFICIAL_OWNER_DELETE_WARNING_PAGE,

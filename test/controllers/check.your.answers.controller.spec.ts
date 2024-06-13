@@ -507,11 +507,6 @@ describe("GET tests", () => {
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
-    // console.log(`${TRUST_ENTRY_WITH_PARAMS_URL}${ADD_TRUST_URL}`);
-    // console.log(`${TRUST_DETAILS_URL}/${TRUST_WITH_ID.trust_id}`);
-    // console.log(`${TRUST_DETAILS_URL}/${TRUST_WITH_ID.trust_id}`);
-    // console.log(mockGetUrlWithParamsToPath.mock.calls[0][0]);
-
     expect(resp.status).toEqual(200);
     expect(resp.text).not.toContain(BENEFICIAL_OWNER_TYPE_LINK); // back button
     expect(resp.text).toContain(MOCKED_URL); // back button

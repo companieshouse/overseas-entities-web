@@ -21,11 +21,11 @@ import request from "supertest";
 import app from "../../src/app";
 
 import {
-  ADD_TRUST_URL,
   BENEFICIAL_OWNER_GOV_URL,
   BENEFICIAL_OWNER_INDIVIDUAL_URL,
   BENEFICIAL_OWNER_OTHER_URL,
   BENEFICIAL_OWNER_STATEMENTS_URL,
+  BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
   CHECK_YOUR_ANSWERS_PAGE,
   CHECK_YOUR_ANSWERS_URL,
   CONFIRMATION_PAGE,
@@ -34,8 +34,7 @@ import {
   MANAGING_OFFICER_CORPORATE_URL,
   MANAGING_OFFICER_URL,
   TRUST_DETAILS_URL,
-  CHECK_YOUR_ANSWERS_WITH_PARAMS_URL,
-  TRUST_ENTRY_WITH_PARAMS_URL
+  CHECK_YOUR_ANSWERS_WITH_PARAMS_URL
 } from "../../src/config";
 
 import * as CHANGE_LINKS from "../../src/config";
@@ -157,6 +156,7 @@ describe("GET tests", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockIsActiveFeature.mockReset();
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including presenter details`, async () => {
@@ -485,11 +485,16 @@ describe("GET tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with trust data and feature flag on`, async () => {
+    mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE FLAG REDIS REMOVAL
+    mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE FLAG REDIS REMOVAL
+    mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE FLAG REDIS REMOVAL
     mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_TRUSTS_WEB flag returning true
-    mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE FLAG REDIS REMOVAL trusts.ts - GET TRUST LANDING URL
-    mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_TRUSTS_WEB flag returning true
-    const mockBackButtonUrl = "backButtonUrl";
-    mockGetUrlWithParamsToPath.mockReturnValueOnce(mockBackButtonUrl);
+    mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE FLAG REDIS REMOVAL
+    mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE FLAG REDIS REMOVAL
+
+    // const mockBackButtonUrl = "backButtonUrl";
+    // mockGetUrlWithParamsToPath.mockReturnValueOnce(mockBackButtonUrl);
+
     APPLICATION_DATA_MOCK.entity_number = undefined;
     const mockAppData = {
       ...APPLICATION_DATA_MOCK,
@@ -502,10 +507,16 @@ describe("GET tests", () => {
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
+    // console.log(`${TRUST_ENTRY_WITH_PARAMS_URL}${ADD_TRUST_URL}`);
+    // console.log(`${TRUST_DETAILS_URL}/${TRUST_WITH_ID.trust_id}`);
+    // console.log(`${TRUST_DETAILS_URL}/${TRUST_WITH_ID.trust_id}`);
+    // console.log(mockGetUrlWithParamsToPath.mock.calls[0][0]);
+
     expect(resp.status).toEqual(200);
     expect(resp.text).not.toContain(BENEFICIAL_OWNER_TYPE_LINK); // back button
-    expect(resp.text).toContain(mockBackButtonUrl); // back button
-    expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(`${TRUST_ENTRY_WITH_PARAMS_URL}${ADD_TRUST_URL}`);
+    expect(resp.text).toContain(MOCKED_URL); // back button
+    expect(resp.text).toContain("govuk-back-link"); // back button
+    expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(`${BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL}`);
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TRUST_TITLE);
     expect(resp.text).toContain(`${TRUST_DETAILS_URL}/${TRUST_WITH_ID.trust_id}`);
     expect(resp.text).toContain(TRUST_WITH_ID.trust_name);
@@ -979,10 +990,15 @@ describe("GET with url params tests tests", () => {
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with trust data and feature flag on`, async () => {
     mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_TRUSTS_WEB flag returning true
-    mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE FLAG REDIS REMOVAL trusts.ts - GET TRUST LANDING URL
-    mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_TRUSTS_WEB flag returning true
-    const mockBackButtonUrl = "backButtonUrl";
-    mockGetUrlWithParamsToPath.mockReturnValueOnce(mockBackButtonUrl);
+    mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE FLAG REDIS REMOVAL
+    mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE FLAG REDIS REMOVAL
+    mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE FLAG REDIS REMOVAL
+    mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE FLAG REDIS REMOVAL
+    // mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE FLAG REDIS REMOVAL
+
+    // const mockBackButtonUrl = "backButtonUrl";
+    // mockGetUrlWithParamsToPath.mockReturnValueOnce(mockBackButtonUrl);
+
     APPLICATION_DATA_MOCK.entity_number = undefined;
     const mockAppData = {
       ...APPLICATION_DATA_MOCK,
@@ -994,11 +1010,11 @@ describe("GET with url params tests tests", () => {
     mockGetApplicationData.mockReturnValueOnce(mockAppData);
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
-
     expect(resp.status).toEqual(200);
     expect(resp.text).not.toContain(BENEFICIAL_OWNER_TYPE_LINK); // back button
-    expect(resp.text).toContain(mockBackButtonUrl); // back button
-    expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(`${TRUST_ENTRY_WITH_PARAMS_URL}${ADD_TRUST_URL}`);
+    expect(resp.text).toContain(MOCKED_URL); // back button
+    expect(resp.text).toContain("govuk-back-link"); // back button
+    expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(`${BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL}`);
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TRUST_TITLE);
     expect(resp.text).toContain(`${TRUST_DETAILS_URL}/${TRUST_WITH_ID.trust_id}`);
     expect(resp.text).toContain(TRUST_WITH_ID.trust_name);

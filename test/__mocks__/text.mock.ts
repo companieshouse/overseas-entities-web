@@ -156,6 +156,7 @@ export const TRUST_SUMMARY_HEADING = "Trusts associated with the overseas entity
 export const TRUST_NOT_ASSOCIATED_WITH_BENEFICIAL_OWNER_TEXT = "This trust is no longer associated with a beneficial owner";
 export const TRUST_CEASED_DATE_TEXT = "When did this trust stop being associated with the overseas entity";
 export const TRUST_SELECT_TRUSTEES_TEXT = "Which of the overseas entity’s beneficial owners are trustees of this trust";
+export const TRUST_ENTER_CEASED_DATE = "Enter the date the trust stopped being associated with this overseas entity";
 
 export const CHANGE_LINK_INDIVIDUAL_BO_LABEL = "Individual beneficial owner ";
 export const CHANGE_LINK_INDIVIDUAL_BO_FIRST_NAME = CHANGE_LINK_INDIVIDUAL_BO_LABEL + "Ivan Drago - first name";

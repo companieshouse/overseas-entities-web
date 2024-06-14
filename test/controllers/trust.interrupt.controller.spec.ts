@@ -26,7 +26,7 @@ import {
   TRUST_INTERRUPT_URL,
   TRUST_ENTRY_WITH_PARAMS_URL,
   TRUST_INTERRUPT_PAGE,
-  BENEFICIAL_OWNER_TYPE_URL, BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL
+  BENEFICIAL_OWNER_TYPE_URL,
 } from '../../src/config';
 
 import { get, post, TRUST_INTERRUPT_TEXTS } from '../../src/controllers/trust.interrupt.controller';
@@ -141,11 +141,12 @@ describe('Trust Interrupt controller', () => {
     });
 
     test(`renders ${TRUST_INTERRUPT_PAGE} on GET method with correct back link url when feature flag is on`, async () => {
+      mockGetUrlWithParamsToPath.mockReturnValueOnce(`${TRUST_ENTRY_WITH_PARAMS_URL}`);
       mockIsActiveFeature.mockReturnValue(true);
-      const resp = await request(app).get(pageUrl);
+      const resp = await request(app).get(pageWithParamsUrl);
 
       expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
-      // expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL);
+      expect(resp.text).toContain(TRUST_ENTRY_WITH_PARAMS_URL);
       expect(resp.text).toContain(BACK_BUTTON_CLASS);
       expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
     });

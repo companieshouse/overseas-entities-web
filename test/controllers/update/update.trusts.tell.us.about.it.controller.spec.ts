@@ -119,6 +119,8 @@ describe('Update - Trusts - Tell us about the trust', () => {
       const resp = await request(app).post(UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL).send({ stillInvolved: '0' });
 
       expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ERROR_LIST);
+      expect(resp.text).toContain(UPDATE_TELL_US_ABOUT_TRUST_HEADING);
       expect(resp.text).toContain(TRUST_ENTER_CEASED_DATE);
     });
 

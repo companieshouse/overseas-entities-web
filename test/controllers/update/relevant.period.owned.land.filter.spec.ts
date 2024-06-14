@@ -99,21 +99,31 @@ describe("owned land filter page tests", () => {
       expect(resp.status).toEqual(404);
       expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
     });
-    test(`renders the ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE} page with banner when registration date is equal to 29 february 2022.`, async () => {
+    test(`renders the ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE} page with banner when registration date is equal to 29 February 2022.`, async () => {
       mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK, [UpdateKey]: { date_of_creation: { day: "29", month: "02", year: "2022" } } });
       const resp = await request(app).get(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain("29");
-      expect(resp.text).toContain("February");
-      expect(resp.text).toContain("2022");
+      expect(resp.text).toMatch(/29\s+February\s+2022/i);
+    });
+    test(`renders the ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE} page with banner when registration date is equal to 27 February 2022, but 31 January is displayed.`, async () => {
+      mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK, [UpdateKey]: { date_of_creation: { day: "22", month: "02", year: "2022" } } });
+      const resp = await request(app).get(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toMatch(/31\s+January\s+2023/i);
+      expect(resp.text).not.toMatch(/27\s+February\s+2022/i);
     });
     test(`renders the ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE} page page with banner when registration date is equal to 30 January 2023.`, async () => {
       mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK, [UpdateKey]: { date_of_creation: { day: "30", month: "01", year: "2023" } } });
       const resp = await request(app).get(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain("30");
-      expect(resp.text).toContain("January");
-      expect(resp.text).toContain("2022");
+      expect(resp.text).toMatch(/30\s+January\s+2023/i);
+    });
+    test(`renders the ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE} page page with banner when registration date is equal to 1 February 2023, but 31 January is displayed`, async () => {
+      mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK, [UpdateKey]: { date_of_creation: { day: "01", month: "02", year: "2023" } } });
+      const resp = await request(app).get(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toMatch(/31\s+January\s+2023/i);
+      expect(resp.text).not.toMatch(/2\s+February\s+2023/i);
     });
   });
 

@@ -1,3 +1,5 @@
+import { constants } from "http2";
+
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
@@ -21,7 +23,7 @@ import {
   BENEFICIAL_OWNER_TYPE_PAGE,
   BENEFICIAL_OWNER_TYPE_URL,
   BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
-  REMOVE
+  REMOVE,
 } from "../../src/config";
 import {
   getFromApplicationData,
@@ -50,6 +52,7 @@ import {
   NO_SANCTIONS_TEXT_THEY,
   SANCTIONS_HINT_TEXT_THEY,
   TRUSTS_NOC_HEADING,
+  BACK_BUTTON_CLASS,
 } from '../__mocks__/text.mock';
 import {
   APPLICATION_DATA_MOCK,
@@ -144,6 +147,20 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(SANCTIONS_HINT_TEXT_THEY);
       expect(resp.text).toContain(TRUSTS_NOC_HEADING);
     });
+
+    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with correct back link url when feature flag is off`, async () => {
+      const appData = APPLICATION_DATA_MOCK;
+      delete appData[EntityNumberKey];
+      mockGetApplicationData.mockReturnValueOnce({ ...appData });
+      mockIsActiveFeature.mockReturnValue(false);
+
+      const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL);
+
+      expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_URL);
+      expect(resp.text).toContain(BACK_BUTTON_CLASS);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(0);
+    });
   });
 
   describe("GET with url params tests", () => {
@@ -171,6 +188,22 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(SANCTIONS_HINT_TEXT_THEY);
       expect(resp.text).toContain(TRUSTS_NOC_HEADING);
     });
+
+    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with correct back link url when feature flag is on`, async () => {
+      const appData = APPLICATION_DATA_MOCK;
+      delete appData[EntityNumberKey];
+      mockGetApplicationData.mockReturnValueOnce({ ...appData });
+      mockIsActiveFeature.mockReturnValue(true);
+
+      const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL);
+
+      expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
+      expect(resp.text).toContain(NEXT_PAGE_URL);
+      // expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_URL);
+      expect(resp.text).toContain(BACK_BUTTON_CLASS);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
+    });
+
   });
 
   describe("GET BY ID tests", () => {

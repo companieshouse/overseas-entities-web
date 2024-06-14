@@ -226,7 +226,7 @@ const getBackLinkUrl = (isUpdate: boolean, appData: ApplicationData, req: Reques
     }
   }
 
-  if (isReview){
+  if (isReview) {
     backLinkUrl = config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL;
   }
 

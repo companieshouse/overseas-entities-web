@@ -75,7 +75,8 @@ import {
   CHANGE_LINK_BO_GOVERNMENT,
   CHANGE_LINK_BO_INDIVIDUAL,
   CHANGE_LINK_MO_INDIVIDUAL,
-  CHANGE_LINK_MO_CORPORATE
+  CHANGE_LINK_MO_CORPORATE,
+  BACK_BUTTON_CLASS
 } from "../__mocks__/text.mock";
 import {
   ERROR,
@@ -473,6 +474,11 @@ describe("GET tests", () => {
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with trust data and feature flag off`, async () => {
     mockIsActiveFeature.mockReturnValue(false); // FEATURE_FLAG_ENABLE_TRUSTS_WEB flag
+    mockIsActiveFeature.mockReturnValueOnce(false);
+    mockIsActiveFeature.mockReturnValueOnce(false);
+    mockIsActiveFeature.mockReturnValueOnce(false);
+    mockIsActiveFeature.mockReturnValueOnce(false);
+    mockIsActiveFeature.mockReturnValueOnce(false);
 
     mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
 
@@ -510,7 +516,7 @@ describe("GET tests", () => {
     expect(resp.status).toEqual(200);
     expect(resp.text).not.toContain(BENEFICIAL_OWNER_TYPE_LINK); // back button
     expect(resp.text).toContain(MOCKED_URL); // back button
-    expect(resp.text).toContain("govuk-back-link"); // back button
+    expect(resp.text).toContain(BACK_BUTTON_CLASS); // back button
     expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(`${BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL}`);
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TRUST_TITLE);
     expect(resp.text).toContain(`${TRUST_DETAILS_URL}/${TRUST_WITH_ID.trust_id}`);
@@ -1008,7 +1014,7 @@ describe("GET with url params tests tests", () => {
     expect(resp.status).toEqual(200);
     expect(resp.text).not.toContain(BENEFICIAL_OWNER_TYPE_LINK); // back button
     expect(resp.text).toContain(MOCKED_URL); // back button
-    expect(resp.text).toContain("govuk-back-link"); // back button
+    expect(resp.text).toContain(BACK_BUTTON_CLASS); // back button
     expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(`${BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL}`);
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TRUST_TITLE);
     expect(resp.text).toContain(`${TRUST_DETAILS_URL}/${TRUST_WITH_ID.trust_id}`);

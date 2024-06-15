@@ -247,4 +247,26 @@ describe("Url utils tests", () => {
       expect(previousPage).toBeUndefined();
     });
   });
+
+  describe("isUpdateOrRemoveJourney tests", () => {
+    test("returns true if entity number present", () => {
+      mockGetApplicationData.mockReturnValueOnce({ entity_number: "12345678" });
+      expect(urlUtils.isUpdateOrRemoveJourney(req)).toBeTruthy();
+    });
+
+    test("returns false if entity number is undefined", () => {
+      mockGetApplicationData.mockReturnValueOnce({ });
+      expect(urlUtils.isUpdateOrRemoveJourney(req)).toBeFalsy();
+    });
+
+    test("returns false if entity number is empty string", () => {
+      mockGetApplicationData.mockReturnValueOnce({ entity_number: "" });
+      expect(urlUtils.isUpdateOrRemoveJourney(req)).toBeFalsy();
+    });
+
+    test("returns false if entity number is null", () => {
+      mockGetApplicationData.mockReturnValueOnce({ entity_number: null });
+      expect(urlUtils.isUpdateOrRemoveJourney(req)).toBeFalsy();
+    });
+  });
 });

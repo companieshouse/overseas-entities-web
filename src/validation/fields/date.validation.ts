@@ -24,6 +24,7 @@ import {
   checkTrustCeasedDate,
   checkDateIsBeforeOrOnOtherDate,
   checkFilingDate,
+  checkTrustIndividualCeasedDate,
 } from "../custom.validation";
 import { ErrorMessages } from "../error.messages";
 import { conditionalDateValidations, conditionalHistoricalBODateValidations, dateContext, dateContextWithCondition, dateValidations } from "./helper/date.validation.helper";
@@ -33,6 +34,7 @@ import { getConfirmationStatementNextMadeUpToDateAsIsoString } from "../../servi
 import { getApplicationData } from "../../utils/application.data";
 import { logger } from "../../utils/logger";
 import { DateTime } from "luxon";
+import { isUpdateOrRemoveJourney } from "../../utils/url";
 
 export const NEXT_MADE_UP_TO_ISO_DATE = 'nextMadeUpToIsoDate';
 
@@ -381,6 +383,40 @@ const historicalBOEndDateContext: dateContext = {
   },
 };
 
+const trustIndividualCeasedDateValidationsContext: dateContextWithCondition = {
+  dayInput: {
+    name: "ceasedDateDay",
+    errors: {
+      noDayError: ErrorMessages.DAY_OF_CEASED_TRUST_INDIVIDUAL,
+      wrongDayLength: ErrorMessages.DAY_LENGTH_OF_CEASED_TRUST_INDIVIDUAL,
+      noRealDay: ErrorMessages.INVALID_DAY,
+    } as DayFieldErrors,
+  },
+  monthInput: {
+    name: "ceasedDateMonth",
+    errors: {
+      noMonthError: ErrorMessages.MONTH_OF_CEASED_TRUST_INDIVIDUAL,
+      wrongMonthLength: ErrorMessages.MONTH_LENGTH_OF_CEASED_TRUST_INDIVIDUAL,
+      noRealMonth: ErrorMessages.INVALID_MONTH,
+    } as MonthFieldErrors,
+  },
+  yearInput: {
+    name: "ceasedDateYear",
+    errors: {
+      noYearError: ErrorMessages.YEAR_OF_CEASED_TRUST_INDIVIDUAL,
+      wrongYearLength: ErrorMessages.YEAR_LENGTH_OF_CEASED_TRUST_INDIVIDUAL
+    } as YearFieldErrors,
+  },
+  dateInput: {
+    name: "ceasedDate",
+    callBack: checkTrustIndividualCeasedDate,
+  },
+  condition: {
+    elementName: "stillInvolved",
+    expectedValue: "0"
+  }
+};
+
 const historicalBOEndDateConditionalContext: dateContextWithCondition = {
   ...historicalBOEndDateContext,
   condition: { elementName: "validateCeasedDate", expectedValue: "true" },
@@ -413,3 +449,33 @@ export const dateBecameIPLegalEntityBeneficialOwner = conditionalDateValidations
 export const filingPeriodTrustStartDateValidations = is_date_within_filing_period_trusts(historicalBOStartDateContext, ErrorMessages.START_DATE_BEFORE_FILING_DATE);
 
 export const filingPeriodTrustCeaseDateValidations = is_date_within_filing_period_trusts(historicalBOEndDateContext, ErrorMessages.CEASED_DATE_BEFORE_FILING_DATE);
+
+export const trustIndividualCeasedDateValidations = [
+  ...conditionalDateValidations(trustIndividualCeasedDateValidationsContext),
+
+  body("ceasedDate")
+    .if((value, { req }) => isUpdateOrRemoveJourney(req))
+    .if(body("stillInvolved").equals("0"))
+    .custom((value, { req }) => {
+      checkFirstDateOnOrAfterSecondDate(
+        req.body["ceasedDateDay"], req.body["ceasedDateMonth"], req.body["ceasedDateYear"],
+        req.body["dateOfBirthDay"], req.body["dateOfBirthMonth"], req.body["dateOfBirthYear"],
+        ErrorMessages.TRUST_INDIVIDUAL_CEASED_DATE_BEFORE_BIRTH_DATE);
+
+      checkFirstDateOnOrAfterSecondDate(
+        req.body["ceasedDateDay"], req.body["ceasedDateMonth"], req.body["ceasedDateYear"],
+        req.body["trustCreationDateDay"], req.body["trustCreationDateMonth"], req.body["trustCreationDateYear"],
+        ErrorMessages.TRUST_INDIVIDUAL_CEASED_DATE_BEFORE_TRUST_CREATION_DATE);
+
+      if (req.body["roleWithinTrust"] === RoleWithinTrustType.INTERESTED_PERSON
+        && req.body["dateBecameIPDay"]
+        && req.body["dateBecameIPMonth"]
+        && req.body["dateBecameIPYear"]) {
+        checkFirstDateOnOrAfterSecondDate(
+          req.body["ceasedDateDay"], req.body["ceasedDateMonth"], req.body["ceasedDateYear"],
+          req.body["dateBecameIPDay"], req.body["dateBecameIPMonth"], req.body["dateBecameIPYear"],
+          ErrorMessages.TRUST_INDIVIDUAL_CEASED_DATE_BEFORE_INTERESTED_PERSON_START_DATE);
+      }
+      return true;
+    })
+];

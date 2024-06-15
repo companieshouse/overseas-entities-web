@@ -29,7 +29,12 @@ const getPageProperties = (trust, formData, trustee: TrustIndividual, errors?: F
       title: 'Tell us about the individual',
     },
     pageData: {
-      trustData: { trustName: trust?.trust_name },
+      trustData: {
+        trustName: trust?.trust_name,
+        creationDateDay: trust?.creation_date_day,
+        creationDateMonth: trust?.creation_date_month,
+        creationDateYear: trust?.creation_date_year,
+      },
       roleWithinTrustType: RoleWithinTrustType,
     },
     formData,
@@ -67,7 +72,6 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     const errorList = validationResult(req);
     const formData: IndividualTrusteesFormCommon = req.body as IndividualTrusteesFormCommon;
-    console.log("****************** " + JSON.stringify(formData, null, 2));
 
     if (!errorList.isEmpty()) {
       const trustee = getTrustee(trust, trusteeId, TrusteeType.INDIVIDUAL) as IndividualTrustee;
@@ -88,8 +92,6 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       const trustee = mapIndividualTrusteeToSession(formData);
       trust.INDIVIDUALS?.push(trustee);
     }
-
-    console.log(" &&&&&&&&&&&&&&&&&&&&&&&& " + JSON.stringify(trust.INDIVIDUALS, null, 2));
 
     setExtraData(req.session, appData);
     await saveAndContinue(req, req.session as Session, false);

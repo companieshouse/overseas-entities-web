@@ -57,7 +57,8 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       ...appData,
       hasExistingBosMos,
       hasNewlyAddedBosMos,
-      dateOfCreation: getRegistrationDate(appData.update?.date_of_creation as InputDate)
+      dateOfCreation: getRegistrationDate(appData.update?.date_of_creation as InputDate),
+      feature_flag_relevant_period: config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD
     });
   } catch (error) {
     logger.errorRequest(req, error);

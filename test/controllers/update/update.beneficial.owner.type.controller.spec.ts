@@ -214,6 +214,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
 
     test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} page with first statement selected`, async () => {
+      mockIsActiveFeature.mockReturnValue(true);
       appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
       appData[UpdateKey] = UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE;
 
@@ -228,6 +229,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
     
     test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} page with first statement de-selected`, async () => {
+      mockIsActiveFeature.mockReturnValue(true);
       appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
       appData[UpdateKey] = UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE;
     

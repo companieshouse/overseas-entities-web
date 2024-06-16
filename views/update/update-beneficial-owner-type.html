@@ -94,7 +94,7 @@
     <form method="post">
       {% include "includes/csrf_token.html" %}
       {% include "includes/beneficial-owner-type-add-radios.html" %}
-      {% if update.change_bo_relevant_period === "CHANGE_BO_RELEVANT_PERIOD" %}
+      {% if (feature_flag_relevant_period === "true") and (update.change_bo_relevant_period === "CHANGE_BO_RELEVANT_PERIOD") %}
       <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
       {% include "includes/page-templates/relevant-period-statements-add-radios.html" %}
       {% endif %}

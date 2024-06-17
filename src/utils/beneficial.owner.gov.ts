@@ -33,7 +33,7 @@ export const getBeneficialOwnerGov = (req: Request, res: Response, templateName:
   const appData: ApplicationData = getApplicationData(req.session);
 
   res.render(templateName, {
-    backLinkUrl: backLinkUrl,
+    backLinkUrl,
     templateName: templateName,
     ...appData
   });
@@ -51,7 +51,7 @@ export const getBeneficialOwnerGovById = (req: Request, res: Response, next: Nex
     const startDate = (data) ? mapDataObjectToFields(data[StartDateKey], StartDateKeys, InputDateKeys) : {};
 
     const templateOptions = {
-      backLinkUrl: backLinkUrl,
+      backLinkUrl,
       templateName: `${templateName}/${id}`,
       id,
       ...data,

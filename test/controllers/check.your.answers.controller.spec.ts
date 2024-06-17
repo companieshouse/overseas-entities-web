@@ -21,11 +21,11 @@ import request from "supertest";
 import app from "../../src/app";
 
 import {
-  ADD_TRUST_URL,
   BENEFICIAL_OWNER_GOV_URL,
   BENEFICIAL_OWNER_INDIVIDUAL_URL,
   BENEFICIAL_OWNER_OTHER_URL,
   BENEFICIAL_OWNER_STATEMENTS_URL,
+  BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
   CHECK_YOUR_ANSWERS_PAGE,
   CHECK_YOUR_ANSWERS_URL,
   CONFIRMATION_PAGE,
@@ -34,8 +34,7 @@ import {
   MANAGING_OFFICER_CORPORATE_URL,
   MANAGING_OFFICER_URL,
   TRUST_DETAILS_URL,
-  CHECK_YOUR_ANSWERS_WITH_PARAMS_URL,
-  TRUST_ENTRY_WITH_PARAMS_URL
+  CHECK_YOUR_ANSWERS_WITH_PARAMS_URL
 } from "../../src/config";
 
 import * as CHANGE_LINKS from "../../src/config";
@@ -76,7 +75,8 @@ import {
   CHANGE_LINK_BO_GOVERNMENT,
   CHANGE_LINK_BO_INDIVIDUAL,
   CHANGE_LINK_MO_INDIVIDUAL,
-  CHANGE_LINK_MO_CORPORATE
+  CHANGE_LINK_MO_CORPORATE,
+  BACK_BUTTON_CLASS
 } from "../__mocks__/text.mock";
 import {
   ERROR,
@@ -157,6 +157,7 @@ describe("GET tests", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockIsActiveFeature.mockReset();
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including presenter details`, async () => {
@@ -471,8 +472,14 @@ describe("GET tests", () => {
     expect(resp.text).toContain(SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS_TEXT);
   });
 
-  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with trust data and feature flag off`, async () => {
-    mockIsActiveFeature.mockReturnValue(false); // FEATURE_FLAG_ENABLE_TRUSTS_WEB flag
+  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with trust data and feature flags are set to off`, async () => {
+    // set FEATURE_FLAG_ENABLE_TRUSTS_WEB and FEATURE_FLAG_ENABLE_REDIS_REMOVAL to OFF
+    mockIsActiveFeature.mockReturnValue(false);
+    mockIsActiveFeature.mockReturnValueOnce(false);
+    mockIsActiveFeature.mockReturnValueOnce(false);
+    mockIsActiveFeature.mockReturnValueOnce(false);
+    mockIsActiveFeature.mockReturnValueOnce(false);
+    mockIsActiveFeature.mockReturnValueOnce(false);
 
     mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
 
@@ -484,12 +491,15 @@ describe("GET tests", () => {
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TRUST_TITLE);
   });
 
-  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with trust data and feature flag on`, async () => {
-    mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_TRUSTS_WEB flag returning true
-    mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE FLAG REDIS REMOVAL trusts.ts - GET TRUST LANDING URL
-    mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_TRUSTS_WEB flag returning true
-    const mockBackButtonUrl = "backButtonUrl";
-    mockGetUrlWithParamsToPath.mockReturnValueOnce(mockBackButtonUrl);
+  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with trust data and feature flags set to on`, async () => {
+    // set FEATURE_FLAG_ENABLE_TRUSTS_WEB and FEATURE_FLAG_ENABLE_REDIS_REMOVAL to ON
+    mockIsActiveFeature.mockReturnValueOnce(true);
+    mockIsActiveFeature.mockReturnValueOnce(true);
+    mockIsActiveFeature.mockReturnValueOnce(true);
+    mockIsActiveFeature.mockReturnValueOnce(true);
+    mockIsActiveFeature.mockReturnValueOnce(true);
+    mockIsActiveFeature.mockReturnValueOnce(true);
+
     APPLICATION_DATA_MOCK.entity_number = undefined;
     const mockAppData = {
       ...APPLICATION_DATA_MOCK,
@@ -504,8 +514,9 @@ describe("GET tests", () => {
 
     expect(resp.status).toEqual(200);
     expect(resp.text).not.toContain(BENEFICIAL_OWNER_TYPE_LINK); // back button
-    expect(resp.text).toContain(mockBackButtonUrl); // back button
-    expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(`${TRUST_ENTRY_WITH_PARAMS_URL}${ADD_TRUST_URL}`);
+    expect(resp.text).toContain(MOCKED_URL); // back button
+    expect(resp.text).toContain(BACK_BUTTON_CLASS); // back button
+    expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(`${BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL}`);
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TRUST_TITLE);
     expect(resp.text).toContain(`${TRUST_DETAILS_URL}/${TRUST_WITH_ID.trust_id}`);
     expect(resp.text).toContain(TRUST_WITH_ID.trust_name);
@@ -977,12 +988,14 @@ describe("GET with url params tests tests", () => {
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TRUST_TITLE);
   });
 
-  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with trust data and feature flag on`, async () => {
-    mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_TRUSTS_WEB flag returning true
-    mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE FLAG REDIS REMOVAL trusts.ts - GET TRUST LANDING URL
-    mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_TRUSTS_WEB flag returning true
-    const mockBackButtonUrl = "backButtonUrl";
-    mockGetUrlWithParamsToPath.mockReturnValueOnce(mockBackButtonUrl);
+  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with trust data and feature flags set to on`, async () => {
+    // set FEATURE_FLAG_ENABLE_TRUSTS_WEB and FEATURE_FLAG_ENABLE_REDIS_REMOVAL to ON
+    mockIsActiveFeature.mockReturnValueOnce(true);
+    mockIsActiveFeature.mockReturnValueOnce(true);
+    mockIsActiveFeature.mockReturnValueOnce(true);
+    mockIsActiveFeature.mockReturnValueOnce(true);
+    mockIsActiveFeature.mockReturnValueOnce(true);
+
     APPLICATION_DATA_MOCK.entity_number = undefined;
     const mockAppData = {
       ...APPLICATION_DATA_MOCK,
@@ -994,11 +1007,11 @@ describe("GET with url params tests tests", () => {
     mockGetApplicationData.mockReturnValueOnce(mockAppData);
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
-
     expect(resp.status).toEqual(200);
     expect(resp.text).not.toContain(BENEFICIAL_OWNER_TYPE_LINK); // back button
-    expect(resp.text).toContain(mockBackButtonUrl); // back button
-    expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(`${TRUST_ENTRY_WITH_PARAMS_URL}${ADD_TRUST_URL}`);
+    expect(resp.text).toContain(MOCKED_URL); // back button
+    expect(resp.text).toContain(BACK_BUTTON_CLASS); // back button
+    expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(`${BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL}`);
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TRUST_TITLE);
     expect(resp.text).toContain(`${TRUST_DETAILS_URL}/${TRUST_WITH_ID.trust_id}`);
     expect(resp.text).toContain(TRUST_WITH_ID.trust_name);

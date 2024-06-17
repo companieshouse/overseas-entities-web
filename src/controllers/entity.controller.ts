@@ -36,7 +36,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       : {};
 
     return res.render(config.ENTITY_PAGE, {
-      backLinkUrl: getEntityBackLink(appData),
+      backLinkUrl: getEntityBackLink(appData, req),
       templateName: config.ENTITY_PAGE,
       entityName: appData[EntityNameKey],
       ...entity,

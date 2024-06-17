@@ -11,7 +11,7 @@ export const getWhoIsFiling = (req: Request, res: Response, next: NextFunction, 
     const appData: ApplicationData = getApplicationData(req.session);
 
     return res.render(templateName, {
-      backLinkUrl: backLinkUrl,
+      backLinkUrl,
       templateName: templateName,
       [WhoIsRegisteringKey]: appData[WhoIsRegisteringKey]
     });

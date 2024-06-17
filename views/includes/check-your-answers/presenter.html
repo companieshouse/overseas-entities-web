@@ -1,12 +1,12 @@
 {% if pageParams.isRegistration %}
   {% set contactDetailsSubText = "Who can we contact about this application?" %}
-  {% set presenterNameChangeLink = OE_CONFIGS.PRESENTER_CHANGE_FULL_NAME %} 
+  {% set presenterNameChangeLink = OE_CONFIGS.PRESENTER_CHANGE_FULL_NAME %}
   {% set presenterEmailChangeLink = OE_CONFIGS.PRESENTER_CHANGE_EMAIL %}
   {% set nameFieldLabel = "Name" %}
   {% set emailFieldLabel = "Email" %}
   {% set nameChangeText = "Full name - Who can we contact about this application" %}
   {% set emailChangeText = "Email address - Who can we contact about this application" %}
-{% else %} 
+{% else %}
   {% set contactDetailsSubText %}
     {% if pageParams.noChangeFlag %}
       {% if pageParams.isRemove %}
@@ -14,11 +14,11 @@
       {% else %}
         Who can we contact about this update statement?
       {% endif %}
-    {%else%}
+    {% else %}
       Who can we contact about this update application?
-    {%endif%}
-  {%endset%}
-  {% set presenterNameChangeLink = OE_CONFIGS.UPDATE_PRESENTER_CHANGE_FULL_NAME %} 
+    {% endif %}
+  {% endset %}
+  {% set presenterNameChangeLink = OE_CONFIGS.UPDATE_PRESENTER_CHANGE_FULL_NAME %}
   {% set presenterEmailChangeLink = OE_CONFIGS.UPDATE_PRESENTER_CHANGE_EMAIL %}
   {% set nameFieldLabel = "Full Name" %}
   {% set emailFieldLabel = "Email address" %}

@@ -105,7 +105,6 @@ import {
   relevantPeriodInterrupt,
   relevantPeriodCombinedStatements,
   relevantPeriodReviewStatements,
-  relevantPeriodBeneficialOwnerIndividual,
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -591,15 +590,6 @@ router.route(config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL)
     navigation.hasOverseasEntity)
   .get(relevantPeriodReviewStatements.get)
   .post(relevantPeriodReviewStatements.post);
-
-router.route(config.RELEVANT_PERIOD_BENEFICIAL_OWNER_INDIVIDUAL_URL)
-  .all(
-    authentication,
-    companyAuthentication,
-    navigation.hasUpdatePresenter
-  )
-  .get(relevantPeriodBeneficialOwnerIndividual.get)
-  .post(...validator.updateBeneficialOwnerIndividual, checkValidations, relevantPeriodBeneficialOwnerIndividual.post);
 
 router.route(config.OVERSEAS_ENTITY_PRESENTER_URL)
   .all(

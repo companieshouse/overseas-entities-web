@@ -100,7 +100,6 @@ export * as relevantPeriodOwnedLandFilter from './update/relevant.period.owned.l
 export * as relevantPeriodInterrupt from './update/relevant.period.interrupt.card.controller';
 export * as relevantPeriodCombinedStatements from './update/relevant.period.combined.statements.controller';
 export * as relevantPeriodReviewStatements from './update/relevant.period.review.statments.controller';
-export * as relevantPeriodBeneficialOwnerIndividual from './update/relevant.period.beneficial.owner.individual.controller';
 
 // REMOVE controllers
 export * as removeSoldAllLandFilter from './update/remove.sold.all.land.filter.controller';

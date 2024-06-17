@@ -797,7 +797,7 @@ describe("Test fetching and mapping of Trust data", () => {
     trustMock.HISTORICAL_BO = [];
 
     const ceasedIndividualTrusteeData = {
-      hashedTrusteeId: "1",
+      hashedTrusteeId: "17",
       trusteeForename1: "",
       trusteeSurname: "",
       corporateIndicator: "",
@@ -826,7 +826,7 @@ describe("Test fetching and mapping of Trust data", () => {
     mapIndividualTrusteeData(historicalIndividualTrusteeData, trustMock);
 
     const ceasedCorporateTrusteeData = {
-      hashedTrusteeId: "3",
+      hashedTrusteeId: "19",
       trusteeName: "",
       corporateIndicator: "",
       trusteeTypeId: "5005",
@@ -843,7 +843,7 @@ describe("Test fetching and mapping of Trust data", () => {
     mapCorporateTrusteeData(corporateTrusteeData, trustMock);
 
     const historicalCorporateTrusteeData: CorporateTrusteeData = {
-      hashedTrusteeId: "3",
+      hashedTrusteeId: "14",
       trusteeName: "",
       corporateIndicator: "",
       trusteeTypeId: "5001",

@@ -1,0 +1,17 @@
+{% extends "update-layout.html" %}
+
+{% set title = "Tell us about the individual person involved in the pre-registration period" %}
+
+{% block pageTitle %}
+{% include "includes/update-page-title.html" %}
+{% endblock %}
+
+{% block backLink %}
+{% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+{% include "includes/page-templates/important-banner.html" %}
+{% set removePathURL = OE_CONFIGS.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + OE_CONFIGS.REMOVE + "/" + id %}
+{% include "includes/page-templates/beneficial-owner-individual.html" %}
+{% endblock %}

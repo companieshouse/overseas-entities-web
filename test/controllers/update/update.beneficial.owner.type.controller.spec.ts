@@ -227,12 +227,12 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.text).toContain("January");
       expect(resp.text).toContain("2011");
     });
-    
+
     test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} page with first statement de-selected`, async () => {
       mockIsActiveFeature.mockReturnValue(true);
       appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
       appData[UpdateKey] = UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE;
-    
+
       mockGetApplicationData.mockReturnValueOnce(appData);
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(resp.status).toEqual(200);

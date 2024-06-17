@@ -802,7 +802,7 @@ describe("Test fetching and mapping of Trust data", () => {
       trusteeSurname: "",
       corporateIndicator: "",
       trusteeTypeId: "5002",
-      ceasedDate: "2021-11-17"
+      ceasedDate: "2021-11-18"
     } as unknown as IndividualTrusteeData;
     mapIndividualTrusteeData(ceasedIndividualTrusteeData, trustMock);
 

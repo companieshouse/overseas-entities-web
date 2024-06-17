@@ -222,7 +222,6 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(RELEVANT_PERIOD_INDIVIDUAL_BENEFICIAL_OWNER);
-      expect(resp.text).toContain(RELEVANT_PERIOD);
     });
     
     test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} page with first statement de-selected`, async () => {

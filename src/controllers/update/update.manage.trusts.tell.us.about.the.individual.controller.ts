@@ -56,7 +56,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     const formData = trustee ? mapIndividualTrusteeFromSessionToPage(trustee) : {};
 
-    return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE, getPageProperties(trust, formData, trustee, ));
+    return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE, getPageProperties(trust, formData, trustee));
   } catch (error) {
     next(error);
   }

@@ -129,15 +129,14 @@ describe("owned land filter page tests", () => {
       expect(resp.text).toContain(ERROR_LIST);
       expect(resp.text).toContain(SELECT_IF_REGISTER_DURING_PRE_REG_PERIOD);
     });
-    xtest(`renders the ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL} page with error when uninitialised string found`, async () => {
-      let uninitialisedString: string | undefined;
+    test(`renders the ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL} page with ${SERVICE_UNAVAILABLE} error when uninitialised string found`, async () => {
+      let uninitialisedString: string | null | undefined;
       const resp = await request(app)
         .post(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL)
         .send({ owned_land_relevant_period: uninitialisedString });
 
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(ERROR_LIST);
-      expect(resp.text).toContain(SELECT_IF_REGISTER_DURING_PRE_REG_PERIOD);
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
 
   });

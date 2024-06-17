@@ -7,10 +7,16 @@ import {
   updateBeneficialOwnerIndividual
 } from "../../utils/beneficial.owner.individual";
 
-import { UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL } from "../../config";
+import {
+  RELEVANT_PERIOD_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
+  UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
+  UPDATE_BENEFICIAL_OWNER_TYPE_URL
+} from "../../config";
 
 export const get = (req: Request, res: Response) => {
-  getBeneficialOwnerIndividual(req, res, UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+  const relevant_period = req.query["relevant-period"];
+  const nextPage = relevant_period === "true" ? RELEVANT_PERIOD_BENEFICIAL_OWNER_INDIVIDUAL_PAGE : UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE;
+  getBeneficialOwnerIndividual(req, res, nextPage, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
 };
 
 export const getById = (req: Request, res: Response, next: NextFunction) => {

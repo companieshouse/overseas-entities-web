@@ -791,6 +791,71 @@ describe("Test fetching and mapping of Trust data", () => {
     expect(trustMock.HISTORICAL_BO).toHaveLength(2);
   });
 
+  test("should not map trustees into trust when trustees are ceased", () => {
+    trustMock.INDIVIDUALS = [];
+    trustMock.CORPORATES = [];
+    trustMock.HISTORICAL_BO = [];
+
+    const ceasedIndividualTrusteeData = {
+      hashedTrusteeId: "1",
+      trusteeForename1: "",
+      trusteeSurname: "",
+      corporateIndicator: "",
+      trusteeTypeId: "5002",
+      ceasedDate: "2021-11-17"
+    } as unknown as IndividualTrusteeData;
+    mapIndividualTrusteeData(ceasedIndividualTrusteeData, trustMock);
+
+    const individualTrusteeData = {
+      hashedTrusteeId: "1",
+      trusteeForename1: "",
+      trusteeSurname: "",
+      corporateIndicator: "",
+      trusteeTypeId: "5002"
+    } as unknown as IndividualTrusteeData;
+    mapIndividualTrusteeData(individualTrusteeData, trustMock);
+
+    const historicalIndividualTrusteeData = {
+      hashedTrusteeId: "2",
+      trusteeForename1: "",
+      trusteeSurname: "",
+      corporateIndicator: "",
+      trusteeTypeId: "5001",
+      ceasedDate: "2023-03-03"
+    } as unknown as IndividualTrusteeData;
+    mapIndividualTrusteeData(historicalIndividualTrusteeData, trustMock);
+
+    const ceasedCorporateTrusteeData = {
+      hashedTrusteeId: "3",
+      trusteeName: "",
+      corporateIndicator: "",
+      trusteeTypeId: "5005",
+      ceasedDate: "2022-06-25"
+    } as unknown as CorporateTrusteeData;
+    mapCorporateTrusteeData(ceasedCorporateTrusteeData, trustMock);
+
+    const corporateTrusteeData = {
+      hashedTrusteeId: "3",
+      trusteeName: "",
+      corporateIndicator: "",
+      trusteeTypeId: "5005"
+    } as unknown as CorporateTrusteeData;
+    mapCorporateTrusteeData(corporateTrusteeData, trustMock);
+
+    const historicalCorporateTrusteeData: CorporateTrusteeData = {
+      hashedTrusteeId: "3",
+      trusteeName: "",
+      corporateIndicator: "",
+      trusteeTypeId: "5001",
+      ceasedDate: "2022-02-02"
+    } as unknown as CorporateTrusteeData;
+    mapCorporateTrusteeData(historicalCorporateTrusteeData, trustMock);
+
+    expect(trustMock.INDIVIDUALS).toHaveLength(1);
+    expect(trustMock.CORPORATES).toHaveLength(1);
+    expect(trustMock.HISTORICAL_BO).toHaveLength(2);
+  });
+
   test("should map interested person trustees into trust", () => {
     const trusteeData = {
       hashedTrusteeId: "1",

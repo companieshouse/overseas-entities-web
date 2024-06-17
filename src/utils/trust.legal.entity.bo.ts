@@ -30,7 +30,6 @@ type TrustLegalEntityBeneificalOwnerPageProperties = {
     trustData: CommonTrustData,
     roleWithinTrustType: typeof RoleWithinTrustType;
   },
-  isUpdate: boolean,
   formData?: TrustLegalEntityForm,  
   errors?: FormattedValidationErrors,
   url: string,
@@ -54,7 +53,6 @@ const getPageProperties = (
       trustData: CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId, false),
       roleWithinTrustType: RoleWithinTrustType
     },   
-    isUpdate,
     formData,    
     errors,
     url: getUrl(isUpdate),
@@ -63,7 +61,6 @@ const getPageProperties = (
 
 export const getTrustLegalEntityBo = (req: Request, res: Response, next: NextFunction, isUpdate: boolean): void => {
   try {
-    console.log(">>>>>>>>>> Trust LE ctrler is update " + isUpdate);
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];

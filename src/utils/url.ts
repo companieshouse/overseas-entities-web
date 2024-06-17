@@ -69,3 +69,8 @@ export function getPreviousPageUrl(req: Request, basePath: string) {
 
   return relativePreviousPageUrl;
 }
+
+export const isUpdateOrRemoveJourney = (req: Request): boolean => {
+  const appData: ApplicationData = getApplicationData(req.session);
+  return !!appData.entity_number; // !! = truthy check
+};

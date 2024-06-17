@@ -89,6 +89,7 @@ export enum ErrorMessages {
   TRUST_INDIVIDUAL_ROLE_INDIVIDUAL_BO = TRUST_INDIVIDUAL_ROLE,
   LEGAL_ENTITY_BO_ROLE = "Select its role within the trust",
   ADD_TRUST = "Select yes if you need to add another trust",
+  TRUST_LEGAL_ENTITY_STILL_INVOLVED = " Select yes if they are still involved in the trust",
 
   // Date
   DAY = "Date must include a day",
@@ -192,6 +193,12 @@ export enum ErrorMessages {
   DAY_AND_MONTH_OF_CEASED_LEGAL_ENTITY = "The date the legal entity stopped being associated with this trust entity must include a day and month",
   DAY_AND_YEAR_OF_CEASED_LEGAL_ENTITY = "The date the legal entity stopped being associated with this trust entity must include a day and year",
   MONTH_AND_YEAR_OF_CEASED_LEGAL_ENTITY = "The date the legal entity stopped being associated with this trustentity must include a month and year",
+  ENTER_DATE_OF_TRUST_CEASED_LEGAL_ENTITY = "Enter the date they ceased being involved in the trust",
+  DAY_AND_MONTH_OF_CEASED_TRUST_LEGAL_ENTITY = "The date they ceased being involved in the trust must include a day and month",
+  MONTH_AND_YEAR_OF_CEASED_TRUST_LEGAL_ENTITY = "The date they ceased being involved in the trust must include a month and year",
+  DAY_AND_YEAR_OF_CEASED_TRUST_LEGAL_ENTITY = "The date they ceased being involved in the trust must include a day and year",
+  INVALID_DATE_OF_CEASED_TRUST_LEGAL_ENTITY = "The date they ceased being involved in the trust must be a real date",
+  DATE_NOT_IN_PAST_OR_TODAY_OF_CEASED_TRUST_LEGAL_ENTITY= "The date they ceased being involved in the trust cannot be in the future",
 
   // No radio selected
   SELECT_IF_ENTITY_HAS_SOLD_LAND = "Select yes if the entity has disposed of UK property or land since 28 February 2022",

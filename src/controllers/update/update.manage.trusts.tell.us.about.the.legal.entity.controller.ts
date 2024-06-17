@@ -30,18 +30,22 @@ const getPageProperties = (trust, formData, errors?: FormattedValidationErrors) 
       title: 'Tell us about the legal entity',
     },
     pageData: {
-      trustData: { trustName: trust?.trust_name },
+      trustData: { 
+        trustName: trust?.trust_name, 
+        creationDateDay: trust?.creation_date_day,
+        creationDateMonth: trust?.creation_date_month,
+        creationDateYear: trust?.creation_date_year,
+      },
       roleWithinTrustType: RoleWithinTrustType,
     },
     formData,
     errors,
+    isUpdate: true
   };
 };
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
-
-    console.log("\n\n\n\n\n>>>>>>>>>>>>>>>>>>>>>>>> Manage trusts \n \n\n\n\n\n\n ");
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const appData = getApplicationData(req.session);

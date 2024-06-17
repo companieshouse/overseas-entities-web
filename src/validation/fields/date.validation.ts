@@ -24,6 +24,7 @@ import {
   checkTrustCeasedDate,
   checkDateIsBeforeOrOnOtherDate,
   checkFilingDate,
+  checkTrustLegalEntityCeasedDate,
 } from "../custom.validation";
 import { ErrorMessages } from "../error.messages";
 import { conditionalDateValidations, conditionalHistoricalBODateValidations, dateContext, dateContextWithCondition, dateValidations } from "./helper/date.validation.helper";
@@ -33,6 +34,7 @@ import { getConfirmationStatementNextMadeUpToDateAsIsoString } from "../../servi
 import { getApplicationData } from "../../utils/application.data";
 import { logger } from "../../utils/logger";
 import { DateTime } from "luxon";
+import { isUpdateOrRemoveJourney } from "../../utils/url";
 
 export const NEXT_MADE_UP_TO_ISO_DATE = 'nextMadeUpToIsoDate';
 
@@ -407,11 +409,11 @@ const legalEntityCeasedDateValidationsContext: dateContextWithCondition = {
   },
   dateInput: {
     name: "ceasedDate",
-    callBack: checkTrustCeasedDate,
+    callBack: checkTrustLegalEntityCeasedDate,
   },
   condition: {
     elementName: "stillInvolved",
-    expectedValue: "false"
+    expectedValue: "0"
   }
 };
 
@@ -442,6 +444,7 @@ export const trusteeLegalEntityCeasedDateValidations = [
   ...conditionalDateValidations(legalEntityCeasedDateValidationsContext),
 
   body("ceasedDate")
+    .if((value, { req }) => isUpdateOrRemoveJourney(req))
     .if(body("stillInvolved").equals("0"))
     .custom((value, { req }) => {
       console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + JSON.stringify(req.body));

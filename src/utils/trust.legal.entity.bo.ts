@@ -30,7 +30,7 @@ type TrustLegalEntityBeneificalOwnerPageProperties = {
     trustData: CommonTrustData,
     roleWithinTrustType: typeof RoleWithinTrustType;
   },
-  formData?: TrustLegalEntityForm,  
+  formData?: TrustLegalEntityForm,
   errors?: FormattedValidationErrors,
   url: string,
 };
@@ -52,8 +52,8 @@ const getPageProperties = (
     pageData: {
       trustData: CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId, false),
       roleWithinTrustType: RoleWithinTrustType
-    },   
-    formData,    
+    },
+    formData,
     errors,
     url: getUrl(isUpdate),
   };

@@ -249,6 +249,6 @@ describe('Update - Manage Trusts - Review legal entities', () => {
 
       expect(response.status).toEqual(404);
       expect(response.text).toContain(PAGE_NOT_FOUND_TEXT);
-    }); 
+    });
   });
 });

@@ -832,7 +832,6 @@ router.route(config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + config.
   )
   .get(updateTrustsIndividualsOrEntitiesInvolved.get)
   .post(...validator.trustInvolved, updateTrustsIndividualsOrEntitiesInvolved.post);
-
       
 router.route(config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL + config.TRUSTEE_ID + '?')
   .all(

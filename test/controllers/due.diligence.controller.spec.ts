@@ -1,5 +1,3 @@
-import * as config from "../../src/config";
-
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
@@ -183,16 +181,16 @@ describe("DUE_DILIGENCE controller", () => {
       expect(resp.text).toContain(WHO_IS_MAKING_FILING_URL);
     });
 
-    test(`renders the ${DUE_DILIGENCE_PAGE} page on GET method with correct back link url when feature flag is off`, async () => {
+    test(`renders the ${DUE_DILIGENCE_PAGE} page on GET method with correct back link url when REDIS removal feature flag is off`, async () => {
       mockGetApplicationData.mockReturnValueOnce( { [DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK } );
       mockIsActiveFeature.mockReturnValue(false);
       const resp = await request(app).get(DUE_DILIGENCE_WITH_PARAMS_URL);
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(config.WHO_IS_MAKING_FILING_URL);
+      expect(resp.text).toContain(WHO_IS_MAKING_FILING_URL);
       expect(resp.text).toContain(BACK_BUTTON_CLASS);
     });
 
-    test(`renders the ${DUE_DILIGENCE_PAGE} page on GET method with correct back link url when feature flag is on`, async () => {
+    test(`renders the ${DUE_DILIGENCE_PAGE} page on GET method with correct back link url when REDIS removal feature flag is on`, async () => {
       mockGetApplicationData.mockReturnValueOnce( { [DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK } );
       mockIsActiveFeature.mockReturnValue(true);
       const resp = await request(app).get(DUE_DILIGENCE_WITH_PARAMS_URL);

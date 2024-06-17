@@ -153,7 +153,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(TRUSTS_NOC_HEADING);
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with correct back link url when feature flag is off`, async () => {
+    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with correct back link url when Redis removal feature flag is off`, async () => {
       const appData = APPLICATION_DATA_MOCK;
       delete appData[EntityNumberKey];
       mockGetApplicationData.mockReturnValueOnce({ ...appData });

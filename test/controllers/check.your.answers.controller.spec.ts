@@ -472,8 +472,9 @@ describe("GET tests", () => {
     expect(resp.text).toContain(SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS_TEXT);
   });
 
-  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with trust data and feature flag off`, async () => {
-    mockIsActiveFeature.mockReturnValue(false); // FEATURE_FLAG_ENABLE_TRUSTS_WEB flag
+  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with trust data and feature flags are set to off`, async () => {
+    // set FEATURE_FLAG_ENABLE_TRUSTS_WEB and FEATURE_FLAG_ENABLE_REDIS_REMOVAL to OFF
+    mockIsActiveFeature.mockReturnValue(false);
     mockIsActiveFeature.mockReturnValueOnce(false);
     mockIsActiveFeature.mockReturnValueOnce(false);
     mockIsActiveFeature.mockReturnValueOnce(false);
@@ -490,16 +491,14 @@ describe("GET tests", () => {
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TRUST_TITLE);
   });
 
-  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with trust data and feature flag on`, async () => {
-    mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE FLAG REDIS REMOVAL
-    mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE FLAG REDIS REMOVAL
-    mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE FLAG REDIS REMOVAL
-    mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_TRUSTS_WEB flag returning true
-    mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE FLAG REDIS REMOVAL
-    mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE FLAG REDIS REMOVAL
-
-    // const mockBackButtonUrl = "backButtonUrl";
-    // mockGetUrlWithParamsToPath.mockReturnValueOnce(mockBackButtonUrl);
+  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with trust data and feature flags set to on`, async () => {
+    // set FEATURE_FLAG_ENABLE_TRUSTS_WEB and FEATURE_FLAG_ENABLE_REDIS_REMOVAL to ON
+    mockIsActiveFeature.mockReturnValueOnce(true);
+    mockIsActiveFeature.mockReturnValueOnce(true);
+    mockIsActiveFeature.mockReturnValueOnce(true);
+    mockIsActiveFeature.mockReturnValueOnce(true);
+    mockIsActiveFeature.mockReturnValueOnce(true);
+    mockIsActiveFeature.mockReturnValueOnce(true);
 
     APPLICATION_DATA_MOCK.entity_number = undefined;
     const mockAppData = {
@@ -989,16 +988,13 @@ describe("GET with url params tests tests", () => {
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TRUST_TITLE);
   });
 
-  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with trust data and feature flag on`, async () => {
-    mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_TRUSTS_WEB flag returning true
-    mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE FLAG REDIS REMOVAL
-    mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE FLAG REDIS REMOVAL
-    mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE FLAG REDIS REMOVAL
-    mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE FLAG REDIS REMOVAL
-    // mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE FLAG REDIS REMOVAL
-
-    // const mockBackButtonUrl = "backButtonUrl";
-    // mockGetUrlWithParamsToPath.mockReturnValueOnce(mockBackButtonUrl);
+  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with trust data and feature flags set to on`, async () => {
+    // set FEATURE_FLAG_ENABLE_TRUSTS_WEB and FEATURE_FLAG_ENABLE_REDIS_REMOVAL to ON
+    mockIsActiveFeature.mockReturnValueOnce(true);
+    mockIsActiveFeature.mockReturnValueOnce(true);
+    mockIsActiveFeature.mockReturnValueOnce(true);
+    mockIsActiveFeature.mockReturnValueOnce(true);
+    mockIsActiveFeature.mockReturnValueOnce(true);
 
     APPLICATION_DATA_MOCK.entity_number = undefined;
     const mockAppData = {

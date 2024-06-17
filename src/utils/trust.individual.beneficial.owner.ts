@@ -30,6 +30,7 @@ type TrustIndividualBeneificalOwnerPageProperties = {
   pageParams: {
     title: string;
   },
+  isUpdate: boolean,
   formData?: PageModel.IndividualTrusteesFormCommon,
   errors?: FormattedValidationErrors,
   url: string,
@@ -53,6 +54,7 @@ const getPageProperties = (
       trustData: CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId, false),
       roleWithinTrustType: RoleWithinTrustType
     },
+    isUpdate,
     formData,
     errors,
     url: getUrl(isUpdate),

@@ -381,6 +381,40 @@ const historicalBOEndDateContext: dateContext = {
   },
 };
 
+const legalEntityCeasedDateValidationsContext: dateContextWithCondition = {
+  dayInput: {
+    name: "ceasedDateDay",
+    errors: {
+      noDayError: ErrorMessages.DAY_OF_CEASED_LEGAL_ENTITY,
+      wrongDayLength: ErrorMessages.DAY_LENGTH_OF_LEGAL_ENTITY,
+      noRealDay: ErrorMessages.INVALID_DAY,
+    } as DayFieldErrors,
+  },
+  monthInput: {
+    name: "ceasedDateMonth",
+    errors: {
+      noMonthError: ErrorMessages.MONTH_OF_CEASED_LEGAL_ENTITY,
+      wrongMonthLength: ErrorMessages.MONTH_LENGTH_OF_LEGAL_ENTITY,
+      noRealMonth: ErrorMessages.INVALID_MONTH,
+    } as MonthFieldErrors,
+  },
+  yearInput: {
+    name: "ceasedDateYear",
+    errors: {
+      noYearError: ErrorMessages.YEAR_OF_CEASED_LEGAL_ENTITY,
+      wrongYearLength: ErrorMessages.YEAR_LENGTH_OF_LEGAL_ENTITY
+    } as YearFieldErrors,
+  },
+  dateInput: {
+    name: "ceasedDate",
+    callBack: checkTrustCeasedDate,
+  },
+  condition: {
+    elementName: "stillInvolved",
+    expectedValue: "false"
+  }
+};
+
 const historicalBOEndDateConditionalContext: dateContextWithCondition = {
   ...historicalBOEndDateContext,
   condition: { elementName: "validateCeasedDate", expectedValue: "true" },
@@ -402,6 +436,21 @@ export const trustCeasedDateValidations = [
       req.body["createdDateDay"], req.body["createdDateMonth"], req.body["createdDateYear"],
       ErrorMessages.TRUST_CEASED_DATE_BEFORE_CREATED_DATE
     ))
+];
+
+export const trusteeLegalEntityCeasedDateValidations = [
+  ...conditionalDateValidations(legalEntityCeasedDateValidationsContext),
+
+  body("ceasedDate")
+    .if(body("stillInvolved").equals("0"))
+    .custom((value, { req }) => {
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + JSON.stringify(req.body));
+      checkFirstDateOnOrAfterSecondDate(
+      req.body["ceasedDateDay"], req.body["ceasedDateMonth"], req.body["ceasedDateYear"],
+      req.body["createdDateDay"], req.body["createdDateMonth"], req.body["createdDateYear"],
+      ErrorMessages.LEGAL_ENTITY_CEASED_DATE_BEFORE_CREATED_DATE
+    )    
+  })
 ];
 
 export const historicalBeneficialOwnerStartDate = dateValidations(historicalBOStartDateContext);

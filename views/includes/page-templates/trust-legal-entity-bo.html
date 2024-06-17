@@ -125,6 +125,8 @@
     {% set registration_number = formData.registration_number %}
     {% include "includes/inputs/fields/is-on-register-in-country-formed-input.html" %}
 
+    {% include "includes/inputs/fields/is-legal-entity-still-involved-in-trust.html" %}
+
     {{ govukInsetText({
       html: '
         <h2 class="govuk-heading-m">What information we’ll show on the public register</h2>

@@ -38,6 +38,7 @@ import { ApplicationData } from '../../../src/model';
 import { saveAndContinue } from '../../../src/utils/save.and.continue';
 import { getTrustInReview } from '../../../src/utils/update/review_trusts';
 import { hasBOsOrMOsUpdate } from '../../../src/middleware/navigation/update/has.beneficial.owners.or.managing.officers.update.middleware';
+import { ErrorMessages } from "../../../src/validation/error.messages";
 
 const defaultLegalEntities = [{
   id: "123",
@@ -67,7 +68,8 @@ const defaultLegalEntities = [{
   sa_address_locality: "",
   sa_address_region: "",
   sa_address_country: "",
-  sa_address_postal_code: ""
+  sa_address_postal_code: "",
+  is_corporate_still_involved_in_trust: "Yes"
 } as TrustCorporate,
 {
   id: "456",
@@ -97,7 +99,8 @@ const defaultLegalEntities = [{
   sa_address_locality: "",
   sa_address_region: "",
   sa_address_country: "",
-  sa_address_postal_code: ""
+  sa_address_postal_code: "",
+  is_corporate_still_involved_in_trust: "Yes"
 } as TrustCorporate];
 
 const getReviewTrust = (corporates) => (
@@ -249,6 +252,130 @@ describe('Update - Manage Trusts - Review legal entities', () => {
 
       expect(response.status).toEqual(404);
       expect(response.text).toContain(PAGE_NOT_FOUND_TEXT);
+    });
+
+    describe('Still involved and ceased date tests', () => {
+      const ceasedDateScenarios = [
+        [
+          "missing ceased date DAY error message",
+          {
+            ceasedDateMonth: "11",
+            ceasedDateYear: "2021"
+          },
+          ErrorMessages.DAY_OF_CEASED_LEGAL_ENTITY
+        ],
+        [
+          "missing ceased date MONTH error message",
+          {
+            ceasedDateDay: "11",
+            ceasedDateYear: "2021"
+          },
+          ErrorMessages.MONTH_OF_CEASED_LEGAL_ENTITY
+        ],
+        [
+          "missing ceased date YEAR error message",
+          {
+            ceasedDateDay: "11",
+            ceasedDateMonth: "5"
+          },
+          ErrorMessages.YEAR_OF_CEASED_LEGAL_ENTITY
+        ],
+        [
+          "invalid ceased date YEAR length error message",
+          {
+            ceasedDateDay: "11",
+            ceasedDateMonth: "5",
+            ceasedDateYear: "21"
+          },
+          ErrorMessages.YEAR_OF_CEASED_LEGAL_ENTITY
+        ],
+        [
+          "invalid ceased date DAY length error message",
+          {
+            ceasedDateDay: "111",
+            ceasedDateMonth: "5",
+            ceasedDateYear: "21"
+          },
+          ErrorMessages.DAY_LENGTH_OF_LEGAL_ENTITY
+        ],
+        [
+          "invalid ceased date MONTH length error message",
+          {
+            ceasedDateDay: "11",
+            ceasedDateMonth: "544",
+            ceasedDateYear: "21"
+          },
+          ErrorMessages.MONTH_LENGTH_OF_LEGAL_ENTITY
+        ],
+        [
+          "invalid ceased date error message",
+          {
+            ceasedDateDay: "31",
+            ceasedDateMonth: "2",
+            ceasedDateYear: "2023"
+          },
+          ErrorMessages.INVALID_DATE_OF_LEGAL_ENTITY
+        ],
+        [
+          "future ceased date error message",
+          {
+            ceasedDateDay: "11",
+            ceasedDateMonth: "2",
+            ceasedDateYear: "9024"
+          },
+          ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY_OF_CEASED_LEGAL_ENTITY
+        ],
+        [
+          "day and month ceased date missing error message",
+          {
+            ceasedDateYear: "2023"
+          },
+          ErrorMessages.DAY_AND_MONTH_OF_CEASED_LEGAL_ENTITY
+        ],
+        [
+          "month and year ceased date missing error message",
+          {
+            ceasedDateDay: "23"
+          },
+          ErrorMessages.MONTH_AND_YEAR_OF_CEASED_LEGAL_ENTITY
+        ],
+        [
+          "day and year ceased date missing error message",
+          {
+            ceasedDateMonth: "11"
+          },
+          ErrorMessages.DAY_AND_YEAR_OF_CEASED_LEGAL_ENTITY
+        ],
+        [
+          "ceased date must not be before creation date error message",
+          {
+            createdDateDay: "11",
+            createdDateMonth: "2",
+            createdDateYear: "2000",
+            ceasedDateDay: "10",
+            ceasedDateMonth: "2",
+            ceasedDateYear: "2000"
+          },
+          ErrorMessages.LEGAL_ENTITY_CEASED_DATE_BEFORE_CREATED_DATE
+        ]
+      ];
+
+      test.only(`renders the update-manage-trusts-tell-us-about-the-individual page with missing ceased date error message when legal entity is no longer involved but date not entered`, async () => {
+        mockIsActiveFeature.mockReturnValueOnce(true);
+        const response = await request(app).post(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL)
+        .send({ stillInvolved: "0" });
+        expect(response.status).toEqual(200);
+        expect(response.header.location).toEqual(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
+
+      });
+
+      test.each(ceasedDateScenarios)(`renders the update-manage-trusts-tell-us-about-the-individual page when %s`, async (_, formData, errorMessage) => {
+        mockIsActiveFeature.mockReturnValueOnce(true);
+        const response = await request(app).post(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL)
+        .send({ ...formData, stillInvolved: "0" });
+        expect(response.status).toEqual(200);
+        expect(response.header.location).toEqual(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
+      });
     });
   });
 });

@@ -180,6 +180,18 @@ export enum ErrorMessages {
   CEASED_DATE_BEFORE_FILING_DATE = "Ceased date must be before or on the date of the update statement",
   RESIGNED_ON_BEFORE_FILING_DATE = "Resigned on date must be before or on the date of the update statement",
   DATE_AFTER_MADE_UP_TO_DATE = "The date you provide must be on or before %s",
+  DAY_LENGTH_OF_LEGAL_ENTITY = "The day the legal entity was created must include 1 or 2 numbers",
+  MONTH_LENGTH_OF_LEGAL_ENTITY = "The month the legal entity was created must include 1 or 2 numbers",
+  YEAR_LENGTH_OF_LEGAL_ENTITY = "The year of the date the legal entity was created must include 4 numbers",
+  DAY_OF_CEASED_LEGAL_ENTITY = "The date the legal entity stopped being associated with this overseas entity must include a day",
+  MONTH_OF_CEASED_LEGAL_ENTITY = "The date the legal entity stopped being associated with this overseas entity must include a month",
+  YEAR_OF_CEASED_LEGAL_ENTITY = "The date the legal entity stopped being associated with this overseas entity must include a year",
+  LEGAL_ENTITY_CEASED_DATE_BEFORE_CREATED_DATE = "The date the legal entity stopped being associated with this trust must be on or after the created date",
+  INVALID_DATE_OF_LEGAL_ENTITY = "The date the legal entity stopped being associated with this trust must be a real date",
+  DATE_NOT_IN_PAST_OR_TODAY_OF_CEASED_LEGAL_ENTITY = "The date the legal entity stopped being associated with this trust cannot be in the future",
+  DAY_AND_MONTH_OF_CEASED_LEGAL_ENTITY = "The date the legal entity stopped being associated with this trust entity must include a day and month",
+  DAY_AND_YEAR_OF_CEASED_LEGAL_ENTITY = "The date the legal entity stopped being associated with this trust entity must include a day and year",
+  MONTH_AND_YEAR_OF_CEASED_LEGAL_ENTITY = "The date the legal entity stopped being associated with this trustentity must include a month and year",
 
   // No radio selected
   SELECT_IF_ENTITY_HAS_SOLD_LAND = "Select yes if the entity has disposed of UK property or land since 28 February 2022",

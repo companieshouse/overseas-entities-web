@@ -122,6 +122,10 @@ public_register_jurisdiction?: string;
 registration_number?: string;
 is_service_address_same_as_principal_address: yesNoResponse;
 is_on_register_in_country_formed_in: yesNoResponse;
+ceased_date_day?: string;
+ceased_date_month?: string;
+ceased_date_year?: string;
+stillInvolved?: string; 
 };
 
 type TrusteeItem = {

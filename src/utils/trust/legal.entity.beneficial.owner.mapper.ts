@@ -33,9 +33,17 @@ const mapLegalEntityToSession = (
     identification_legal_authority: formData.governingLaw,
     identification_legal_form: formData.legalForm,
     is_service_address_same_as_principal_address: (formData.is_service_address_same_as_principal_address) ? Number(formData.is_service_address_same_as_principal_address) : 0,
-
     is_on_register_in_country_formed_in: (formData.is_on_register_in_country_formed_in) ? Number(formData.is_on_register_in_country_formed_in) : 0,
+    ceased_date_day: formData. ceased_date_day,
+    ceased_date_month: formData. ceased_date_month,
+    ceased_date_year: formData. ceased_date_year,
   };
+
+  let stillInvolved = (formData.stillInvolved === "1") ? "Yes" : "No";
+
+  if (formData.stillInvolved === null || formData.stillInvolved === undefined) {
+    stillInvolved = null as unknown as string;
+  }
 
   let publicRegisterData = {};
   if (formData.is_on_register_in_country_formed_in?.toString() === "1"){
@@ -67,6 +75,7 @@ const mapLegalEntityToSession = (
       sa_address_region: formData.service_address_county,
       sa_address_country: formData.service_address_country,
       sa_address_postal_code: formData.service_address_postcode,
+      is_corporate_still_involved_in_trust: stillInvolved,
     } as Trust.TrustCorporate;
   } else {
     return {
@@ -80,6 +89,7 @@ const mapLegalEntityToSession = (
       sa_address_region: "",
       sa_address_country: "",
       sa_address_postal_code: "",
+      is_corporate_still_involved_in_trust: stillInvolved,
     } as Trust.TrustCorporate;
   }
 };
@@ -125,6 +135,19 @@ const mapLegalEntityTrusteeFromSessionToPage = (
     is_on_register_in_country_formed_in: trustee.is_on_register_in_country_formed_in,
   } as Page.TrustLegalEntityForm;
 
+  let isCorporateStillInvolvedInTrust: string;
+  switch (trustee.is_corporate_still_involved_in_trust) {
+    case "Yes":
+      isCorporateStillInvolvedInTrust = "1";
+      break;
+    case "No":
+      isCorporateStillInvolvedInTrust = "0";
+      break;
+    default:
+      isCorporateStillInvolvedInTrust = ""; // forces user to enter a value on new legal entity
+      break;
+  }
+
   if (trustee.type === RoleWithinTrustType.INTERESTED_PERSON){
     return {
       ...data,
@@ -132,6 +155,10 @@ const mapLegalEntityTrusteeFromSessionToPage = (
       interestedPersonStartDateMonth: trustee.date_became_interested_person_month,
       interestedPersonStartDateYear: trustee.date_became_interested_person_year,
       principal_address_property_name_number: trustee.ro_address_premises,
+      ceasedDateDay: trustee.ceased_date_day,
+      ceasedDateMonth: trustee.ceased_date_month,
+      ceasedDateYear: trustee.ceased_date_year,
+      stillInvolved: isCorporateStillInvolvedInTrust,
     } as Page.TrustLegalEntityForm;
   }
   return data;

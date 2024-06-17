@@ -1,7 +1,7 @@
 import { body, check } from "express-validator";
 import { ErrorMessages } from "./error.messages";
 import { legal_entity_usual_residential_service_address_validations, principal_address_validations } from "./fields/address.validation";
-import { dateBecameIPLegalEntityBeneficialOwner } from "./fields/date.validation";
+import { dateBecameIPLegalEntityBeneficialOwner, trusteeLegalEntityCeasedDateValidations } from "./fields/date.validation";
 import { ErrorMessagesOptional, ErrorMessagesRequired } from "./models/address.error.model";
 import { VALID_CHARACTERS } from "./regex/regex.validation";
 
@@ -69,6 +69,9 @@ export const trustLegalEntityBeneficialOwnerValidator = [
     .custom( async (value, { req }) => {
       await checkIfLessThanTargetValue(req.body.public_register_name.length, req.body.public_register_jurisdiction.length, 160);
     }),
+  body("stillInvolved")    
+    .not().isEmpty().withMessage(ErrorMessages.TRUST_STILL_INVOLVED),
+    ...trusteeLegalEntityCeasedDateValidations
 ];
 
 export const checkIfLessThanTargetValue = async (value1: number, value2: number, target: number) => {

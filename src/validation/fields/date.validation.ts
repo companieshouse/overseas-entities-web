@@ -456,6 +456,9 @@ export const trustIndividualCeasedDateValidations = [
   body("ceasedDate")
     .if((value, { req }) => isUpdateOrRemoveJourney(req))
     .if(body("stillInvolved").equals("0"))
+    .if(body("ceasedDateDay").notEmpty({ ignore_whitespace: true }))
+    .if(body("ceasedDateMonth").notEmpty({ ignore_whitespace: true }))
+    .if(body("ceasedDateYear").notEmpty({ ignore_whitespace: true }))
     .custom((value, { req }) => {
       checkFirstDateOnOrAfterSecondDate(
         req.body["ceasedDateDay"], req.body["ceasedDateMonth"], req.body["ceasedDateYear"],

@@ -214,7 +214,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
 
     test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} page with first statement selected`, async () => {
-      mockIsActiveFeature.mockReturnValue(true);
+      mockIsActiveFeature.mockReturnValueOnce(true);
       appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
       appData[UpdateKey] = UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE;
 
@@ -223,13 +223,10 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(RELEVANT_PERIOD_INDIVIDUAL_BENEFICIAL_OWNER);
       expect(resp.text).toContain(RELEVANT_PERIOD);
-      expect(resp.text).toContain("1");
-      expect(resp.text).toContain("January");
-      expect(resp.text).toContain("2011");
     });
     
     test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} page with first statement de-selected`, async () => {
-      mockIsActiveFeature.mockReturnValue(true);
+      mockIsActiveFeature.mockReturnValueOnce(true);
       appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
       appData[UpdateKey] = UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE;
     

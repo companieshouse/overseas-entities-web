@@ -1,5 +1,5 @@
 import { body } from "express-validator";
-import { OwnedLandKey } from "../model/update.type.model";
+import { OwnedLandKey } from "../model/relevant.period.owned.land.filter.model";
 import { ErrorMessages } from "./error.messages";
 
 export const relevantPeriodOwnedLandFilter = [

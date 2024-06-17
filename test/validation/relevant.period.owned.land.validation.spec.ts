@@ -9,23 +9,23 @@ jest.mock('express-validator', () => ({
   })),
 }));
 
-// import { OwnedLandKey } from "../../src/model/relevant.period.owned.land.filter.model";
-// import * as ownedLandHelper from "../../src/validation/relevant.period.owned.land.validation";
-//
-// const ownedLandKey = OwnedLandKey;
-//
-// describe('Overseas entity was registered owner of UK land during relevant period page validation test', () => {
-//   // Arrange
-//   afterAll(() => {
-//     jest.resetAllMocks();
-//   });
-//   test('should validate field successfully', () => {
-//     // Act
-//     ownedLandHelper.relevantPeriodOwnedLand;
-//
-//     // Assert
-//     expect(ownedLandKey).toBeTruthy;
-//     expect(mockNot).toHaveBeenCalled();
-//     expect(mockIsEmpty).toHaveBeenCalled();
-//   });
-// });
+import { OwnedLandKey } from "../../src/model/relevant.period.owned.land.filter.model";
+import * as ownedLandHelper from "../../src/validation/relevant.period.owned.land.validation";
+
+const ownedLandKey = OwnedLandKey;
+
+describe('Overseas entity was registered owner of UK land during relevant period page validation test', () => {
+  // Arrange
+  afterAll(() => {
+    jest.resetAllMocks();
+  });
+  test('should validate field successfully', () => {
+    // Act
+    ownedLandHelper.relevantPeriodOwnedLandFilter;
+
+    // Assert
+    expect(ownedLandKey).toBeTruthy;
+    expect(mockNot).toHaveBeenCalled();
+    expect(mockIsEmpty).toHaveBeenCalled();
+  });
+});

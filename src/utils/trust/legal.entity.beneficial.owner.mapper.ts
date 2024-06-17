@@ -34,9 +34,9 @@ const mapLegalEntityToSession = (
     identification_legal_form: formData.legalForm,
     is_service_address_same_as_principal_address: (formData.is_service_address_same_as_principal_address) ? Number(formData.is_service_address_same_as_principal_address) : 0,
     is_on_register_in_country_formed_in: (formData.is_on_register_in_country_formed_in) ? Number(formData.is_on_register_in_country_formed_in) : 0,
-    ceased_date_day: formData. ceased_date_day,
-    ceased_date_month: formData. ceased_date_month,
-    ceased_date_year: formData. ceased_date_year,
+    ceased_date_day: formData.ceasedDateDay,
+    ceased_date_month: formData.ceasedDateMonth,
+    ceased_date_year: formData.ceasedDateYear,
   };
 
   let stillInvolved = (formData.stillInvolved === "1") ? "Yes" : "No";

@@ -40,8 +40,6 @@ const getPageProperties = (trust, formData, errors?: FormattedValidationErrors) 
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
-
-    console.log("\n\n\n\n\n>>>>>>>>>>>>>>>>>>>>>>>> Manage trusts \n \n\n\n\n\n\n ");
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const appData = getApplicationData(req.session);

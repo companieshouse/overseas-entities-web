@@ -266,6 +266,7 @@ export const RELEVANT_PERIOD_TRUSTEE_INVOLVED = "at least one person was a regis
 export const RELEVANT_PERIOD_NO_TRUSTEE_INVOLVED = "anyone was a registrable beneficial owner due to being a trustee of a trust";
 export const RELEVANT_PERIOD_CHANGE_BENEFICIARY = "at least one person became or ceased to be a beneficiary of a trust";
 export const RELEVANT_PERIOD_NO_CHANGE_BENEFICIARY = "anyone became or ceased to be a beneficiary of a trust";
+export const RELEVANT_PERIOD_INDIVIDUAL_BENEFICIAL_OWNER = "Individual beneficial owner";
 
 // Remove journey
 export const REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE = "Has the overseas entity disposed of all relevant property or land in the UK?";

@@ -54,8 +54,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       templateName: config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
       ...appData,
       hasExistingBosMos,
-      hasNewlyAddedBosMos,
-      feature_flag_relevant_period: config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD
+      hasNewlyAddedBosMos
     });
   } catch (error) {
     logger.errorRequest(req, error);

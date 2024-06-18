@@ -58,7 +58,7 @@
 
 {% set addButtonAction = "/update-an-overseas-entity/update-beneficial-owner-type" %}
 {% set noMoreToAddButtonAction = "/update-an-overseas-entity/update-beneficial-owner-type/submit" %}
-
+{% set feature_flag_relevant_period = OE_CONFIGS.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD %}
 {% block content %}
 
   <div class="govuk-grid-row govuk-body">
@@ -95,8 +95,8 @@
       {% include "includes/csrf_token.html" %}
       {% include "includes/beneficial-owner-type-add-radios.html" %}
 
-      <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
       {% if (feature_flag_relevant_period === "true") and (update.change_bo_relevant_period === "CHANGE_BO_RELEVANT_PERIOD") %}
+      <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
       {% include "includes/page-templates/relevant-period-statements-add-radios.html" %}
       {% endif %}
       <button class="govuk-button" data-module="govuk-button" id="add" formaction="{{ addButtonAction }}" >Add<span class="govuk-visually-hidden"> {{ whatToAdd }} </span></button>

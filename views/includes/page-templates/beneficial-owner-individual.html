@@ -4,17 +4,26 @@
   <div class="govuk-grid-column-two-thirds">
     {% include "includes/list/errors.html" %}
 
+    {% if relevant_period %}
+      {% include "includes/page-templates/important-banner.html" %}
+    {% endif %}
+
     <span class="govuk-caption-xl">Beneficial owner</span>
 
     <h1 class="govuk-heading-xl govuk-!-margin-0">{{ title }}</h1>
-    <br> <p class="govuk-body">You can add more later.</p> <br>
-
-    {% if entity_number %}
-      {% include "includes/ceased-date-details-summary-new-bo.html" %}
+    {% if relevant_period %}
+      {{ govukInsetText({
+        text: 'You need to enter information that is correct as at the date they ceased to be a registrable beneficial owner.'
+      }) }}
+    {% else %}
+      <br> <p class="govuk-body">You can add more later.</p> <br>
+      {% if entity_number %}
+        {% include "includes/ceased-date-details-summary-new-bo.html" %}
+      {% endif %}
     {% endif %}
 
     <form method="post">
-      {% include "includes/csrf_token.html" %} 
+      {% include "includes/csrf_token.html" %}
       {% include "includes/inputs/fields/first-name-input.html" %}
 
       {% set hintLastNameText = "This is also known as your family name." %}

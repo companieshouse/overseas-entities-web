@@ -127,6 +127,10 @@ const mapLegalEntityTrusteeFromSessionToPage = (
     registration_number: trustee.identification_registration_number,
     is_service_address_same_as_principal_address: trustee.is_service_address_same_as_principal_address,
     is_on_register_in_country_formed_in: trustee.is_on_register_in_country_formed_in,
+    ceasedDateDay: trustee.ceased_date_day,
+    ceasedDateMonth: trustee.ceased_date_month,
+    ceasedDateYear: trustee.ceased_date_year,
+    stillInvolved: trustee.is_corporate_still_involved_in_trust,
   } as Page.TrustLegalEntityForm;
 
   if (trustee.type === RoleWithinTrustType.INTERESTED_PERSON){
@@ -136,10 +140,6 @@ const mapLegalEntityTrusteeFromSessionToPage = (
       interestedPersonStartDateMonth: trustee.date_became_interested_person_month,
       interestedPersonStartDateYear: trustee.date_became_interested_person_year,
       principal_address_property_name_number: trustee.ro_address_premises,
-      ceasedDateDay: trustee.ceased_date_day,
-      ceasedDateMonth: trustee.ceased_date_month,
-      ceasedDateYear: trustee.ceased_date_year,
-      stillInvolved: trustee.is_corporate_still_involved_in_trust,
     } as Page.TrustLegalEntityForm;
   }
   return data;

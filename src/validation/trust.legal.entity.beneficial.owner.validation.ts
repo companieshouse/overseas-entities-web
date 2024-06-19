@@ -72,7 +72,7 @@ export const trustLegalEntityBeneficialOwnerValidator = [
     }),
   body("stillInvolved")    
     .if((value, { req }) => isUpdateOrRemoveJourney(req))
-    .not().isEmpty().withMessage(ErrorMessages.TRUST_STILL_INVOLVED),
+    .not().isEmpty().withMessage(ErrorMessages.TRUST_LEGAL_ENTITY_STILL_INVOLVED),
     ...trusteeLegalEntityCeasedDateValidations
 ];
 

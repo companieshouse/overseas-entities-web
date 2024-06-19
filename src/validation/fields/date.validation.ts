@@ -446,13 +446,24 @@ export const trusteeLegalEntityCeasedDateValidations = [
   body("ceasedDate")
     .if((value, { req }) => isUpdateOrRemoveJourney(req))
     .if(body("stillInvolved").equals("0"))
+    .if(body("ceasedDateDay").notEmpty({ ignore_whitespace: true }))
+    .if(body("ceasedDateMonth").notEmpty({ ignore_whitespace: true }))
+    .if(body("ceasedDateYear").notEmpty({ ignore_whitespace: true }))
+    .if(body("stillInvolved").equals("0"))
     .custom((value, { req }) => {
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + JSON.stringify(req.body));
       checkFirstDateOnOrAfterSecondDate(
       req.body["ceasedDateDay"], req.body["ceasedDateMonth"], req.body["ceasedDateYear"],
-      req.body["createdDateDay"], req.body["createdDateMonth"], req.body["createdDateYear"],
-      ErrorMessages.LEGAL_ENTITY_CEASED_DATE_BEFORE_CREATED_DATE
-    )    
+      req.body["trustCreationDateDay"], req.body["trustCreationDateMonth"], req.body["trustCreationDateYear"],
+      ErrorMessages.TRUST_LEGAL_ENTITY_CEASED_DATE_BEFORE_TRUST_CREATION_DATE)    
+      if (req.body["roleWithinTrust"] === RoleWithinTrustType.INTERESTED_PERSON
+        && req.body["interestedPersonStartDateDay"]
+        && req.body["interestedPersonStartDateMonth"]
+        && req.body["interestedPersonStartDateYear"]) {
+        checkFirstDateOnOrAfterSecondDate(
+          req.body["ceasedDateDay"], req.body["ceasedDateMonth"], req.body["ceasedDateYear"],
+          req.body["interestedPersonStartDateDay"], req.body["interestedPersonStartDateMonth"], req.body["interestedPersonStartDateYear"],
+          ErrorMessages.TRUST_LEGAL_ENTITY_CEASED_DATE_BEFORE_INTERESTED_PERSON_START_DATE);
+      }
   })
 ];
 

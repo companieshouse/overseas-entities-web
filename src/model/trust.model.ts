@@ -157,7 +157,7 @@ export type TrustCorporate = {
   ceased_date_day?: string;
   ceased_date_month?: string;
   ceased_date_year?: string;
-  is_corporate_still_involved_in_trust: string;
+  is_corporate_still_involved_in_trust?: string;
 };
 
 export interface BeneficialOwnerItem {

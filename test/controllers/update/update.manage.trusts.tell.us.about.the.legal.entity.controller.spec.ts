@@ -24,7 +24,15 @@ import { getApplicationData, setExtraData } from '../../../src/utils/application
 import { isActiveFeature } from '../../../src/utils/feature.flag';
 
 import { TRUST } from '../../__mocks__/session.mock';
-import { ANY_MESSAGE_ERROR, CONTINUE_BUTTON_TEXT, PAGE_NOT_FOUND_TEXT, PAGE_TITLE_ERROR, SERVICE_UNAVAILABLE, UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_TITLE } from '../../__mocks__/text.mock';
+import { 
+  ANY_MESSAGE_ERROR,
+  CONTINUE_BUTTON_TEXT,
+  PAGE_NOT_FOUND_TEXT,
+  PAGE_TITLE_ERROR,
+  SERVICE_UNAVAILABLE,
+  UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_TITLE,
+  ERROR_LIST 
+} from '../../__mocks__/text.mock';
 import { UpdateKey } from '../../../src/model/update.type.model';
 import { Trust, TrustCorporate } from '../../../src/model/trust.model';
 import { yesNoResponse } from '../../../src/model/data.types.model';
@@ -36,6 +44,7 @@ import { isInChangeJourney } from '../../../src/middleware/navigation/update/is.
 import { getTrustInReview, getTrustee, getTrusteeIndex } from '../../../src/utils/update/review_trusts';
 import { TrusteeType } from '../../../src/model/trustee.type.model';
 import { saveAndContinue } from '../../../src/utils/save.and.continue';
+import { ErrorMessages } from "../../../src/validation/error.messages";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockAuthenticationMiddleware = authentication as jest.Mock;
@@ -93,7 +102,7 @@ const legal_entity_trustee = {
   sa_address_locality: "",
   sa_address_region: "",
   sa_address_country: "",
-  sa_address_postal_code: ""
+  sa_address_postal_code: "",
 } as TrustCorporate;
 
 const legal_entity_trustee_2 = {
@@ -126,6 +135,37 @@ const legal_entity_trustee_2 = {
   sa_address_country: "",
   sa_address_postal_code: ""
 } as TrustCorporate;
+
+const DEFAULT_FORM_SUBMISSION = {
+  legalEntityId: 'trustee-id-2',
+  legalEntityName: 'Legal Trust',
+  roleWithinTrust: RoleWithinTrustType.BENEFICIARY,
+  interestedPersonStartDateDay: '01',
+  interestedPersonStartDateMonth: '02',
+  interestedPersonStartDateYear: '2024',
+  principal_address_property_name_number: 'Principal 1',
+  principal_address_line_1: 'Principal New Line 1',
+  principal_address_line_2: 'Principal New Line 2',
+  principal_address_town: 'Principal New Town',
+  principal_address_county: 'Principal New County',
+  principal_address_country: 'Principal New Country',
+  principal_address_postcode: 'RO NE994WS',
+  service_address_property_name_number: 'Principal 1',
+  service_address_line_1: 'Principal New Line 1',
+  service_address_line_2: 'Principal New Line 2',
+  service_address_town: 'Principal New Town',
+  service_address_county: 'Principal New County',
+  service_address_country: 'Principal New Country',
+  service_address_postcode: 'RO NE994WS',
+  governingLaw: 'Governing Law',
+  legalForm: 'Legal form',
+  public_register_name: '',
+  public_register_jurisdiction: '',
+  registration_number: '',
+  is_service_address_same_as_principal_address: yesNoResponse.Yes,
+  is_on_register_in_country_formed_in: yesNoResponse.No,
+  stillInvolved: "1",        
+};
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 mockGetApplicationData.mockReturnValue({
@@ -183,10 +223,18 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       const appData = { entity_number: 'OE123456', entity_name: 'Test OE' };
       const trustInReview = { trust_id: '1199', trust_name: 'Trust 1', review_status: { in_review: true } };
 
+      const legalEntityTrustee = {
+        ...legal_entity_trustee,
+        ceased_date_day: "01",
+        ceased_date_month: "01",
+        ceased_date_year: "2024",
+        is_corporate_still_involved_in_trust: "0"
+      };
+
       mockIsActiveFeature.mockReturnValue(true);
       mockGetApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
-      mockGetTrustee.mockReturnValue(legal_entity_trustee);
+      mockGetTrustee.mockReturnValue(legalEntityTrustee);    
 
       const response = await request(app).get(`${UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL}/123`);
 
@@ -205,6 +253,12 @@ describe('Update - Manage Trusts - Review legal entities', () => {
 
       expect(response.text).toContain(CONTINUE_BUTTON_TEXT);
       expect(response.text).not.toContain(PAGE_TITLE_ERROR);
+
+      expect(response.text).toContain('name="stillInvolved" type="radio" value="0" checked');
+      expect(response.text).toContain('name="ceasedDateDay" type="text" value="01"');
+      expect(response.text).toContain('name="ceasedDateMonth" type="text" value="01"');
+      expect(response.text).toContain('name="ceasedDateYear" type="text" value="2024"');
+
     });
 
     test('when feature flag is off, 404 is returned', async () => {
@@ -257,6 +311,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
         registration_number: '0123449EDCA',
         is_service_address_same_as_principal_address: yesNoResponse.No,
         is_on_register_in_country_formed_in: yesNoResponse.Yes,
+        stillInvolved: "1",
       };
 
       const expectedTrustee = {
@@ -291,6 +346,10 @@ describe('Update - Manage Trusts - Review legal entities', () => {
         identification_registration_number: '0123449EDCA',
         is_service_address_same_as_principal_address: yesNoResponse.No,
         is_on_register_in_country_formed_in: yesNoResponse.Yes,
+        ceased_date_day: "",
+        ceased_date_month: "",
+        ceased_date_year: "",
+        is_corporate_still_involved_in_trust: "1",
       };
 
       const trustInReview = {
@@ -328,6 +387,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
           identification_registration_number: '',
           is_service_address_same_as_principal_address: yesNoResponse.Yes,
           is_on_register_in_country_formed_in: yesNoResponse.No,
+          is_corporate_still_involved_in_trust: "1",
         }]
       };
 
@@ -345,7 +405,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       const resp = await request(app)
         .post(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL)
         .send({
-          ...formSubmission,
+         ...formSubmission
         });
 
       expect(resp.status).toBe(302);
@@ -358,43 +418,14 @@ describe('Update - Manage Trusts - Review legal entities', () => {
     });
 
     test('when a valid trust submission is provided, and the trust id is not an existing trust, the trust is added to the model', async () => {
-      const formSubmission = {
-        legalEntityId: 'trustee-id-2',
-        legalEntityName: 'Legal Trust',
-        roleWithinTrust: RoleWithinTrustType.BENEFICIARY,
-        interestedPersonStartDateDay: '01',
-        interestedPersonStartDateMonth: '02',
-        interestedPersonStartDateYear: '2022',
-        principal_address_property_name_number: 'Principal 1',
-        principal_address_line_1: 'Principal New Line 1',
-        principal_address_line_2: 'Principal New Line 2',
-        principal_address_town: 'Principal New Town',
-        principal_address_county: 'Principal New County',
-        principal_address_country: 'Principal New Country',
-        principal_address_postcode: 'RO NE994WS',
-        service_address_property_name_number: 'Principal 1',
-        service_address_line_1: 'Principal New Line 1',
-        service_address_line_2: 'Principal New Line 2',
-        service_address_town: 'Principal New Town',
-        service_address_county: 'Principal New County',
-        service_address_country: 'Principal New Country',
-        service_address_postcode: 'RO NE994WS',
-        governingLaw: 'Governing Law',
-        legalForm: 'Legal form',
-        public_register_name: '',
-        public_register_jurisdiction: '',
-        registration_number: '',
-        is_service_address_same_as_principal_address: yesNoResponse.Yes,
-        is_on_register_in_country_formed_in: yesNoResponse.No,
-      };
-
+      
       const expectedTrustee = {
         id: 'trustee-id-2',
         name: 'Legal Trust',
         type: RoleWithinTrustType.BENEFICIARY,
         date_became_interested_person_day: '01',
         date_became_interested_person_month: '02',
-        date_became_interested_person_year: '2022',
+        date_became_interested_person_year: '2024',
         ro_address_premises: 'Principal 1',
         ro_address_line_1: 'Principal New Line 1',
         ro_address_line_2: 'Principal New Line 2',
@@ -417,6 +448,10 @@ describe('Update - Manage Trusts - Review legal entities', () => {
         identification_legal_form: 'Legal form',
         is_service_address_same_as_principal_address: yesNoResponse.Yes,
         is_on_register_in_country_formed_in: yesNoResponse.No,
+        ceased_date_day: "",
+        ceased_date_month: "",
+        ceased_date_year: "",
+        is_corporate_still_involved_in_trust: "1",
       };
 
       const existingTrustee = {
@@ -451,6 +486,10 @@ describe('Update - Manage Trusts - Review legal entities', () => {
         identification_registration_number: 'Existing 12345CDE',
         is_service_address_same_as_principal_address: yesNoResponse.Yes,
         is_on_register_in_country_formed_in: yesNoResponse.No,
+        ceased_date_day: "",
+        ceased_date_month: "",
+        ceased_date_year: "",
+        is_corporate_still_involved_in_trust: "1",
       };
 
       const trustInReview = {
@@ -473,7 +512,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       const resp = await request(app)
         .post(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL)
         .send({
-          ...formSubmission,
+          ...DEFAULT_FORM_SUBMISSION,
         });
 
       expect(resp.status).toBe(302);
@@ -494,5 +533,118 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       expect(resp.status).toEqual(404);
       expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
     });
+
+    test.each([
+      [
+        '"still involved" is not selected',
+        {
+          stillInvolved: '',
+          ceasedDateDay: '',
+          ceasedDateMonth: '',
+          ceasedDateYear: ''
+        },
+        ErrorMessages.TRUST_LEGAL_ENTITY_STILL_INVOLVED
+      ], [
+        'ceased date is not provided',
+        {
+          stillInvolved: '0',
+          ceasedDateDay: '',
+          ceasedDateMonth: '',
+          ceasedDateYear: ''
+        },
+        ErrorMessages.ENTER_DATE_OF_TRUST_CEASED_LEGAL_ENTITY
+      ] , [
+        'ceased date day is not provided',
+        {
+          stillInvolved: '0',
+          ceasedDateDay: '',
+          ceasedDateMonth: '01',
+          ceasedDateYear: '2023'
+        },
+        ErrorMessages.DAY_OF_CEASED_LEGAL_ENTITY
+      ], [
+        'ceased date month is not provided',
+        {
+          stillInvolved: '0',
+          ceasedDateDay: '01',
+          ceasedDateMonth: '',
+          ceasedDateYear: '2023'
+        },
+        ErrorMessages.MONTH_OF_CEASED_LEGAL_ENTITY
+      ], [
+        'ceased date year is not provided',
+        {
+          stillInvolved: '0',
+          ceasedDateDay: '01',
+          ceasedDateMonth: '01',
+          ceasedDateYear: ''
+        },
+        ErrorMessages.YEAR_OF_CEASED_LEGAL_ENTITY
+      ], [
+        'ceased date is not a valid date',
+        {
+          stillInvolved: '0',
+          ceasedDateDay: '30',
+          ceasedDateMonth: '02',
+          ceasedDateYear: '2024'
+        },
+        ErrorMessages.INVALID_DATE_OF_CEASED_TRUST_LEGAL_ENTITY
+      ], [
+        'ceased date is in the future',
+        {
+          stillInvolved: '0',
+          ceasedDateDay: '01',
+          ceasedDateMonth: '01',
+          ceasedDateYear: '2100'
+        },
+        ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY_OF_CEASED_TRUST_LEGAL_ENTITY
+      ], [
+        'ceased date is before trust creation date',
+        {
+          stillInvolved: '0',
+          ceasedDateDay: '01',
+          ceasedDateMonth: '01',
+          ceasedDateYear: '2024',
+          trustCreationDateDay: '02',
+          trustCreationDateMonth: '01',
+          trustCreationDateYear: '2024'
+        },
+        ErrorMessages.TRUST_LEGAL_ENTITY_CEASED_DATE_BEFORE_TRUST_CREATION_DATE
+      ], [
+        'ceased date is before interested person start date',
+        {
+          roleWithinTrust: RoleWithinTrustType.INTERESTED_PERSON,
+          stillInvolved: '0',
+          ceasedDateDay: '31',
+          ceasedDateMonth: '12',
+          ceasedDateYear: '2021'
+        },
+        ErrorMessages.TRUST_LEGAL_ENTITY_CEASED_DATE_BEFORE_INTERESTED_PERSON_START_DATE
+      ]
+    ])('should return a validation error if %s', async (description, formData, errorMessage) => {
+   
+      const formSubmission = {
+        ...DEFAULT_FORM_SUBMISSION,
+        ...formData
+      };
+
+      mockIsActiveFeature.mockReturnValue(true);
+
+      const resp = await request(app)
+        .post(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL)
+        .send({
+          ...formSubmission,
+        });
+
+      expect(resp.status).toBe(200);
+      expect(resp.text).toContain(ERROR_LIST);
+      expect(resp.text).toContain('Tell us about the legal entity');
+      expect(resp.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
+      expect(resp.text).toContain(errorMessage);
+
+      expect(mockSetExtraData).not.toHaveBeenCalled();
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+    });
+
   });
 });

@@ -39,7 +39,8 @@ import {
   BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_MO,
   REVIEWED_BENEFICIAL_OWNER_MANAGING_OFFICER_TABLE_HEADING,
   NEWLY_ADDED_BENEFICIAL_OWNERS_SUMMARY_TABLE_HEADING,
-  MESSAGE_ERROR
+  MESSAGE_ERROR,
+  RELEVANT_PERIOD_INDIVIDUAL_BENEFICIAL_OWNER
 } from '../../__mocks__/text.mock';
 import {
   ERROR,
@@ -55,7 +56,9 @@ import {
   UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
   UPDATE_BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
   UPDATE_MANAGING_OFFICER_OBJECT_MOCK,
-  UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK
+  UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
+  UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE,
+  UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE
 } from '../../__mocks__/session.mock';
 import { BeneficialOwnersStatementType, BeneficialOwnerStatementKey } from '../../../src/model/beneficial.owner.statement.model';
 import { ManagingOfficerKey } from '../../../src/model/managing.officer.model';
@@ -207,6 +210,28 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+
+    test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} page with first statement selected`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
+      appData[UpdateKey] = UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE;
+
+      mockGetApplicationData.mockReturnValueOnce(appData);
+      const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(RELEVANT_PERIOD_INDIVIDUAL_BENEFICIAL_OWNER);
+    });
+
+    test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} page with first statement de-selected`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
+      appData[UpdateKey] = UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE;
+
+      mockGetApplicationData.mockReturnValueOnce(appData);
+      const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(RELEVANT_PERIOD_INDIVIDUAL_BENEFICIAL_OWNER);
     });
   });
 

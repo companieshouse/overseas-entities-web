@@ -70,10 +70,10 @@ export const trustLegalEntityBeneficialOwnerValidator = [
     .custom( async (value, { req }) => {
       await checkIfLessThanTargetValue(req.body.public_register_name.length, req.body.public_register_jurisdiction.length, 160);
     }),
-  body("stillInvolved")    
+  body("stillInvolved")
     .if((value, { req }) => isUpdateOrRemoveJourney(req))
     .not().isEmpty().withMessage(ErrorMessages.TRUST_LEGAL_ENTITY_STILL_INVOLVED),
-    ...trusteeLegalEntityCeasedDateValidations
+  ...trusteeLegalEntityCeasedDateValidations
 ];
 
 export const checkIfLessThanTargetValue = async (value1: number, value2: number, target: number) => {

@@ -449,22 +449,22 @@ export const trusteeLegalEntityCeasedDateValidations = [
     .if(body("ceasedDateDay").notEmpty({ ignore_whitespace: true }))
     .if(body("ceasedDateMonth").notEmpty({ ignore_whitespace: true }))
     .if(body("ceasedDateYear").notEmpty({ ignore_whitespace: true }))
-    .if(body("stillInvolved").equals("0"))
     .custom((value, { req }) => {
       checkFirstDateOnOrAfterSecondDate(
-      req.body["ceasedDateDay"], req.body["ceasedDateMonth"], req.body["ceasedDateYear"],
-      req.body["trustCreationDateDay"], req.body["trustCreationDateMonth"], req.body["trustCreationDateYear"],
-      ErrorMessages.TRUST_LEGAL_ENTITY_CEASED_DATE_BEFORE_TRUST_CREATION_DATE)    
+        req.body["ceasedDateDay"], req.body["ceasedDateMonth"], req.body["ceasedDateYear"],
+        req.body["trustCreationDateDay"], req.body["trustCreationDateMonth"], req.body["trustCreationDateYear"],
+        ErrorMessages.TRUST_LEGAL_ENTITY_CEASED_DATE_BEFORE_TRUST_CREATION_DATE);
       if (req.body["roleWithinTrust"] === RoleWithinTrustType.INTERESTED_PERSON
-        && req.body["interestedPersonStartDateDay"]
-        && req.body["interestedPersonStartDateMonth"]
-        && req.body["interestedPersonStartDateYear"]) {
+      && req.body["interestedPersonStartDateDay"]
+      && req.body["interestedPersonStartDateMonth"]
+      && req.body["interestedPersonStartDateYear"]) {
         checkFirstDateOnOrAfterSecondDate(
           req.body["ceasedDateDay"], req.body["ceasedDateMonth"], req.body["ceasedDateYear"],
           req.body["interestedPersonStartDateDay"], req.body["interestedPersonStartDateMonth"], req.body["interestedPersonStartDateYear"],
           ErrorMessages.TRUST_LEGAL_ENTITY_CEASED_DATE_BEFORE_INTERESTED_PERSON_START_DATE);
       }
-  })
+      return true;
+    })
 ];
 
 export const historicalBeneficialOwnerStartDate = dateValidations(historicalBOStartDateContext);

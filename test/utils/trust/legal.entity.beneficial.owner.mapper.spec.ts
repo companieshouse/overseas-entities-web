@@ -50,7 +50,7 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
         ceasedDateDay: "02",
         ceasedDateMonth: "01",
         ceasedDateYear: "2024",
-        stillInvolved: "0", 
+        stillInvolved: "0",
       };
 
       test('Map legal entity trustee to session with different service address and not on public reg', () => {
@@ -91,10 +91,10 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
           identification_legal_form: mockFormData.legalForm,
           is_service_address_same_as_principal_address: mockFormData.is_service_address_same_as_principal_address,
           is_on_register_in_country_formed_in: mockFormData.is_on_register_in_country_formed_in,
-          ceased_date_day:  mockFormData.ceasedDateDay,
-          ceased_date_month:  mockFormData.ceasedDateMonth,
-          ceased_date_year:  mockFormData.ceasedDateYear,
-          is_corporate_still_involved_in_trust:  mockFormData.stillInvolved,
+          ceased_date_day: mockFormData.ceasedDateDay,
+          ceased_date_month: mockFormData.ceasedDateMonth,
+          ceased_date_year: mockFormData.ceasedDateYear,
+          is_corporate_still_involved_in_trust: mockFormData.stillInvolved,
         });
       });
 
@@ -142,10 +142,10 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
           identification_registration_number: mockFormData.registration_number,
           is_service_address_same_as_principal_address: mockFormData.is_service_address_same_as_principal_address,
           is_on_register_in_country_formed_in: mockFormData.is_on_register_in_country_formed_in,
-          ceased_date_day:  mockFormData.ceasedDateDay,
-          ceased_date_month:  mockFormData.ceasedDateMonth,
-          ceased_date_year:  mockFormData.ceasedDateYear,
-          is_corporate_still_involved_in_trust:  mockFormData.stillInvolved,
+          ceased_date_day: mockFormData.ceasedDateDay,
+          ceased_date_month: mockFormData.ceasedDateMonth,
+          ceased_date_year: mockFormData.ceasedDateYear,
+          is_corporate_still_involved_in_trust: mockFormData.stillInvolved,
         });
       });
 

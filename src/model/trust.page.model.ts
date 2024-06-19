@@ -125,7 +125,7 @@ is_on_register_in_country_formed_in: yesNoResponse;
 ceasedDateDay?: string;
 ceasedDateMonth?: string;
 ceasedDateYear?: string;
-stillInvolved?: string; 
+stillInvolved?: string;
 };
 
 type TrusteeItem = {

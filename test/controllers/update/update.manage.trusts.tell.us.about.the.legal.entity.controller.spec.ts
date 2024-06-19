@@ -24,14 +24,14 @@ import { getApplicationData, setExtraData } from '../../../src/utils/application
 import { isActiveFeature } from '../../../src/utils/feature.flag';
 
 import { TRUST } from '../../__mocks__/session.mock';
-import { 
+import {
   ANY_MESSAGE_ERROR,
   CONTINUE_BUTTON_TEXT,
   PAGE_NOT_FOUND_TEXT,
   PAGE_TITLE_ERROR,
   SERVICE_UNAVAILABLE,
   UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_TITLE,
-  ERROR_LIST 
+  ERROR_LIST
 } from '../../__mocks__/text.mock';
 import { UpdateKey } from '../../../src/model/update.type.model';
 import { Trust, TrustCorporate } from '../../../src/model/trust.model';
@@ -164,7 +164,7 @@ const DEFAULT_FORM_SUBMISSION = {
   registration_number: '',
   is_service_address_same_as_principal_address: yesNoResponse.Yes,
   is_on_register_in_country_formed_in: yesNoResponse.No,
-  stillInvolved: "1",        
+  stillInvolved: "1",
 };
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
@@ -234,7 +234,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       mockIsActiveFeature.mockReturnValue(true);
       mockGetApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
-      mockGetTrustee.mockReturnValue(legalEntityTrustee);    
+      mockGetTrustee.mockReturnValue(legalEntityTrustee);
 
       const response = await request(app).get(`${UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL}/123`);
 
@@ -405,7 +405,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       const resp = await request(app)
         .post(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL)
         .send({
-         ...formSubmission
+          ...formSubmission
         });
 
       expect(resp.status).toBe(302);
@@ -418,7 +418,6 @@ describe('Update - Manage Trusts - Review legal entities', () => {
     });
 
     test('when a valid trust submission is provided, and the trust id is not an existing trust, the trust is added to the model', async () => {
-      
       const expectedTrustee = {
         id: 'trustee-id-2',
         name: 'Legal Trust',
@@ -553,7 +552,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
           ceasedDateYear: ''
         },
         ErrorMessages.ENTER_DATE_OF_TRUST_CEASED_LEGAL_ENTITY
-      ] , [
+      ], [
         'ceased date day is not provided',
         {
           stillInvolved: '0',
@@ -622,7 +621,6 @@ describe('Update - Manage Trusts - Review legal entities', () => {
         ErrorMessages.TRUST_LEGAL_ENTITY_CEASED_DATE_BEFORE_INTERESTED_PERSON_START_DATE
       ]
     ])('should return a validation error if %s', async (description, formData, errorMessage) => {
-   
       const formSubmission = {
         ...DEFAULT_FORM_SUBMISSION,
         ...formData

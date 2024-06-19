@@ -40,7 +40,6 @@ const mapLegalEntityToSession = (
     ceased_date_year: formData.stillInvolved === "0" ? formData.ceasedDateYear : "",
   };
 
-  
   let publicRegisterData = {};
   if (formData.is_on_register_in_country_formed_in?.toString() === "1"){
     publicRegisterData = {

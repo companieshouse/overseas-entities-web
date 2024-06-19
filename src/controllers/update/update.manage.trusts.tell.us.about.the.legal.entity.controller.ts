@@ -23,9 +23,7 @@ import { RoleWithinTrustType } from '../../model/role.within.trust.type.model';
 import { TrustLegalEntityForm } from '../../model/trust.page.model';
 import { ApplicationData } from '../../model';
 
-const getPageProperties = (trust, relevantPeriod, formData, errors?: FormattedValidationErrors) => {
-  formData.relevantPeriod = relevantPeriod;
-  formData.entity_name = trust.trust_name;
+const getPageProperties = (trust, formData, errors?: FormattedValidationErrors) => {
   return {
     templateName: UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE,
     backLinkUrl: getBackLink(trust.review_status?.reviewed_legal_entities),

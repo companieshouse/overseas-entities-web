@@ -11,7 +11,7 @@ import { isActiveFeature } from "../utils/feature.flag";
 import { getUrlWithParamsToPath } from "../utils/url";
 
 export const get = (req: Request, res: Response) => {
-  getManagingOfficerCorporate(req, res, config.BENEFICIAL_OWNER_TYPE_URL, config.MANAGING_OFFICER_CORPORATE_PAGE);
+  getManagingOfficerCorporate(req, res, getBeneficialOwnerTypeUrl(req), config.MANAGING_OFFICER_CORPORATE_PAGE);
 };
 
 export const getById = (req: Request, res: Response, next: NextFunction) => {

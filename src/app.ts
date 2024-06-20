@@ -68,7 +68,7 @@ app.use(SessionMiddleware(cookieConfig, sessionStore));
 
 const csrfProtectionMiddleware = CsrfProtectionMiddleware({
   sessionStore,
-  enabled: false,
+  enabled: true,
   sessionCookieName: config.COOKIE_NAME
 });
 app.use(csrfProtectionMiddleware);

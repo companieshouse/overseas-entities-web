@@ -26,7 +26,7 @@ import { getApplicationData } from '../../../src/utils/application.data';
 import { isActiveFeature } from '../../../src/utils/feature.flag';
 
 import { APPLICATION_DATA_UPDATE_NO_TRUSTS_MOCK, APPLICATION_DATA_MOCK, APPLICATION_DATA_UPDATE_NO_BO_TRUSTEES_MOCK } from '../../__mocks__/session.mock';
-import { PAGE_TITLE_ERROR, PAGE_NOT_FOUND_TEXT, UPDATE_TELL_US_ABOUT_TRUST_HEADING, UPDATE_TELL_US_ABOUT_TRUST_QUESTION, ERROR_LIST, TRUST_CEASED_DATE_TEXT, TRUST_NOT_ASSOCIATED_WITH_BENEFICIAL_OWNER_TEXT } from '../../__mocks__/text.mock';
+import { PAGE_TITLE_ERROR, PAGE_NOT_FOUND_TEXT, UPDATE_TELL_US_ABOUT_TRUST_HEADING, UPDATE_TELL_US_ABOUT_TRUST_QUESTION, ERROR_LIST, TRUST_CEASED_DATE_TEXT, TRUST_NOT_ASSOCIATED_WITH_BENEFICIAL_OWNER_TEXT, TRUST_ENTER_CEASED_DATE } from '../../__mocks__/text.mock';
 import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.mock';
 import { saveAndContinue } from '../../../src/utils/save.and.continue';
 
@@ -111,6 +111,17 @@ describe('Update - Trusts - Tell us about the trust', () => {
       expect(resp.text).toContain(ERROR_LIST);
       expect(resp.text).toContain(UPDATE_TELL_US_ABOUT_TRUST_HEADING);
       expect(resp.text).toContain(UPDATE_TELL_US_ABOUT_TRUST_QUESTION);
+    });
+
+    test('when feature flag is on and new trust no longer involved in the OE, re-render page with ceased date validation error', async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockGetApplicationData.mockReturnValue( { ...APPLICATION_DATA_MOCK } );
+      const resp = await request(app).post(UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL).send({ stillInvolved: '0' });
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ERROR_LIST);
+      expect(resp.text).toContain(UPDATE_TELL_US_ABOUT_TRUST_HEADING);
+      expect(resp.text).toContain(TRUST_ENTER_CEASED_DATE);
     });
 
     test('when feature flag is on and posting valid data, redirect to update-trusts-individuals-or-entities-involved page', async () => {

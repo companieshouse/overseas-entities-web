@@ -97,7 +97,7 @@ export const STARTING_NEW_PAGE = "starting-new";
 export const PAYMENT_FAILED_PAGE = "payment-failed";
 export const RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE = "relevant-period-owned-land-filter";
 export const RELEVANT_PERIOD_INTERRUPT_PAGE = "relevant-period-interrupt-card";
-export const RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE = "relevant-period-combined-statements";
+export const RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE = "provide-statements-for-the-pre-registration-period";
 export const RELEVANT_PERIOD_REVIEW_STATEMENTS_PAGE = "relevant-period-review-statements";
 export const TRUST_DETAILS_PAGE = "trust-details";
 export const TRUST_INVOLVED_PAGE = "trust-involved";
@@ -489,3 +489,4 @@ export const PAYMENT_WITH_TRANSACTION_WITH_PARAMS_URL = REGISTER_AN_OVERSEAS_ENT
 
 // Trusts with id params
 export const TRUST_ENTRY_WITH_PARAMS_URL = REGISTER_AN_OVERSEAS_ENTITY_WITH_PARAMS_URL + TRUSTS_URL;
+export const TRUST_INFO_WITH_PARAMS_URL = REGISTER_AN_OVERSEAS_ENTITY_WITH_PARAMS_URL + TRUST_INFO_PAGE;

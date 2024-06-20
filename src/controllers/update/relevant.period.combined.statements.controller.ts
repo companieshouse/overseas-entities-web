@@ -24,11 +24,6 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `GET ${config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE}`);
     const appData: ApplicationData = getApplicationData(req.session);
-    if (appData.update) {
-      appData.update[ChangeBoRelevantPeriodKey] = ChangeBoRelevantPeriodType.NO;
-      appData.update[TrusteeInvolvedRelevantPeriodKey] = TrusteeInvolvedRelevantPeriodType.NO;
-      appData.update[ChangeBeneficiaryRelevantPeriodKey] = ChangeBeneficiaryRelevantPeriodType.NO;
-    }
 
     return res.render(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE, {
       backLinkUrl: config.RELEVANT_PERIOD_INTERRUPT_PAGE,

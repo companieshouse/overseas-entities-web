@@ -146,7 +146,7 @@ describe("owned land filter page tests", () => {
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.UPDATE_FILING_DATE_URL);
     });
-    xtest(`renders the ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL} page with error when no radios are selected`, async () => {
+    test(`renders the ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL} page with error when no radios are selected`, async () => {
       const resp = await request(app)
         .post(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL)
         .send({ owned_land_relevant_period: "" });
@@ -155,15 +155,20 @@ describe("owned land filter page tests", () => {
       expect(resp.text).toContain(ERROR_LIST);
       expect(resp.text).toContain(SELECT_IF_REGISTER_DURING_PRE_REG_PERIOD);
     });
-    test(`renders the ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL} page with ${SERVICE_UNAVAILABLE} error when uninitialised string found`, async () => {
-      let uninitialisedString: string | null | undefined;
+    test(`redirect to the ${config.UPDATE_FILING_DATE_URL} page when negative invalid value found`, async () => {
       const resp = await request(app)
         .post(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL)
-        .send({ owned_land_relevant_period: uninitialisedString });
+        .send({ owned_land_relevant_period: "-1" });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.UPDATE_FILING_DATE_URL);
+    });
+    test("catch error when validating the page", async () => {
+      mockGetApplicationData.mockImplementation( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      const resp = await request(app).post(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
-
   });
 });

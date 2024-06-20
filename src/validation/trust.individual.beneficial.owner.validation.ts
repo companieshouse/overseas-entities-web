@@ -10,7 +10,8 @@ import { second_nationality_validations } from "./fields/second-nationality.vali
 import { dateBecameIPIndividualBeneficialOwner, dateOfBirthValidations, trustIndividualCeasedDateValidations } from "./fields/date.validation";
 import { DefaultErrorsSecondNationality } from "./models/second.nationality.error.model";
 import { ErrorMessagesOptional, ErrorMessagesRequired } from "./models/address.error.model";
-import { isUpdateOrRemoveJourney } from "../utils/url";
+import { ApplicationData } from "../model";
+import { getApplicationData } from "../utils/application.data";
 
 const addressErrorMessages: ErrorMessagesOptional = {
   propertyValueError: ErrorMessages.PROPERTY_NAME_OR_NUMBER_INDIVIDUAL_BO,
@@ -53,7 +54,10 @@ export const trustIndividualBeneficialOwner = [
   ...usual_residential_service_address_validations(addressErrorMessages as ErrorMessagesRequired),
 
   body("stillInvolved")
-    .if((value, { req }) => isUpdateOrRemoveJourney(req))
+    .if((value, { req }) => {
+      const appData: ApplicationData = getApplicationData(req.session);
+      return !!appData.entity_number; // !! = truthy check
+    })
     .not().isEmpty().withMessage(ErrorMessages.TRUST_INDIVIDUAL_STILL_INVOLVED),
 
   ...trustIndividualCeasedDateValidations

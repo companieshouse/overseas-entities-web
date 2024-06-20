@@ -171,7 +171,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
         date_became_interested_person_month: '3',
         date_became_interested_person_year: '2020',
         is_service_address_same_as_usual_residential_address: yesNoResponse.No,
-        still_involved: "0",
+        is_individual_still_involved_in_trust: "0",
         ceased_date_day: "22",
         ceased_date_month: "03",
         ceased_date_year: "2022"
@@ -202,9 +202,6 @@ describe('Update - Manage Trusts - Review individuals', () => {
       expect(resp.text).toContain('name="ceasedDateDay" type="text" value="22"');
       expect(resp.text).toContain('name="ceasedDateMonth" type="text" value="03"');
       expect(resp.text).toContain('name="ceasedDateYear" type="text" value="2022"');
-      expect(resp.text).toContain('name="trustCreationDateDay" value="24"');
-      expect(resp.text).toContain('name="trustCreationDateMonth" value="02"');
-      expect(resp.text).toContain('name="trustCreationDateYear" value="2000"');
 
       expect(resp.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL);
 
@@ -261,7 +258,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
         sa_address_region: 'Service New County',
         sa_address_country: 'Service New Country',
         sa_address_postal_code: 'Service NE994WS',
-        still_involved: '0',
+        is_individual_still_involved_in_trust: '0',
         ceased_date_day: '21',
         ceased_date_month: '10',
         ceased_date_year: '2023',
@@ -381,7 +378,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
         sa_address_postal_code: '',
         sa_address_care_of: '',
         sa_address_po_box: '',
-        still_involved: '1',
+        is_individual_still_involved_in_trust: '1',
         ceased_date_day: '',
         ceased_date_month: '',
         ceased_date_year: '',
@@ -626,10 +623,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
           stillInvolved: '0',
           ceasedDateDay: '10',
           ceasedDateMonth: '01',
-          ceasedDateYear: '2023',
-          trustCreationDateDay: '01',
-          trustCreationDateMonth: '03',
-          trustCreationDateYear: '2023'
+          ceasedDateYear: '2023'
         },
         ErrorMessages.TRUST_INDIVIDUAL_CEASED_DATE_BEFORE_TRUST_CREATION_DATE
       ], [
@@ -649,7 +643,23 @@ describe('Update - Manage Trusts - Review individuals', () => {
         ...formData
       };
 
+      const appData = {
+        entity_number: 'OE988669',
+        entity_name: 'Tell us about the individual OE 1'
+      };
+
+      const trustInReview = {
+        trust_id: 'trust-in-review-1',
+        trust_name: 'Trust One',
+        creation_date_day: '01',
+        creation_date_month: '03',
+        creation_date_year: '2023',
+        review_status: { in_review: true }
+      };
+
       mockIsActiveFeature.mockReturnValue(true);
+      mockGetApplicationData.mockReturnValue(appData);
+      mockGetTrustInReview.mockReturnValue(trustInReview);
 
       const resp = await request(app)
         .post(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL)

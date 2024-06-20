@@ -30,10 +30,7 @@ const getPageProperties = (trust, formData, trustee: TrustIndividual, errors?: F
     },
     pageData: {
       trustData: {
-        trustName: trust?.trust_name,
-        creationDateDay: trust?.creation_date_day,
-        creationDateMonth: trust?.creation_date_month,
-        creationDateYear: trust?.creation_date_year,
+        trustName: trust?.trust_name
       },
       roleWithinTrustType: RoleWithinTrustType,
     },
@@ -65,7 +62,6 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-
     const appData = getApplicationData(req.session);
     const trusteeId = req.params[ROUTE_PARAM_TRUSTEE_ID];
     const trust = getTrustInReview(appData) as Trust;

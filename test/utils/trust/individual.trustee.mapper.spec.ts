@@ -96,7 +96,7 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
           sa_address_postal_code: mockFormData.service_address_postcode,
           sa_address_care_of: '',
           sa_address_po_box: '',
-          still_involved: '0',
+          is_individual_still_involved_in_trust: '0',
           ceased_date_day: '24',
           ceased_date_month: '11',
           ceased_date_year: '2023'
@@ -145,7 +145,7 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
           sa_address_postal_code: '',
           sa_address_care_of: '',
           sa_address_po_box: '',
-          still_involved: '0',
+          is_individual_still_involved_in_trust: '0',
           ceased_date_day: '24',
           ceased_date_month: '11',
           ceased_date_year: '2023'
@@ -200,7 +200,7 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
           date_became_interested_person_day: mockFormData.dateBecameIPDay,
           date_became_interested_person_month: mockFormData.dateBecameIPMonth,
           date_became_interested_person_year: mockFormData.dateBecameIPYear,
-          still_involved: '0',
+          is_individual_still_involved_in_trust: '0',
           ceased_date_day: '24',
           ceased_date_month: '11',
           ceased_date_year: '2023'

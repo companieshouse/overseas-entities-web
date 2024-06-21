@@ -228,7 +228,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
         ceased_date_day: "01",
         ceased_date_month: "01",
         ceased_date_year: "2024",
-        is_corporate_still_involved_in_trust: "0"
+        still_involved: "No"
       };
 
       mockIsActiveFeature.mockReturnValue(true);
@@ -349,7 +349,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
         ceased_date_day: "",
         ceased_date_month: "",
         ceased_date_year: "",
-        is_corporate_still_involved_in_trust: "1",
+        still_involved: "Yes",
       };
 
       const trustInReview = {
@@ -387,7 +387,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
           identification_registration_number: '',
           is_service_address_same_as_principal_address: yesNoResponse.Yes,
           is_on_register_in_country_formed_in: yesNoResponse.No,
-          is_corporate_still_involved_in_trust: "1",
+          still_involved: "Yes",
         }]
       };
 
@@ -450,7 +450,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
         ceased_date_day: "",
         ceased_date_month: "",
         ceased_date_year: "",
-        is_corporate_still_involved_in_trust: "1",
+        still_involved: "Yes",
       };
 
       const existingTrustee = {
@@ -488,7 +488,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
         ceased_date_day: "",
         ceased_date_month: "",
         ceased_date_year: "",
-        is_corporate_still_involved_in_trust: "1",
+        still_involved: "Yes",
       };
 
       const trustInReview = {

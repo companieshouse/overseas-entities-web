@@ -34,10 +34,9 @@ const mapLegalEntityToSession = (
     identification_legal_form: formData.legalForm,
     is_service_address_same_as_principal_address: (formData.is_service_address_same_as_principal_address) ? Number(formData.is_service_address_same_as_principal_address) : 0,
     is_on_register_in_country_formed_in: (formData.is_on_register_in_country_formed_in) ? Number(formData.is_on_register_in_country_formed_in) : 0,
-    is_corporate_still_involved_in_trust: formData.stillInvolved,
-    ceased_date_day: formData.stillInvolved === "0" ? formData.ceasedDateDay : "",
-    ceased_date_month: formData.stillInvolved === "0" ? formData.ceasedDateMonth : "",
-    ceased_date_year: formData.stillInvolved === "0" ? formData.ceasedDateYear : "",
+    ceased_date_day: formData.stillInvolved === "No" ? formData.ceasedDateDay : "",
+    ceased_date_month: formData.stillInvolved === "No" ? formData.ceasedDateMonth : "",
+    ceased_date_year: formData.stillInvolved === "No" ? formData.ceasedDateYear : "",
   };
 
   let publicRegisterData = {};
@@ -58,6 +57,13 @@ const mapLegalEntityToSession = (
     };
   }
 
+  let stillInvolved = (formData.stillInvolved === "1") ? "Yes" : "No";
+
+  // If a boolean value isn't receieved from the web form (it could be null or undefined, e.g. if question not displayed), need to set null
+  if (formData.stillInvolved === null || formData.stillInvolved === undefined) {
+    stillInvolved = null as unknown as string;
+  }
+
   if (formData.is_service_address_same_as_principal_address?.toString() === "0") {
     return {
       ...data,
@@ -69,7 +75,8 @@ const mapLegalEntityToSession = (
       sa_address_locality: formData.service_address_town,
       sa_address_region: formData.service_address_county,
       sa_address_country: formData.service_address_country,
-      sa_address_postal_code: formData.service_address_postcode
+      sa_address_postal_code: formData.service_address_postcode,
+      still_involved: stillInvolved,
     } as Trust.TrustCorporate;
   } else {
     return {
@@ -82,7 +89,8 @@ const mapLegalEntityToSession = (
       sa_address_locality: "",
       sa_address_region: "",
       sa_address_country: "",
-      sa_address_postal_code: ""
+      sa_address_postal_code: "",
+      still_involved: stillInvolved,
     } as Trust.TrustCorporate;
   }
 };
@@ -129,19 +137,35 @@ const mapLegalEntityTrusteeFromSessionToPage = (
     ceasedDateDay: trustee.ceased_date_day,
     ceasedDateMonth: trustee.ceased_date_month,
     ceasedDateYear: trustee.ceased_date_year,
-    stillInvolved: trustee.is_corporate_still_involved_in_trust,
   } as Page.TrustLegalEntityForm;
 
-  if (trustee.type === RoleWithinTrustType.INTERESTED_PERSON){
+  let stillInvolvedInTrust: string;
+  switch (trustee.still_involved) {
+      case "Yes":
+        stillInvolvedInTrust = "1";
+        break;
+      case "No":
+        stillInvolvedInTrust = "0";
+        break;
+      default:
+        stillInvolvedInTrust = ""; // forces user to enter a value on new trustee
+        break;
+  }
+
+  if (trustee.type === RoleWithinTrustType.INTERESTED_PERSON) {
     return {
       ...data,
       interestedPersonStartDateDay: trustee.date_became_interested_person_day,
       interestedPersonStartDateMonth: trustee.date_became_interested_person_month,
       interestedPersonStartDateYear: trustee.date_became_interested_person_year,
       principal_address_property_name_number: trustee.ro_address_premises,
+      stillInvolved: stillInvolvedInTrust,
     } as Page.TrustLegalEntityForm;
   }
-  return data;
+  return {
+    ...data,
+    stillInvolved: stillInvolvedInTrust,
+  } as Page.TrustLegalEntityForm;
 };
 
 const mapLegalEntityItemToPage = (

@@ -655,12 +655,42 @@ describe("Test fetching and mapping of Trust data", () => {
     expect(appData.beneficial_owners_individual[0].trust_ids).toEqual(undefined);
   });
 
-  test("should fetch and map trust links when trusts to review in update match", () => {
+  test("should fetch and map trust links when trusts to review in update match and trust_ids is 'undefined'", () => {
     const appData = {
       beneficial_owners_individual: [{
         id: "bo1",
         ch_reference: "bolink100",
         trust_ids: undefined
+      }],
+      update: {
+        review_trusts:
+        [
+          {
+            trust_id: "1",
+            ch_reference: "abcd1234",
+            trust_name: "Test Trust",
+            creation_date_day: "1",
+            creation_date_month: "1",
+            creation_date_year: "2020",
+            trust_still_involved_in_overseas_entity: "Yes",
+            unable_to_obtain_all_trust_info: "No"
+          }
+        ]
+      }
+    };
+    mapTrustLink({
+      hashedTrustId: "abcd1234",
+      hashedCorporateBodyAppointmentId: "bolink100",
+    }, appData);
+    expect(appData.beneficial_owners_individual[0].trust_ids).toEqual(["1"]);
+  });
+
+  test("should fetch and map trust links when trusts to review in update match and trust_ids is 'null'", () => {
+    const appData = {
+      beneficial_owners_individual: [{
+        id: "bo1",
+        ch_reference: "bolink100",
+        trust_ids: null as unknown as string[]
       }],
       update: {
         review_trusts:

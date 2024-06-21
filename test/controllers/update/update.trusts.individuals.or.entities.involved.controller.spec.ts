@@ -176,7 +176,7 @@ describe('Update - Trusts - Individuals or entities involved', () => {
 
       expect(resp.status).toBe(200);
       expect(resp.text).toContain(ERROR_LIST);
-      expect(resp.text).toContain(ErrorMessages.TRUST_INDIVIDUAL_CEASED_DATE_BEFORE_TRUST_CREATION_DATE);
+      expect(resp.text).toContain(ErrorMessages.DATE_BEFORE_TRUST_CREATION_DATE_CEASED_TRUSTEE);
 
     });
   });

@@ -40,7 +40,7 @@ export const mapIndividualTrusteeToSession = (
     is_service_address_same_as_usual_residential_address: (formData.is_service_address_same_as_usual_residential_address) ? Number(formData.is_service_address_same_as_usual_residential_address) : 0,
     sa_address_care_of: '',
     sa_address_po_box: '',
-    is_individual_still_involved_in_trust: stillInvolved,
+    still_involved: stillInvolved,
     ceased_date_day: formData.stillInvolved === "0" ? formData.ceasedDateDay : "",
     ceased_date_month: formData.stillInvolved === "0" ? formData.ceasedDateMonth : "",
     ceased_date_year: formData.stillInvolved === "0" ? formData.ceasedDateYear : "",
@@ -97,16 +97,16 @@ export const mapIndividualTrusteeFromSessionToPage = (
   trustee: Trust.IndividualTrustee,
 ): Page.IndividualTrusteesFormCommon => {
 
-  let stillInvolvedInOverseasEntity: string;
-  switch (trustee.is_individual_still_involved_in_trust) {
+  let stillInvolvedInTrust: string;
+  switch (trustee.still_involved) {
       case "Yes":
-        stillInvolvedInOverseasEntity = "1";
+        stillInvolvedInTrust = "1";
         break;
       case "No":
-        stillInvolvedInOverseasEntity = "0";
+        stillInvolvedInTrust = "0";
         break;
       default:
-        stillInvolvedInOverseasEntity = "";
+        stillInvolvedInTrust = "";
         break;
   }
 
@@ -136,7 +136,7 @@ export const mapIndividualTrusteeFromSessionToPage = (
     service_address_county: trustee.sa_address_region,
     service_address_country: trustee.sa_address_country,
     service_address_postcode: trustee.sa_address_postal_code,
-    stillInvolved: stillInvolvedInOverseasEntity,
+    stillInvolved: stillInvolvedInTrust,
     ceasedDateDay: trustee.ceased_date_day,
     ceasedDateMonth: trustee.ceased_date_month,
     ceasedDateYear: trustee.ceased_date_year

@@ -171,7 +171,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
         date_became_interested_person_month: '3',
         date_became_interested_person_year: '2020',
         is_service_address_same_as_usual_residential_address: yesNoResponse.No,
-        is_individual_still_involved_in_trust: "No",
+        still_involved: "No",
         ceased_date_day: "22",
         ceased_date_month: "03",
         ceased_date_year: "2022"
@@ -258,7 +258,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
         sa_address_region: 'Service New County',
         sa_address_country: 'Service New Country',
         sa_address_postal_code: 'Service NE994WS',
-        is_individual_still_involved_in_trust: 'No',
+        still_involved: 'No',
         ceased_date_day: '21',
         ceased_date_month: '10',
         ceased_date_year: '2023',
@@ -297,7 +297,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
           sa_address_postal_code: 'Existing service postcode',
           sa_address_po_box: '',
           is_service_address_same_as_usual_residential_address: yesNoResponse.No,
-          is_individual_still_involved_in_trust: 'No',
+          still_involved: 'No',
           ceased_date_day: '21',
           ceased_date_month: '10',
           ceased_date_year: '2023',
@@ -378,7 +378,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
         sa_address_postal_code: '',
         sa_address_care_of: '',
         sa_address_po_box: '',
-        is_individual_still_involved_in_trust: 'Yes',
+        still_involved: 'Yes',
         ceased_date_day: '',
         ceased_date_month: '',
         ceased_date_year: '',
@@ -562,7 +562,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
           ceasedDateMonth: '',
           ceasedDateYear: ''
         },
-        ErrorMessages.ENTER_DATE_OF_TRUST_CEASED_INDIVIDUAL
+        ErrorMessages.ENTER_DATE_OF_CEASED_TRUSTEE
       ], [
         'ceased date day is not provided',
         {
@@ -571,7 +571,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
           ceasedDateMonth: '11',
           ceasedDateYear: '2001'
         },
-        ErrorMessages.DAY_OF_CEASED_TRUST_INDIVIDUAL
+        ErrorMessages.DAY_OF_CEASED_TRUSTEE
       ], [
         'ceased date month is not provided',
         {
@@ -580,7 +580,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
           ceasedDateMonth: '',
           ceasedDateYear: '2001'
         },
-        ErrorMessages.MONTH_OF_CEASED_TRUST_INDIVIDUAL
+        ErrorMessages.MONTH_OF_CEASED_TRUSTEE
       ], [
         'ceased date year is not provided',
         {
@@ -589,7 +589,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
           ceasedDateMonth: '12',
           ceasedDateYear: ''
         },
-        ErrorMessages.YEAR_OF_CEASED_TRUST_INDIVIDUAL
+        ErrorMessages.YEAR_OF_CEASED_TRUSTEE
       ], [
         'ceased date is not a valid date',
         {
@@ -598,7 +598,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
           ceasedDateMonth: '02',
           ceasedDateYear: '2024'
         },
-        ErrorMessages.INVALID_DATE_OF_CEASED_TRUST_INDIVIDUAL
+        ErrorMessages.INVALID_DATE_OF_CEASED_TRUSTEE
       ], [
         'ceased date is in the future',
         {
@@ -607,7 +607,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
           ceasedDateMonth: '02',
           ceasedDateYear: '3000'
         },
-        ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY_OF_CEASED_TRUST_INDIVIDUAL
+        ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY_OF_CEASED_TRUSTEE
       ], [
         'ceased date is before birth date',
         {
@@ -616,7 +616,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
           ceasedDateMonth: '01',
           ceasedDateYear: '2022'
         },
-        ErrorMessages.TRUST_INDIVIDUAL_CEASED_DATE_BEFORE_BIRTH_DATE
+        ErrorMessages.DATE_BEFORE_BIRTH_DATE_CEASED_TRUSTEE
       ], [
         'ceased date is before trust creation date',
         {
@@ -625,7 +625,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
           ceasedDateMonth: '01',
           ceasedDateYear: '2023'
         },
-        ErrorMessages.TRUST_INDIVIDUAL_CEASED_DATE_BEFORE_TRUST_CREATION_DATE
+        ErrorMessages.DATE_BEFORE_TRUST_CREATION_DATE_CEASED_TRUSTEE
       ], [
         'ceased date is before interested person start date',
         {
@@ -635,7 +635,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
           ceasedDateMonth: '8',
           ceasedDateYear: '2023'
         },
-        ErrorMessages.TRUST_INDIVIDUAL_CEASED_DATE_BEFORE_INTERESTED_PERSON_START_DATE
+        ErrorMessages.DATE_BEFORE_INTERESTED_PERSON_START_DATE_CEASED_TRUSTEE
       ]
     ])('should return a validation error if %s', async (description, formData, errorMessage) => {
       const formSubmission = {

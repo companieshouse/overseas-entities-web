@@ -96,7 +96,7 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
           sa_address_postal_code: mockFormData.service_address_postcode,
           sa_address_care_of: '',
           sa_address_po_box: '',
-          is_individual_still_involved_in_trust: 'No',
+          still_involved: 'No',
           ceased_date_day: '24',
           ceased_date_month: '11',
           ceased_date_year: '2023'
@@ -145,7 +145,7 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
           sa_address_postal_code: '',
           sa_address_care_of: '',
           sa_address_po_box: '',
-          is_individual_still_involved_in_trust: 'No',
+          still_involved: 'No',
           ceased_date_day: '24',
           ceased_date_month: '11',
           ceased_date_year: '2023'
@@ -200,7 +200,7 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
           date_became_interested_person_day: mockFormData.dateBecameIPDay,
           date_became_interested_person_month: mockFormData.dateBecameIPMonth,
           date_became_interested_person_year: mockFormData.dateBecameIPYear,
-          is_individual_still_involved_in_trust: 'No',
+          still_involved: 'No',
           ceased_date_day: '24',
           ceased_date_month: '11',
           ceased_date_year: '2023'
@@ -255,7 +255,7 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
           date_became_interested_person_day: mockFormData.dateBecameIPDay,
           date_became_interested_person_month: mockFormData.dateBecameIPMonth,
           date_became_interested_person_year: mockFormData.dateBecameIPYear,
-          is_individual_still_involved_in_trust: 'Yes',
+          still_involved: 'Yes',
           ceased_date_day: '',
           ceased_date_month: '',
           ceased_date_year: ''
@@ -311,7 +311,7 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
       sa_address_postal_code: "cf482lw",
       sa_address_care_of: '',
       sa_address_po_box: '',
-      is_individual_still_involved_in_trust: 'No',
+      still_involved: 'No',
       ceased_date_day: '24',
       ceased_date_month: '11',
       ceased_date_year: '2023'

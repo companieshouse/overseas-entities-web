@@ -9,6 +9,13 @@ export const mapIndividualTrusteeToSession = (
   formData: Page.IndividualTrusteesFormCommon,
   trustee?: Trust.TrustIndividual
 ): Trust.IndividualTrustee => {
+  let stillInvolved = (formData.stillInvolved === "1") ? "Yes" : "No";
+
+  // If a boolean value isn't receieved from the web form (it could be null or undefined, e.g. if question not displayed), need to set null
+  if (formData.stillInvolved === null || formData.stillInvolved === undefined) {
+    stillInvolved = null as unknown as string;
+  }
+
   const data = {
     id: formData.trusteeId || uuidv4(),
     ch_references: trustee?.ch_references,
@@ -33,7 +40,7 @@ export const mapIndividualTrusteeToSession = (
     is_service_address_same_as_usual_residential_address: (formData.is_service_address_same_as_usual_residential_address) ? Number(formData.is_service_address_same_as_usual_residential_address) : 0,
     sa_address_care_of: '',
     sa_address_po_box: '',
-    is_individual_still_involved_in_trust: formData.stillInvolved,
+    is_individual_still_involved_in_trust: stillInvolved,
     ceased_date_day: formData.stillInvolved === "0" ? formData.ceasedDateDay : "",
     ceased_date_month: formData.stillInvolved === "0" ? formData.ceasedDateMonth : "",
     ceased_date_year: formData.stillInvolved === "0" ? formData.ceasedDateYear : "",
@@ -89,6 +96,20 @@ export const mapIndividualTrusteeByIdFromSessionToPage = (
 export const mapIndividualTrusteeFromSessionToPage = (
   trustee: Trust.IndividualTrustee,
 ): Page.IndividualTrusteesFormCommon => {
+
+  let stillInvolvedInOverseasEntity: string;
+  switch (trustee.is_individual_still_involved_in_trust) {
+      case "Yes":
+        stillInvolvedInOverseasEntity = "1";
+        break;
+      case "No":
+        stillInvolvedInOverseasEntity = "0";
+        break;
+      default:
+        stillInvolvedInOverseasEntity = "";
+        break;
+  }
+
   const data = {
     trusteeId: trustee.id,
     is_newly_added: trustee.ch_references ? false : true,
@@ -115,7 +136,7 @@ export const mapIndividualTrusteeFromSessionToPage = (
     service_address_county: trustee.sa_address_region,
     service_address_country: trustee.sa_address_country,
     service_address_postcode: trustee.sa_address_postal_code,
-    stillInvolved: trustee.is_individual_still_involved_in_trust,
+    stillInvolved: stillInvolvedInOverseasEntity,
     ceasedDateDay: trustee.ceased_date_day,
     ceasedDateMonth: trustee.ceased_date_month,
     ceasedDateYear: trustee.ceased_date_year

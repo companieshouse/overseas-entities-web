@@ -32,9 +32,13 @@ import { Request, Response, NextFunction } from "express";
 import { ApplicationData } from "../../model";
 import { getConfirmationStatementNextMadeUpToDateAsIsoString } from "../../service/company.profile.service";
 import { getApplicationData } from "../../utils/application.data";
-import { logger } from "../../utils/logger";
+import { createAndLogErrorRequest, logger } from "../../utils/logger";
 import { DateTime } from "luxon";
 import { isUpdateOrRemoveJourney } from "../../utils/url";
+import { ROUTE_PARAM_TRUST_ID } from "../../config";
+import { getReviewTrustById, getTrustInReview } from "../../utils/update/review_trusts";
+import { getTrustByIdFromApp } from "../../utils/trusts";
+import { Trust } from "../../model/trust.model";
 
 export const NEXT_MADE_UP_TO_ISO_DATE = 'nextMadeUpToIsoDate';
 
@@ -450,22 +454,63 @@ export const trusteeLegalEntityCeasedDateValidations = [
     .if(body("ceasedDateMonth").notEmpty({ ignore_whitespace: true }))
     .if(body("ceasedDateYear").notEmpty({ ignore_whitespace: true }))
     .custom((value, { req }) => {
-      checkFirstDateOnOrAfterSecondDate(
-        req.body["ceasedDateDay"], req.body["ceasedDateMonth"], req.body["ceasedDateYear"],
-        req.body["trustCreationDateDay"], req.body["trustCreationDateMonth"], req.body["trustCreationDateYear"],
-        ErrorMessages.TRUST_LEGAL_ENTITY_CEASED_DATE_BEFORE_TRUST_CREATION_DATE);
+      checkCeasedDateOnOrAfterTrustCreationDate(req, ErrorMessages.TRUST_LEGAL_ENTITY_CEASED_DATE_BEFORE_TRUST_CREATION_DATE);
       if (req.body["roleWithinTrust"] === RoleWithinTrustType.INTERESTED_PERSON
       && req.body["interestedPersonStartDateDay"]
       && req.body["interestedPersonStartDateMonth"]
       && req.body["interestedPersonStartDateYear"]) {
-        checkFirstDateOnOrAfterSecondDate(
-          req.body["ceasedDateDay"], req.body["ceasedDateMonth"], req.body["ceasedDateYear"],
-          req.body["interestedPersonStartDateDay"], req.body["interestedPersonStartDateMonth"], req.body["interestedPersonStartDateYear"],
-          ErrorMessages.TRUST_LEGAL_ENTITY_CEASED_DATE_BEFORE_INTERESTED_PERSON_START_DATE);
+        checkCeasedDateOnOrAfterInterestedPersonStartDate(req, ErrorMessages.TRUST_LEGAL_ENTITY_CEASED_DATE_BEFORE_INTERESTED_PERSON_START_DATE);
       }
       return true;
     })
 ];
+
+const checkCeasedDateOnOrAfterInterestedPersonStartDate = (req, errorMessage: ErrorMessages) => {
+  checkFirstDateOnOrAfterSecondDate(
+    req.body["ceasedDateDay"], req.body["ceasedDateMonth"], req.body["ceasedDateYear"],
+    req.body["interestedPersonStartDateDay"], req.body["interestedPersonStartDateMonth"], req.body["interestedPersonStartDateYear"],
+    errorMessage);
+};
+
+const checkCeasedDateOnOrAfterTrustCreationDate = (req, errorMessage: ErrorMessages) => {
+  const trustId = req.params ? req.params[ROUTE_PARAM_TRUST_ID] : undefined;
+  const appData: ApplicationData = getApplicationData(req.session);
+  const trust: Trust | undefined = getTrust(appData, trustId);
+  if (trust) {
+    checkFirstDateOnOrAfterSecondDate(
+      req.body["ceasedDateDay"], req.body["ceasedDateMonth"], req.body["ceasedDateYear"],
+      trust.creation_date_day, trust.creation_date_month, trust.creation_date_year,
+      errorMessage);
+  } else {
+    throw createAndLogErrorRequest(req, "Unable to find trust for ceased date validation");
+  }
+};
+
+/**
+ * Try and find the trust based on trust id, if not provided then assume it is the trust marked as 'in review'
+ * @param appData
+ * @param trustId
+ * @returns Trust | undefined
+ */
+const getTrust = (appData: ApplicationData, trustId?: string): Trust | undefined => {
+  let trust: Trust;
+  if (trustId) {
+    trust = getReviewTrustById(appData, trustId);
+    if (!trust || isEmpty(trust)) {
+      trust = getTrustByIdFromApp(appData, trustId);
+    }
+  } else {
+    trust = getTrustInReview(appData) as Trust;
+  }
+  if (trust && isEmpty(trust)) {
+    return undefined;
+  }
+  return trust;
+};
+
+const isEmpty = (obj) => {
+  return Object.keys(obj).length === 0;
+};
 
 export const historicalBeneficialOwnerStartDate = dateValidations(historicalBOStartDateContext);
 

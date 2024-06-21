@@ -32,9 +32,6 @@ const getPageProperties = (trust, formData, errors?: FormattedValidationErrors) 
     pageData: {
       trustData: {
         trustName: trust?.trust_name,
-        creationDateDay: trust?.creation_date_day,
-        creationDateMonth: trust?.creation_date_month,
-        creationDateYear: trust?.creation_date_year,
       },
       roleWithinTrustType: RoleWithinTrustType,
     },

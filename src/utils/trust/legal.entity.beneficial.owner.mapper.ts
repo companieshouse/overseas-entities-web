@@ -34,9 +34,9 @@ const mapLegalEntityToSession = (
     identification_legal_form: formData.legalForm,
     is_service_address_same_as_principal_address: (formData.is_service_address_same_as_principal_address) ? Number(formData.is_service_address_same_as_principal_address) : 0,
     is_on_register_in_country_formed_in: (formData.is_on_register_in_country_formed_in) ? Number(formData.is_on_register_in_country_formed_in) : 0,
-    ceased_date_day: formData.stillInvolved === "No" ? formData.ceasedDateDay : "",
-    ceased_date_month: formData.stillInvolved === "No" ? formData.ceasedDateMonth : "",
-    ceased_date_year: formData.stillInvolved === "No" ? formData.ceasedDateYear : "",
+    ceased_date_day: formData.stillInvolved === "0" ? formData.ceasedDateDay : "",
+    ceased_date_month: formData.stillInvolved === "0" ? formData.ceasedDateMonth : "",
+    ceased_date_year: formData.stillInvolved === "0" ? formData.ceasedDateYear : "",
   };
 
   let publicRegisterData = {};
@@ -76,7 +76,7 @@ const mapLegalEntityToSession = (
       sa_address_region: formData.service_address_county,
       sa_address_country: formData.service_address_country,
       sa_address_postal_code: formData.service_address_postcode,
-      still_involved: stillInvolved,
+      is_corporate_still_involved_in_trust: stillInvolved,
     } as Trust.TrustCorporate;
   } else {
     return {
@@ -90,7 +90,7 @@ const mapLegalEntityToSession = (
       sa_address_region: "",
       sa_address_country: "",
       sa_address_postal_code: "",
-      still_involved: stillInvolved,
+      is_corporate_still_involved_in_trust: stillInvolved,
     } as Trust.TrustCorporate;
   }
 };
@@ -140,7 +140,7 @@ const mapLegalEntityTrusteeFromSessionToPage = (
   } as Page.TrustLegalEntityForm;
 
   let stillInvolvedInTrust: string;
-  switch (trustee.still_involved) {
+  switch (trustee.is_corporate_still_involved_in_trust) {
       case "Yes":
         stillInvolvedInTrust = "1";
         break;

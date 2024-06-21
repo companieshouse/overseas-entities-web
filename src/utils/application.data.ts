@@ -3,23 +3,42 @@ import { Request } from "express";
 
 import { createAndLogErrorRequest } from './logger';
 import { ID } from '../model/data.types.model';
+
 import {
   ApplicationData,
   APPLICATION_DATA_KEY,
   ApplicationDataType,
   ApplicationDataArrayType
 } from "../model";
+
 import { BeneficialOwnerGov, BeneficialOwnerGovKey } from '../model/beneficial.owner.gov.model';
 import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from '../model/beneficial.owner.individual.model';
 import { BeneficialOwnerOtherKey } from '../model/beneficial.owner.other.model';
 import { ManagingOfficerCorporate, ManagingOfficerCorporateKey } from '../model/managing.officer.corporate.model';
 import { ManagingOfficerIndividual, ManagingOfficerKey } from '../model/managing.officer.model';
-import { PARAM_BENEFICIAL_OWNER_GOV, PARAM_BENEFICIAL_OWNER_INDIVIDUAL, PARAM_BENEFICIAL_OWNER_OTHER, PARAM_MANAGING_OFFICER_CORPORATE, PARAM_MANAGING_OFFICER_INDIVIDUAL } from '../config';
+
+import {
+  FEATURE_FLAG_ENABLE_REDIS_REMOVAL,
+  PARAM_BENEFICIAL_OWNER_GOV,
+  PARAM_BENEFICIAL_OWNER_INDIVIDUAL,
+  PARAM_BENEFICIAL_OWNER_OTHER,
+  PARAM_MANAGING_OFFICER_CORPORATE,
+  PARAM_MANAGING_OFFICER_INDIVIDUAL
+} from '../config';
+
 import { BeneficialOwnerCorporate } from '@companieshouse/api-sdk-node/dist/services/overseas-entities';
 import { Remove } from 'model/remove.type.model';
+import { isActiveFeature } from "./feature.flag";
+import { getOverseasEntity } from "../service/overseas.entities.service";
+import * as config from "../config";
 
-export const getApplicationData = (session: Session | undefined): ApplicationData => {
-  return session?.getExtraData(APPLICATION_DATA_KEY) || {} as ApplicationData;
+export const getApplicationData = async (session: Session | undefined, req?: Request): Promise<ApplicationData> => {
+  if (!isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL) || typeof req === "undefined") {
+    return session?.getExtraData(APPLICATION_DATA_KEY) || {} as ApplicationData;
+  }
+  const transactionId: string = req.params[config.ROUTE_PARAM_TRANSACTION_ID] ? req.params[config.ROUTE_PARAM_TRANSACTION_ID] : "";
+  const submissionId: string = req.params[config.ROUTE_PARAM_SUBMISSION_ID] ? req.params[config.ROUTE_PARAM_SUBMISSION_ID] : "";
+  return await getOverseasEntity(req, transactionId, submissionId);
 };
 
 export const deleteApplicationData = (session: Session | undefined): boolean | undefined => {
@@ -27,9 +46,9 @@ export const deleteApplicationData = (session: Session | undefined): boolean | u
 };
 
 export const setApplicationData = (session: Session | undefined, data: any, key: string): undefined | void => {
-  let appData: ApplicationData = getApplicationData(session);
+  let appData: ApplicationData = await getApplicationData(session);
 
-  if (ApplicationDataArrayType.includes(key)){
+  if (ApplicationDataArrayType.includes(key)) {
     if ( !appData[key] ) { appData[key] = []; }
     appData[key].push(data);
   } else {

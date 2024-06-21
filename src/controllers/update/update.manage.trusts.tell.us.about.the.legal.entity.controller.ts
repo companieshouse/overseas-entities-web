@@ -82,11 +82,9 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     if (trust.CORPORATES && trusteeIndex >= 0) {
       const trusteeToChange = trust.CORPORATES[trusteeIndex];
       const updatedTrustee = mapLegalEntityToSession(formData, trusteeToChange);
-      console.log("\n\n\n >>>>>>>>>>>>>>>>>>>>>>>>>>>> WEBAPP update " + JSON.stringify(updatedTrustee) + "\n\n\n");
       trust.CORPORATES[trusteeIndex] = updatedTrustee;
     } else {
       const trustee = mapLegalEntityToSession(formData);
-      console.log("\n\n\n >>>>>>>>>>>>>>>>>>>>>>>>>>>> WEBAPP create " + JSON.stringify(trustee) + "\n\n\n");
       trust.CORPORATES?.push(trustee);
     }
 

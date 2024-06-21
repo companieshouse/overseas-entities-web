@@ -70,6 +70,7 @@ export enum ErrorMessages {
   NO_ACTIVE_MO = "There are no active managing officers.",
   ADDED_OR_CEASED_BO = "You have added or ceased a beneficial owner as part of this update statement.",
   NOT_ADDED_OR_CEASED_BO = "You have not added or ceased a beneficial owner as part of this update statement.",
+  RELEVANT_PERIOD_COMBINED_STATEMENTS_CHECKBOX = "Select the relevant statements for the pre-registration period, or select ‘None of these’.",
 
   // Trusts
   TRUST_DATA_EMPTY = "Paste the trust information from the Excel document into the box",

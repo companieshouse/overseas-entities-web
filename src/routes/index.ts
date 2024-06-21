@@ -140,12 +140,16 @@ router.get(config.STARTING_NEW_URL, authentication, startingNew.get);
 router.post(config.STARTING_NEW_URL, authentication, ...validator.startingNew, checkValidations, startingNew.post);
 
 router.get(config.SOLD_LAND_FILTER_URL, authentication, soldLandFilter.get);
+router.get(config.SOLD_LAND_FILTER_WITH_PARAMS_URL, authentication, soldLandFilter.get);
 router.post(config.SOLD_LAND_FILTER_URL, authentication, ...validator.soldLandFilter, checkValidations, soldLandFilter.post);
+router.post(config.SOLD_LAND_FILTER_WITH_PARAMS_URL, authentication, ...validator.soldLandFilter, checkValidations, soldLandFilter.post);
 
 router.get(config.CANNOT_USE_URL, authentication, cannotUse.get);
 
 router.get(config.SECURE_REGISTER_FILTER_URL, authentication, navigation.hasSoldLand, secureRegisterFilter.get);
+router.get(config.SECURE_REGISTER_FILTER_WITH_PARAMS_URL, authentication, navigation.hasSoldLand, secureRegisterFilter.get);
 router.post(config.SECURE_REGISTER_FILTER_URL, authentication, navigation.hasSoldLand, ...validator.secureRegisterFilter, checkValidations, secureRegisterFilter.post);
+router.post(config.SECURE_REGISTER_FILTER_WITH_PARAMS_URL, authentication, navigation.hasSoldLand, ...validator.secureRegisterFilter, checkValidations, secureRegisterFilter.post);
 
 router.get(config.USE_PAPER_URL, authentication, navigation.hasSoldLand, usePaper.get);
 

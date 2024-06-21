@@ -327,7 +327,7 @@ export const mapTrustLink = (trustLink: TrustLinkData, appData: ApplicationData)
 
 const linkBoToTrust = (beneficialOwner: BeneficialOwnerIndividual | BeneficialOwnerOther, trust: Trust, boType: string) => {
   logger.debug(`Linking ${boType} ${beneficialOwner.ch_reference} to trust ${trust.ch_reference}`);
-  if (beneficialOwner.trust_ids === undefined) {
+  if (!beneficialOwner.trust_ids) {
     beneficialOwner.trust_ids = [];
   }
   beneficialOwner.trust_ids.push(trust.trust_id);

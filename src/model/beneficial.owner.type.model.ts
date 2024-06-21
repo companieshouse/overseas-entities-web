@@ -3,7 +3,8 @@ export const BeneficialOwnerTypeKey = "beneficial_owner_type";
 export enum BeneficialOwnerTypeChoice {
     individual = "individualOwner",
     otherLegal = "otherLegalOwner",
-    government = "governmentOrPublicOwner"
+    government = "governmentOrPublicOwner",
+    relevantPeriodOtherLegal = "relevantPeriodOtherLegalOwner"
 }
 
 export enum ManagingOfficerTypeChoice {

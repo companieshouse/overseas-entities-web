@@ -4,7 +4,8 @@ import { legal_entity_usual_residential_service_address_validations, principal_a
 import { dateBecameIPLegalEntityBeneficialOwner, trusteeLegalEntityCeasedDateValidations } from "./fields/date.validation";
 import { ErrorMessagesOptional, ErrorMessagesRequired } from "./models/address.error.model";
 import { VALID_CHARACTERS } from "./regex/regex.validation";
-import { isUpdateOrRemoveJourney } from "../utils/url";
+import { ApplicationData } from "../model";
+import { getApplicationData } from "../utils/application.data";
 
 const addressErrorMessages: ErrorMessagesOptional = {
   propertyValueError: ErrorMessages.PROPERTY_NAME_OR_NUMBER_LEGAL_ENTITY_BO,
@@ -71,7 +72,10 @@ export const trustLegalEntityBeneficialOwnerValidator = [
       await checkIfLessThanTargetValue(req.body.public_register_name.length, req.body.public_register_jurisdiction.length, 160);
     }),
   body("stillInvolved")
-    .if((value, { req }) => isUpdateOrRemoveJourney(req))
+    .if((value, { req }) => {
+      const appData: ApplicationData = getApplicationData(req.session);
+      return !!appData.entity_number; // !! = truthy check
+    })
     .not().isEmpty().withMessage(ErrorMessages.TRUST_LEGAL_ENTITY_STILL_INVOLVED),
   ...trusteeLegalEntityCeasedDateValidations
 ];

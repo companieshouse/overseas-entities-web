@@ -34,7 +34,6 @@ import { getConfirmationStatementNextMadeUpToDateAsIsoString } from "../../servi
 import { getApplicationData } from "../../utils/application.data";
 import { createAndLogErrorRequest, logger } from "../../utils/logger";
 import { DateTime } from "luxon";
-import { isUpdateOrRemoveJourney } from "../../utils/url";
 import { ROUTE_PARAM_TRUST_ID } from "../../config";
 import { getReviewTrustById, getTrustInReview } from "../../utils/update/review_trusts";
 import { getTrustByIdFromApp } from "../../utils/trusts";
@@ -448,7 +447,6 @@ export const trusteeLegalEntityCeasedDateValidations = [
   ...conditionalDateValidations(legalEntityCeasedDateValidationsContext),
 
   body("ceasedDate")
-    .if((value, { req }) => isUpdateOrRemoveJourney(req))
     .if(body("stillInvolved").equals("0"))
     .if(body("ceasedDateDay").notEmpty({ ignore_whitespace: true }))
     .if(body("ceasedDateMonth").notEmpty({ ignore_whitespace: true }))

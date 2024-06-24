@@ -34,7 +34,8 @@ const getPageProperties = (trust, formData, trustee: TrustIndividual, errors?: F
     },
     formData,
     errors,
-    uneditableDOB: trustee?.ch_references ? true : false
+    uneditableDOB: trustee?.ch_references ? true : false,
+    isUpdate: true // this is an update controller so we are safe to say that isUpdate is true
   };
 };
 

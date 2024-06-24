@@ -125,7 +125,15 @@
     {% set registration_number = formData.registration_number %}
     {% include "includes/inputs/fields/is-on-register-in-country-formed-input.html" %}
 
-    {% include "includes/inputs/fields/is-legal-entity-still-involved-in-trust.html" %}
+    
+    {% set isUpdateOrRemoveJourney = (isUpdate or journey === "remove") %}
+
+    {% if isUpdateOrRemoveJourney %}
+      {% set ceasedDateLabel = "Date they ceased to be involved in the trust" %}
+      {% set ceasedDateHint = "For example, 27 1 2023" %}
+      {% set stillInvolvedLegendText = "Are they still involved in the trust?" %}
+      {% include "includes/inputs/date/trust-ceased-date-input.html" %}
+    {% endif %}
 
     {{ govukInsetText({
       html: '

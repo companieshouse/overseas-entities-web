@@ -440,10 +440,10 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
       const resp = await request(app)
         .post(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL)
-        .send({ [BeneficialOwnerTypeKey]: BeneficialOwnerTypeChoice.relevantPeriodOtherLegal });
+        .send({ [BeneficialOwnerTypeKey]: BeneficialOwnerTypeChoice.relevantPeriodGovernment });
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.UPDATE_BENEFICIAL_OWNER_OTHER_URL + "?relevant-period=true");
+      expect(resp.header.location).toEqual(config.UPDATE_BENEFICIAL_OWNER_GOV_URL + "?relevant-period=true");
     });
 
     test("Catch error when posting submit", async () => {

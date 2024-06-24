@@ -1,3 +1,5 @@
+import { constants } from "http2";
+
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
@@ -11,9 +13,9 @@ import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
-
 import app from "../../src/app";
 import { authentication } from "../../src/middleware/authentication.middleware";
+
 import {
   BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
   BENEFICIAL_OWNER_INDIVIDUAL_URL,
@@ -21,8 +23,9 @@ import {
   BENEFICIAL_OWNER_TYPE_PAGE,
   BENEFICIAL_OWNER_TYPE_URL,
   BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
-  REMOVE
+  REMOVE,
 } from "../../src/config";
+
 import {
   getFromApplicationData,
   mapFieldsToDataObject,
@@ -31,7 +34,7 @@ import {
   setApplicationData,
   getApplicationData
 } from '../../src/utils/application.data';
-import { saveAndContinue } from "../../src/utils/save.and.continue";
+
 import {
   ANY_MESSAGE_ERROR,
   BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING,
@@ -50,7 +53,9 @@ import {
   NO_SANCTIONS_TEXT_THEY,
   SANCTIONS_HINT_TEXT_THEY,
   TRUSTS_NOC_HEADING,
+  BACK_BUTTON_CLASS,
 } from '../__mocks__/text.mock';
+
 import {
   APPLICATION_DATA_MOCK,
   BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
@@ -65,13 +70,16 @@ import {
   BO_IND_ID_URL,
   REQ_BODY_BENEFICIAL_OWNER_INDIVIDUAL_EMPTY,
 } from '../__mocks__/session.mock';
-import { BeneficialOwnerIndividualKey } from '../../src/model/beneficial.owner.individual.model';
-import { AddressKeys, EntityNumberKey } from '../../src/model/data.types.model';
+
 import {
   BENEFICIAL_OWNER_INDIVIDUAL_WITH_INVALID_CHARS_MOCK,
   BENEFICIAL_OWNER_INDIVIDUAL_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK,
   BENEFICIAL_OWNER_INDIVIDUAL_WITH_MAX_LENGTH_FIELDS_MOCK
 } from '../__mocks__/validation.mock';
+
+import { BeneficialOwnerIndividualKey } from '../../src/model/beneficial.owner.individual.model';
+import { AddressKeys, EntityNumberKey } from '../../src/model/data.types.model';
+import { saveAndContinue } from "../../src/utils/save.and.continue";
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { ServiceAddressKey, ServiceAddressKeys } from "../../src/model/address.model";
 import { ApplicationDataType } from '../../src/model';
@@ -144,6 +152,20 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(SANCTIONS_HINT_TEXT_THEY);
       expect(resp.text).toContain(TRUSTS_NOC_HEADING);
     });
+
+    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with correct back link url when Redis removal feature flag is off`, async () => {
+      const appData = APPLICATION_DATA_MOCK;
+      delete appData[EntityNumberKey];
+      mockGetApplicationData.mockReturnValueOnce({ ...appData });
+      mockIsActiveFeature.mockReturnValue(false);
+
+      const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL);
+
+      expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_URL);
+      expect(resp.text).toContain(BACK_BUTTON_CLASS);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(0);
+    });
   });
 
   describe("GET with url params tests", () => {
@@ -171,6 +193,23 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(SANCTIONS_HINT_TEXT_THEY);
       expect(resp.text).toContain(TRUSTS_NOC_HEADING);
     });
+
+    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with correct back link url when feature flag is on`, async () => {
+      const appData = APPLICATION_DATA_MOCK;
+      delete appData[EntityNumberKey];
+      mockGetApplicationData.mockReturnValueOnce({ ...appData });
+      mockGetUrlWithParamsToPath.mockReturnValueOnce(`${BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL}`);
+      mockIsActiveFeature.mockReturnValue(true);
+
+      const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL);
+
+      expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
+      expect(resp.text).toContain(BACK_BUTTON_CLASS);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(1);
+    });
+
   });
 
   describe("GET BY ID tests", () => {

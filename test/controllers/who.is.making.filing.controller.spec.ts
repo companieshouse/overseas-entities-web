@@ -15,7 +15,7 @@ import request from "supertest";
 import * as config from "../../src/config";
 import app from "../../src/app";
 import {
-  ANY_MESSAGE_ERROR,
+  ANY_MESSAGE_ERROR, BACK_BUTTON_CLASS,
   PAGE_TITLE_ERROR,
   RADIO_BUTTON_AGENT_SELECTED,
   RADIO_BUTTON_SOMEONE_ELSE_SELECTED,
@@ -74,6 +74,24 @@ describe("Who is making filing controller tests", () => {
       expect(resp.text).not.toContain(RADIO_BUTTON_SOMEONE_ELSE_SELECTED);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(UK_REGULATED_AGENT);
+    });
+
+    test(`renders the ${config.WHO_IS_MAKING_FILING_PAGE} page with correct back link url when feature flag is off`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({ });
+      mockIsActiveFeature.mockReturnValue(false);
+      const resp = await request(app).get(config.WHO_IS_MAKING_FILING_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(config.PRESENTER_URL);
+      expect(resp.text).toContain(BACK_BUTTON_CLASS);
+    });
+
+    test(`renders the ${config.WHO_IS_MAKING_FILING_PAGE} page with correct back link url when feature flag is on`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({ });
+      mockIsActiveFeature.mockReturnValue(true);
+      const resp = await request(app).get(config.WHO_IS_MAKING_FILING_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(NEXT_PAGE_URL);
+      expect(resp.text).toContain(BACK_BUTTON_CLASS);
     });
 
     test(`renders the ${config.WHO_IS_MAKING_FILING_PAGE} page with radios selected to ${WhoIsRegisteringType.AGENT}`, async () => {

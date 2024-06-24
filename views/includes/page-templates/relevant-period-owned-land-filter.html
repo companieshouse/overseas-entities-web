@@ -11,7 +11,7 @@
         <form method="post">
             {% include "includes/csrf_token.html" %}
             {{ govukRadios({
-            errorMessage: errors.update.owned.land.filter if errors,
+            errorMessage: errors.owned_land_relevant_period if errors,
             idPrefix: "owned_land_relevant_period",
             name: "owned_land_relevant_period",
             fieldset: {

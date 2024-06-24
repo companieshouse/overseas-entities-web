@@ -13,6 +13,7 @@ import { getApplicationData } from "../utils/application.data";
 import { startPaymentsSession } from "../service/payment.service";
 import { OverseasEntityKey, Transactionkey } from "../model/data.types.model";
 import { RoleWithinTrustType } from "../model/role.within.trust.type.model";
+import { getUrlWithParamsToPath } from "../utils/url";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -27,11 +28,18 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     logger.infoRequest(req, `${config.CHECK_YOUR_ANSWERS_PAGE} hasTrusts=${requiresTrusts}`);
 
-    let backLinkUrl: string = config.BENEFICIAL_OWNER_TYPE_URL;
+    let backLinkUrl: string = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
+      ? getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req)
+      : config.BENEFICIAL_OWNER_TYPE_URL;
+
     if (requiresTrusts) {
+      const trustInfoBackLinkUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
+        ? getUrlWithParamsToPath(config.TRUST_INFO_WITH_PARAMS_URL, req)
+        : config.TRUST_INFO_PAGE;
+
       backLinkUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB)
         ? getTrustLandingUrl(appData, req)
-        : config.TRUST_INFO_PAGE;
+        : trustInfoBackLinkUrl;
     }
 
     return res.render(config.CHECK_YOUR_ANSWERS_PAGE, {

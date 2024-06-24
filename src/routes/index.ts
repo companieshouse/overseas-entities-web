@@ -562,7 +562,7 @@ router.route(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL)
     companyAuthentication,
     navigation.hasOverseasEntity)
   .get(relevantPeriodOwnedLandFilter.get)
-  .post(relevantPeriodOwnedLandFilter.post);
+  .post(...validator.relevantPeriodOwnedLandFilter, checkValidations, relevantPeriodOwnedLandFilter.post);
 
 router.route(config.RELEVANT_PERIOD_INTERRUPT_URL)
   .all(
@@ -580,7 +580,7 @@ router.route(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
     companyAuthentication,
     navigation.hasOverseasEntity)
   .get(relevantPeriodCombinedStatements.get)
-  .post(relevantPeriodCombinedStatements.post);
+  .post(...validator.relevantPeriodCombinedStatements, checkValidations, relevantPeriodCombinedStatements.post);
 
 router.route(config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL)
   .all(

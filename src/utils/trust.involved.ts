@@ -86,7 +86,7 @@ const getPageProperties = (
   }
 
   return {
-    backLinkUrl: getBackLinkUrl(isUpdate, trustId, isReview),
+    backLinkUrl: getBackLinkUrl(isUpdate, trustId, isReview, req),
     templateName: getPageTemplate(isUpdate, isReview),
     pageParams: {
       title: TRUST_INVOLVED_TEXTS.title,
@@ -215,13 +215,17 @@ const getPageTemplate = (isUpdate: boolean, isReview: boolean) => {
   }
 };
 
-const getBackLinkUrl = (isUpdate: boolean, trustId: string, isReview: boolean) => {
+const getBackLinkUrl = (isUpdate: boolean, trustId: string, isReview: boolean, req: Request) => {
   if (isReview) {
     return config.UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL;
   } else if (isUpdate) {
     return `${config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL}/${trustId}`;
   } else {
-    return `${config.TRUST_DETAILS_URL}/${trustId}`;
+    let backLinUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
+      ? getUrlWithParamsToPath(config.TRUST_ENTRY_WITH_PARAMS_URL, req)
+      : config.TRUST_DETAILS_URL;
+    backLinUrl += `/${trustId}`;
+    return backLinUrl;
   }
 };
 

@@ -4,8 +4,6 @@ import { logger } from "../../utils/logger";
 import * as config from "../../config";
 import { ApplicationData } from "../../model";
 import { getApplicationData } from "../../utils/application.data";
-import { InputDate } from "model/data.types.model";
-import { getRegistrationDate } from "../../utils/update/relevant.period";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -15,7 +13,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     return res.render(config.RELEVANT_PERIOD_INTERRUPT_PAGE, {
       backLinkUrl: config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL,
       templateName: config.RELEVANT_PERIOD_INTERRUPT_PAGE,
-      ...appData, dateOfCreation: getRegistrationDate(appData.update?.date_of_creation as InputDate)
+      ...appData
     });
 
   } catch (error) {

@@ -13,7 +13,7 @@ import { isActiveFeature } from "../utils/feature.flag";
 import { getUrlWithParamsToPath } from "../utils/url";
 
 export const get = (req: Request, res: Response) => {
-  getManagingOfficer(req, res, config.BENEFICIAL_OWNER_TYPE_URL, config.MANAGING_OFFICER_PAGE);
+  getManagingOfficer(req, res, getBeneficialOwnerTypeUrl(req), config.MANAGING_OFFICER_PAGE);
 };
 
 export const getById = (req: Request, res: Response, next: NextFunction) => {

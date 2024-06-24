@@ -391,24 +391,24 @@ const legalEntityCeasedDateValidationsContext: dateContextWithCondition = {
   dayInput: {
     name: "ceasedDateDay",
     errors: {
-      noDayError: ErrorMessages.DAY_OF_CEASED_LEGAL_ENTITY,
-      wrongDayLength: ErrorMessages.DAY_LENGTH_OF_LEGAL_ENTITY,
+      noDayError: ErrorMessages.DAY_OF_CEASED_TRUSTEE,
+      wrongDayLength: ErrorMessages.DAY_LENGTH_OF_CEASED_TRUSTEE,
       noRealDay: ErrorMessages.INVALID_DAY,
     } as DayFieldErrors,
   },
   monthInput: {
     name: "ceasedDateMonth",
     errors: {
-      noMonthError: ErrorMessages.MONTH_OF_CEASED_LEGAL_ENTITY,
-      wrongMonthLength: ErrorMessages.MONTH_LENGTH_OF_LEGAL_ENTITY,
+      noMonthError: ErrorMessages.MONTH_OF_CEASED_TRUSTEE,
+      wrongMonthLength: ErrorMessages.MONTH_LENGTH_OF_CEASED_TRUSTEE,
       noRealMonth: ErrorMessages.INVALID_MONTH,
     } as MonthFieldErrors,
   },
   yearInput: {
     name: "ceasedDateYear",
     errors: {
-      noYearError: ErrorMessages.YEAR_OF_CEASED_LEGAL_ENTITY,
-      wrongYearLength: ErrorMessages.YEAR_LENGTH_OF_LEGAL_ENTITY
+      noYearError: ErrorMessages.YEAR_OF_CEASED_TRUSTEE,
+      wrongYearLength: ErrorMessages.YEAR_LENGTH_OF_CEASED_TRUSTEE
     } as YearFieldErrors,
   },
   dateInput: {
@@ -454,12 +454,12 @@ export const trusteeLegalEntityCeasedDateValidations = [
     .if(body("ceasedDateMonth").notEmpty({ ignore_whitespace: true }))
     .if(body("ceasedDateYear").notEmpty({ ignore_whitespace: true }))
     .custom((value, { req }) => {
-      checkCeasedDateOnOrAfterTrustCreationDate(req, ErrorMessages.TRUST_LEGAL_ENTITY_CEASED_DATE_BEFORE_TRUST_CREATION_DATE);
+      checkCeasedDateOnOrAfterTrustCreationDate(req, ErrorMessages.DATE_BEFORE_TRUST_CREATION_DATE_CEASED_TRUSTEE);
       if (req.body["roleWithinTrust"] === RoleWithinTrustType.INTERESTED_PERSON
       && req.body["interestedPersonStartDateDay"]
       && req.body["interestedPersonStartDateMonth"]
       && req.body["interestedPersonStartDateYear"]) {
-        checkCeasedDateOnOrAfterInterestedPersonStartDate(req, ErrorMessages.TRUST_LEGAL_ENTITY_CEASED_DATE_BEFORE_INTERESTED_PERSON_START_DATE);
+        checkCeasedDateOnOrAfterInterestedPersonStartDate(req, ErrorMessages.DATE_BEFORE_INTERESTED_PERSON_START_DATE_CEASED_TRUSTEE);
       }
       return true;
     })

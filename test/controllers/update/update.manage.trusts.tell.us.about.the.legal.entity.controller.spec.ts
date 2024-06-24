@@ -248,7 +248,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
         ceased_date_day: "01",
         ceased_date_month: "01",
         ceased_date_year: "2024",
-        is_corporate_still_involved_in_trust: "No"
+        still_involved: "No"
       };
 
       mockIsActiveFeature.mockReturnValue(true);
@@ -369,7 +369,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
         ceased_date_day: "",
         ceased_date_month: "",
         ceased_date_year: "",
-        is_corporate_still_involved_in_trust: "Yes",
+        still_involved: "Yes",
       };
 
       const trustInReview = {
@@ -407,7 +407,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
           identification_registration_number: '',
           is_service_address_same_as_principal_address: yesNoResponse.Yes,
           is_on_register_in_country_formed_in: yesNoResponse.No,
-          is_corporate_still_involved_in_trust: "Yes",
+          still_involved: "Yes",
         }]
       };
 
@@ -470,7 +470,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
         ceased_date_day: "",
         ceased_date_month: "",
         ceased_date_year: "",
-        is_corporate_still_involved_in_trust: "Yes",
+        still_involved: "Yes",
       };
 
       const existingTrustee = {
@@ -508,7 +508,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
         ceased_date_day: "",
         ceased_date_month: "",
         ceased_date_year: "",
-        is_corporate_still_involved_in_trust: "Yes",
+        still_involved: "Yes",
       };
 
       const trustInReview = {
@@ -608,7 +608,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
 
       expect(resp.status).toBe(200);
       expect(resp.text).toContain(ERROR_LIST);
-      expect(resp.text).toContain(ErrorMessages.TRUST_LEGAL_ENTITY_CEASED_DATE_BEFORE_TRUST_CREATION_DATE);
+      expect(resp.text).toContain(ErrorMessages.DATE_BEFORE_TRUST_CREATION_DATE_CEASED_TRUSTEE);
 
     });
 
@@ -639,7 +639,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
           ceasedDateMonth: '',
           ceasedDateYear: ''
         },
-        ErrorMessages.ENTER_DATE_OF_TRUST_CEASED_LEGAL_ENTITY
+        ErrorMessages.ENTER_DATE_OF_CEASED_TRUSTEE
       ], [
         'ceased date day is not provided',
         {
@@ -648,7 +648,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
           ceasedDateMonth: '01',
           ceasedDateYear: '2023'
         },
-        ErrorMessages.DAY_OF_CEASED_LEGAL_ENTITY
+        ErrorMessages.DAY_OF_CEASED_TRUSTEE
       ], [
         'ceased date month is not provided',
         {
@@ -657,7 +657,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
           ceasedDateMonth: '',
           ceasedDateYear: '2023'
         },
-        ErrorMessages.MONTH_OF_CEASED_LEGAL_ENTITY
+        ErrorMessages.MONTH_OF_CEASED_TRUSTEE
       ], [
         'ceased date year is not provided',
         {
@@ -666,7 +666,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
           ceasedDateMonth: '01',
           ceasedDateYear: ''
         },
-        ErrorMessages.YEAR_OF_CEASED_LEGAL_ENTITY
+        ErrorMessages.YEAR_OF_CEASED_TRUSTEE
       ], [
         'ceased date is not a valid date',
         {
@@ -675,7 +675,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
           ceasedDateMonth: '02',
           ceasedDateYear: '2024'
         },
-        ErrorMessages.INVALID_DATE_OF_CEASED_TRUST_LEGAL_ENTITY
+        ErrorMessages.INVALID_DATE_OF_CEASED_TRUSTEE
       ], [
         'ceased date is in the future',
         {
@@ -684,7 +684,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
           ceasedDateMonth: '01',
           ceasedDateYear: '2100'
         },
-        ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY_OF_CEASED_TRUST_LEGAL_ENTITY
+        ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY_OF_CEASED_TRUSTEE
       ], [
         'ceased date is before interested person start date',
         {
@@ -694,7 +694,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
           ceasedDateMonth: '12',
           ceasedDateYear: '2021'
         },
-        ErrorMessages.TRUST_LEGAL_ENTITY_CEASED_DATE_BEFORE_INTERESTED_PERSON_START_DATE
+        ErrorMessages.DATE_BEFORE_INTERESTED_PERSON_START_DATE_CEASED_TRUSTEE
       ]
     ])('should return a validation error if %s', async (description, formData, errorMessage) => {
       const formSubmission = {

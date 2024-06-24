@@ -94,7 +94,7 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
           ceased_date_day: mockFormData.ceasedDateDay,
           ceased_date_month: mockFormData.ceasedDateMonth,
           ceased_date_year: mockFormData.ceasedDateYear,
-          is_corporate_still_involved_in_trust: "No",
+          still_involved: "No",
         });
       });
 
@@ -145,7 +145,7 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
           ceased_date_day: mockFormData.ceasedDateDay,
           ceased_date_month: mockFormData.ceasedDateMonth,
           ceased_date_year: mockFormData.ceasedDateYear,
-          is_corporate_still_involved_in_trust: "No",
+          still_involved: "No",
         });
       });
 
@@ -190,7 +190,7 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
         ceased_date_day: "01",
         ceased_date_month: "02",
         ceased_date_year: "2020",
-        is_corporate_still_involved_in_trust: "No"
+        still_involved: "No"
       };
       test("Map legal entity trustee session data to page", () => {
 

@@ -269,6 +269,8 @@ export const RELEVANT_PERIOD_NO_CHANGE_BENEFICIARY = "anyone became or ceased to
 export const RELEVANT_PERIOD_INDIVIDUAL_BENEFICIAL_OWNER = "Individual beneficial owner";
 export const RELEVANT_PERIOD_INFORMATION = "You need to enter information that is correct as at the date they ceased to be a registrable beneficial owner.";
 export const RELEVANT_PERIOD_GOVERNMENT = "Government or public authority beneficial owner";
+export const SELECT_IF_REGISTER_DURING_PRE_REG_PERIOD = "Select yes if the overseas entity was the registered owner of UK land during the pre-registration period.";
+
 // Remove journey
 export const REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE = "Has the overseas entity disposed of all relevant property or land in the UK?";
 export const REMOVE_IS_ENTITY_REGISTERED_OWNER_TITLE = "Is the overseas entity currently listed on any land registry records as the registered owner of property or land in the UK?";

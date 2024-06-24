@@ -29,6 +29,8 @@ import { companyAuthentication } from "../../../src/middleware/company.authentic
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
+import { ErrorMessages } from "../../../src/validation/error.messages";
+import { UpdateKey } from "../../../src/model/update.type.model";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockHasUpdatePresenter = hasUpdatePresenter as jest.Mock;
@@ -83,6 +85,20 @@ describe("Combined Statements Page tests", () => {
     expect(resp.status).toEqual(404);
     expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
   });
+  test(`renders the ${config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE} page page with banner when registration date is equal to 31 January 2023.`, async () => {
+    mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK, [UpdateKey]: { date_of_creation: { day: "31", month: "01", year: "2023" } } });
+    const resp = await request(app).get(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
+    expect(resp.status).toEqual(200);
+    expect(resp.text).toMatch(/31\s+January\s+2023/i);
+  });
+  test(`renders the ${config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE} page page with banner when registration date is equal to 27 February 2022, but 31 January is displayed`, async () => {
+    mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK, [UpdateKey]: { date_of_creation: { day: "27", month: "02", year: "2022" } } });
+    const resp = await request(app).get(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
+
+    expect(resp.status).toEqual(200);
+    expect(resp.text).toMatch(/31\s+January\s+2023/i);
+    expect(resp.text).not.toMatch(/27\s+February\s+2022/i);
+  });
 });
 
 describe("POST tests", () => {
@@ -116,12 +132,10 @@ describe("POST tests", () => {
     expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
   });
 
-  test('page throws an error', async () => {
-    // Arrange
-    const resp = await request(app)
-      // Act
-      .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
-    // Assert
-    expect(resp.status).toEqual(500);
+  test(`renders the ${config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE} with error when checkbox is empty`, async () => {
+    const resp = await request(app).post(`${config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL}`);
+    expect(resp.status).toEqual(200);
+    expect(resp.text).toContain(RELEVANT_PERIOD_COMBINED_STATEMENTS_TITLE);
+    expect(resp.text).toContain(ErrorMessages.RELEVANT_PERIOD_COMBINED_STATEMENTS_CHECKBOX);
   });
 });

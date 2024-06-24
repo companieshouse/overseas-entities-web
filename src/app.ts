@@ -64,8 +64,6 @@ const cookieConfig = {
 const sessionStore = new SessionStore(new Redis(`redis://${config.CACHE_SERVER}`));
 app.use(SessionMiddleware(cookieConfig, sessionStore));
 
-// TODO This will be enabled to true once Update and Remove journeys are completed
-
 const csrfProtectionMiddleware = CsrfProtectionMiddleware({
   sessionStore,
   enabled: true,

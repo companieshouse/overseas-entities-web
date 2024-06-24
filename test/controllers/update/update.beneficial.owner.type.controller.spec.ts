@@ -40,7 +40,7 @@ import {
   REVIEWED_BENEFICIAL_OWNER_MANAGING_OFFICER_TABLE_HEADING,
   NEWLY_ADDED_BENEFICIAL_OWNERS_SUMMARY_TABLE_HEADING,
   MESSAGE_ERROR,
-  RELEVANT_PERIOD_INDIVIDUAL_BENEFICIAL_OWNER
+  RELEVANT_PERIOD_INDIVIDUAL_BENEFICIAL_OWNER,
 } from '../../__mocks__/text.mock';
 import {
   ERROR,
@@ -221,6 +221,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(RELEVANT_PERIOD_INDIVIDUAL_BENEFICIAL_OWNER);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_BO);
     });
 
     test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} page with first statement de-selected`, async () => {
@@ -232,6 +233,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(RELEVANT_PERIOD_INDIVIDUAL_BENEFICIAL_OWNER);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_BO );
     });
   });
 

@@ -73,6 +73,7 @@ import { hasTrustsToReview, moveReviewableTrustsIntoReview, resetReviewStatusOnA
 import { retrieveTrustData } from "../../../src/utils/update/trust.model.fetch";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import { BeneficialOwnerTypeChoice, BeneficialOwnerTypeKey } from "../../../src/model/beneficial.owner.type.model";
+import { RELEVANT_PERIOD_QUERY_PARAM } from "../../../src/config";
 
 mockRemoveJourneyMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
@@ -436,7 +437,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.header.location).toContain(config.UPDATE_CHECK_YOUR_ANSWERS_URL);
     });
 
-    test(`redirects to the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL + "?relevant-period=true"} page when the relevant_period=true and Other leegal entity button selected`, async () => {
+    test(`redirects to the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM } page when the relevant_period=true and Other leegal entity button selected`, async () => {
       appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
       appData[UpdateKey] = UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE;
 
@@ -445,7 +446,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
         .send({ [BeneficialOwnerTypeKey]: BeneficialOwnerTypeChoice.relevantPeriodOtherLegal });
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.UPDATE_BENEFICIAL_OWNER_OTHER_URL + "?relevant-period=true");
+      expect(resp.header.location).toEqual(config.UPDATE_BENEFICIAL_OWNER_OTHER_URL + RELEVANT_PERIOD_QUERY_PARAM);
     });
 
     test("Catch error when posting submit", async () => {

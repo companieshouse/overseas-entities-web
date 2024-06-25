@@ -40,6 +40,7 @@ import { authentication } from "../../../src/middleware/authentication.middlewar
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import app from "../../../src/app";
 import {
+  RELEVANT_PERIOD_QUERY_PARAM,
   UPDATE_BENEFICIAL_OWNER_OTHER_PAGE,
   UPDATE_BENEFICIAL_OWNER_OTHER_URL,
   UPDATE_BENEFICIAL_OWNER_TYPE_URL
@@ -170,7 +171,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
     test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page when relevant_period=true`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
 
-      const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_OTHER_URL + "?relevant-period=true");
+      const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_OTHER_URL + RELEVANT_PERIOD_QUERY_PARAM);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);

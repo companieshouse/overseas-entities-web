@@ -1,3 +1,5 @@
+import { BeneficialOwnerTypeChoice, BeneficialOwnerTypeKey } from "../../../src/model/beneficial.owner.type.model";
+
 jest.mock("ioredis");
 jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/company.authentication.middleware');
@@ -431,6 +433,18 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toContain(config.UPDATE_CHECK_YOUR_ANSWERS_URL);
+    });
+
+    test(`redirects to the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL + "?relevant-period=true"} page when the relevant_period=true and Other leegal entity button selected`, async () => {
+      appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
+      appData[UpdateKey] = UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE;
+
+      const resp = await request(app)
+        .post(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL)
+        .send({ [BeneficialOwnerTypeKey]: BeneficialOwnerTypeChoice.relevantPeriodIndividual });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + "?relevant-period=true");
     });
 
     test("Catch error when posting submit", async () => {

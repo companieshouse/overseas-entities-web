@@ -22,7 +22,6 @@ import { checkEntityRequiresTrusts, getTrustLandingUrl } from "../../utils/trust
 import { retrieveTrustData } from "../../utils/update/trust.model.fetch";
 import { saveAndContinue } from "../../utils/save.and.continue";
 import { Session } from "@companieshouse/node-session-handler";
-import { RELEVANT_PERIOD_QUERY_PARAM } from "../../config";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -123,7 +122,7 @@ const getNextPage = (beneficialOwnerTypeChoices: BeneficialOwnerTypeChoice | Man
       case ManagingOfficerTypeChoice.individual:
         return config.UPDATE_MANAGING_OFFICER_URL;
       case BeneficialOwnerTypeChoice.relevantPeriodOtherLegal:
-        return config.UPDATE_BENEFICIAL_OWNER_OTHER_URL + RELEVANT_PERIOD_QUERY_PARAM;
+        return config.UPDATE_BENEFICIAL_OWNER_OTHER_URL + config.RELEVANT_PERIOD_QUERY_PARAM;
       default:
         return config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL;
   }

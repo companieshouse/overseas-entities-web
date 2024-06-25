@@ -54,7 +54,7 @@ import {
   PAGE_TITLE_ERROR,
   PUBLIC_REGISTER_HINT_TEXT,
   RELEVANT_PERIOD,
-  RELEVANT_PERIOD_OTHER_TEXT,
+  RELEVANT_PERIOD_OTHER_LEGAL_ENTITY_INFORMATION,
   SERVICE_UNAVAILABLE,
   SHOW_INFORMATION_ON_PUBLIC_REGISTER,
   TRUSTS_NOC_HEADING,
@@ -175,7 +175,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-      expect(resp.text).toContain(RELEVANT_PERIOD_OTHER_TEXT);
+      expect(resp.text).toContain(RELEVANT_PERIOD_OTHER_LEGAL_ENTITY_INFORMATION);
       expect(resp.text).toContain(RELEVANT_PERIOD);
       expect(resp.text).toContain("1");
       expect(resp.text).toContain("January");

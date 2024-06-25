@@ -5,15 +5,22 @@ import { RoleWithinTrustType } from '../../model/role.within.trust.type.model';
 import { getIndividualTrustee } from '../../utils/trusts';
 import { ApplicationData } from 'model';
 
+enum YesOrNo {
+  No = "0",
+  Yes = "1"
+}
+
+const isYesOrNo = (value: string): boolean => Object.keys(YesOrNo).includes(value);
+
 export const mapIndividualTrusteeToSession = (
   formData: Page.IndividualTrusteesFormCommon,
   trustee?: Trust.TrustIndividual
 ): Trust.IndividualTrustee => {
-  let stillInvolved = (formData.stillInvolved === "1") ? "Yes" : "No";
+  let stillInvolved: string | null = (formData.stillInvolved === "1") ? "Yes" : "No";
 
   // If a boolean value isn't receieved from the web form (it could be null or undefined, e.g. if question not displayed), need to set null
-  if (formData.stillInvolved === null || formData.stillInvolved === undefined) {
-    stillInvolved = null as unknown as string;
+  if (!formData.stillInvolved) {
+    stillInvolved = null;
   }
 
   const data = {
@@ -96,19 +103,7 @@ export const mapIndividualTrusteeByIdFromSessionToPage = (
 export const mapIndividualTrusteeFromSessionToPage = (
   trustee: Trust.IndividualTrustee,
 ): Page.IndividualTrusteesFormCommon => {
-
-  let stillInvolvedInTrust: string;
-  switch (trustee.still_involved) {
-      case "Yes":
-        stillInvolvedInTrust = "1";
-        break;
-      case "No":
-        stillInvolvedInTrust = "0";
-        break;
-      default:
-        stillInvolvedInTrust = "";
-        break;
-  }
+  const stillInvolvedInTrust: string = !trustee.still_involved || !isYesOrNo(trustee.still_involved) ? "" : YesOrNo[trustee.still_involved];
 
   const data = {
     trusteeId: trustee.id,

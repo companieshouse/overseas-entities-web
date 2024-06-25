@@ -22,7 +22,8 @@ import {
   UPDATE_BENEFICIAL_OWNER_GOV_PAGE,
   UPDATE_BENEFICIAL_OWNER_GOV_URL,
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
-  UPDATE_LANDING_PAGE_URL
+  UPDATE_LANDING_PAGE_URL,
+  RELEVANT_PERIOD_QUERY_PARAM,
 } from "../../../src/config";
 import {
   getFromApplicationData,
@@ -132,7 +133,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with relevant period content when query param is passed`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
 
-      const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_GOV_URL + "?relevant-period=true");
+      const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_GOV_URL + RELEVANT_PERIOD_QUERY_PARAM);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(RELEVANT_PERIOD);

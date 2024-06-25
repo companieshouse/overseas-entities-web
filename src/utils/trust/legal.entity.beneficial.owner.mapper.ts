@@ -6,6 +6,14 @@ import { RoleWithinTrustType } from '../../model/role.within.trust.type.model';
 import { getLegalEntityTrustee } from '../../utils/trusts';
 import { ApplicationData } from 'model';
 
+enum YesOrNo {
+  No = "0",
+  Yes = "1"
+}
+
+const isYesOrNo = (value: string): boolean =>
+  Object.keys(YesOrNo).includes(value);
+
 const mapLegalEntityToSession = (
   formData: Page.TrustLegalEntityForm,
   trustee?: Trust.TrustCorporate
@@ -139,18 +147,8 @@ const mapLegalEntityTrusteeFromSessionToPage = (
     ceasedDateYear: trustee.ceased_date_year,
   } as Page.TrustLegalEntityForm;
 
-  let stillInvolvedInTrust: string;
-  switch (trustee.still_involved) {
-      case "Yes":
-        stillInvolvedInTrust = "1";
-        break;
-      case "No":
-        stillInvolvedInTrust = "0";
-        break;
-      default:
-        stillInvolvedInTrust = ""; // forces user to enter a value on new trustee
-        break;
-  }
+  const stillInvolvedInTrust: string =
+  !trustee.still_involved || !isYesOrNo(trustee.still_involved) ? "" : YesOrNo[trustee.still_involved];
 
   if (trustee.type === RoleWithinTrustType.INTERESTED_PERSON) {
     return {

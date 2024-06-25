@@ -180,6 +180,7 @@ export const ROUTE_PARAM_SUBMISSION_ID = "submissionId";
 export const LANDING_PAGE_QUERY_PARAM = "start";
 export const JOURNEY_QUERY_PARAM = "journey";
 export const PREVIOUS_PAGE_QUERY_PARAM = "previousPage";
+export const RELEVANT_PERIOD_QUERY_PARAM = "?relevant-period=true";
 
 export const BUTTON_OPTION_YES = '1';
 export const BUTTON_OPTION_NO = '0';

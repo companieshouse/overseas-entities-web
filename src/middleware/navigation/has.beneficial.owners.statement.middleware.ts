@@ -5,9 +5,9 @@ import { SOLD_LAND_FILTER_URL } from '../../config';
 import { getApplicationData } from "../../utils/application.data";
 import { checkBeneficialOwnersStatementDetailsEntered, NavigationErrorMessage } from './check.condition';
 
-export const hasBeneficialOwnersStatement = (req: Request, res: Response, next: NextFunction): void => {
+export const hasBeneficialOwnersStatement = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    if ( !checkBeneficialOwnersStatementDetailsEntered(getApplicationData(req.session)) ) {
+    if ( !checkBeneficialOwnersStatementDetailsEntered(await getApplicationData(req.session)) ) {
       logger.infoRequest(req, NavigationErrorMessage);
       return res.redirect(SOLD_LAND_FILTER_URL);
     }

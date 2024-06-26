@@ -5,9 +5,9 @@ import { SOLD_LAND_FILTER_URL } from '../../config';
 import { getApplicationData } from "../../utils/application.data";
 import { checkBOsOrMOsDetailsEntered, NavigationErrorMessage } from './check.condition';
 
-export const hasBOsOrMOs = (req: Request, res: Response, next: NextFunction): void => {
+export const hasBOsOrMOs = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    if ( !checkBOsOrMOsDetailsEntered(getApplicationData(req.session)) ) {
+    if ( !checkBOsOrMOsDetailsEntered(await getApplicationData(req.session)) ) {
       logger.infoRequest(req, NavigationErrorMessage);
       return res.redirect(SOLD_LAND_FILTER_URL);
     }

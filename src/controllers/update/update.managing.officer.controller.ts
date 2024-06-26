@@ -4,22 +4,22 @@ import { UPDATE_BENEFICIAL_OWNER_TYPE_URL, UPDATE_MANAGING_OFFICER_PAGE } from "
 
 import { getManagingOfficer, getManagingOfficerById, postManagingOfficer, removeManagingOfficer, updateManagingOfficer } from "../../utils/managing.officer.individual";
 
-export const get = (req: Request, res: Response) => {
-  getManagingOfficer(req, res, UPDATE_BENEFICIAL_OWNER_TYPE_URL, UPDATE_MANAGING_OFFICER_PAGE);
+export const get = async (req: Request, res: Response) => {
+  await getManagingOfficer(req, res, UPDATE_BENEFICIAL_OWNER_TYPE_URL, UPDATE_MANAGING_OFFICER_PAGE);
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
-  postManagingOfficer(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL, false);
+export const post = async(req: Request, res: Response, next: NextFunction) => {
+  await postManagingOfficer(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL, false);
 };
 
-export const getById = (req: Request, res: Response, next: NextFunction) => {
-  getManagingOfficerById(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL, UPDATE_MANAGING_OFFICER_PAGE);
+export const getById = async (req: Request, res: Response, next: NextFunction) => {
+  await getManagingOfficerById(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL, UPDATE_MANAGING_OFFICER_PAGE);
 };
 
-export const update = (req: Request, res: Response, next: NextFunction) => {
-  updateManagingOfficer(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL, false);
+export const update = async (req: Request, res: Response, next: NextFunction) => {
+  await updateManagingOfficer(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL, false);
 };
 
-export const remove = (req: Request, res: Response, next: NextFunction) => {
-  removeManagingOfficer(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL, false);
+export const remove = async (req: Request, res: Response, next: NextFunction) => {
+  await removeManagingOfficer(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL, false);
 };

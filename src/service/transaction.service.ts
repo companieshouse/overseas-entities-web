@@ -12,7 +12,7 @@ import { makeApiCallWithRetry } from "./retry.handler.service";
 import { EntityNameKey, EntityNumberKey } from "../model/data.types.model";
 
 export const postTransaction = async (req: Request, session: Session): Promise<string> => {
-  const applicationData: ApplicationData = getApplicationData(session);
+  const applicationData: ApplicationData = await getApplicationData(session);
   const companyName = applicationData[EntityNameKey];
   const companyNumber = applicationData[EntityNumberKey];
 

@@ -5,9 +5,9 @@ import { SOLD_LAND_FILTER_URL } from '../../config';
 import { getApplicationData } from "../../utils/application.data";
 import { checkEntityDetailsEntered, NavigationErrorMessage } from './check.condition';
 
-export const hasEntity = (req: Request, res: Response, next: NextFunction): void => {
+export const hasEntity = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    if ( !checkEntityDetailsEntered(getApplicationData(req.session)) ) {
+    if ( !checkEntityDetailsEntered(await getApplicationData(req.session)) ) {
       logger.infoRequest(req, NavigationErrorMessage);
       return res.redirect(SOLD_LAND_FILTER_URL);
     }

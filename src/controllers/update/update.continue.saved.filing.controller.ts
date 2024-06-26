@@ -4,10 +4,10 @@ import * as config from "../../config";
 import { logger } from "../../utils/logger";
 import { isRemoveJourney } from "../../utils/url";
 
-export const get = (req: Request, res: Response, _: NextFunction) => {
+export const get = async (req: Request, res: Response, _: NextFunction) => {
   logger.debugRequest(req, `GET ${config.UPDATE_CONTINUE_WITH_SAVED_FILING_PAGE}`);
 
-  if (isRemoveJourney(req)){
+  if (await isRemoveJourney(req)) {
     return res.render(config.UPDATE_CONTINUE_WITH_SAVED_FILING_PAGE, {
       journey: config.JourneyType.remove,
       backLinkUrl: config.REMOVE_LANDING_PAGE_URL,
@@ -20,14 +20,14 @@ export const get = (req: Request, res: Response, _: NextFunction) => {
   });
 };
 
-export const post = (req: Request, res: Response, _: NextFunction) => {
+export const post = async (req: Request, res: Response, _: NextFunction) => {
   logger.debugRequest(req, `POST ${config.UPDATE_CONTINUE_WITH_SAVED_FILING_PAGE}`);
 
   if (req.body["continue_saved_filing"] === 'yes') {
     return res.redirect(config.YOUR_FILINGS_PATH);
   }
 
-  if (isRemoveJourney(req)){
+  if (await isRemoveJourney(req)) {
     return res.redirect(`${config.REMOVE_SOLD_ALL_LAND_FILTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
   }
 

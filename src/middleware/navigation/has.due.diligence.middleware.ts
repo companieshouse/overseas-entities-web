@@ -5,9 +5,9 @@ import { SOLD_LAND_FILTER_URL } from '../../config';
 import { getApplicationData } from "../../utils/application.data";
 import { checkDueDiligenceDetailsEntered, NavigationErrorMessage } from './check.condition';
 
-export const hasDueDiligence = (req: Request, res: Response, next: NextFunction): void => {
+export const hasDueDiligence = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    if ( !checkDueDiligenceDetailsEntered(getApplicationData(req.session)) ) {
+    if ( !checkDueDiligenceDetailsEntered(await getApplicationData(req.session)) ) {
       logger.infoRequest(req, NavigationErrorMessage);
       return res.redirect(SOLD_LAND_FILTER_URL);
     }

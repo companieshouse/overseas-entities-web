@@ -16,10 +16,10 @@ import { addResignedDateToTemplateOptions } from "../../utils/update/ceased_date
 import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAddressKeys } from "../../model/address.model";
 import { ManagingOfficerCorporateKey } from "../../model/managing.officer.corporate.model";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
     const index = req.query.index;
 
     let dataToReview = {}, principalAddress = {}, serviceAddress = {};
@@ -53,7 +53,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const moIndex = req.query.index;
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
 
     if (moIndex !== undefined && appData.managing_officers_corporate && appData.managing_officers_corporate[Number(moIndex)].id === req.body["id"]){
 
@@ -67,7 +67,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
       // Save new Managing Officer
       const session = req.session as Session;
-      setApplicationData(session, data, ManagingOfficerCorporateKey);
+      await setApplicationData(session, data, ManagingOfficerCorporateKey);
 
       await saveAndContinue(req, session, false);
     }

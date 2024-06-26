@@ -10,10 +10,10 @@ import { Session } from "@companieshouse/node-session-handler";
 import { saveAndContinue } from "./save.and.continue";
 import { isRemoveJourney } from "../utils/url";
 
-export const getRegistrableBeneficialOwner = (req: Request, res: Response, next: NextFunction, noChangeFlag?: boolean) => {
+export const getRegistrableBeneficialOwner = async (req: Request, res: Response, next: NextFunction, noChangeFlag?: boolean) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
     let templateName: string;
     let backLinkUrl: string;
     if (noChangeFlag) {
@@ -41,14 +41,14 @@ export const postRegistrableBeneficialOwner = async (req: Request, res: Response
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const isRegistrableBeneficialOwner = req.body[RegistrableBeneficialOwnerKey];
     const session = req.session as Session;
-    const appData: ApplicationData = getApplicationData(session);
+    const appData: ApplicationData = await getApplicationData(session);
     if (appData.update) {
       appData.update.registrable_beneficial_owner = isRegistrableBeneficialOwner === '1' ? yesNoResponse.Yes : yesNoResponse.No;
     }
     setExtraData(req.session, appData);
     await saveAndContinue(req, session, false);
 
-    if (isRemoveJourney(req)) {
+    if (await isRemoveJourney(req)) {
       const redirectUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION)
         ? config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL
         : config.REMOVE_CONFIRM_STATEMENT_URL;

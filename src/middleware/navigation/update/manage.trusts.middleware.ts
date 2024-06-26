@@ -7,9 +7,9 @@ import { getTrustInReview, getTrusteeIndex, hasTrusteesToReview, hasTrustsToRevi
 import { getApplicationData } from "../../../utils/application.data";
 import { TrusteeType } from "../../../model/trustee.type.model";
 
-export const reviewTheTrustGuard = (req: Request, res: Response, next: NextFunction) => {
+export const reviewTheTrustGuard = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
 
     if (hasTrustsToReview(appData)) {
       return next();
@@ -22,9 +22,9 @@ export const reviewTheTrustGuard = (req: Request, res: Response, next: NextFunct
   }
 };
 
-const reviewTrusteesGuard = (req: Request, res: Response, next: NextFunction, trusteeType: TrusteeType) => {
+const reviewTrusteesGuard = async (req: Request, res: Response, next: NextFunction, trusteeType: TrusteeType) => {
   try {
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
     const trustInReview = getTrustInReview(appData);
     const hasTrusteesForReview = hasTrusteesToReview(trustInReview, trusteeType);
 
@@ -39,9 +39,9 @@ const reviewTrusteesGuard = (req: Request, res: Response, next: NextFunction, tr
   }
 };
 
-const tellUsAboutTrusteesGuard = (req: Request, res: Response, next: NextFunction, trusteeType: TrusteeType) => {
+const tellUsAboutTrusteesGuard = async (req: Request, res: Response, next: NextFunction, trusteeType: TrusteeType) => {
   try {
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
     const trustInReview = getTrustInReview(appData);
     const trusteeId = req.params[ROUTE_PARAM_TRUSTEE_ID];
 

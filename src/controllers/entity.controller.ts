@@ -21,11 +21,11 @@ import { saveAndContinue } from "../utils/save.and.continue";
 import { isActiveFeature } from "../utils/feature.flag";
 import { getUrlWithParamsToPath } from "../utils/url";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `GET ENTITY_PAGE`);
 
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
 
     const entity = appData[EntityKey];
     const principalAddress = (entity && Object.keys(entity).length)
@@ -49,14 +49,14 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = async(req: Request, res: Response, next: NextFunction) => {
+export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ENTITY_PAGE`);
 
     const data: ApplicationDataType = mapRequestToEntityData(req);
 
     const session = req.session as Session;
-    setApplicationData(session, data, EntityKey);
+    await setApplicationData(session, data, EntityKey);
     await saveAndContinue(req, session, true);
 
     let nextPageUrl = config.BENEFICIAL_OWNER_STATEMENTS_URL;

@@ -8,10 +8,10 @@ import { NavigationErrorMessage } from './check.condition';
 import { containsTrustData, getTrustArray } from '../../utils/trusts';
 import { TrusteeType } from '../../model/trustee.type.model';
 
-const hasTrustWithId = (req: Request, res: Response, next: NextFunction, url: string): void => {
+const hasTrustWithId = async (req: Request, res: Response, next: NextFunction, url: string): Promise<void> => {
   try {
     const trustId = req.params[ROUTE_PARAM_TRUST_ID];
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
 
     const isTrustPresent = appData[TrustKey]?.some(
       (trust) => trust.trust_id === trustId,
@@ -28,12 +28,12 @@ const hasTrustWithId = (req: Request, res: Response, next: NextFunction, url: st
   }
 };
 
-const hasTrusteeWithId = (req: Request, res: Response, next: NextFunction, url: string): void => {
+const hasTrusteeWithId = async (req: Request, res: Response, next: NextFunction, url: string): Promise<void> => {
   try {
     const trustId = req.params[ROUTE_PARAM_TRUST_ID];
     const trusteeId = req.params[ROUTE_PARAM_TRUSTEE_ID];
     const trusteeType = req.params[ROUTE_PARAM_TRUSTEE_TYPE];
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
 
     const isTrustPresent = appData[TrustKey]?.some(
       (trust) => trust.trust_id === trustId,
@@ -73,9 +73,9 @@ const hasTrusteeWithId = (req: Request, res: Response, next: NextFunction, url: 
   }
 };
 
-const hasTrustData = (req: Request, res: Response, next: NextFunction, url: string): void => {
+const hasTrustData = async (req: Request, res: Response, next: NextFunction, url: string): Promise<void> => {
   try {
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
     if (containsTrustData(getTrustArray(appData))) {
       return next();
     }

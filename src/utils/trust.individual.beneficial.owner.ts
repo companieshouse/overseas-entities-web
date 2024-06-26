@@ -36,13 +36,13 @@ type TrustIndividualBeneificalOwnerPageProperties = {
   isUpdate: boolean
 };
 
-const getPageProperties = (
+const getPageProperties = async (
   req: Request,
   trustId: string,
   isUpdate: boolean,
   formData?: PageModel.IndividualTrusteesFormCommon,
   errors?: FormattedValidationErrors,
-): TrustIndividualBeneificalOwnerPageProperties => {
+): Promise<TrustIndividualBeneificalOwnerPageProperties> => {
 
   return {
     backLinkUrl: getTrustInvolvedUrl(isUpdate, trustId, req),
@@ -51,7 +51,7 @@ const getPageProperties = (
       title: INDIVIDUAL_BO_TEXTS.title,
     },
     pageData: {
-      trustData: CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId, false),
+      trustData: CommonTrustDataMapper.mapCommonTrustDataToPage(await getApplicationData(req.session), trustId, false),
       roleWithinTrustType: RoleWithinTrustType
     },
     formData,
@@ -61,19 +61,19 @@ const getPageProperties = (
   };
 };
 
-export const getTrustIndividualBo = (req: Request, res: Response, next: NextFunction, isUpdate: boolean): void => {
+export const getTrustIndividualBo = async (req: Request, res: Response, next: NextFunction, isUpdate: boolean): Promise<void> => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
     const trusteeId = req.params[config.ROUTE_PARAM_TRUSTEE_ID];
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
 
     const formData: PageModel.IndividualTrusteesFormCommon = mapIndividualTrusteeByIdFromSessionToPage(
       appData,
       trustId,
       trusteeId
     );
-    const pageProps = getPageProperties(req, trustId, isUpdate, formData);
+    const pageProps = await getPageProperties(req, trustId, isUpdate, formData);
 
     return res.render(pageProps.templateName, pageProps);
   } catch (error) {
@@ -91,14 +91,14 @@ export const postTrustIndividualBo = async (req: Request, res: Response, next: N
     const individualTrusteeData = mapIndividualTrusteeToSession(req.body);
 
     // get trust data from session
-    let appData: ApplicationData = getApplicationData(req.session);
+    let appData: ApplicationData = await getApplicationData(req.session);
 
     // check for errors
     const errorList = validationResult(req);
     const formData: PageModel.IndividualTrusteesFormCommon = req.body as PageModel.IndividualTrusteesFormCommon;
     // if no errors present rerender the page
     if (!errorList.isEmpty()) {
-      const pageProps = getPageProperties(
+      const pageProps = await getPageProperties(
         req,
         trustId,
         isUpdate,

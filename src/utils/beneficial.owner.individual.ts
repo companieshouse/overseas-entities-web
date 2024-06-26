@@ -40,10 +40,10 @@ import { v4 as uuidv4 } from "uuid";
 import * as config from "../config";
 import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
 
-export const getBeneficialOwnerIndividual = (req: Request, res: Response, templateName: string, backLinkUrl: string) => {
+export const getBeneficialOwnerIndividual = async (req: Request, res: Response, templateName: string, backLinkUrl: string) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-  const appData: ApplicationData = getApplicationData(req.session);
+  const appData: ApplicationData = await getApplicationData(req.session);
 
   return res.render(templateName, {
     backLinkUrl: backLinkUrl,
@@ -53,12 +53,12 @@ export const getBeneficialOwnerIndividual = (req: Request, res: Response, templa
   });
 };
 
-export const getBeneficialOwnerIndividualById = (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string) => {
+export const getBeneficialOwnerIndividualById = async (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string) => {
   try {
     logger.debugRequest(req, `GET BY ID ${req.route.path}`);
 
     const id = req.params[ID];
-    const data = getFromApplicationData(req, BeneficialOwnerIndividualKey, id, true);
+    const data = await getFromApplicationData(req, BeneficialOwnerIndividualKey, id, true);
 
     const usualResidentialAddress = (data) ? mapDataObjectToFields(data[UsualResidentialAddressKey], UsualResidentialAddressKeys, AddressKeys) : {};
     const serviceAddress = (data) ? mapDataObjectToFields(data[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
@@ -82,7 +82,7 @@ export const getBeneficialOwnerIndividualById = (req: Request, res: Response, ne
       addActiveSubmissionBasePathToTemplateData(templateOptions, req);
     }
 
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
 
     if (EntityNumberKey in appData && appData[EntityNumberKey]) {
       return res.render(templateName, addCeasedDateToTemplateOptions(templateOptions, appData, data));
@@ -104,7 +104,7 @@ export const postBeneficialOwnerIndividual = async (req: Request, res: Response,
     const data: ApplicationDataType = setBeneficialOwnerData(req.body, uuidv4());
     data[HaveDayOfBirthKey] = true;
 
-    setApplicationData(session, data, BeneficialOwnerIndividualKey);
+    await setApplicationData(session, data, BeneficialOwnerIndividualKey);
 
     await saveAndContinue(req, session, registrationFlag);
 
@@ -127,7 +127,7 @@ export const updateBeneficialOwnerIndividual = async (req: Request, res: Respons
     const session = req.session as Session;
 
     // Save new Beneficial Owner
-    setApplicationData(session, data, BeneficialOwnerIndividualKey);
+    await setApplicationData(session, data, BeneficialOwnerIndividualKey);
 
     await saveAndContinue(req, session, registrationFlag);
 

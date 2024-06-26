@@ -15,11 +15,11 @@ import { getTrustInReview, setTrusteesAsReviewed } from '../../utils/update/revi
 import { ApplicationData } from '../../model';
 import { TrusteeType } from '../../model/trustee.type.model';
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
     const trustInReview = getTrustInReview(appData);
     const legalEntities = trustInReview?.CORPORATES;
 
@@ -48,7 +48,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       return res.redirect(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL);
     }
 
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
 
     setTrusteesAsReviewed(appData, TrusteeType.LEGAL_ENTITY);
 

@@ -31,6 +31,7 @@ import { TrusteeType } from '../../../src/model/trustee.type.model';
 import { saveAndContinue } from '../../../src/utils/save.and.continue';
 import { yesNoResponse } from '../../../src/model/data.types.model';
 import { RoleWithinTrustType } from '../../../src/model/role.within.trust.type.model';
+import { ErrorMessages } from "../../../src/validation/error.messages";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockAuthenticationMiddleware = authentication as jest.Mock;
@@ -61,9 +62,49 @@ const mockGetTrusteeIndex = getTrusteeIndex as jest.Mock;
 const mockSetExtraData = setExtraData as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
+let DEFAULT_FORM_SUBMISSION;
+
 describe('Update - Manage Trusts - Review individuals', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+
+    DEFAULT_FORM_SUBMISSION = {
+      trusteeId: 'trustee-id-2',
+      roleWithinTrust: RoleWithinTrustType.GRANTOR,
+      forename: 'Trust',
+      surname: 'Ee',
+      dateOfBirthDay: '1',
+      dateOfBirthMonth: '2',
+      dateOfBirthYear: '2022',
+      nationality: 'Afghan',
+      second_nationality: 'English',
+      usual_residential_address_property_name_number: 'Usual 1',
+      usual_residential_address_line_1: 'Usual New Line 1',
+      usual_residential_address_line_2: 'Usual New Line 2',
+      usual_residential_address_town: 'Usual New Town',
+      usual_residential_address_county: 'Usual New County',
+      usual_residential_address_country: 'Usual New Country',
+      usual_residential_address_postcode: 'Usual NE994WS',
+      usual_address_po_box: '',
+      usual_address_care_of: '',
+      service_address_property_name_number: 'Service 1',
+      service_address_line_1: 'Service New Line 1',
+      service_address_line_2: 'Service New Line 2',
+      service_address_town: 'Service New Town',
+      service_address_county: 'Service New County',
+      service_address_country: 'Service New Country',
+      service_address_postcode: 'Service NE994WS',
+      service_address_po_box: '',
+      service_address_care_of: '',
+      is_service_address_same_as_usual_residential_address: yesNoResponse.No,
+      dateBecameIPDay: '2',
+      dateBecameIPMonth: '8',
+      dateBecameIPYear: '2023',
+      stillInvolved: '0',
+      ceasedDateDay: '21',
+      ceasedDateMonth: '10',
+      ceasedDateYear: '2023'
+    };
   });
 
   describe('GET tests', () => {
@@ -95,7 +136,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
 
     test('when there is a trustee to display, the page is rendered with fields populated', async () => {
       const appData = { entity_number: 'OE988664', entity_name: 'Tell us about the individual OE 2' };
-      const trustInReview = { trust_id: 'trust-in-review-2', trust_name: 'Veggie Trust', review_status: { in_review: true } };
+      const trustInReview = { trust_id: 'trust-in-review-2', trust_name: 'Veggie Trust', review_status: { in_review: true }, creation_date_day: "24", creation_date_month: "02", creation_date_year: "2000" };
       const trustee = {
         id: 'trustee-individual-2',
         ch_references: 'trustee-ch-references',
@@ -130,6 +171,10 @@ describe('Update - Manage Trusts - Review individuals', () => {
         date_became_interested_person_month: '3',
         date_became_interested_person_year: '2020',
         is_service_address_same_as_usual_residential_address: yesNoResponse.No,
+        still_involved: "No",
+        ceased_date_day: "22",
+        ceased_date_month: "03",
+        ceased_date_year: "2022"
       };
 
       mockIsActiveFeature.mockReturnValue(true);
@@ -138,7 +183,6 @@ describe('Update - Manage Trusts - Review individuals', () => {
       mockGetTrustee.mockReturnValue(trustee);
 
       const resp = await request(app).get(`${UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL}/trustee-individual-2`);
-
       expect(resp.status).toEqual(200);
 
       expect(mockGetTrustInReview).toHaveBeenCalledWith(appData);
@@ -154,6 +198,11 @@ describe('Update - Manage Trusts - Review individuals', () => {
       expect(resp.text).toContain('name="dateBecameIPDay" type="text" value="1"');
       expect(resp.text).toContain('name="dateBecameIPMonth" type="text" value="3"');
       expect(resp.text).toContain('name="dateBecameIPYear" type="text" value="2020"');
+      expect(resp.text).toContain('name="stillInvolved" type="radio" value="0" checked');
+      expect(resp.text).toContain('name="ceasedDateDay" type="text" value="22"');
+      expect(resp.text).toContain('name="ceasedDateMonth" type="text" value="03"');
+      expect(resp.text).toContain('name="ceasedDateYear" type="text" value="2022"');
+
       expect(resp.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL);
 
       expect(resp.text).not.toContain('id="dateOfBirthDay"');
@@ -175,37 +224,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
   describe('POST tests', () => {
     test('when a valid trust submission is provided, and the trust id is of an existing trust, the trust is updated in the model', async () => {
       const formSubmission = {
-        trusteeId: 'trustee-id-2',
-        roleWithinTrust: RoleWithinTrustType.GRANTOR,
-        forename: 'Trust',
-        surname: 'Ee',
-        dateOfBirthDay: '1',
-        dateOfBirthMonth: '2',
-        dateOfBirthYear: '2022',
-        nationality: 'Afghan',
-        second_nationality: 'English',
-        usual_residential_address_property_name_number: 'Usual 1',
-        usual_residential_address_line_1: 'Usual New Line 1',
-        usual_residential_address_line_2: 'Usual New Line 2',
-        usual_residential_address_town: 'Usual New Town',
-        usual_residential_address_county: 'Usual New County',
-        usual_residential_address_country: 'Usual New Country',
-        usual_residential_address_postcode: 'Usual NE994WS',
-        usual_address_po_box: '',
-        usual_address_care_of: '',
-        service_address_property_name_number: 'Service 1',
-        service_address_line_1: 'Service New Line 1',
-        service_address_line_2: 'Service New Line 2',
-        service_address_town: 'Service New Town',
-        service_address_county: 'Service New County',
-        service_address_country: 'Service New Country',
-        service_address_postcode: 'Service NE994WS',
-        service_address_po_box: '',
-        service_address_care_of: '',
-        is_service_address_same_as_usual_residential_address: yesNoResponse.No,
-        dateBecameIPDay: '2',
-        dateBecameIPMonth: '8',
-        dateBecameIPYear: '2023',
+        ...DEFAULT_FORM_SUBMISSION
       };
 
       const expectedTrustee = {
@@ -239,6 +258,10 @@ describe('Update - Manage Trusts - Review individuals', () => {
         sa_address_region: 'Service New County',
         sa_address_country: 'Service New Country',
         sa_address_postal_code: 'Service NE994WS',
+        still_involved: 'No',
+        ceased_date_day: '21',
+        ceased_date_month: '10',
+        ceased_date_year: '2023',
       };
 
       const trustInReview = {
@@ -274,6 +297,10 @@ describe('Update - Manage Trusts - Review individuals', () => {
           sa_address_postal_code: 'Existing service postcode',
           sa_address_po_box: '',
           is_service_address_same_as_usual_residential_address: yesNoResponse.No,
+          still_involved: 'No',
+          ceased_date_day: '21',
+          ceased_date_month: '10',
+          ceased_date_year: '2023',
         }]
       };
 
@@ -305,24 +332,8 @@ describe('Update - Manage Trusts - Review individuals', () => {
 
     test('when a valid trust submission is provided, and the trust id is not an existing trust, the trust is added to the model', async () => {
       const formSubmission = {
-        trusteeId: 'trustee-id-2',
+        ...DEFAULT_FORM_SUBMISSION,
         roleWithinTrust: RoleWithinTrustType.BENEFICIARY,
-        forename: 'Trust',
-        surname: 'Ee',
-        dateOfBirthDay: '1',
-        dateOfBirthMonth: '2',
-        dateOfBirthYear: '2022',
-        nationality: 'Afghan',
-        second_nationality: 'English',
-        usual_residential_address_property_name_number: 'Usual 1',
-        usual_residential_address_line_1: 'Usual New Line 1',
-        usual_residential_address_line_2: 'Usual New Line 2',
-        usual_residential_address_town: 'Usual New Town',
-        usual_residential_address_county: 'Usual New County',
-        usual_residential_address_country: 'Usual New Country',
-        usual_residential_address_postcode: 'Usual NE994WS',
-        usual_address_po_box: '',
-        usual_address_care_of: '',
         service_address_property_name_number: 'Usual 1',
         service_address_line_1: 'Usual New Line 1',
         service_address_line_2: 'Usual New Line 2',
@@ -330,12 +341,11 @@ describe('Update - Manage Trusts - Review individuals', () => {
         service_address_county: 'Usual New County',
         service_address_country: 'Usual New Country',
         service_address_postcode: 'Usual NE994WS',
-        service_address_po_box: '',
-        service_address_care_of: '',
         is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
-        dateBecameIPDay: '2',
-        dateBecameIPMonth: '8',
-        dateBecameIPYear: '2023',
+        stillInvolved: '1',
+        ceasedDateDay: '',
+        ceasedDateMonth: '',
+        ceasedDateYear: ''
       };
 
       const expectedTrustee = {
@@ -368,6 +378,10 @@ describe('Update - Manage Trusts - Review individuals', () => {
         sa_address_postal_code: '',
         sa_address_care_of: '',
         sa_address_po_box: '',
+        still_involved: 'Yes',
+        ceased_date_day: '',
+        ceased_date_month: '',
+        ceased_date_year: '',
       };
 
       const existingTrustee = {
@@ -437,7 +451,6 @@ describe('Update - Manage Trusts - Review individuals', () => {
 
     test('when validation fails, page is re-rendered', async () => {
       const formSubmission = {
-        trusteeId: 'trustee-id-2',
         ch_references: 'existing-ch-references',
         roleWithinTrust: RoleWithinTrustType.BENEFICIARY,
         forename: '',
@@ -445,17 +458,6 @@ describe('Update - Manage Trusts - Review individuals', () => {
         dateOfBirthDay: '01',
         dateOfBirthMonth: '02',
         dateOfBirthYear: '2022',
-        nationality: 'Afghan',
-        second_nationality: 'English',
-        usual_residential_address_property_name_number: 'Usual 1',
-        usual_residential_address_line_1: 'Usual New Line 1',
-        usual_residential_address_line_2: 'Usual New Line 2',
-        usual_residential_address_town: 'Usual New Town',
-        usual_residential_address_county: 'Usual New County',
-        usual_residential_address_country: 'Usual New Country',
-        usual_residential_address_postcode: 'Usual NE994WS',
-        usual_address_po_box: '',
-        usual_address_care_of: '',
         service_address_property_name_number: 'Usual 1',
         service_address_line_1: 'Usual New Line 1',
         service_address_line_2: 'Usual New Line 2',
@@ -463,8 +465,6 @@ describe('Update - Manage Trusts - Review individuals', () => {
         service_address_county: 'Usual New County',
         service_address_country: 'Usual New Country',
         service_address_postcode: 'Usual NE994WS',
-        service_address_po_box: '',
-        service_address_care_of: '',
         is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
         dateBecameIPDay: '02',
         dateBecameIPMonth: '08',
@@ -542,6 +542,139 @@ describe('Update - Manage Trusts - Review individuals', () => {
 
       expect(resp.status).toEqual(404);
       expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
+    });
+
+    test.each([
+      [
+        '"still involved" is not selected',
+        {
+          stillInvolved: '',
+          ceasedDateDay: '',
+          ceasedDateMonth: '',
+          ceasedDateYear: ''
+        },
+        ErrorMessages.TRUST_INDIVIDUAL_STILL_INVOLVED
+      ], [
+        'ceased date is not provided',
+        {
+          stillInvolved: '0',
+          ceasedDateDay: '',
+          ceasedDateMonth: '',
+          ceasedDateYear: ''
+        },
+        ErrorMessages.ENTER_DATE_OF_CEASED_TRUSTEE
+      ], [
+        'ceased date day is not provided',
+        {
+          stillInvolved: '0',
+          ceasedDateDay: '',
+          ceasedDateMonth: '11',
+          ceasedDateYear: '2001'
+        },
+        ErrorMessages.DAY_OF_CEASED_TRUSTEE
+      ], [
+        'ceased date month is not provided',
+        {
+          stillInvolved: '0',
+          ceasedDateDay: '11',
+          ceasedDateMonth: '',
+          ceasedDateYear: '2001'
+        },
+        ErrorMessages.MONTH_OF_CEASED_TRUSTEE
+      ], [
+        'ceased date year is not provided',
+        {
+          stillInvolved: '0',
+          ceasedDateDay: '11',
+          ceasedDateMonth: '12',
+          ceasedDateYear: ''
+        },
+        ErrorMessages.YEAR_OF_CEASED_TRUSTEE
+      ], [
+        'ceased date is not a valid date',
+        {
+          stillInvolved: '0',
+          ceasedDateDay: '30',
+          ceasedDateMonth: '02',
+          ceasedDateYear: '2024'
+        },
+        ErrorMessages.INVALID_DATE_OF_CEASED_TRUSTEE
+      ], [
+        'ceased date is in the future',
+        {
+          stillInvolved: '0',
+          ceasedDateDay: '01',
+          ceasedDateMonth: '02',
+          ceasedDateYear: '3000'
+        },
+        ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY_OF_CEASED_TRUSTEE
+      ], [
+        'ceased date is before birth date',
+        {
+          stillInvolved: '0',
+          ceasedDateDay: '01',
+          ceasedDateMonth: '01',
+          ceasedDateYear: '2022'
+        },
+        ErrorMessages.DATE_BEFORE_BIRTH_DATE_CEASED_TRUSTEE
+      ], [
+        'ceased date is before trust creation date',
+        {
+          stillInvolved: '0',
+          ceasedDateDay: '10',
+          ceasedDateMonth: '01',
+          ceasedDateYear: '2023'
+        },
+        ErrorMessages.DATE_BEFORE_TRUST_CREATION_DATE_CEASED_TRUSTEE
+      ], [
+        'ceased date is before interested person start date',
+        {
+          roleWithinTrust: RoleWithinTrustType.INTERESTED_PERSON,
+          stillInvolved: '0',
+          ceasedDateDay: '1',
+          ceasedDateMonth: '8',
+          ceasedDateYear: '2023'
+        },
+        ErrorMessages.DATE_BEFORE_INTERESTED_PERSON_START_DATE_CEASED_TRUSTEE
+      ]
+    ])('should return a validation error if %s', async (description, formData, errorMessage) => {
+      const formSubmission = {
+        ...DEFAULT_FORM_SUBMISSION,
+        ...formData
+      };
+
+      const appData = {
+        entity_number: 'OE988669',
+        entity_name: 'Tell us about the individual OE 1'
+      };
+
+      const trustInReview = {
+        trust_id: 'trust-in-review-1',
+        trust_name: 'Trust One',
+        creation_date_day: '01',
+        creation_date_month: '03',
+        creation_date_year: '2023',
+        review_status: { in_review: true }
+      };
+
+      mockIsActiveFeature.mockReturnValue(true);
+      mockGetApplicationData.mockReturnValue(appData);
+      mockGetTrustInReview.mockReturnValue(trustInReview);
+
+      const resp = await request(app)
+        .post(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL)
+        .send({
+          ...formSubmission,
+        });
+
+      expect(resp.status).toBe(200);
+      expect(resp.text).toContain(ERROR_LIST);
+      expect(resp.text).toContain('Tell us about the individual');
+      expect(resp.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL);
+      expect(resp.text).toContain(errorMessage);
+
+      expect(mockSetExtraData).not.toHaveBeenCalled();
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
   });
 });

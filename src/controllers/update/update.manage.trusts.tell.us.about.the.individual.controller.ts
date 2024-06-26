@@ -29,12 +29,15 @@ const getPageProperties = (trust, formData, trustee: TrustIndividual, errors?: F
       title: 'Tell us about the individual',
     },
     pageData: {
-      trustData: { trustName: trust?.trust_name },
+      trustData: {
+        trustName: trust?.trust_name
+      },
       roleWithinTrustType: RoleWithinTrustType,
     },
     formData,
     errors,
-    uneditableDOB: trustee?.ch_references ? true : false
+    uneditableDOB: trustee?.ch_references ? true : false,
+    isUpdate: true // this is an update controller so we are safe to say that isUpdate is true
   };
 };
 
@@ -59,7 +62,6 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-
     const appData = getApplicationData(req.session);
     const trusteeId = req.params[ROUTE_PARAM_TRUSTEE_ID];
     const trust = getTrustInReview(appData) as Trust;

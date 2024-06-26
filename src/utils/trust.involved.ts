@@ -86,11 +86,12 @@ const getPageProperties = (
     trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
     individualTrusteeData = getIndividualTrusteesFromTrust(appData, trustId, isReview);
     formerTrusteeData = getFormerTrusteesFromTrust(appData, trustId, isReview);
-    if (isUpdate) {
-      isRelevantPeriod = (appData.update?.change_bo_relevant_period === "CHANGE_BO_RELEVANT_PERIOD" ||
-        appData.update?.trustee_involved_relevant_period === "TRUSTEE_INVOLVED_RELEVANT_PERIOD" ||
-        appData.update?.change_beneficiary_relevant_period === "CHANGE_BENEFICIARY_RELEVANT_PERIOD");
-    }
+  }
+
+  if (isUpdate) {
+    isRelevantPeriod = (appData.update?.change_bo_relevant_period === "CHANGE_BO_RELEVANT_PERIOD" ||
+      appData.update?.trustee_involved_relevant_period === "TRUSTEE_INVOLVED_RELEVANT_PERIOD" ||
+      appData.update?.change_beneficiary_relevant_period === "CHANGE_BENEFICIARY_RELEVANT_PERIOD");
   }
 
   return {

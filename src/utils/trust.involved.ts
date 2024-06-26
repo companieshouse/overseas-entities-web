@@ -57,14 +57,14 @@ type TrustInvolvedPageProperties = {
   url: string,
 };
 
-const getPageProperties = (
+const getPageProperties = async (
   req: Request,
   isUpdate: boolean,
   isReview: boolean,
   formData?: TrustWhoIsInvolvedForm,
   errors?: FormattedValidationErrors,
-): TrustInvolvedPageProperties => {
-  const appData = getApplicationData(req.session);
+): Promise<TrustInvolvedPageProperties> => {
+  const appData = await getApplicationData(req.session);
   let trustId;
   let individualTrusteeData;
   let formerTrusteeData;
@@ -120,17 +120,17 @@ const getPageProperties = (
   };
 };
 
-export const getTrustInvolvedPage = (
+export const getTrustInvolvedPage = async (
   req: Request,
   res: Response,
   next: NextFunction,
   isUpdate: boolean,
   isReview: boolean
-): void => {
+): Promise<void> => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const pageProps = getPageProperties(req, isUpdate, isReview);
+    const pageProps = await getPageProperties(req, isUpdate, isReview);
 
     return res.render(pageProps.templateName, pageProps);
   } catch (error) {
@@ -151,7 +151,7 @@ export const postTrustInvolvedPage = async (
 
     if (req.body.noMoreToAdd) {
       if (isReview) {
-        const appData = getApplicationData(req.session);
+        const appData = await getApplicationData(req.session);
         moveTrustOutOfReview(appData);
         setExtraData(req.session, appData);
         await saveAndContinue(req, req.session as Session, false);
@@ -163,7 +163,7 @@ export const postTrustInvolvedPage = async (
     const errorList = validationResult(req);
 
     if (!errorList.isEmpty()) {
-      const pageProps = getPageProperties(
+      const pageProps = await getPageProperties(
         req,
         isUpdate,
         isReview,

@@ -19,11 +19,11 @@ import { saveAndContinue } from '../../utils/save.and.continue';
 import { mapBeneficialOwnerToSession, mapFormerTrusteeFromSessionToPage } from '../../utils/trust/historical.beneficial.owner.mapper';
 import { getTrustInReview, getTrustee, getTrusteeIndex } from '../../utils/update/review_trusts';
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
     const trust = getTrustInReview(appData) as Trust;
     const trusteeId = req.params[ROUTE_PARAM_TRUSTEE_ID];
     const trustee = getTrustee(trust, trusteeId, TrusteeType.HISTORICAL) as TrustHistoricalBeneficialOwner;
@@ -43,7 +43,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const session = req.session as Session;
-    const appData = getApplicationData(session);
+    const appData = await getApplicationData(session);
     const trust = getTrustInReview(appData) as Trust;
     const trusteeId = req.params[ROUTE_PARAM_TRUSTEE_ID];
     const formData: TrustHistoricalBeneficialOwnerForm = req.body as TrustHistoricalBeneficialOwnerForm;

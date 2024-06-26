@@ -35,13 +35,13 @@ type TrustLegalEntityBeneificalOwnerPageProperties = {
   url: string,
 };
 
-const getPageProperties = (
+const getPageProperties = async (
   req: Request,
   trustId: string,
   isUpdate: boolean,
   formData?: TrustLegalEntityForm,
   errors?: FormattedValidationErrors,
-): TrustLegalEntityBeneificalOwnerPageProperties => {
+): Promise<TrustLegalEntityBeneificalOwnerPageProperties> => {
 
   return {
     backLinkUrl: getTrustInvolvedUrl(isUpdate, trustId, req),
@@ -50,7 +50,7 @@ const getPageProperties = (
       title: LEGAL_ENTITY_BO_TEXTS.title,
     },
     pageData: {
-      trustData: CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId, false),
+      trustData: CommonTrustDataMapper.mapCommonTrustDataToPage(await getApplicationData(req.session), trustId, false),
       roleWithinTrustType: RoleWithinTrustType
     },
     formData,
@@ -59,20 +59,20 @@ const getPageProperties = (
   };
 };
 
-export const getTrustLegalEntityBo = (req: Request, res: Response, next: NextFunction, isUpdate: boolean): void => {
+export const getTrustLegalEntityBo = async (req: Request, res: Response, next: NextFunction, isUpdate: boolean): Promise<void> => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
     const trusteeId = req.params[config.ROUTE_PARAM_TRUSTEE_ID];
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
 
     const formData: TrustLegalEntityForm = mapLegalEntityTrusteeByIdFromSessionToPage(
       appData,
       trustId,
       trusteeId
     );
-    const pageProps = getPageProperties(req, trustId, isUpdate, formData);
+    const pageProps = await getPageProperties(req, trustId, isUpdate, formData);
 
     return res.render(pageProps.templateName, pageProps);
   } catch (error) {
@@ -91,14 +91,14 @@ export const postTrustLegalEntityBo = async (req: Request, res: Response, next: 
     const legalEntityBoData = mapLegalEntityToSession(req.body);
 
     //  get trust data from session
-    let appData: ApplicationData = getApplicationData(req.session);
+    let appData: ApplicationData = await getApplicationData(req.session);
 
     // validate request
     const errorList = validationResult(req);
     const formData: TrustLegalEntityForm = req.body as TrustLegalEntityForm;
 
     if (errorList && !errorList.isEmpty()) {
-      const pageProps = getPageProperties(
+      const pageProps = await getPageProperties(
         req,
         trustId,
         isUpdate,

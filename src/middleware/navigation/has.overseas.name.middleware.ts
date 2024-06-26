@@ -5,9 +5,9 @@ import { SOLD_LAND_FILTER_URL } from '../../config';
 import { getApplicationData } from "../../utils/application.data";
 import { checkOverseasNameDetailsEntered, NavigationErrorMessage } from './check.condition';
 
-export const hasOverseasName = (req: Request, res: Response, next: NextFunction): void => {
+export const hasOverseasName = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    if ( !checkOverseasNameDetailsEntered(getApplicationData(req.session)) ) {
+    if ( !checkOverseasNameDetailsEntered(await getApplicationData(req.session)) ) {
       logger.infoRequest(req, NavigationErrorMessage);
       return res.redirect(SOLD_LAND_FILTER_URL);
     }

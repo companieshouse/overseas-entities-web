@@ -41,11 +41,11 @@ const getPageProperties = (trust, formData, trustee: TrustIndividual, errors?: F
   };
 };
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
     const trusteeId = req.params[ROUTE_PARAM_TRUSTEE_ID];
 
     const trust = getTrustInReview(appData) as Trust;
@@ -62,7 +62,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
     const trusteeId = req.params[ROUTE_PARAM_TRUSTEE_ID];
     const trust = getTrustInReview(appData) as Trust;
 

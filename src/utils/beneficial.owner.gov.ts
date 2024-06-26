@@ -27,10 +27,10 @@ import { v4 as uuidv4 } from "uuid";
 import * as config from "../config";
 import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
 
-export const getBeneficialOwnerGov = (req: Request, res: Response, templateName: string, backLinkUrl: string) => {
+export const getBeneficialOwnerGov = async (req: Request, res: Response, templateName: string, backLinkUrl: string) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-  const appData: ApplicationData = getApplicationData(req.session);
+  const appData: ApplicationData = await getApplicationData(req.session);
 
   res.render(templateName, {
     backLinkUrl,
@@ -40,12 +40,12 @@ export const getBeneficialOwnerGov = (req: Request, res: Response, templateName:
   });
 };
 
-export const getBeneficialOwnerGovById = (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string) => {
+export const getBeneficialOwnerGovById = async (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string) => {
   try {
     logger.debugRequest(req, `GET BY ID ${req.route.path}`);
 
     const id = req.params[ID];
-    const data = getFromApplicationData(req, BeneficialOwnerGovKey, id, true);
+    const data = await getFromApplicationData(req, BeneficialOwnerGovKey, id, true);
 
     const principalAddress = (data) ? mapDataObjectToFields(data[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};
     const serviceAddress = (data) ? mapDataObjectToFields(data[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
@@ -60,7 +60,7 @@ export const getBeneficialOwnerGovById = (req: Request, res: Response, next: Nex
       ...serviceAddress,
       [StartDateKey]: startDate
     };
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
 
     // Redis removal work - Add extra template options if Redis Remove flag is true and on Registration journey
     const isRegistration: boolean = req.path.startsWith(config.LANDING_URL);
@@ -86,7 +86,7 @@ export const postBeneficialOwnerGov = async (req: Request, res: Response, next: 
     const data: ApplicationDataType = setBeneficialOwnerData(req.body, uuidv4());
 
     const session = req.session as Session;
-    setApplicationData(session, data, BeneficialOwnerGovKey);
+    await setApplicationData(session, data, BeneficialOwnerGovKey);
 
     await saveAndContinue(req, session, registrationFlag);
 
@@ -110,7 +110,7 @@ export const updateBeneficialOwnerGov = async (req: Request, res: Response, next
 
     // Save new Beneficial Owner
     const session = req.session as Session;
-    setApplicationData(session, data, BeneficialOwnerGovKey);
+    await setApplicationData(session, data, BeneficialOwnerGovKey);
 
     await saveAndContinue(req, session, registrationFlag);
 

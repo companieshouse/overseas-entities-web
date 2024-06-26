@@ -5,10 +5,10 @@ import * as config from "../../config";
 import { ApplicationData } from "../../model";
 import { getApplicationData } from "../../utils/application.data";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `GET ${config.RELEVANT_PERIOD_INTERRUPT_PAGE}`);
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
 
     return res.render(config.RELEVANT_PERIOD_INTERRUPT_PAGE, {
       backLinkUrl: config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL,

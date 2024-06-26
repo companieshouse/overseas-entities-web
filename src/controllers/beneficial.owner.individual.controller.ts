@@ -13,19 +13,19 @@ import * as config from "../config";
 import { isActiveFeature } from "../utils/feature.flag";
 import { getUrlWithParamsToPath } from "../utils/url";
 
-export const get = (req: Request, res: Response) => {
+export const get = async (req: Request, res: Response) => {
   const backLinkUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
     ? getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req)
     : config.BENEFICIAL_OWNER_TYPE_URL;
-  getBeneficialOwnerIndividual(req, res, config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE, backLinkUrl);
+  await getBeneficialOwnerIndividual(req, res, config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE, backLinkUrl);
 };
 
-export const getById = (req: Request, res: Response, next: NextFunction) => {
-  getBeneficialOwnerIndividualById(req, res, next, config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE, config.BENEFICIAL_OWNER_TYPE_URL);
+export const getById = async (req: Request, res: Response, next: NextFunction) => {
+  await getBeneficialOwnerIndividualById(req, res, next, config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE, config.BENEFICIAL_OWNER_TYPE_URL);
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
-  postBeneficialOwnerIndividual(req, res, next, getBeneficialOwnerTypeUrl(req), true);
+export const post = async (req: Request, res: Response, next: NextFunction) => {
+  await postBeneficialOwnerIndividual(req, res, next, getBeneficialOwnerTypeUrl(req), true);
 };
 
 export const update = (req: Request, res: Response, next: NextFunction) => {

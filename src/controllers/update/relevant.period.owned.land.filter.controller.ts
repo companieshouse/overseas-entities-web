@@ -6,10 +6,10 @@ import { ApplicationData } from "../../model";
 import { getApplicationData } from "../../utils/application.data";
 import { OwnedLandKey } from "../../model/update.type.model";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `GET ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE}`);
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
 
     return res.render(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE, {
       backLinkUrl: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,

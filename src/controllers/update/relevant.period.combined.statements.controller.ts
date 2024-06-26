@@ -20,10 +20,10 @@ import { postTransaction } from "../../service/transaction.service";
 import { createOverseasEntity } from "../../service/overseas.entities.service";
 import { isActiveFeature } from "../../utils/feature.flag";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `GET ${config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE}`);
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
 
     return res.render(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE, {
       backLinkUrl: config.RELEVANT_PERIOD_INTERRUPT_PAGE,
@@ -41,7 +41,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `POST ${config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE}`);
     const session = req.session as Session;
 
-    const appData: ApplicationData = getApplicationData(session);
+    const appData: ApplicationData = await getApplicationData(session);
     // Store checked checkbox values in array
     const statements = req.body[RelevantPeriodStatementsKey];
 

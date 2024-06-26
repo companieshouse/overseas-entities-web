@@ -12,7 +12,7 @@ import { createOverseasEntity, updateOverseasEntity } from "../service/overseas.
 import { getUrlWithTransactionIdAndSubmissionId } from "../utils/url";
 import { Session } from "@companieshouse/node-session-handler";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `GET ${config.SOLD_LAND_FILTER_PAGE}`);
 
@@ -20,10 +20,10 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       deleteApplicationData(req.session);
     }
 
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
 
     return res.render(config.SOLD_LAND_FILTER_PAGE, {
-      backLinkUrl: getSoldLandFilterBackLink(),
+      backLinkUrl: await getSoldLandFilterBackLink(),
       templateName: config.SOLD_LAND_FILTER_PAGE,
       [HasSoldLandKey]: appData?.[HasSoldLandKey]
     });

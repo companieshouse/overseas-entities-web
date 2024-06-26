@@ -63,7 +63,7 @@ export const startPaymentsSession = async (
   const createPaymentRequest: CreatePaymentRequest = setPaymentRequest(transactionId, overseasEntityId, baseURL);
 
   // Save info into the session extra data field, including the state used as `nonce` against CSRF.
-  setApplicationData(session, createPaymentRequest, PaymentKey);
+  await setApplicationData(session, createPaymentRequest, PaymentKey);
 
   // Create Payment Api Client by using the `paymentUrl` as baseURL
   const apiClient: ApiClient = createOAuthApiClient(session, paymentUrl);

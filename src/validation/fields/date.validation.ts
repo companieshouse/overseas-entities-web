@@ -93,7 +93,7 @@ const is_trust_still_active_validation = (error_message: string) => [
 ];
 
 const checkAgainstFilingDate = (date_field_id, error_message) =>
-  (value, { req }) => checkDatePreviousToFilingDate(
+  async (value, { req }) => await checkDatePreviousToFilingDate(
     req,
     req.body[date_field_id + "-day"], req.body[date_field_id + "-month"], req.body[date_field_id + "-year"],
     error_message
@@ -112,7 +112,7 @@ const is_end_date_within_filing_period = (date_field_id: string, radio_button_id
 
 const is_date_within_filing_period_trusts = (trustDateContext: dateContext, error_message: string) => [
   body(trustDateContext.dateInput.name)
-    .custom((value, { req }) => checkDatePreviousToFilingDate(
+    .custom(async (value, { req }) => await checkDatePreviousToFilingDate(
       req,
       req.body[trustDateContext.dayInput.name], req.body[trustDateContext.monthInput.name], req.body[trustDateContext.yearInput.name],
       error_message
@@ -158,7 +158,7 @@ export const identity_check_date_validations = [
 ];
 
 export const addNextMadeUpToDateToRequest = async (req: Request, res: Response, next: NextFunction) => {
-  const appData: ApplicationData = getApplicationData(req.session);
+  const appData: ApplicationData = await getApplicationData(req.session);
   if (!appData.entity_number) {
     logger.errorRequest(req, "addNextMadeUpToDateToRequest - Unable to find entity number in application data.");
     return next(new Error(ErrorMessages.UNABLE_TO_RETRIEVE_ENTITY_NUMBER));

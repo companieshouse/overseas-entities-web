@@ -17,9 +17,9 @@ import { addCeasedDateToTemplateOptions } from "../../utils/update/ceased_date_u
 import { CeasedDateKey, HaveDayOfBirthKey } from "../../model/date.model";
 import { ServiceAddressKey, ServiceAddressKeys, UsualResidentialAddressKey, UsualResidentialAddressKeys } from "../../model/address.model";
 
-export const get = (req: Request, res: Response) => {
+export const get = async (req: Request, res: Response) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
-  const appData = getApplicationData(req.session);
+  const appData = await getApplicationData(req.session);
   const index = req.query.index;
 
   let dataToReview = {}, serviceAddress = {}, usual_residential_address = {};
@@ -53,7 +53,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const boiIndex = req.query.index;
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
 
     if (boiIndex !== undefined && appData.beneficial_owners_individual && appData.beneficial_owners_individual[Number(boiIndex)].id === req.body["id"]){
       const boId = appData.beneficial_owners_individual[Number(boiIndex)].id;
@@ -70,7 +70,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         data[HaveDayOfBirthKey] = haveDayOfBirth;
       }
 
-      setApplicationData(req.session, data, BeneficialOwnerIndividualKey);
+      await setApplicationData(req.session, data, BeneficialOwnerIndividualKey);
 
       await saveAndContinue(req, session, false);
     }

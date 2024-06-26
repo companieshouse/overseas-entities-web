@@ -17,11 +17,11 @@ import { IdentityAddressKey, IdentityAddressKeys } from "../model/address.model"
 import { AddressKeys, InputDateKeys } from "../model/data.types.model";
 import { saveAndContinue } from "../utils/save.and.continue";
 
-export const getDueDiligencePage = (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string) => {
+export const getDueDiligencePage = async (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
     const agentData = appData[DueDiligenceKey];
 
     const identityAddress = (agentData?.[IdentityAddressKey]) ? mapDataObjectToFields(agentData[IdentityAddressKey], IdentityAddressKeys, AddressKeys) : {};
@@ -48,10 +48,10 @@ export const postDueDiligencePage = async (req: Request, res: Response, next: Ne
     agentData[IdentityAddressKey] = mapFieldsToDataObject(req.body, IdentityAddressKeys, AddressKeys);
     agentData[IdentityDateKey] = mapFieldsToDataObject(req.body, IdentityDateKeys, InputDateKeys);
 
-    setApplicationData(session, agentData, DueDiligenceKey);
+    await setApplicationData(session, agentData, DueDiligenceKey);
 
     // Empty OverseasEntityDueDiligence object
-    setApplicationData(session, {}, OverseasEntityDueDiligenceKey);
+    await setApplicationData(session, {}, OverseasEntityDueDiligenceKey);
 
     await saveAndContinue(req, session, registrationFlag);
 

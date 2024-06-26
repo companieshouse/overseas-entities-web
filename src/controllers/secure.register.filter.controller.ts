@@ -13,6 +13,6 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   getFilterPage(req, res, next, config.SECURE_REGISTER_FILTER_PAGE, backLinkUrl);
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
-  postFilterPage(req, res, next, config.USE_PAPER_URL, config.INTERRUPT_CARD_URL);
+export const post = async (req: Request, res: Response, next: NextFunction) => {
+  await postFilterPage(req, res, next, config.USE_PAPER_URL, config.INTERRUPT_CARD_URL);
 };

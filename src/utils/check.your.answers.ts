@@ -41,10 +41,10 @@ import { getTodaysDate } from "./date";
 
 export const getDataForReview = async (req: Request, res: Response, next: NextFunction, isNoChangeJourney: boolean) => {
   const session = req.session as Session;
-  const appData = getApplicationData(session);
+  const appData = await getApplicationData(session);
   const hasAnyBosWithTrusteeNocs = isNoChangeJourney ? checkEntityReviewRequiresTrusts(appData) : checkEntityRequiresTrusts(appData);
 
-  const backLinkUrl = getBackLinkUrl(isNoChangeJourney, hasAnyBosWithTrusteeNocs, isRemoveJourney(req));
+  const backLinkUrl = getBackLinkUrl(isNoChangeJourney, hasAnyBosWithTrusteeNocs, await isRemoveJourney(req));
   const templateName = getTemplateName(isNoChangeJourney);
 
   try {
@@ -60,7 +60,7 @@ export const getDataForReview = async (req: Request, res: Response, next: NextFu
 
     }
 
-    if (isRemoveJourney(req)) {
+    if (await isRemoveJourney(req)) {
       return res.render(templateName, {
         journey: JourneyType.remove,
         backLinkUrl: backLinkUrl,
@@ -107,7 +107,7 @@ export const postDataForReview = async (req: Request, res: Response, next: NextF
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const session = req.session as Session;
-    const appData: ApplicationData = getApplicationData(session);
+    const appData: ApplicationData = await getApplicationData(session);
     const noChangeReviewStatement = req.body["no_change_review_statement"];
 
     if (noChangeReviewStatement === "0") {

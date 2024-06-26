@@ -12,12 +12,12 @@ import * as config from "../config";
 import { isActiveFeature } from "../utils/feature.flag";
 import { getUrlWithParamsToPath } from "../utils/url";
 
-export const get = (req: Request, res: Response) => {
-  return getBeneficialOwnerGov(req, res, config.BENEFICIAL_OWNER_GOV_PAGE, getBeneficialOwnerTypeUrl(req));
+export const get = async (req: Request, res: Response) => {
+  return await getBeneficialOwnerGov(req, res, config.BENEFICIAL_OWNER_GOV_PAGE, getBeneficialOwnerTypeUrl(req));
 };
 
-export const getById = (req: Request, res: Response, next: NextFunction) => {
-  return getBeneficialOwnerGovById(req, res, next, config.BENEFICIAL_OWNER_GOV_PAGE, getBeneficialOwnerTypeUrl(req));
+export const getById = async (req: Request, res: Response, next: NextFunction) => {
+  return await getBeneficialOwnerGovById(req, res, next, config.BENEFICIAL_OWNER_GOV_PAGE, getBeneficialOwnerTypeUrl(req));
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {

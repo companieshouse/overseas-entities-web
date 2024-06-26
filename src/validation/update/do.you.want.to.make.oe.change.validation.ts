@@ -3,5 +3,5 @@ import { checkNoChangeStatementSubmission } from "../custom.validation";
 
 export const doYouWantToMakeOeChange = [
   body("no_change")
-    .custom((value, { req }) => checkNoChangeStatementSubmission(value, req))
+    .custom(async(value, { req }) => await checkNoChangeStatementSubmission(value, req))
 ];

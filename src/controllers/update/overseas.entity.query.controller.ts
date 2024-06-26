@@ -13,12 +13,12 @@ import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/compa
 import { retrieveBoAndMoData } from "../../utils/update/beneficial_owners_managing_officers_data_fetch";
 import { isRemoveJourney } from "../../utils/url";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
 
-    if (isRemoveJourney(req)) {
+    if (await isRemoveJourney(req)) {
       return res.render(config.OVERSEAS_ENTITY_QUERY_PAGE, {
         journey: config.JourneyType.remove,
         backLinkUrl: `${config.UPDATE_INTERRUPT_CARD_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`,
@@ -48,15 +48,15 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const companyProfile = await getCompanyProfile(req, entityNumber);
 
     if (!companyProfile) {
-      return renderGetPageWithError(req, res, entityNumber);
+      return await renderGetPageWithError(req, res, entityNumber);
     }
 
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
     if (appData.entity_number !== entityNumber) {
       await addOeToApplicationData(req, appData, entityNumber, companyProfile);
     }
 
-    if (isRemoveJourney(req)) {
+    if (await isRemoveJourney(req)) {
       return res.redirect(`${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
     }
 
@@ -76,10 +76,10 @@ function createEntityNumberError(entityNumber: string): any {
   return errors;
 }
 
-const renderGetPageWithError = (req: Request, res: Response, entityNumber: any) => {
+const renderGetPageWithError = async (req: Request, res: Response, entityNumber: any) => {
   const errors = createEntityNumberError(entityNumber);
 
-  if (isRemoveJourney(req)) {
+  if (await isRemoveJourney(req)) {
     return res.render(config.OVERSEAS_ENTITY_QUERY_PAGE, {
       journey: config.JourneyType.remove,
       backLinkUrl: `${config.UPDATE_INTERRUPT_CARD_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`,

@@ -13,12 +13,12 @@ import { getDueDiligencePage, postDueDiligencePage } from "../utils/due.diligenc
 import { isActiveFeature } from "../utils/feature.flag";
 import { getUrlWithParamsToPath } from "../utils/url";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   let backLinkUrl: string = WHO_IS_MAKING_FILING_URL;
   if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
     backLinkUrl = getUrlWithParamsToPath(WHO_IS_MAKING_FILING_WITH_PARAMS_URL, req);
   }
-  getDueDiligencePage(req, res, next, DUE_DILIGENCE_PAGE, backLinkUrl);
+  await getDueDiligencePage(req, res, next, DUE_DILIGENCE_PAGE, backLinkUrl);
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {

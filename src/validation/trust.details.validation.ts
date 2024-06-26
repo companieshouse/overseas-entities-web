@@ -11,7 +11,7 @@ import { logger } from "../utils/logger";
 import { hasNoBoAssignableToTrust } from "../utils/trusts";
 
 const setIsTrustToBeCeasedFlagOnBody = () => {
-  return (req: Request, _res: Response, next: NextFunction) => {
+  return async (req: Request, _res: Response, next: NextFunction) => {
     try {
       if (req.body["stillInvolved"] === "1") {
         return next();
@@ -21,7 +21,7 @@ const setIsTrustToBeCeasedFlagOnBody = () => {
         return next();
       }
 
-      const appData: ApplicationData = getApplicationData(req.session);
+      const appData: ApplicationData = await getApplicationData(req.session);
 
       const isTrustToBeCeased = req.body["stillInvolved"] === "0" || hasNoBoAssignableToTrust(appData) ? "true" : "false";
       // Create a new object with the updated property
@@ -35,8 +35,8 @@ const setIsTrustToBeCeasedFlagOnBody = () => {
   };
 };
 
-export const checkTrustStillInvolved = (req: Request): boolean => {
-  const appData: ApplicationData = getApplicationData(req.session);
+export const checkTrustStillInvolved = async (req: Request): Promise<boolean> => {
+  const appData: ApplicationData = await getApplicationData(req.session);
 
   const isUpdateOrRemove: boolean = !!appData.entity_number;
 
@@ -55,7 +55,7 @@ export const trustDetails = [
   ...trustCreatedDateValidations,
 
   body("stillInvolved")
-    .if((value, { req }) => checkTrustStillInvolved(req))
+    .if(async(value, { req }) => await checkTrustStillInvolved(req))
     .not().isEmpty().withMessage(ErrorMessages.TRUST_STILL_INVOLVED),
 
   body("beneficialOwnersIds")
@@ -78,7 +78,7 @@ export const reviewTrustDetails = [
     .isLength({ max: 160 }).withMessage(ErrorMessages.MAX_NAME_LENGTH_TRUST),
 
   body("stillInvolved")
-    .if((value, { req }) => checkTrustStillInvolved(req))
+    .if(async(value, { req }) => await checkTrustStillInvolved(req))
     .not().isEmpty().withMessage(ErrorMessages.TRUST_STILL_INVOLVED),
 
   body("beneficialOwnersIds")

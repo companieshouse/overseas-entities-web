@@ -5,9 +5,9 @@ import { OVERSEAS_ENTITY_QUERY_URL } from '../../../config';
 import { getApplicationData } from "../../../utils/application.data";
 import { checkUpdateDueDiligenceDetailsEntered, NavigationErrorMessage } from '../check.condition';
 
-export const hasDueDiligenceDetails = (req: Request, res: Response, next: NextFunction): void => {
+export const hasDueDiligenceDetails = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
     if (!checkUpdateDueDiligenceDetailsEntered(appData)) {
       logger.infoRequest(req, NavigationErrorMessage);
       return res.redirect(OVERSEAS_ENTITY_QUERY_URL);

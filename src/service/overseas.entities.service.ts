@@ -11,10 +11,13 @@ export const createOverseasEntity = async (
   req: Request,
   session: Session,
   transactionId: string,
-  isSaveAndResumeFeatureActive: boolean = false
+  isSaveAndResumeFeatureActive: boolean = false,
+  data?: ApplicationData
 ): Promise<string> => {
 
   logger.infoRequest(req, `Calling 'postOverseasEntity' for transaction id '${transactionId}'`);
+
+  const appData: ApplicationData = typeof data !== "undefined" ? data : await getApplicationData(session);
 
   const response = await makeApiCallWithRetry(
     "overseasEntity",
@@ -22,7 +25,7 @@ export const createOverseasEntity = async (
     req,
     session,
     transactionId,
-    getApplicationData(session),
+    appData,
     isSaveAndResumeFeatureActive
   );
 
@@ -36,8 +39,9 @@ export const createOverseasEntity = async (
   return response.resource.id;
 };
 
-export const updateOverseasEntity = async (req: Request, session: Session) => {
-  const appData = getApplicationData(session);
+export const updateOverseasEntity = async (req: Request, session: Session, data?: ApplicationData) => {
+
+  const appData: ApplicationData = typeof data !== "undefined" ? data : await getApplicationData(session);
 
   const transactionId = appData[Transactionkey] as string;
   const overseasEntityId = appData[OverseasEntityKey] as string;

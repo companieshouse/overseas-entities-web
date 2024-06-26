@@ -6,10 +6,10 @@ import { getApplicationData } from "../../utils/application.data";
 import { OverseasEntityKey, PaymentKey } from "../../model/data.types.model";
 import { CreatePaymentRequest } from "@companieshouse/api-sdk-node/dist/services/payment";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { status, state } = req.query;
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
     const savedPayment = appData[PaymentKey] || {} as CreatePaymentRequest;
 
     logger.infoRequest(req, `Returned state: ${ state }, saved state: ${savedPayment.state}, with status: ${ status }`);

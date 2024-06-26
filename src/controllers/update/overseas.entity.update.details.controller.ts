@@ -28,7 +28,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const session = req.session as Session;
 
-    const appData: ApplicationData = getApplicationData(session);
+    const appData: ApplicationData = await getApplicationData(session);
 
     await fetchBeneficialOwnersPrivateData(appData, req);
 
@@ -68,10 +68,12 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const session = req.session as Session;
     const entityName = req.body[EntityNameKey];
 
-    setApplicationData(session, data, EntityKey);
+    await setApplicationData(session, data, EntityKey);
+
+    const appData: ApplicationData = await getApplicationData(req.session);
 
     setExtraData(req.session, {
-      ...getApplicationData(req.session),
+      ...appData,
       [EntityNameKey]: entityName
     });
 

@@ -14,11 +14,11 @@ import { Trust } from '../../model/trust.model';
 import { Session } from '@companieshouse/node-session-handler';
 import { TrusteeType } from '../../model/trustee.type.model';
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const appData = getApplicationData(req.session as Session);
+    const appData = await getApplicationData(req.session as Session);
     const trust = getTrustInReview(appData) as Trust;
 
     return res.render(UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_PAGE, {
@@ -39,7 +39,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       return res.redirect(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL);
     }
 
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
     setTrusteesAsReviewed(appData, TrusteeType.HISTORICAL);
 
     setExtraData(req.session, appData);

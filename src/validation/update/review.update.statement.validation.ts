@@ -12,9 +12,9 @@ export const statementResolution = [
     .isIn(StatementResolutionTypes).withMessage(ErrorMessages.SELECT_UPDATE_STATEMENT_VALIDATION_RESOLUTION),
 ];
 
-const checkNoChangeReviewStatement = (value: any, req) => {
+const checkNoChangeReviewStatement = async (value: any, req) => {
   if (value === undefined) {
-    if (isRemoveJourney(req)) {
+    if (await isRemoveJourney(req)) {
       throw new Error(ErrorMessages.SELECT_DO_YOU_WANT_TO_MAKE_CHANGES_REMOVE_STATEMENT);
     }
 

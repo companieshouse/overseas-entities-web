@@ -49,7 +49,8 @@ type TrustInvolvedPageProperties = {
     beneficialOwnerUrlDetach: string;
     trustData: CommonTrustData,
     isUpdate: boolean,
-    isReview: boolean
+    isReview: boolean,
+    isRelevantPeriod: boolean
   } & TrustWhoIsInvolved,
   formData?: TrustWhoIsInvolvedForm,
   errors?: FormattedValidationErrors,
@@ -67,6 +68,7 @@ const getPageProperties = (
   let trustId;
   let individualTrusteeData;
   let formerTrusteeData;
+  let isRelevantPeriod;
 
   if (isReview) {
     const trustInReview = getTrustInReview(appData);
@@ -79,10 +81,16 @@ const getPageProperties = (
       ...getFormerTrusteesFromTrust(appData, trustId, isReview)
         .map(mapFormerTrusteeFromSessionToPage)
     ];
+
   } else {
     trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
     individualTrusteeData = getIndividualTrusteesFromTrust(appData, trustId, isReview);
     formerTrusteeData = getFormerTrusteesFromTrust(appData, trustId, isReview);
+    if (isUpdate) {
+      isRelevantPeriod = (appData.update?.change_bo_relevant_period === "CHANGE_BO_RELEVANT_PERIOD" ||
+        appData.update?.trustee_involved_relevant_period === "TRUSTEE_INVOLVED_RELEVANT_PERIOD" ||
+        appData.update?.change_beneficiary_relevant_period === "CHANGE_BENEFICIARY_RELEVANT_PERIOD");
+    }
   }
 
   return {
@@ -102,7 +110,8 @@ const getPageProperties = (
       checkYourAnswersUrl: getCheckYourAnswersUrl(isUpdate),
       beneficialOwnerUrlDetach: `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_BENEFICIAL_OWNER_DETACH_URL}`,
       isUpdate: isUpdate,
-      isReview: isReview
+      isReview: isReview,
+      isRelevantPeriod: isRelevantPeriod,
     },
     formData,
     errors,

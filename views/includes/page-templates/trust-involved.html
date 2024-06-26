@@ -1,3 +1,4 @@
+{% set feature_flag_relevant_period = OE_CONFIGS.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD %}
 {% block content %}
 
   <div class="govuk-grid-row">
@@ -166,7 +167,7 @@
         {{ govukSummaryList({
           rows: addedLegalEntityTrustees
         }) }}
-        
+
       {% endif %}
 
       <form class="form" method="post">
@@ -211,6 +212,49 @@
           ]
         } %}
         {% include "includes/inputs/radio-input.html" %}
+
+
+        {% if (feature_flag_relevant_period === "true" and isRelevantPeriod) %}
+
+          <h4 class="govuk-heading-m">For the pre-registration period</h4>
+          <div class="govuk-inset-text">
+            <p>Based on the pre-registration statement you provided earlier in this service, you also need to tell us about any beneficiaries from this period, that the entity has not already told us about.</p>
+            {% include "includes/page-templates/relevant-period.html" %}
+          </div>
+
+
+          {% set fieldParam = {
+            name: 'typeOfTrustee',
+            label: 'Which type of individual or entity do you want to add to this trust?',
+            error: errors.typeOfTrustee,
+            items: [
+              {
+              value: pageData.trusteeType.HISTORICAL,
+              text: "Individual beneficiary",
+              hint: {
+                text: "This is an individual who was a beneficiary of this trust during the pre-registration period."
+              },
+              checked: typeOfTrustee == pageData.trusteeType.HISTORICAL,
+              attributes: {
+                "data-event-id": "individual-radio-option"
+              }
+              }, {
+              value: pageData.trusteeType.INDIVIDUAL,
+              text: "Legal entity beneficiary",
+              hint: {
+                text: "This is a legal entity that was a beneficiary of this trust during the pre-registration period. You do not need to tell us about government or public authority beneficiaries."
+              },
+              checked: typeOfTrustee == pageData.trusteeType.INDIVIDUAL,
+              attributes: {
+                "data-event-id": "legal-entity-radio-option"
+              }
+              }
+            ]
+          } %}
+          {% include "includes/inputs/radio-input.html" %}
+        {% endif %}
+
+
 
         <div class="govuk-button-group">
           {{ govukButton({

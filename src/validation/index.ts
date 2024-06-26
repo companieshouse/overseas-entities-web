@@ -37,6 +37,8 @@ import { reviewUpdateStatementChange, statementResolution } from "./update/revie
 import { removeSoldAllLandFilter } from "./update/remove.sold.all.land.filter.validation";
 import { removeIsEntityRegisteredOwner } from "./update/remove.is.entity.registered.owner.validation";
 import { removeConfirmStatement } from "./update/remove.confirm.statement.validation";
+import { relevantPeriodOwnedLandFilter } from "./relevant.period.owned.land.validation";
+import { relevantPeriodCombinedStatements } from "./relevant.period.combined.statements.validation";
 export const validator = {
   soldLandFilter,
   secureRegisterFilter,
@@ -89,5 +91,7 @@ export const validator = {
   statementResolution,
   removeSoldAllLandFilter,
   removeIsEntityRegisteredOwner,
-  removeConfirmStatement
+  removeConfirmStatement,
+  relevantPeriodOwnedLandFilter,
+  relevantPeriodCombinedStatements
 };

@@ -70,6 +70,7 @@ export enum ErrorMessages {
   NO_ACTIVE_MO = "There are no active managing officers.",
   ADDED_OR_CEASED_BO = "You have added or ceased a beneficial owner as part of this update statement.",
   NOT_ADDED_OR_CEASED_BO = "You have not added or ceased a beneficial owner as part of this update statement.",
+  RELEVANT_PERIOD_COMBINED_STATEMENTS_CHECKBOX = "Select the relevant statements for the pre-registration period, or select ‘None of these’.",
 
   // Trusts
   TRUST_DATA_EMPTY = "Paste the trust information from the Excel document into the box",
@@ -79,6 +80,7 @@ export enum ErrorMessages {
   TRUST_BO_CHECKBOX = "At least one listed beneficial owner must be selected",
   TRUST_INDIVIDUAL_HOME_ADDRESS_LENGTH = "Individual home address must be 50 characters or less",
   TRUST_INDIVIDUAL_CORRESPONDENCE_ADDRESS_LENGTH = "Individual correspondence address must be 50 characters or less",
+  TRUST_INDIVIDUAL_STILL_INVOLVED = " Select yes if they are still involved in the trust",
   TRUST_CORPORATE_REGISTERED_OFFICE_ADDRESS_LENGTH = "Corporate registered office address must be 50 characters or less",
   TRUST_CORPORATE_CORRESPONDENCE_ADDRESS_LENGTH = "Corporate correspondence address must be 50 characters or less",
   TRUST_INVOLVED_INVALID = 'Select which type of individual or entity you want to add',
@@ -235,6 +237,7 @@ export enum ErrorMessages {
   SELECT_IF_REMOVE_SOLD_ALL_LAND_FILTER = "Select yes if the overseas entity has disposed of all relevant property or land in the UK",
   SELECT_REMOVE_DO_YOU_WANT_TO_MAKE_OE_CHANGE = "Select yes if you need to make any changes to this overseas entity before it is removed",
   SELECT_TO_CONFIRM_REMOVE_STATEMENT = "Select the removal statement",
+  SELECT_RELEVANT_OWNED_LAND_FILTER = "Select yes if the overseas entity was the registered owner of UK land during the pre-registration period.",
 
   // MAX Lengths
   MAX_FIRST_NAME_LENGTH = "First name must be 50 characters or less",

@@ -117,6 +117,9 @@ export const CHANGE_LINK = "Change";
 export const CHANGE_LINK_NAME_PRESENTER = "Full name - who can we contact about this application";
 export const DATA_EVENT_ID = "data-event-id";
 export const PAGE_TITLE_ERROR = "Error:";
+export const CSRF_TOKEN_ERROR = "CSRF token mismatch";
+export const CSRF_ERROR_PAGE_TEXT = "We have not been able to save the information you submitted on the previous screen.";
+export const CSRF_ERROR_PAGE_HEADING = "Sorry, something went wrong";
 export const PAGE_NOT_FOUND_TEXT = "Page not found";
 export const UPDATE_OE_MSG_ERROR = "Something went wrong with updating Overseas Entity";
 export const CONTINUE_BUTTON_TEXT = "Continue";
@@ -153,6 +156,7 @@ export const TRUST_SUMMARY_HEADING = "Trusts associated with the overseas entity
 export const TRUST_NOT_ASSOCIATED_WITH_BENEFICIAL_OWNER_TEXT = "This trust is no longer associated with a beneficial owner";
 export const TRUST_CEASED_DATE_TEXT = "When did this trust stop being associated with the overseas entity";
 export const TRUST_SELECT_TRUSTEES_TEXT = "Which of the overseas entity’s beneficial owners are trustees of this trust";
+export const TRUST_ENTER_CEASED_DATE = "Enter the date the trust stopped being associated with this overseas entity";
 
 export const CHANGE_LINK_INDIVIDUAL_BO_LABEL = "Individual beneficial owner ";
 export const CHANGE_LINK_INDIVIDUAL_BO_FIRST_NAME = CHANGE_LINK_INDIVIDUAL_BO_LABEL + "Ivan Drago - first name";
@@ -227,7 +231,7 @@ export const CONTINUE_SAVED_FILING_PAGE_TITLE = "Do you want to continue with a 
 export const REVIEWED_BENEFICIAL_OWNER_MANAGING_OFFICER_TABLE_HEADING = "What you have reviewed";
 export const NEWLY_ADDED_BENEFICIAL_OWNERS_SUMMARY_TABLE_HEADING = "What you have added in this update";
 export const UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE_TITLE = "You're about to review overseas entity information";
-export const UPDATE_DO_YOU_WANT_TO_CHANGE_OE_TITLE = "Do you need to make any changes to this overseas entity?";
+export const UPDATE_DO_YOU_WANT_TO_CHANGE_OE_TITLE = "Do you need to make any changes to this overseas entity for the update period?";
 export const REMOVE_DO_YOU_WANT_TO_CHANGE_OE_TITLE = "Do you need to make any changes to this overseas entity before it is removed?";
 export const UPDATE_DO_YOU_WANT_TO_CHANGE_OE_YES_TEXT = "Yes, I need to make changes";
 export const UPDATE_DO_YOU_WANT_TO_CHANGE_OE_NO_TEXT = "No, I do not need to make changes";
@@ -262,6 +266,8 @@ export const RELEVANT_PERIOD_TRUSTEE_INVOLVED = "at least one person was a regis
 export const RELEVANT_PERIOD_NO_TRUSTEE_INVOLVED = "anyone was a registrable beneficial owner due to being a trustee of a trust";
 export const RELEVANT_PERIOD_CHANGE_BENEFICIARY = "at least one person became or ceased to be a beneficiary of a trust";
 export const RELEVANT_PERIOD_NO_CHANGE_BENEFICIARY = "anyone became or ceased to be a beneficiary of a trust";
+export const RELEVANT_PERIOD_INDIVIDUAL_BENEFICIAL_OWNER = "Individual beneficial owner";
+export const SELECT_IF_REGISTER_DURING_PRE_REG_PERIOD = "Select yes if the overseas entity was the registered owner of UK land during the pre-registration period.";
 
 // Remove journey
 export const REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE = "Has the overseas entity disposed of all relevant property or land in the UK?";
@@ -293,3 +299,5 @@ export const UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_TITLE = "Review former benefi
 export const UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_FORMER_BO_TITLE = "Tell us about the former beneficial owner";
 export const UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_TABLE_HEADING = "<th scope=\"col\" class=\"govuk-table__header\">Name</th>";
 export const UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_TITLE = "Tell us about the legal entity";
+export const BACK_BUTTON_CLASS = "govuk-back-link";
+

@@ -1,6 +1,15 @@
-{% set start_date = "28 February 2022" %}
 {% import "includes/date-macros.html" as dateMacros %}
-{% set registration_date = dateMacros.formatDate(dateOfCreation["day"], dateOfCreation["month"], dateOfCreation["year"]) %}
+{% set start_date = "28 February 2022" %}
+
+{% set start_date_YYYYMMDD = "20220228" %}
+{% set end_date_YYYYMMDD = "20230131" %}
+{% set date_of_creation_YYYYMMDD = update.date_of_creation["year"] ~ update.date_of_creation["month"] ~ update.date_of_creation["day"] %}
+
+{% if date_of_creation_YYYYMMDD >= start_date_YYYYMMDD and date_of_creation_YYYYMMDD <= end_date_YYYYMMDD %}
+    {% set registration_date = dateMacros.formatDate(update.date_of_creation["day"], update.date_of_creation["month"], update.date_of_creation["year"]) %}
+{% else %}
+    {% set registration_date = "31 January 2023" %}
+{% endif %}
 
 <p class="govuk-body-m">
     The pre-registration period for <strong>{{ entity_name }}</strong> is between <strong>{{ start_date }}</strong> and <strong>{{ registration_date | trim }}.</strong>

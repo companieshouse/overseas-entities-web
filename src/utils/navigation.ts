@@ -6,10 +6,13 @@ import { isActiveFeature } from "./feature.flag";
 import { getUrlWithParamsToPath, isRemoveJourney } from "./url";
 import { Request } from "express";
 
-export const getEntityBackLink = (data: ApplicationData): string => {
-  return data?.who_is_registering === WhoIsRegisteringType.AGENT
-    ? config.DUE_DILIGENCE_URL
-    : config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL;
+export const getEntityBackLink = (data: ApplicationData, req: Request): string => {
+  let backLinkUrl: string = data?.who_is_registering === WhoIsRegisteringType.AGENT ? config.DUE_DILIGENCE_URL : config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL;
+  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+    backLinkUrl = backLinkUrl === config.DUE_DILIGENCE_URL ? config.DUE_DILIGENCE_WITH_PARAMS_URL : config.OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_PARAMS_URL;
+    return getUrlWithParamsToPath(backLinkUrl, req);
+  }
+  return backLinkUrl;
 };
 
 export const getSoldLandFilterBackLink = (): string => {
@@ -103,7 +106,7 @@ export const NAVIGATION: Navigation = {
     nextPage: [config.UPDATE_FILING_DATE_PAGE, config.PRESENTER_URL, config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE]
   },
   [config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL]: {
-    currentPage: config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL,
+    currentPage: config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE,
     previousPage: () => config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
     nextPage: [config.RELEVANT_PERIOD_INTERRUPT_PAGE]
   },
@@ -118,7 +121,7 @@ export const NAVIGATION: Navigation = {
     nextPage: [config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL]
   },
   [config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL]: {
-    currentPage: config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL,
+    currentPage: config.RELEVANT_PERIOD_REVIEW_STATEMENTS_PAGE,
     previousPage: () => config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL,
     nextPage: [config.UPDATE_FILING_DATE_URL]
   },

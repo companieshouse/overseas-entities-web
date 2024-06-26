@@ -24,9 +24,9 @@ const mapLegalEntityToSession = (
     ch_references: trustee?.ch_references,
     type: formData.roleWithinTrust,
     name: formData.legalEntityName,
-    date_became_interested_person_day: formData.interestedPersonStartDateDay,
-    date_became_interested_person_month: formData.interestedPersonStartDateMonth,
-    date_became_interested_person_year: formData.interestedPersonStartDateYear,
+    date_became_interested_person_day: formData.dateBecameIPDay,
+    date_became_interested_person_month: formData.dateBecameIPMonth,
+    date_became_interested_person_year: formData.dateBecameIPYear,
     ro_address_premises: formData.principal_address_property_name_number,
     ro_address_line_1: formData.principal_address_line_1,
     ro_address_line_2: formData.principal_address_line_2,
@@ -59,9 +59,9 @@ const mapLegalEntityToSession = (
   let interestedPersonData = {};
   if (formData.roleWithinTrust === RoleWithinTrustType.INTERESTED_PERSON){
     interestedPersonData = {
-      date_became_interested_person_day: formData.interestedPersonStartDateDay,
-      date_became_interested_person_month: formData.interestedPersonStartDateMonth,
-      date_became_interested_person_year: formData.interestedPersonStartDateYear,
+      date_became_interested_person_day: formData.dateBecameIPDay,
+      date_became_interested_person_month: formData.dateBecameIPMonth,
+      date_became_interested_person_year: formData.dateBecameIPYear,
     };
   }
 
@@ -153,9 +153,9 @@ const mapLegalEntityTrusteeFromSessionToPage = (
   if (trustee.type === RoleWithinTrustType.INTERESTED_PERSON) {
     return {
       ...data,
-      interestedPersonStartDateDay: trustee.date_became_interested_person_day,
-      interestedPersonStartDateMonth: trustee.date_became_interested_person_month,
-      interestedPersonStartDateYear: trustee.date_became_interested_person_year,
+      dateBecameIPDay: trustee.date_became_interested_person_day,
+      dateBecameIPMonth: trustee.date_became_interested_person_month,
+      dateBecameIPYear: trustee.date_became_interested_person_year,
       principal_address_property_name_number: trustee.ro_address_premises,
       stillInvolved: stillInvolvedInTrust,
     } as Page.TrustLegalEntityForm;

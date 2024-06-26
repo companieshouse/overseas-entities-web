@@ -9,12 +9,17 @@ import {
   DUE_DILIGENCE_WITH_PARAMS_URL,
   FEATURE_FLAG_ENABLE_REDIS_REMOVAL,
   OVERSEAS_ENTITY_DUE_DILIGENCE_URL,
-  OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_PARAMS_URL
+  OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_PARAMS_URL,
+  PRESENTER_WITH_PARAMS_URL
 } from "../config";
 import { getWhoIsFiling, postWhoIsFiling } from "../utils/who.is.making.filing";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
-  getWhoIsFiling(req, res, next, WHO_IS_MAKING_FILING_PAGE, PRESENTER_URL);
+  let backLinkUrl: string = PRESENTER_URL;
+  if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+    backLinkUrl = getUrlWithParamsToPath(PRESENTER_WITH_PARAMS_URL, req);
+  }
+  getWhoIsFiling(req, res, next, WHO_IS_MAKING_FILING_PAGE, backLinkUrl);
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {

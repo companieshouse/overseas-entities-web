@@ -24,7 +24,7 @@ import {
   checkTrustCeasedDate,
   checkDateIsBeforeOrOnOtherDate,
   checkFilingDate,
-  checkTrustLegalEntityCeasedDate,
+  checkTrusteeCeasedDate,
 } from "../custom.validation";
 import { ErrorMessages } from "../error.messages";
 import { conditionalDateValidations, conditionalHistoricalBODateValidations, dateContext, dateContextWithCondition, dateValidations } from "./helper/date.validation.helper";
@@ -386,7 +386,7 @@ const historicalBOEndDateContext: dateContext = {
   },
 };
 
-const legalEntityCeasedDateValidationsContext: dateContextWithCondition = {
+const trusteeCeasedDateValidationsContext: dateContextWithCondition = {
   dayInput: {
     name: "ceasedDateDay",
     errors: {
@@ -412,7 +412,7 @@ const legalEntityCeasedDateValidationsContext: dateContextWithCondition = {
   },
   dateInput: {
     name: "ceasedDate",
-    callBack: checkTrustLegalEntityCeasedDate,
+    callBack: checkTrusteeCeasedDate,
   },
   condition: {
     elementName: "stillInvolved",
@@ -443,8 +443,47 @@ export const trustCeasedDateValidations = [
     ))
 ];
 
+export const historicalBeneficialOwnerStartDate = dateValidations(historicalBOStartDateContext);
+
+export const historicalBeneficialOwnerEndDate = conditionalHistoricalBODateValidations(historicalBOEndDateConditionalContext);
+
+export const dateBecameIPLegalEntityBeneficialOwner = conditionalDateValidations(dateBecameIPLegalEntityBeneficialOwnerContext);
+
+export const filingPeriodTrustStartDateValidations = is_date_within_filing_period_trusts(historicalBOStartDateContext, ErrorMessages.START_DATE_BEFORE_FILING_DATE);
+
+export const filingPeriodTrustCeaseDateValidations = is_date_within_filing_period_trusts(historicalBOEndDateContext, ErrorMessages.CEASED_DATE_BEFORE_FILING_DATE);
+
+export const trustIndividualCeasedDateValidations = [
+  ...conditionalDateValidations(trusteeCeasedDateValidationsContext),
+
+  body("ceasedDate")
+    .if((value, { req }) => {
+      // check they are on an update or remove journey
+      // entity_number should have been populated by time they reach trust screens
+      const appData: ApplicationData = getApplicationData(req.session);
+      return !!appData.entity_number; // !! = truthy check
+    })
+    .if(body("stillInvolved").equals("0"))
+    .if(body("ceasedDateDay").notEmpty({ ignore_whitespace: true }))
+    .if(body("ceasedDateMonth").notEmpty({ ignore_whitespace: true }))
+    .if(body("ceasedDateYear").notEmpty({ ignore_whitespace: true }))
+    .custom((value, { req }) => {
+      checkCeasedDateOnOrAfterDateOfBirth(req, ErrorMessages.DATE_BEFORE_BIRTH_DATE_CEASED_TRUSTEE);
+
+      checkCeasedDateOnOrAfterTrustCreationDate(req, ErrorMessages.DATE_BEFORE_TRUST_CREATION_DATE_CEASED_TRUSTEE);
+
+      if (req.body["roleWithinTrust"] === RoleWithinTrustType.INTERESTED_PERSON
+        && req.body["dateBecameIPDay"]
+        && req.body["dateBecameIPMonth"]
+        && req.body["dateBecameIPYear"]) {
+        checkCeasedDateOnOrAfterInterestedPersonStartDate(req, ErrorMessages.DATE_BEFORE_INTERESTED_PERSON_START_DATE_CEASED_TRUSTEE);
+      }
+      return true;
+    })
+];
+
 export const trusteeLegalEntityCeasedDateValidations = [
-  ...conditionalDateValidations(legalEntityCeasedDateValidationsContext),
+  ...conditionalDateValidations(trusteeCeasedDateValidationsContext),
 
   body("ceasedDate")
     .if(body("stillInvolved").equals("0"))
@@ -454,9 +493,9 @@ export const trusteeLegalEntityCeasedDateValidations = [
     .custom((value, { req }) => {
       checkCeasedDateOnOrAfterTrustCreationDate(req, ErrorMessages.DATE_BEFORE_TRUST_CREATION_DATE_CEASED_TRUSTEE);
       if (req.body["roleWithinTrust"] === RoleWithinTrustType.INTERESTED_PERSON
-      && req.body["interestedPersonStartDateDay"]
-      && req.body["interestedPersonStartDateMonth"]
-      && req.body["interestedPersonStartDateYear"]) {
+      && req.body["dateBecameIPDay"]
+      && req.body["dateBecameIPMonth"]
+      && req.body["dateBecameIPYear"]) {
         checkCeasedDateOnOrAfterInterestedPersonStartDate(req, ErrorMessages.DATE_BEFORE_INTERESTED_PERSON_START_DATE_CEASED_TRUSTEE);
       }
       return true;
@@ -466,7 +505,7 @@ export const trusteeLegalEntityCeasedDateValidations = [
 const checkCeasedDateOnOrAfterInterestedPersonStartDate = (req, errorMessage: ErrorMessages) => {
   checkFirstDateOnOrAfterSecondDate(
     req.body["ceasedDateDay"], req.body["ceasedDateMonth"], req.body["ceasedDateYear"],
-    req.body["interestedPersonStartDateDay"], req.body["interestedPersonStartDateMonth"], req.body["interestedPersonStartDateYear"],
+    req.body["dateBecameIPDay"], req.body["dateBecameIPMonth"], req.body["dateBecameIPYear"],
     errorMessage);
 };
 
@@ -482,6 +521,13 @@ const checkCeasedDateOnOrAfterTrustCreationDate = (req, errorMessage: ErrorMessa
   } else {
     throw createAndLogErrorRequest(req, "Unable to find trust for ceased date validation");
   }
+};
+
+const checkCeasedDateOnOrAfterDateOfBirth = (req, errorMessage: ErrorMessages) => {
+  checkFirstDateOnOrAfterSecondDate(
+    req.body["ceasedDateDay"], req.body["ceasedDateMonth"], req.body["ceasedDateYear"],
+    req.body["dateOfBirthDay"], req.body["dateOfBirthMonth"], req.body["dateOfBirthYear"],
+    errorMessage);
 };
 
 /**
@@ -509,13 +555,3 @@ const getTrust = (appData: ApplicationData, trustId?: string): Trust | undefined
 const isEmpty = (obj) => {
   return Object.keys(obj).length === 0;
 };
-
-export const historicalBeneficialOwnerStartDate = dateValidations(historicalBOStartDateContext);
-
-export const historicalBeneficialOwnerEndDate = conditionalHistoricalBODateValidations(historicalBOEndDateConditionalContext);
-
-export const dateBecameIPLegalEntityBeneficialOwner = conditionalDateValidations(dateBecameIPLegalEntityBeneficialOwnerContext);
-
-export const filingPeriodTrustStartDateValidations = is_date_within_filing_period_trusts(historicalBOStartDateContext, ErrorMessages.START_DATE_BEFORE_FILING_DATE);
-
-export const filingPeriodTrustCeaseDateValidations = is_date_within_filing_period_trusts(historicalBOEndDateContext, ErrorMessages.CEASED_DATE_BEFORE_FILING_DATE);

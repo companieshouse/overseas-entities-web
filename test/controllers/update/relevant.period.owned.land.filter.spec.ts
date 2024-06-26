@@ -21,7 +21,9 @@ import {
   SERVICE_UNAVAILABLE,
   RELEVANT_PERIOD_OWNED_LAND,
   PAGE_NOT_FOUND_TEXT,
-  RELEVANT_PERIOD
+  RELEVANT_PERIOD,
+  ERROR_LIST,
+  SELECT_IF_REGISTER_DURING_PRE_REG_PERIOD
 } from "../../__mocks__/text.mock";
 import { APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock";
 import { getApplicationData } from "../../../src/utils/application.data";
@@ -31,7 +33,7 @@ import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/ha
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { yesNoResponse } from "../../../src/model/data.types.model";
-import { OwnedLandKey } from "../../../src/model/update.type.model";
+import { OwnedLandKey, UpdateKey } from "../../../src/model/update.type.model";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockHasUpdatePresenter = hasUpdatePresenter as jest.Mock;
@@ -99,6 +101,32 @@ describe("owned land filter page tests", () => {
       expect(resp.status).toEqual(404);
       expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
     });
+    test(`renders the ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE} page with banner when registration date is equal to 29 February 2022.`, async () => {
+      mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK, [UpdateKey]: { date_of_creation: { day: "29", month: "02", year: "2022" } } });
+      const resp = await request(app).get(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toMatch(/29\s+February\s+2022/i);
+    });
+    test(`renders the ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE} page with banner when registration date is equal to 27 February 2022, but 31 January is displayed.`, async () => {
+      mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK, [UpdateKey]: { date_of_creation: { day: "22", month: "02", year: "2022" } } });
+      const resp = await request(app).get(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toMatch(/31\s+January\s+2023/i);
+      expect(resp.text).not.toMatch(/27\s+February\s+2022/i);
+    });
+    test(`renders the ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE} page page with banner when registration date is equal to 30 January 2023.`, async () => {
+      mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK, [UpdateKey]: { date_of_creation: { day: "30", month: "01", year: "2023" } } });
+      const resp = await request(app).get(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toMatch(/30\s+January\s+2023/i);
+    });
+    test(`renders the ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE} page page with banner when registration date is equal to 1 February 2023, but 31 January is displayed`, async () => {
+      mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK, [UpdateKey]: { date_of_creation: { day: "01", month: "02", year: "2023" } } });
+      const resp = await request(app).get(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toMatch(/31\s+January\s+2023/i);
+      expect(resp.text).not.toMatch(/2\s+February\s+2023/i);
+    });
   });
 
   describe("POST tests", () => {
@@ -117,6 +145,30 @@ describe("owned land filter page tests", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.UPDATE_FILING_DATE_URL);
+    });
+    test(`renders the ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL} page with error when no radios are selected`, async () => {
+      const resp = await request(app)
+        .post(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL)
+        .send({ owned_land_relevant_period: "" });
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ERROR_LIST);
+      expect(resp.text).toContain(SELECT_IF_REGISTER_DURING_PRE_REG_PERIOD);
+    });
+    test(`redirect to the ${config.UPDATE_FILING_DATE_URL} page when negative invalid value found`, async () => {
+      const resp = await request(app)
+        .post(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL)
+        .send({ owned_land_relevant_period: "-1" });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.UPDATE_FILING_DATE_URL);
+    });
+    test("catch error when validating the page", async () => {
+      mockGetApplicationData.mockImplementation( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      const resp = await request(app).post(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
   });
 });

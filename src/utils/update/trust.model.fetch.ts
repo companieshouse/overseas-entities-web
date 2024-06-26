@@ -121,6 +121,13 @@ export const mapIndividualTrusteeData = (trustee: IndividualTrusteeData, trust: 
     mapHistoricalIndividualTrusteeData(trustee, trust);
     return;
   }
+
+  // This needs to be done after checking (and mapping) an historical individual trustee, as they will have ceased dates. It's
+  // enough to simply check for the presence of a ceased date, since future dates cannot be entered in this field
+  if (trustee.ceasedDate) {
+    return;
+  }
+
   const dateOfBirth = mapInputDate(trustee.dateOfBirth);
   const nationalities = splitNationalities(trustee.nationality);
 
@@ -208,6 +215,13 @@ export const mapCorporateTrusteeData = (trustee: CorporateTrusteeData, trust: Tr
     mapHistoricalCorporateTrusteeData(trustee, trust);
     return;
   }
+
+  // This needs to be done after checking (and mapping) an historical corporate trustee, as they will have ceased dates. It's
+  // enough to simply check for the presence of a ceased date, since future dates cannot be entered in this field
+  if (trustee.ceasedDate) {
+    return;
+  }
+
   const appointmentDate = mapInputDate(trustee.appointmentDate);
 
   const corporateTrustee: TrustCorporate = {
@@ -313,7 +327,7 @@ export const mapTrustLink = (trustLink: TrustLinkData, appData: ApplicationData)
 
 const linkBoToTrust = (beneficialOwner: BeneficialOwnerIndividual | BeneficialOwnerOther, trust: Trust, boType: string) => {
   logger.debug(`Linking ${boType} ${beneficialOwner.ch_reference} to trust ${trust.ch_reference}`);
-  if (beneficialOwner.trust_ids === undefined) {
+  if (!beneficialOwner.trust_ids) {
     beneficialOwner.trust_ids = [];
   }
   beneficialOwner.trust_ids.push(trust.trust_id);

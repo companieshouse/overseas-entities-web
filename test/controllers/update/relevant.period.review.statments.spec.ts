@@ -59,6 +59,7 @@ describe("owned review statements page tests", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
+
   describe("GET tests", () => {
     test(`renders the ${config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL} page with all statements selected`, async () => {
       mockGetApplicationData.mockReturnValue( { ...APPLICATION_DATA_MOCK,

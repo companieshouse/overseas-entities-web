@@ -392,7 +392,7 @@ export const checkHistoricalBOEndDate = (dayStr: string = "", monthStr: string =
   return true;
 };
 
-export const checkTrustLegalEntityCeasedDate = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+export const checkTrusteeCeasedDate = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   const dateFieldErrors = {
     completelyEmptyDateError: ErrorMessages.ENTER_DATE_OF_CEASED_TRUSTEE,
     noDayAndMonthError: ErrorMessages.DAY_AND_MONTH_OF_CEASED_TRUSTEE,

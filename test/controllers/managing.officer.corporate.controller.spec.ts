@@ -55,7 +55,8 @@ import {
   PUBLIC_REGISTER_HINT_TEXT,
   SAVE_AND_CONTINUE_BUTTON_TEXT,
   SERVICE_UNAVAILABLE,
-  SHOW_INFORMATION_ON_PUBLIC_REGISTER
+  SHOW_INFORMATION_ON_PUBLIC_REGISTER,
+  BACK_BUTTON_CLASS
 } from "../__mocks__/text.mock";
 import {
   getApplicationData,
@@ -664,7 +665,8 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).toContain(ErrorMessages.EMAIL);
       expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_URL); // Navigation back/next poimts to url woithout params
+      expect(resp.text).toContain(NEXT_PAGE_URL);
+      expect(resp.text).toContain(BACK_BUTTON_CLASS);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
@@ -685,7 +687,8 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.SELECT_IF_REGISTER_IN_COUNTRY_FORMED_IN);
       expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NAME);
       expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_URL); // Navigation back/next poimts to url woithout params
+      expect(resp.text).toContain(NEXT_PAGE_URL);
+      expect(resp.text).toContain(BACK_BUTTON_CLASS);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 

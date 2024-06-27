@@ -40,7 +40,7 @@ import {
   OVERSEAS_ENTITY_DUE_DILIGENCE_IDENTITY_DATE_LABEL_TEXT,
   OVERSEAS_ENTITY_DUE_DILIGENCE_PARTNER_NAME_LABEL_TEXT,
   OVERSEAS_ENTITY_DUE_DILIGENCE_SUPERVISORY_NAME_LABEL_TEXT,
-  ALL_THE_OTHER_INFORMATION_ON_PUBLIC_REGISTER,
+  ALL_THE_OTHER_INFORMATION_ON_PUBLIC_REGISTER, BACK_BUTTON_CLASS,
 } from "../__mocks__/text.mock";
 import { ApplicationDataType } from '../../src/model';
 import { EMAIL_ADDRESS } from "../__mocks__/session.mock";
@@ -774,7 +774,8 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.SUPERVISORY_NAME);
       expect(resp.text).not.toContain(ErrorMessages.PARTNER_NAME);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).toContain(WHO_IS_MAKING_FILING_URL);
+      expect(resp.text).toContain(NEXT_PAGE_URL);
+      expect(resp.text).toContain(BACK_BUTTON_CLASS);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 

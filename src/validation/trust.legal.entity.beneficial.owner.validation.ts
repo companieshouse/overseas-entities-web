@@ -76,7 +76,7 @@ export const trustLegalEntityBeneficialOwnerValidator = [
       const appData: ApplicationData = getApplicationData(req.session);
       return !!appData.entity_number; // !! = truthy check
     })
-    .not().isEmpty().withMessage(ErrorMessages.TRUST_LEGAL_ENTITY_STILL_INVOLVED),
+    .not().isEmpty().withMessage(ErrorMessages.TRUSTEE_STILL_INVOLVED),
   ...trusteeLegalEntityCeasedDateValidations
 ];
 

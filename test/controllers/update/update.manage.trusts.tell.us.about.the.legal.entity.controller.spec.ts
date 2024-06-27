@@ -630,7 +630,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
           ceasedDateMonth: '',
           ceasedDateYear: ''
         },
-        ErrorMessages.TRUST_LEGAL_ENTITY_STILL_INVOLVED
+        ErrorMessages.TRUSTEE_STILL_INVOLVED
       ], [
         'ceased date is not provided',
         {

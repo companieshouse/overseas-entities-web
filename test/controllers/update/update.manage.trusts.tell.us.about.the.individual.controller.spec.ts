@@ -553,7 +553,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
           ceasedDateMonth: '',
           ceasedDateYear: ''
         },
-        ErrorMessages.TRUST_INDIVIDUAL_STILL_INVOLVED
+        ErrorMessages.TRUSTEE_STILL_INVOLVED
       ], [
         'ceased date is not provided',
         {

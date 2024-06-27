@@ -58,7 +58,7 @@ export const trustIndividualBeneficialOwner = [
       const appData: ApplicationData = getApplicationData(req.session);
       return !!appData.entity_number; // !! = truthy check
     })
-    .not().isEmpty().withMessage(ErrorMessages.TRUST_INDIVIDUAL_STILL_INVOLVED),
+    .not().isEmpty().withMessage(ErrorMessages.TRUSTEE_STILL_INVOLVED),
 
   ...trustIndividualCeasedDateValidations
 ];

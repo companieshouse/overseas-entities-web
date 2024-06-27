@@ -68,7 +68,9 @@ const mapLegalEntityToSession = (
   let stillInvolved: string | null = (formData.stillInvolved === "1") ? "Yes" : "No";
 
   // If a boolean value isn't receieved from the web form (it could be null or undefined, e.g. if question not displayed), need to set null
-  if (!formData.stillInvolved) { stillInvolved = null; }
+  if (!formData.stillInvolved) {
+    stillInvolved = null;
+  }
 
   if (formData.is_service_address_same_as_principal_address?.toString() === "0") {
     return {

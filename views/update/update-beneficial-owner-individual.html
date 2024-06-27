@@ -12,5 +12,8 @@
 
 {% block content %}
   {% set removePathURL = OE_CONFIGS.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + OE_CONFIGS.REMOVE + "/" + id %}
+  {% if update.change_bo_relevant_period === "CHANGE_BO_RELEVANT_PERIOD" %}
+    {% include "includes/page-templates/important-banner.html" %}
+  {% endif %}
   {% include "includes/page-templates/beneficial-owner-individual.html" %}
 {% endblock %}

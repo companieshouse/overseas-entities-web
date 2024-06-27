@@ -1,3 +1,5 @@
+import { UpdateKey } from "../../../src/model/update.type.model";
+
 jest.mock('ioredis');
 jest.mock('../../../src/utils/feature.flag' );
 jest.mock('../../../src/utils/application.data');
@@ -23,8 +25,11 @@ import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.a
 import { getApplicationData } from '../../../src/utils/application.data';
 import { isActiveFeature } from '../../../src/utils/feature.flag';
 
-import { APPLICATION_DATA_MOCK } from '../../__mocks__/session.mock';
-import { PAGE_TITLE_ERROR, PAGE_NOT_FOUND_TEXT } from '../../__mocks__/text.mock';
+import {
+  APPLICATION_DATA_MOCK,
+  UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE,
+} from '../../__mocks__/session.mock';
+import { PAGE_TITLE_ERROR, PAGE_NOT_FOUND_TEXT, RELEVANT_PERIOD_EXTRA_INFO_REQUIRED } from '../../__mocks__/text.mock';
 import { saveAndContinue } from '../../../src/utils/save.and.continue';
 import { ErrorMessages } from '../../../src/validation/error.messages';
 
@@ -60,6 +65,22 @@ describe('Update - Manage Trusts - Individuals or entities involved', () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain("Individuals or entities involved in the trust");
       expect(resp.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);
+      expect(resp.text).not.toContain(RELEVANT_PERIOD_EXTRA_INFO_REQUIRED);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+    });
+
+    test('when relevant period changes are selected in the application data extra relevant period section is rendered on page', async () => {
+      mockIsActiveFeature.mockReturnValue(true);
+      const appData = APPLICATION_DATA_MOCK;
+      appData[UpdateKey] = UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE;
+
+      mockGetApplicationData.mockReturnValueOnce(appData);
+
+      const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain("Individuals or entities involved in the trust");
+      expect(resp.text).toContain(RELEVANT_PERIOD_EXTRA_INFO_REQUIRED);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 

@@ -476,7 +476,7 @@ export const trustIndividualCeasedDateValidations = [
         && req.body["dateBecameIPDay"]
         && req.body["dateBecameIPMonth"]
         && req.body["dateBecameIPYear"]) {
-        checkCeasedDateOnOrAfterInterestedPersonStartDate(req, ErrorMessages.DATE_BEFORE_INTERESTED_PERSON_START_DATE_CEASED_TRUSTEE);
+        checkIndividualCeasedDateOnOrAfterInterestedPersonStartDate(req, ErrorMessages.DATE_BEFORE_INTERESTED_PERSON_START_DATE_CEASED_TRUSTEE);
       }
       return true;
     })
@@ -493,19 +493,26 @@ export const trusteeLegalEntityCeasedDateValidations = [
     .custom((value, { req }) => {
       checkCeasedDateOnOrAfterTrustCreationDate(req, ErrorMessages.DATE_BEFORE_TRUST_CREATION_DATE_CEASED_TRUSTEE);
       if (req.body["roleWithinTrust"] === RoleWithinTrustType.INTERESTED_PERSON
-      && req.body["dateBecameIPDay"]
-      && req.body["dateBecameIPMonth"]
-      && req.body["dateBecameIPYear"]) {
-        checkCeasedDateOnOrAfterInterestedPersonStartDate(req, ErrorMessages.DATE_BEFORE_INTERESTED_PERSON_START_DATE_CEASED_TRUSTEE);
+      && req.body["interestedPersonStartDateDay"]
+      && req.body["interestedPersonStartDateMonth"]
+      && req.body["interestedPersonStartDateYear"]) {
+        checkLegalEntityCeasedDateOnOrAfterInterestedPersonStartDate(req, ErrorMessages.DATE_BEFORE_INTERESTED_PERSON_START_DATE_CEASED_TRUSTEE);
       }
       return true;
     })
 ];
 
-const checkCeasedDateOnOrAfterInterestedPersonStartDate = (req, errorMessage: ErrorMessages) => {
+const checkIndividualCeasedDateOnOrAfterInterestedPersonStartDate = (req, errorMessage: ErrorMessages) => {
   checkFirstDateOnOrAfterSecondDate(
     req.body["ceasedDateDay"], req.body["ceasedDateMonth"], req.body["ceasedDateYear"],
     req.body["dateBecameIPDay"], req.body["dateBecameIPMonth"], req.body["dateBecameIPYear"],
+    errorMessage);
+};
+
+const checkLegalEntityCeasedDateOnOrAfterInterestedPersonStartDate = (req, errorMessage: ErrorMessages) => {
+  checkFirstDateOnOrAfterSecondDate(
+    req.body["ceasedDateDay"], req.body["ceasedDateMonth"], req.body["ceasedDateYear"],
+    req.body["interestedPersonStartDateDay"], req.body["interestedPersonStartDateMonth"], req.body["interestedPersonStartDateYear"],
     errorMessage);
 };
 

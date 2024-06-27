@@ -102,9 +102,9 @@ type TrustLegalEntityForm = {
 legalEntityId?: string;
 legalEntityName: string;
 roleWithinTrust: string;
-dateBecameIPDay?: string;
-dateBecameIPMonth?: string;
-dateBecameIPYear?: string;
+interestedPersonStartDateDay?: string;
+interestedPersonStartDateMonth?: string;
+interestedPersonStartDateYear?: string;
 principal_address_property_name_number: string;
 principal_address_line_1: string;
 principal_address_line_2?: string;

@@ -24,9 +24,9 @@ const mapLegalEntityToSession = (
     ch_references: trustee?.ch_references,
     type: formData.roleWithinTrust,
     name: formData.legalEntityName,
-    date_became_interested_person_day: formData.dateBecameIPDay,
-    date_became_interested_person_month: formData.dateBecameIPMonth,
-    date_became_interested_person_year: formData.dateBecameIPYear,
+    date_became_interested_person_day: formData.interestedPersonStartDateDay,
+    date_became_interested_person_month: formData.interestedPersonStartDateMonth,
+    date_became_interested_person_year: formData.interestedPersonStartDateYear,
     ro_address_premises: formData.principal_address_property_name_number,
     ro_address_line_1: formData.principal_address_line_1,
     ro_address_line_2: formData.principal_address_line_2,
@@ -59,18 +59,16 @@ const mapLegalEntityToSession = (
   let interestedPersonData = {};
   if (formData.roleWithinTrust === RoleWithinTrustType.INTERESTED_PERSON){
     interestedPersonData = {
-      date_became_interested_person_day: formData.dateBecameIPDay,
-      date_became_interested_person_month: formData.dateBecameIPMonth,
-      date_became_interested_person_year: formData.dateBecameIPYear,
+      date_became_interested_person_day: formData.interestedPersonStartDateDay,
+      date_became_interested_person_month: formData.interestedPersonStartDateMonth,
+      date_became_interested_person_year: formData.interestedPersonStartDateYear,
     };
   }
 
-  let stillInvolved = (formData.stillInvolved === "1") ? "Yes" : "No";
+  let stillInvolved: string | null = (formData.stillInvolved === "1") ? "Yes" : "No";
 
   // If a boolean value isn't receieved from the web form (it could be null or undefined, e.g. if question not displayed), need to set null
-  if (formData.stillInvolved === null || formData.stillInvolved === undefined) {
-    stillInvolved = null as unknown as string;
-  }
+  if (!formData.stillInvolved) { stillInvolved = null; }
 
   if (formData.is_service_address_same_as_principal_address?.toString() === "0") {
     return {
@@ -153,9 +151,9 @@ const mapLegalEntityTrusteeFromSessionToPage = (
   if (trustee.type === RoleWithinTrustType.INTERESTED_PERSON) {
     return {
       ...data,
-      dateBecameIPDay: trustee.date_became_interested_person_day,
-      dateBecameIPMonth: trustee.date_became_interested_person_month,
-      dateBecameIPYear: trustee.date_became_interested_person_year,
+      interestedPersonStartDateDay: trustee.date_became_interested_person_day,
+      interestedPersonStartDateMonth: trustee.date_became_interested_person_month,
+      interestedPersonStartDateYear: trustee.date_became_interested_person_year,
       principal_address_property_name_number: trustee.ro_address_premises,
       stillInvolved: stillInvolvedInTrust,
     } as Page.TrustLegalEntityForm;

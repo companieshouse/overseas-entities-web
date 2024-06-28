@@ -57,7 +57,7 @@ export const postSubmit = (req: Request, res: Response) => {
   const appData: ApplicationData = getApplicationData(req.session);
   const requiresTrusts: boolean = checkEntityRequiresTrusts(appData);
   let nextPageUrl = config.CHECK_YOUR_ANSWERS_URL;
-  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)){
+  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
     nextPageUrl = getUrlWithParamsToPath(config.CHECK_YOUR_ANSWERS_WITH_PARAMS_URL, req);
   }
   if (requiresTrusts) {

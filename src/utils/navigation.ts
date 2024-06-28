@@ -405,6 +405,11 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.BENEFICIAL_OWNER_TYPE_URL,
     nextPage: [config.CHECK_YOUR_ANSWERS_URL]
   },
+  [config.TRUST_INFO_WITH_PARAMS_URL]: {
+    currentPage: config.TRUST_INFO_PAGE,
+    previousPage: () => config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
+    nextPage: [config.CHECK_YOUR_ANSWERS_URL]
+  },
   [config.SIGN_OUT_URL]: {
     currentPage: config.SIGN_OUT_PAGE,
     previousPage: () => "",

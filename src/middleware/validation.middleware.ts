@@ -57,6 +57,7 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
         entityName = appData?.[EntityNameKey];
       }
       const entityNumber = appData?.[EntityNumberKey];
+      const relevantPeriod = req.query["relevant-period"] === "true";
 
       // The journey property may already be part of the page form data/body so get it from there and override it if we are on a remove journey
       // Then when we pass it back into the template, make sure it is below/after the req.body fields so it overrides the req.body value
@@ -78,6 +79,7 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
           ...req.body,
           ...dates,
           journey,
+          relevant_period: relevantPeriod,
           errors,
           FEATURE_FLAG_ENABLE_REDIS_REMOVAL: true,
           activeSubmissionBasePath: getUrlWithParamsToPath(config.ACTIVE_SUBMISSION_BASE_PATH, req)
@@ -94,6 +96,7 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
         ...req.body,
         ...dates,
         journey,
+        relevant_period: relevantPeriod,
         errors
       });
     }
@@ -118,6 +121,7 @@ export function checkTrustValidations(req: Request, res: Response, next: NextFun
         templateName: NAVIGATION[routePath].currentPage,
         ...req.body,
         beneficialOwners: getBeneficialOwnerList(appData),
+        relevant_period: req.query["relevant-period"] === "true",
         trusts_input: req.body.trusts?.toString(),
         errors
       });

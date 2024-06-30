@@ -267,7 +267,7 @@ export const RELEVANT_PERIOD_NO_TRUSTEE_INVOLVED = "anyone was a registrable ben
 export const RELEVANT_PERIOD_CHANGE_BENEFICIARY = "at least one person became or ceased to be a beneficiary of a trust";
 export const RELEVANT_PERIOD_NO_CHANGE_BENEFICIARY = "anyone became or ceased to be a beneficiary of a trust";
 export const RELEVANT_PERIOD_INDIVIDUAL_BENEFICIAL_OWNER = "Individual beneficial owner";
-export const RELEVANT_PERIOD_INFORMATION = "You need to enter information that is correct as at the date they ceased to be a registrable beneficial owner.";
+export const RELEVANT_PERIOD_INFORMATION = "You need to enter information that is correct as at the date it ceased to be a registrable beneficial owner.";
 export const SELECT_IF_REGISTER_DURING_PRE_REG_PERIOD = "Select yes if the overseas entity was the registered owner of UK land during the pre-registration period.";
 
 // Remove journey

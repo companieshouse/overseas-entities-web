@@ -37,7 +37,7 @@ export const getBeneficialOwnerOther = (req: Request, res: Response, templateNam
   return res.render(templateName, {
     backLinkUrl: backLinkUrl,
     templateName: templateName,
-    ...appData
+    ...appData, relevant_period: req.query["relevant-period"] === "true",
   });
 };
 

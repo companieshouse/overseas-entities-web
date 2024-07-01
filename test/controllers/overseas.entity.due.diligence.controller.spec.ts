@@ -140,7 +140,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
 
-    test(`renders the ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page with correct backlink url when feature flag is on`, async () => {
+    test(`renders the ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page with correct backlink url when REDIS_removal feature flag is on`, async () => {
       mockIsActiveFeature.mockReturnValue(true);
       mockGetApplicationData.mockReturnValueOnce( { [OverseasEntityDueDiligenceKey]: null });
       const resp = await request(app).get(OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
@@ -163,7 +163,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
       expect(mockIsActiveFeature).toHaveBeenCalledTimes(1);
     });
 
-    test(`renders the ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page with correct backlink url when feature flag is off`, async () => {
+    test(`renders the ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page with correct backlink url when REDIS_removal feature flag is off`, async () => {
       mockIsActiveFeature.mockReturnValue(false);
       mockGetApplicationData.mockReturnValueOnce( { [OverseasEntityDueDiligenceKey]: null });
       const resp = await request(app).get(OVERSEAS_ENTITY_DUE_DILIGENCE_URL);

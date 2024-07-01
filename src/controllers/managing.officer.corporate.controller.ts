@@ -15,7 +15,7 @@ export const get = (req: Request, res: Response) => {
   if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
     backLinkUrl = getUrlWithParamsToPath(config.MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL, req);
   }
-  getManagingOfficerCorporate(req, res, getBeneficialOwnerTypeUrl(req), backLinkUrl);
+  getManagingOfficerCorporate(req, res, backLinkUrl, config.MANAGING_OFFICER_CORPORATE_PAGE);
 };
 
 export const getById = (req: Request, res: Response, next: NextFunction) => {

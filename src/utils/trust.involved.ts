@@ -7,6 +7,7 @@ import { validationResult } from 'express-validator/src/validation-result';
 import { logger } from './logger';
 import { safeRedirect } from './http.ext';
 import { getApplicationData, setExtraData } from './application.data';
+import { checkRelevantPeriod } from './relevant.period';
 import { mapCommonTrustDataToPage } from './trust/common.trust.data.mapper';
 import { mapTrustWhoIsInvolvedToPage } from './trust/who.is.involved.mapper';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
@@ -68,7 +69,6 @@ const getPageProperties = (
   let trustId;
   let individualTrusteeData;
   let formerTrusteeData;
-  let isRelevantPeriod;
 
   if (isReview) {
     const trustInReview = getTrustInReview(appData);
@@ -86,12 +86,6 @@ const getPageProperties = (
     trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
     individualTrusteeData = getIndividualTrusteesFromTrust(appData, trustId, isReview);
     formerTrusteeData = getFormerTrusteesFromTrust(appData, trustId, isReview);
-  }
-
-  if (isUpdate) {
-    isRelevantPeriod = (appData.update?.change_bo_relevant_period === "CHANGE_BO_RELEVANT_PERIOD" ||
-      appData.update?.trustee_involved_relevant_period === "TRUSTEE_INVOLVED_RELEVANT_PERIOD" ||
-      appData.update?.change_beneficiary_relevant_period === "CHANGE_BENEFICIARY_RELEVANT_PERIOD");
   }
 
   return {
@@ -112,7 +106,7 @@ const getPageProperties = (
       beneficialOwnerUrlDetach: `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_BENEFICIAL_OWNER_DETACH_URL}`,
       isUpdate: isUpdate,
       isReview: isReview,
-      isRelevantPeriod: isRelevantPeriod,
+      isRelevantPeriod: isUpdate ? checkRelevantPeriod(appData) : false,
     },
     formData,
     errors,

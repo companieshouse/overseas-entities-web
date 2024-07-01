@@ -30,11 +30,14 @@ const getPageProperties = (trust, formData, errors?: FormattedValidationErrors) 
       title: 'Tell us about the legal entity',
     },
     pageData: {
-      trustData: { trustName: trust?.trust_name },
+      trustData: {
+        trustName: trust?.trust_name,
+      },
       roleWithinTrustType: RoleWithinTrustType,
     },
     formData,
     errors,
+    isUpdate: true
   };
 };
 

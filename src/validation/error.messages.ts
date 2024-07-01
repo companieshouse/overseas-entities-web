@@ -80,7 +80,6 @@ export enum ErrorMessages {
   TRUST_BO_CHECKBOX = "At least one listed beneficial owner must be selected",
   TRUST_INDIVIDUAL_HOME_ADDRESS_LENGTH = "Individual home address must be 50 characters or less",
   TRUST_INDIVIDUAL_CORRESPONDENCE_ADDRESS_LENGTH = "Individual correspondence address must be 50 characters or less",
-  TRUST_INDIVIDUAL_STILL_INVOLVED = " Select yes if they are still involved in the trust",
   TRUST_CORPORATE_REGISTERED_OFFICE_ADDRESS_LENGTH = "Corporate registered office address must be 50 characters or less",
   TRUST_CORPORATE_CORRESPONDENCE_ADDRESS_LENGTH = "Corporate correspondence address must be 50 characters or less",
   TRUST_INVOLVED_INVALID = 'Select which type of individual or entity you want to add',
@@ -91,6 +90,7 @@ export enum ErrorMessages {
   TRUST_INDIVIDUAL_ROLE_INDIVIDUAL_BO = TRUST_INDIVIDUAL_ROLE,
   LEGAL_ENTITY_BO_ROLE = "Select its role within the trust",
   ADD_TRUST = "Select yes if you need to add another trust",
+  TRUSTEE_STILL_INVOLVED = "Select yes if they are still involved in the trust",
 
   // Date
   DAY = "Date must include a day",

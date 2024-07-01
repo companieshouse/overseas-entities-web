@@ -24,7 +24,7 @@ import {
   checkTrustCeasedDate,
   checkDateIsBeforeOrOnOtherDate,
   checkFilingDate,
-  checkTrustIndividualCeasedDate,
+  checkTrusteeCeasedDate,
 } from "../custom.validation";
 import { ErrorMessages } from "../error.messages";
 import { conditionalDateValidations, conditionalHistoricalBODateValidations, dateContext, dateContextWithCondition, dateValidations } from "./helper/date.validation.helper";
@@ -386,7 +386,7 @@ const historicalBOEndDateContext: dateContext = {
   },
 };
 
-const trustIndividualCeasedDateValidationsContext: dateContextWithCondition = {
+const trusteeCeasedDateValidationsContext: dateContextWithCondition = {
   dayInput: {
     name: "ceasedDateDay",
     errors: {
@@ -412,7 +412,7 @@ const trustIndividualCeasedDateValidationsContext: dateContextWithCondition = {
   },
   dateInput: {
     name: "ceasedDate",
-    callBack: checkTrustIndividualCeasedDate,
+    callBack: checkTrusteeCeasedDate,
   },
   condition: {
     elementName: "stillInvolved",
@@ -454,7 +454,7 @@ export const filingPeriodTrustStartDateValidations = is_date_within_filing_perio
 export const filingPeriodTrustCeaseDateValidations = is_date_within_filing_period_trusts(historicalBOEndDateContext, ErrorMessages.CEASED_DATE_BEFORE_FILING_DATE);
 
 export const trustIndividualCeasedDateValidations = [
-  ...conditionalDateValidations(trustIndividualCeasedDateValidationsContext),
+  ...conditionalDateValidations(trusteeCeasedDateValidationsContext),
 
   body("ceasedDate")
     .if((value, { req }) => {
@@ -476,16 +476,43 @@ export const trustIndividualCeasedDateValidations = [
         && req.body["dateBecameIPDay"]
         && req.body["dateBecameIPMonth"]
         && req.body["dateBecameIPYear"]) {
-        checkCeasedDateOnOrAfterInterestedPersonStartDate(req, ErrorMessages.DATE_BEFORE_INTERESTED_PERSON_START_DATE_CEASED_TRUSTEE);
+        checkIndividualCeasedDateOnOrAfterInterestedPersonStartDate(req, ErrorMessages.DATE_BEFORE_INTERESTED_PERSON_START_DATE_CEASED_TRUSTEE);
       }
       return true;
     })
 ];
 
-const checkCeasedDateOnOrAfterInterestedPersonStartDate = (req, errorMessage: ErrorMessages) => {
+export const trusteeLegalEntityCeasedDateValidations = [
+  ...conditionalDateValidations(trusteeCeasedDateValidationsContext),
+
+  body("ceasedDate")
+    .if(body("stillInvolved").equals("0"))
+    .if(body("ceasedDateDay").notEmpty({ ignore_whitespace: true }))
+    .if(body("ceasedDateMonth").notEmpty({ ignore_whitespace: true }))
+    .if(body("ceasedDateYear").notEmpty({ ignore_whitespace: true }))
+    .custom((value, { req }) => {
+      checkCeasedDateOnOrAfterTrustCreationDate(req, ErrorMessages.DATE_BEFORE_TRUST_CREATION_DATE_CEASED_TRUSTEE);
+      if (req.body["roleWithinTrust"] === RoleWithinTrustType.INTERESTED_PERSON
+      && req.body["interestedPersonStartDateDay"]
+      && req.body["interestedPersonStartDateMonth"]
+      && req.body["interestedPersonStartDateYear"]) {
+        checkLegalEntityCeasedDateOnOrAfterInterestedPersonStartDate(req, ErrorMessages.DATE_BEFORE_INTERESTED_PERSON_START_DATE_CEASED_TRUSTEE);
+      }
+      return true;
+    })
+];
+
+const checkIndividualCeasedDateOnOrAfterInterestedPersonStartDate = (req, errorMessage: ErrorMessages) => {
   checkFirstDateOnOrAfterSecondDate(
     req.body["ceasedDateDay"], req.body["ceasedDateMonth"], req.body["ceasedDateYear"],
     req.body["dateBecameIPDay"], req.body["dateBecameIPMonth"], req.body["dateBecameIPYear"],
+    errorMessage);
+};
+
+const checkLegalEntityCeasedDateOnOrAfterInterestedPersonStartDate = (req, errorMessage: ErrorMessages) => {
+  checkFirstDateOnOrAfterSecondDate(
+    req.body["ceasedDateDay"], req.body["ceasedDateMonth"], req.body["ceasedDateYear"],
+    req.body["interestedPersonStartDateDay"], req.body["interestedPersonStartDateMonth"], req.body["interestedPersonStartDateYear"],
     errorMessage);
 };
 

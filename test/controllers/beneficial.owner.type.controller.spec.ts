@@ -413,7 +413,6 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
     const expectTextToContainBOTypePageURL = (text: string) => {
       expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(2);
-      // expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.ACTIVE_SUBMISSION_BASE_PATH);
       expect(text).toContain(config.REGISTER_AN_OVERSEAS_ENTITY_URL + MOCKED_URL + config.BENEFICIAL_OWNER_TYPE_PAGE);
     };
   });

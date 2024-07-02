@@ -14,14 +14,19 @@
 
 {% set rows=[] %}
 {% for trustee in pageData.legalEntities %}
+  {% set trusteeStatus = 'Removed' if (trustee.still_involved === "No") else 'Active' %}
+  {% set trusteeRole = trusteeMacros.readableTrusteeRole(trustee.type | upper) %}
   {% set changeLink = OE_CONFIGS.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL + "/" + trustee.id %}
   {% set rows = (rows.push(
     [
-      {
+      { 
         text: trustee.name
       },
+      { 
+        text: trusteeStatus 
+      },
       {
-        text: trusteeMacros.readableTrusteeRole(trustee.type | upper)
+        text: trusteeRole
       },
       {
         html: "<a href=" + changeLink + ">Change</a>",
@@ -45,7 +50,7 @@
       caption: "Legal entities associated with this trust",
       captionClasses: "govuk-table__caption--m",
       firstCellIsHeader: true,
-      head: [{text: "Name"}, {text: "Role"},{text: "Change"}],
+      head: [{ text: "Name" }, { text: "Status" }, { text: "Role" }, { text: "Change" }],
       rows: rows
     }) }}
 

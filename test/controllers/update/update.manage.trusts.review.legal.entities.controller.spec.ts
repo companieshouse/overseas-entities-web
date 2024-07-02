@@ -215,6 +215,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
 
       const response = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
       expect(response.text).toContain('Add a legal entity');
+      expect(response.text).toContain('Status');
       expect(response.text).toContain('Active');
     });
 
@@ -230,6 +231,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
 
       const response = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
       expect(response.text).toContain('Add a legal entity');
+      expect(response.text).toContain('Status');
       expect(response.text).toContain('Removed');
     });
 

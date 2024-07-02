@@ -6,6 +6,11 @@
 
     <span class="govuk-caption-xl">Beneficial owner</span>
 
+    {% if relevant_period %}
+      {% include "includes/page-templates/important-banner.html" %}
+      <h1 class="govuk-heading-xl govuk-!-margin-0">Tell us about the individual beneficiary</h1>
+    {% endif %}
+
     <h1 class="govuk-heading-xl govuk-!-margin-0">{{ title }}</h1>
     <br> <p class="govuk-body">You can add more later.</p> <br>
 

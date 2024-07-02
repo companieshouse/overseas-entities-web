@@ -32,6 +32,7 @@ type TrustIndividualBeneificalOwnerPageProperties = {
   },
   formData?: PageModel.IndividualTrusteesFormCommon,
   errors?: FormattedValidationErrors,
+  relevant_period: boolean,
   url: string,
   isUpdate: boolean
 };
@@ -56,6 +57,7 @@ const getPageProperties = (
     },
     formData,
     errors,
+    relevant_period: req.query["relevant-period"] === "true",
     url: getUrl(isUpdate),
     isUpdate
   };

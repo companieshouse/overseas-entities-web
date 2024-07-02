@@ -224,12 +224,12 @@
             error: errors.typeOfTrustee,
             items: [
               {
-              value: pageData.trusteeType.HISTORICAL,
+              value: pageData.trusteeType.INDIVIDUAL_BENEFICIARY,
               text: "Individual beneficiary",
               hint: {
                 text: "This is an individual who was a beneficiary of this trust during the pre-registration period."
               },
-              checked: typeOfTrustee == pageData.trusteeType.HISTORICAL,
+              checked: typeOfTrustee == pageData.trusteeType.INDIVIDUAL_BENEFICIARY,
               attributes: {
                 "data-event-id": "individual-radio-option"
               }

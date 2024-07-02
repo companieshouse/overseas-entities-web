@@ -184,6 +184,8 @@ export const postTrustInvolvedPage = async (
             return safeRedirect(res, config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL);
           case TrusteeType.LEGAL_ENTITY:
             return safeRedirect(res, config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL);
+          case TrusteeType.INDIVIDUAL_BENEFICIARY:
+            return safeRedirect(res, config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
           default:
             throw new Error("Unexpected trustee type received");
       }

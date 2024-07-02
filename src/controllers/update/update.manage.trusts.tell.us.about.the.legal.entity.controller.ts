@@ -22,7 +22,9 @@ import { RoleWithinTrustType } from '../../model/role.within.trust.type.model';
 import { TrustLegalEntityForm } from '../../model/trust.page.model';
 import { ApplicationData } from '../../model';
 
-const getPageProperties = (trust, formData, errors?: FormattedValidationErrors) => {
+const getPageProperties = (trust, relevantPeriod, formData, errors?: FormattedValidationErrors) => {
+  formData.relevantPeriod = relevantPeriod;
+  formData.entity_name = trust.trust_name;
   return {
     templateName: UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE,
     backLinkUrl: getBackLink(trust.review_status?.reviewed_legal_entities),
@@ -47,13 +49,18 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     const appData = getApplicationData(req.session);
     const trusteeId = req.params[ROUTE_PARAM_TRUSTEE_ID];
+    const relevantPeriod = req.query['relevant-period'];
 
     const trust = getTrustInReview(appData) as Trust;
     const trustee = getTrustee(trust, trusteeId, TrusteeType.LEGAL_ENTITY) as TrustCorporate;
 
     const formData = trustee ? mapLegalEntityTrusteeFromSessionToPage(trustee) : {};
 
-    return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE, getPageProperties(trust, formData));
+    if (relevantPeriod) {
+      return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE, getPageProperties(trust, relevantPeriod, formData));
+    } else {
+      return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE, getPageProperties(trust, false, formData));
+    }
   } catch (error) {
     next(error);
   }

@@ -11,6 +11,7 @@ import { mapCommonTrustDataToPage } from './trust/common.trust.data.mapper';
 import { mapTrustWhoIsInvolvedToPage } from './trust/who.is.involved.mapper';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
 import { IndividualTrustee, TrustHistoricalBeneficialOwner } from '../model/trust.model';
+import { RoleWithinTrustType } from '../model/role.within.trust.type.model';
 import { getIndividualTrusteesFromTrust, getFormerTrusteesFromTrust } from './trusts';
 import { getTrustInReview, moveTrustOutOfReview } from './update/review_trusts';
 import { saveAndContinue } from './save.and.continue';
@@ -184,6 +185,10 @@ export const postTrustInvolvedPage = async (
             return safeRedirect(res, config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL);
           case TrusteeType.LEGAL_ENTITY:
             return safeRedirect(res, config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL);
+          case TrusteeType.RELEVANT_PERIOD_LEGAL_ENTITY:
+            req.body.typeOfTrustee = TrusteeType.LEGAL_ENTITY;
+            req.body.roleWithinTrustType = RoleWithinTrustType.BENEFICIARY;
+            return safeRedirect(res, config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
           default:
             throw new Error("Unexpected trustee type received");
       }

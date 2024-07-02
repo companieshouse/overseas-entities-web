@@ -787,7 +787,8 @@ describe("DUE_DILIGENCE controller", () => {
       expect(resp.text).toContain(ErrorMessages.AGENT_CODE);
       expect(resp.text).toContain(ErrorMessages.PARTNER_NAME);
       expect(resp.text).toContain(ErrorMessages.CHECK_DILIGENCE);
-      expect(resp.text).toContain(WHO_IS_MAKING_FILING_URL);
+      expect(resp.text).toContain(NEXT_PAGE_URL);
+      expect(resp.text).toContain(BACK_BUTTON_CLASS);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 

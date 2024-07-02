@@ -55,7 +55,8 @@ import {
   PUBLIC_REGISTER_HINT_TEXT,
   SAVE_AND_CONTINUE_BUTTON_TEXT,
   SERVICE_UNAVAILABLE,
-  SHOW_INFORMATION_ON_PUBLIC_REGISTER
+  SHOW_INFORMATION_ON_PUBLIC_REGISTER,
+  BACK_BUTTON_CLASS
 } from "../__mocks__/text.mock";
 import {
   getApplicationData,
@@ -134,7 +135,8 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).toContain(SHOW_INFORMATION_ON_PUBLIC_REGISTER);
     });
 
-    test(`renders the ${MANAGING_OFFICER_CORPORATE_PAGE} page without public register jurisdiction field`, async () => {
+    test(`renders the ${MANAGING_OFFICER_CORPORATE_PAGE} page with correct backlink url when REDIS_removal feature flag is on`, async () => {
+      mockIsActiveFeature.mockReturnValue(true);
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(MANAGING_OFFICER_CORPORATE_URL);
 
@@ -142,9 +144,39 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
       expect(resp.text).toContain(LANDING_PAGE_URL);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-      expect(resp.text).not.toContain(JURISDICTION_FIELD_LABEL);
-      expect(resp.text).toContain(PUBLIC_REGISTER_HINT_TEXT);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
+      expect(resp.text).toContain(SHOW_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(1);
+    });
+
+    test(`renders the ${MANAGING_OFFICER_CORPORATE_PAGE} page with correct backlink url when REDIS_removal feature flag is off`, async () => {
+      mockIsActiveFeature.mockReturnValue(false);
+      mockIsActiveFeature.mockReturnValue(false);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      const resp = await request(app).get(MANAGING_OFFICER_CORPORATE_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
+      expect(resp.text).toContain(LANDING_PAGE_URL);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
+      expect(resp.text).toContain(SHOW_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(1);
+    });
+
+    test(`renders the ${MANAGING_OFFICER_CORPORATE_PAGE} page`, async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      const resp = await request(app).get(MANAGING_OFFICER_CORPORATE_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
+      expect(resp.text).toContain(LANDING_PAGE_URL);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
+      expect(resp.text).toContain(SHOW_INFORMATION_ON_PUBLIC_REGISTER);
     });
   });
 
@@ -664,7 +696,8 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).toContain(ErrorMessages.EMAIL);
       expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_URL); // Navigation back/next poimts to url woithout params
+      expect(resp.text).toContain(NEXT_PAGE_URL);
+      expect(resp.text).toContain(BACK_BUTTON_CLASS);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
@@ -685,7 +718,8 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.SELECT_IF_REGISTER_IN_COUNTRY_FORMED_IN);
       expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NAME);
       expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_URL); // Navigation back/next poimts to url woithout params
+      expect(resp.text).toContain(NEXT_PAGE_URL);
+      expect(resp.text).toContain(BACK_BUTTON_CLASS);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 

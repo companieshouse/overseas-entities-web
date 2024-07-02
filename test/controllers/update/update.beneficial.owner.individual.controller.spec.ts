@@ -45,7 +45,7 @@ import {
   UPDATE_BENEFICIAL_OWNER_TYPE_PAGE_REDIRECT,
   TRUSTS_NOC_HEADING,
   RELEVANT_PERIOD,
-  RELEVANT_PERIOD_INFORMATION,
+  RELEVANT_PERIOD_INDIVIDUAL_INFORMATION,
 } from '../../__mocks__/text.mock';
 import {
   APPLICATION_DATA_UPDATE_BO_MOCK,
@@ -136,7 +136,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(RELEVANT_PERIOD);
-      expect(resp.text).toContain(RELEVANT_PERIOD_INFORMATION);
+      expect(resp.text).toContain(RELEVANT_PERIOD_INDIVIDUAL_INFORMATION);
       expect(resp.text).toContain("1");
       expect(resp.text).toContain("January");
       expect(resp.text).toContain("2023");

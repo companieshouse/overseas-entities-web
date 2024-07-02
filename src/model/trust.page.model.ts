@@ -73,6 +73,10 @@ type IndividualTrusteesFormCommon = {
   dateBecameIPDay?: string,
   dateBecameIPMonth?: string,
   dateBecameIPYear?: string,
+  stillInvolved?: string,
+  ceasedDateDay?: string,
+  ceasedDateMonth?: string,
+  ceasedDateYear?: string,
 };
 
 interface TrustHistoricalBeneficialOwnerFormLegal extends TrustHistoricalBeneficialOwnerFormCommon {
@@ -122,6 +126,10 @@ public_register_jurisdiction?: string;
 registration_number?: string;
 is_service_address_same_as_principal_address: yesNoResponse;
 is_on_register_in_country_formed_in: yesNoResponse;
+ceasedDateDay?: string;
+ceasedDateMonth?: string;
+ceasedDateYear?: string;
+stillInvolved?: string;
 };
 
 type TrusteeItem = {

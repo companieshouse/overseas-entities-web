@@ -40,7 +40,7 @@ import {
   OVERSEAS_ENTITY_DUE_DILIGENCE_IDENTITY_DATE_LABEL_TEXT,
   OVERSEAS_ENTITY_DUE_DILIGENCE_PARTNER_NAME_LABEL_TEXT,
   OVERSEAS_ENTITY_DUE_DILIGENCE_SUPERVISORY_NAME_LABEL_TEXT,
-  ALL_THE_OTHER_INFORMATION_ON_PUBLIC_REGISTER,
+  ALL_THE_OTHER_INFORMATION_ON_PUBLIC_REGISTER, BACK_BUTTON_CLASS,
 } from "../__mocks__/text.mock";
 import { ApplicationDataType } from '../../src/model';
 import { EMAIL_ADDRESS } from "../__mocks__/session.mock";
@@ -138,6 +138,52 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+
+    test(`renders the ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page with correct backlink url when REDIS_removal feature flag is on`, async () => {
+      mockIsActiveFeature.mockReturnValue(true);
+      mockGetApplicationData.mockReturnValueOnce( { [OverseasEntityDueDiligenceKey]: null });
+      const resp = await request(app).get(OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(LANDING_PAGE_URL);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE_TITLE);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_IDENTITY_DATE_LABEL_TEXT);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_NAME_TEXT);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_IDENTITY_ADDRESS_HINT_TEXT);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_SUPERVISORY_NAME_LABEL_TEXT);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_PARTNER_NAME_LABEL_TEXT);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_NO_EMAIL_OR_VERIFICATION_DATE_SHOWN_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(resp.text).toContain(ALL_THE_OTHER_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(resp.text).toContain(NEXT_PAGE_URL);
+      expect(resp.text).toContain(BACK_BUTTON_CLASS);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_PARTNER_NAME_HINT_TEXT);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(1);
+    });
+
+    test(`renders the ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page with correct backlink url when REDIS_removal feature flag is off`, async () => {
+      mockIsActiveFeature.mockReturnValue(false);
+      mockGetApplicationData.mockReturnValueOnce( { [OverseasEntityDueDiligenceKey]: null });
+      const resp = await request(app).get(OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(LANDING_PAGE_URL);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE_TITLE);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_IDENTITY_DATE_LABEL_TEXT);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_NAME_TEXT);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_IDENTITY_ADDRESS_HINT_TEXT);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_SUPERVISORY_NAME_LABEL_TEXT);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_PARTNER_NAME_LABEL_TEXT);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_NO_EMAIL_OR_VERIFICATION_DATE_SHOWN_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(resp.text).toContain(ALL_THE_OTHER_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(resp.text).toContain(WHO_IS_MAKING_FILING_URL);
+      expect(resp.text).toContain(BACK_BUTTON_CLASS);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_PARTNER_NAME_HINT_TEXT);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -774,7 +820,8 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.SUPERVISORY_NAME);
       expect(resp.text).not.toContain(ErrorMessages.PARTNER_NAME);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).toContain(WHO_IS_MAKING_FILING_URL);
+      expect(resp.text).toContain(NEXT_PAGE_URL);
+      expect(resp.text).toContain(BACK_BUTTON_CLASS);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 

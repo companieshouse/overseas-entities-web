@@ -24,6 +24,7 @@ import {
   checkTrustCeasedDate,
   checkDateIsBeforeOrOnOtherDate,
   checkFilingDate,
+  checkTrusteeCeasedDate,
 } from "../custom.validation";
 import { ErrorMessages } from "../error.messages";
 import { conditionalDateValidations, conditionalHistoricalBODateValidations, dateContext, dateContextWithCondition, dateValidations } from "./helper/date.validation.helper";
@@ -31,8 +32,12 @@ import { Request, Response, NextFunction } from "express";
 import { ApplicationData } from "../../model";
 import { getConfirmationStatementNextMadeUpToDateAsIsoString } from "../../service/company.profile.service";
 import { getApplicationData } from "../../utils/application.data";
-import { logger } from "../../utils/logger";
+import { createAndLogErrorRequest, logger } from "../../utils/logger";
 import { DateTime } from "luxon";
+import { ROUTE_PARAM_TRUST_ID } from "../../config";
+import { getReviewTrustById, getTrustInReview } from "../../utils/update/review_trusts";
+import { getTrustByIdFromApp } from "../../utils/trusts";
+import { Trust } from "../../model/trust.model";
 
 export const NEXT_MADE_UP_TO_ISO_DATE = 'nextMadeUpToIsoDate';
 
@@ -381,6 +386,40 @@ const historicalBOEndDateContext: dateContext = {
   },
 };
 
+const trusteeCeasedDateValidationsContext: dateContextWithCondition = {
+  dayInput: {
+    name: "ceasedDateDay",
+    errors: {
+      noDayError: ErrorMessages.DAY_OF_CEASED_TRUSTEE,
+      wrongDayLength: ErrorMessages.DAY_LENGTH_OF_CEASED_TRUSTEE,
+      noRealDay: ErrorMessages.INVALID_DAY,
+    } as DayFieldErrors,
+  },
+  monthInput: {
+    name: "ceasedDateMonth",
+    errors: {
+      noMonthError: ErrorMessages.MONTH_OF_CEASED_TRUSTEE,
+      wrongMonthLength: ErrorMessages.MONTH_LENGTH_OF_CEASED_TRUSTEE,
+      noRealMonth: ErrorMessages.INVALID_MONTH,
+    } as MonthFieldErrors,
+  },
+  yearInput: {
+    name: "ceasedDateYear",
+    errors: {
+      noYearError: ErrorMessages.YEAR_OF_CEASED_TRUSTEE,
+      wrongYearLength: ErrorMessages.YEAR_LENGTH_OF_CEASED_TRUSTEE
+    } as YearFieldErrors,
+  },
+  dateInput: {
+    name: "ceasedDate",
+    callBack: checkTrusteeCeasedDate,
+  },
+  condition: {
+    elementName: "stillInvolved",
+    expectedValue: "0"
+  }
+};
+
 const historicalBOEndDateConditionalContext: dateContextWithCondition = {
   ...historicalBOEndDateContext,
   condition: { elementName: "validateCeasedDate", expectedValue: "true" },
@@ -413,3 +452,113 @@ export const dateBecameIPLegalEntityBeneficialOwner = conditionalDateValidations
 export const filingPeriodTrustStartDateValidations = is_date_within_filing_period_trusts(historicalBOStartDateContext, ErrorMessages.START_DATE_BEFORE_FILING_DATE);
 
 export const filingPeriodTrustCeaseDateValidations = is_date_within_filing_period_trusts(historicalBOEndDateContext, ErrorMessages.CEASED_DATE_BEFORE_FILING_DATE);
+
+export const trustIndividualCeasedDateValidations = [
+  ...conditionalDateValidations(trusteeCeasedDateValidationsContext),
+
+  body("ceasedDate")
+    .if((value, { req }) => {
+      // check they are on an update or remove journey
+      // entity_number should have been populated by time they reach trust screens
+      const appData: ApplicationData = getApplicationData(req.session);
+      return !!appData.entity_number; // !! = truthy check
+    })
+    .if(body("stillInvolved").equals("0"))
+    .if(body("ceasedDateDay").notEmpty({ ignore_whitespace: true }))
+    .if(body("ceasedDateMonth").notEmpty({ ignore_whitespace: true }))
+    .if(body("ceasedDateYear").notEmpty({ ignore_whitespace: true }))
+    .custom((value, { req }) => {
+      checkCeasedDateOnOrAfterDateOfBirth(req, ErrorMessages.DATE_BEFORE_BIRTH_DATE_CEASED_TRUSTEE);
+
+      checkCeasedDateOnOrAfterTrustCreationDate(req, ErrorMessages.DATE_BEFORE_TRUST_CREATION_DATE_CEASED_TRUSTEE);
+
+      if (req.body["roleWithinTrust"] === RoleWithinTrustType.INTERESTED_PERSON
+        && req.body["dateBecameIPDay"]
+        && req.body["dateBecameIPMonth"]
+        && req.body["dateBecameIPYear"]) {
+        checkIndividualCeasedDateOnOrAfterInterestedPersonStartDate(req, ErrorMessages.DATE_BEFORE_INTERESTED_PERSON_START_DATE_CEASED_TRUSTEE);
+      }
+      return true;
+    })
+];
+
+export const trusteeLegalEntityCeasedDateValidations = [
+  ...conditionalDateValidations(trusteeCeasedDateValidationsContext),
+
+  body("ceasedDate")
+    .if(body("stillInvolved").equals("0"))
+    .if(body("ceasedDateDay").notEmpty({ ignore_whitespace: true }))
+    .if(body("ceasedDateMonth").notEmpty({ ignore_whitespace: true }))
+    .if(body("ceasedDateYear").notEmpty({ ignore_whitespace: true }))
+    .custom((value, { req }) => {
+      checkCeasedDateOnOrAfterTrustCreationDate(req, ErrorMessages.DATE_BEFORE_TRUST_CREATION_DATE_CEASED_TRUSTEE);
+      if (req.body["roleWithinTrust"] === RoleWithinTrustType.INTERESTED_PERSON
+      && req.body["interestedPersonStartDateDay"]
+      && req.body["interestedPersonStartDateMonth"]
+      && req.body["interestedPersonStartDateYear"]) {
+        checkLegalEntityCeasedDateOnOrAfterInterestedPersonStartDate(req, ErrorMessages.DATE_BEFORE_INTERESTED_PERSON_START_DATE_CEASED_TRUSTEE);
+      }
+      return true;
+    })
+];
+
+const checkIndividualCeasedDateOnOrAfterInterestedPersonStartDate = (req, errorMessage: ErrorMessages) => {
+  checkFirstDateOnOrAfterSecondDate(
+    req.body["ceasedDateDay"], req.body["ceasedDateMonth"], req.body["ceasedDateYear"],
+    req.body["dateBecameIPDay"], req.body["dateBecameIPMonth"], req.body["dateBecameIPYear"],
+    errorMessage);
+};
+
+const checkLegalEntityCeasedDateOnOrAfterInterestedPersonStartDate = (req, errorMessage: ErrorMessages) => {
+  checkFirstDateOnOrAfterSecondDate(
+    req.body["ceasedDateDay"], req.body["ceasedDateMonth"], req.body["ceasedDateYear"],
+    req.body["interestedPersonStartDateDay"], req.body["interestedPersonStartDateMonth"], req.body["interestedPersonStartDateYear"],
+    errorMessage);
+};
+
+const checkCeasedDateOnOrAfterTrustCreationDate = (req, errorMessage: ErrorMessages) => {
+  const trustId = req.params ? req.params[ROUTE_PARAM_TRUST_ID] : undefined;
+  const appData: ApplicationData = getApplicationData(req.session);
+  const trust: Trust | undefined = getTrust(appData, trustId);
+  if (trust) {
+    checkFirstDateOnOrAfterSecondDate(
+      req.body["ceasedDateDay"], req.body["ceasedDateMonth"], req.body["ceasedDateYear"],
+      trust.creation_date_day, trust.creation_date_month, trust.creation_date_year,
+      errorMessage);
+  } else {
+    throw createAndLogErrorRequest(req, "Unable to find trust for ceased date validation");
+  }
+};
+
+const checkCeasedDateOnOrAfterDateOfBirth = (req, errorMessage: ErrorMessages) => {
+  checkFirstDateOnOrAfterSecondDate(
+    req.body["ceasedDateDay"], req.body["ceasedDateMonth"], req.body["ceasedDateYear"],
+    req.body["dateOfBirthDay"], req.body["dateOfBirthMonth"], req.body["dateOfBirthYear"],
+    errorMessage);
+};
+
+/**
+ * Try and find the trust based on trust id, if not provided then assume it is the trust marked as 'in review'
+ * @param appData
+ * @param trustId
+ * @returns Trust | undefined
+ */
+const getTrust = (appData: ApplicationData, trustId?: string): Trust | undefined => {
+  let trust: Trust;
+  if (trustId) {
+    trust = getReviewTrustById(appData, trustId);
+    if (!trust || isEmpty(trust)) {
+      trust = getTrustByIdFromApp(appData, trustId);
+    }
+  } else {
+    trust = getTrustInReview(appData) as Trust;
+  }
+  if (trust && isEmpty(trust)) {
+    return undefined;
+  }
+  return trust;
+};
+
+const isEmpty = (obj) => {
+  return Object.keys(obj).length === 0;
+};

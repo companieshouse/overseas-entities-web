@@ -27,6 +27,13 @@ mockRemoveRequest["query"] = {
   "journey": "remove"
 };
 
+const mockRequestWithParams = {
+  params: {
+    transactionId: `:${config.ROUTE_PARAM_TRANSACTION_ID}`,
+    submissionId: `:${config.ROUTE_PARAM_SUBMISSION_ID}`
+  }
+} as any;
+
 describe("NAVIGATION utils", () => {
 
   test(`getEntityBackLink returns ${config.DUE_DILIGENCE_URL} when ${WhoIsRegisteringType.AGENT} selected`, () => {
@@ -118,9 +125,19 @@ describe("NAVIGATION utils", () => {
     expect(navigation).toEqual(config.OVERSEAS_NAME_URL);
   });
 
+  test(`NAVIGATION returns ${config.OVERSEAS_NAME_WITH_PARAMS_URL} when calling previousPage on ${config.PRESENTER_WITH_PARAMS_URL} object`, () => {
+    const navigation = NAVIGATION[config.PRESENTER_WITH_PARAMS_URL].previousPage(mockGetApplicationData(), mockRequestWithParams);
+    expect(navigation).toEqual(config.OVERSEAS_NAME_WITH_PARAMS_URL);
+  });
+
   test(`NAVIGATION returns ${config.PRESENTER_URL} when calling previousPage on ${config.WHO_IS_MAKING_FILING_URL} object`, () => {
     const navigation = NAVIGATION[config.WHO_IS_MAKING_FILING_URL].previousPage();
     expect(navigation).toEqual(config.PRESENTER_URL);
+  });
+
+  test(`NAVIGATION returns ${config.PRESENTER_WITH_PARAMS_URL} when calling previousPage on ${config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL} object`, () => {
+    const navigation = NAVIGATION[config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL].previousPage(mockGetApplicationData(), mockRequestWithParams);
+    expect(navigation).toEqual(config.PRESENTER_WITH_PARAMS_URL);
   });
 
   test(`NAVIGATION returns ${config.WHO_IS_MAKING_FILING_URL} when calling previousPage on ${config.DUE_DILIGENCE_URL} object`, () => {
@@ -128,9 +145,19 @@ describe("NAVIGATION utils", () => {
     expect(navigation).toEqual(config.WHO_IS_MAKING_FILING_URL);
   });
 
+  test(`NAVIGATION returns ${config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL} when calling previousPage on ${config.DUE_DILIGENCE_WITH_PARAMS_URL} object`, () => {
+    const navigation = NAVIGATION[config.DUE_DILIGENCE_WITH_PARAMS_URL].previousPage(mockGetApplicationData(), mockRequestWithParams);
+    expect(navigation).toEqual(config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL);
+  });
+
   test(`NAVIGATION returns ${config.WHO_IS_MAKING_FILING_URL} when calling previousPage on ${config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL} object`, () => {
     const navigation = NAVIGATION[config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL].previousPage();
     expect(navigation).toEqual(config.WHO_IS_MAKING_FILING_URL);
+  });
+
+  test(`NAVIGATION returns ${config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL} when calling previousPage on ${config.OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_PARAMS_URL} object`, () => {
+    const navigation = NAVIGATION[config.OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_PARAMS_URL].previousPage(mockGetApplicationData(), mockRequestWithParams);
+    expect(navigation).toEqual(config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL);
   });
 
   test(`NAVIGATION returns ${config.ENTITY_URL} when calling previousPage on ${config.BENEFICIAL_OWNER_STATEMENTS_URL} object`, () => {
@@ -143,9 +170,19 @@ describe("NAVIGATION utils", () => {
     expect(navigation).toEqual(config.BENEFICIAL_OWNER_STATEMENTS_URL);
   });
 
+  test(`NAVIGATION returns ${config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL} when calling previousPage on ${config.BENEFICIAL_OWNER_DELETE_WARNING_WITH_PARAMS_URL} object`, () => {
+    const navigation = NAVIGATION[config.BENEFICIAL_OWNER_DELETE_WARNING_WITH_PARAMS_URL].previousPage(mockGetApplicationData(), mockRequestWithParams);
+    expect(navigation).toEqual(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL);
+  });
+
   test(`NAVIGATION returns ${config.BENEFICIAL_OWNER_STATEMENTS_URL} when calling previousPage on ${config.BENEFICIAL_OWNER_TYPE_URL} object`, () => {
     const navigation = NAVIGATION[config.BENEFICIAL_OWNER_TYPE_URL].previousPage();
     expect(navigation).toEqual(config.BENEFICIAL_OWNER_STATEMENTS_URL);
+  });
+
+  test(`NAVIGATION returns ${config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL} when calling previousPage on ${config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL} object`, () => {
+    const navigation = NAVIGATION[config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL].previousPage(mockGetApplicationData(), mockRequestWithParams);
+    expect(navigation).toEqual(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL);
   });
 
   test(`NAVIGATION returns ${config.BENEFICIAL_OWNER_TYPE_URL} when calling previousPage on ${config.BENEFICIAL_OWNER_INDIVIDUAL_URL} object`, () => {
@@ -153,9 +190,19 @@ describe("NAVIGATION utils", () => {
     expect(navigation).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
   });
 
+  test(`NAVIGATION returns ${config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL} when calling previousPage on ${config.BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL} object`, () => {
+    const navigation = NAVIGATION[config.BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL].previousPage(mockGetApplicationData(), mockRequestWithParams);
+    expect(navigation).toEqual(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
+  });
+
   test(`NAVIGATION returns ${config.BENEFICIAL_OWNER_TYPE_URL} when calling previousPage on ${config.BENEFICIAL_OWNER_OTHER_URL} object`, () => {
     const navigation = NAVIGATION[config.BENEFICIAL_OWNER_OTHER_URL].previousPage();
     expect(navigation).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
+  });
+
+  test(`NAVIGATION returns ${config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL} when calling previousPage on ${config.BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL} object`, () => {
+    const navigation = NAVIGATION[config.BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL].previousPage(mockGetApplicationData(), mockRequestWithParams);
+    expect(navigation).toEqual(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
   });
 
   test(`NAVIGATION returns ${config.BENEFICIAL_OWNER_TYPE_URL} when calling previousPage on ${config.BENEFICIAL_OWNER_GOV_URL} object`, () => {
@@ -163,9 +210,19 @@ describe("NAVIGATION utils", () => {
     expect(navigation).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
   });
 
+  test(`NAVIGATION returns ${config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL} when calling previousPage on ${config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL} object`, () => {
+    const navigation = NAVIGATION[config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL].previousPage(mockGetApplicationData(), mockRequestWithParams);
+    expect(navigation).toEqual(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
+  });
+
   test(`NAVIGATION returns ${config.BENEFICIAL_OWNER_TYPE_URL} when calling previousPage on ${config.MANAGING_OFFICER_URL} object`, () => {
     const navigation = NAVIGATION[config.MANAGING_OFFICER_URL].previousPage();
     expect(navigation).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
+  });
+
+  test(`NAVIGATION returns ${config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL} when calling previousPage on ${config.MANAGING_OFFICER_WITH_PARAMS_URL} object`, () => {
+    const navigation = NAVIGATION[config.MANAGING_OFFICER_WITH_PARAMS_URL].previousPage(mockGetApplicationData(), mockRequestWithParams);
+    expect(navigation).toEqual(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
   });
 
   test(`NAVIGATION returns ${config.BENEFICIAL_OWNER_TYPE_URL} when calling previousPage on ${config.MANAGING_OFFICER_CORPORATE_URL} object`, () => {
@@ -173,9 +230,19 @@ describe("NAVIGATION utils", () => {
     expect(navigation).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
   });
 
+  test(`NAVIGATION returns ${config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL} when calling previousPage on ${config.MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL} object`, () => {
+    const navigation = NAVIGATION[config.MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL].previousPage(mockGetApplicationData(), mockRequestWithParams);
+    expect(navigation).toEqual(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
+  });
+
   test(`NAVIGATION returns ${config.BENEFICIAL_OWNER_TYPE_URL} when calling previousPage on ${config.BENEFICIAL_OWNER_INDIVIDUAL_URL + config.ID} object`, () => {
     const navigation = NAVIGATION[config.BENEFICIAL_OWNER_INDIVIDUAL_URL + config.ID].previousPage();
     expect(navigation).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
+  });
+
+  test(`NAVIGATION returns ${config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL} when calling previousPage on ${config.BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL + config.ID} object`, () => {
+    const navigation = NAVIGATION[config.BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL + config.ID].previousPage(mockGetApplicationData(), mockRequestWithParams);
+    expect(navigation).toEqual(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
   });
 
   test(`NAVIGATION returns ${config.BENEFICIAL_OWNER_TYPE_URL} when calling previousPage on ${config.BENEFICIAL_OWNER_OTHER_URL + config.ID} object`, () => {
@@ -183,9 +250,19 @@ describe("NAVIGATION utils", () => {
     expect(navigation).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
   });
 
+  test(`NAVIGATION returns ${config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL} when calling previousPage on ${config.BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL + config.ID} object`, () => {
+    const navigation = NAVIGATION[config.BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL + config.ID].previousPage(mockGetApplicationData(), mockRequestWithParams);
+    expect(navigation).toEqual(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
+  });
+
   test(`NAVIGATION returns ${config.BENEFICIAL_OWNER_TYPE_URL} when calling previousPage on ${config.BENEFICIAL_OWNER_GOV_URL + config.ID} object`, () => {
     const navigation = NAVIGATION[config.BENEFICIAL_OWNER_GOV_URL + config.ID].previousPage();
     expect(navigation).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
+  });
+
+  test(`NAVIGATION returns ${config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL} when calling previousPage on ${config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL + config.ID} object`, () => {
+    const navigation = NAVIGATION[config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL + config.ID].previousPage(mockGetApplicationData(), mockRequestWithParams);
+    expect(navigation).toEqual(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
   });
 
   test(`NAVIGATION returns ${config.BENEFICIAL_OWNER_TYPE_URL} when calling previousPage on ${config.MANAGING_OFFICER_URL + config.ID} object`, () => {
@@ -193,14 +270,29 @@ describe("NAVIGATION utils", () => {
     expect(navigation).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
   });
 
+  test(`NAVIGATION returns ${config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL} when calling previousPage on ${config.MANAGING_OFFICER_WITH_PARAMS_URL + config.ID} object`, () => {
+    const navigation = NAVIGATION[config.MANAGING_OFFICER_WITH_PARAMS_URL + config.ID].previousPage(mockGetApplicationData(), mockRequestWithParams);
+    expect(navigation).toEqual(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
+  });
+
   test(`NAVIGATION returns ${config.BENEFICIAL_OWNER_TYPE_URL} when calling previousPage on ${config.MANAGING_OFFICER_CORPORATE_URL + config.ID} object`, () => {
     const navigation = NAVIGATION[config.MANAGING_OFFICER_CORPORATE_URL + config.ID].previousPage();
     expect(navigation).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
   });
 
+  test(`NAVIGATION returns ${config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL} when calling previousPage on ${config.MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL + config.ID} object`, () => {
+    const navigation = NAVIGATION[config.MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL + config.ID].previousPage(mockGetApplicationData(), mockRequestWithParams);
+    expect(navigation).toEqual(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
+  });
+
   test(`NAVIGATION returns ${config.BENEFICIAL_OWNER_TYPE_URL} when calling previousPage on ${config.TRUST_INFO_URL} object`, () => {
     const navigation = NAVIGATION[config.TRUST_INFO_URL].previousPage();
     expect(navigation).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
+  });
+
+  test(`NAVIGATION returns ${config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL} when calling previousPage on ${config.TRUST_INFO_WITH_PARAMS_URL} object`, () => {
+    const navigation = NAVIGATION[config.TRUST_INFO_WITH_PARAMS_URL].previousPage(mockGetApplicationData(), mockRequestWithParams);
+    expect(navigation).toEqual(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
   });
 
   // Update Journey

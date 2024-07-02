@@ -79,6 +79,10 @@ export interface TrustIndividual {
   sa_address_postal_code?: string;
   sa_address_care_of?: string;
   sa_address_po_box?: string;
+  still_involved?: string;
+  ceased_date_day?: string;
+  ceased_date_month?: string;
+  ceased_date_year?: string;
 }
 
 interface TrustHistoricalBeneficialOwnerCommon {
@@ -154,6 +158,10 @@ export type TrustCorporate = {
   identification_registration_number?: string;
   is_service_address_same_as_principal_address: yesNoResponse;
   is_on_register_in_country_formed_in: yesNoResponse;
+  ceased_date_day?: string;
+  ceased_date_month?: string;
+  ceased_date_year?: string;
+  still_involved?: string;
 };
 
 export interface BeneficialOwnerItem {

@@ -28,6 +28,7 @@ import {
   SECURE_UPDATE_FILTER_URL,
   REMOVE_SERVICE_NAME,
   REMOVE_CONFIRM_STATEMENT_URL,
+  UPDATE_DUE_DILIGENCE_CHANGE_AGENT_CODE,
 } from "../../../src/config";
 import app from "../../../src/app";
 import {
@@ -342,6 +343,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME);
       expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_CHANGE_AML_NUMBER);
       expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_CHANGE_PARTNER_NAME);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_CHANGE_AGENT_CODE);
     });
 
     test.each([

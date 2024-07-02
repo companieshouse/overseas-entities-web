@@ -40,6 +40,7 @@ import { authentication } from "../../../src/middleware/authentication.middlewar
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import app from "../../../src/app";
 import {
+  RELEVANT_PERIOD_QUERY_PARAM,
   UPDATE_BENEFICIAL_OWNER_OTHER_PAGE,
   UPDATE_BENEFICIAL_OWNER_OTHER_URL,
   UPDATE_BENEFICIAL_OWNER_TYPE_URL
@@ -52,6 +53,8 @@ import {
   MESSAGE_ERROR,
   PAGE_TITLE_ERROR,
   PUBLIC_REGISTER_HINT_TEXT,
+  RELEVANT_PERIOD,
+  RELEVANT_PERIOD_OTHER_LEGAL_ENTITY_INFORMATION,
   SERVICE_UNAVAILABLE,
   SHOW_INFORMATION_ON_PUBLIC_REGISTER,
   TRUSTS_NOC_HEADING,
@@ -163,6 +166,20 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
 
       expect(response.status).toEqual(500);
       expect(response.text).toContain(SERVICE_UNAVAILABLE);
+    });
+
+    test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page when relevant_period=true`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
+
+      const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_OTHER_URL + RELEVANT_PERIOD_QUERY_PARAM);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(RELEVANT_PERIOD_OTHER_LEGAL_ENTITY_INFORMATION);
+      expect(resp.text).toContain(RELEVANT_PERIOD);
+      expect(resp.text).toContain("1");
+      expect(resp.text).toContain("January");
+      expect(resp.text).toContain("2023");
     });
   });
 

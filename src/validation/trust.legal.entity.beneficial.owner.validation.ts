@@ -1,9 +1,11 @@
 import { body, check } from "express-validator";
 import { ErrorMessages } from "./error.messages";
 import { legal_entity_usual_residential_service_address_validations, principal_address_validations } from "./fields/address.validation";
-import { dateBecameIPLegalEntityBeneficialOwner } from "./fields/date.validation";
+import { dateBecameIPLegalEntityBeneficialOwner, trusteeLegalEntityCeasedDateValidations } from "./fields/date.validation";
 import { ErrorMessagesOptional, ErrorMessagesRequired } from "./models/address.error.model";
 import { VALID_CHARACTERS } from "./regex/regex.validation";
+import { ApplicationData } from "../model";
+import { getApplicationData } from "../utils/application.data";
 
 const addressErrorMessages: ErrorMessagesOptional = {
   propertyValueError: ErrorMessages.PROPERTY_NAME_OR_NUMBER_LEGAL_ENTITY_BO,
@@ -69,6 +71,13 @@ export const trustLegalEntityBeneficialOwnerValidator = [
     .custom( async (value, { req }) => {
       await checkIfLessThanTargetValue(req.body.public_register_name.length, req.body.public_register_jurisdiction.length, 160);
     }),
+  body("stillInvolved")
+    .if((value, { req }) => {
+      const appData: ApplicationData = getApplicationData(req.session);
+      return !!appData.entity_number; // !! = truthy check
+    })
+    .not().isEmpty().withMessage(ErrorMessages.TRUSTEE_STILL_INVOLVED),
+  ...trusteeLegalEntityCeasedDateValidations
 ];
 
 export const checkIfLessThanTargetValue = async (value1: number, value2: number, target: number) => {

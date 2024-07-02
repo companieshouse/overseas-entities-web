@@ -231,7 +231,7 @@ export const CONTINUE_SAVED_FILING_PAGE_TITLE = "Do you want to continue with a 
 export const REVIEWED_BENEFICIAL_OWNER_MANAGING_OFFICER_TABLE_HEADING = "What you have reviewed";
 export const NEWLY_ADDED_BENEFICIAL_OWNERS_SUMMARY_TABLE_HEADING = "What you have added in this update";
 export const UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE_TITLE = "You're about to review overseas entity information";
-export const UPDATE_DO_YOU_WANT_TO_CHANGE_OE_TITLE = "Do you need to make any changes to this overseas entity?";
+export const UPDATE_DO_YOU_WANT_TO_CHANGE_OE_TITLE = "Do you need to make any changes to this overseas entity for the update period?";
 export const REMOVE_DO_YOU_WANT_TO_CHANGE_OE_TITLE = "Do you need to make any changes to this overseas entity before it is removed?";
 export const UPDATE_DO_YOU_WANT_TO_CHANGE_OE_YES_TEXT = "Yes, I need to make changes";
 export const UPDATE_DO_YOU_WANT_TO_CHANGE_OE_NO_TEXT = "No, I do not need to make changes";
@@ -268,6 +268,7 @@ export const RELEVANT_PERIOD_CHANGE_BENEFICIARY = "at least one person became or
 export const RELEVANT_PERIOD_NO_CHANGE_BENEFICIARY = "anyone became or ceased to be a beneficiary of a trust";
 export const RELEVANT_PERIOD_INDIVIDUAL_BENEFICIAL_OWNER = "Individual beneficial owner";
 export const SELECT_IF_REGISTER_DURING_PRE_REG_PERIOD = "Select yes if the overseas entity was the registered owner of UK land during the pre-registration period.";
+export const RELEVANT_PERIOD_EXTRA_INFO_REQUIRED = "Based on the pre-registration statement you provided earlier in this service";
 export const RELEVANT_PERIOD_INFORMATION = "You need to enter information that is correct as at the date they ceased to be a registrable beneficial owner.";
 
 // Remove journey

@@ -6,6 +6,14 @@ import { RoleWithinTrustType } from '../../model/role.within.trust.type.model';
 import { getLegalEntityTrustee } from '../../utils/trusts';
 import { ApplicationData } from 'model';
 
+enum YesOrNo {
+  No = "0",
+  Yes = "1"
+}
+
+const isYesOrNo = (value: string): boolean =>
+  Object.keys(YesOrNo).includes(value);
+
 const mapLegalEntityToSession = (
   formData: Page.TrustLegalEntityForm,
   trustee?: Trust.TrustCorporate
@@ -33,8 +41,10 @@ const mapLegalEntityToSession = (
     identification_legal_authority: formData.governingLaw,
     identification_legal_form: formData.legalForm,
     is_service_address_same_as_principal_address: (formData.is_service_address_same_as_principal_address) ? Number(formData.is_service_address_same_as_principal_address) : 0,
-
     is_on_register_in_country_formed_in: (formData.is_on_register_in_country_formed_in) ? Number(formData.is_on_register_in_country_formed_in) : 0,
+    ceased_date_day: formData.stillInvolved === "0" ? formData.ceasedDateDay : "",
+    ceased_date_month: formData.stillInvolved === "0" ? formData.ceasedDateMonth : "",
+    ceased_date_year: formData.stillInvolved === "0" ? formData.ceasedDateYear : "",
   };
 
   let publicRegisterData = {};
@@ -55,6 +65,13 @@ const mapLegalEntityToSession = (
     };
   }
 
+  let stillInvolved: string | null = (formData.stillInvolved === "1") ? "Yes" : "No";
+
+  // If a boolean value isn't receieved from the web form (it could be null or undefined, e.g. if question not displayed), need to set null
+  if (!formData.stillInvolved) {
+    stillInvolved = null;
+  }
+
   if (formData.is_service_address_same_as_principal_address?.toString() === "0") {
     return {
       ...data,
@@ -67,6 +84,7 @@ const mapLegalEntityToSession = (
       sa_address_region: formData.service_address_county,
       sa_address_country: formData.service_address_country,
       sa_address_postal_code: formData.service_address_postcode,
+      still_involved: stillInvolved,
     } as Trust.TrustCorporate;
   } else {
     return {
@@ -80,6 +98,7 @@ const mapLegalEntityToSession = (
       sa_address_region: "",
       sa_address_country: "",
       sa_address_postal_code: "",
+      still_involved: stillInvolved,
     } as Trust.TrustCorporate;
   }
 };
@@ -123,18 +142,28 @@ const mapLegalEntityTrusteeFromSessionToPage = (
     registration_number: trustee.identification_registration_number,
     is_service_address_same_as_principal_address: trustee.is_service_address_same_as_principal_address,
     is_on_register_in_country_formed_in: trustee.is_on_register_in_country_formed_in,
+    ceasedDateDay: trustee.ceased_date_day,
+    ceasedDateMonth: trustee.ceased_date_month,
+    ceasedDateYear: trustee.ceased_date_year,
   } as Page.TrustLegalEntityForm;
 
-  if (trustee.type === RoleWithinTrustType.INTERESTED_PERSON){
+  const stillInvolvedInTrust: string =
+  !trustee.still_involved || !isYesOrNo(trustee.still_involved) ? "" : YesOrNo[trustee.still_involved];
+
+  if (trustee.type === RoleWithinTrustType.INTERESTED_PERSON) {
     return {
       ...data,
       interestedPersonStartDateDay: trustee.date_became_interested_person_day,
       interestedPersonStartDateMonth: trustee.date_became_interested_person_month,
       interestedPersonStartDateYear: trustee.date_became_interested_person_year,
       principal_address_property_name_number: trustee.ro_address_premises,
+      stillInvolved: stillInvolvedInTrust,
     } as Page.TrustLegalEntityForm;
   }
-  return data;
+  return {
+    ...data,
+    stillInvolved: stillInvolvedInTrust,
+  } as Page.TrustLegalEntityForm;
 };
 
 const mapLegalEntityItemToPage = (

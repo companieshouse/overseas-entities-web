@@ -121,6 +121,8 @@ const getNextPage = (beneficialOwnerTypeChoices: BeneficialOwnerTypeChoice | Man
         return config.UPDATE_MANAGING_OFFICER_CORPORATE_URL;
       case ManagingOfficerTypeChoice.individual:
         return config.UPDATE_MANAGING_OFFICER_URL;
+      case BeneficialOwnerTypeChoice.relevantPeriodOtherLegal:
+        return config.UPDATE_BENEFICIAL_OWNER_OTHER_URL + config.RELEVANT_PERIOD_QUERY_PARAM;
       default:
         return config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL;
   }

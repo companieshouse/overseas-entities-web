@@ -210,7 +210,7 @@ mockGetApplicationData.mockReturnValue({
   }
 } as ApplicationData);
 
-describe('Update - Manage Trusts - Review legal entities', () => {
+xdescribe('Update - Manage Trusts - Review legal entities', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });

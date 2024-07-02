@@ -4,8 +4,8 @@ export enum BeneficialOwnerTypeChoice {
     individual = "individualOwner",
     otherLegal = "otherLegalOwner",
     government = "governmentOrPublicOwner",
-    relevantPeriodGovernment = "relevantPeriodGovernment",
-    relevantPeriodOtherLegal = "relevantPeriodOtherLegalOwner"
+    relevantPeriodOtherLegal = "relevantPeriodOtherLegalOwner",
+    relevantPeriodGovernment = "relevantPeriodGovernment"
 }
 
 export enum ManagingOfficerTypeChoice {

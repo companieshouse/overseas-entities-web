@@ -59,7 +59,8 @@ import {
   SAVE_AND_CONTINUE_BUTTON_TEXT,
   SECOND_NATIONALITY,
   SECOND_NATIONALITY_HINT,
-  SERVICE_UNAVAILABLE
+  SERVICE_UNAVAILABLE,
+  BACK_BUTTON_CLASS
 } from '../__mocks__/text.mock';
 import { ApplicationDataType, managingOfficerType } from '../../src/model';
 import { ErrorMessages } from '../../src/validation/error.messages';
@@ -879,7 +880,8 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).toContain(ErrorMessages.SELECT_IF_SERVICE_ADDRESS_SAME_AS_USER_RESIDENTIAL_ADDRESS);
       expect(resp.text).toContain(ErrorMessages.OCCUPATION);
       expect(resp.text).toContain(ErrorMessages.ROLE_AND_RESPONSIBILITIES_INDIVIDUAL);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_URL);
+      expect(resp.text).toContain(NEXT_PAGE_URL);
+      expect(resp.text).toContain(BACK_BUTTON_CLASS);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
@@ -900,7 +902,8 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).toContain(MANAGING_OFFICER);
       expect(resp.text).not.toContain(ErrorMessages.SELECT_IF_INDIVIDUAL_PERSON_HAS_FORMER_NAME);
       expect(resp.text).toContain(ErrorMessages.FORMER_NAME);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_URL);
+      expect(resp.text).toContain(NEXT_PAGE_URL);
+      expect(resp.text).toContain(BACK_BUTTON_CLASS);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 

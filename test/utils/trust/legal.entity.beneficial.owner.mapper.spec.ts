@@ -44,6 +44,13 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
         public_register_name: "Reg Name",
         public_register_jurisdiction: "Reg Jurisdiction",
         registration_number: "9001",
+        interestedPersonStartDateDay: "01",
+        interestedPersonStartDateMonth: "01",
+        interestedPersonStartDateYear: "2024",
+        ceasedDateDay: "02",
+        ceasedDateMonth: "01",
+        ceasedDateYear: "2024",
+        stillInvolved: "0",
       };
 
       test('Map legal entity trustee to session with different service address and not on public reg', () => {
@@ -59,6 +66,9 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
           id: mockFormData.legalEntityId,
           type: mockFormData.roleWithinTrust,
           name: mockFormData.legalEntityName,
+          date_became_interested_person_day: mockFormData.interestedPersonStartDateDay,
+          date_became_interested_person_month: mockFormData.interestedPersonStartDateMonth,
+          date_became_interested_person_year: mockFormData.interestedPersonStartDateYear,
           ro_address_premises: mockFormData.principal_address_property_name_number,
           ro_address_line_1: mockFormData.principal_address_line_1,
           ro_address_line_2: mockFormData.principal_address_line_2,
@@ -81,6 +91,10 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
           identification_legal_form: mockFormData.legalForm,
           is_service_address_same_as_principal_address: mockFormData.is_service_address_same_as_principal_address,
           is_on_register_in_country_formed_in: mockFormData.is_on_register_in_country_formed_in,
+          ceased_date_day: mockFormData.ceasedDateDay,
+          ceased_date_month: mockFormData.ceasedDateMonth,
+          ceased_date_year: mockFormData.ceasedDateYear,
+          still_involved: "No",
         });
       });
 
@@ -128,6 +142,10 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
           identification_registration_number: mockFormData.registration_number,
           is_service_address_same_as_principal_address: mockFormData.is_service_address_same_as_principal_address,
           is_on_register_in_country_formed_in: mockFormData.is_on_register_in_country_formed_in,
+          ceased_date_day: mockFormData.ceasedDateDay,
+          ceased_date_month: mockFormData.ceasedDateMonth,
+          ceased_date_year: mockFormData.ceasedDateYear,
+          still_involved: "No",
         });
       });
 
@@ -168,7 +186,11 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
         identification_country_registration: "Reg Jurisdiction",
         identification_registration_number: "9002",
         is_service_address_same_as_principal_address: yesNoResponse.Yes,
-        is_on_register_in_country_formed_in: yesNoResponse.Yes
+        is_on_register_in_country_formed_in: yesNoResponse.Yes,
+        ceased_date_day: "01",
+        ceased_date_month: "02",
+        ceased_date_year: "2020",
+        still_involved: "No"
       };
       test("Map legal entity trustee session data to page", () => {
 
@@ -213,6 +235,10 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
           is_service_address_same_as_principal_address: mockSessionData.is_service_address_same_as_principal_address,
           is_on_register_in_country_formed_in: mockSessionData.is_on_register_in_country_formed_in,
           is_newly_added: true,
+          ceasedDateDay: mockSessionData.ceased_date_day,
+          ceasedDateMonth: mockSessionData.ceased_date_month,
+          ceasedDateYear: mockSessionData.ceased_date_year,
+          stillInvolved: "0"
         });
       });
 
@@ -266,6 +292,10 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
           is_service_address_same_as_principal_address: mockSessionData.is_service_address_same_as_principal_address,
           is_on_register_in_country_formed_in: mockSessionData.is_on_register_in_country_formed_in,
           is_newly_added: true,
+          ceasedDateDay: mockSessionData.ceased_date_day,
+          ceasedDateMonth: mockSessionData.ceased_date_month,
+          ceasedDateYear: mockSessionData.ceased_date_year,
+          stillInvolved: "0"
         });
       });
       test("Map legal entity trustee session data to page trustee item", () => {
@@ -278,6 +308,207 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
           is_newly_added: true,
         });
       });
+
+      test("Test stillInvolved flag with Yes", () => {
+
+        const trustId = '987';
+        const trusteeId = '9998';
+
+        const mockSessionData = {
+          ...mockSessionDataBasic,
+          still_involved: "Yes",
+        };
+
+        const appData = {
+          [TrustKey]: [{
+            'trust_id': trustId,
+            'CORPORATES': [ mockSessionData ] as TrustCorporate[],
+          }]
+        } as ApplicationData;
+        expect(
+          mapLegalEntityTrusteeByIdFromSessionToPage(appData, trustId, trusteeId)
+        ).toEqual({
+          legalEntityId: mockSessionData.id,
+          legalEntityName: mockSessionData.name,
+          principal_address_property_name_number: mockSessionData.ro_address_premises,
+          principal_address_line_1: mockSessionData.ro_address_line_1,
+          principal_address_line_2: mockSessionData.ro_address_line_2,
+          principal_address_town: mockSessionData.ro_address_locality,
+          principal_address_county: mockSessionData.ro_address_region,
+          principal_address_country: mockSessionData.ro_address_country,
+          principal_address_postcode: mockSessionData.ro_address_postal_code,
+          service_address_property_name_number: mockSessionData.sa_address_premises,
+          service_address_line_1: mockSessionData.sa_address_line_1,
+          service_address_line_2: mockSessionData.sa_address_line_2,
+          service_address_town: mockSessionData.sa_address_locality,
+          service_address_county: mockSessionData.sa_address_region,
+          service_address_country: mockSessionData.sa_address_country,
+          service_address_postcode: mockSessionData.sa_address_postal_code,
+          governingLaw: mockSessionData.identification_legal_authority,
+          legalForm: mockSessionData.identification_legal_form,
+          public_register_name: mockSessionData.identification_place_registered,
+          public_register_jurisdiction: mockSessionData.identification_country_registration,
+          registration_number: mockSessionData.identification_registration_number,
+          is_service_address_same_as_principal_address: mockSessionData.is_service_address_same_as_principal_address,
+          is_on_register_in_country_formed_in: mockSessionData.is_on_register_in_country_formed_in,
+          is_newly_added: true,
+          ceasedDateDay: mockSessionData.ceased_date_day,
+          ceasedDateMonth: mockSessionData.ceased_date_month,
+          ceasedDateYear: mockSessionData.ceased_date_year,
+          stillInvolved: "1"
+        });
+      });
+
+      test("Test stillInvolved flag with No", () => {
+
+        const trustId = '987';
+        const trusteeId = '9998';
+
+        const mockSessionData = {
+          ...mockSessionDataBasic,
+          still_involved: "No",
+        };
+
+        const appData = {
+          [TrustKey]: [{
+            'trust_id': trustId,
+            'CORPORATES': [ mockSessionData ] as TrustCorporate[],
+          }]
+        } as ApplicationData;
+        expect(
+          mapLegalEntityTrusteeByIdFromSessionToPage(appData, trustId, trusteeId)
+        ).toEqual({
+          legalEntityId: mockSessionData.id,
+          legalEntityName: mockSessionData.name,
+          principal_address_property_name_number: mockSessionData.ro_address_premises,
+          principal_address_line_1: mockSessionData.ro_address_line_1,
+          principal_address_line_2: mockSessionData.ro_address_line_2,
+          principal_address_town: mockSessionData.ro_address_locality,
+          principal_address_county: mockSessionData.ro_address_region,
+          principal_address_country: mockSessionData.ro_address_country,
+          principal_address_postcode: mockSessionData.ro_address_postal_code,
+          service_address_property_name_number: mockSessionData.sa_address_premises,
+          service_address_line_1: mockSessionData.sa_address_line_1,
+          service_address_line_2: mockSessionData.sa_address_line_2,
+          service_address_town: mockSessionData.sa_address_locality,
+          service_address_county: mockSessionData.sa_address_region,
+          service_address_country: mockSessionData.sa_address_country,
+          service_address_postcode: mockSessionData.sa_address_postal_code,
+          governingLaw: mockSessionData.identification_legal_authority,
+          legalForm: mockSessionData.identification_legal_form,
+          public_register_name: mockSessionData.identification_place_registered,
+          public_register_jurisdiction: mockSessionData.identification_country_registration,
+          registration_number: mockSessionData.identification_registration_number,
+          is_service_address_same_as_principal_address: mockSessionData.is_service_address_same_as_principal_address,
+          is_on_register_in_country_formed_in: mockSessionData.is_on_register_in_country_formed_in,
+          is_newly_added: true,
+          ceasedDateDay: mockSessionData.ceased_date_day,
+          ceasedDateMonth: mockSessionData.ceased_date_month,
+          ceasedDateYear: mockSessionData.ceased_date_year,
+          stillInvolved: "0"
+        });
+      });
+
+      test("Test stillInvolved flag not defined", () => {
+
+        const trustId = '987';
+        const trusteeId = '9998';
+
+        const mockSessionData = {
+          ...mockSessionDataBasic,
+          still_involved: undefined,
+        };
+
+        const appData = {
+          [TrustKey]: [{
+            'trust_id': trustId,
+            'CORPORATES': [ mockSessionData ] as TrustCorporate[],
+          }]
+        } as ApplicationData;
+        expect(
+          mapLegalEntityTrusteeByIdFromSessionToPage(appData, trustId, trusteeId)
+        ).toEqual({
+          legalEntityId: mockSessionData.id,
+          legalEntityName: mockSessionData.name,
+          principal_address_property_name_number: mockSessionData.ro_address_premises,
+          principal_address_line_1: mockSessionData.ro_address_line_1,
+          principal_address_line_2: mockSessionData.ro_address_line_2,
+          principal_address_town: mockSessionData.ro_address_locality,
+          principal_address_county: mockSessionData.ro_address_region,
+          principal_address_country: mockSessionData.ro_address_country,
+          principal_address_postcode: mockSessionData.ro_address_postal_code,
+          service_address_property_name_number: mockSessionData.sa_address_premises,
+          service_address_line_1: mockSessionData.sa_address_line_1,
+          service_address_line_2: mockSessionData.sa_address_line_2,
+          service_address_town: mockSessionData.sa_address_locality,
+          service_address_county: mockSessionData.sa_address_region,
+          service_address_country: mockSessionData.sa_address_country,
+          service_address_postcode: mockSessionData.sa_address_postal_code,
+          governingLaw: mockSessionData.identification_legal_authority,
+          legalForm: mockSessionData.identification_legal_form,
+          public_register_name: mockSessionData.identification_place_registered,
+          public_register_jurisdiction: mockSessionData.identification_country_registration,
+          registration_number: mockSessionData.identification_registration_number,
+          is_service_address_same_as_principal_address: mockSessionData.is_service_address_same_as_principal_address,
+          is_on_register_in_country_formed_in: mockSessionData.is_on_register_in_country_formed_in,
+          is_newly_added: true,
+          ceasedDateDay: mockSessionData.ceased_date_day,
+          ceasedDateMonth: mockSessionData.ceased_date_month,
+          ceasedDateYear: mockSessionData.ceased_date_year,
+          stillInvolved: ""
+        });
+      });
+
+      test("Test stillInvolved flag with invalid value", () => {
+
+        const trustId = '987';
+        const trusteeId = '9998';
+
+        const mockSessionData = {
+          ...mockSessionDataBasic,
+          still_involved: "Wrong",
+        };
+
+        const appData = {
+          [TrustKey]: [{
+            'trust_id': trustId,
+            'CORPORATES': [ mockSessionData ] as TrustCorporate[],
+          }]
+        } as ApplicationData;
+        expect(
+          mapLegalEntityTrusteeByIdFromSessionToPage(appData, trustId, trusteeId)
+        ).toEqual({
+          legalEntityId: mockSessionData.id,
+          legalEntityName: mockSessionData.name,
+          principal_address_property_name_number: mockSessionData.ro_address_premises,
+          principal_address_line_1: mockSessionData.ro_address_line_1,
+          principal_address_line_2: mockSessionData.ro_address_line_2,
+          principal_address_town: mockSessionData.ro_address_locality,
+          principal_address_county: mockSessionData.ro_address_region,
+          principal_address_country: mockSessionData.ro_address_country,
+          principal_address_postcode: mockSessionData.ro_address_postal_code,
+          service_address_property_name_number: mockSessionData.sa_address_premises,
+          service_address_line_1: mockSessionData.sa_address_line_1,
+          service_address_line_2: mockSessionData.sa_address_line_2,
+          service_address_town: mockSessionData.sa_address_locality,
+          service_address_county: mockSessionData.sa_address_region,
+          service_address_country: mockSessionData.sa_address_country,
+          service_address_postcode: mockSessionData.sa_address_postal_code,
+          governingLaw: mockSessionData.identification_legal_authority,
+          legalForm: mockSessionData.identification_legal_form,
+          public_register_name: mockSessionData.identification_place_registered,
+          public_register_jurisdiction: mockSessionData.identification_country_registration,
+          registration_number: mockSessionData.identification_registration_number,
+          is_service_address_same_as_principal_address: mockSessionData.is_service_address_same_as_principal_address,
+          is_on_register_in_country_formed_in: mockSessionData.is_on_register_in_country_formed_in,
+          is_newly_added: true,
+          ceasedDateDay: mockSessionData.ceased_date_day,
+          ceasedDateMonth: mockSessionData.ceased_date_month,
+          ceasedDateYear: mockSessionData.ceased_date_year,
+          stillInvolved: ""
+        });
+      });
+
     });
   });
 });

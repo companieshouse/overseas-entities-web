@@ -207,7 +207,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL]: {
     currentPage: config.WHO_IS_MAKING_FILING_PAGE,
-    previousPage: () => config.PRESENTER_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.PRESENTER_WITH_PARAMS_URL, req),
     nextPage: [config.DUE_DILIGENCE_URL, config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL]
   },
   [config.DUE_DILIGENCE_URL]: {
@@ -217,7 +217,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.DUE_DILIGENCE_WITH_PARAMS_URL]: {
     currentPage: config.DUE_DILIGENCE_PAGE,
-    previousPage: () => config.WHO_IS_MAKING_FILING_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL, req),
     nextPage: [config.ENTITY_URL]
   },
   [config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL]: {
@@ -227,7 +227,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_PARAMS_URL]: {
     currentPage: config.OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE,
-    previousPage: () => config.WHO_IS_MAKING_FILING_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL, req),
     nextPage: [config.ENTITY_URL]
   },
   [config.ENTITY_URL]: {
@@ -247,7 +247,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL]: {
     currentPage: config.BENEFICIAL_OWNER_STATEMENTS_PAGE,
-    previousPage: () => config.ENTITY_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.ENTITY_WITH_PARAMS_URL, req),
     nextPage: [config.BENEFICIAL_OWNER_TYPE_URL]
   },
   [config.BENEFICIAL_OWNER_DELETE_WARNING_URL]: {
@@ -257,7 +257,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.BENEFICIAL_OWNER_DELETE_WARNING_WITH_PARAMS_URL]: {
     currentPage: config.BENEFICIAL_OWNER_DELETE_WARNING_PAGE,
-    previousPage: () => config.BENEFICIAL_OWNER_STATEMENTS_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL, req),
     nextPage: [config.BENEFICIAL_OWNER_STATEMENTS_URL, config.BENEFICIAL_OWNER_TYPE_URL]
   },
   [config.BENEFICIAL_OWNER_TYPE_URL]: {
@@ -267,7 +267,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL]: {
     currentPage: config.BENEFICIAL_OWNER_TYPE_PAGE,
-    previousPage: () => config.BENEFICIAL_OWNER_STATEMENTS_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL, req),
     nextPage: [config.CHECK_YOUR_ANSWERS_URL, config.TRUST_INFO_URL]
   },
   [config.BENEFICIAL_OWNER_TYPE_SUBMIT_URL]: {
@@ -277,7 +277,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.BENEFICIAL_OWNER_TYPE_SUBMIT_WITH_PARAMS_URL]: {
     currentPage: config.BENEFICIAL_OWNER_TYPE_PAGE,
-    previousPage: () => config.BENEFICIAL_OWNER_STATEMENTS_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL, req),
     nextPage: [config.CHECK_YOUR_ANSWERS_URL, config.TRUST_INFO_URL]
   },
   [config.BENEFICIAL_OWNER_INDIVIDUAL_URL]: {
@@ -287,7 +287,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL]: {
     currentPage: config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
-    previousPage: () => config.BENEFICIAL_OWNER_TYPE_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req),
     nextPage: [config.BENEFICIAL_OWNER_TYPE_URL]
   },
   [config.BENEFICIAL_OWNER_OTHER_URL]: {
@@ -297,7 +297,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL]: {
     currentPage: config.BENEFICIAL_OWNER_OTHER_PAGE,
-    previousPage: () => config.BENEFICIAL_OWNER_TYPE_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req),
     nextPage: [config.BENEFICIAL_OWNER_TYPE_URL]
   },
   [config.BENEFICIAL_OWNER_GOV_URL]: {
@@ -307,7 +307,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL]: {
     currentPage: config.BENEFICIAL_OWNER_GOV_PAGE,
-    previousPage: () => config.BENEFICIAL_OWNER_TYPE_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req),
     nextPage: [config.BENEFICIAL_OWNER_TYPE_URL]
   },
   [config.MANAGING_OFFICER_URL]: {
@@ -317,7 +317,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.MANAGING_OFFICER_WITH_PARAMS_URL]: {
     currentPage: config.MANAGING_OFFICER_PAGE,
-    previousPage: () => config.BENEFICIAL_OWNER_TYPE_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req),
     nextPage: [config.BENEFICIAL_OWNER_TYPE_URL]
   },
   [config.MANAGING_OFFICER_CORPORATE_URL]: {
@@ -327,7 +327,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL]: {
     currentPage: config.MANAGING_OFFICER_CORPORATE_PAGE,
-    previousPage: () => config.BENEFICIAL_OWNER_TYPE_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req),
     nextPage: [config.BENEFICIAL_OWNER_TYPE_URL]
   },
   [config.MANAGING_OFFICER_CORPORATE_URL + config.ID]: {
@@ -337,7 +337,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL + config.ID]: {
     currentPage: config.MANAGING_OFFICER_CORPORATE_PAGE,
-    previousPage: () => config.BENEFICIAL_OWNER_TYPE_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req),
     nextPage: [config.BENEFICIAL_OWNER_TYPE_URL]
   },
   [config.BENEFICIAL_OWNER_INDIVIDUAL_URL + config.ID]: {
@@ -347,7 +347,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL + config.ID]: {
     currentPage: config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
-    previousPage: () => config.BENEFICIAL_OWNER_TYPE_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req),
     nextPage: [config.BENEFICIAL_OWNER_TYPE_URL]
   },
   [config.BENEFICIAL_OWNER_OTHER_URL + config.ID]: {
@@ -357,7 +357,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL + config.ID]: {
     currentPage: config.BENEFICIAL_OWNER_OTHER_PAGE,
-    previousPage: () => config.BENEFICIAL_OWNER_TYPE_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req),
     nextPage: [config.BENEFICIAL_OWNER_TYPE_URL]
   },
   [config.BENEFICIAL_OWNER_GOV_URL + config.ID]: {
@@ -367,7 +367,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL + config.ID]: {
     currentPage: config.BENEFICIAL_OWNER_GOV_PAGE,
-    previousPage: () => config.BENEFICIAL_OWNER_TYPE_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req),
     nextPage: [config.BENEFICIAL_OWNER_TYPE_URL]
   },
   [config.MANAGING_OFFICER_URL + config.ID]: {
@@ -377,7 +377,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.MANAGING_OFFICER_WITH_PARAMS_URL + config.ID]: {
     currentPage: config.MANAGING_OFFICER_PAGE,
-    previousPage: () => config.BENEFICIAL_OWNER_TYPE_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req),
     nextPage: [config.BENEFICIAL_OWNER_TYPE_URL]
   },
   [config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_URL]: {
@@ -403,6 +403,11 @@ export const NAVIGATION: Navigation = {
   [config.TRUST_INFO_URL]: {
     currentPage: config.TRUST_INFO_PAGE,
     previousPage: () => config.BENEFICIAL_OWNER_TYPE_URL,
+    nextPage: [config.CHECK_YOUR_ANSWERS_URL]
+  },
+  [config.TRUST_INFO_WITH_PARAMS_URL]: {
+    currentPage: config.TRUST_INFO_PAGE,
+    previousPage: () => config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
     nextPage: [config.CHECK_YOUR_ANSWERS_URL]
   },
   [config.SIGN_OUT_URL]: {

@@ -29,6 +29,7 @@ import {
   BeneficialOwnerStatementKey,
 } from "../../src/model/beneficial.owner.statement.model";
 import {
+  BACK_BUTTON_CLASS,
   BENEFICIAL_OWNER_DELETE_WARNING_PAGE_HEADING,
   PAGE_TITLE_ERROR,
   SERVICE_UNAVAILABLE,
@@ -346,10 +347,11 @@ describe("BENEFICIAL OWNER DELETE WARNING controller", () => {
       const resp = await request(app).post(config.BENEFICIAL_OWNER_DELETE_WARNING_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(config.BENEFICIAL_OWNER_STATEMENTS_URL);
       expect(resp.text).toContain(config.LANDING_PAGE_URL);
       expect(resp.text).toContain(BENEFICIAL_OWNER_DELETE_WARNING_PAGE_HEADING);
       expect(resp.text).toContain(ErrorMessages.SELECT_IF_YOU_WANT_TO_CHANGE_INFORMATION);
+      expect(resp.text).toContain(NEXT_PAGE_URL);
+      expect(resp.text).toContain(BACK_BUTTON_CLASS);
     });
 
     test(`POST empty object and check for error in page title`, async () => {

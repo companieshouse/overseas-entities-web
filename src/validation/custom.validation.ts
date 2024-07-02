@@ -392,6 +392,20 @@ export const checkHistoricalBOEndDate = (dayStr: string = "", monthStr: string =
   return true;
 };
 
+export const checkTrusteeCeasedDate = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+  const dateFieldErrors = {
+    completelyEmptyDateError: ErrorMessages.ENTER_DATE_OF_CEASED_TRUSTEE,
+    noDayAndMonthError: ErrorMessages.DAY_AND_MONTH_OF_CEASED_TRUSTEE,
+    noMonthAndYearError: ErrorMessages.MONTH_AND_YEAR_OF_CEASED_TRUSTEE,
+    noDayAndYearError: ErrorMessages.DAY_AND_YEAR_OF_CEASED_TRUSTEE,
+  };
+
+  checkDateFieldsForErrors(dateFieldErrors, dayStr, monthStr, yearStr);
+  checkAllDateFieldsArePresent(dayStr, monthStr, yearStr) && checkDateValueIsValid(ErrorMessages.INVALID_DATE_OF_CEASED_TRUSTEE, dayStr, monthStr, yearStr);
+  checkDateIsInPastOrToday(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY_OF_CEASED_TRUSTEE, dayStr, monthStr, yearStr);
+  return true;
+};
+
 export const checkDateOfBirthFieldsArePresent = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   if (!checkAllDateFieldsArePresent(dayStr, monthStr, yearStr)) {
     return false;

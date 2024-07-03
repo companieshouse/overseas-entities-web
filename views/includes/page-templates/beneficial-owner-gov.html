@@ -3,9 +3,9 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
     {% include "includes/list/errors.html" %}
-    {% include "includes/page-templates/relevant-period-common-code.html" %}
     
     <form class="form" method="post">
+      {% include "includes/page-templates/relevant-period-common-code.html" %}
       {% include "includes/csrf_token.html" %}  
       {% include "includes/inputs/fields/name-input.html" %}
 

@@ -412,8 +412,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
 
     const expectTextToContainBOTypePageURL = (text: string) => {
-      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
-      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.ACTIVE_SUBMISSION_BASE_PATH);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(2);
       expect(text).toContain(config.REGISTER_AN_OVERSEAS_ENTITY_URL + MOCKED_URL + config.BENEFICIAL_OWNER_TYPE_PAGE);
     };
   });
@@ -564,8 +563,8 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING_SOME_IDENTIFIED);
       expect(resp.text).toContain(ErrorMessages.MUST_ADD_MANAGING_OFFICER);
-      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
-      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.ACTIVE_SUBMISSION_BASE_PATH);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(2);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL);
     });
 
     test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} has only ole corporate beneficial owner`, async () => {
@@ -585,8 +584,8 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING_SOME_IDENTIFIED);
       expect(resp.text).toContain(ErrorMessages.MUST_ADD_MANAGING_OFFICER);
-      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
-      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.ACTIVE_SUBMISSION_BASE_PATH);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(2);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL);
     });
 
     test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} has only gov beneficial owner`, async () => {
@@ -606,8 +605,8 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING_SOME_IDENTIFIED);
       expect(resp.text).toContain(ErrorMessages.MUST_ADD_MANAGING_OFFICER);
-      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
-      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.ACTIVE_SUBMISSION_BASE_PATH);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(2);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL);
     });
 
     test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} has only individual managing officer`, async () => {
@@ -627,8 +626,8 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING_SOME_IDENTIFIED);
       expect(resp.text).toContain(ErrorMessages.MUST_ADD_BENEFICIAL_OWNER);
-      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
-      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.ACTIVE_SUBMISSION_BASE_PATH);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(2);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL);
     });
 
     test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} has only corporate managing officer`, async () => {
@@ -648,8 +647,8 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING_SOME_IDENTIFIED);
       expect(resp.text).toContain(ErrorMessages.MUST_ADD_BENEFICIAL_OWNER);
-      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
-      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.ACTIVE_SUBMISSION_BASE_PATH);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(2);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL);
     });
 
     test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} has no beneficial owner`, async () => {
@@ -668,8 +667,8 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING_SOME_IDENTIFIED);
       expect(resp.text).toContain(ErrorMessages.MUST_ADD_BENEFICIAL_OWNER);
-      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
-      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.ACTIVE_SUBMISSION_BASE_PATH);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(2);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL);
     });
 
     test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} has no managing officer`, async () => {
@@ -687,8 +686,8 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING_SOME_IDENTIFIED);
       expect(resp.text).toContain(ErrorMessages.MUST_ADD_MANAGING_OFFICER);
-      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
-      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.ACTIVE_SUBMISSION_BASE_PATH);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(2);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL);
     });
   });
 

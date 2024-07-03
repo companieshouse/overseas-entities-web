@@ -17,7 +17,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       return next(createAndLogErrorRequest(req, `Rejecting update payment redirect, payment state does not match. Payment Request: ${ JSON.stringify(savedPayment)}`));
     }
 
-    if (status === config.PAYMENT_PAID){
+    if (status === config.PAYMENT_PAID) {
       logger.debugRequest(req, `Overseas Entity id: ${ appData[OverseasEntityKey] }, Payment status: ${status}, Redirecting to: ${config.UPDATE_CONFIRMATION_URL}`);
       return res.redirect(config.UPDATE_CONFIRMATION_URL);
     } else {

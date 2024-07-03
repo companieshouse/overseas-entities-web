@@ -22,6 +22,7 @@ import {
   ERROR
 } from "../__mocks__/session.mock";
 import {
+  BACK_BUTTON_CLASS,
   BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING,
   PAGE_TITLE_ERROR,
   SAVE_AND_CONTINUE_BUTTON_TEXT,
@@ -270,7 +271,8 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING);
       expect(resp.text).toContain(ErrorMessages.SELECT_IF_ANY_BENEFICIAL_OWNERS_BEEN_IDENTIFIED);
-      expect(resp.text).toContain(config.ENTITY_URL);
+      expect(resp.text).toContain(NEXT_PAGE_URL);
+      expect(resp.text).toContain(BACK_BUTTON_CLASS);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 

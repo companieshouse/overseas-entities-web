@@ -6,7 +6,11 @@ import { isActiveFeature } from "../utils/feature.flag";
 import { getUrlWithParamsToPath } from "../utils/url";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
-  getDueDiligence(req, res, next, config.OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE, config.WHO_IS_MAKING_FILING_URL);
+  let backLinkUrl: string = config.WHO_IS_MAKING_FILING_URL;
+  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+    backLinkUrl = getUrlWithParamsToPath(config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL, req);
+  }
+  getDueDiligence(req, res, next, config.OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE, backLinkUrl);
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {

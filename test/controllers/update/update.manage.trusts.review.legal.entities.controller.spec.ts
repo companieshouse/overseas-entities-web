@@ -203,7 +203,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       expect(resp.text).toContain('Beneficiary');
     });
 
-    test('Page displays status as active when entity is still involved in the trust', async () => {
+    test('Page displays status as active whenthe legal entity trustee is still involved in the trust', async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
 
       const legalEntities = [{
@@ -219,7 +219,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       expect(response.text).toContain('Active');
     });
 
-    test('Page displays status as removed when entity is not still involved in the trust', async () => {
+    test('Page displays status as removed when the legal entity trustee is not still involved in the trust', async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
 
       const legalEntities = [{

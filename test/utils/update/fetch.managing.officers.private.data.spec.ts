@@ -64,14 +64,6 @@ describe("fetchManagingOfficersPrivateData", () => {
     expect(email_address).toEqual("jane.doe@example.com");
   });
 
-  test("should return early when feature flag is active", async () => {
-    mockIsActiveFeature.mockReturnValue(true);
-
-    await fetchManagingOfficersPrivateData(appData, req);
-
-    expect(mockGetManagingOfficersPrivateData).not.toHaveBeenCalled();
-  });
-
   test("should handle absence of private Managing Officer details", async () => {
     mockIsActiveFeature.mockReturnValue(false);
     mockGetManagingOfficersPrivateData.mockResolvedValue([]);

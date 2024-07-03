@@ -15,13 +15,11 @@ import {
   PRIVATE_BO_DATA_MOCK,
   PRIVATE_BO_ADDRESS
 } from "../../__mocks__/get.beneficial.owner.private.data.mock";
-import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { FETCH_BO_APPLICATION_DATA_MOCK, FETCH_BO_APPLICATION_DATA_MOCK_NO_CH_REF } from "../../__mocks__/session.mock";
 
 const mockGetBeneficialOwnersPrivateData = getBeneficialOwnersPrivateData as jest.Mock;
 const mockLoggerInfo = logger.info as jest.Mock;
 const mockLoggerError = logger.errorRequest as jest.Mock;
-const mockIsActiveFeature = isActiveFeature as jest.Mock;
 
 describe("Test fetching and mapping BO private data", () => {
   let appData: ApplicationData, req: Request;
@@ -64,16 +62,6 @@ describe("Test fetching and mapping BO private data", () => {
     expect(boGovPrincipalAddress?.postcode).toEqual(PRIVATE_BO_ADDRESS.postalCode);
     expect(boGovPrincipalAddress?.county).toEqual(PRIVATE_BO_ADDRESS.region);
     expect(boGovPrincipalAddress?.country).toEqual(PRIVATE_BO_ADDRESS.country);
-  });
-
-  test("should not fetch and map BO private data if FEATURE_FLAG_DISABLE_UPDATE_PRIVATE_DATA_FETCH=true", async () => {
-    appData = {};
-    mockIsActiveFeature.mockReturnValueOnce(true);
-    await fetchBeneficialOwnersPrivateData(appData, req);
-    expect(mockGetBeneficialOwnersPrivateData).not.toHaveBeenCalled();
-    expect(appData.update?.review_beneficial_owners_individual?.length).toBeUndefined();
-    expect(appData.update?.review_beneficial_owners_corporate?.length).toBeUndefined();
-    expect(appData.update?.review_beneficial_owners_government_or_public_authority?.length).toBeUndefined();
   });
 
   test("should throw error if BO private data retrieval fails", async () => {

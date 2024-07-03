@@ -77,6 +77,7 @@ describe("OVERSEAS ENTITY UPDATE DETAILS controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockIsActiveFeature.mockReset();
   });
 
   describe("GET tests", () => {

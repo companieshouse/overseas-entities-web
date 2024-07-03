@@ -146,6 +146,70 @@ describe('Update - Manage Trusts - Review individuals', () => {
       expect(resp.text).toContain('Beneficiary');
     });
 
+    test('Page displays status as active when entity is still involved in the trust', async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+
+      const individualTrustee = [{
+        ...individuals[0],
+        still_involved: "Yes"
+      }];
+
+      const trusts = [{
+        trust_id: 'test-trust-1',
+        INDIVIDUALS: individualTrustee,
+        review_status: {
+          in_review: true,
+          reviewed_individuals: false,
+        }
+      }];
+
+      const appData = { update: { review_trusts: trusts } };
+
+      const trustInReview = {
+        ...trusts[0],
+      };
+
+      mockGetApplicationData.mockReturnValueOnce(appData);
+      mockGetTrustInReview.mockReturnValueOnce(trustInReview);
+
+      const response = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL);
+      expect(response.text).toContain('Add an individual');
+      expect(response.text).toContain('Status');
+      expect(response.text).toContain('Active');
+    });
+
+    test('Page displays status as removed when entity is not still involved in the trust', async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+
+      const individualTrustee = [{
+        ...individuals[0],
+        still_involved: "No"
+      }];
+
+      const trusts = [{
+        trust_id: 'test-trust-1',
+        INDIVIDUALS: individualTrustee,
+        review_status: {
+          in_review: true,
+          reviewed_individuals: false,
+        }
+      }];
+
+      const appData = { update: { review_trusts: trusts } };
+
+      const trustInReview = {
+        ...trusts[0],
+      };
+
+      mockGetApplicationData.mockReturnValueOnce(appData);
+      mockGetTrustInReview.mockReturnValueOnce(trustInReview);
+
+      const response = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL);
+      expect(response.text).toContain('Add an individual');
+      expect(response.text).toContain('Status');
+      expect(response.text).toContain('Removed');
+    });
+
     test('when feature flag is off, 404 is returned', async () => {
       mockIsActiveFeature.mockReturnValueOnce(false);
 

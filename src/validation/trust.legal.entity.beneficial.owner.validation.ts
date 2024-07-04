@@ -80,14 +80,6 @@ export const trustLegalEntityBeneficialOwnerValidator = [
   ...trusteeLegalEntityCeasedDateValidations
 ];
 
-// export const trustLegalEntityBeneficialOwnerValidator2 = [
-
-//   body("roleWithinTrust").notEmpty().withMessage(ErrorMessages.LEGAL_ENTITY_BO_ROLE).if(body("roleWithinTrust")),
-
-//   ...dateBecameIPLegalEntityBeneficialOwner,
-
-// ];
-
 export const checkIfLessThanTargetValue = async (value1: number, value2: number, target: number) => {
   const condition = await Promise.resolve((value1 + value2) > target);
   if (condition){

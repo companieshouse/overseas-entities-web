@@ -44,6 +44,8 @@ import {
   ALL_THE_OTHER_INFORMATION_ON_PUBLIC_REGISTER,
   UPDATE_BENEFICIAL_OWNER_TYPE_PAGE_REDIRECT,
   TRUSTS_NOC_HEADING,
+  RELEVANT_PERIOD,
+  RELEVANT_PERIOD_INDIVIDUAL_INFORMATION,
 } from '../../__mocks__/text.mock';
 import {
   APPLICATION_DATA_UPDATE_BO_MOCK,
@@ -125,6 +127,19 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(ALL_THE_OTHER_INFORMATION_ON_PUBLIC_REGISTER);
       expect(resp.text).toContain(NOT_SHOW_BENEFICIAL_OWNER_INFORMATION_ON_PUBLIC_REGISTER);
       expect(resp.text).not.toContain(TRUSTS_NOC_HEADING);
+    });
+
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with relevant period content when query param is passed`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
+
+      const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + "?relevant-period=true");
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(RELEVANT_PERIOD);
+      expect(resp.text).toContain(RELEVANT_PERIOD_INDIVIDUAL_INFORMATION);
+      expect(resp.text).toContain("1");
+      expect(resp.text).toContain("January");
+      expect(resp.text).toContain("2023");
     });
   });
 

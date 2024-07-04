@@ -1,6 +1,10 @@
 {% extends "update-layout.html" %}
 
-{% set title = "Tell us about the individual person" %}
+{% if not relevant_period %}
+  {% set title = "Tell us about the individual person" %}
+{% else %}
+  {% set title = "Tell us about the individual person involved in the pre-registration period" %}
+{% endif %}
 
 {% block pageTitle %}
   {% include "includes/update-page-title.html" %}

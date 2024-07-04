@@ -48,7 +48,8 @@ export const getBeneficialOwnerIndividual = (req: Request, res: Response, templa
   return res.render(templateName, {
     backLinkUrl: backLinkUrl,
     templateName: templateName,
-    ...appData
+    ...appData,
+    relevant_period: req.query["relevant-period"] === "true",
   });
 };
 

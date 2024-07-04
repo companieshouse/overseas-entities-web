@@ -139,6 +139,44 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).toContain(ALL_THE_OTHER_INFORMATION_ON_PUBLIC_REGISTER);
       expect(resp.text).toContain(NOT_SHOW_MANAGING_OFFICER_INFORMATION_ON_PUBLIC_REGISTER);
     });
+
+    test(`renders the ${MANAGING_OFFICER_PAGE} page when REDIS_removal flag is ON`, async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockIsActiveFeature.mockReturnValue(true);
+      const resp = await request(app).get(MANAGING_OFFICER_WITH_PARAMS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(LANDING_PAGE_URL);
+      expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContain(SECOND_NATIONALITY);
+      expect(resp.text).toContain(SECOND_NATIONALITY_HINT);
+      expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
+      expect(resp.text).toContain(ALL_THE_OTHER_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(resp.text).toContain(NOT_SHOW_MANAGING_OFFICER_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
+    });
+
+    test(`renders the ${MANAGING_OFFICER_PAGE} page when REDIS_removal flag is OFF`, async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockIsActiveFeature.mockReturnValue(false);
+      const resp = await request(app).get(MANAGING_OFFICER_WITH_PARAMS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(LANDING_PAGE_URL);
+      expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContain(SECOND_NATIONALITY);
+      expect(resp.text).toContain(SECOND_NATIONALITY_HINT);
+      expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
+      expect(resp.text).toContain(ALL_THE_OTHER_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(resp.text).toContain(NOT_SHOW_MANAGING_OFFICER_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(0);
+    });
   });
 
   describe("GET with url params tests", () => {
@@ -181,6 +219,54 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).toContain(SECOND_NATIONALITY);
       expect(resp.text).toContain(SECOND_NATIONALITY_HINT);
       expect(resp.text).toContain(MANAGING_OFFICER_URL);
+    });
+
+    test("renders the managing officer page when REDIS_removal flag is set to ON", async () => {
+      const moMock = { ...MANAGING_OFFICER_OBJECT_MOCK };
+      const appData = {
+        ...APPLICATION_DATA_MOCK,
+        [ManagingOfficerKey]: [moMock],
+        [EntityNumberKey]: undefined,
+      };
+      mockGetApplicationData.mockReturnValueOnce(appData);
+      mockGetFromApplicationData.mockReturnValueOnce(moMock);
+      mockIsActiveFeature.mockReturnValue(true);
+      const resp = await request(app).get(MANAGING_OFFICER_WITH_PARAMS_URL + MO_IND_ID_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
+      expect(resp.text).toContain(MANAGING_OFFICER);
+      expect(resp.text).toContain("Malawian");
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContain(SECOND_NATIONALITY);
+      expect(resp.text).toContain(SECOND_NATIONALITY_HINT);
+      expect(resp.text).toContain(BACK_BUTTON_CLASS);
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(2);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(2);
+    });
+
+    test("renders the managing officer page when REDIS_removal flag is set to OFF", async () => {
+      const moMock = { ...MANAGING_OFFICER_OBJECT_MOCK };
+      const appData = {
+        ...APPLICATION_DATA_MOCK,
+        [ManagingOfficerKey]: [moMock],
+        [EntityNumberKey]: undefined,
+      };
+      mockGetApplicationData.mockReturnValueOnce(appData);
+      mockGetFromApplicationData.mockReturnValueOnce(moMock);
+      mockIsActiveFeature.mockReturnValue(false);
+      const resp = await request(app).get(MANAGING_OFFICER_URL + MO_IND_ID_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
+      expect(resp.text).toContain(MANAGING_OFFICER);
+      expect(resp.text).toContain("Malawian");
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContain(SECOND_NATIONALITY);
+      expect(resp.text).toContain(SECOND_NATIONALITY_HINT);
+      expect(resp.text).toContain(BACK_BUTTON_CLASS);
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(2);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(0);
     });
 
     test("catch error when rendering the page", async () => {

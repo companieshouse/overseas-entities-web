@@ -66,7 +66,7 @@ export const getTrusts = (
   req: Request,
   res: Response,
   next: NextFunction,
-  isUpdate: boolean,
+  isUpdate: boolean
 ): void => {
 
   try {
@@ -78,7 +78,7 @@ export const getTrusts = (
       addActiveSubmissionBasePathToTemplateData(pageProps, req);
     }
 
-    return res.render(pageProps.templateName, pageProps );
+    return res.render(pageProps.templateName, pageProps);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

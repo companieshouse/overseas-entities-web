@@ -141,6 +141,7 @@ type TrusteeItem = {
 
 type AddTrust = {
   addTrust: yesNoResponse;
+  preRegistrationPeriod: yesNoResponse;
 };
 
 export {

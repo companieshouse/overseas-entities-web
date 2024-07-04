@@ -231,7 +231,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(SECOND_NATIONALITY_HINT);
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page when the REDIS_removal flag is on`, async () => {
+    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page when the REDIS_removal flag is ON`, async () => {
       mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
       const applicationDataMock = { ...APPLICATION_DATA_MOCK };
       delete applicationDataMock[EntityNumberKey];
@@ -253,7 +253,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(mockIsActiveFeature).toHaveBeenCalledTimes(2);
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page when the REDIS_removal flag is off`, async () => {
+    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page when the REDIS_removal flag is OFF`, async () => {
       mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
       const applicationDataMock = { ...APPLICATION_DATA_MOCK };
       delete applicationDataMock[EntityNumberKey];

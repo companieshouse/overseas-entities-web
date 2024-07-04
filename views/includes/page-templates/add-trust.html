@@ -48,7 +48,9 @@
         <div class="govuk-summary-card__content">
           <dl class="govuk-summary-list">
         {{ govukSummaryList({ rows: reviewedTrustsRows }) }}
-        </dl></div></div>
+          </dl>
+        </div>
+      </div>
       {% endif %}
 
       {% if (isUpdate and addedTrusts.length > 0) %}
@@ -92,7 +94,7 @@
 
         <h2 class="govuk-heading-m"> Do you need to add another trust? </h2>
         <div class="govuk-inset-text">
-          <p>Based on the pre-registration statement you provided earlier in this service, you also need to tell us about any beneficiaries from this period, that the entity has not already told us about.</p>
+          <p>Based on the pre-registration statement you provided earlier in this service, you also need to tell us about any trusts from this period, that the entity has not already told us about.</p>
           {% include "includes/page-templates/relevant-period.html" %}
         </div>
 
@@ -101,26 +103,26 @@
           error: errors.addTrust,
           items: [
             {
-        value: 1,
+        value: "addTrustYes",
         text: "Yes - for the current filing period",
         attributes: {
         "data-event-id": "add-trust-yes-radio-option"
         },
-        checked: formData.addTrust == 1
+        checked: formData.addTrust == "addTrustYes"
         }, {
-        value: preRegistrationPeriod,
+        value: "preRegistration",
         text: "Yes - for the pre-registration period",
-        checked: formData.preRegistrationPeriod == 1
+        checked: formData.preRegistrationPeriod == "preRegistration"
         },
         {
-              value: 0,
-              text: "No",
-              attributes: {
-                "data-event-id": "add-trust-no-radio-option"
-              },
-              checked: formData.addTrust == 0
-            }
-          ]
+        value: "noTrust",
+        text: "No",
+        attributes: {
+        "data-event-id": "add-trust-no-radio-option"
+        },
+        checked: formData.addTrust == "noTrust"
+        }
+        ]
         } %}
 
         {% include "includes/inputs/radio-input.html" %}

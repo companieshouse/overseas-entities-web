@@ -170,7 +170,7 @@ describe('Update - Trusts - Trusts associated with the overseas entity', () => {
       mockIsActiveFeature.mockReturnValue(true);
       mockGetApplicationData.mockReturnValue( APPLICATION_DATA_MOCK );
 
-      const resp = await request(app).post(UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL).send({ addTrust: '1' });
+      const resp = await request(app).post(UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL).send({ addTrust: 'addTrustYes' });
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toContain(UPDATE_TRUSTS_TELL_US_ABOUT_IT_PAGE);

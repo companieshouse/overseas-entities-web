@@ -46,6 +46,7 @@ const getPageProperties = (
   return {
     templateName: getPageTemplate(isUpdate),
     backLinkUrl: getBackLinkUrl(isUpdate, req),
+    ...appData,
     pageData: {
       trustData: getTrustArray(appData)
     },
@@ -65,7 +66,7 @@ export const getTrusts = (
   req: Request,
   res: Response,
   next: NextFunction,
-  isUpdate: boolean
+  isUpdate: boolean,
 ): void => {
 
   try {
@@ -77,7 +78,7 @@ export const getTrusts = (
       addActiveSubmissionBasePathToTemplateData(pageProps, req);
     }
 
-    return res.render(pageProps.templateName, pageProps);
+    return res.render(pageProps.templateName, pageProps );
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);
@@ -112,9 +113,12 @@ export const postTrusts = (
       return res.render(pageProps.templateName, pageProps);
     }
 
-    if (addNewTrust === '1') {
+    if (addNewTrust === "addTrustYes") {
       const newTrustId = generateTrustId(appData);
       return res.redirect(`${newTrustPage(isUpdate, req)}/${newTrustId}`);
+    } else if (addNewTrust === "preRegistration") {
+      const newTrustId = generateTrustId(appData);
+      return res.redirect(`${newTrustPage(isUpdate, req)}/${newTrustId}${config.RELEVANT_PERIOD_QUERY_PARAM}`);
     } else {
       return res.redirect(nextPage(isUpdate, req));
     }

@@ -19,6 +19,7 @@ import { mapIndividualTrusteeFromSessionToPage } from '../utils/trust/individual
 import { mapFormerTrusteeFromSessionToPage } from '../utils/trust/historical.beneficial.owner.mapper';
 import { isActiveFeature } from './feature.flag';
 import { getUrlWithParamsToPath } from './url';
+import { ApplicationData } from "../model";
 
 export const TRUST_INVOLVED_TEXTS = {
   title: 'Individuals or entities involved in the trust',
@@ -129,10 +130,11 @@ export const getTrustInvolvedPage = (
 ): void => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
+    const appData: ApplicationData = getApplicationData(req.session);
 
     const pageProps = getPageProperties(req, isUpdate, isReview);
 
-    return res.render(pageProps.templateName, pageProps);
+    return res.render(pageProps.templateName, { ...pageProps, ...appData });
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

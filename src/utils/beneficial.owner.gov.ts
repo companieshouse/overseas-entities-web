@@ -35,7 +35,8 @@ export const getBeneficialOwnerGov = (req: Request, res: Response, templateName:
   res.render(templateName, {
     backLinkUrl,
     templateName: templateName,
-    ...appData
+    ...appData,
+    relevant_period: req.query["relevant-period"] === "true",
   });
 };
 

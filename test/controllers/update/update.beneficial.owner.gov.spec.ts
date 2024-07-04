@@ -22,7 +22,8 @@ import {
   UPDATE_BENEFICIAL_OWNER_GOV_PAGE,
   UPDATE_BENEFICIAL_OWNER_GOV_URL,
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
-  UPDATE_LANDING_PAGE_URL
+  UPDATE_LANDING_PAGE_URL,
+  RELEVANT_PERIOD_QUERY_PARAM,
 } from "../../../src/config";
 import {
   getFromApplicationData,
@@ -42,6 +43,8 @@ import {
   SERVICE_UNAVAILABLE,
   SHOW_INFORMATION_ON_PUBLIC_REGISTER,
   TRUSTS_NOC_HEADING,
+  RELEVANT_PERIOD,
+  RELEVANT_PERIOD_INFORMATION,
 } from "../../__mocks__/text.mock";
 import { logger } from "../../../src/utils/logger";
 import {
@@ -125,6 +128,19 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with relevant period content when query param is passed`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
+
+      const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_GOV_URL + RELEVANT_PERIOD_QUERY_PARAM);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(RELEVANT_PERIOD);
+      expect(resp.text).toContain(RELEVANT_PERIOD_INFORMATION);
+      expect(resp.text).toContain("1");
+      expect(resp.text).toContain("January");
+      expect(resp.text).toContain("2023");
     });
   });
 

@@ -270,6 +270,7 @@ export const RELEVANT_PERIOD_INDIVIDUAL_BENEFICIAL_OWNER = "Individual beneficia
 export const RELEVANT_PERIOD_INFORMATION = "You need to enter information that is correct as at the date it ceased to be a registrable beneficial owner.";
 export const SELECT_IF_REGISTER_DURING_PRE_REG_PERIOD = "Select yes if the overseas entity was the registered owner of UK land during the pre-registration period.";
 export const RELEVANT_PERIOD_EXTRA_INFO_REQUIRED = "Based on the pre-registration statement you provided earlier in this service";
+export const RELEVANT_PERIOD_INDIVIDUAL_INFORMATION = "You need to enter information that is correct as at the date they ceased to be a registrable beneficial owner.";
 export const RELEVANT_PERIOD_OTHER_LEGAL_ENTITY_INFORMATION = "You need to enter information that is correct as at the date it ceased to be a registrable beneficial owner.";
 
 // Remove journey

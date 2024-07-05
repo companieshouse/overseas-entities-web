@@ -94,7 +94,7 @@ describe("BENEFICIAL OWNER BO MO REVIEW controller", () => {
       const resp = await request(app).post(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(resp.header.location).toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
     });
 
     test(`catch error on POST action for ${config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE} page`, async () => {

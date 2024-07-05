@@ -15,15 +15,12 @@ const addressErrorMessages: ErrorMessagesOptional = {
   countryValueError: ErrorMessages.COUNTRY_LEGAL_ENTITY_BO,
 };
 
-export const trustLegalEntityBeneficialOwnerValidator = [
+export const trustRelevantPeriodLegalEntityBeneficialOwnerValidator = [
   body("legalEntityName")
     .notEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.LEGAL_ENTITY_BO_NAME)
     .isLength({ max: 160 }).withMessage(ErrorMessages.MAX_NAME_LENGTH)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.NAME_INVALID_CHARACTERS),
 
-  body("roleWithinTrust").notEmpty().withMessage(ErrorMessages.LEGAL_ENTITY_BO_ROLE).if(body("roleWithinTrust")),
-
-  ...dateBecameIPLegalEntityBeneficialOwner,
 
   body("is_service_address_same_as_principal_address")
     .notEmpty().withMessage(ErrorMessages.SELECT_IF_SERVICE_ADDRESS_SAME_AS_USER_RESIDENTIAL_ADDRESS_LEGAL_ENTITY_BO),

@@ -21,7 +21,10 @@ export const get = (req: Request, res: Response) => {
 };
 
 export const getById = (req: Request, res: Response, next: NextFunction) => {
-  getBeneficialOwnerIndividualById(req, res, next, config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE, config.BENEFICIAL_OWNER_TYPE_URL);
+  const backLinkUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
+    ? getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req)
+    : config.BENEFICIAL_OWNER_TYPE_URL;
+  getBeneficialOwnerIndividualById(req, res, next, config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE, backLinkUrl);
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {

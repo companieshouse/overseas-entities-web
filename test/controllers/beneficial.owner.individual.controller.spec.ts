@@ -231,6 +231,50 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(SECOND_NATIONALITY_HINT);
     });
 
+    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page when the REDIS_removal flag is ON`, async () => {
+      mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
+      const applicationDataMock = { ...APPLICATION_DATA_MOCK };
+      delete applicationDataMock[EntityNumberKey];
+      mockGetApplicationData.mockReturnValueOnce(applicationDataMock);
+      mockIsActiveFeature.mockReturnValue(true);
+
+      const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL + BO_IND_ID_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContain("Ivan");
+      expect(resp.text).toContain("Drago");
+      expect(resp.text).toContain("Russian");
+      expect(resp.text).toContain(SECOND_NATIONALITY);
+      expect(resp.text).toContain(SECOND_NATIONALITY_HINT);
+      expect(resp.text).toContain(BACK_BUTTON_CLASS);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(2);
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(2);
+    });
+
+    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page when the REDIS_removal flag is OFF`, async () => {
+      mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
+      const applicationDataMock = { ...APPLICATION_DATA_MOCK };
+      delete applicationDataMock[EntityNumberKey];
+      mockGetApplicationData.mockReturnValueOnce(applicationDataMock);
+      mockIsActiveFeature.mockReturnValue(false);
+
+      const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL + BO_IND_ID_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContain("Ivan");
+      expect(resp.text).toContain("Drago");
+      expect(resp.text).toContain("Russian");
+      expect(resp.text).toContain(SECOND_NATIONALITY);
+      expect(resp.text).toContain(SECOND_NATIONALITY_HINT);
+      expect(resp.text).toContain(BACK_BUTTON_CLASS);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(0);
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(2);
+    });
+
     test("catch error when rendering the page", async () => {
       mockGetFromApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL);

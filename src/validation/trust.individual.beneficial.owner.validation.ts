@@ -54,8 +54,8 @@ export const trustIndividualBeneficialOwner = [
   ...usual_residential_service_address_validations(addressErrorMessages as ErrorMessagesRequired),
 
   body("stillInvolved")
-    .if((value, { req }) => {
-      const appData: ApplicationData = getApplicationData(req.session);
+    .if(async (value, { req }) => {
+      const appData: ApplicationData = await getApplicationData(req.session);
       return !!appData.entity_number; // !! = truthy check
     })
     .not().isEmpty().withMessage(ErrorMessages.TRUSTEE_STILL_INVOLVED),

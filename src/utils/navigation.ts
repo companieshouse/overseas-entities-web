@@ -87,7 +87,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.OVERSEAS_ENTITY_PRESENTER_URL]: {
     currentPage: config.UPDATE_PRESENTER_PAGE,
-    previousPage:async (appData: ApplicationData, req: Request) => await getOverseasEntityPresenterBackLink(req),
+    previousPage: async (appData: ApplicationData, req: Request) => await getOverseasEntityPresenterBackLink(req),
     nextPage: [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE]
   },
   [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL]: {

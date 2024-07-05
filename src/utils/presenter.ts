@@ -18,7 +18,7 @@ export const getPresenterPage = async (req: Request, res: Response, next: NextFu
     const appData: ApplicationData = await getApplicationData(req.session);
     const presenter = appData[PresenterKey];
 
-    if (await isRemoveJourney(req)){
+    if (await isRemoveJourney(req)) {
       return res.render(templateName, {
         journey: config.JourneyType.remove,
         backLinkUrl: `${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`,
@@ -28,7 +28,7 @@ export const getPresenterPage = async (req: Request, res: Response, next: NextFu
     }
 
     return res.render(templateName, {
-      backLinkUrl: backLinkUrl,
+      backLinkUrl,
       templateName: templateName,
       ...presenter
     });

@@ -11,7 +11,7 @@ export const getFilterPage = async (req: Request, res: Response, next: NextFunct
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const appData: ApplicationData = await getApplicationData(req.session);
 
-    if (await isRemoveJourney(req)){
+    if (await isRemoveJourney(req)) {
       return res.render(templateName, {
         journey: config.JourneyType.remove,
         backLinkUrl: config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL,
@@ -35,7 +35,7 @@ export const postFilterPage = async (req: Request, res: Response, next: NextFunc
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const isSecureRegister = req.body[IsSecureRegisterKey];
 
-    setExtraData(req.session, { ...getApplicationData(req.session), [IsSecureRegisterKey]: isSecureRegister });
+    setExtraData(req.session, { ...(await getApplicationData(req.session)), [IsSecureRegisterKey]: isSecureRegister });
 
     let nextPageUrl: any;
     if (isSecureRegister === '1') {
@@ -43,7 +43,7 @@ export const postFilterPage = async (req: Request, res: Response, next: NextFunc
     } else if (isSecureRegister === '0') {
       nextPageUrl = isSecureRegisterNo;
     }
-    if (await isRemoveJourney(req)){
+    if (await isRemoveJourney(req)) {
       nextPageUrl = `${nextPageUrl}${config.JOURNEY_REMOVE_QUERY_PARAM}`;
     }
     return res.redirect(nextPageUrl);

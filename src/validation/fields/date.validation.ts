@@ -457,20 +457,20 @@ export const trustIndividualCeasedDateValidations = [
   ...conditionalDateValidations(trusteeCeasedDateValidationsContext),
 
   body("ceasedDate")
-    .if((value, { req }) => {
+    .if(async (value, { req }) => {
       // check they are on an update or remove journey
       // entity_number should have been populated by time they reach trust screens
-      const appData: ApplicationData = getApplicationData(req.session);
+      const appData: ApplicationData = await getApplicationData(req.session);
       return !!appData.entity_number; // !! = truthy check
     })
     .if(body("stillInvolved").equals("0"))
     .if(body("ceasedDateDay").notEmpty({ ignore_whitespace: true }))
     .if(body("ceasedDateMonth").notEmpty({ ignore_whitespace: true }))
     .if(body("ceasedDateYear").notEmpty({ ignore_whitespace: true }))
-    .custom((value, { req }) => {
+    .custom(async (value, { req }) => {
       checkCeasedDateOnOrAfterDateOfBirth(req, ErrorMessages.DATE_BEFORE_BIRTH_DATE_CEASED_TRUSTEE);
 
-      checkCeasedDateOnOrAfterTrustCreationDate(req, ErrorMessages.DATE_BEFORE_TRUST_CREATION_DATE_CEASED_TRUSTEE);
+      await checkCeasedDateOnOrAfterTrustCreationDate(req, ErrorMessages.DATE_BEFORE_TRUST_CREATION_DATE_CEASED_TRUSTEE);
 
       if (req.body["roleWithinTrust"] === RoleWithinTrustType.INTERESTED_PERSON
         && req.body["dateBecameIPDay"]
@@ -516,9 +516,9 @@ const checkLegalEntityCeasedDateOnOrAfterInterestedPersonStartDate = (req, error
     errorMessage);
 };
 
-const checkCeasedDateOnOrAfterTrustCreationDate = (req, errorMessage: ErrorMessages) => {
+const checkCeasedDateOnOrAfterTrustCreationDate = async (req, errorMessage: ErrorMessages) => {
   const trustId = req.params ? req.params[ROUTE_PARAM_TRUST_ID] : undefined;
-  const appData: ApplicationData = getApplicationData(req.session);
+  const appData: ApplicationData = await getApplicationData(req.session);
   const trust: Trust | undefined = getTrust(appData, trustId);
   if (trust) {
     checkFirstDateOnOrAfterSecondDate(

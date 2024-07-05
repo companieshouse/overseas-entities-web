@@ -2,7 +2,7 @@ import { Session } from '@companieshouse/node-session-handler';
 import { Request } from "express";
 
 import { createAndLogErrorRequest } from './logger';
-import { ID } from '../model/data.types.model';
+import { ID, OverseasEntityKey, Transactionkey } from '../model/data.types.model';
 
 import {
   ApplicationData,
@@ -23,22 +23,33 @@ import {
   PARAM_BENEFICIAL_OWNER_INDIVIDUAL,
   PARAM_BENEFICIAL_OWNER_OTHER,
   PARAM_MANAGING_OFFICER_CORPORATE,
-  PARAM_MANAGING_OFFICER_INDIVIDUAL
+  PARAM_MANAGING_OFFICER_INDIVIDUAL,
+  ROUTE_PARAM_TRANSACTION_ID,
+  ROUTE_PARAM_SUBMISSION_ID
 } from '../config';
 
 import { BeneficialOwnerCorporate } from '@companieshouse/api-sdk-node/dist/services/overseas-entities';
 import { Remove } from 'model/remove.type.model';
 import { isActiveFeature } from "./feature.flag";
 import { getOverseasEntity } from "../service/overseas.entities.service";
-import * as config from "../config";
 
 export const getApplicationData = async (session: Session | undefined, req?: Request): Promise<ApplicationData> => {
-  if (!isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL) || typeof req === "undefined") {
+  if (typeof req === "undefined" || !isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
     return session?.getExtraData(APPLICATION_DATA_KEY) || {} as ApplicationData;
   }
-  const transactionId: string = req.params[config.ROUTE_PARAM_TRANSACTION_ID] ? req.params[config.ROUTE_PARAM_TRANSACTION_ID] : "";
-  const submissionId: string = req.params[config.ROUTE_PARAM_SUBMISSION_ID] ? req.params[config.ROUTE_PARAM_SUBMISSION_ID] : "";
-  return await getOverseasEntity(req, transactionId, submissionId);
+
+  const transactionId: string = req.params[ROUTE_PARAM_TRANSACTION_ID] ?? "";
+  const submissionId: string = req.params[ROUTE_PARAM_SUBMISSION_ID] ?? "";
+
+  if (transactionId === "" && submissionId === "") {
+    return {};
+  }
+
+  const appData = await getOverseasEntity(req, transactionId, submissionId);
+  appData[Transactionkey] = transactionId;
+  appData[OverseasEntityKey] = submissionId;
+
+  return appData;
 };
 
 export const deleteApplicationData = (session: Session | undefined): boolean | undefined => {

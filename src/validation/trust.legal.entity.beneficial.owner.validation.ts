@@ -72,8 +72,8 @@ export const trustLegalEntityBeneficialOwnerValidator = [
       await checkIfLessThanTargetValue(req.body.public_register_name.length, req.body.public_register_jurisdiction.length, 160);
     }),
   body("stillInvolved")
-    .if((value, { req }) => {
-      const appData: ApplicationData = getApplicationData(req.session);
+    .if(async (value, { req }) => {
+      const appData: ApplicationData = await getApplicationData(req.session);
       return !!appData.entity_number; // !! = truthy check
     })
     .not().isEmpty().withMessage(ErrorMessages.TRUSTEE_STILL_INVOLVED),

@@ -12,6 +12,6 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   await getWhoIsFiling(req, res, next, WHO_IS_MAKING_UPDATE_PAGE, UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL);
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
-  postWhoIsFiling(req, res, next, UPDATE_DUE_DILIGENCE_URL, UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL);
+export const post = async (req: Request, res: Response, next: NextFunction) => {
+  await postWhoIsFiling(req, res, next, UPDATE_DUE_DILIGENCE_URL, UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL);
 };

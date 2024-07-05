@@ -39,7 +39,7 @@ export const startPaymentsSession = async (
 ): Promise<string> => {
 
   setExtraData(session, {
-    ...getApplicationData(session),
+    ...(await getApplicationData(session)),
     [Transactionkey]: transactionId,
     [OverseasEntityKey]: overseasEntityId
   });

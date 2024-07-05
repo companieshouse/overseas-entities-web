@@ -12,7 +12,7 @@ import { makeApiCallWithRetry } from "./retry.handler.service";
 import { EntityNameKey, EntityNumberKey } from "../model/data.types.model";
 
 export const postTransaction = async (req: Request, session: Session): Promise<string> => {
-  const applicationData: ApplicationData = await getApplicationData(session);
+  const applicationData: ApplicationData = await getApplicationData(session, req);
   const companyName = applicationData[EntityNameKey];
   const companyNumber = applicationData[EntityNumberKey];
 
@@ -32,9 +32,9 @@ export const postTransaction = async (req: Request, session: Session): Promise<s
   );
 
   if (!response.httpStatusCode || response.httpStatusCode >= 400) {
-    throw createAndLogErrorRequest(req, `'postTransaction' for company number '${companyNumber}' with name '${companyName}' returned HTTP status code ${response.httpStatusCode}`);
+    throw createAndLogErrorRequest(req, `'>>error:>>>>>>>>postTransaction' for company number '${companyNumber}' with name '${companyName}' returned HTTP status code ${response.httpStatusCode}`);
   } else if (!response.resource) {
-    throw createAndLogErrorRequest(req, `'postTransaction' for company number '${companyNumber}' with name '${companyName}' returned no response`);
+    throw createAndLogErrorRequest(req, `'>>error:>>>>>>>>>postTransaction' for company number '${companyNumber}' with name '${companyName}' returned no response`);
   }
 
   logger.infoRequest(req, `Response from 'postTransaction' for company number '${companyNumber}' with name '${companyName}': ${JSON.stringify(response)}`);

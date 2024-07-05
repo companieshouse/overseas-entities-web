@@ -29,7 +29,11 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    return res.redirect(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD)) {
+      return res.redirect(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
+    } else {
+      return res.redirect(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+    }
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

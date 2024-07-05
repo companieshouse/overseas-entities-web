@@ -13,7 +13,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     return res.render(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE, {
       backLinkUrl: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
-      templateName: config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE,
+      templateName: config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE + config.RELEVANT_PERIOD_QUERY_PARAM,
       ...appData,
     });
   } catch (error) {
@@ -28,7 +28,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     const ownedLandKey = req.body[OwnedLandKey];
 
     if (ownedLandKey === '1') {
-      return res.redirect(config.RELEVANT_PERIOD_INTERRUPT_URL);
+      return res.redirect(config.RELEVANT_PERIOD_INTERRUPT_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
     } else {
       return res.redirect(config.UPDATE_FILING_DATE_URL);
     }

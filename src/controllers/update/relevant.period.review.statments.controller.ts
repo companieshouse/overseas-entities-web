@@ -10,7 +10,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `GET ${config.RELEVANT_PERIOD_REVIEW_STATEMENTS_PAGE}`);
     const appData: ApplicationData = getApplicationData(req.session);
     return res.render(config.RELEVANT_PERIOD_REVIEW_STATEMENTS_PAGE, {
-      backLinkUrl: config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL,
+      backLinkUrl: config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL + config.RELEVANT_PERIOD_QUERY_PARAM,
       templateName: config.RELEVANT_PERIOD_REVIEW_STATEMENTS_PAGE,
       ...appData,
     });

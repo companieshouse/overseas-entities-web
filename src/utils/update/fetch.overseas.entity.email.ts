@@ -1,16 +1,11 @@
-import * as config from "../../config";
 import { logger } from "../logger";
 import { Session } from "@companieshouse/node-session-handler";
 import { setExtraData } from "../application.data";
 import { getPrivateOeDetails } from "../../service/private.overseas.entity.details";
 import { updateOverseasEntity } from "../../service/overseas.entities.service";
-import { isActiveFeature } from '../feature.flag';
 import { ApplicationData } from "../../model";
 
 export const fetchOverseasEntityEmailAddress = async (appData: ApplicationData, req, session: Session) => {
-  if (isActiveFeature(config.FEATURE_FLAG_DISABLE_UPDATE_PRIVATE_DATA_FETCH)) {
-    return;
-  }
 
   const overseasEntityId = appData.overseas_entity_id;
   const transactionId = appData.transaction_id;

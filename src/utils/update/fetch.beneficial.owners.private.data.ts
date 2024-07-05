@@ -1,15 +1,9 @@
-import * as config from "../../config";
 import { logger } from "../logger";
 import { getBeneficialOwnersPrivateData } from "../../service/private.overseas.entity.details";
-import { isActiveFeature } from '../feature.flag';
 import { ApplicationData } from "../../model";
 import { mapCorporateOrGovernmentBOPrivateData, mapIndividualBOPrivateData } from "./psc.to.beneficial.owner.type.mapper";
 
 export const fetchBeneficialOwnersPrivateData = async (appData: ApplicationData, req) => {
-
-  if (isActiveFeature(config.FEATURE_FLAG_DISABLE_UPDATE_PRIVATE_DATA_FETCH)) {
-    return;
-  }
 
   const overseasEntityId = appData.overseas_entity_id;
   const transactionId = appData.transaction_id;

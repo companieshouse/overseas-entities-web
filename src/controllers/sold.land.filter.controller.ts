@@ -23,7 +23,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = await getApplicationData(req.session);
 
     return res.render(config.SOLD_LAND_FILTER_PAGE, {
-      backLinkUrl: await getSoldLandFilterBackLink(),
+      backLinkUrl: getSoldLandFilterBackLink(),
       templateName: config.SOLD_LAND_FILTER_PAGE,
       [HasSoldLandKey]: appData?.[HasSoldLandKey]
     });
@@ -35,6 +35,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
+
     logger.debugRequest(req, `POST ${config.SOLD_LAND_FILTER_PAGE}`);
 
     const session = req.session as Session;
@@ -54,12 +55,16 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       } else {
         await updateOverseasEntity(req, session, appData);
       }
+
       nextPageUrl = config.SECURE_REGISTER_FILTER_URL;
+
       if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
         nextPageUrl = getUrlWithTransactionIdAndSubmissionId(config.SECURE_REGISTER_FILTER_WITH_PARAMS_URL, appData[Transactionkey] as string, appData[OverseasEntityKey] as string);
       }
     }
+
     setExtraData(session, appData);
+
     return res.redirect(nextPageUrl);
   } catch (error) {
     logger.errorRequest(req, error);

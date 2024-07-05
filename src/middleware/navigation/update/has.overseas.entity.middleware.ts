@@ -5,7 +5,7 @@ import { OVERSEAS_ENTITY_QUERY_URL, SECURE_UPDATE_FILTER_URL } from '../../../co
 import { getApplicationData } from "../../../utils/application.data";
 import { checkOverseasEntityNumberEntered, checkHasOverseasEntity, checkHasDateOfCreation, NavigationErrorMessage } from '../check.condition';
 
-export const hasOverseasEntityNumber = async  (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const hasOverseasEntityNumber = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     if (!checkOverseasEntityNumberEntered(await getApplicationData(req.session))) {
       logger.infoRequest(req, NavigationErrorMessage);

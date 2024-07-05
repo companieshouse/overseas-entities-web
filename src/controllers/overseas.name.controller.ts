@@ -13,6 +13,7 @@ import { getUrlWithParamsToPath, getUrlWithTransactionIdAndSubmissionId, transac
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `GET ${config.OVERSEAS_NAME_PAGE}`);
+
     const appData: ApplicationData = await getApplicationData(req.session);
 
     let backLinkUrl = config.INTERRUPT_CARD_URL;
@@ -33,17 +34,13 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
+
     logger.debugRequest(req, `POST ${config.OVERSEAS_NAME_PAGE}`);
 
     const session = req.session as Session;
     const entityName = req.body[EntityNameKey];
 
-    setExtraData(req.session, {
-      ...getApplicationData(req.session),
-      [EntityNameKey]: entityName
-    });
-
-    const appData: ApplicationData = await getApplicationData(session, req);
+    const appData: ApplicationData = await getApplicationData(session);
     let nextPageUrl = config.PRESENTER_URL;
 
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022)) {
@@ -52,6 +49,9 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         nextPageUrl = getUrlWithTransactionIdAndSubmissionId(config.PRESENTER_WITH_PARAMS_URL, appData[Transactionkey] as string, appData[OverseasEntityKey] as string);
       }
     }
+
+    setExtraData(req.session, { ...appData, [EntityNameKey]: entityName });
+
     return res.redirect(nextPageUrl);
   } catch (error) {
     logger.errorRequest(req, error);

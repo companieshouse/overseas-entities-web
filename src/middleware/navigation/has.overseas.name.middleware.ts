@@ -7,7 +7,7 @@ import { checkOverseasNameDetailsEntered, NavigationErrorMessage } from './check
 
 export const hasOverseasName = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    if ( !checkOverseasNameDetailsEntered(await getApplicationData(req.session)) ) {
+    if (!checkOverseasNameDetailsEntered(await getApplicationData(req.session))) {
       logger.infoRequest(req, NavigationErrorMessage);
       return res.redirect(SOLD_LAND_FILTER_URL);
     }

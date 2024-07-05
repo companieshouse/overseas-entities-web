@@ -132,7 +132,7 @@ describe("owned land filter page tests", () => {
   describe("POST tests", () => {
     test(`renders the ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL} page when yes is selected`, async () => {
       const resp = await request(app)
-        .post(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL)
+        .post(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL + config.RELEVANT_PERIOD_QUERY_PARAM)
         .send({ owned_land_relevant_period: "1" });
 
       expect(resp.status).toEqual(302);

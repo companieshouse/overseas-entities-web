@@ -83,7 +83,7 @@ describe("relevant interrupt card page tests", () => {
         .post(config.RELEVANT_PERIOD_INTERRUPT_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
+      expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
     });
     test("catch error when posting the page", async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });

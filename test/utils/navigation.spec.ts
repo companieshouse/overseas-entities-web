@@ -337,19 +337,19 @@ describe("NAVIGATION utils", () => {
   test(`NAVIGATION returns ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL} when calling previousPage on ${config.RELEVANT_PERIOD_INTERRUPT_URL} object`, () => {
     const mockRequest = { query: {} } as Request;
     const navigation = NAVIGATION[config.RELEVANT_PERIOD_INTERRUPT_URL].previousPage(undefined, mockRequest);
-    expect(navigation).toEqual(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
+    expect(navigation).toEqual(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
   });
 
   test(`NAVIGATION returns ${config.RELEVANT_PERIOD_INTERRUPT_URL} when calling previousPage on ${config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL} object`, () => {
     const mockRequest = { query: {} } as Request;
     const navigation = NAVIGATION[config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL].previousPage(undefined, mockRequest);
-    expect(navigation).toEqual(config.RELEVANT_PERIOD_INTERRUPT_URL);
+    expect(navigation).toEqual(config.RELEVANT_PERIOD_INTERRUPT_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
   });
 
   test(`NAVIGATION returns ${config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL} when calling previousPage on ${config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL} object`, () => {
     const mockRequest = { query: {} } as Request;
     const navigation = NAVIGATION[config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL].previousPage(undefined, mockRequest);
-    expect(navigation).toEqual(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
+    expect(navigation).toEqual(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
   });
 
   test(`NAVIGATION returns ${config.UPDATE_INTERRUPT_CARD_URL} when calling previousPage on ${config.OVERSEAS_ENTITY_QUERY_URL} object`, () => {

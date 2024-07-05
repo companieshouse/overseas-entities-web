@@ -88,7 +88,7 @@ describe("UPDATE INTERRUPT CARD controller", () => {
 
     test("catch error when rendering the page", async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-      const resp = await request(app).get(UPDATE_INTERRUPT_CARD_URL);
+      const resp = await request(app).get(UPDATE_INTERRUPT_CARD_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
@@ -97,7 +97,7 @@ describe("UPDATE INTERRUPT CARD controller", () => {
 
   describe("POST tests", () => {
     test(`redirect to ${OVERSEAS_ENTITY_QUERY_URL}`, async () => {
-      const resp = await request(app).post(UPDATE_INTERRUPT_CARD_URL);
+      const resp = await request(app).post(UPDATE_INTERRUPT_CARD_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain("overseas-entity-query");

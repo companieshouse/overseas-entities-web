@@ -468,11 +468,60 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).toContain(REMOVE_CHECK_YOUR_ANSWERS_BACK_LINK);
     });
 
-    // Test failing trust still involved in the overseas entity is not there according to the test
-    test.only(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page when a reviewed trust is still involved in the overseas entity`, async () => {
+    test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page when an added trust is still involved in the overseas entity`, async () => {
       const trust = {
         trust_id: "123",
-        ch_reference: "123",
+        trust_name: "wizzz trust",
+        creation_date_day: "31",
+        creation_date_month: "12",
+        creation_date_year: "1999",
+        trust_still_involved_in_overseas_entity: "Yes",
+        unable_to_obtain_all_trust_info: "No"
+      };
+      const appData = {
+        ...APPLICATION_DATA_UPDATE_BO_MOCK,
+        ["trusts"]: [trust]
+      };
+
+      mockGetApplicationData.mockReturnValue(appData);
+      mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true);
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain("Trusts you have added");
+      expect(resp.text).not.toContain("Trusts you have reviewed");
+      expect(resp.text).toContain("Is the trust still involved in the overseas entity?");
+      expect(resp.text).not.toContain("Date the trust stopped being associated to the overseas entity");
+    });
+
+    test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page when an added trust is not still involved in the overseas entity`, async () => {
+      const trust = {
+        trust_id: "123",
+        trust_name: "wizzz trust",
+        creation_date_day: "31",
+        creation_date_month: "12",
+        creation_date_year: "1999",
+        trust_still_involved_in_overseas_entity: "No",
+        unable_to_obtain_all_trust_info: "No"
+      };
+      const appData = {
+        ...APPLICATION_DATA_UPDATE_BO_MOCK,
+        ["trusts"]: [trust]
+      };
+
+      mockGetApplicationData.mockReturnValue(appData);
+      mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true);
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain("Trusts you have added");
+      expect(resp.text).not.toContain("Trusts you have reviewed");
+      expect(resp.text).toContain("Is the trust still involved in the overseas entity?");
+      expect(resp.text).toContain("Date the trust stopped being associated to the overseas entity");
+    });
+
+    test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page when a reviewed trust is still involved in the overseas entity`, async () => {
+      const trust = {
+        trust_id: "123",
+        ch_reference: "123", // marks out a review trust
         trust_name: "wizzz trust",
         creation_date_day: "31",
         creation_date_month: "12",
@@ -490,8 +539,35 @@ describe("CHECK YOUR ANSWERS controller", () => {
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain("Trusts you have reviewed");
+      expect(resp.text).not.toContain("Trusts you have added");
       expect(resp.text).toContain("Is the trust still involved in the overseas entity?");
       expect(resp.text).not.toContain("Date the trust stopped being associated to the overseas entity");
+    });
+
+    test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page when a reviewed trust is still involved in the overseas entity`, async () => {
+      const trust = {
+        trust_id: "123",
+        ch_reference: "123", // marks out a review trust
+        trust_name: "wizzz trust",
+        creation_date_day: "31",
+        creation_date_month: "12",
+        creation_date_year: "1999",
+        trust_still_involved_in_overseas_entity: "No",
+        unable_to_obtain_all_trust_info: "No"
+      };
+      const appData = {
+        ...APPLICATION_DATA_UPDATE_BO_MOCK,
+        ["trusts"]: [trust]
+      };
+
+      mockGetApplicationData.mockReturnValue(appData);
+      mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true);
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain("Trusts you have reviewed");
+      expect(resp.text).not.toContain("Trusts you have added");
+      expect(resp.text).toContain("Is the trust still involved in the overseas entity?");
+      expect(resp.text).toContain("Date the trust stopped being associated to the overseas entity");
     });
 
     test('catch error when rendering the page', async () => {

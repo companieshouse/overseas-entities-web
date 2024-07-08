@@ -36,6 +36,7 @@ type TrustDetailPageProperties = {
   };
   pageData: {
     beneficialOwners: PageModel.TrustBeneficialOwnerListItem[];
+    relevantPeriod: boolean
   };
   formData: PageModel.TrustDetailsForm,
   errors?: FormattedValidationErrors,
@@ -68,7 +69,9 @@ const getPageProperties = (
     },
     pageData: {
       beneficialOwners: boAvailableForTrust,
+      relevantPeriod: req.query["relevant-period"] === "true",
     },
+    ...appData,
     formData,
     isUpdate,
     isReview,

@@ -128,6 +128,7 @@ describe('Trust Details controller', () => {
       session: {} as Session,
       route: '',
       method: '',
+      query: {},
     } as Request;
   });
 
@@ -144,7 +145,7 @@ describe('Trust Details controller', () => {
       expect(mockNext).toBeCalledWith(error);
     });
 
-    xtest('render trust data based on parameter id', () => {
+    test('render trust data based on parameter id', () => {
       mockGetApplicationData.mockReturnValue(mockAppData);
 
       const expectMapResult = { dummyKey: 'EXPECT-MAP-RESULT' };
@@ -174,6 +175,7 @@ describe('Trust Details controller', () => {
               expectBoIndividualItems,
               expectBoOtherItems,
             ],
+            relevantPeriod: false
           },
         }),
       );

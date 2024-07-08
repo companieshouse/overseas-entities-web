@@ -82,26 +82,8 @@
           }
         ]
       } %}
-      {% include "includes/inputs/radio-input.html" %}
-    {% else %}
-      {% set fieldParam = {
-        name: 'roleWithinTrust',
-        label: 'What is its role within the trust?',
-        value: formData.roleWithinTrust,
-        error: errors.roleWithinTrust if errors,
-        items: [
-          {
-            value: pageData.roleWithinTrustType.BENEFICIARY,
-            text: "Beneficiary",
-            checked: true,
-            attributes: {
-              "data-event-id": "beneficiaries-type-radio-option"
-            }
-          } 
-        ]
-      } %}
-      {% include "includes/inputs/radio-input.html" %}
-    {% endif %}
+      {% include "includes/inputs/radio-input.html" %}    
+    {% endif %}  
     {% set principal_address_property_name_number = formData.principal_address_property_name_number %}
     {% set principal_address_line_1 = formData.principal_address_line_1 %}
     {% set principal_address_line_2 = formData.principal_address_line_2 %}

@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { validationResult } from "express-validator";
+import * as config from '../../config';
 import { Session } from '@companieshouse/node-session-handler';
 
 import {
@@ -60,10 +61,8 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const formData = trustee ? mapLegalEntityTrusteeFromSessionToPage(trustee) : {};
 
     if (relevantPeriod) {
-      console.log("GET rendering Trusts Relevant Period Tell us");
       return res.render(UPDATE_MANAGE_TRUSTS_RELEVANT_PERIOD_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE, getPagePropertiesRelevantPeriod(relevantPeriod, trust, formData));
     } else {
-      console.log("GET rendering Trusts Tell us");
       return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE, getPageProperties(trust, formData));
     }
   } catch (error) {
@@ -83,14 +82,9 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     if (!errorList.isEmpty()) {
       const relevantPeriod = req.query['relevant-period'];
-      if (relevantPeriod && errorList) {
-        console.log("rendering Trusts Relevant Period Tell us");
-        return res.render(
-          UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE,
-          getPagePropertiesRelevantPeriod(true, trust, formData, formatValidationError(errorList.array())),
-        );
+      if (relevantPeriod) {
+        return renderGetPageWithError(req, res);
       } else {
-        console.log("rendering Trusts Tell us");
         return res.render(
           UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE,
           getPageProperties(trust, formData, formatValidationError(errorList.array())),
@@ -128,4 +122,14 @@ const getBackLink = (legalEntitiesReviewed: boolean) => {
   } else {
     return UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL;
   }
+};
+
+const renderGetPageWithError = (req: Request, res: Response) => {
+  const errors = { errorList: [] } as any;
+  errors.errorList.push({ href: `#toDoHandleRoleWithinTrustValidation-hint`, text: "Select its role within the trust" });
+  return res.render(UPDATE_MANAGE_TRUSTS_RELEVANT_PERIOD_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE, {
+    backLinkUrl: `${config.UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE}${config.JOURNEY_REMOVE_QUERY_PARAM}`,
+    templateName: config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE,
+    errors
+  });
 };

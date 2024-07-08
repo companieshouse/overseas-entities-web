@@ -855,7 +855,7 @@ router.route(config.UPDATE_MANAGE_TRUSTS_RELEVANT_PERIOD_TELL_US_ABOUT_THE_LEGAL
     navigation.manageTrustsTellUsAboutLegalEntitiesGuard,
   )
   .get(updateManageTrustsTellUsAboutTheLegalEntity.get)
-  .post(...validator.trustRelevantPeriodLegalEntityBeneficialOwnerValidator, updateManageTrustsTellUsAboutTheLegalEntity.post);
+  .post(...validator.trustLegalEntityBeneficialOwnerValidator, updateManageTrustsTellUsAboutTheLegalEntity.post);
 
 router
   .route(config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + config.TRUST_ID + config.TRUST_HISTORICAL_BENEFICIAL_OWNER_URL + config.TRUSTEE_ID + '?')

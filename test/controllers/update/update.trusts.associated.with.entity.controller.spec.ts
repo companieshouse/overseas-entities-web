@@ -91,7 +91,7 @@ describe('Update - Trusts - Trusts associated with the overseas entity', () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 
-    test('when trust has a cease date, reviewed trust status will be shown in summary table', async () => {
+    test('Reviewed trust status will be shown in summary table', async () => {
       mockIsActiveFeature.mockReturnValue(true);
       // trust with ch_references indicates a reviewable trust (ie it would be an existing trust that has come from chips)
       mockGetApplicationData.mockReturnValue({

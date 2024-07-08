@@ -544,7 +544,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).not.toContain("Date the trust stopped being associated to the overseas entity");
     });
 
-    test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page when a reviewed trust is still involved in the overseas entity`, async () => {
+    test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page when a reviewed trust is not still involved in the overseas entity`, async () => {
       const trust = {
         trust_id: "123",
         ch_reference: "123", // marks out a review trust

@@ -19,6 +19,7 @@ export const getFilterPage = async (req: Request, res: Response, next: NextFunct
         [IsSecureRegisterKey]: appData[IsSecureRegisterKey]
       });
     }
+
     return res.render(templateName, {
       backLinkUrl: backLinkUrl,
       templateName: templateName,

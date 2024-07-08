@@ -106,7 +106,7 @@ const setWebApplicationData = (session: Session, appData: ApplicationData, trans
 
   if (Object.keys(appData[OverseasEntityDueDiligenceKey] as OverseasEntityDueDiligence).length) {
     appData[WhoIsRegisteringKey] = WhoIsRegisteringType.SOMEONE_ELSE;
-  } else if (Object.keys(appData[DueDiligenceKey] as DueDiligence).length){
+  } else if (Object.keys(appData[DueDiligenceKey] as DueDiligence).length) {
     appData[WhoIsRegisteringKey] = WhoIsRegisteringType.AGENT;
   }
 

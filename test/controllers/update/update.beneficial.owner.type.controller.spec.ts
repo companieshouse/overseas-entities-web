@@ -148,7 +148,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
         appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
         appData[BeneficialOwnerStatementKey] = BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS;
 
-        mockGetApplicationData.mockReturnValueOnce(appData);
+        mockGetApplicationData.mockReturnValueOnce(appData).mockReturnValueOnce(appData);
         const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
 
         expect(resp.status).toEqual(200);
@@ -179,7 +179,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
         appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
         appData[key] = [objectWithRef];
 
-        mockGetApplicationData.mockReturnValueOnce(appData);
+        mockGetApplicationData.mockReturnValueOnce(appData).mockReturnValueOnce(appData);
         const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
 
         expect(resp.status).toEqual(200);
@@ -197,7 +197,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
         appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
         appData[key] = [mockObject];
 
-        mockGetApplicationData.mockReturnValueOnce(appData);
+        mockGetApplicationData.mockReturnValueOnce(appData).mockReturnValueOnce(appData);
         const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
 
         expect(resp.status).toEqual(200);
@@ -219,7 +219,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
       appData[UpdateKey] = UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE;
 
-      mockGetApplicationData.mockReturnValueOnce(appData);
+      mockGetApplicationData.mockReturnValueOnce(appData).mockReturnValueOnce(appData);
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(RELEVANT_PERIOD_INDIVIDUAL_BENEFICIAL_OWNER);
@@ -232,7 +232,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
       appData[UpdateKey] = UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE;
 
-      mockGetApplicationData.mockReturnValueOnce(appData);
+      mockGetApplicationData.mockReturnValueOnce(appData).mockReturnValueOnce(appData);
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(RELEVANT_PERIOD_INDIVIDUAL_BENEFICIAL_OWNER);
@@ -440,8 +440,6 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
 
     test(`redirects to the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL + "?relevant-period=true"} page when the relevant_period=true and Other leegal entity button selected`, async () => {
-      appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
-      appData[UpdateKey] = UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE;
 
       const resp = await request(app)
         .post(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL)
@@ -452,8 +450,6 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
 
     test(`redirects to the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM } page when the relevant_period=true and Other leegal entity button selected`, async () => {
-      appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
-      appData[UpdateKey] = UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE;
 
       const resp = await request(app)
         .post(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL)
@@ -461,6 +457,21 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.UPDATE_BENEFICIAL_OWNER_OTHER_URL + RELEVANT_PERIOD_QUERY_PARAM);
+    });
+
+    test(`renders ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL } page with validation errors when no radio button is selected`, async () => {
+      appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
+      appData[UpdateKey] = UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE;
+
+      mockGetApplicationData.mockReturnValueOnce(appData).mockReturnValueOnce(appData);
+
+      const resp = await request(app)
+        .post(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_MANAGING_OFFFICER_TYPE_PAGE_HEADING);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_MANAGING_OFFICER_TYPE_LEGEND_TEXT);
+      expect(resp.text).not.toContain(REVIEWED_BENEFICIAL_OWNER_MANAGING_OFFICER_TABLE_HEADING);
     });
 
     test(`redirects to the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM } page when the relevant_period=true and government entity button selected`, async () => {

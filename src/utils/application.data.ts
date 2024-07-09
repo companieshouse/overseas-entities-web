@@ -34,7 +34,11 @@ import { isActiveFeature } from "./feature.flag";
 import { getOverseasEntity } from "../service/overseas.entities.service";
 
 export const getApplicationData = async (session: Session | undefined, req?: Request): Promise<ApplicationData> => {
-  if (typeof req === "undefined" || !isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+  if (typeof req === "undefined"
+      || !isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
+      || typeof req.params[ROUTE_PARAM_TRANSACTION_ID] === "undefined"
+      || typeof req.params[ROUTE_PARAM_SUBMISSION_ID] === "undefined"
+  ) {
     return session?.getExtraData(APPLICATION_DATA_KEY) || {} as ApplicationData;
   }
 

@@ -130,7 +130,7 @@ export const getTrustInvolvedPage = async (
 ): Promise<void> => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
 
     const pageProps = await getPageProperties(req, isUpdate, isReview);
 

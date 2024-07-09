@@ -23,7 +23,42 @@ import { retrieveTrustData } from "../../utils/update/trust.model.fetch";
 import { saveAndContinue } from "../../utils/save.and.continue";
 import { Session } from "@companieshouse/node-session-handler";
 import { validationResult } from "express-validator/src/validation-result";
-import { formatValidationError } from "../../middleware/validation.middleware";
+import { FormattedValidationErrors, formatValidationError } from "../../middleware/validation.middleware";
+
+type BeneficialOwnerTypePageProperties = {
+  backLinkUrl: string;
+  templateName: string;
+  errors?: FormattedValidationErrors;
+  hasExistingBosMos: boolean;
+  hasNewlyAddedBosMos: boolean;
+};
+
+const getPageProperties = (
+  req: Request,
+  errors?: FormattedValidationErrors,
+): BeneficialOwnerTypePageProperties => {
+  const appData: ApplicationData = getApplicationData(req.session);
+
+  const allBosMos = [
+    ...(appData[BeneficialOwnerIndividualKey] ?? []),
+    ...(appData[BeneficialOwnerOtherKey] ?? []),
+    ...(appData[BeneficialOwnerGovKey] ?? []),
+    ...(appData[ManagingOfficerCorporateKey] ?? []),
+    ...(appData[ManagingOfficerKey] ?? [])
+  ];
+
+  const hasNewlyAddedBosMos = allBosMos.find(boMo => !boMo.ch_reference) !== undefined;
+  const hasExistingBosMos = allBosMos.find(boMo => boMo.ch_reference) !== undefined;
+
+  return {
+    backLinkUrl: config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
+    templateName: config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
+    hasNewlyAddedBosMos,
+    hasExistingBosMos,
+    ...appData,
+    errors
+  };
+};
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -40,24 +75,9 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       return res.redirect(checkMoRedirect);
     }
 
-    const allBosMos = [
-      ...(appData[BeneficialOwnerIndividualKey] ?? []),
-      ...(appData[BeneficialOwnerOtherKey] ?? []),
-      ...(appData[BeneficialOwnerGovKey] ?? []),
-      ...(appData[ManagingOfficerCorporateKey] ?? []),
-      ...(appData[ManagingOfficerKey] ?? [])
-    ];
+    const pageProps = getPageProperties(req);
 
-    const hasNewlyAddedBosMos = allBosMos.find(boMo => !boMo.ch_reference) !== undefined;
-    const hasExistingBosMos = allBosMos.find(boMo => boMo.ch_reference) !== undefined;
-
-    return res.render(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, {
-      backLinkUrl: config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
-      templateName: config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
-      ...appData,
-      hasExistingBosMos,
-      hasNewlyAddedBosMos
-    });
+    return res.render(pageProps.templateName, pageProps);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);
@@ -71,7 +91,9 @@ export const post = (req: Request, res: Response) => {
   const errorList = validationResult(req);
 
   if (!errorList.isEmpty()) {
-    return renderGetPageWithErrors(req, res, formatValidationError(errorList.array()));
+    const pageProps = getPageProperties(req, formatValidationError(errorList.array()));
+
+    return res.render(pageProps.templateName, pageProps);
   }
   return res.redirect(getNextPage(req.body[BeneficialOwnerTypeKey]));
 };
@@ -135,37 +157,4 @@ const getNextPage = (beneficialOwnerTypeChoices: BeneficialOwnerTypeChoice | Man
       default:
         return config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL;
   }
-};
-
-const renderGetPageWithErrors = (req: Request, res: Response, errors: any) => {
-  const appData: ApplicationData = getApplicationData(req.session);
-
-  const checkIsRedirect = checkAndReviewBeneficialOwner(appData);
-  if (checkIsRedirect && checkIsRedirect !== "") {
-    return res.redirect(checkIsRedirect);
-  }
-
-  const checkMoRedirect = checkAndReviewManagingOfficers(appData);
-  if (checkMoRedirect){
-    return res.redirect(checkMoRedirect);
-  }
-  const allBosMos = [
-    ...(appData[BeneficialOwnerIndividualKey] ?? []),
-    ...(appData[BeneficialOwnerOtherKey] ?? []),
-    ...(appData[BeneficialOwnerGovKey] ?? []),
-    ...(appData[ManagingOfficerCorporateKey] ?? []),
-    ...(appData[ManagingOfficerKey] ?? [])
-  ];
-
-  const hasNewlyAddedBosMos = allBosMos.find(boMo => !boMo.ch_reference) !== undefined;
-  const hasExistingBosMos = allBosMos.find(boMo => boMo.ch_reference) !== undefined;
-
-  return res.render(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, {
-    backLinkUrl: config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
-    templateName: config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
-    ...appData,
-    hasExistingBosMos,
-    hasNewlyAddedBosMos,
-    errors
-  });
 };

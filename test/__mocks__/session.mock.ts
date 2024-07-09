@@ -52,7 +52,7 @@ import {
   yesNoResponse,
   IsRemoveKey
 } from "../../src/model/data.types.model";
-import { TrustKey, Trust } from "../../src/model/trust.model";
+import { TrustKey, Trust, TrustIndividual } from "../../src/model/trust.model";
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../src/model/who.is.making.filing.model";
 import { DUE_DILIGENCE_OBJECT_MOCK } from "./due.diligence.mock";
 import { ADDRESS } from "./fields/address.mock";
@@ -61,6 +61,7 @@ import { ANY_MESSAGE_ERROR } from "./text.mock";
 import { EntityKey } from "../../src/model/entity.model";
 import { OverseasEntityDueDiligenceKey } from "../../src/model/overseas.entity.due.diligence.model";
 import { BeneficialOwnerPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
+import { RoleWithinTrustType } from "../../src/model/role.within.trust.type.model";
 
 export const BO_GOV_ID = "10722c3c-9301-4f46-ad8b-b30f5dcd76a0";
 export const BO_GOV_ID_URL = "/" + BO_GOV_ID;
@@ -1707,6 +1708,47 @@ export const TRUST_WITH_ID: Trust = {
   creation_date_year: "1999",
   trust_still_involved_in_overseas_entity: "Yes",
   unable_to_obtain_all_trust_info: "No"
+};
+
+export const TRUST_WITH_TRUSTEES: Trust = {
+  trust_id: "725",
+  trust_name: "name of trust",
+  creation_date_day: "31",
+  creation_date_month: "12",
+  creation_date_year: "1999",
+  trust_still_involved_in_overseas_entity: "Yes",
+  unable_to_obtain_all_trust_info: "No"
+};
+
+export const INDIVIUAL_TRUSTEE: TrustIndividual = {
+  id: "1",
+  ch_references: "CNFca5mzOxn9O_TW04SXGGolD-Y",
+  forename: "INDIE",
+  other_forenames: "",
+  surname: "BENO",
+  dob_day: "16",
+  dob_month: "8",
+  dob_year: "1982",
+  nationality: "Bahraini",
+  type: RoleWithinTrustType.SETTLOR,
+  ura_address_premises: "1",
+  ura_address_line_1: "INDIVIDUAL  ROAD",
+  ura_address_locality: "INDIVIDUAL CITY",
+  ura_address_country: "United Kingdom",
+  ura_address_postal_code: "INDBO1",
+  ura_address_line_2: "INDIVIDUAL VILLAGE",
+  ura_address_region: "INDIVIDUAL COUNTY",
+  ura_address_care_of: "",
+  ura_address_po_box: "",
+  sa_address_premises: "1",
+  sa_address_line_1: "INDIVIDUAL  ROAD",
+  sa_address_line_2: "INDIVIDUAL VILLAGE",
+  sa_address_locality: "INDIVIDUAL CITY",
+  sa_address_region: "INDIVIDUAL COUNTY",
+  sa_address_country: "United Kingdom",
+  sa_address_postal_code: "INDBO1",
+  sa_address_care_of: "",
+  sa_address_po_box: ""
 };
 
 export const APPLICATION_DATA_MOCK: ApplicationData = {

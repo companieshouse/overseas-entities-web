@@ -404,6 +404,7 @@ export const NO_CHANGE = "#no_change";
 export const BENEFICIAL_OWNERS_STATEMENT = "#beneficial_owners_statement";
 export const REGISTRABLE_BENEFICIAL_OWNER = "#registrable_beneficial_owner";
 export const TRUST_STILL_INVOLVED = "#trust_still_involved_in_overseas_entity";
+export const TRUSTEE_STILL_INVOLVED = "#still_involved";
 
 export const ENTITY_CHANGE_NAME = OVERSEAS_NAME_URL + ENTITY_NAME;
 export const PRESENTER_CHANGE_FULL_NAME = PRESENTER_URL + "#full_name";

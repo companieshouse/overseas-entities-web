@@ -27,6 +27,12 @@
   <div class="govuk-grid-column-two-thirds">
     {% include "includes/list/errors.html" %}
 
+    {% if formData.relevant_period %}
+      {% set entity_name = formData.entity_name %}
+      {% include "includes/page-templates/important-banner.html" %}
+      {% set pageTitle = pageParams.title + " beneficiary" %}
+    {% endif %}
+
     <span class="govuk-caption-l">{{ trustName }}</span>
     <h1 class="govuk-heading-xl govuk-!-margin-0">{{ pageTitle }}</h1>
     <br> <p class="govuk-body">You can add more later.</p> <br>
@@ -77,6 +83,8 @@
         } %}
         {% include "includes/inputs/date-input.html" %}
       {% endif %}
+      
+      {% if not formData.relevant_period %}
 
       {% set interestedPersonDateHtml %}
         {% set fieldParam = {
@@ -137,6 +145,8 @@
       } %}
 
       {% include "includes/inputs/radio-input.html" %}
+
+      {% endif %}
 
       {% include "includes/inputs/nationality/nationality.html" %}
 

@@ -20,6 +20,7 @@ import { TrusteeType } from '../../model/trustee.type.model';
 import { IndividualTrustee, Trust, TrustIndividual } from '../../model/trust.model';
 import { RoleWithinTrustType } from '../../model/role.within.trust.type.model';
 import { IndividualTrusteesFormCommon } from '../../model/trust.page.model';
+// import * as config from '../../config';
 
 const getPageProperties = (trust, formData, trustee: TrustIndividual, errors?: FormattedValidationErrors) => {
   return {
@@ -52,8 +53,14 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const trustee = getTrustee(trust, trusteeId, TrusteeType.INDIVIDUAL) as IndividualTrustee;
 
     const formData = trustee ? mapIndividualTrusteeFromSessionToPage(trustee) : {};
+    const relevant_period = req.query['relevant-period'];
 
-    return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE, getPageProperties(trust, formData, trustee));
+    if (relevant_period) {
+      return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE, getPagePropertiesRelevantPeriod(relevant_period, trust, formData, trustee));
+    } else {
+      return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE, getPageProperties(trust, formData, trustee));
+    }
+
   } catch (error) {
     next(error);
   }
@@ -67,12 +74,17 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const trust = getTrustInReview(appData) as Trust;
 
     const errorList = validationResult(req);
-    const formData: IndividualTrusteesFormCommon = req.body as IndividualTrusteesFormCommon;
+
+    req.body.roleWithinTrust = RoleWithinTrustType.GRANTOR;
+    const formData: IndividualTrusteesFormCommon = req.body;
+    // appData[RoleWithinTrustType] = RoleWithinTrustType.GRANTOR;;
+
+    console.log("-------------------------> " + appData.trusts);
 
     if (!errorList.isEmpty()) {
       const trustee = getTrustee(trust, trusteeId, TrusteeType.INDIVIDUAL) as IndividualTrustee;
-
       return res.render(
+        // roleTypes: RoleWithinTrustType,
         UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE,
         getPageProperties(trust, formData, trustee, formatValidationError(errorList.array())),
       );
@@ -104,4 +116,10 @@ const getBackLink = (individualsReviewed: boolean) => {
   } else {
     return UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL;
   }
+};
+
+const getPagePropertiesRelevantPeriod = (relevant_period, trust, formData, trustee: TrustIndividual) => {
+  formData.relevant_period = relevant_period;
+  formData.entity_name = trust.trust_name;
+  return getPageProperties(trust, formData, trustee);
 };

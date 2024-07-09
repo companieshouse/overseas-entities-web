@@ -4,6 +4,7 @@
     {% include "includes/page-templates/relevant-period.html" %}
 </div>
 
+
 {% set fieldParam = {
 name: 'addTrust',
 error: errors.addTrust,
@@ -19,8 +20,7 @@ checked: formData.addTrust == "addTrustYes"
 value: "preRegistration",
 text: "Yes - for the pre-registration period",
 checked: formData.preRegistrationPeriod == "preRegistration"
-},
-{
+}, {
 value: "noTrust",
 text: "No",
 attributes: {
@@ -28,11 +28,13 @@ attributes: {
 },
 checked: formData.addTrust == "noTrust"
 }
-]
-} %}
+] } %}
+
 {% include "includes/inputs/radio-input.html" %}
+
 {% if isUpdate %}
 {% include "includes/save-and-continue-button.html" %}
 {% else %}
 {% include "includes/continue-button.html" %}
+
 {% endif %}

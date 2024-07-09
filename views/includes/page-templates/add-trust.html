@@ -113,7 +113,8 @@
         "data-event-id": "add-trust-yes-radio-option"
         },
         checked: formData.addTrust == "addTrustYes"
-        }, {
+        },
+        {
         value: "noTrust",
         text: "No",
         attributes: {
@@ -123,7 +124,6 @@
         }
         ]
         } %}
-
         {% include "includes/inputs/radio-input.html" %}
         {% if isUpdate %}
           {% include "includes/save-and-continue-button.html" %}

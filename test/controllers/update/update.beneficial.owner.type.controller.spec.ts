@@ -434,6 +434,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
       const resp = await request(app)
         .post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
+
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toContain(config.UPDATE_CHECK_YOUR_ANSWERS_URL);
     });

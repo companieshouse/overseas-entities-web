@@ -1,15 +1,9 @@
-import { FEATURE_FLAG_DISABLE_UPDATE_PRIVATE_DATA_FETCH } from "../../config";
 import { logger } from "../logger";
 import { getManagingOfficersPrivateData } from "../../service/private.overseas.entity.details";
-import { isActiveFeature } from '../feature.flag';
 import { ApplicationData } from "../../model";
 import { mapIndividualMoPrivateData, mapCorporateMoPrivateData } from "./managing.officer.mapper";
 
 export const fetchManagingOfficersPrivateData = async (appData: ApplicationData, req) => {
-
-  if (isActiveFeature(FEATURE_FLAG_DISABLE_UPDATE_PRIVATE_DATA_FETCH)) {
-    return;
-  }
 
   const overseasEntityId = appData.overseas_entity_id;
   const transactionId = appData.transaction_id;

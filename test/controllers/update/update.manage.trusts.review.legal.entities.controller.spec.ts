@@ -203,6 +203,38 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       expect(resp.text).toContain('Beneficiary');
     });
 
+    test('Page displays status as active whenthe legal entity trustee is still involved in the trust', async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+
+      const legalEntities = [{
+        ...defaultLegalEntities[0],
+        still_involved: "Yes"
+      }];
+      mockGetApplicationData.mockReturnValueOnce(getAppDataWithReviewTrust(legalEntities));
+      mockGetTrustInReview.mockReturnValueOnce(getReviewTrust(legalEntities));
+
+      const response = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
+      expect(response.text).toContain('Add a legal entity');
+      expect(response.text).toContain('Status');
+      expect(response.text).toContain('Active');
+    });
+
+    test('Page displays status as removed when the legal entity trustee is not still involved in the trust', async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+
+      const legalEntities = [{
+        ...defaultLegalEntities[0],
+        still_involved: "No"
+      }];
+      mockGetApplicationData.mockReturnValueOnce(getAppDataWithReviewTrust(legalEntities));
+      mockGetTrustInReview.mockReturnValueOnce(getReviewTrust(legalEntities));
+
+      const response = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
+      expect(response.text).toContain('Add a legal entity');
+      expect(response.text).toContain('Status');
+      expect(response.text).toContain('Removed');
+    });
+
     test('when feature flag is off, 404 is returned', async () => {
       mockIsActiveFeature.mockReturnValueOnce(false);
 

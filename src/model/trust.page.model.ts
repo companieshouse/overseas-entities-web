@@ -139,9 +139,11 @@ type TrusteeItem = {
     is_newly_added: boolean
 };
 
-type AddTrust = {
-  addTrust: yesNoResponse;
-};
+ enum AddTrust {
+    addTrustYes = "addTrustYes",
+    preRegistration = "preRegistration",
+    noTrust = "noTrust"
+}
 
 export {
   TrustDetailsForm,

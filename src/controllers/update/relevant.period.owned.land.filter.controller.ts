@@ -5,6 +5,7 @@ import * as config from "../../config";
 import { ApplicationData } from "../../model";
 import { getApplicationData } from "../../utils/application.data";
 import { OwnedLandKey } from "../../model/update.type.model";
+import { ChangeBeneficiaryRelevantPeriodKey, ChangeBeneficiaryRelevantPeriodType, ChangeBoRelevantPeriodKey, ChangeBoRelevantPeriodType, TrusteeInvolvedRelevantPeriodKey, TrusteeInvolvedRelevantPeriodType } from "../../model/relevant.period.statment.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -26,10 +27,16 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE}`);
     const ownedLandKey = req.body[OwnedLandKey];
+    const appData: ApplicationData = getApplicationData(req.session);
 
     if (ownedLandKey === '1') {
       return res.redirect(config.RELEVANT_PERIOD_INTERRUPT_URL);
     } else {
+      if (appData.update) {
+        appData.update[ChangeBoRelevantPeriodKey] = ChangeBoRelevantPeriodType.NO;
+        appData.update[TrusteeInvolvedRelevantPeriodKey] = TrusteeInvolvedRelevantPeriodType.NO;
+        appData.update[ChangeBeneficiaryRelevantPeriodKey] = ChangeBeneficiaryRelevantPeriodType.NO;
+      }
       return res.redirect(config.UPDATE_FILING_DATE_URL);
     }
   } catch (error) {

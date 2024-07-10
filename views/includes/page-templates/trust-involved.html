@@ -212,7 +212,7 @@
         } %}
         {% include "includes/inputs/radio-input.html" %}
 
-        {% if pageData.isRelevantPeriod %}
+        {% if pageData.isRelevantPeriod or (not update.change_bo_relevant_period === "undefined") and (not update.trustee_involved_relevant_period === "undefined") and (not update.change_beneficiary_relevant_period === "undefined") %}
           <h4 class="govuk-heading-m">For the pre-registration period</h4>
           <div class="govuk-inset-text">
             <p>Based on the pre-registration statement you provided earlier in this service, you also need to tell us about any beneficiaries from this period, that the entity has not already told us about.</p>

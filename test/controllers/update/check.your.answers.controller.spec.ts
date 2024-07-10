@@ -75,6 +75,17 @@ import {
   REMOVE_IS_OE_REGISTERED_OWNER_CHANGE_LINK,
   REMOVE_SECURE_REGISTER_CHANGE_LINK,
   REMOVE_CHECK_YOUR_ANSWERS_BACK_LINK,
+  TRUSTS_ADDED,
+  TRUSTS_REVIEWED,
+  TRUST_INVOLVED,
+  TRUST_CEASED_DATE,
+  TRUSTEE_INDIVIDUAL_NAME,
+  TRUSTEE_LEGAL_ENTITY_NAME,
+  TRUSTEE_INDIVIDUAL_INVOLVED,
+  TRUSTEE_LEGAL_ENTITY_INVOLVED,
+  TRUSTEE_ROLE,
+  TRUSTEE_INDIVIDUAL_CEASED_DATE,
+  TRUSTEE_LEGAL_ENTITY_CEASED_DATE
 } from "../../__mocks__/text.mock";
 import {
   ERROR,
@@ -94,7 +105,7 @@ import {
   COMPANY_NUMBER,
   INDIVIUAL_TRUSTEE,
   CORPORATE_TRUSTEE,
-  TRUST_WITH_ID
+  TRUST_WITH_ID,
 } from "../../__mocks__/session.mock";
 import { DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/due.diligence.mock";
 import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/overseas.entity.due.diligence.mock";
@@ -490,10 +501,10 @@ describe("CHECK YOUR ANSWERS controller", () => {
       mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain("Trusts you have added");
-      expect(resp.text).not.toContain("Trusts you have reviewed");
-      expect(resp.text).toContain("Is the trust still involved in the overseas entity?");
-      expect(resp.text).not.toContain("Date the trust stopped being associated to the overseas entity");
+      expect(resp.text).toContain(TRUSTS_ADDED);
+      expect(resp.text).not.toContain(TRUSTS_REVIEWED);
+      expect(resp.text).toContain(TRUST_INVOLVED);
+      expect(resp.text).not.toContain(TRUST_CEASED_DATE);
     });
 
     test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page when an added trust is not still involved in the overseas entity`, async () => {
@@ -515,10 +526,10 @@ describe("CHECK YOUR ANSWERS controller", () => {
       mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain("Trusts you have added");
-      expect(resp.text).not.toContain("Trusts you have reviewed");
-      expect(resp.text).toContain("Is the trust still involved in the overseas entity?");
-      expect(resp.text).toContain("Date the trust stopped being associated to the overseas entity");
+      expect(resp.text).toContain(TRUSTS_ADDED);
+      expect(resp.text).not.toContain(TRUSTS_REVIEWED);
+      expect(resp.text).toContain(TRUST_INVOLVED);
+      expect(resp.text).toContain(TRUST_CEASED_DATE);
     });
 
     test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page when a reviewed trust is still involved in the overseas entity`, async () => {
@@ -541,10 +552,10 @@ describe("CHECK YOUR ANSWERS controller", () => {
       mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain("Trusts you have reviewed");
-      expect(resp.text).not.toContain("Trusts you have added");
-      expect(resp.text).toContain("Is the trust still involved in the overseas entity?");
-      expect(resp.text).not.toContain("Date the trust stopped being associated to the overseas entity");
+      expect(resp.text).toContain(TRUSTS_REVIEWED);
+      expect(resp.text).not.toContain(TRUSTS_ADDED);
+      expect(resp.text).toContain(TRUST_INVOLVED);
+      expect(resp.text).not.toContain(TRUST_CEASED_DATE);
     });
 
     test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page when a reviewed trust is not still involved in the overseas entity`, async () => {
@@ -567,10 +578,10 @@ describe("CHECK YOUR ANSWERS controller", () => {
       mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain("Trusts you have reviewed");
-      expect(resp.text).not.toContain("Trusts you have added");
-      expect(resp.text).toContain("Is the trust still involved in the overseas entity?");
-      expect(resp.text).toContain("Date the trust stopped being associated to the overseas entity");
+      expect(resp.text).toContain(TRUSTS_REVIEWED);
+      expect(resp.text).not.toContain(TRUSTS_ADDED);
+      expect(resp.text).toContain(TRUST_INVOLVED);
+      expect(resp.text).toContain(TRUST_CEASED_DATE);
     });
 
     test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page when an individual is still involved in the trust`, async () => {
@@ -592,13 +603,15 @@ describe("CHECK YOUR ANSWERS controller", () => {
 
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain("Individual for Flying Cats");
-      expect(resp.text).toContain("Are they still involved in the trust?");
-      expect(resp.text).toContain("Role within the trust");
-      expect(resp.text).not.toContain("Date they ceased to be involved in the trust");
-      expect(resp.text).not.toContain("Legal Entity for Flying Cats");
-      expect(resp.text).not.toContain("Is it still involved in the trust?");
-      expect(resp.text).not.toContain("Date it ceased to be involved in the trust");
+      expect(resp.text).toContain(TRUSTEE_ROLE);
+
+      expect(resp.text).toContain(`${TRUSTEE_INDIVIDUAL_NAME} Flying Cats`);
+      expect(resp.text).toContain(TRUSTEE_INDIVIDUAL_INVOLVED);
+      expect(resp.text).not.toContain(TRUSTEE_INDIVIDUAL_CEASED_DATE);
+
+      expect(resp.text).not.toContain(`${TRUSTEE_LEGAL_ENTITY_NAME} Flying Cats`);
+      expect(resp.text).not.toContain(TRUSTEE_LEGAL_ENTITY_INVOLVED);
+      expect(resp.text).not.toContain(TRUSTEE_LEGAL_ENTITY_CEASED_DATE);
     });
 
     test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page when a both types of trustee are still involved in the trust`, async () => {
@@ -626,13 +639,15 @@ describe("CHECK YOUR ANSWERS controller", () => {
 
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain("Legal Entity for Flying Cats");
-      expect(resp.text).toContain("Is it still involved in the trust?");
-      expect(resp.text).toContain("Role within the trust");
-      expect(resp.text).not.toContain("Date it ceased to be involved in the trust");
-      expect(resp.text).toContain("Are they still involved in the trust?");
-      expect(resp.text).toContain("Individual for Flying Cats");
-      expect(resp.text).not.toContain("Date they ceased to be involved in the trust");
+      expect(resp.text).toContain(TRUSTEE_ROLE);
+
+      expect(resp.text).toContain(`${TRUSTEE_LEGAL_ENTITY_NAME} Flying Cats`);
+      expect(resp.text).toContain(TRUSTEE_LEGAL_ENTITY_INVOLVED);
+      expect(resp.text).not.toContain(TRUSTEE_LEGAL_ENTITY_CEASED_DATE);
+
+      expect(resp.text).toContain(TRUSTEE_INDIVIDUAL_INVOLVED);
+      expect(resp.text).toContain(`${TRUSTEE_INDIVIDUAL_NAME} Flying Cats`);
+      expect(resp.text).not.toContain(TRUSTEE_INDIVIDUAL_CEASED_DATE);
     });
 
     test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page when an individual trustee is not still involved in the trust`, async () => {
@@ -657,13 +672,15 @@ describe("CHECK YOUR ANSWERS controller", () => {
 
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain("Are they still involved in the trust?");
-      expect(resp.text).toContain("Individual for Flying Cats");
-      expect(resp.text).toContain("Role within the trust");
-      expect(resp.text).toContain("Date they ceased to be involved in the trust");
-      expect(resp.text).not.toContain("Legal Entity for Flying Cats");
-      expect(resp.text).not.toContain("Is it still involved in the trust?");
-      expect(resp.text).not.toContain("Date it ceased to be involved in the trust");
+      expect(resp.text).toContain(TRUSTEE_ROLE);
+
+      expect(resp.text).toContain(TRUSTEE_INDIVIDUAL_INVOLVED);
+      expect(resp.text).toContain(`${TRUSTEE_INDIVIDUAL_NAME} Flying Cats`);
+      expect(resp.text).toContain(TRUSTEE_INDIVIDUAL_CEASED_DATE);
+
+      expect(resp.text).not.toContain(`${TRUSTEE_LEGAL_ENTITY_NAME} Flying Cats`);
+      expect(resp.text).not.toContain(TRUSTEE_LEGAL_ENTITY_INVOLVED);
+      expect(resp.text).not.toContain(TRUSTEE_LEGAL_ENTITY_CEASED_DATE);
     });
 
     test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page when a corporate trustee is still involved in the trust`, async () => {
@@ -685,13 +702,15 @@ describe("CHECK YOUR ANSWERS controller", () => {
 
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain("Legal Entity for Flying Cats");
-      expect(resp.text).toContain("Is it still involved in the trust?");
-      expect(resp.text).toContain("Role within the trust");
-      expect(resp.text).not.toContain("Date it ceased to be involved in the trust");
-      expect(resp.text).not.toContain("Are they still involved in the trust?");
-      expect(resp.text).not.toContain("Individual for Flying Cats");
-      expect(resp.text).not.toContain("Date they ceased to be involved in the trust");
+      expect(resp.text).toContain(TRUSTEE_ROLE);
+
+      expect(resp.text).toContain(`${TRUSTEE_LEGAL_ENTITY_NAME} Flying Cats`);
+      expect(resp.text).toContain(TRUSTEE_LEGAL_ENTITY_INVOLVED);
+      expect(resp.text).not.toContain(TRUSTEE_LEGAL_ENTITY_CEASED_DATE);
+
+      expect(resp.text).not.toContain(TRUSTEE_INDIVIDUAL_INVOLVED);
+      expect(resp.text).not.toContain(`${TRUSTEE_INDIVIDUAL_NAME} Flying Cats`);
+      expect(resp.text).not.toContain(TRUSTEE_INDIVIDUAL_CEASED_DATE);
     });
 
     test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page when a corporate trustee is not still involved in the trust`, async () => {
@@ -716,15 +735,15 @@ describe("CHECK YOUR ANSWERS controller", () => {
 
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain("Role within the trust");
+      expect(resp.text).toContain(TRUSTEE_ROLE);
 
-      expect(resp.text).not.toContain("Individual for Flying Cats");
-      expect(resp.text).not.toContain("Are they still involved in the trust?");
-      expect(resp.text).not.toContain("Date they ceased to be involved in the trust");
+      expect(resp.text).not.toContain(`${TRUSTEE_INDIVIDUAL_NAME} Flying Cats`);
+      expect(resp.text).not.toContain(TRUSTEE_INDIVIDUAL_INVOLVED);
+      expect(resp.text).not.toContain(TRUSTEE_INDIVIDUAL_CEASED_DATE);
 
-      expect(resp.text).toContain("Legal Entity for Flying Cats");
-      expect(resp.text).toContain("Is it still involved in the trust?");
-      expect(resp.text).toContain("Date it ceased to be involved in the trust");
+      expect(resp.text).toContain(`${TRUSTEE_LEGAL_ENTITY_NAME} Flying Cats`);
+      expect(resp.text).toContain(TRUSTEE_LEGAL_ENTITY_INVOLVED);
+      expect(resp.text).toContain(TRUSTEE_LEGAL_ENTITY_CEASED_DATE);
     });
 
     test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page when a both types of trustee are not still involved in the trust`, async () => {
@@ -758,15 +777,15 @@ describe("CHECK YOUR ANSWERS controller", () => {
 
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain("Role within the trust");
+      expect(resp.text).toContain(TRUSTEE_ROLE);
 
-      expect(resp.text).toContain("Individual for Flying Cats");
-      expect(resp.text).toContain("Are they still involved in the trust?");
-      expect(resp.text).toContain("Date they ceased to be involved in the trust");
+      expect(resp.text).toContain(`${TRUSTEE_INDIVIDUAL_NAME} Flying Cats`);
+      expect(resp.text).toContain(TRUSTEE_INDIVIDUAL_INVOLVED);
+      expect(resp.text).toContain(TRUSTEE_INDIVIDUAL_CEASED_DATE);
 
-      expect(resp.text).toContain("Legal Entity for Flying Cats");
-      expect(resp.text).toContain("Is it still involved in the trust?");
-      expect(resp.text).toContain("Date it ceased to be involved in the trust");
+      expect(resp.text).toContain(`${TRUSTEE_LEGAL_ENTITY_NAME} Flying Cats`);
+      expect(resp.text).toContain(TRUSTEE_INDIVIDUAL_INVOLVED);
+      expect(resp.text).toContain(TRUSTEE_LEGAL_ENTITY_CEASED_DATE);
     });
 
     test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page when individual trustee are not still involved in the trust, corporate trustee is still involved`, async () => {
@@ -797,15 +816,15 @@ describe("CHECK YOUR ANSWERS controller", () => {
 
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain("Role within the trust");
+      expect(resp.text).toContain(TRUSTEE_ROLE);
 
-      expect(resp.text).toContain("Individual for Flying Cats");
-      expect(resp.text).toContain("Are they still involved in the trust?");
-      expect(resp.text).toContain("Date they ceased to be involved in the trust");
+      expect(resp.text).toContain(`${TRUSTEE_INDIVIDUAL_NAME} Flying Cats`);
+      expect(resp.text).toContain(TRUSTEE_INDIVIDUAL_INVOLVED);
+      expect(resp.text).toContain(TRUSTEE_INDIVIDUAL_CEASED_DATE);
 
-      expect(resp.text).toContain("Legal Entity for Flying Cats");
-      expect(resp.text).toContain("Is it still involved in the trust?");
-      expect(resp.text).not.toContain("Date it ceased to be involved in the trust");
+      expect(resp.text).toContain(`${TRUSTEE_LEGAL_ENTITY_NAME} Flying Cats`);
+      expect(resp.text).toContain(TRUSTEE_INDIVIDUAL_INVOLVED);
+      expect(resp.text).not.toContain(TRUSTEE_LEGAL_ENTITY_CEASED_DATE);
     });
 
     test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page when corporate trustee are not still involved in the trust, individual trustee is still involved`, async () => {
@@ -836,15 +855,15 @@ describe("CHECK YOUR ANSWERS controller", () => {
 
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain("Role within the trust");
+      expect(resp.text).toContain(TRUSTEE_ROLE);
 
-      expect(resp.text).toContain("Individual for Flying Cats");
-      expect(resp.text).toContain("Are they still involved in the trust?");
-      expect(resp.text).not.toContain("Date they ceased to be involved in the trust");
+      expect(resp.text).toContain(`${TRUSTEE_INDIVIDUAL_NAME} Flying Cats`);
+      expect(resp.text).toContain(TRUSTEE_INDIVIDUAL_INVOLVED);
+      expect(resp.text).not.toContain(TRUSTEE_INDIVIDUAL_CEASED_DATE);
 
-      expect(resp.text).toContain("Legal Entity for Flying Cats");
-      expect(resp.text).toContain("Is it still involved in the trust?");
-      expect(resp.text).toContain("Date it ceased to be involved in the trust");
+      expect(resp.text).toContain(`${TRUSTEE_LEGAL_ENTITY_NAME} Flying Cats`);
+      expect(resp.text).toContain(TRUSTEE_INDIVIDUAL_INVOLVED);
+      expect(resp.text).toContain(TRUSTEE_LEGAL_ENTITY_CEASED_DATE);
     });
 
     test('catch error when rendering the page', async () => {

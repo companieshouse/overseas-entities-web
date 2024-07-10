@@ -20,7 +20,6 @@ import { TrusteeType } from '../../model/trustee.type.model';
 import { IndividualTrustee, Trust, TrustIndividual } from '../../model/trust.model';
 import { RoleWithinTrustType } from '../../model/role.within.trust.type.model';
 import { IndividualTrusteesFormCommon } from '../../model/trust.page.model';
-// import * as config from '../../config';
 
 const getPageProperties = (trust, formData, trustee: TrustIndividual, errors?: FormattedValidationErrors) => {
   return {
@@ -75,16 +74,11 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     const errorList = validationResult(req);
 
-    req.body.roleWithinTrust = RoleWithinTrustType.GRANTOR;
     const formData: IndividualTrusteesFormCommon = req.body;
-    // appData[RoleWithinTrustType] = RoleWithinTrustType.GRANTOR;;
-
-    console.log("-------------------------> " + appData.trusts);
 
     if (!errorList.isEmpty()) {
       const trustee = getTrustee(trust, trusteeId, TrusteeType.INDIVIDUAL) as IndividualTrustee;
       return res.render(
-        // roleTypes: RoleWithinTrustType,
         UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE,
         getPageProperties(trust, formData, trustee, formatValidationError(errorList.array())),
       );

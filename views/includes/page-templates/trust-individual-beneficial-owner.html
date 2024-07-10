@@ -176,8 +176,8 @@
         <input type="hidden" name="dateOfBirthYear" value="{{ formData.dateOfBirthYear }}"/>
       {% endif %}
 
-      {% if relevant_period %}
-        <input type="hidden" name="roleWithinTrust" value="TEST"/>
+      {% if formData.relevant_period %}
+        <input type="hidden" name="roleWithinTrust" value= "{{ pageData.roleWithinTrustType.BENEFICIARY }}" />
       {% endif %}
 
       {% include "includes/save-and-continue-button.html" %}

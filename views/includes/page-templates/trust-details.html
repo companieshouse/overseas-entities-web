@@ -28,8 +28,18 @@
 
       <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ formData.name }}</span>
     {% endif %}
-    <h1 class="govuk-heading-xl">{{ pageParams.title }}</h1>
-    <p class="govuk-caption-l govuk-!-margin-bottom-8">{{ pageParams.subtitle }}</p>
+
+    {% if pageData.relevantPeriod %}
+      <h1 class="govuk-heading-xl">Tell us about the trust involved in the pre-registration period</h1>
+
+      {{ govukInsetText({
+        text: "You need to enter information that is correct as at the date the trust stopped being associated with the overseas entity."
+      }) }}
+    {% else %}
+      <h1 class="govuk-heading-xl">{{ pageParams.title }}</h1>
+
+      <p class="govuk-caption-l govuk-!-margin-bottom-8">{{ pageParams.subtitle }}</p>
+    {% endif %}
 
     <form class="form" method="post">
       {% include "includes/csrf_token.html" %}
@@ -83,10 +93,25 @@
       {% set isUpdateOrRemoveJourney = (isUpdate or journey === "remove") %}
 
       {% if not isTrustToBeCeased and isUpdateOrRemoveJourney %}
-        {% set ceasedDateLabel = "When did this trust stop being associated with the overseas entity?" %}
-        {% set ceasedDateHint = "For example, 27 3 2007. This trust's information must be correct to this date." %}
-        {% set stillInvolvedLegendText = "Is the trust still involved in the overseas entity?" %}
-        {% include "includes/inputs/date/trust-ceased-date-input.html" %}
+        {% if pageData.relevantPeriod %}
+          {% set fieldParam = {
+          name: 'ceasedDate',
+          label: 'When did this trust stop being associated with the overseas entity?',
+          hint: "For example, 27 3 2007. This trust's information must be correct to this date.",
+          error: errors.ceasedDate if errors,
+          value: {
+          'Day': formData.ceasedDateDay,
+          'Month': formData.ceasedDateMonth,
+          'Year': formData.ceasedDateYear
+          }
+          } %}
+          {% include "includes/inputs/date-input.html" %}
+        {% else %}
+          {% set ceasedDateLabel = "When did this trust stop being associated with the overseas entity?" %}
+          {% set ceasedDateHint = "For example, 27 3 2007. This trust's information must be correct to this date." %}
+          {% set stillInvolvedLegendText = "Is the trust still involved in the overseas entity?" %}
+          {% include "includes/inputs/date/trust-ceased-date-input.html" %}
+        {% endif %}
       {% endif %}
 
       {% set boItems = [] %}
@@ -152,6 +177,11 @@
         <input type="hidden" name="createdDateMonth" value="{{ formData.createdDateMonth }}"/>
         <input type="hidden" name="createdDateYear" value="{{ formData.createdDateYear }}"/>
       {% endif %}
+
+      {% if pageData.relevantPeriod %}
+        <input type="hidden" name="stillInvolved" value="0"/>
+      {% endif %}
+      
       {% include "includes/save-and-continue-button.html" %}
     </form>
   </div>

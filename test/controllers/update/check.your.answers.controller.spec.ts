@@ -91,7 +91,10 @@ import {
   APPLICATION_DATA_REMOVE_BO_MOCK,
   APPLICATION_DATA_CH_REF_REMOVE_MOCK,
   OVERSEAS_NAME_MOCK,
-  COMPANY_NUMBER
+  COMPANY_NUMBER,
+  INDIVIUAL_TRUSTEE,
+  CORPORATE_TRUSTEE,
+  TRUST_WITH_ID
 } from "../../__mocks__/session.mock";
 import { DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/due.diligence.mock";
 import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/overseas.entity.due.diligence.mock";
@@ -544,28 +547,305 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).not.toContain("Date the trust stopped being associated to the overseas entity");
     });
 
-    // Testing the presence of individual trustees, data is present in console log, but no on the target page
-    /*
-    test.only(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page when a reviewed trust is not still involved in the overseas entity`, async () => {
+    test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page when a reviewed trust is not still involved in the overseas entity`, async () => {
+      const trust = {
+        trust_id: "123",
+        ch_reference: "123", // marks out a review trust
+        trust_name: "wizzz trust",
+        creation_date_day: "31",
+        creation_date_month: "12",
+        creation_date_year: "1999",
+        trust_still_involved_in_overseas_entity: "No",
+        unable_to_obtain_all_trust_info: "No"
+      };
+      const appData = {
+        ...APPLICATION_DATA_UPDATE_BO_MOCK,
+        ["trusts"]: [trust]
+      };
+
+      mockGetApplicationData.mockReturnValue(appData);
+      mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true);
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain("Trusts you have reviewed");
+      expect(resp.text).not.toContain("Trusts you have added");
+      expect(resp.text).toContain("Is the trust still involved in the overseas entity?");
+      expect(resp.text).toContain("Date the trust stopped being associated to the overseas entity");
+    });
+
+    test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page when an individual is still involved in the trust`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true);
+
       const trustee = {
         ...INDIVIUAL_TRUSTEE,
         still_involved: "Yes"
-      }
+      };
       const appData = {
         ...APPLICATION_DATA_UPDATE_BO_MOCK,
         ["trusts"]: [{
-          TRUST_WITH_TRUSTEES
+          ...TRUST_WITH_ID,
+          trust_name: "Flying Cats",
+          INDIVIDUALS: [trustee]
         }]
       };
       mockGetApplicationData.mockReturnValue(appData);
 
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
       expect(resp.status).toEqual(200);
-      // EXPECTED FIELDS BUT FAILING
-      expect(resp.text).toContain("Role within the trust");
+      expect(resp.text).toContain("Individual for Flying Cats");
       expect(resp.text).toContain("Are they still involved in the trust?");
+      expect(resp.text).toContain("Role within the trust");
+      expect(resp.text).not.toContain("Date they ceased to be involved in the trust");
+      expect(resp.text).not.toContain("Legal Entity for Flying Cats");
+      expect(resp.text).not.toContain("Is it still involved in the trust?");
+      expect(resp.text).not.toContain("Date it ceased to be involved in the trust");
     });
-    */
+
+    test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page when a both types of trustee are still involved in the trust`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true);
+
+      const individualTrustee = {
+        ...INDIVIUAL_TRUSTEE,
+        still_involved: "Yes"
+      };
+
+      const coprorateTrustee = {
+        ...CORPORATE_TRUSTEE,
+        still_involved: "Yes"
+      };
+      const appData = {
+        ...APPLICATION_DATA_UPDATE_BO_MOCK,
+        ["trusts"]: [{
+          ...TRUST_WITH_ID,
+          trust_name: "Flying Cats",
+          INDIVIDUALS: [individualTrustee],
+          CORPORATES: [coprorateTrustee]
+        }]
+      };
+      mockGetApplicationData.mockReturnValue(appData);
+
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain("Legal Entity for Flying Cats");
+      expect(resp.text).toContain("Is it still involved in the trust?");
+      expect(resp.text).toContain("Role within the trust");
+      expect(resp.text).not.toContain("Date it ceased to be involved in the trust");
+      expect(resp.text).toContain("Are they still involved in the trust?");
+      expect(resp.text).toContain("Individual for Flying Cats");
+      expect(resp.text).not.toContain("Date they ceased to be involved in the trust");
+    });
+
+    test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page when an individual trustee is not still involved in the trust`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true);
+
+      const trustee = {
+        ...INDIVIUAL_TRUSTEE,
+        still_involved: "No",
+        ceased_date_day: "10",
+        ceased_date_month: "5",
+        ceased_date_year: "2024"
+      };
+      const appData = {
+        ...APPLICATION_DATA_UPDATE_BO_MOCK,
+        ["trusts"]: [{
+          ...TRUST_WITH_ID,
+          trust_name: "Flying Cats",
+          INDIVIDUALS: [trustee]
+        }]
+      };
+      mockGetApplicationData.mockReturnValue(appData);
+
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain("Are they still involved in the trust?");
+      expect(resp.text).toContain("Individual for Flying Cats");
+      expect(resp.text).toContain("Role within the trust");
+      expect(resp.text).toContain("Date they ceased to be involved in the trust");
+      expect(resp.text).not.toContain("Legal Entity for Flying Cats");
+      expect(resp.text).not.toContain("Is it still involved in the trust?");
+      expect(resp.text).not.toContain("Date it ceased to be involved in the trust");
+    });
+
+    test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page when a corporate trustee is still involved in the trust`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true);
+
+      const trustee = {
+        ...CORPORATE_TRUSTEE,
+        still_involved: "Yes"
+      };
+      const appData = {
+        ...APPLICATION_DATA_UPDATE_BO_MOCK,
+        ["trusts"]: [{
+          ...TRUST_WITH_ID,
+          trust_name: "Flying Cats",
+          CORPORATES: [trustee]
+        }]
+      };
+      mockGetApplicationData.mockReturnValue(appData);
+
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain("Legal Entity for Flying Cats");
+      expect(resp.text).toContain("Is it still involved in the trust?");
+      expect(resp.text).toContain("Role within the trust");
+      expect(resp.text).not.toContain("Date it ceased to be involved in the trust");
+      expect(resp.text).not.toContain("Are they still involved in the trust?");
+      expect(resp.text).not.toContain("Individual for Flying Cats");
+      expect(resp.text).not.toContain("Date they ceased to be involved in the trust");
+    });
+
+    test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page when a corporate trustee is not still involved in the trust`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true);
+
+      const trustee = {
+        ...CORPORATE_TRUSTEE,
+        still_involved: "No",
+        ceased_date_day: "10",
+        ceased_date_month: "5",
+        ceased_date_year: "2024"
+      };
+      const appData = {
+        ...APPLICATION_DATA_UPDATE_BO_MOCK,
+        ["trusts"]: [{
+          ...TRUST_WITH_ID,
+          trust_name: "Flying Cats",
+          CORPORATES: [trustee]
+        }]
+      };
+      mockGetApplicationData.mockReturnValue(appData);
+
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain("Role within the trust");
+
+      expect(resp.text).not.toContain("Individual for Flying Cats");
+      expect(resp.text).not.toContain("Are they still involved in the trust?");
+      expect(resp.text).not.toContain("Date they ceased to be involved in the trust");
+
+      expect(resp.text).toContain("Legal Entity for Flying Cats");
+      expect(resp.text).toContain("Is it still involved in the trust?");
+      expect(resp.text).toContain("Date it ceased to be involved in the trust");
+    });
+
+    test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page when a both types of trustee are not still involved in the trust`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true);
+
+      const individualTrustee = {
+        ...INDIVIUAL_TRUSTEE,
+        still_involved: "No",
+        ceased_date_day: "10",
+        ceased_date_month: "5",
+        ceased_date_year: "2024"
+      };
+
+      const coprorateTrustee = {
+        ...CORPORATE_TRUSTEE,
+        still_involved: "No",
+        ceased_date_day: "10",
+        ceased_date_month: "5",
+        ceased_date_year: "2024"
+      };
+      const appData = {
+        ...APPLICATION_DATA_UPDATE_BO_MOCK,
+        ["trusts"]: [{
+          ...TRUST_WITH_ID,
+          trust_name: "Flying Cats",
+          INDIVIDUALS: [individualTrustee],
+          CORPORATES: [coprorateTrustee]
+        }]
+      };
+      mockGetApplicationData.mockReturnValue(appData);
+
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain("Role within the trust");
+
+      expect(resp.text).toContain("Individual for Flying Cats");
+      expect(resp.text).toContain("Are they still involved in the trust?");
+      expect(resp.text).toContain("Date they ceased to be involved in the trust");
+
+      expect(resp.text).toContain("Legal Entity for Flying Cats");
+      expect(resp.text).toContain("Is it still involved in the trust?");
+      expect(resp.text).toContain("Date it ceased to be involved in the trust");
+    });
+
+    test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page when individual trustee are not still involved in the trust, corporate trustee is still involved`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true);
+
+      const individualTrustee = {
+        ...INDIVIUAL_TRUSTEE,
+        still_involved: "No",
+        ceased_date_day: "10",
+        ceased_date_month: "5",
+        ceased_date_year: "2024"
+      };
+
+      const coprorateTrustee = {
+        ...CORPORATE_TRUSTEE,
+        still_involved: "Yes"
+      };
+      const appData = {
+        ...APPLICATION_DATA_UPDATE_BO_MOCK,
+        ["trusts"]: [{
+          ...TRUST_WITH_ID,
+          trust_name: "Flying Cats",
+          INDIVIDUALS: [individualTrustee],
+          CORPORATES: [coprorateTrustee]
+        }]
+      };
+      mockGetApplicationData.mockReturnValue(appData);
+
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain("Role within the trust");
+
+      expect(resp.text).toContain("Individual for Flying Cats");
+      expect(resp.text).toContain("Are they still involved in the trust?");
+      expect(resp.text).toContain("Date they ceased to be involved in the trust");
+
+      expect(resp.text).toContain("Legal Entity for Flying Cats");
+      expect(resp.text).toContain("Is it still involved in the trust?");
+      expect(resp.text).not.toContain("Date it ceased to be involved in the trust");
+    });
+
+    test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page when corporate trustee are not still involved in the trust, individual trustee is still involved`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true);
+
+      const individualTrustee = {
+        ...INDIVIUAL_TRUSTEE,
+        still_involved: "Yes"
+      };
+
+      const coprorateTrustee = {
+        ...CORPORATE_TRUSTEE,
+        still_involved: "No",
+        ceased_date_day: "10",
+        ceased_date_month: "5",
+        ceased_date_year: "2024"
+      };
+      const appData = {
+        ...APPLICATION_DATA_UPDATE_BO_MOCK,
+        ["trusts"]: [{
+          ...TRUST_WITH_ID,
+          trust_name: "Flying Cats",
+          INDIVIDUALS: [individualTrustee],
+          CORPORATES: [coprorateTrustee]
+        }]
+      };
+      mockGetApplicationData.mockReturnValue(appData);
+
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain("Role within the trust");
+
+      expect(resp.text).toContain("Individual for Flying Cats");
+      expect(resp.text).toContain("Are they still involved in the trust?");
+      expect(resp.text).not.toContain("Date they ceased to be involved in the trust");
+
+      expect(resp.text).toContain("Legal Entity for Flying Cats");
+      expect(resp.text).toContain("Is it still involved in the trust?");
+      expect(resp.text).toContain("Date it ceased to be involved in the trust");
+    });
 
     test('catch error when rendering the page', async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });

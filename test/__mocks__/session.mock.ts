@@ -1710,16 +1710,6 @@ export const TRUST_WITH_ID: Trust = {
   unable_to_obtain_all_trust_info: "No"
 };
 
-export const TRUST_WITH_TRUSTEES: Trust = {
-  trust_id: "725",
-  trust_name: "name of trust",
-  creation_date_day: "31",
-  creation_date_month: "12",
-  creation_date_year: "1999",
-  trust_still_involved_in_overseas_entity: "Yes",
-  unable_to_obtain_all_trust_info: "No"
-};
-
 export const INDIVIUAL_TRUSTEE: TrustIndividual = {
   id: "1",
   ch_references: "CNFca5mzOxn9O_TW04SXGGolD-Y",
@@ -1747,6 +1737,41 @@ export const INDIVIUAL_TRUSTEE: TrustIndividual = {
   sa_address_region: "INDIVIDUAL COUNTY",
   sa_address_country: "United Kingdom",
   sa_address_postal_code: "INDBO1",
+  sa_address_care_of: "",
+  sa_address_po_box: ""
+};
+
+export const CORPORATE_TRUSTEE = {
+  id: "1",
+  ch_references: "gUGj2sjjPhh7AooOzdPr4LMa3Ms",
+  type: "Interested_Person",
+  name: "Legal E trustee",
+  date_became_interested_person_day: "10",
+  date_became_interested_person_month: "9",
+  date_became_interested_person_year: "2021",
+  is_on_register_in_country_formed_in: 0,
+  identification_legal_authority: "GOVERNING LAW",
+  identification_legal_form: "LEGAL FORM",
+  identification_place_registered: "",
+  identification_registration_number: "",
+  identification_country_registration: "",
+  ro_address_premises: "1",
+  ro_address_line_1: "LEGAL ROAD",
+  ro_address_locality: "LEGAL CITY",
+  ro_address_region: "",
+  ro_address_country: "Guam",
+  ro_address_postal_code: "",
+  is_service_address_same_as_principal_address: 0,
+  ro_address_line_2: "",
+  ro_address_care_of: "",
+  ro_address_po_box: "",
+  sa_address_premises: "1",
+  sa_address_line_1: "LEGAL ROAD",
+  sa_address_line_2: "",
+  sa_address_locality: "LEGAL CITY",
+  sa_address_region: "",
+  sa_address_country: "Guam",
+  sa_address_postal_code: "",
   sa_address_care_of: "",
   sa_address_po_box: ""
 };

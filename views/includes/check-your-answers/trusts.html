@@ -87,7 +87,7 @@
           items: [ CREATE_CHANGE_LINK(
             changeLinkUrl + "/" + trust.trust_id + OE_CONFIGS.TRUST_STILL_INVOLVED,
             "Trust " + trust.trust_name + " -  Still Involved",
-            "change-trust-still-involved"
+            "change-trust-still-involved-button"
           ) ]
         } if not isRegistration
       },
@@ -102,7 +102,7 @@
           items: [ CREATE_CHANGE_LINK(
             changeLinkUrl + "/" + trust.trust_id + OE_CONFIGS.CEASED_DATE,
             "Trust " + trust.trust_name + " -  Ceased date",
-            "change-trust-still-involved"
+            "change-trust-ceased-date-button"
           ) ]
         } 
       } if not isRegistration and isNotStillInvolved

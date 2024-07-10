@@ -45,7 +45,7 @@
   {% set changeLinkUrl = OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE + "/" + individualTrustee.id %}
 {% else %}
   {% set stillInvolved =  individualTrustee.still_involved %}
-  {% set isNotStillInvolved = ndividualTrustee.still_involved === "No" %}    
+  {% set isNotStillInvolved = individualTrustee.still_involved === "No" %}    
   {% set trusteeCeasedDate = dateMacros.formatDate(individualTrustee.ceased_date_day, individualTrustee.ceased_date_month, individualTrustee.ceased_date_year) %}
   {% if manageTrusts %}
     {% set changeLinkUrl = OE_CONFIGS.UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_CHANGE_HANDLER_URL +  "/" + trust.trust_id + "/individual/" + individualTrustee.id %}
@@ -211,39 +211,37 @@
 
 {% if not pageParams.isRegistration %}
   {% set rows = (rows.push({
-    {
-      key: {
-        text: "Are they still involved in the trust?"
+    key: {
+    text: "Are they still involved in the trust?"
       },
       value: {
         text: stillInvolved
       },
       actions: {
-        items: [ CREATE_CHANGE_LINK(
-          changeLinkUrl + "/" + trust.trust_id + OE_CONFIGS.TRUSTEE_STILL_INVOLVED,
+      items: [ CREATE_CHANGE_LINK(
+          changeLinkUrl + trust.trust_id + OE_CONFIGS.TRUSTEE_STILL_INVOLVED,
           "Individual beneficial owner " + individualTrusteeFullName + " -  Still Involved",
-          "change-trustee-still-involved"
+          "change-individual-beneficial-owner-still-involved-button"
         ) ]
       }
-    },
-    {
+    }), rows) %}
+    
+    {% set rows = (rows.push({
       key: {
-        text: "Date the trust stopped being associated to the overseas entity"
+        text: "Date they ceased to be involved in the trust"
       },
       value: {
         text: trusteeCeasedDate
       },
       actions: {
-        items: [ CREATE_CHANGE_LINK(
-          changeLinkUrl + "/" + OE_CONFIGS.TRUSTEE_STILL_INVOLVED,
+      items: [ CREATE_CHANGE_LINK(
+          changeLinkUrl + trust.trust_id + OE_CONFIGS.CEASED_DATE,
           "Individual beneficial owner " + individualTrusteeFullName + " -  Ceased date",
-          "change-trustee-still-involved"
+          "change-individual-beneficial-owner-ceased-date-button"
         ) ]
       } 
-    } if isNotStillInvolved
-  }), rows) %}
+    }) if isNotStillInvolved, rows) %} 
 {% endif %}
-
 
 <h3 class="govuk-heading-m">Individual for {{trust.trust_name}}</h3>
 

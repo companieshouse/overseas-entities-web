@@ -43,6 +43,7 @@ const getPageProperties = (trust, formData, errors?: FormattedValidationErrors) 
 const getPagePropertiesRelevantPeriod = (relevantPeriod, trust, formData, errors?: FormattedValidationErrors) => {
   formData.relevantPeriod = relevantPeriod;
   formData.entity_name = trust.trust_name;
+
   return getPageProperties(trust, formData, errors);
 };
 
@@ -51,15 +52,15 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const appData = getApplicationData(req.session);
     const trusteeId = req.params[ROUTE_PARAM_TRUSTEE_ID];
-    const relevantPeriod = req.query['relevant-period'];
+    const isRelevantPeriod = req.query['relevant-period'];
 
     const trust = getTrustInReview(appData) as Trust;
     const trustee = getTrustee(trust, trusteeId, TrusteeType.LEGAL_ENTITY) as TrustCorporate;
 
     const formData = trustee ? mapLegalEntityTrusteeFromSessionToPage(trustee) : {};
 
-    if (relevantPeriod) {
-      return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE, getPagePropertiesRelevantPeriod(relevantPeriod, trust, formData));
+    if (isRelevantPeriod) {
+      return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE, getPagePropertiesRelevantPeriod(isRelevantPeriod, trust, formData));
     } else {
       return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE, getPageProperties(trust, formData));
     }
@@ -75,17 +76,14 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const trusteeId = req.params[ROUTE_PARAM_TRUSTEE_ID];
     const trust = getTrustInReview(appData) as Trust;
 
-    const relevantPeriod = req.query['relevant-period'];
-    if (relevantPeriod) {
-      req.body.roleWithinTrust = "Beneficiary";
-    }
+    const isRelevantPeriod = req.query['relevant-period'];
     const formData = req.body as TrustLegalEntityForm;
     const errorList = validationResult(req);
     if (!errorList.isEmpty()) {
-      if (relevantPeriod) {
+      if (isRelevantPeriod) {
         return res.render(
           UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE,
-          getPagePropertiesRelevantPeriod(relevantPeriod, trust, formData, formatValidationError(errorList.array())),
+          getPagePropertiesRelevantPeriod(isRelevantPeriod, trust, formData, formatValidationError(errorList.array())),
         );
       } else {
         return res.render(

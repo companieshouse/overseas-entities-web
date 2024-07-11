@@ -22,8 +22,6 @@ import { checkEntityRequiresTrusts, getTrustLandingUrl } from "../../utils/trust
 import { retrieveTrustData } from "../../utils/update/trust.model.fetch";
 import { saveAndContinue } from "../../utils/save.and.continue";
 import { Session } from "@companieshouse/node-session-handler";
-import { validationResult } from "express-validator/src/validation-result";
-import { formatValidationError } from "../../middleware/validation.middleware";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -66,13 +64,6 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
 export const post = (req: Request, res: Response) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
-
-  //  check on errors
-  const errorList = validationResult(req);
-
-  if (!errorList.isEmpty()) {
-    return renderGetPageWithErrors(req, res, formatValidationError(errorList.array()));
-  }
   return res.redirect(getNextPage(req.body[BeneficialOwnerTypeKey]));
 };
 
@@ -135,37 +126,4 @@ const getNextPage = (beneficialOwnerTypeChoices: BeneficialOwnerTypeChoice | Man
       default:
         return config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL;
   }
-};
-
-const renderGetPageWithErrors = (req: Request, res: Response, errors: any) => {
-  const appData: ApplicationData = getApplicationData(req.session);
-
-  const checkIsRedirect = checkAndReviewBeneficialOwner(appData);
-  if (checkIsRedirect && checkIsRedirect !== "") {
-    return res.redirect(checkIsRedirect);
-  }
-
-  const checkMoRedirect = checkAndReviewManagingOfficers(appData);
-  if (checkMoRedirect){
-    return res.redirect(checkMoRedirect);
-  }
-  const allBosMos = [
-    ...(appData[BeneficialOwnerIndividualKey] ?? []),
-    ...(appData[BeneficialOwnerOtherKey] ?? []),
-    ...(appData[BeneficialOwnerGovKey] ?? []),
-    ...(appData[ManagingOfficerCorporateKey] ?? []),
-    ...(appData[ManagingOfficerKey] ?? [])
-  ];
-
-  const hasNewlyAddedBosMos = allBosMos.find(boMo => !boMo.ch_reference) !== undefined;
-  const hasExistingBosMos = allBosMos.find(boMo => boMo.ch_reference) !== undefined;
-
-  return res.render(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, {
-    backLinkUrl: config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
-    templateName: config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
-    ...appData,
-    hasExistingBosMos,
-    hasNewlyAddedBosMos,
-    errors
-  });
 };

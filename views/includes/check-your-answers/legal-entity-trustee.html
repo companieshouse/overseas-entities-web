@@ -55,7 +55,7 @@
   {% set changeLinkUrl = OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id %}
 {% else %}
   {% set stillInvolved = legalEntity.still_involved %}
-  {% set isNotStillInvolved = legalEntity.still_involved === "No" %}    
+  {% set isNotStillInvolved = stillInvolved === "No" %}    
   {% set trusteeCeasedDate = dateMacros.formatDate(legalEntity.ceased_date_day, legalEntity.ceased_date_month, legalEntity.ceased_date_year) %}
   {% if manageTrusts %}
     {% set changeLinkUrl = OE_CONFIGS.UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_CHANGE_HANDLER_URL + "/" + trust.trust_id + "/legalEntity/" + legalEntity.id %}

@@ -1,7 +1,7 @@
 import { body } from "express-validator";
 
 import { ErrorMessages } from "./error.messages";
-import { principal_address_validations, principal_service_address_validations } from "./fields/address.validation";
+import { overseas_entity_address_validations, overseas_entity_service_address_validations } from "./fields/address.validation";
 import { entity_public_register_validations } from "./fields/public-register.validation";
 import { VALID_CHARACTERS } from "./regex/regex.validation";
 import { email_validations } from "./fields/email.validation";
@@ -9,10 +9,10 @@ import { email_validations } from "./fields/email.validation";
 export const entity = [
   body("incorporation_country").not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.COUNTRY),
 
-  ...principal_address_validations(),
+  ...overseas_entity_address_validations(),
   body("is_service_address_same_as_principal_address").not().isEmpty().withMessage(ErrorMessages.SELECT_IF_SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS),
 
-  ...principal_service_address_validations,
+  ...overseas_entity_service_address_validations,
   ...email_validations,
 
   body("legal_form")

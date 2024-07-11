@@ -104,7 +104,7 @@ describe("Update review overseas entity information controller tests", () => {
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS);
       expect(resp.text).toContain(NO_CHANGE_REVIEW_STATEMENT_WHO_CAN_WE_CONTACT);
       expect(resp.text).toContain(CONTINUE_BUTTON_TEXT);
-      expect(mockIsActiveFeature).toHaveBeenCalledTimes(6);
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(3);
       expect(mockGetPrivateOeDetails).toHaveBeenCalledTimes(1);
       expect(mockGetBeneficialOwnersPrivateData).toHaveBeenCalledTimes(1);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
@@ -125,7 +125,7 @@ describe("Update review overseas entity information controller tests", () => {
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS);
       expect(resp.text).toContain(NO_CHANGE_REVIEW_STATEMENT_WHO_CAN_WE_CONTACT);
       expect(resp.text).toContain(CONTINUE_BUTTON_TEXT);
-      expect(mockIsActiveFeature).toHaveBeenCalledTimes(6);
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(3);
       expect(mockGetPrivateOeDetails).toHaveBeenCalledTimes(1);
       expect(mockSetExtraData).toHaveBeenCalledTimes(0);
       expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(0);

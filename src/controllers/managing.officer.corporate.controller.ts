@@ -11,15 +11,17 @@ import { isActiveFeature } from "../utils/feature.flag";
 import { getUrlWithParamsToPath } from "../utils/url";
 
 export const get = (req: Request, res: Response) => {
-  let backLinkUrl: string = config.MANAGING_OFFICER_CORPORATE_PAGE;
-  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
-    backLinkUrl = getUrlWithParamsToPath(config.MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL, req);
-  }
+  const backLinkUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
+    ? getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req)
+    : config.BENEFICIAL_OWNER_TYPE_URL;
   getManagingOfficerCorporate(req, res, backLinkUrl, config.MANAGING_OFFICER_CORPORATE_PAGE);
 };
 
 export const getById = (req: Request, res: Response, next: NextFunction) => {
-  getManagingOfficerCorporateById(req, res, next, config.BENEFICIAL_OWNER_TYPE_URL, config.MANAGING_OFFICER_CORPORATE_PAGE);
+  const backLinkUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
+    ? getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req)
+    : config.BENEFICIAL_OWNER_TYPE_URL;
+  getManagingOfficerCorporateById(req, res, next, backLinkUrl, config.MANAGING_OFFICER_CORPORATE_PAGE);
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {

@@ -135,7 +135,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).toContain(SHOW_INFORMATION_ON_PUBLIC_REGISTER);
     });
 
-    test(`renders the ${MANAGING_OFFICER_CORPORATE_PAGE} page with correct backlink url when REDIS_removal feature flag is on`, async () => {
+    test(`renders the ${MANAGING_OFFICER_CORPORATE_PAGE} page with correct backlink url when REDIS_removal feature flag is ON`, async () => {
       mockIsActiveFeature.mockReturnValue(true);
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(MANAGING_OFFICER_CORPORATE_URL);
@@ -147,10 +147,12 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
       expect(resp.text).toContain(SHOW_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(resp.text).toContain(NEXT_PAGE_URL);
+      expect(resp.text).toContain(BACK_BUTTON_CLASS);
       expect(mockIsActiveFeature).toHaveBeenCalledTimes(1);
     });
 
-    test(`renders the ${MANAGING_OFFICER_CORPORATE_PAGE} page with correct backlink url when REDIS_removal feature flag is off`, async () => {
+    test(`renders the ${MANAGING_OFFICER_CORPORATE_PAGE} page with correct backlink url when REDIS_removal feature flag is OFF`, async () => {
       mockIsActiveFeature.mockReturnValue(false);
       mockIsActiveFeature.mockReturnValue(false);
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);

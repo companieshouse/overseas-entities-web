@@ -33,6 +33,7 @@ type TrustLegalEntityBeneificalOwnerPageProperties = {
   formData?: TrustLegalEntityForm,
   errors?: FormattedValidationErrors,
   url: string,
+  isUpdate: boolean
 };
 
 const getPageProperties = (
@@ -56,6 +57,7 @@ const getPageProperties = (
     formData,
     errors,
     url: getUrl(isUpdate),
+    isUpdate
   };
 };
 

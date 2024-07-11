@@ -160,12 +160,12 @@ describe("Add Trust Controller Tests", () => {
   });
 
   describe('POST unit tests', () => {
-    test('select yes to add trust', () => {
+    test('select yes - Yes - for the current filing period to add trust', () => {
       (getApplicationData as jest.Mock).mockReturnValue(mockAppData);
       (generateTrustId as jest.Mock).mockReturnValue(trustId);
 
       mockReq.body = {
-        addTrust: '1',
+        addTrust: 'addTrustYes',
       };
 
       post(mockReq, mockRes, mockNext);
@@ -173,7 +173,19 @@ describe("Add Trust Controller Tests", () => {
       expect(mockRes.redirect).toBeCalledTimes(1);
       expect(mockRes.redirect).toBeCalledWith(`${config.TRUST_DETAILS_URL}/${trustId}`);
     });
+    test('select Yes - for the pre-registration period to add trust', () => {
+      (getApplicationData as jest.Mock).mockReturnValue(mockAppData);
+      (generateTrustId as jest.Mock).mockReturnValue(trustId);
 
+      mockReq.body = {
+        addTrust: 'preRegistration',
+      };
+
+      post(mockReq, mockRes, mockNext);
+
+      expect(mockRes.redirect).toBeCalledTimes(1);
+      expect(mockRes.redirect).toBeCalledWith(`${config.TRUST_DETAILS_URL}/${trustId}?relevant-period=true`);
+    });
     test('catches post request errors', () => {
       (getApplicationData as jest.Mock).mockReturnValue(mockAppData);
       (generateTrustId as jest.Mock).mockReturnValue(trustId);
@@ -200,7 +212,7 @@ describe("Add Trust Controller Tests", () => {
       (getApplicationData as jest.Mock).mockReturnValue(mockAppData);
 
       mockReq.body = {
-        addTrust: '1',
+        addTrust: 'addTrustYes',
       };
 
       post(mockReq, mockRes, mockNext);

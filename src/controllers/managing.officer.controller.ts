@@ -17,7 +17,10 @@ export const get = (req: Request, res: Response) => {
 };
 
 export const getById = (req: Request, res: Response, next: NextFunction) => {
-  getManagingOfficerById(req, res, next, config.BENEFICIAL_OWNER_TYPE_URL, config.MANAGING_OFFICER_PAGE);
+  const backLinkUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
+    ? getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req)
+    : config.BENEFICIAL_OWNER_TYPE_URL;
+  getManagingOfficerById(req, res, next, backLinkUrl, config.MANAGING_OFFICER_PAGE);
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {

@@ -31,16 +31,16 @@
 {% set entity_name = entity_name %}
 {% set entity_number = entity_number %}
 
+{% if not errors %}
+  {% set hasBeneficialOwners = (beneficial_owners_individual and beneficial_owners_individual.length > 0)
+    or (beneficial_owners_corporate and beneficial_owners_corporate.length > 0)
+    or (beneficial_owners_government_or_public_authority and beneficial_owners_government_or_public_authority.length > 0)
+  %}
 
-{% set hasBeneficialOwners = (beneficial_owners_individual and beneficial_owners_individual.length > 0)
-  or (beneficial_owners_corporate and beneficial_owners_corporate.length > 0)
-  or (beneficial_owners_government_or_public_authority and beneficial_owners_government_or_public_authority.length > 0)
-%}
-
-{% set hasManagingOfficers = (managing_officers_individual and managing_officers_individual.length > 0)
-  or (managing_officers_corporate and managing_officers_corporate.length > 0)
-%}
-
+  {% set hasManagingOfficers = (managing_officers_individual and managing_officers_individual.length > 0)
+    or (managing_officers_corporate and managing_officers_corporate.length > 0)
+  %}
+{% endif %}
 
 {% block pageTitle %}
   {% include "includes/update-page-title.html" %}

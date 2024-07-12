@@ -43,6 +43,7 @@ export const getDataForReview = async (req: Request, res: Response, next: NextFu
   const session = req.session as Session;
   const appData = getApplicationData(session);
   const hasAnyBosWithTrusteeNocs = isNoChangeJourney ? checkEntityReviewRequiresTrusts(appData) : checkEntityRequiresTrusts(appData);
+
   const backLinkUrl = getBackLinkUrl(isNoChangeJourney, hasAnyBosWithTrusteeNocs, isRemoveJourney(req));
   const templateName = getTemplateName(isNoChangeJourney);
 

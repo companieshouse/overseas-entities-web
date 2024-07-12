@@ -44,7 +44,7 @@
 {% if pageParams.isRegistration %}
   {% set changeLinkUrl = OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE + "/" + individualTrustee.id %}
 {% else %}
-  {% set stillInvolved =  individualTrustee.still_involved %}
+  {% set stillInvolved = individualTrustee.still_involved %}
   {% set isNotStillInvolved = stillInvolved === "No" %}    
   {% set trusteeCeasedDate = dateMacros.formatDate(individualTrustee.ceased_date_day, individualTrustee.ceased_date_month, individualTrustee.ceased_date_year) %}
   {% if manageTrusts %}

@@ -40,7 +40,7 @@ import {
   REVIEWED_BENEFICIAL_OWNER_MANAGING_OFFICER_TABLE_HEADING,
   NEWLY_ADDED_BENEFICIAL_OWNERS_SUMMARY_TABLE_HEADING,
   MESSAGE_ERROR,
-  RELEVANT_PERIOD_INDIVIDUAL_BENEFICIAL_OWNER,
+  RELEVANT_PERIOD_INDIVIDUAL_BENEFICIAL_OWNER, ERROR_LIST,
 } from '../../__mocks__/text.mock';
 import {
   ERROR,
@@ -459,9 +459,9 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.header.location).toEqual(config.UPDATE_BENEFICIAL_OWNER_OTHER_URL + RELEVANT_PERIOD_QUERY_PARAM);
     });
 
-    test(`renders ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL } page with validation errors when no radio button is selected`, async () => {
+    test(`renders ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL } page with validation errors when no radio button is selected, including reviewed and newly added beneficial owner summaries`, async () => {
       appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
-      appData[UpdateKey] = UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE;
+      appData[BeneficialOwnerIndividualKey] = [{ ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK, ch_reference: '12345' }, BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK];
 
       mockGetApplicationData.mockReturnValueOnce(appData).mockReturnValueOnce(appData);
 
@@ -471,7 +471,9 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_MANAGING_OFFFICER_TYPE_PAGE_HEADING);
       expect(resp.text).toContain(BENEFICIAL_OWNER_MANAGING_OFFICER_TYPE_LEGEND_TEXT);
-      expect(resp.text).not.toContain(REVIEWED_BENEFICIAL_OWNER_MANAGING_OFFICER_TABLE_HEADING);
+      expect(resp.text).toContain(REVIEWED_BENEFICIAL_OWNER_MANAGING_OFFICER_TABLE_HEADING);
+      expect(resp.text).toContain(NEWLY_ADDED_BENEFICIAL_OWNERS_SUMMARY_TABLE_HEADING);
+      expect(resp.text).toContain(ERROR_LIST);
     });
 
     test(`redirects to the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM } page when the relevant_period=true and government entity button selected`, async () => {

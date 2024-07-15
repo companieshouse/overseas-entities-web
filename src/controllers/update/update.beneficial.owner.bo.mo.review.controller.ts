@@ -5,6 +5,7 @@ import * as config from "../../config";
 import { ApplicationData } from "../../model";
 import { getApplicationData } from "../../utils/application.data";
 import { isActiveFeature } from "../../utils/feature.flag";
+import { checkRelevantPeriod } from "../../utils/relevant.period";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -28,8 +29,9 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
+    const appData: ApplicationData = getApplicationData(req.session);
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD)) {
+    if (checkRelevantPeriod(appData)) {
       return res.redirect(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
     } else {
       return res.redirect(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);

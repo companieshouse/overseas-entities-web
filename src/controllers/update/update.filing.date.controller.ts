@@ -12,6 +12,7 @@ import { FilingDateKey, FilingDateKeys } from '../../model/date.model';
 import { ApplicationData } from "../../model/application.model";
 import { getConfirmationStatementNextMadeUpToDateAsIsoString } from "../../service/company.profile.service";
 import { convertIsoDateToInputDate } from "../../utils/date";
+import { checkRelevantPeriod } from "../../utils/relevant.period";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -19,7 +20,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     const appData = getApplicationData(req.session);
 
-    const backLinkUrl = !isActiveFeature(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD) ? config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL : config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL + config.RELEVANT_PERIOD_QUERY_PARAM;
+    const backLinkUrl = !checkRelevantPeriod(appData) ? config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL : config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL + config.RELEVANT_PERIOD_QUERY_PARAM;
 
     return res.render(config.UPDATE_FILING_DATE_PAGE, {
       backLinkUrl: backLinkUrl,

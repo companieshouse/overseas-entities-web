@@ -402,6 +402,8 @@ export const FILING_DATE = "#filing_date";
 export const NO_CHANGE = "#no_change";
 export const BENEFICIAL_OWNERS_STATEMENT = "#beneficial_owners_statement";
 export const REGISTRABLE_BENEFICIAL_OWNER = "#registrable_beneficial_owner";
+export const TRUST_STILL_INVOLVED = "#stillInvolved";
+export const TRUST_CEASED_DATE = "#ceasedDateDay";
 
 export const ENTITY_CHANGE_NAME = OVERSEAS_NAME_URL + ENTITY_NAME;
 export const PRESENTER_CHANGE_FULL_NAME = PRESENTER_URL + "#full_name";

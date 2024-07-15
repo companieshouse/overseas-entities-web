@@ -52,7 +52,7 @@ import {
   yesNoResponse,
   IsRemoveKey
 } from "../../src/model/data.types.model";
-import { TrustKey, Trust } from "../../src/model/trust.model";
+import { TrustKey, Trust, TrustIndividual } from "../../src/model/trust.model";
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../src/model/who.is.making.filing.model";
 import { DUE_DILIGENCE_OBJECT_MOCK } from "./due.diligence.mock";
 import { ADDRESS } from "./fields/address.mock";
@@ -61,6 +61,7 @@ import { ANY_MESSAGE_ERROR } from "./text.mock";
 import { EntityKey } from "../../src/model/entity.model";
 import { OverseasEntityDueDiligenceKey } from "../../src/model/overseas.entity.due.diligence.model";
 import { BeneficialOwnerPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
+import { RoleWithinTrustType } from "../../src/model/role.within.trust.type.model";
 
 export const BO_GOV_ID = "10722c3c-9301-4f46-ad8b-b30f5dcd76a0";
 export const BO_GOV_ID_URL = "/" + BO_GOV_ID;
@@ -1707,6 +1708,72 @@ export const TRUST_WITH_ID: Trust = {
   creation_date_year: "1999",
   trust_still_involved_in_overseas_entity: "Yes",
   unable_to_obtain_all_trust_info: "No"
+};
+
+export const INDIVIUAL_TRUSTEE: TrustIndividual = {
+  id: "1",
+  ch_references: "CNFca5mzOxn9O_TW04SXGGolD-Y",
+  forename: "INDIE",
+  other_forenames: "",
+  surname: "BENO",
+  dob_day: "16",
+  dob_month: "8",
+  dob_year: "1982",
+  nationality: "Bahraini",
+  type: RoleWithinTrustType.SETTLOR,
+  ura_address_premises: "1",
+  ura_address_line_1: "INDIVIDUAL  ROAD",
+  ura_address_locality: "INDIVIDUAL CITY",
+  ura_address_country: "United Kingdom",
+  ura_address_postal_code: "INDBO1",
+  ura_address_line_2: "INDIVIDUAL VILLAGE",
+  ura_address_region: "INDIVIDUAL COUNTY",
+  ura_address_care_of: "",
+  ura_address_po_box: "",
+  sa_address_premises: "1",
+  sa_address_line_1: "INDIVIDUAL  ROAD",
+  sa_address_line_2: "INDIVIDUAL VILLAGE",
+  sa_address_locality: "INDIVIDUAL CITY",
+  sa_address_region: "INDIVIDUAL COUNTY",
+  sa_address_country: "United Kingdom",
+  sa_address_postal_code: "INDBO1",
+  sa_address_care_of: "",
+  sa_address_po_box: ""
+};
+
+export const CORPORATE_TRUSTEE = {
+  id: "1",
+  ch_references: "gUGj2sjjPhh7AooOzdPr4LMa3Ms",
+  type: "Interested_Person",
+  name: "Legal E trustee",
+  date_became_interested_person_day: "10",
+  date_became_interested_person_month: "9",
+  date_became_interested_person_year: "2021",
+  is_on_register_in_country_formed_in: 0,
+  identification_legal_authority: "GOVERNING LAW",
+  identification_legal_form: "LEGAL FORM",
+  identification_place_registered: "",
+  identification_registration_number: "",
+  identification_country_registration: "",
+  ro_address_premises: "1",
+  ro_address_line_1: "LEGAL ROAD",
+  ro_address_locality: "LEGAL CITY",
+  ro_address_region: "",
+  ro_address_country: "Guam",
+  ro_address_postal_code: "",
+  is_service_address_same_as_principal_address: 0,
+  ro_address_line_2: "",
+  ro_address_care_of: "",
+  ro_address_po_box: "",
+  sa_address_premises: "1",
+  sa_address_line_1: "LEGAL ROAD",
+  sa_address_line_2: "",
+  sa_address_locality: "LEGAL CITY",
+  sa_address_region: "",
+  sa_address_country: "Guam",
+  sa_address_postal_code: "",
+  sa_address_care_of: "",
+  sa_address_po_box: ""
 };
 
 export const APPLICATION_DATA_MOCK: ApplicationData = {

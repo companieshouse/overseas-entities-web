@@ -306,3 +306,26 @@ export const UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_TABLE_HEADING = "<th scope=\"
 export const UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_TITLE = "Tell us about the legal entity";
 export const BACK_BUTTON_CLASS = "govuk-back-link";
 
+// Trust field keys
+export const TRUST_NAME = "Trust name";
+export const TRUST_CREATION_DATE = "Date the trust was created";
+export const TRUSTS_ADDED = "Trusts you have added";
+export const TRUSTS_REVIEWED = "Trusts you have reviewed";
+export const TRUST_INVOLVED = "Is the trust still involved in the overseas entity?";
+export const TRUST_CEASED_DATE = "Date the trust stopped being associated to the overseas entity";
+
+// Trustee field keys
+export const TRUSTEE_INDIVIDUAL_TITLE = "Individual for";
+export const TRUSTEE_INDIVIDUAL_FIRSTNAME = "First name";
+export const TRUSTEE_INDIVIDUAL_LASTNAME = "Last name";
+export const TRUSTEE_INDIVIDUAL_DATE_OF_BIRTH = "Date of birth";
+export const TRUSTEE_INDIVIDUAL_NATIONALITY = "Nationality";
+export const TRUSTEE_ROLE = "Role within the trust";
+export const TRUSTEE_INDIVIDUAL_INVOLVED = "Are they still involved in the trust?";
+export const TRUSTEE_INDIVIDUAL_CEASED_DATE = "Date they ceased to be involved in the trust";
+export const TRUSTEE_LEGAL_ENTITY_TITLE = "Legal Entity for";
+export const TRUSTEE_LEGAL_ENTITY_NAME = "Name";
+export const TRUSTEE_LEGAL_ENTITY_LEGAL_AUTHORITY = "Governing Law";
+export const TRUSTEE_LEGAL_ENTITY_LEGAL_FORM = "Legal form";
+export const TRUSTEE_LEGAL_ENTITY_INVOLVED = "Is it still involved in the trust?";
+export const TRUSTEE_LEGAL_ENTITY_CEASED_DATE = "Date it ceased to be involved in the trust";

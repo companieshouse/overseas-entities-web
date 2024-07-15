@@ -1,3 +1,4 @@
+
 jest.mock("ioredis");
 jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/middleware/authentication.middleware');
@@ -9,6 +10,7 @@ jest.mock('../../../src/service/overseas.entities.service');
 jest.mock("../../../src/utils/feature.flag" );
 jest.mock('../../../src/middleware/navigation/update/has.overseas.entity.middleware');
 jest.mock("../../../src/service/company.profile.service");
+jest.mock('../../../src/utils/relevant.period');
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
 import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";

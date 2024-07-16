@@ -6,6 +6,8 @@ jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/feature.flag');
+jest.mock('../../../src/utils/save.and.continue');
+jest.mock('../../../src/service/overseas.entities.service');
 
 import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import { NextFunction, Request, Response } from "express";
@@ -26,7 +28,7 @@ import {
   SELECT_IF_REGISTER_DURING_PRE_REG_PERIOD
 } from "../../__mocks__/text.mock";
 import { APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock";
-import { getApplicationData } from "../../../src/utils/application.data";
+import { getApplicationData, setExtraData } from "../../../src/utils/application.data";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
@@ -34,6 +36,8 @@ import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.a
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { yesNoResponse } from "../../../src/model/data.types.model";
 import { OwnedLandKey, UpdateKey } from "../../../src/model/update.type.model";
+import { ChangeBeneficiaryRelevantPeriodKey, ChangeBoRelevantPeriodKey, TrusteeInvolvedRelevantPeriodKey } from "../../../src/model/relevant.period.statment.model";
+import { saveAndContinue } from "../../../src/utils/save.and.continue";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockHasUpdatePresenter = hasUpdatePresenter as jest.Mock;
@@ -52,6 +56,8 @@ const mockGetApplicationData = getApplicationData as jest.Mock;
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue(true);
+const mockSetExtraData = setExtraData as jest.Mock;
+const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
 describe("owned land filter page tests", () => {
 
@@ -138,15 +144,21 @@ describe("owned land filter page tests", () => {
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_INTERRUPT_URL);
     });
-    xtest(`renders the ${config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL} page when no is selected`, async () => {
+    test(`renders the ${config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL} page when no is selected`, async () => {
       mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
       mockIsActiveFeature.mockReturnValueOnce(true);
       const resp = await request(app)
         .post(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL)
         .send({ owned_land_relevant_period: "0" });
+      const mockAppData = {};
 
+      mockAppData[ChangeBoRelevantPeriodKey] = undefined;
+      mockAppData[TrusteeInvolvedRelevantPeriodKey] = undefined;
+      mockAppData[ChangeBeneficiaryRelevantPeriodKey] = undefined;
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.UPDATE_FILING_DATE_URL);
+      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
     test(`renders the ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL} page with error when no radios are selected`, async () => {
       const resp = await request(app)
@@ -157,7 +169,7 @@ describe("owned land filter page tests", () => {
       expect(resp.text).toContain(ERROR_LIST);
       expect(resp.text).toContain(SELECT_IF_REGISTER_DURING_PRE_REG_PERIOD);
     });
-    xtest(`redirect to the ${config.UPDATE_FILING_DATE_URL} page when negative invalid value found`, async () => {
+    test(`redirect to the ${config.UPDATE_FILING_DATE_URL} page when negative invalid value found`, async () => {
       const resp = await request(app)
         .post(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL)
         .send({ owned_land_relevant_period: "-1" });

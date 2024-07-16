@@ -12,7 +12,7 @@ type DateOfBirthTypes = {
 
 export const mapDateOfBirth: DateOfBirthTypes = (dateOfBirth) => {
   return {
-    day: dateOfBirth?.day ?? "01",
+    day: dateOfBirth?.day ? padWithZero(dateOfBirth?.day, 2, "0") : "01",
     month: padWithZero(dateOfBirth?.month, 2, "0"),
     year: dateOfBirth?.year
   } as InputDate;

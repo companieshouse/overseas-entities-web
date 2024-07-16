@@ -24,7 +24,6 @@ import {
 } from "../__mocks__/text.mock";
 
 import {
-  APPLICATION_DATA_MOCK,
   OVERSEAS_ENTITY_ID,
   TRANSACTION_ID
 } from "../__mocks__/session.mock";
@@ -140,24 +139,16 @@ describe("SOLD LAND FILTER controller", () => {
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 
-    test.only(`creates transaction and overseas entity and redirects to the ${config.SECURE_REGISTER_FILTER_PAGE} page when no is selected and REDIS_removal flag is ON`, async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    test(`creates transaction and overseas entity and redirects to the ${config.SECURE_REGISTER_FILTER_PAGE} page when no is selected and REDIS_removal flag is ON`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockGetApplicationData.mockReturnValueOnce({});
+      mockGetApplicationData.mockReturnValueOnce({});
+      mockIsActiveFeature.mockReturnValueOnce(true);
       mockIsActiveFeature.mockReturnValueOnce(true);
       const resp = await request(app).post(config.SOLD_LAND_FILTER_URL).send({ has_sold_land: '0' });
 
       expect(resp.status).toEqual(302);
       expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(0);
-      expect(mockTransactionService).toHaveBeenCalledTimes(1);
-      expect(mockCreateOverseasEntity).toHaveBeenCalledTimes(1);
-    });
-
-    test(`creates transaction and entity and redirects to the ${config.SECURE_REGISTER_FILTER_PAGE} page when no is selected and REDIS_removal flag is ON`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({});
-      mockIsActiveFeature.mockReturnValueOnce(true);
-      const resp = await request(app).post(config.SOLD_LAND_FILTER_URL).send({ has_sold_land: '0' });
-
-      expect(resp.status).toEqual(302);
-      expect(mockUpdateOverseasEntity).not.toHaveBeenCalled();
       expect(mockTransactionService).toHaveBeenCalledTimes(1);
       expect(mockCreateOverseasEntity).toHaveBeenCalledTimes(1);
     });

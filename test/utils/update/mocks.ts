@@ -76,7 +76,7 @@ export const pscMock: CompanyPersonWithSignificantControl = {
   },
   countryOfResidence: "Wales",
   dateOfBirth: {
-    day: "1",
+    day: "01",
     month: "02",
     year: "1900"
   },

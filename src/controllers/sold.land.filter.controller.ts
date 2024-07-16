@@ -35,18 +35,19 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
+
     logger.debugRequest(req, `POST ${config.SOLD_LAND_FILTER_PAGE}`);
 
     const session = req.session as Session;
-    const hasSoldLand = req.body[HasSoldLandKey];
+    const hasSoldLand = (req.body[HasSoldLandKey]).toString();
     const appData: ApplicationData = getApplicationData(session);
     appData[HasSoldLandKey] = hasSoldLand;
 
     let nextPageUrl: string = "";
 
-    if (hasSoldLand === '1') {
+    if (hasSoldLand === "1") {
       nextPageUrl = config.CANNOT_USE_URL;
-    } else if (hasSoldLand === '0') {
+    } else if (hasSoldLand === "0") {
       nextPageUrl = config.SECURE_REGISTER_FILTER_URL;
       if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
         if (!appData[Transactionkey]) {

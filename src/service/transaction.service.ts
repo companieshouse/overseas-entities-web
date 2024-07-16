@@ -19,7 +19,6 @@ export const postTransaction = async (req: Request, session: Session, data?: App
   let transaction: Object = { reference: REFERENCE, description: DESCRIPTION };
   transaction = companyNumber !== undefined ? { ...transaction, companyNumber } : transaction;
   transaction = companyName !== undefined ? { ...transaction, companyName } : transaction;
-  transaction = Object.assign(applicationData, transaction);
 
   logger.infoRequest(req, `Calling 'postTransaction' for company number '${companyNumber}' with name '${companyName}'`);
 

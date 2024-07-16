@@ -27,7 +27,7 @@ import {
   ERROR_LIST,
   SELECT_IF_REGISTER_DURING_PRE_REG_PERIOD
 } from "../../__mocks__/text.mock";
-import { APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock";
+import { APPLICATION_DATA_MOCK, UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE } from "../../__mocks__/session.mock";
 import { getApplicationData, setExtraData } from "../../../src/utils/application.data";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
@@ -36,7 +36,6 @@ import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.a
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { yesNoResponse } from "../../../src/model/data.types.model";
 import { OwnedLandKey, UpdateKey } from "../../../src/model/update.type.model";
-import { ChangeBeneficiaryRelevantPeriodKey, ChangeBoRelevantPeriodKey, TrusteeInvolvedRelevantPeriodKey } from "../../../src/model/relevant.period.statment.model";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
 
 mockCsrfProtectionMiddleware.mockClear();
@@ -145,16 +144,16 @@ describe("owned land filter page tests", () => {
       expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_INTERRUPT_URL);
     });
     test(`renders the ${config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL} page when no is selected`, async () => {
-      mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
+      const appData = { ...APPLICATION_DATA_MOCK, [UpdateKey]: UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE };
+      mockGetApplicationData.mockReturnValue(appData);
       mockIsActiveFeature.mockReturnValueOnce(true);
       const resp = await request(app)
         .post(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL)
         .send({ owned_land_relevant_period: "0" });
-      const mockAppData = {};
 
-      mockAppData[ChangeBoRelevantPeriodKey] = undefined;
-      mockAppData[TrusteeInvolvedRelevantPeriodKey] = undefined;
-      mockAppData[ChangeBeneficiaryRelevantPeriodKey] = undefined;
+      expect(appData.update?.change_bo_relevant_period).toEqual(undefined);
+      expect(appData.update?.trustee_involved_relevant_period).toEqual(undefined);
+      expect(appData.update?.change_beneficiary_relevant_period).toEqual(undefined);
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.UPDATE_FILING_DATE_URL);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);

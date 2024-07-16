@@ -36,6 +36,7 @@ describe("service availability middleware tests", () => {
   });
 
   test("update journey should not return service offline page", async () => {
+    mockIsActiveFeature.mockReturnValueOnce(false); // SHOW_SERVICE_OFFLINE_PAGE
     const response = await request(app).get("/update-an-overseas-entity");
 
     expect(response.text).not.toContain("Service offline - Register an overseas entity");

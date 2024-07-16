@@ -261,7 +261,11 @@ const getNextPage = (isUpdate: boolean, trustId: string, req: Request, isReview?
   if (isReview) {
     return config.UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL;
   } else if (isUpdate) {
-    return `${config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL}/${trustId}${config.TRUST_INVOLVED_URL}`;
+    let nextPageUrl = `${config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL}/${trustId}${config.TRUST_INVOLVED_URL}`;
+    if (req.query["relevant-period"] === "true") {
+      nextPageUrl += config.RELEVANT_PERIOD_QUERY_PARAM;
+    }
+    return nextPageUrl;
   } else {
     let nextPageUrl = `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_INVOLVED_URL}`;
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {

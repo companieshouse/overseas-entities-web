@@ -24,7 +24,6 @@ import {
   PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING
 } from "../__mocks__/session.mock";
 import {
-  CHECK_YOUR_ANSWERS_URL,
   CONFIRMATION_PAGE,
   CONFIRMATION_URL,
   CONFIRMATION_WITH_PARAMS_URL,
@@ -81,19 +80,7 @@ describe("Payment controller", () => {
       expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
     });
 
-    test(`should redirect to ${CHECK_YOUR_ANSWERS_URL} page, Payment failed somehow`, async () => {
-      mockGetApplicationData.mockReturnValueOnce( { [PaymentKey]: PAYMENT_OBJECT_MOCK } );
-      const resp = await request(app).get(PAYMENT_DECLINED_WITH_TRANSACTION_URL_AND_QUERY_STRING);
-
-      expect(resp.status).toEqual(302);
-      expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${CHECK_YOUR_ANSWERS_URL}`);
-      expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
-      expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
-      expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
-    });
-
-    test(`should redirect to ${PAYMENT_FAILED_PAGE} page, Payment failed somehow and feature flag active`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
+    test(`should redirect to ${PAYMENT_FAILED_PAGE} page, Payment failed somehow`, async () => {
       mockGetApplicationData.mockReturnValueOnce( { [PaymentKey]: PAYMENT_OBJECT_MOCK } );
       const resp = await request(app).get(PAYMENT_DECLINED_WITH_TRANSACTION_URL_AND_QUERY_STRING);
 
@@ -132,7 +119,6 @@ describe("Payment controller", () => {
     });
 
     test(`should redirect to ${PAYMENT_FAILED_PAGE} page, Payment failed somehow and feature flag active`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG ENABLE_SAVE_AND_RESUME
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockGetApplicationData.mockReturnValueOnce( { [PaymentKey]: PAYMENT_OBJECT_MOCK } );
       const resp = await request(app).get(PAYMENT_DECLINED_WITH_TRANSACTION_URL_AND_QUERY_STRING);

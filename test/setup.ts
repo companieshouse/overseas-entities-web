@@ -27,5 +27,4 @@ export default () => {
 
   //  feature flags
   process.env.SHOW_SERVICE_OFFLINE_PAGE = "false";
-  process.env.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 = "true";
 };

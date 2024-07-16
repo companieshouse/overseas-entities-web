@@ -11,12 +11,15 @@ import { ApplicationData } from "../model";
 import { makeApiCallWithRetry } from "./retry.handler.service";
 import { EntityNameKey, EntityNumberKey } from "../model/data.types.model";
 
-export const postTransaction = async (req: Request, session: Session): Promise<string> => {
-  const applicationData: ApplicationData = getApplicationData(session);
+export const postTransaction = async (req: Request, session: Session, data?: ApplicationData): Promise<string> => {
+  const applicationData: ApplicationData = typeof data !== "undefined" ? data : getApplicationData(session);
   const companyName = applicationData[EntityNameKey];
   const companyNumber = applicationData[EntityNumberKey];
 
-  const transaction: Transaction = companyNumber === undefined ? { reference: REFERENCE, companyName, description: DESCRIPTION } : { reference: REFERENCE, companyName, companyNumber, description: DESCRIPTION };
+  let transaction: Object = { reference: REFERENCE, description: DESCRIPTION };
+  transaction = companyNumber !== undefined ? { ...transaction, companyNumber } : transaction;
+  transaction = companyName !== undefined ? { ...transaction, companyName } : transaction;
+  transaction = Object.assign(applicationData, transaction);
 
   logger.infoRequest(req, `Calling 'postTransaction' for company number '${companyNumber}' with name '${companyName}'`);
 

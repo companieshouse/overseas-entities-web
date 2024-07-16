@@ -22,7 +22,7 @@ import { Session } from '@companieshouse/node-session-handler';
 import request from "supertest";
 import app from "../../../src/app";
 import { get, post } from "../../../src/controllers/update/update.trusts.individual.beneficial.owner.controller";
-import { ANY_MESSAGE_ERROR, PAGE_NOT_FOUND_TEXT, PAGE_TITLE_ERROR, UPDATE_TELL_US_ABOUT_THE_INDIVIDUAL_HEADING } from '../../__mocks__/text.mock';
+import { ANY_MESSAGE_ERROR, PAGE_NOT_FOUND_TEXT, PAGE_TITLE_ERROR, TRUSTEE_STILL_INVOLVED_TEXT, UPDATE_TELL_US_ABOUT_THE_INDIVIDUAL_HEADING } from '../../__mocks__/text.mock';
 import { authentication } from '../../../src/middleware/authentication.middleware';
 import { hasTrustWithIdUpdate } from '../../../src/middleware/navigation/has.trust.middleware';
 import {
@@ -218,6 +218,7 @@ describe('Update Trust Individual Beneficial Owner Controller', () => {
       expect(resp.text).toContain(UPDATE_TELL_US_ABOUT_THE_INDIVIDUAL_HEADING);
       expect(resp.text).toContain(mockTrust.trustName);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(TRUSTEE_STILL_INVOLVED_TEXT);
 
       expect(authentication).toBeCalledTimes(1);
       expect(hasTrustWithIdUpdate).toBeCalledTimes(1);

@@ -224,6 +224,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(RELEVANT_PERIOD_INDIVIDUAL_BENEFICIAL_OWNER);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_BO);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_GOVERNMENT_BO);
     });
 
     test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} page with first statement de-selected`, async () => {
@@ -236,6 +237,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(RELEVANT_PERIOD_INDIVIDUAL_BENEFICIAL_OWNER);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_BO );
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_GOVERNMENT_BO);
     });
   });
 
@@ -437,6 +439,18 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.header.location).toContain(config.UPDATE_CHECK_YOUR_ANSWERS_URL);
     });
 
+    test(`redirects to the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL + "?relevant-period=true"} page when the relevant_period=true and Other leegal entity button selected`, async () => {
+      appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
+      appData[UpdateKey] = UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE;
+
+      const resp = await request(app)
+        .post(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL)
+        .send({ [BeneficialOwnerTypeKey]: BeneficialOwnerTypeChoice.relevantPeriodIndividual });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + "?relevant-period=true");
+    });
+
     test(`redirects to the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM } page when the relevant_period=true and Other leegal entity button selected`, async () => {
       appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
       appData[UpdateKey] = UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE;
@@ -447,6 +461,18 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.UPDATE_BENEFICIAL_OWNER_OTHER_URL + RELEVANT_PERIOD_QUERY_PARAM);
+    });
+
+    test(`redirects to the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM } page when the relevant_period=true and government entity button selected`, async () => {
+      appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
+      appData[UpdateKey] = UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE;
+
+      const resp = await request(app)
+        .post(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL)
+        .send({ [BeneficialOwnerTypeKey]: BeneficialOwnerTypeChoice.relevantPeriodGovernment });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.UPDATE_BENEFICIAL_OWNER_GOV_URL + RELEVANT_PERIOD_QUERY_PARAM);
     });
 
     test("Catch error when posting submit", async () => {

@@ -27,7 +27,7 @@ import {
   post,
 } from "../../../src/controllers/update/update.trusts.legal.entity.beneficial.owner.controller";
 import { LEGAL_ENTITY_BO_TEXTS } from "../../../src/utils/trust.legal.entity.bo";
-import { ANY_MESSAGE_ERROR, PAGE_NOT_FOUND_TEXT, PAGE_TITLE_ERROR } from "../../__mocks__/text.mock";
+import { ANY_MESSAGE_ERROR, PAGE_NOT_FOUND_TEXT, PAGE_TITLE_ERROR, TRUSTEE_STILL_INVOLVED_TEXT } from "../../__mocks__/text.mock";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { hasTrustWithIdUpdate } from "../../../src/middleware/navigation/has.trust.middleware";
 import {
@@ -227,6 +227,7 @@ describe('Trust Legal Entity Beneficial Owner Controller', () => {
       expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
       expect(resp.text).toContain(LEGAL_ENTITY_BO_TEXTS.title);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(TRUSTEE_STILL_INVOLVED_TEXT);
 
       expect(authentication).toBeCalledTimes(1);
       expect(hasTrustWithIdUpdate).toBeCalledTimes(1);

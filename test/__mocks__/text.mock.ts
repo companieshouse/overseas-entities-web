@@ -157,6 +157,7 @@ export const TRUST_NOT_ASSOCIATED_WITH_BENEFICIAL_OWNER_TEXT = "This trust is no
 export const TRUST_CEASED_DATE_TEXT = "When did this trust stop being associated with the overseas entity";
 export const TRUST_SELECT_TRUSTEES_TEXT = "Which of the overseas entity’s beneficial owners are trustees of this trust";
 export const TRUST_ENTER_CEASED_DATE = "Enter the date the trust stopped being associated with this overseas entity";
+export const TRUSTEE_STILL_INVOLVED_TEXT = "Are they still involved in the trust";
 
 export const CHANGE_LINK_INDIVIDUAL_BO_LABEL = "Individual beneficial owner ";
 export const CHANGE_LINK_INDIVIDUAL_BO_FIRST_NAME = CHANGE_LINK_INDIVIDUAL_BO_LABEL + "Ivan Drago - first name";
@@ -267,8 +268,10 @@ export const RELEVANT_PERIOD_NO_TRUSTEE_INVOLVED = "anyone was a registrable ben
 export const RELEVANT_PERIOD_CHANGE_BENEFICIARY = "at least one person became or ceased to be a beneficiary of a trust";
 export const RELEVANT_PERIOD_NO_CHANGE_BENEFICIARY = "anyone became or ceased to be a beneficiary of a trust";
 export const RELEVANT_PERIOD_INDIVIDUAL_BENEFICIAL_OWNER = "Individual beneficial owner";
+export const RELEVANT_PERIOD_INFORMATION = "You need to enter information that is correct as at the date it ceased to be a registrable beneficial owner.";
 export const SELECT_IF_REGISTER_DURING_PRE_REG_PERIOD = "Select yes if the overseas entity was the registered owner of UK land during the pre-registration period.";
 export const RELEVANT_PERIOD_EXTRA_INFO_REQUIRED = "Based on the pre-registration statement you provided earlier in this service";
+export const RELEVANT_PERIOD_INDIVIDUAL_INFORMATION = "You need to enter information that is correct as at the date they ceased to be a registrable beneficial owner.";
 export const RELEVANT_PERIOD_OTHER_LEGAL_ENTITY_INFORMATION = "You need to enter information that is correct as at the date it ceased to be a registrable beneficial owner.";
 
 // Remove journey

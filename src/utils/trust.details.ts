@@ -220,12 +220,14 @@ const getBackLinkUrl = (isUpdate: boolean, appData: ApplicationData, req: Reques
   } else {
     backLinkUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
       ? getUrlWithParamsToPath(config.TRUST_ENTRY_WITH_PARAMS_URL, req)
-      : config.TRUST_ENTRY_URL + config.TRUST_INTERRUPT_URL;
+      : config.TRUST_ENTRY_URL;
+    backLinkUrl += config.TRUST_INTERRUPT_URL;
 
     if (containsTrustData(getTrustArray(appData))) {
       backLinkUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
         ? getUrlWithParamsToPath(config.TRUST_ENTRY_WITH_PARAMS_URL, req)
-        : config.TRUST_ENTRY_URL + config.ADD_TRUST_URL;
+        : config.TRUST_ENTRY_URL;
+      backLinkUrl += config.ADD_TRUST_URL;
     }
   }
 

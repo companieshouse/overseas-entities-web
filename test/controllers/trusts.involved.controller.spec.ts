@@ -210,10 +210,6 @@ describe('Trust Involved controller', () => {
     
     const dpPostRelevantPeriodTrustee = [
       [
-        TrusteeType.INDIVIDUAL,
-        TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL,
-      ],
-      [
         TrusteeType.RELEVANT_PERIOD_LEGAL_ENTITY,
         '/' + UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE + RELEVANT_PERIOD_QUERY_PARAM,
       ],

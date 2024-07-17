@@ -57,23 +57,24 @@
       {% set date_classes_month = "govuk-input--width-2 govuk-input" %}
       {% set date_classes_day = "govuk-input--width-2 govuk-input" %}
 
+      {% set ceasedParam = {
+        name: 'ceasedDate',
+        label: 'When did this trust stop being associated with the overseas entity?',
+        hint: "For example, 27 3 2007. This trust's information must be correct to this date.",
+        error: errors.ceasedDate if errors,
+        value: {
+          'Day': formData.ceasedDateDay,
+          'Month': formData.ceasedDateMonth,
+          'Year': formData.ceasedDateYear
+        }
+      } %}
       {% if isReview %}
         <h1 class="govuk-heading-m govuk-!-margin-0">Date the trust was created:</h1>
         <label class="govuk-label govuk-!-margin-bottom-7">{{ formatted_creation_date }}</label>
         <br>
 
         {% if isTrustToBeCeased and isFeatureFlagCeaseTrustsEnabled %}
-          {% set fieldParam = {
-            name: 'ceasedDate',
-            label: 'When did this trust stop being associated with the overseas entity?',
-            hint: "For example, 27 3 2007. This trust's information must be correct to this date.",
-            error: errors.ceasedDate if errors,
-            value: {
-              'Day': formData.ceasedDateDay,
-              'Month': formData.ceasedDateMonth,
-              'Year': formData.ceasedDateYear
-            }
-          } %}
+          {% set fieldParam = ceasedParam %}
           {% include "includes/inputs/date-input.html" %}
         {% endif %}
       {% else %}
@@ -94,17 +95,7 @@
 
       {% if not isTrustToBeCeased and isUpdateOrRemoveJourney %}
         {% if pageData.relevantPeriod %}
-          {% set fieldParam = {
-          name: 'ceasedDate',
-          label: 'When did this trust stop being associated with the overseas entity?',
-          hint: "For example, 27 3 2007. This trust's information must be correct to this date.",
-          error: errors.ceasedDate if errors,
-          value: {
-          'Day': formData.ceasedDateDay,
-          'Month': formData.ceasedDateMonth,
-          'Year': formData.ceasedDateYear
-          }
-          } %}
+          {% set fieldParam = ceasedParam %}
           {% include "includes/inputs/date-input.html" %}
         {% else %}
           {% set ceasedDateLabel = "When did this trust stop being associated with the overseas entity?" %}
@@ -177,11 +168,6 @@
         <input type="hidden" name="createdDateMonth" value="{{ formData.createdDateMonth }}"/>
         <input type="hidden" name="createdDateYear" value="{{ formData.createdDateYear }}"/>
       {% endif %}
-
-      {% if pageData.relevantPeriod %}
-        <input type="hidden" name="stillInvolved" value="0"/>
-      {% endif %}
-      
       {% include "includes/save-and-continue-button.html" %}
     </form>
   </div>

@@ -59,7 +59,7 @@ export enum ErrorMessages {
   COUNTY = "Enter a county",
   COUNTRY = "Select a country from the list",
   COUNTRY_INDIVIDUAL_BO = "Select a country from the list",
-  COUNTRY_LEGAL_ENTITY_BO = "Start typing, then select a country from the list",
+  COUNTRY_LEGAL_ENTITY_BO = "Select a country from the list",
   UK_COUNTRY = "Select a country",
   POSTCODE = "Enter a postcode",
 

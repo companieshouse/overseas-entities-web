@@ -209,7 +209,6 @@ describe('Trust Involved controller', () => {
     const dpPostRelevantPeriodTrustee = [
       [
         TrusteeType.RELEVANT_PERIOD_INDIVIDUAL_BENEFICIARY, "/" + UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE + RELEVANT_PERIOD_QUERY_PARAM,
-        // "/update-manage-trusts-tell-us-about-the-individual?relevant-period=true",
       ],
     ];
 

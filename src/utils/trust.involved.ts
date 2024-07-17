@@ -185,6 +185,10 @@ export const postTrustInvolvedPage = async (
             return safeRedirect(res, config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL);
           case TrusteeType.INDIVIDUAL:
             return safeRedirect(res, config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL);
+          case TrusteeType.RELEVANT_PERIOD_INDIVIDUAL_BENEFICIARY:
+            req.body.typeOfTrustee = TrusteeType.INDIVIDUAL;
+            req.body.roleWithinTrustType = RoleWithinTrustType.BENEFICIARY;
+            return safeRedirect(res, config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
           case TrusteeType.LEGAL_ENTITY:
             return safeRedirect(res, config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL);
           case TrusteeType.RELEVANT_PERIOD_LEGAL_ENTITY:

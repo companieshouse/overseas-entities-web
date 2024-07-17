@@ -1,5 +1,3 @@
-import { postTrustInvolvedPage } from "../../src/utils/trust.involved";
-
 jest.mock("ioredis");
 jest.mock('express-validator/src/validation-result');
 jest.mock(".../../../src/utils/application.data");
@@ -38,6 +36,7 @@ import {
   TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL,
   RELEVANT_PERIOD_QUERY_PARAM,
   UPDATE_LANDING_URL,
+  UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE,
   UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE,
 } from '../../src/config';
 import { get, post } from "../../src/controllers/trust.involved.controller";
@@ -51,6 +50,7 @@ import { mapTrustWhoIsInvolvedToPage } from '../../src/utils/trust/who.is.involv
 import { getFormerTrusteesFromTrust, getIndividualTrusteesFromTrust } from '../../src/utils/trusts';
 import { isActiveFeature } from '../../src/utils/feature.flag';
 import { getUrlWithParamsToPath } from '../../src/utils/url';
+import { postTrustInvolvedPage } from "../../src/utils/trust.involved";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
@@ -212,6 +212,10 @@ describe('Trust Involved controller', () => {
     // TrusteeType.RELEVANT_PERIOD_INDIVIDUAL_BENEFICIARY, "/" + UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE + RELEVANT_PERIOD_QUERY_PARAM,
 
     const dpPostRelevantPeriodTrustee = [
+      [
+        TrusteeType.RELEVANT_PERIOD_INDIVIDUAL_BENEFICIARY,
+        "/" + UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE + RELEVANT_PERIOD_QUERY_PARAM,
+      ],
       [
         TrusteeType.RELEVANT_PERIOD_LEGAL_ENTITY,
         "/" + UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE + RELEVANT_PERIOD_QUERY_PARAM,

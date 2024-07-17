@@ -120,7 +120,7 @@ export const postDataForReview = async (req: Request, res: Response, next: NextF
       overseasEntityID = appData[OverseasEntityKey] as string;
     } else {
       transactionID = await postTransaction(req, session);
-      overseasEntityID = await createOverseasEntity(req, session, transactionID);
+      overseasEntityID = await createOverseasEntity(req, session, transactionID, false);
     }
 
     const transactionClosedResponse = await closeTransaction(req, session, transactionID, overseasEntityID);

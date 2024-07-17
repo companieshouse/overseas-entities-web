@@ -45,7 +45,7 @@ describe(`Overseas Entity Service test suite`, () => {
     const mockResponse = { httpStatusCode: 201, resource: { id: OVERSEAS_ENTITY_ID } };
     mockMakeApiCallWithRetry.mockReturnValueOnce(mockResponse);
     mockGetApplicationData.mockReturnValueOnce( APPLICATION_DATA_MOCK );
-    const response = await createOverseasEntity(req, session, TRANSACTION_ID);
+    const response = await createOverseasEntity(req, session, TRANSACTION_ID, false);
 
     expect(response).toEqual(OVERSEAS_ENTITY_ID);
     expect(mockMakeApiCallWithRetry).toBeCalledWith(serviceNameOE, "postOverseasEntity", req, session, TRANSACTION_ID, APPLICATION_DATA_MOCK, false);
@@ -58,7 +58,7 @@ describe(`Overseas Entity Service test suite`, () => {
     const errorMsg = `'postOverseasEntity' for transaction id '${TRANSACTION_ID}' encountered an error - ${JSON.stringify(mockData)}`;
     mockMakeApiCallWithRetry.mockReturnValueOnce( mockData );
 
-    await expect( createOverseasEntity(req, undefined as any, TRANSACTION_ID) ).rejects.toThrow(ERROR);
+    await expect( createOverseasEntity(req, undefined as any, TRANSACTION_ID, false) ).rejects.toThrow(ERROR);
     expect(mockInfoRequestLog).toHaveBeenCalledWith(req, `Calling 'postOverseasEntity' for transaction id '${TRANSACTION_ID}'`);
     expect(mockCreateAndLogErrorRequest).toBeCalledWith(req, errorMsg);
   });
@@ -68,7 +68,7 @@ describe(`Overseas Entity Service test suite`, () => {
     const errorMsg = `'postOverseasEntity' for transaction id '${TRANSACTION_ID}' encountered an error - ${JSON.stringify(mockData)}`;
     mockMakeApiCallWithRetry.mockReturnValueOnce( mockData );
 
-    await expect( createOverseasEntity(req, undefined as any, TRANSACTION_ID) ).rejects.toThrow(ERROR);
+    await expect( createOverseasEntity(req, undefined as any, TRANSACTION_ID, false) ).rejects.toThrow(ERROR);
     expect(mockInfoRequestLog).toHaveBeenCalledWith(req, `Calling 'postOverseasEntity' for transaction id '${TRANSACTION_ID}'`);
     expect(mockCreateAndLogErrorRequest).toBeCalledWith(req, errorMsg);
   });

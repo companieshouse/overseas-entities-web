@@ -9,7 +9,6 @@ import { getSoldLandFilterBackLink } from "../utils/navigation";
 import { isActiveFeature } from "../utils/feature.flag";
 import { postTransaction } from "../service/transaction.service";
 import { createOverseasEntity, updateOverseasEntity } from "../service/overseas.entities.service";
-// import { getUrlWithTransactionIdAndSubmissionId } from "../utils/url";
 import { Session } from "@companieshouse/node-session-handler";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {

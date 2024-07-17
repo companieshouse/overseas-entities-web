@@ -1,3 +1,5 @@
+import { postTrustInvolvedPage } from "../../src/utils/trust.involved";
+
 jest.mock("ioredis");
 jest.mock('express-validator/src/validation-result');
 jest.mock(".../../../src/utils/application.data");
@@ -34,9 +36,8 @@ import {
   TRUST_INVOLVED_PAGE,
   TRUST_INVOLVED_URL,
   TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL,
-  REGISTER_AN_OVERSEAS_ENTITY_URL, 
   RELEVANT_PERIOD_QUERY_PARAM,
-  UPDATE_LANDING_URL, 
+  UPDATE_LANDING_URL,
   UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE,
 } from '../../src/config';
 import { get, post } from "../../src/controllers/trust.involved.controller";
@@ -207,7 +208,6 @@ describe('Trust Involved controller', () => {
         '',
       ],
     ];
-    
     const dpPostRelevantPeriodTrustee = [
       [
         TrusteeType.RELEVANT_PERIOD_LEGAL_ENTITY,
@@ -236,19 +236,16 @@ describe('Trust Involved controller', () => {
         expect(mockRes.redirect).toBeCalledWith(`${TRUST_ENTRY_URL}/${trustId}${expectedUrl}`);
       },
     );
-
-    
     test.each(dpPostRelevantPeriodTrustee)(
       'success push with %p type',
       async (typeOfTrustee: string, expectedUrl: string) => {
         mockReq.body = {
           typeOfTrustee,
         };
-        
+
         (validationResult as any as jest.Mock).mockImplementationOnce(() => ({
           isEmpty: jest.fn().mockReturnValue(true),
         }));
-
         const isUpdate: boolean = true;
         const isReview: boolean = true;
         await postTrustInvolvedPage(mockReq, mockRes, mockNext, isUpdate, isReview);

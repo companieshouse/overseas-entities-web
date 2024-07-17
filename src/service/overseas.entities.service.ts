@@ -17,7 +17,7 @@ export const createOverseasEntity = async (
 
   logger.infoRequest(req, `Calling 'postOverseasEntity' for transaction id '${transactionId}'`);
 
-  const appData: ApplicationData = typeof data !== "undefined" ? data : getApplicationData(session);
+  const appData: ApplicationData = data ?? getApplicationData(session);
 
   const response = await makeApiCallWithRetry(
     "overseasEntity",
@@ -41,7 +41,7 @@ export const createOverseasEntity = async (
 
 export const updateOverseasEntity = async (req: Request, session: Session, data?: ApplicationData) => {
 
-  const appData: ApplicationData = typeof data !== "undefined" ? data : getApplicationData(session);
+  const appData: ApplicationData = data ?? getApplicationData(session);
 
   const transactionId = appData[Transactionkey] as string;
   const overseasEntityId = appData[OverseasEntityKey] as string;

@@ -267,7 +267,7 @@ describe("Update Filing Date controller", () => {
       expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${config.OVERSEAS_ENTITY_PRESENTER_URL}`);
     });
 
-    /* test(`redirect to the ${config.OVERSEAS_ENTITY_PRESENTER_URL} page after a successful creation of transaction and overseas entity`, async () => {
+    test(`redirect to the ${config.OVERSEAS_ENTITY_PRESENTER_URL} page after a successful creation of transaction and overseas entity`, async () => {
       const mockData = { ...APPLICATION_DATA_MOCK, [Transactionkey]: "", [OverseasEntityKey]: "" };
       mockGetApplicationData.mockReturnValue(mockData);
       mockIsActiveFeature.mockReturnValueOnce(false);
@@ -284,7 +284,7 @@ describe("Update Filing Date controller", () => {
       expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
 
       expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${config.OVERSEAS_ENTITY_PRESENTER_URL}`);
-    }); */
+    });
 
     test(`renders the ${config.UPDATE_FILING_DATE_PAGE} page with error when filing date is empty`, async () => {
       const mockData = { ...APPLICATION_DATA_MOCK };

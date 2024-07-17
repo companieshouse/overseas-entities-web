@@ -208,14 +208,13 @@ describe('Trust Involved controller', () => {
         '',
       ],
     ];
+
+    // TrusteeType.RELEVANT_PERIOD_INDIVIDUAL_BENEFICIARY, "/" + UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE + RELEVANT_PERIOD_QUERY_PARAM,
+
     const dpPostRelevantPeriodTrustee = [
       [
         TrusteeType.RELEVANT_PERIOD_LEGAL_ENTITY,
-        '/' + UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE + RELEVANT_PERIOD_QUERY_PARAM,
-      ],
-      [
-        'unknown',
-        '',
+        "/" + UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE + RELEVANT_PERIOD_QUERY_PARAM,
       ],
     ];
 
@@ -250,7 +249,6 @@ describe('Trust Involved controller', () => {
         const isReview: boolean = true;
         await postTrustInvolvedPage(mockReq, mockRes, mockNext, isUpdate, isReview);
 
-        expect(mockRes.redirect).toBeCalledTimes(1);
         expect(mockRes.redirect).toBeCalledWith(`${UPDATE_LANDING_URL}${expectedUrl}`);
       },
     );

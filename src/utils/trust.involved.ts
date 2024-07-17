@@ -225,7 +225,11 @@ const getBackLinkUrl = (isUpdate: boolean, trustId: string, isReview: boolean, r
   if (isReview) {
     return config.UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL;
   } else if (isUpdate) {
-    return `${config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL}/${trustId}`;
+    let backLinkUrl = `${config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL}/${trustId}`;
+    if (req.query["relevant-period"] === "true") {
+      backLinkUrl += config.RELEVANT_PERIOD_QUERY_PARAM;
+    }
+    return backLinkUrl;
   } else {
     let backLinUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
       ? getUrlWithParamsToPath(config.TRUST_ENTRY_WITH_PARAMS_URL, req)

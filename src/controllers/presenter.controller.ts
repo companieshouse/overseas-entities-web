@@ -5,13 +5,13 @@ import { getPresenterPage, postPresenterPage } from "../utils/presenter";
 import { isActiveFeature } from "../utils/feature.flag";
 import { getUrlWithParamsToPath } from "../utils/url";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
+
   let backLinkUrl = config.OVERSEAS_NAME_URL;
   if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)){
     backLinkUrl = getUrlWithParamsToPath(config.OVERSEAS_NAME_WITH_PARAMS_URL, req);
   }
-
-  getPresenterPage(req, res, next, config.PRESENTER_PAGE, backLinkUrl);
+  await getPresenterPage(req, res, next, config.PRESENTER_PAGE, backLinkUrl);
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
@@ -20,6 +20,5 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)){
     nextPageUrl = getUrlWithParamsToPath(config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL, req);
   }
-
   postPresenterPage(req, res, next, nextPageUrl, true);
 };

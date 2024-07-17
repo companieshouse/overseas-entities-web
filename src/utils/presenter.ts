@@ -11,14 +11,14 @@ import * as config from "../config";
 import { postTransaction } from "../service/transaction.service";
 import { createOverseasEntity } from "../service/overseas.entities.service";
 
-export const getPresenterPage = (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string): void => {
+export const getPresenterPage = async (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string): Promise<void> => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
     const presenter = appData[PresenterKey];
 
-    if (isRemoveJourney(req)){
+    if (await isRemoveJourney(req)) {
       return res.render(templateName, {
         journey: config.JourneyType.remove,
         backLinkUrl: `${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`,
@@ -28,7 +28,7 @@ export const getPresenterPage = (req: Request, res: Response, next: NextFunction
     }
 
     return res.render(templateName, {
-      backLinkUrl: backLinkUrl,
+      backLinkUrl,
       templateName: templateName,
       ...presenter
     });
@@ -44,8 +44,8 @@ export const postPresenterPage = async (req: Request, res: Response, next: NextF
 
     const session = req.session as Session;
 
-    if (isRemoveJourney(req)) {
-      const appData: ApplicationData = getApplicationData(session);
+    if (await isRemoveJourney(req)) {
+      const appData: ApplicationData = await getApplicationData(session);
       if (!appData[Transactionkey]) {
         const transactionID = await postTransaction(req, session);
         appData[Transactionkey] = transactionID;
@@ -56,7 +56,7 @@ export const postPresenterPage = async (req: Request, res: Response, next: NextF
     }
 
     const data = prepareData(req.body, PresenterKeys);
-    setApplicationData(session, data, PresenterKey);
+    await setApplicationData(session, data, PresenterKey);
 
     await saveAndContinue(req, session, registrationFlag);
 

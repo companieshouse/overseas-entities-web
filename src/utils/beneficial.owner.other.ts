@@ -29,10 +29,10 @@ import { v4 as uuidv4 } from 'uuid';
 import * as config from "../config";
 import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
 
-export const getBeneficialOwnerOther = (req: Request, res: Response, templateName: string, backLinkUrl: string) => {
+export const getBeneficialOwnerOther = async (req: Request, res: Response, templateName: string, backLinkUrl: string) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-  const appData: ApplicationData = getApplicationData(req.session);
+  const appData: ApplicationData = await getApplicationData(req.session);
 
   return res.render(templateName, {
     backLinkUrl: backLinkUrl,
@@ -41,12 +41,12 @@ export const getBeneficialOwnerOther = (req: Request, res: Response, templateNam
   });
 };
 
-export const getBeneficialOwnerOtherById = (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string) => {
+export const getBeneficialOwnerOtherById = async (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string) => {
   try {
     logger.debugRequest(req, `GET BY ID ${req.route.path}`);
 
     const id = req.params[ID];
-    const data = getFromApplicationData(req, BeneficialOwnerOtherKey, id, true);
+    const data = await getFromApplicationData(req, BeneficialOwnerOtherKey, id, true);
 
     const principalAddress = (data) ? mapDataObjectToFields(data[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};
     const serviceAddress = (data) ? mapDataObjectToFields(data[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
@@ -68,7 +68,7 @@ export const getBeneficialOwnerOtherById = (req: Request, res: Response, next: N
       addActiveSubmissionBasePathToTemplateData(templateOptions, req);
     }
 
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
 
     if (EntityNumberKey in appData && appData[EntityNumberKey]) {
       return res.render(templateName, addCeasedDateToTemplateOptions(templateOptions, appData, data));
@@ -89,7 +89,7 @@ export const postBeneficialOwnerOther = async (req: Request, res: Response, next
     const data: ApplicationDataType = setBeneficialOwnerData(req.body, uuidv4());
 
     const session = req.session as Session;
-    setApplicationData(session, data, BeneficialOwnerOtherKey);
+    await setApplicationData(session, data, BeneficialOwnerOtherKey);
 
     await saveAndContinue(req, session, registrationFlag);
 
@@ -112,7 +112,7 @@ export const updateBeneficialOwnerOther = async (req: Request, res: Response, ne
 
     // Save new Beneficial Owner
     const session = req.session as Session;
-    setApplicationData(session, data, BeneficialOwnerOtherKey);
+    await setApplicationData(session, data, BeneficialOwnerOtherKey);
 
     await saveAndContinue(req, session, registrationFlag);
 

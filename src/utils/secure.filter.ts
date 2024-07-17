@@ -6,12 +6,12 @@ import { logger } from "./logger";
 import { isRemoveJourney } from "../utils/url";
 import * as config from "../config";
 
-export const getFilterPage = (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string): void => {
+export const getFilterPage = async (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string): Promise<void> => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
 
-    if (isRemoveJourney(req)){
+    if (await isRemoveJourney(req)) {
       return res.render(templateName, {
         journey: config.JourneyType.remove,
         backLinkUrl: config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL,
@@ -19,6 +19,7 @@ export const getFilterPage = (req: Request, res: Response, next: NextFunction, t
         [IsSecureRegisterKey]: appData[IsSecureRegisterKey]
       });
     }
+
     return res.render(templateName, {
       backLinkUrl: backLinkUrl,
       templateName: templateName,
@@ -30,12 +31,12 @@ export const getFilterPage = (req: Request, res: Response, next: NextFunction, t
   }
 };
 
-export const postFilterPage = (req: Request, res: Response, next: NextFunction, isSecureRegisterYes: string, isSecureRegisterNo: string): void => {
+export const postFilterPage = async (req: Request, res: Response, next: NextFunction, isSecureRegisterYes: string, isSecureRegisterNo: string): Promise<void> => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const isSecureRegister = req.body[IsSecureRegisterKey];
 
-    setExtraData(req.session, { ...getApplicationData(req.session), [IsSecureRegisterKey]: isSecureRegister });
+    setExtraData(req.session, { ...(await getApplicationData(req.session)), [IsSecureRegisterKey]: isSecureRegister });
 
     let nextPageUrl: any;
     if (isSecureRegister === '1') {
@@ -43,7 +44,7 @@ export const postFilterPage = (req: Request, res: Response, next: NextFunction, 
     } else if (isSecureRegister === '0') {
       nextPageUrl = isSecureRegisterNo;
     }
-    if (isRemoveJourney(req)){
+    if (await isRemoveJourney(req)) {
       nextPageUrl = `${nextPageUrl}${config.JOURNEY_REMOVE_QUERY_PARAM}`;
     }
     return res.redirect(nextPageUrl);

@@ -26,7 +26,7 @@ import { isActiveFeature } from "../utils/feature.flag";
 import * as config from "../config";
 import { getUrlWithParamsToPath, isRemoveJourney } from "../utils/url";
 
-export function checkValidations(req: Request, res: Response, next: NextFunction) {
+export async function checkValidations(req: Request, res: Response, next: NextFunction) {
   try {
     const errorList = validationResult(req);
 
@@ -50,7 +50,7 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
       // when changing BO or MO data after failing validation. If not present, undefined will be passed in, which is fine as those pages
       // that don't use id will just ignore it.
       const id = req.params[ID];
-      const appData: ApplicationData = getApplicationData(req.session);
+      const appData: ApplicationData = await getApplicationData(req.session);
       let entityName = req.body[EntityNameKey];
 
       if (req.body[EntityNameKey] === undefined) {
@@ -62,7 +62,7 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
       // The journey property may already be part of the page form data/body so get it from there and override it if we are on a remove journey
       // Then when we pass it back into the template, make sure it is below/after the req.body fields so it overrides the req.body value
       let journey = req.body["journey"];
-      if (isRemoveJourney(req)){
+      if (await isRemoveJourney(req)){
         journey = config.JourneyType.remove;
       }
 
@@ -108,13 +108,13 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
   }
 }
 
-export function checkTrustValidations(req: Request, res: Response, next: NextFunction) {
+export async function checkTrustValidations(req: Request, res: Response, next: NextFunction) {
   try {
     const errorList = validationResult(req);
     if (!errorList.isEmpty()) {
       const errors = formatValidationError(errorList.array());
       const routePath = req.route.path;
-      const appData: ApplicationData = getApplicationData(req.session);
+      const appData: ApplicationData = await getApplicationData(req.session);
 
       return res.render(NAVIGATION[routePath].currentPage, {
         backLinkUrl: NAVIGATION[routePath].previousPage(appData),

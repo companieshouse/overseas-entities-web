@@ -6,11 +6,11 @@ import { ApplicationData } from "../../model";
 import { getApplicationData } from "../../utils/application.data";
 import { isActiveFeature } from "../../utils/feature.flag";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
     const backLinkUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION)
       ? config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL
       : config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL;

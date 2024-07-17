@@ -566,8 +566,8 @@ export const checkBeneficialOwnerType = (beneficialOwnersStatement: string, valu
   return true;
 };
 
-export const checkBeneficialOwnersSubmission = (req) => {
-  const appData: ApplicationData = getApplicationData(req.session);
+export const checkBeneficialOwnersSubmission = async (req) => {
+  const appData: ApplicationData = await getApplicationData(req.session);
   if (appData.beneficial_owners_statement === BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS) {
     if (!hasBeneficialOwners(appData)) {
       throw new Error(ErrorMessages.MUST_ADD_BENEFICIAL_OWNER);
@@ -579,8 +579,8 @@ export const checkBeneficialOwnersSubmission = (req) => {
   return true;
 };
 
-export const checkDatePreviousToFilingDate = (req, dateDay: string, dateMonth: string, dateYear: string, errorMessage: string) => {
-  const appData: ApplicationData = getApplicationData(req.session);
+export const checkDatePreviousToFilingDate = async (req, dateDay: string, dateMonth: string, dateYear: string, errorMessage: string) => {
+  const appData: ApplicationData = await getApplicationData(req.session);
 
   const filingDateDay = appData?.update?.[FilingDateKey]?.day;
   const filingDateMonth = appData?.update?.[FilingDateKey]?.month;
@@ -592,8 +592,8 @@ export const checkDatePreviousToFilingDate = (req, dateDay: string, dateMonth: s
     errorMessage);
 };
 
-export const isUnableToObtainAllTrustInfo = (req) => {
-  const appData: ApplicationData = getApplicationData(req.session);
+export const isUnableToObtainAllTrustInfo = async (req) => {
+  const appData: ApplicationData = await getApplicationData(req.session);
   let trust;
   // Check first if the trust is in review.
   if (hasTrustsToReview(appData)) {
@@ -671,9 +671,9 @@ export const validateEmail = (email: string, maxLength: number) => {
   return true;
 };
 
-export const checkNoChangeStatementSubmission = (value: any, req) => {
+export const checkNoChangeStatementSubmission = async (value: any, req) => {
   if (value === undefined) {
-    if (isRemoveJourney(req)) {
+    if (await isRemoveJourney(req)) {
       throw new Error(ErrorMessages.SELECT_REMOVE_DO_YOU_WANT_TO_MAKE_OE_CHANGE);
     }
 

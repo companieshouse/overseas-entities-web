@@ -2,34 +2,68 @@ import { Session } from '@companieshouse/node-session-handler';
 import { Request } from "express";
 
 import { createAndLogErrorRequest } from './logger';
-import { ID } from '../model/data.types.model';
+import { ID, OverseasEntityKey, Transactionkey } from '../model/data.types.model';
+
 import {
   ApplicationData,
   APPLICATION_DATA_KEY,
   ApplicationDataType,
   ApplicationDataArrayType
 } from "../model";
+
 import { BeneficialOwnerGov, BeneficialOwnerGovKey } from '../model/beneficial.owner.gov.model';
 import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from '../model/beneficial.owner.individual.model';
 import { BeneficialOwnerOtherKey } from '../model/beneficial.owner.other.model';
 import { ManagingOfficerCorporate, ManagingOfficerCorporateKey } from '../model/managing.officer.corporate.model';
 import { ManagingOfficerIndividual, ManagingOfficerKey } from '../model/managing.officer.model';
-import { PARAM_BENEFICIAL_OWNER_GOV, PARAM_BENEFICIAL_OWNER_INDIVIDUAL, PARAM_BENEFICIAL_OWNER_OTHER, PARAM_MANAGING_OFFICER_CORPORATE, PARAM_MANAGING_OFFICER_INDIVIDUAL } from '../config';
+
+import {
+  FEATURE_FLAG_ENABLE_REDIS_REMOVAL,
+  PARAM_BENEFICIAL_OWNER_GOV,
+  PARAM_BENEFICIAL_OWNER_INDIVIDUAL,
+  PARAM_BENEFICIAL_OWNER_OTHER,
+  PARAM_MANAGING_OFFICER_CORPORATE,
+  PARAM_MANAGING_OFFICER_INDIVIDUAL,
+  ROUTE_PARAM_TRANSACTION_ID,
+  ROUTE_PARAM_SUBMISSION_ID
+} from '../config';
+
 import { BeneficialOwnerCorporate } from '@companieshouse/api-sdk-node/dist/services/overseas-entities';
 import { Remove } from 'model/remove.type.model';
+import { isActiveFeature } from "./feature.flag";
+import { getOverseasEntity } from "../service/overseas.entities.service";
 
-export const getApplicationData = (session: Session | undefined): ApplicationData => {
-  return session?.getExtraData(APPLICATION_DATA_KEY) || {} as ApplicationData;
+export const getApplicationData = async (session: Session | undefined, req?: Request): Promise<ApplicationData> => {
+  if (typeof req === "undefined"
+      || !isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
+      || typeof req.params[ROUTE_PARAM_TRANSACTION_ID] === "undefined"
+      || typeof req.params[ROUTE_PARAM_SUBMISSION_ID] === "undefined"
+  ) {
+    return session?.getExtraData(APPLICATION_DATA_KEY) || {} as ApplicationData;
+  }
+
+  const transactionId: string = req.params[ROUTE_PARAM_TRANSACTION_ID] ?? "";
+  const submissionId: string = req.params[ROUTE_PARAM_SUBMISSION_ID] ?? "";
+
+  if (transactionId === "" && submissionId === "") {
+    return {};
+  }
+
+  const appData = await getOverseasEntity(req, transactionId, submissionId);
+  appData[Transactionkey] = transactionId;
+  appData[OverseasEntityKey] = submissionId;
+
+  return appData;
 };
 
 export const deleteApplicationData = (session: Session | undefined): boolean | undefined => {
   return session?.deleteExtraData(APPLICATION_DATA_KEY);
 };
 
-export const setApplicationData = (session: Session | undefined, data: any, key: string): undefined | void => {
-  let appData: ApplicationData = getApplicationData(session);
+export const setApplicationData = async (session: Session | undefined, data: any, key: string): Promise<undefined | void> => {
+  let appData: ApplicationData = await getApplicationData(session);
 
-  if (ApplicationDataArrayType.includes(key)){
+  if (ApplicationDataArrayType.includes(key)) {
     if ( !appData[key] ) { appData[key] = []; }
     appData[key].push(data);
   } else {
@@ -125,9 +159,9 @@ export const findBoOrMo = (appData: ApplicationData, boMoType: string, id: strin
 export const checkGivenBoOrMoDetailsExist = (appData: ApplicationData, boMoType: string, id: string): boolean =>
   findBoOrMo(appData, boMoType, id) ? true : false;
 
-export const removeFromApplicationData = (req: Request, key: string, id: string) => {
+export const removeFromApplicationData = async (req: Request, key: string, id: string) => {
   const session = req.session;
-  const appData: ApplicationData = getApplicationData(session);
+  const appData: ApplicationData = await getApplicationData(session);
 
   const index = getIndexInApplicationData(req, appData, key, id, true);
   if (index === -1) {
@@ -138,8 +172,8 @@ export const removeFromApplicationData = (req: Request, key: string, id: string)
 };
 
 // gets data from ApplicationData. errorIfNotFound boolean indicates whether an error should be thrown if no data found.
-export const getFromApplicationData = (req: Request, key: string, id: string, errorIfNotFound: boolean = true): any => {
-  const appData: ApplicationData = getApplicationData(req.session);
+export const getFromApplicationData = async (req: Request, key: string, id: string, errorIfNotFound: boolean = true): Promise<any> => {
+  const appData: ApplicationData = await getApplicationData(req.session);
 
   const index = getIndexInApplicationData(req, appData, key, id, errorIfNotFound);
   if (index === -1) {

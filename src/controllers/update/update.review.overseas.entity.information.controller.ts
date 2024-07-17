@@ -6,12 +6,12 @@ import { getApplicationData } from "../../utils/application.data";
 import { Session } from "@companieshouse/node-session-handler";
 import { DueDiligenceKey } from "../../model/due.diligence.model";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const session = req.session as Session;
-    const appData: ApplicationData = getApplicationData(session);
+    const appData: ApplicationData = await getApplicationData(session);
 
     return res.render(config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE, {
       templateName: config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE,

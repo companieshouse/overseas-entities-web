@@ -29,7 +29,7 @@ export const handler = async (req: Request, res: Response, next: NextFunction) =
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
   try {
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
     let trustInReview = getTrustInReview(appData);
 
     if (!trustInReview) {
@@ -69,7 +69,7 @@ const shouldGoToReviewTheTrust = (trustInReview: Trust) => {
   return !trustInReview.review_status?.reviewed_trust_details;
 };
 
-export const trustChangeHandler = async(req: Request, res: Response, next: NextFunction) => {
+export const trustChangeHandler = async (req: Request, res: Response, next: NextFunction) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
   try {
@@ -77,7 +77,7 @@ export const trustChangeHandler = async(req: Request, res: Response, next: NextF
     const trusteeId = req.params[ROUTE_PARAM_TRUSTEE_ID];
     const trusteeType = req.params[ROUTE_PARAM_TRUSTEE_TYPE];
 
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
 
     putTrustInChangeScenario(appData, trustId, trusteeType);
 

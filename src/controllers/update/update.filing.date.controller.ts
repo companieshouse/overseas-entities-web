@@ -17,7 +17,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
 
     const backLinkUrl = !isActiveFeature(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD) ? config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL : config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL;
 
@@ -34,14 +34,14 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = async(req: Request, res: Response, next: NextFunction) => {
+export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const session = req.session as Session;
 
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_SAVE_AND_RESUME)) {
-      const appData: ApplicationData = getApplicationData(session);
+      const appData: ApplicationData = await getApplicationData(session);
       if (!appData[Transactionkey]) {
         const transactionID = await postTransaction(req, session);
         appData[Transactionkey] = transactionID;

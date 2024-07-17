@@ -23,32 +23,32 @@ export const getSoldLandFilterBackLink = (): string => {
   }
 };
 
-export const getUpdateOrRemoveBackLink = (req: Request, backLinkUrl: string): string => {
-  if (isRemoveJourney(req)) {
+export const getUpdateOrRemoveBackLink = async (req: Request, backLinkUrl: string): Promise<string> => {
+  if (await isRemoveJourney(req)) {
     return `${backLinkUrl}${config.JOURNEY_REMOVE_QUERY_PARAM}`;
   } else {
     return backLinkUrl;
   }
 };
 
-export const getSecureUpdateFilterBackLink = (req: Request): string => {
-  if (isRemoveJourney(req)) {
+export const getSecureUpdateFilterBackLink = async (req: Request): Promise<string> => {
+  if (await isRemoveJourney(req)) {
     return `${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`;
   } else {
     return config.UPDATE_LANDING_PAGE_URL;
   }
 };
 
-export const getOverseasEntityPresenterBackLink = (req: Request): string => {
-  if (isRemoveJourney(req)) {
+export const getOverseasEntityPresenterBackLink = async (req: Request): Promise<string> => {
+  if (await isRemoveJourney(req)) {
     return `${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`;
   } else {
     return config.UPDATE_FILING_DATE_URL;
   }
 };
 
-export const getUpdateReviewStatementBackLink = (req: Request): string => {
-  if (isRemoveJourney(req)) {
+export const getUpdateReviewStatementBackLink = async (req: Request): Promise<string> => {
+  if (await isRemoveJourney(req)) {
     return config.REMOVE_CONFIRM_STATEMENT_URL;
   }
   return config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL;
@@ -67,7 +67,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.SECURE_UPDATE_FILTER_URL]: {
     currentPage: config.SECURE_UPDATE_FILTER_PAGE,
-    previousPage: (appData: ApplicationData, req: Request) => getSecureUpdateFilterBackLink(req),
+    previousPage: async (appData: ApplicationData, req: Request) => await getSecureUpdateFilterBackLink(req),
     nextPage: [config.UPDATE_ANY_TRUSTS_INVOLVED_URL]
   },
   [config.UPDATE_INTERRUPT_CARD_URL]: {
@@ -77,7 +77,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.OVERSEAS_ENTITY_QUERY_URL]: {
     currentPage: config.OVERSEAS_ENTITY_QUERY_PAGE,
-    previousPage: (appData: ApplicationData, req: Request) => getUpdateOrRemoveBackLink(req, config.UPDATE_INTERRUPT_CARD_URL),
+    previousPage: async (appData: ApplicationData, req: Request) => await getUpdateOrRemoveBackLink(req, config.UPDATE_INTERRUPT_CARD_URL),
     nextPage: [config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE]
   },
   [config.UPDATE_FILING_DATE_URL]: {
@@ -87,7 +87,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.OVERSEAS_ENTITY_PRESENTER_URL]: {
     currentPage: config.UPDATE_PRESENTER_PAGE,
-    previousPage: (appData: ApplicationData, req: Request) => getOverseasEntityPresenterBackLink(req),
+    previousPage: async (appData: ApplicationData, req: Request) => await getOverseasEntityPresenterBackLink(req),
     nextPage: [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE]
   },
   [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL]: {
@@ -97,12 +97,12 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_REVIEW_STATEMENT_URL]: {
     currentPage: config.UPDATE_REVIEW_STATEMENT_PAGE,
-    previousPage: (appData: ApplicationData, req: Request) => getUpdateReviewStatementBackLink(req),
+    previousPage: async (appData: ApplicationData, req: Request) => await getUpdateReviewStatementBackLink(req),
     nextPage: [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL, config.OVERSEAS_ENTITY_PAYMENT_WITH_TRANSACTION_URL]
   },
   [config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL]: {
     currentPage: config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
-    previousPage: (appData: ApplicationData, req: Request) => getUpdateOrRemoveBackLink(req, config.OVERSEAS_ENTITY_QUERY_URL),
+    previousPage: async (appData: ApplicationData, req: Request) => await getUpdateOrRemoveBackLink(req, config.OVERSEAS_ENTITY_QUERY_URL),
     nextPage: [config.UPDATE_FILING_DATE_PAGE, config.PRESENTER_URL, config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE]
   },
   [config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL]: {

@@ -12,11 +12,14 @@ import { makeApiCallWithRetry } from "./retry.handler.service";
 import { EntityNameKey, EntityNumberKey } from "../model/data.types.model";
 
 export const postTransaction = async (req: Request, session: Session): Promise<string> => {
-  const applicationData: ApplicationData = getApplicationData(session);
+  const applicationData: ApplicationData = await getApplicationData(session, req);
   const companyName = applicationData[EntityNameKey];
   const companyNumber = applicationData[EntityNumberKey];
 
-  const transaction: Transaction = companyNumber === undefined ? { reference: REFERENCE, companyName, description: DESCRIPTION } : { reference: REFERENCE, companyName, companyNumber, description: DESCRIPTION };
+  let transaction: Object = { reference: REFERENCE, description: DESCRIPTION };
+  transaction = companyNumber !== undefined ? { ...transaction, companyNumber } : transaction;
+  transaction = companyName !== undefined ? { ...transaction, companyName } : transaction;
+  transaction = Object.assign(applicationData, transaction);
 
   logger.infoRequest(req, `Calling 'postTransaction' for company number '${companyNumber}' with name '${companyName}'`);
 
@@ -29,9 +32,9 @@ export const postTransaction = async (req: Request, session: Session): Promise<s
   );
 
   if (!response.httpStatusCode || response.httpStatusCode >= 400) {
-    throw createAndLogErrorRequest(req, `'postTransaction' for company number '${companyNumber}' with name '${companyName}' returned HTTP status code ${response.httpStatusCode}`);
+    throw createAndLogErrorRequest(req, `'>>error:>>>>>>>>postTransaction' for company number '${companyNumber}' with name '${companyName}' returned HTTP status code ${response.httpStatusCode}`);
   } else if (!response.resource) {
-    throw createAndLogErrorRequest(req, `'postTransaction' for company number '${companyNumber}' with name '${companyName}' returned no response`);
+    throw createAndLogErrorRequest(req, `'>>error:>>>>>>>>>postTransaction' for company number '${companyNumber}' with name '${companyName}' returned no response`);
   }
 
   logger.infoRequest(req, `Response from 'postTransaction' for company number '${companyNumber}' with name '${companyName}': ${JSON.stringify(response)}`);

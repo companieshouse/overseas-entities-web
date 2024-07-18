@@ -217,7 +217,7 @@
   } if not inNoChangeJourney
 }), rows) %}
 
-{% if not pageParams.isRegistration %}
+{% if not pageParams.isRegistration and (trustStillInvolved === "Yes" or isNotStillInvolved) %}
   {% set rows = (rows.push({
     key: {
     text: "Is it still involved in the trust?"

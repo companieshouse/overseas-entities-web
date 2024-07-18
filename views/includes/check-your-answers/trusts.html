@@ -18,8 +18,8 @@
   {% if isRegistration  %}
     {% set changeLinkUrl = OE_CONFIGS.TRUST_DETAILS_URL %}
   {% else %}
-    {% set stillInvolved = trust.trust_still_involved_in_overseas_entity %}
-    {% set isNotStillInvolved = stillInvolved === "No" %}    
+    {% set trustStillInvolved = trust.trust_still_involved_in_overseas_entity %}
+    {% set isNottrustStillInvolved = trustStillInvolved === "No" %}    
     {% set trustCeasedDate = dateMacros.formatDate(trust.ceased_date_day, trust.ceased_date_month, trust.ceased_date_year) %}
     {% if manageTrusts %}
       {% set changeLinkUrl = OE_CONFIGS.UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_CHANGE_HANDLER_URL %}
@@ -81,7 +81,7 @@
           text: "Is the trust still involved in the overseas entity?"
         },
         value: {
-          text: stillInvolved
+          text: trustStillInvolved
         },
         actions: {
           items: [ CREATE_CHANGE_LINK(
@@ -105,7 +105,7 @@
             "change-trust-ceased-date-button"
           ) ]
         } 
-      } if not isRegistration and isNotStillInvolved
+      } if not isRegistration and isNottrustStillInvolved
     ]
 }) }}
   <br>

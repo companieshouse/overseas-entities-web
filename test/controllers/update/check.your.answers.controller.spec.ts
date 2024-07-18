@@ -1010,7 +1010,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).not.toContain(TRUSTEE_LEGAL_ENTITY_CEASED_DATE);
     });
 
-    test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page when a reviewed trust is not still involved in the overseas entity trustee still involved fields are excluded`, async () => {
+    test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page when a reviewed trust and reviewed trustees are all specified as not still involved`, async () => {
 
       const trustee = {
         ...INDIVIUAL_TRUSTEE,

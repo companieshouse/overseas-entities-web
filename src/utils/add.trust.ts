@@ -11,6 +11,7 @@ import { validationResult } from 'express-validator';
 import { isActiveFeature } from './feature.flag';
 import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
 import { getUrlWithParamsToPath } from './url';
+import { checkRelevantPeriod } from './relevant.period';
 
 export const ADD_TRUST_TEXTS = {
   title: 'Trusts associated with the overseas entity',
@@ -26,7 +27,8 @@ type TrustInvolvedPageProperties = {
     subtitle: string
   },
   pageData: {
-    trustData: Trust[]
+    trustData: Trust[],
+    isRelevantPeriod: boolean,
   },
   formData?: PageModel.AddTrust,
   errors?: FormattedValidationErrors,
@@ -48,7 +50,8 @@ const getPageProperties = (
     backLinkUrl: getBackLinkUrl(isUpdate, req),
     ...appData,
     pageData: {
-      trustData: getTrustArray(appData)
+      trustData: getTrustArray(appData),
+      isRelevantPeriod: isUpdate ? checkRelevantPeriod(appData) : false,
     },
     pageParams: {
       title: ADD_TRUST_TEXTS.title,

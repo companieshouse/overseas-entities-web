@@ -98,7 +98,7 @@
 
       <form method="post">
         {% include "includes/csrf_token.html" %}
-        {% if feature_flag_relevant_period === "true" and isUpdate %}
+        {% if feature_flag_relevant_period === "true" and (update.change_bo_relevant_period === "CHANGE_BO_RELEVANT_PERIOD" or update.trustee_involved_relevant_period === "TRUSTEE_INVOLVED_RELEVANT_PERIOD" or update.change_beneficiary_relevant_period === "CHANGE_BENEFICIARY_RELEVANT_PERIOD") %}
         {% include "includes/page-templates/pre-registration-radio-button.html" %}
         {% else %}
         {% set fieldParam = {

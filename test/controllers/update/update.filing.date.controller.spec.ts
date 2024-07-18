@@ -280,7 +280,6 @@ describe("Update Filing Date controller", () => {
       expect(mockTransactionService).toHaveBeenCalledTimes(1);
       expect(mockCreateOverseasEntity).toHaveBeenCalledTimes(1);
       expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
-
       expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${config.OVERSEAS_ENTITY_PRESENTER_URL}`);
     });
 

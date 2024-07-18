@@ -16,11 +16,7 @@ export const getEntityBackLink = (data: ApplicationData, req: Request): string =
 };
 
 export const getSoldLandFilterBackLink = (): string => {
-  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022)) {
-    return config.LANDING_PAGE_STARTING_NEW_URL;
-  } else {
-    return config.LANDING_PAGE_URL;
-  }
+  return config.LANDING_PAGE_STARTING_NEW_URL;
 };
 
 export const getUpdateOrRemoveBackLink = (req: Request, backLinkUrl: string): string => {

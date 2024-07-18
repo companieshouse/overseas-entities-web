@@ -1,7 +1,8 @@
 import {
   UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
-  UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_PAGE
+  UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_PAGE,
+  RELEVANT_PERIOD_QUERY_PARAM
 } from "../../config";
 import { NextFunction, Request, Response } from "express";
 import { getApplicationData, mapDataObjectToFields, removeFromApplicationData, setApplicationData } from "../../utils/application.data";
@@ -21,6 +22,7 @@ import {
   ServiceAddressKeys
 } from "../../model/address.model";
 import { AddressKeys, EntityNumberKey } from "../../model/data.types.model";
+import { checkRelevantPeriod } from "../../utils/relevant.period";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -75,8 +77,11 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
       await saveAndContinue(req, session, false);
     }
-
-    return res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+    if (checkRelevantPeriod(appData)) {
+      return res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
+    } else {
+      return res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+    }
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

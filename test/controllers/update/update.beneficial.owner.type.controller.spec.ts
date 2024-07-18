@@ -12,6 +12,7 @@ jest.mock('../../../src/utils/trusts');
 jest.mock('../../../src/utils/update/review_trusts');
 jest.mock('../../../src/utils/update/trust.model.fetch');
 jest.mock('../../../src/utils/save.and.continue');
+jest.mock('../../../src/utils/relevant.period');
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
 import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
@@ -74,6 +75,7 @@ import { retrieveTrustData } from "../../../src/utils/update/trust.model.fetch";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import { BeneficialOwnerTypeChoice, BeneficialOwnerTypeKey } from "../../../src/model/beneficial.owner.type.model";
 import { RELEVANT_PERIOD_QUERY_PARAM } from "../../../src/config";
+import { checkRelevantPeriod } from "../../../src/utils/relevant.period";
 
 mockRemoveJourneyMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
@@ -108,6 +110,7 @@ const mockSetExtraData = setExtraData as jest.Mock;
 const mockMoveReviewableTrustsIntoReview = moveReviewableTrustsIntoReview as jest.Mock;
 
 const mockResetReviewStatusOnAllTrustsToBeReviewed = resetReviewStatusOnAllTrustsToBeReviewed as jest.Mock;
+const mockCheckRelevantPeriod = checkRelevantPeriod as jest.Mock;
 
 describe("BENEFICIAL OWNER TYPE controller", () => {
   let appData;
@@ -418,7 +421,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
         .mockReturnValueOnce(false)
         .mockReturnValueOnce(false)
         .mockReturnValueOnce(true);
-
+      mockCheckRelevantPeriod.mockReturnValueOnce(true);
       const resp = await request(app)
         .post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
 
@@ -431,6 +434,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
         .mockReturnValueOnce(false)
         .mockReturnValueOnce(false)
         .mockReturnValueOnce(false);
+      mockCheckRelevantPeriod.mockReturnValueOnce(true);
 
       const resp = await request(app)
         .post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL);

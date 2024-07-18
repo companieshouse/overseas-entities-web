@@ -95,7 +95,7 @@ describe('Trust Individual Beneficial Owner Controller Integration Tests', () =>
       expect(resp.text).toContain(ErrorMessages.SELECT_IF_SERVICE_ADDRESS_SAME_AS_USER_RESIDENTIAL_ADDRESS_INDIVIDUAL_BO);
       expect(resp.text).toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER_INDIVIDUAL_BO);
       expect(resp.text).toContain(ErrorMessages.CITY_OR_TOWN_INDIVIDUAL_BO);
-      expect(resp.text).toContain(ErrorMessages.COUNTRY_INDIVIDUAL_BO);
+      expect(resp.text).toContain(ErrorMessages.COUNTRY_BO);
     });
 
     test(`renders the ${TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE} page with MAX error messages`, async () => {
@@ -221,7 +221,7 @@ describe('Trust Individual Beneficial Owner Controller Integration Tests', () =>
       expect(resp.text).toContain(ErrorMessages.SELECT_IF_SERVICE_ADDRESS_SAME_AS_USER_RESIDENTIAL_ADDRESS_INDIVIDUAL_BO);
       expect(resp.text).toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER_INDIVIDUAL_BO);
       expect(resp.text).toContain(ErrorMessages.CITY_OR_TOWN_INDIVIDUAL_BO);
-      expect(resp.text).toContain(ErrorMessages.COUNTRY_INDIVIDUAL_BO);
+      expect(resp.text).toContain(ErrorMessages.COUNTRY_BO);
     });
 
     test(`renders the ${TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE} page with MAX error messages`, async () => {

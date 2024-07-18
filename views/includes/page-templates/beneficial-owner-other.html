@@ -6,7 +6,7 @@
     {% include "includes/page-templates/relevant-period-common-code.html" %}
 
     <form class="form" method="post">
-      {% include "includes/csrf_token.html" %}  
+      {% include "includes/csrf_token.html" %}
       {% include "includes/inputs/fields/name-input.html" %}
 
       {% include "includes/inputs/address/principal-address-input.html" %}
@@ -42,6 +42,10 @@
       {% set nameToBeRemoved = name %}
       {% if not entity_number %}
         {% include "includes/remove-button.html" %}
+      {% endif %}
+
+      {% if relevant_period %}
+        <input type="hidden" name="relevant_period" value= "true">
       {% endif %}
     </form>
   </div>

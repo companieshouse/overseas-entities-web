@@ -31,7 +31,7 @@
     <h1 class="govuk-heading-xl govuk-!-margin-0">{{ pageTitle }}</h1>
     <br> <p class="govuk-body">You can add more later.</p> <br>
 
-    <form class="form" method="post"> 
+    <form class="form" method="post">
       {% include "includes/csrf_token.html" %}
 
       <input type="hidden" name="trusteeId" value="{{ trusteeId }}"/>
@@ -152,13 +152,17 @@
         {% set stillInvolvedLegendText = "Are they still involved in the trust?" %}
         {% include "includes/inputs/date/trust-ceased-date-input.html" %}
       {% endif %}
-      
+
       {{ govukInsetText({
         html: '
           <h2 class="govuk-heading-m">What information we’ll show on the public register</h2>
           <p>We will not show any of the information you provide on this screen on the public Register of Overseas Entities. However, we may share it with HMRC.</p>
         '
       }) }}
+
+      {% if pageData.relevant_period %}
+        <input type="hidden" name="relevant_period" value= "true">
+      {% endif %}
 
       {% if uneditableDOB %}
         <input type="hidden" name="dateOfBirthDay" value="{{ formData.dateOfBirthDay }}"/>

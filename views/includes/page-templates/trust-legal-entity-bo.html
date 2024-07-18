@@ -125,7 +125,7 @@
     {% set registration_number = formData.registration_number %}
     {% include "includes/inputs/fields/is-on-register-in-country-formed-input.html" %}
 
-    
+
     {% set isUpdateOrRemoveJourney = (isUpdate or journey === "remove") %}
 
     {% if isUpdateOrRemoveJourney %}
@@ -142,8 +142,11 @@
         '
     }) }}
 
-    <input type="hidden" name="legalEntityId" value="{{ formData.legalEntityId }}"/>
+    {% if pageData.relevant_period %}
+      <input type="hidden" name="relevant_period" value= "true">
+    {% endif %}
 
+    <input type="hidden" name="legalEntityId" value="{{ formData.legalEntityId }}"/>
     {% include "includes/save-and-continue-button.html" %}
     </form>
   </div>

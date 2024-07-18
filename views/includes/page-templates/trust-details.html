@@ -168,6 +168,11 @@
         <input type="hidden" name="createdDateMonth" value="{{ formData.createdDateMonth }}"/>
         <input type="hidden" name="createdDateYear" value="{{ formData.createdDateYear }}"/>
       {% endif %}
+
+      {% if pageData.relevantPeriod %}
+        <input type="hidden" name="stillInvolved" value="0"/>
+      {% endif %}
+
       {% include "includes/save-and-continue-button.html" %}
     </form>
   </div>

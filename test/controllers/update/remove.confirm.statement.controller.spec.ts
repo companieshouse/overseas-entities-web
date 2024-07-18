@@ -1,5 +1,6 @@
 jest.mock("ioredis");
 jest.mock("../../../src/utils/logger");
+jest.mock("../../../src/utils/save.and.continue");
 jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/application.data');
@@ -33,8 +34,6 @@ import { REMOVE_SERVICE_NAME } from "../../../src/config";
 import { APPLICATION_DATA_REMOVE_MOCK } from "../../__mocks__/session.mock";
 import { RemoveKey } from "../../../src/model/remove.type.model";
 
-mockRemoveJourneyMiddleware.mockClear();
-mockCsrfProtectionMiddleware.mockClear();
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
@@ -49,6 +48,8 @@ describe("Remove confirmation statement controller", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetRemove.mockReturnValue({});
+    mockRemoveJourneyMiddleware.mockClear();
+    mockCsrfProtectionMiddleware.mockClear();
   });
 
   describe ("GET tests", () => {

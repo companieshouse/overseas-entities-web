@@ -69,7 +69,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       const session = req.session as Session;
       setApplicationData(session, data, ManagingOfficerCorporateKey);
 
-      await saveAndContinue(req, session, false);
+      await saveAndContinue(req, session);
     }
 
     res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL);

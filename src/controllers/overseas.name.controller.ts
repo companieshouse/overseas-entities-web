@@ -50,7 +50,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     if (!appData[Transactionkey]) {
       const transactionID = await postTransaction(req, session);
       appData[Transactionkey] = transactionID;
-      appData[OverseasEntityKey] = await createOverseasEntity(req, session, transactionID, true);
+      appData[OverseasEntityKey] = await createOverseasEntity(req, session, transactionID);
       setExtraData(session, appData);
     } else {
       await updateOverseasEntity(req, session);

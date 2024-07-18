@@ -1,4 +1,3 @@
-jest.mock('../../../src/utils/feature.flag');
 jest.mock("ioredis");
 jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/middleware/service.availability.middleware');
@@ -24,11 +23,9 @@ import {
 
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { NextFunction, Request, Response } from "express";
-import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { getPreviousPageUrl, isRemoveJourney } from "../../../src/utils/url";
 
 mockCsrfProtectionMiddleware.mockClear();
-const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
@@ -44,8 +41,7 @@ describe("SIGN OUT controller", () => {
     mockIsRemoveJourney.mockReturnValue(false);
   });
   describe("GET tests", () => {
-    test(`renders the ${config.SIGN_OUT_PAGE} page, when FEATURE_FLAG_ENABLE_UPDATE_SAVE_AND_RESUME is active,  with ${config.SECURE_UPDATE_FILTER_PAGE} as back link`, async () => {
-      mockIsActiveFeature.mockReturnValue(true);
+    test(`renders the ${config.SIGN_OUT_PAGE} page with ${config.SECURE_UPDATE_FILTER_PAGE} as back link`, async () => {
       const resp = await request(app)
         .get(`${config.UPDATE_SIGN_OUT_URL}?page=${config.SECURE_UPDATE_FILTER_PAGE}`);
       expect(resp.status).toEqual(200);
@@ -53,16 +49,6 @@ describe("SIGN OUT controller", () => {
       expect(resp.text).toContain(UPDATE_SIGN_OUT_HINT_TEXT);
       expect(resp.text).toContain(UPDATE_SIGN_OUT_HELP_DETAILS_TEXT);
       expect(resp.text).toContain(UPDATE_SIGN_OUT_DROPDOWN_TEXT);
-      expect(resp.text).toContain(`${config.UPDATE_AN_OVERSEAS_ENTITY_URL}${config.SECURE_UPDATE_FILTER_PAGE}`);
-    });
-
-    test(`renders the ${config.SIGN_OUT_PAGE} page, when FEATURE_FLAG_ENABLE_UPDATE_SAVE_AND_RESUME is not active,  with ${config.SECURE_UPDATE_FILTER_PAGE} as back link`, async () => {
-      mockIsActiveFeature.mockReturnValue(false);
-      const resp = await request(app)
-        .get(`${config.UPDATE_SIGN_OUT_URL}?page=${config.SECURE_UPDATE_FILTER_PAGE}`);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(SIGN_OUT_PAGE_TITLE);
-      expect(resp.text).toContain('Your answers will not be saved. You will need to start again if you want to update an overseas entity and tell us about its beneficial owners.');
       expect(resp.text).toContain(`${config.UPDATE_AN_OVERSEAS_ENTITY_URL}${config.SECURE_UPDATE_FILTER_PAGE}`);
     });
 
@@ -74,7 +60,6 @@ describe("SIGN OUT controller", () => {
     });
 
     test(`renders the ${config.UPDATE_SIGN_OUT_PAGE} page correctly on Remove journey`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_SAVE_AND_RESUME
       mockIsRemoveJourney.mockReturnValue(true);
 
       const resp = await request(app)

@@ -249,7 +249,7 @@ describe("Sign Out controller", () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app)
         .post(config.SIGN_OUT_URL)
-        .send({ journey: 'register', saveAndResume: true });
+        .send({ journey: 'register' });
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ErrorMessages.SELECT_IF_SIGN_OUT);
@@ -297,7 +297,7 @@ describe("Sign Out controller", () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app)
         .post(config.SIGN_OUT_WITH_PARAMS_URL)
-        .send({ journey: 'register', saveAndResume: true });
+        .send({ journey: 'register' });
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ErrorMessages.SELECT_IF_SIGN_OUT);

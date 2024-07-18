@@ -13,7 +13,6 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     return res.render(config.SIGN_OUT_PAGE, {
       previousPage: previousPageUrl,
-      saveAndResume: true,
       journey: config.JourneyType.register
     });
   } catch (error) {

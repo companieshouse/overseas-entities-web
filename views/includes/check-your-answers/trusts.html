@@ -19,6 +19,7 @@
     {% set changeLinkUrl = OE_CONFIGS.TRUST_DETAILS_URL %}
   {% else %}
     {% set trustStillInvolved = trust.trust_still_involved_in_overseas_entity %}
+    {% set isTrustStillInvolved = trustStillInvolved === "Yes" %}  
     {% set isTrustNotStillInvolved = trustStillInvolved === "No" %}    
     {% set trustCeasedDate = dateMacros.formatDate(trust.ceased_date_day, trust.ceased_date_month, trust.ceased_date_year) %}
     {% if manageTrusts %}

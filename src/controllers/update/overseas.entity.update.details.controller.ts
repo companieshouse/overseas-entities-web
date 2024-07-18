@@ -6,7 +6,7 @@ import {
   mapDataObjectToFields,
   setExtraData
 } from "../../utils/application.data";
-import { EntityKey } from "../../model/entity.model";
+import { Entity, EntityKey } from "../../model/entity.model";
 import { ApplicationData, ApplicationDataType } from "../../model";
 import {
   AddressKeys,
@@ -68,6 +68,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const session = req.session as Session;
     const entityName = req.body[EntityNameKey];
 
+    setOriginalIncorporationCountry(session, data);
+
     setApplicationData(session, data, EntityKey);
 
     setExtraData(req.session, {
@@ -86,3 +88,10 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     next(error);
   }
 };
+
+const setOriginalIncorporationCountry = (session: Session, data: ApplicationDataType) => {
+  const appData: ApplicationData = getApplicationData(session);
+  const entity = appData[EntityKey];
+  (data as Entity).incorporation_country = entity?.incorporation_country;
+};
+

@@ -224,7 +224,7 @@
           "change-individual-beneficial-owner-still-involved-button"
         ) ]
       }
-    }), rows) %}
+    }) if not inNoChangeJourney, rows) %}
     
     {% set rows = (rows.push({
       key: {

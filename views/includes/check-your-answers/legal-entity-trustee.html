@@ -232,7 +232,7 @@
           "change-legal-entity-still-involved-button"
         ) ]
       }
-    }), rows) %}
+    }) if not inNoChangeJourney, rows) %}
     
     {% set rows = (rows.push({
       key: {

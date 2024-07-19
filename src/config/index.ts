@@ -19,6 +19,7 @@ export const PIWIK_SITE_ID = getEnvironmentValue("PIWIK_SITE_ID");
 export const PIWIK_START_GOAL_ID = getEnvironmentValue("PIWIK_START_GOAL_ID");
 export const PIWIK_UPDATE_START_GOAL_ID = getEnvironmentValue("PIWIK_UPDATE_START_GOAL_ID");
 export const PIWIK_REMOVE_START_GOAL_ID = getEnvironmentValue("PIWIK_REMOVE_START_GOAL_ID");
+export const PIWIK_RELEVANT_PERIOD_START_GOAL_ID = getEnvironmentValue("PIWIK_RELEVANT_PERIOD_START_GOAL_ID");
 export const PAYMENT_FEE = getEnvironmentValue("PAYMENT_FEE");
 export const UPDATE_PAYMENT_FEE = getEnvironmentValue("UPDATE_PAYMENT_FEE");
 export const LANDING_PAGE_URL = getEnvironmentValue("LANDING_PAGE_URL");

@@ -884,7 +884,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).toContain("2023");
 
       expect(resp.text).toContain(`${TRUSTEE_LEGAL_ENTITY_TITLE} Flying Cats`);
-      expect(resp.text).toContain(TRUSTEE_INDIVIDUAL_INVOLVED);
+      expect(resp.text).toContain(TRUSTEE_LEGAL_ENTITY_INVOLVED);
       expect(resp.text).toContain(TRUSTEE_LEGAL_ENTITY_CEASED_DATE);
       expect(resp.text).toContain("10");
       expect(resp.text).toContain("May");
@@ -929,7 +929,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).toContain("2024");
 
       expect(resp.text).toContain(`${TRUSTEE_LEGAL_ENTITY_TITLE} Flying Cats`);
-      expect(resp.text).toContain(TRUSTEE_INDIVIDUAL_INVOLVED);
+      expect(resp.text).toContain(TRUSTEE_LEGAL_ENTITY_INVOLVED);
       expect(resp.text).not.toContain(TRUSTEE_LEGAL_ENTITY_CEASED_DATE);
     });
 
@@ -968,7 +968,89 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).not.toContain(TRUSTEE_INDIVIDUAL_CEASED_DATE);
 
       expect(resp.text).toContain(`${TRUSTEE_LEGAL_ENTITY_TITLE} Flying Cats`);
+      expect(resp.text).toContain(TRUSTEE_LEGAL_ENTITY_INVOLVED);
+      expect(resp.text).toContain(TRUSTEE_LEGAL_ENTITY_CEASED_DATE);
+      expect(resp.text).toContain("10");
+      expect(resp.text).toContain("May");
+      expect(resp.text).toContain("2024");
+    });
+
+    test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page when a reviewed trust is not still involved in the overseas entity trustee still involved fields are excluded`, async () => {
+
+      const trustee = {
+        ...INDIVIUAL_TRUSTEE,
+        still_involved: "Yes"
+      };
+
+      const coprorateTrustee = {
+        ...CORPORATE_TRUSTEE,
+        still_involved: "Yes"
+      };
+
+      const appData = {
+        ...APPLICATION_DATA_UPDATE_BO_MOCK,
+        ["trusts"]: [{
+          ...TRUST_WITH_ID,
+          trust_still_involved_in_overseas_entity: "No",
+          ceased_date_day: "10",
+          ceased_date_month: "05",
+          ceased_date_year: "2024",
+          INDIVIDUALS: [trustee],
+          CORPORATES: [coprorateTrustee]
+        }]
+      };
+
+      mockGetApplicationData.mockReturnValue(appData);
+      mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true);
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+
+      expect(resp.text).not.toContain(TRUSTEE_INDIVIDUAL_INVOLVED);
+      expect(resp.text).not.toContain(TRUSTEE_INDIVIDUAL_CEASED_DATE);
+      expect(resp.text).not.toContain(TRUSTEE_LEGAL_ENTITY_INVOLVED);
+      expect(resp.text).not.toContain(TRUSTEE_LEGAL_ENTITY_CEASED_DATE);
+    });
+
+    test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page when a reviewed trust and reviewed trustees are all specified as not still involved`, async () => {
+
+      const trustee = {
+        ...INDIVIUAL_TRUSTEE,
+        still_involved: "No",
+        ceased_date_day: "10",
+        ceased_date_month: "05",
+        ceased_date_year: "2024",
+      };
+
+      const coprorateTrustee = {
+        ...CORPORATE_TRUSTEE,
+        still_involved: "No",
+        ceased_date_day: "10",
+        ceased_date_month: "05",
+        ceased_date_year: "2024",
+      };
+
+      const appData = {
+        ...APPLICATION_DATA_UPDATE_BO_MOCK,
+        ["trusts"]: [{
+          ...TRUST_WITH_ID,
+          trust_still_involved_in_overseas_entity: "No",
+          ceased_date_day: "01",
+          ceased_date_month: "05",
+          ceased_date_year: "2024",
+          INDIVIDUALS: [trustee],
+          CORPORATES: [coprorateTrustee]
+        }]
+      };
+
+      mockGetApplicationData.mockReturnValue(appData);
+      mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true);
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+
       expect(resp.text).toContain(TRUSTEE_INDIVIDUAL_INVOLVED);
+      expect(resp.text).toContain(TRUSTEE_INDIVIDUAL_CEASED_DATE);
+      expect(resp.text).toContain("10");
+      expect(resp.text).toContain("May");
+      expect(resp.text).toContain("2024");
+      expect(resp.text).toContain(TRUSTEE_LEGAL_ENTITY_INVOLVED);
       expect(resp.text).toContain(TRUSTEE_LEGAL_ENTITY_CEASED_DATE);
       expect(resp.text).toContain("10");
       expect(resp.text).toContain("May");

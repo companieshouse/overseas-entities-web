@@ -214,14 +214,6 @@ describe("Update statement validation errors controller", () => {
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
-
-    test('returns 404 when feature is disabled', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(false);
-
-      const resp = await request(app).get(UPDATE_STATEMENT_VALIDATION_ERRORS_URL);
-
-      expect(resp.status).toEqual(404);
-    });
   });
 
   describe("POST tests", () => {
@@ -353,14 +345,6 @@ describe("Update statement validation errors controller", () => {
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
-    });
-
-    test('returns 404 when feature is disabled', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(false);
-
-      const resp = await request(app).post(UPDATE_STATEMENT_VALIDATION_ERRORS_URL);
-
-      expect(resp.status).toEqual(404);
-    });
+    });    
   });
 });

@@ -238,7 +238,7 @@ describe("OVERSEAS ENTITY UPDATE DETAILS controller", () => {
         .send(UPDATE_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(resp.status).toEqual(302);
-      expect(resp.text).toContain(config.BENEFICIAL_OWNER_STATEMENTS_PAGE);
+      expect(resp.text).toContain(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 

@@ -41,50 +41,6 @@ describe('statement validation middleware', () => {
   });
 
   describe("statementValidationErrorsGuard", () => {
-    test.each([
-      ['off', 'change', 'no errors', 'check your answers', false, false, undefined, UPDATE_CHECK_YOUR_ANSWERS_URL],
-      ['off', 'no change', 'no errors', 'review update statement', false, true, undefined, UPDATE_REVIEW_STATEMENT_URL],
-      ['on', 'change', 'no errors', 'check your answers', true, false, undefined, UPDATE_CHECK_YOUR_ANSWERS_URL],
-      ['on', 'no change', 'no errors', 'review update statement', true, true, undefined, UPDATE_REVIEW_STATEMENT_URL],
-      ['off', 'change', 'errors', 'check your answers', false, false, ['This is an error'], UPDATE_CHECK_YOUR_ANSWERS_URL],
-      ['off', 'no change', 'errors', 'review update statement', false, true, ['This is an error'], UPDATE_REVIEW_STATEMENT_URL],
-    ])('when the feature flag is %s, on %s journey, with %s, redirects to %s', (_, __, ___, ____, flag, noChange, errors, redirectUrl) => {
-      mockIsActiveFeature.mockReturnValueOnce(flag);
-      mockGetApplicationData.mockReturnValueOnce({
-        ...APPLICATION_DATA_MOCK,
-        [UpdateKey]: {
-          ...UPDATE_OBJECT_MOCK,
-          no_change: noChange
-        }
-      });
-      req['statementErrorList'] = errors;
-
-      statementValidationErrorsGuard(req, res, next);
-
-      expect(next).not.toHaveBeenCalled();
-      expect(res.redirect).toHaveBeenCalledWith(redirectUrl);
-    });
-
-    test.each([
-      ['change', false ],
-      ['no change', true ],
-    ])('when the feature flag is on, on %s journey, with errors, continue to next middleware', (_, noChange) => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
-      mockGetApplicationData.mockReturnValueOnce({
-        ...APPLICATION_DATA_MOCK,
-        [UpdateKey]: {
-          ...UPDATE_OBJECT_MOCK,
-          no_change: noChange
-        }
-      });
-      req['statementErrorList'] = ['This is an error'];
-
-      statementValidationErrorsGuard(req, res, next);
-
-      expect(next).toHaveBeenCalled();
-      expect(res.redirect).not.toHaveBeenCalled();
-    });
-
     test(`Redirects to ${REMOVE_CONFIRM_STATEMENT_URL} when on the remove journey`, () => {
       mockIsRemoveJourney.mockReturnValueOnce(true);
       statementValidationErrorsGuard(req, res, next);

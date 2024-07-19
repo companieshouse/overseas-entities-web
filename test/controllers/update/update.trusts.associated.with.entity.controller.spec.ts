@@ -153,7 +153,7 @@ describe('Update - Trusts - Trusts associated with the overseas entity', () => {
       const resp = await request(app).post(UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL).send({ addTrust: '0' });
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_CHECK_YOUR_ANSWERS_URL);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL);
     });
 
     test('when trusts feature flag is on and statement validation flag is on, and no trusts are to be added, redirect to beneficial owner statements page', async () => {

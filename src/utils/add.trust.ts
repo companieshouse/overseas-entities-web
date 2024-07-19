@@ -141,11 +141,7 @@ const newTrustPage = (isUpdate: boolean, req: Request) => {
 
 const nextPage = (isUpdate: boolean, req: Request) => {
   if (isUpdate) {
-    return (
-      isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION)
-        ? config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL
-        : config.UPDATE_CHECK_YOUR_ANSWERS_URL
-    );
+    return config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL;
   } else {
     return isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
       ? getUrlWithParamsToPath(config.CHECK_YOUR_ANSWERS_WITH_PARAMS_URL, req)

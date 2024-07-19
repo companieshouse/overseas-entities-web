@@ -131,7 +131,7 @@ describe("No change registrable beneficial owner", () => {
         .send({ [RegistrableBeneficialOwnerKey]: "1" });
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_REVIEW_STATEMENT_URL);
+      expect(resp.header.location).toEqual(UPDATE_STATEMENT_VALIDATION_ERRORS_URL);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 
@@ -142,7 +142,7 @@ describe("No change registrable beneficial owner", () => {
         .send({ [RegistrableBeneficialOwnerKey]: "0" });
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_REVIEW_STATEMENT_URL);
+      expect(resp.header.location).toEqual(UPDATE_STATEMENT_VALIDATION_ERRORS_URL);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 

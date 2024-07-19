@@ -3,6 +3,7 @@ import { CompanyPersonWithSignificantControl } from '@companieshouse/api-sdk-nod
 import { CompanyOfficer } from '@companieshouse/api-sdk-node/dist/services/company-officers/types';
 import { TrustData, IndividualTrusteeData, CorporateTrusteeData } from '@companieshouse/api-sdk-node/dist/services/overseas-entities/types';
 import { RoleWithinTrustType } from '../../../src/model/role.within.trust.type.model';
+import { yesNoResponse } from '../../../src/model/data.types.model';
 
 export const companyDetailsMock: CompanyProfile = {
   companyName: "acme",
@@ -286,7 +287,8 @@ export const FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK: IndividualTrusteeData[] = [
       poBox: "",
       premises: "100",
       postalCode: "56335",
-      region: "Sierra Madre"
+      region: "Sierra Madre",
+      is_service_address_same_as_usual_residential_address: "No"
     },
   },
   {
@@ -438,7 +440,8 @@ export const MAPPED_FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK =
     "ura_address_po_box": "",
     "ura_address_postal_code": "12345",
     "ura_address_premises": "8",
-    "ura_address_region": "Shing Mun"
+    "ura_address_region": "Shing Mun",
+    "is_service_address_same_as_usual_residential_address": yesNoResponse.Yes
   };
 
 export const MAPPED_FETCH_SECOND_INDIVIDUAL_TRUSTEE_DATA_MOCK =
@@ -471,7 +474,8 @@ export const MAPPED_FETCH_SECOND_INDIVIDUAL_TRUSTEE_DATA_MOCK =
     "ura_address_po_box": "8439",
     "ura_address_postal_code": "12345",
     "ura_address_premises": "1A",
-    "ura_address_region": "California"
+    "ura_address_region": "California",
+    "is_service_address_same_as_usual_residential_address": yesNoResponse.No
   };
 
 export const MAPPED_FETCH_HISTORICAL_INDIVIDUAL_DATA_MOCK =

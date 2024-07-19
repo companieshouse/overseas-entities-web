@@ -2,13 +2,23 @@
   <div class="govuk-grid-column-two-thirds">
     {% include "includes/list/errors.html" %}
     {% if formData.relevant_period %}
-      {% set entity_name = formData.entityName %} 
-      {% include "includes/page-templates/important-banner.html" %}  
+      {% set entity_name = formData.entityName %}
+      {% include "includes/page-templates/important-banner.html" %}
     {% endif %}
 
     <span class="govuk-caption-l">{{ pageData.trustData.trustName }}</span>
     <h1 class="govuk-heading-xl govuk-!-margin-0">{{ pageParams.title }}</h1>
-    <br> <p class="govuk-body">You can add more later.</p> <br>
+    <br>
+
+    {% if formData.relevant_period %}
+      <p class="govuk-body">You can add more later.</p>
+      <div class="govuk-inset-text">
+        <p>The information you enter for this pre-registration beneficiary must be correct as at the date they ceased to be involved in the trust</p>
+      </div>
+      <br>
+    {% else %}
+      <p class="govuk-body">You can add more later.</p> <br>
+    {% endif %}
 
     <form class="form" method="post">
       {% include "includes/csrf_token.html" %}

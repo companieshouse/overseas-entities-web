@@ -345,6 +345,6 @@ describe("Update statement validation errors controller", () => {
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
-    });    
+    });
   });
 });

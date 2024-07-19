@@ -416,7 +416,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     test('redirects to statement validation if statement validation flag is on, both trusts flags are off', async () => {
       mockIsActiveFeature
         .mockReturnValueOnce(false)
-        .mockReturnValueOnce(false);       
+        .mockReturnValueOnce(false);
 
       const resp = await request(app)
         .post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
@@ -428,7 +428,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     test('redirects to beneficial owner statements page if all flags are off', async () => {
       mockIsActiveFeature
         .mockReturnValueOnce(false)
-        .mockReturnValueOnce(false);       
+        .mockReturnValueOnce(false);
 
       const resp = await request(app)
         .post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL);

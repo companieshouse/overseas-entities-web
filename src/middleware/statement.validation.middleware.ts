@@ -17,7 +17,7 @@ import { isRemoveJourney } from "../utils/url";
 
 export const statementValidationErrorsGuard = (req: Request, res: Response, next: NextFunction) => {
   const hasStatementErrors = req['statementErrorList']?.length;
-  
+
   if (hasStatementErrors) {
     return next();
   }
@@ -82,6 +82,5 @@ export const validateStatements = (req: Request, _: Response, next: NextFunction
   }
 
   req['statementErrorList'] = errorList;
-  console.log("\n\n\n\n>>>>>>>>>>>>>>>>>>> ERROR " + errorList);
   next();
 };

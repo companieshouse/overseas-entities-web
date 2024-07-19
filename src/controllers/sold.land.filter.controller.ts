@@ -10,6 +10,7 @@ import { isActiveFeature } from "../utils/feature.flag";
 import { postTransaction } from "../service/transaction.service";
 import { createOverseasEntity, updateOverseasEntity } from "../service/overseas.entities.service";
 import { Session } from "@companieshouse/node-session-handler";
+import { getUrlWithTransactionIdAndSubmissionId } from "../utils/url";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -56,6 +57,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         } else {
           await updateOverseasEntity(req, session, appData);
         }
+        nextPageUrl = getUrlWithTransactionIdAndSubmissionId(config.SECURE_REGISTER_FILTER_WITH_PARAMS_URL, appData[Transactionkey] as string, appData[OverseasEntityKey] as string);
       }
     }
     setExtraData(req.session, appData);

@@ -13,7 +13,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     return res.render(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE, {
       backLinkUrl: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
-      templateName: config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE + config.RELEVANT_PERIOD_QUERY_PARAM,
+      templateName: config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE,
       ...appData,
     });
   } catch (error) {

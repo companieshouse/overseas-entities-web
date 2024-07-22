@@ -39,7 +39,9 @@ import {
   UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE,
   UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE,
   UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE,
-  TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE, TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE,
+  TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE,
+  TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE,
+  UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_PAGE,
 } from '../../src/config';
 import { get, post } from "../../src/controllers/trust.involved.controller";
 import { authentication } from '../../src/middleware/authentication.middleware';
@@ -211,9 +213,15 @@ describe('Trust Involved controller', () => {
       ],
     ];
 
-    // TrusteeType.RELEVANT_PERIOD_INDIVIDUAL_BENEFICIARY, "/" + UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE + RELEVANT_PERIOD_QUERY_PARAM,
-
-    const dpPostRelevantPeriodReviewTrustee = [
+    const dpPostReviewTrustee = [
+      [
+        TrusteeType.HISTORICAL,
+        "/" + UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_PAGE,
+      ],
+      [
+        TrusteeType.INDIVIDUAL,
+        "/" + UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE,
+      ],
       [
         TrusteeType.RELEVANT_PERIOD_INDIVIDUAL_BENEFICIARY,
         "/" + UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE + RELEVANT_PERIOD_QUERY_PARAM,
@@ -262,7 +270,7 @@ describe('Trust Involved controller', () => {
         expect(mockRes.redirect).toBeCalledWith(`${TRUST_ENTRY_URL}/${trustId}${expectedUrl}`);
       },
     );
-    test.each(dpPostRelevantPeriodReviewTrustee)(
+    test.each(dpPostReviewTrustee)(
       'success push with %p type',
       async (typeOfTrustee: string, expectedUrl: string) => {
         mockReq.body = {

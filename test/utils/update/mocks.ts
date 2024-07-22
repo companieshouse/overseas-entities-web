@@ -288,7 +288,7 @@ export const FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK: IndividualTrusteeData[] = [
       premises: "100",
       postalCode: "56335",
       region: "Sierra Madre",
-      is_service_address_same_as_usual_residential_address: "No"
+      isServiceAddressSameAsUsualResidentialAddress: "No"
     },
   },
   {

@@ -209,7 +209,7 @@
   }), rows) %}
 {% endif %}
 
-{% if not pageParams.isRegistration %}
+{% if not pageParams.isRegistration and (isTrustStillInvolved or isNotStillInvolved) %}
   {% set rows = (rows.push({
     key: {
     text: "Are they still involved in the trust?"

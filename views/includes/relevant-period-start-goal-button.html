@@ -1,0 +1,11 @@
+{% if PIWIK_RELEVANT_PERIOD_START_GOAL_ID > 0 %}
+    {{ govukButton({
+        text: "Continue",
+        attributes: {
+            "id": "submit",
+            "onclick": "_paq.push(['trackGoal', '" + PIWIK_RELEVANT_PERIOD_START_GOAL_ID + "'])"
+        }
+    }) }}
+{% else %}
+    {% include "includes/continue-button.html" %}
+{% endif %}

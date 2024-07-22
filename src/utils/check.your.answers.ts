@@ -152,8 +152,7 @@ const getBackLinkUrl = (isNoChangeJourney: boolean, hasAnyBosWithTrusteeNocs: bo
     return UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL;
   } else {
     let backLinkUrl: string;
-    backLinkUrl =
-    (isActiveFeature(FEATURE_FLAG_ENABLE_UPDATE_TRUSTS) && hasAnyBosWithTrusteeNocs) ?
+    backLinkUrl = (isActiveFeature(FEATURE_FLAG_ENABLE_UPDATE_TRUSTS) && hasAnyBosWithTrusteeNocs) ?
       UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL :
       UPDATE_BENEFICIAL_OWNER_TYPE_URL;
     if (isRemove) {

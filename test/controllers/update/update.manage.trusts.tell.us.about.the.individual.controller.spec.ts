@@ -222,7 +222,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
     });
 
     test('render page with the important banner when relevant_period is true and we want to add an individual beneficiary', async () => {
-      const appData = { entity_number: 'OE999999', entity_name: 'Dummy Entity Name' };
+      const appData = { entity_number: 'OE999999', entity_name: 'Overseas Entity Name' };
       const trustInReview = { trust_id: 'trust-in-review-1', trust_name: 'Overseas Entity Name', review_status: { in_review: true } };
       mockIsActiveFeature.mockReturnValue(true);
       mockGetApplicationData.mockReturnValue(appData);

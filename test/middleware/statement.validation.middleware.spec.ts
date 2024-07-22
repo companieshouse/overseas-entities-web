@@ -9,7 +9,6 @@ import { isActiveFeature } from "../../src/utils/feature.flag";
 import { getApplicationData, checkActiveBOExists, checkActiveMOExists, hasAddedOrCeasedBO } from "../../src/utils/application.data";
 
 import {
-  APPLICATION_DATA_MOCK,
   APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW,
   BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF,
   MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF,
@@ -20,7 +19,7 @@ import { BeneficialOwnerStatementKey, BeneficialOwnersStatementType } from '../.
 import { BeneficialOwnerIndividualKey } from '../../src/model/beneficial.owner.individual.model';
 import { yesNoResponse } from '../../src/model/data.types.model';
 import { RegistrableBeneficialOwnerKey, UpdateKey } from '../../src/model/update.type.model';
-import { UPDATE_CHECK_YOUR_ANSWERS_URL, UPDATE_REVIEW_STATEMENT_URL, REMOVE_CONFIRM_STATEMENT_URL } from '../../src/config';
+import { REMOVE_CONFIRM_STATEMENT_URL } from '../../src/config';
 import { ManagingOfficerKey } from '../../src/model/managing.officer.model';
 import { isRemoveJourney } from "../../src/utils/url";
 

@@ -16,9 +16,6 @@ import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
 import {
-  REMOVE_CONFIRM_STATEMENT_PAGE,
-  REMOVE_CONFIRM_STATEMENT_URL,
-  UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
   UPDATE_REGISTRABLE_BENEFICIAL_OWNER_PAGE,
   UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL,
   UPDATE_STATEMENT_VALIDATION_ERRORS_URL
@@ -122,7 +119,7 @@ describe("Update registrable beneficial owner controller tests", () => {
   });
 
   describe("POST tests", () => {
-   
+
     test(`redirect to update-statement-validation-errors page when ${yesNoResponse.Yes} is selected`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
       mockIsActiveFeature.mockReturnValueOnce(true);

@@ -18,7 +18,6 @@ import * as config from "../../config";
 import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAddressKeys } from "../../model/address.model";
 import { Session } from "@companieshouse/node-session-handler";
 import { saveAndContinue } from "../../utils/save.and.continue";
-import { isActiveFeature } from "../../utils/feature.flag";
 import { fetchOverseasEntityEmailAddress } from "../../utils/update/fetch.overseas.entity.email";
 import { fetchBeneficialOwnersPrivateData } from "../../utils/update/fetch.beneficial.owners.private.data";
 import { fetchManagingOfficersPrivateData } from "../../utils/update/fetch.managing.officers.private.data";

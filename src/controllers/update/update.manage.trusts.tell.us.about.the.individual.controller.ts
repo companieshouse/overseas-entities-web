@@ -33,6 +33,8 @@ const getPageProperties = (trust, formData, trustee: TrustIndividual, errors?: F
         trustName: trust?.trust_name
       },
       roleWithinTrustType: RoleWithinTrustType,
+      relevant_period: false,
+      entity_name: trust?.trust_name,
     },
     formData,
     errors,
@@ -55,7 +57,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const relevant_period = req.query['relevant-period'];
 
     if (relevant_period) {
-      return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE, getPagePropertiesRelevantPeriod(relevant_period, trust, formData, trustee));
+      return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE, getPagePropertiesRelevantPeriod(relevant_period, trust, formData, trustee, appData.entity_name));
     } else {
       return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE, getPageProperties(trust, formData, trustee));
     }
@@ -81,7 +83,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       if (relevant_period) {
         return res.render(
           UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE,
-          getPagePropertiesRelevantPeriod(relevant_period, trust, formData, trustee, formatValidationError(errorList.array())),
+          getPagePropertiesRelevantPeriod(relevant_period, trust, formData, trustee, appData.entity_name, formatValidationError(errorList.array())),
         );
       } else {
         return res.render(
@@ -119,8 +121,9 @@ const getBackLink = (individualsReviewed: boolean) => {
   }
 };
 
-const getPagePropertiesRelevantPeriod = (relevant_period, trust, formData, trustee: TrustIndividual, errors?: FormattedValidationErrors) => {
-  formData.relevant_period = relevant_period;
-  formData.entity_name = trust.trust_name;
-  return getPageProperties(trust, formData, trustee, errors);
+const getPagePropertiesRelevantPeriod = (relevant_period, trust, formData, trustee: TrustIndividual, entityName, errors?: FormattedValidationErrors) => {
+  const pageProps = getPageProperties(trust, formData, trustee, errors);
+  pageProps.pageData.relevant_period = relevant_period;
+  pageProps.pageData.entity_name = entityName;
+  return pageProps;
 };

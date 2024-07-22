@@ -6,6 +6,7 @@ jest.mock('../../../src/utils/save.and.continue');
 jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock("../../../src/utils/feature.flag" );
+jest.mock('../../../src/utils/relevant.period');
 
 import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import { describe, expect, jest, test, beforeEach } from "@jest/globals";
@@ -81,6 +82,7 @@ import * as config from "../../../src/config";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import { DateTime } from "luxon";
 import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
+import { checkRelevantPeriod } from "../../../src/utils/relevant.period";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockHasUpdatePresenter = hasUpdatePresenter as jest.Mock;
@@ -104,6 +106,7 @@ const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
 
+const mockCheckRelevantPeriod = checkRelevantPeriod as jest.Mock;
 const DUMMY_DATA_OBJECT = { dummy: "data" };
 
 describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
@@ -187,6 +190,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
     test(`Sets session data and renders the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
       const beneficialOwnerOtherMock = { ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK, [IsOnSanctionsListKey]: "0" };
       mockPrepareData.mockReturnValueOnce(beneficialOwnerOtherMock);
+      mockCheckRelevantPeriod.mockReturnValueOnce(true);
       const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL)
         .send(UPDATE_BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS);
 

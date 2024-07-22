@@ -26,7 +26,7 @@ import {
   OVERSEAS_NAME_WITH_PARAMS_URL,
   PRESENTER_PAGE,
 } from "../../src/config";
-import { getApplicationData } from "../../src/utils/application.data";
+import { getApplicationData, setExtraData } from "../../src/utils/application.data";
 import {
   ANY_MESSAGE_ERROR,
   FOUND_REDIRECT_TO,
@@ -64,6 +64,8 @@ mockIsSecureRegisterMiddleware.mockImplementation((req: Request, res: Response, 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 mockGetApplicationData.mockReturnValue( APPLICATION_DATA_MOCK );
 
+const mockSetExtraData = setExtraData as jest.Mock;
+
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
@@ -88,6 +90,7 @@ describe("Overseas Name controller", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockIsActiveFeature.mockReset();
+    mockSetExtraData.mockReset();
   });
 
   describe("GET tests", () => {
@@ -217,11 +220,12 @@ describe("Overseas Name controller", () => {
 
       const mockData = { ...APPLICATION_DATA_MOCK, [Transactionkey]: null, [OverseasEntityKey]: null };
       mockGetApplicationData.mockReturnValueOnce(mockData);
+      mockSetExtraData.mockReturnValue(true);
       const resp = await request(app).post(OVERSEAS_NAME_URL).send({ [EntityNameKey]: OVERSEAS_NAME_MOCK });
 
       expect(resp.status).toEqual(302);
-      expect(mockData[Transactionkey]).toEqual(null);
-      expect(mockData[OverseasEntityKey]).toEqual(null);
+      expect(mockSetExtraData.mock.calls[0][1][Transactionkey]).toEqual(TRANSACTION_ID);
+      expect(mockSetExtraData.mock.calls[0][1][OverseasEntityKey]).toEqual(OVERSEAS_ENTITY_ID);
       expect(mockTransactionService).toHaveBeenCalledTimes(1);
       expect(mockCreateOverseasEntity).toHaveBeenCalledTimes(1);
       expect(mockUpdateOverseasEntity).not.toHaveBeenCalled();
@@ -233,16 +237,18 @@ describe("Overseas Name controller", () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_SAVE_AND_RESUME
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
-      const mockData = { ...APPLICATION_DATA_MOCK, [Transactionkey]: null, [OverseasEntityKey]: null };
+      const mockData = { ...APPLICATION_DATA_MOCK };
       mockGetApplicationData.mockReturnValueOnce(mockData);
       const resp = await request(app).post(OVERSEAS_NAME_URL).send({ [EntityNameKey]: OVERSEAS_NAME_MOCK });
 
       expect(resp.status).toEqual(302);
-      expect(mockData[Transactionkey]).toEqual(null);
-      expect(mockData[OverseasEntityKey]).toEqual(null);
+      expect(mockData[Transactionkey]).toEqual(TRANSACTION_ID);
+      expect(mockData[OverseasEntityKey]).toEqual(OVERSEAS_ENTITY_ID);
       expect(mockTransactionService).not.toHaveBeenCalledTimes(1);
       expect(mockCreateOverseasEntity).not.toHaveBeenCalledTimes(1);
       expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
+      expect(mockSetExtraData.mock.calls[0][1][Transactionkey]).toEqual(TRANSACTION_ID);
+      expect(mockSetExtraData.mock.calls[0][1][OverseasEntityKey]).toEqual(OVERSEAS_ENTITY_ID);
 
       expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${MOCKED_PAGE_URL}`);
     });

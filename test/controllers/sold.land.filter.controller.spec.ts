@@ -145,9 +145,12 @@ describe("SOLD LAND FILTER controller", () => {
       mockGetApplicationData.mockReturnValueOnce({});
       mockIsActiveFeature.mockReturnValueOnce(true);
       mockIsActiveFeature.mockReturnValueOnce(true);
+
       const resp = await request(app).post(config.SOLD_LAND_FILTER_URL).send({ has_sold_land: '0' });
 
+      const redirectUrl = "/register-an-overseas-entity/transaction/" + TRANSACTION_ID + "/submission/" + OVERSEAS_ENTITY_ID + "/secure-register-filter";
       expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(redirectUrl);
       expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(0);
       expect(mockTransactionService).toHaveBeenCalledTimes(1);
       expect(mockCreateOverseasEntity).toHaveBeenCalledTimes(1);

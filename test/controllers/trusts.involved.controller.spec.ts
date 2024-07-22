@@ -245,11 +245,11 @@ describe('Trust Involved controller', () => {
 
     const dpPostRelevantPeriodUpdateTrustee = [
       [
-        TrusteeType.INDIVIDUAL,
+        TrusteeType.RELEVANT_PERIOD_INDIVIDUAL_BENEFICIARY,
         "/" + UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE + "/" + TRUST_WITH_ID.trust_id + "/" + TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE + RELEVANT_PERIOD_QUERY_PARAM,
       ],
       [
-        TrusteeType.LEGAL_ENTITY,
+        TrusteeType.RELEVANT_PERIOD_LEGAL_ENTITY,
         "/" + UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE + "/" + TRUST_WITH_ID.trust_id + "/" + TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + RELEVANT_PERIOD_QUERY_PARAM,
       ],
     ];

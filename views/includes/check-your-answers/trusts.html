@@ -91,7 +91,7 @@
             "change-trust-still-involved-button"
           ) ]
         } 
-      } if not isRegistration,
+      } if not isRegistration and not inNoChangeJourney,
       {
         key: {
           text: "Date the trust stopped being associated to the overseas entity"
@@ -106,7 +106,7 @@
             "change-trust-ceased-date-button"
           ) ]
         } 
-      } if not isRegistration and isTrustNotStillInvolved
+      } if not isRegistration and not inNoChangeJourney and isTrustNotStillInvolved
     ]
 }) }}
   <br>

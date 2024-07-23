@@ -90,6 +90,7 @@
   }
   %}
 {% else %}
+<div>TEST</div>
 {% set countryFormedIn =
   {
     key: {
@@ -97,12 +98,7 @@
     },
     value: {
       text: appData.entity.incorporation_country
-    },
-    actions: {
-      items: [
-        "Country it was formed in"
-      ]
-    } if inChangeJourney
+    }
   }
   %}
 {% endif %}

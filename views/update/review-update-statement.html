@@ -73,10 +73,11 @@
   {% endif %}
 {% endset %}
 
-{% set addTrustsEnabled = OE_CONFIGS.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS === 'true' %}
-{% set manageTrustsEnabled = OE_CONFIGS.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS === 'true' %}
+{% set addTrustsEnabled = pageParams.addTrustsEnabled %}
+{% set manageTrustsEnabled = pageParams.manageTrustsEnabled %}
 {% set hasExistingTrusts = appData.update and appData.update.review_trusts and appData.update.review_trusts.length > 0 %}
 {% set hasBosWithTrusteeNOC = pageParams.hasAnyBosWithTrusteeNocs %}
+
 
 {% block content %}
   <div class="govuk-grid-row">
@@ -304,7 +305,6 @@
   {% endif %}
 
   {% if addTrustsEnabled and manageTrustsEnabled %}
-
     {% if hasExistingTrusts %}
       <br>
       <h2 class="govuk-heading-l">Trusts</h2>
@@ -315,7 +315,6 @@
     {% endif %}
 
   {% elif addTrustsEnabled and pageParams.hasAnyBosWithTrusteeNocs %}
-
     <br>
     <h2 class="govuk-heading-l">Trusts</h2>
     <p class="govuk-body govuk-!-margin-bottom-9">Trust information cannot be displayed.</p>

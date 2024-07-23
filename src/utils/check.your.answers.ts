@@ -41,12 +41,9 @@ import { isRemoveJourney } from "./url";
 import { getTodaysDate } from "./date";
 
 export const getDataForReview = async (req: Request, res: Response, next: NextFunction, isNoChangeJourney: boolean) => {
-  console.log("*********** isNoChangeJourney = " + isNoChangeJourney);
   const session = req.session as Session;
   const appData = getApplicationData(session);
   const hasAnyBosWithTrusteeNocs = isNoChangeJourney ? checkEntityReviewRequiresTrusts(appData) : checkEntityRequiresTrusts(appData);
-  console.log("*********** hasAnyBosWithTrusteeNocs = " + hasAnyBosWithTrusteeNocs);
-
   const backLinkUrl = getBackLinkUrl(isNoChangeJourney, hasAnyBosWithTrusteeNocs, isRemoveJourney(req));
   const templateName = getTemplateName(isNoChangeJourney);
 
@@ -86,11 +83,6 @@ export const getDataForReview = async (req: Request, res: Response, next: NextFu
       });
     }
 
-    const isTrustFeatureEnabled = isActiveFeature(FEATURE_FLAG_ENABLE_TRUSTS_WEB);
-    console.log("*********** isTrustFeatureEnabled = " + isTrustFeatureEnabled);
-
-    console.log("*********** rendering  = " + templateName);
-
     return res.render(templateName, {
       backLinkUrl: backLinkUrl,
       templateName: templateName,
@@ -102,7 +94,7 @@ export const getDataForReview = async (req: Request, res: Response, next: NextFu
       pageParams: {
         isRegistration: false,
         noChangeFlag: isNoChangeJourney,
-        isTrustFeatureEnabled,
+        isTrustFeatureEnabled: isActiveFeature(FEATURE_FLAG_ENABLE_TRUSTS_WEB),
         hasAnyBosWithTrusteeNocs,
         addTrustsEnabled: isActiveFeature(FEATURE_FLAG_ENABLE_UPDATE_TRUSTS),
         manageTrustsEnabled: isActiveFeature(FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS)

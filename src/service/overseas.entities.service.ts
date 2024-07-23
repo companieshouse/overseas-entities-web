@@ -10,7 +10,7 @@ import { ApplicationData } from "../model/application.model";
 export const createOverseasEntity = async (
   req: Request,
   session: Session,
-  transactionId: string,
+  transactionId: string
 ): Promise<string> => {
 
   logger.infoRequest(req, `Calling 'postOverseasEntity' for transaction id '${transactionId}'`);
@@ -21,7 +21,7 @@ export const createOverseasEntity = async (
     req,
     session,
     transactionId,
-    getApplicationData(session),
+    getApplicationData(session)
   );
 
   if (response.httpStatusCode !== 201) {

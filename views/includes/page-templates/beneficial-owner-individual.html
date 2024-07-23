@@ -55,9 +55,7 @@
       {% include "includes/save-and-continue-button.html" %}
       {% set nameToBeRemoved = first_name + " " + last_name %}
 
-      {% if relevant_period %}
-      <input type="hidden" name="relevant_period" value= "true">
-      {% endif %}
+      {% include "includes/inputs/relevant-period-input.html" %}
 
       {% if not entity_number %}
         {% include "includes/remove-button.html" %}

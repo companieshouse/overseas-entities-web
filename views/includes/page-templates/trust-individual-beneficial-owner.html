@@ -160,15 +160,14 @@
         '
       }) }}
 
-      {% if pageData.relevant_period %}
-        <input type="hidden" name="relevant_period" value= "true">
-      {% endif %}
-
       {% if uneditableDOB %}
         <input type="hidden" name="dateOfBirthDay" value="{{ formData.dateOfBirthDay }}"/>
         <input type="hidden" name="dateOfBirthMonth" value="{{ formData.dateOfBirthMonth }}"/>
         <input type="hidden" name="dateOfBirthYear" value="{{ formData.dateOfBirthYear }}"/>
       {% endif %}
+
+      {% set relevant_period = pageData.relevant_period %}
+      {% include "includes/inputs/relevant-period-input.html" %}
 
       {% include "includes/save-and-continue-button.html" %}
     </form>

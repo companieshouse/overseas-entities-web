@@ -38,9 +38,7 @@
         {% include "includes/remove-button.html" %}
       {% endif %}
 
-      {% if relevant_period %}
-        <input type="hidden" name="relevant_period" value= "true">
-      {% endif %}
+      {% include "includes/inputs/relevant-period-input.html" %}
     </form>
   </div>
 </div>

@@ -142,9 +142,8 @@
         '
     }) }}
 
-    {% if pageData.relevant_period %}
-      <input type="hidden" name="relevant_period" value= "true">
-    {% endif %}
+    {% set relevant_period = pageData.relevant_period %}
+    {% include "includes/inputs/relevant-period-input.html" %}
 
     <input type="hidden" name="legalEntityId" value="{{ formData.legalEntityId }}"/>
     {% include "includes/save-and-continue-button.html" %}

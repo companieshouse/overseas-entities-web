@@ -106,7 +106,6 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       trust.CORPORATES?.push(trustee);
     }
 
-    console.log(appData);
     await saveAppData(req, appData);
 
     return res.redirect(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);

@@ -75,7 +75,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       [EntityNameKey]: entityName
     });
 
-    await saveAndContinue(req, session, false);
+    await saveAndContinue(req, session);
     const redirectUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION)
       ? config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL
       : config.BENEFICIAL_OWNER_STATEMENTS_PAGE;

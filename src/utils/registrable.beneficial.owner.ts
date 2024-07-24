@@ -46,7 +46,7 @@ export const postRegistrableBeneficialOwner = async (req: Request, res: Response
       appData.update.registrable_beneficial_owner = isRegistrableBeneficialOwner === '1' ? yesNoResponse.Yes : yesNoResponse.No;
     }
     setExtraData(req.session, appData);
-    await saveAndContinue(req, session, false);
+    await saveAndContinue(req, session);
 
     if (isRemoveJourney(req)) {
       const redirectUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION)

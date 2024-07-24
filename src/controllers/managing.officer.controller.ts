@@ -24,15 +24,15 @@ export const getById = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
-  postManagingOfficer(req, res, next, getBeneficialOwnerTypeUrl(req), true);
+  postManagingOfficer(req, res, next, getBeneficialOwnerTypeUrl(req));
 };
 
 export const update = (req: Request, res: Response, next: NextFunction) => {
-  updateManagingOfficer(req, res, next, getBeneficialOwnerTypeUrl(req), true);
+  updateManagingOfficer(req, res, next, getBeneficialOwnerTypeUrl(req));
 };
 
 export const remove = (req: Request, res: Response, next: NextFunction) => {
-  removeManagingOfficer(req, res, next, getBeneficialOwnerTypeUrl(req), true);
+  removeManagingOfficer(req, res, next, getBeneficialOwnerTypeUrl(req));
 };
 
 const getBeneficialOwnerTypeUrl = (req: Request): string => {

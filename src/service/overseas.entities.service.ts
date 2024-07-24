@@ -7,13 +7,10 @@ import { Transactionkey, OverseasEntityKey } from "../model/data.types.model";
 import { makeApiCallWithRetry } from "./retry.handler.service";
 import { ApplicationData } from "../model/application.model";
 
-// TODO find all calls to this function and remove the isSaveAndResumeFeatureActive
-// parameter when registration and update save and resume flags are removed
 export const createOverseasEntity = async (
   req: Request,
   session: Session,
-  transactionId: string,
-  isSaveAndResumeFeatureActive: boolean
+  transactionId: string
 ): Promise<string> => {
 
   logger.infoRequest(req, `Calling 'postOverseasEntity' for transaction id '${transactionId}'`);
@@ -24,8 +21,7 @@ export const createOverseasEntity = async (
     req,
     session,
     transactionId,
-    getApplicationData(session),
-    isSaveAndResumeFeatureActive
+    getApplicationData(session)
   );
 
   if (response.httpStatusCode !== 201) {

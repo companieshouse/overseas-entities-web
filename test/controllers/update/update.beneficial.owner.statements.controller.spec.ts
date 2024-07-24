@@ -26,7 +26,7 @@ import {
   PAGE_TITLE_ERROR,
   BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING,
   SERVICE_UNAVAILABLE,
-  CONTINUE_BUTTON_TEXT
+  SAVE_AND_CONTINUE_BUTTON_TEXT
 } from "../../__mocks__/text.mock";
 import {
   BeneficialOwnerStatementKey,
@@ -81,7 +81,7 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS);
       // TODO: UAR-369 control
-      expect(resp.text).toContain(CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
     });
 
     test("renders the beneficial owner statements page with statement validation flag on and trusts flag on ", async () => {
@@ -96,7 +96,7 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS);
       // TODO: UAR-369 control
-      expect(resp.text).toContain(CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
     });
 
     test("renders the beneficial owner statements page with statement validation flag on and trusts flag on with no trusts", async () => {
@@ -111,7 +111,7 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS);
       // TODO: UAR-369 control
-      expect(resp.text).toContain(CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
     });
 
     test("renders the trusts associated page with statement validation flag off and trusts flag on ", async () => {
@@ -126,7 +126,7 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS);
       // TODO: UAR-369 control
-      expect(resp.text).toContain(CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
     });
 
     test("catch error when rendering the page", async () => {

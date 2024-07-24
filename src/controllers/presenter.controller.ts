@@ -21,5 +21,5 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     nextPageUrl = getUrlWithParamsToPath(config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL, req);
   }
 
-  postPresenterPage(req, res, next, nextPageUrl, true);
+  postPresenterPage(req, res, next, nextPageUrl);
 };

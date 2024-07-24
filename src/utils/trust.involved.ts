@@ -150,7 +150,7 @@ export const postTrustInvolvedPage = async (
         const appData = getApplicationData(req.session);
         moveTrustOutOfReview(appData);
         setExtraData(req.session, appData);
-        await saveAndContinue(req, req.session as Session, false);
+        await saveAndContinue(req, req.session as Session);
       }
       return safeRedirect(res, getNextPage(isUpdate, isReview, req));
     }

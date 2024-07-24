@@ -100,7 +100,7 @@ export const getManagingOfficerById = (req: Request, res: Response, next: NextFu
   }
 };
 
-export const postManagingOfficer = async (req: Request, res: Response, next: NextFunction, redirectUrl: string, registrationFlag: boolean): Promise<void> => {
+export const postManagingOfficer = async (req: Request, res: Response, next: NextFunction, redirectUrl: string): Promise<void> => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
@@ -110,7 +110,7 @@ export const postManagingOfficer = async (req: Request, res: Response, next: Nex
     const session = req.session as Session;
     setApplicationData(session, officerData, ManagingOfficerKey);
 
-    await saveAndContinue(req, session, registrationFlag);
+    await saveAndContinue(req, session);
 
     return res.redirect(redirectUrl);
   } catch (error) {
@@ -119,7 +119,7 @@ export const postManagingOfficer = async (req: Request, res: Response, next: Nex
   }
 };
 
-export const updateManagingOfficer = async (req: Request, res: Response, next: NextFunction, redirectUrl: string, registrationFlag: boolean): Promise<void> => {
+export const updateManagingOfficer = async (req: Request, res: Response, next: NextFunction, redirectUrl: string): Promise<void> => {
   try {
     logger.debugRequest(req, `UPDATE ${req.route.path}`);
 
@@ -130,7 +130,7 @@ export const updateManagingOfficer = async (req: Request, res: Response, next: N
     const session = req.session as Session;
     setApplicationData(session, officerData, ManagingOfficerKey);
 
-    await saveAndContinue(req, session, registrationFlag);
+    await saveAndContinue(req, session);
 
     return res.redirect(redirectUrl);
   } catch (error) {
@@ -139,14 +139,14 @@ export const updateManagingOfficer = async (req: Request, res: Response, next: N
   }
 };
 
-export const removeManagingOfficer = async (req: Request, res: Response, next: NextFunction, redirectUrl: string, registrationFlag: boolean): Promise<void> => {
+export const removeManagingOfficer = async (req: Request, res: Response, next: NextFunction, redirectUrl: string): Promise<void> => {
   try {
     logger.debugRequest(req, `REMOVE ${req.route.path}`);
 
     removeFromApplicationData(req, ManagingOfficerKey, req.params.id);
     const session = req.session as Session;
 
-    await saveAndContinue(req, session, registrationFlag);
+    await saveAndContinue(req, session);
 
     return res.redirect(redirectUrl);
   } catch (error) {

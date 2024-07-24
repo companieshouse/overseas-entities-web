@@ -10,10 +10,13 @@ import { ApplicationData } from "../model/application.model";
 export const createOverseasEntity = async (
   req: Request,
   session: Session,
-  transactionId: string
+  transactionId: string,
+  data?: ApplicationData
 ): Promise<string> => {
 
   logger.infoRequest(req, `Calling 'postOverseasEntity' for transaction id '${transactionId}'`);
+
+  const appData: ApplicationData = data ?? getApplicationData(session);
 
   const response = await makeApiCallWithRetry(
     "overseasEntity",
@@ -21,7 +24,7 @@ export const createOverseasEntity = async (
     req,
     session,
     transactionId,
-    getApplicationData(session)
+    appData
   );
 
   if (response.httpStatusCode !== 201) {
@@ -34,8 +37,9 @@ export const createOverseasEntity = async (
   return response.resource.id;
 };
 
-export const updateOverseasEntity = async (req: Request, session: Session) => {
-  const appData = getApplicationData(session);
+export const updateOverseasEntity = async (req: Request, session: Session, data?: ApplicationData) => {
+
+  const appData: ApplicationData = data ?? getApplicationData(session);
 
   const transactionId = appData[Transactionkey] as string;
   const overseasEntityId = appData[OverseasEntityKey] as string;

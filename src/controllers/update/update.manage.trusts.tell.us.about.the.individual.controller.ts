@@ -33,6 +33,8 @@ const getPageProperties = (trust, formData, trustee: TrustIndividual, errors?: F
         trustName: trust?.trust_name
       },
       roleWithinTrustType: RoleWithinTrustType,
+      relevant_period: false,
+      entity_name: trust?.trust_name,
     },
     formData,
     errors,
@@ -52,8 +54,14 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const trustee = getTrustee(trust, trusteeId, TrusteeType.INDIVIDUAL) as IndividualTrustee;
 
     const formData = trustee ? mapIndividualTrusteeFromSessionToPage(trustee) : {};
+    const relevant_period = req.query['relevant-period'];
 
-    return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE, getPageProperties(trust, formData, trustee));
+    if (relevant_period) {
+      return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE, getPagePropertiesRelevantPeriod(relevant_period, trust, formData, trustee, appData.entity_name));
+    } else {
+      return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE, getPageProperties(trust, formData, trustee));
+    }
+
   } catch (error) {
     next(error);
   }
@@ -66,16 +74,23 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const trusteeId = req.params[ROUTE_PARAM_TRUSTEE_ID];
     const trust = getTrustInReview(appData) as Trust;
 
+    const relevant_period = req.query['relevant-period'];
     const errorList = validationResult(req);
-    const formData: IndividualTrusteesFormCommon = req.body as IndividualTrusteesFormCommon;
+    const formData: IndividualTrusteesFormCommon = req.body;
 
     if (!errorList.isEmpty()) {
       const trustee = getTrustee(trust, trusteeId, TrusteeType.INDIVIDUAL) as IndividualTrustee;
-
-      return res.render(
-        UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE,
-        getPageProperties(trust, formData, trustee, formatValidationError(errorList.array())),
-      );
+      if (relevant_period) {
+        return res.render(
+          UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE,
+          getPagePropertiesRelevantPeriod(relevant_period, trust, formData, trustee, appData.entity_name, formatValidationError(errorList.array())),
+        );
+      } else {
+        return res.render(
+          UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE,
+          getPageProperties(trust, formData, trustee, formatValidationError(errorList.array())),
+        );
+      }
     }
 
     const trusteeIndex = getTrusteeIndex(trust, trusteeId, TrusteeType.INDIVIDUAL);
@@ -104,4 +119,11 @@ const getBackLink = (individualsReviewed: boolean) => {
   } else {
     return UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL;
   }
+};
+
+const getPagePropertiesRelevantPeriod = (relevant_period, trust, formData, trustee: TrustIndividual, entityName, errors?: FormattedValidationErrors) => {
+  const pageProps = getPageProperties(trust, formData, trustee, errors);
+  pageProps.pageData.relevant_period = relevant_period;
+  pageProps.pageData.entity_name = entityName;
+  return pageProps;
 };

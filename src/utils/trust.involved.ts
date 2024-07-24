@@ -12,6 +12,7 @@ import { mapCommonTrustDataToPage } from './trust/common.trust.data.mapper';
 import { mapTrustWhoIsInvolvedToPage } from './trust/who.is.involved.mapper';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
 import { IndividualTrustee, TrustHistoricalBeneficialOwner } from '../model/trust.model';
+import { RoleWithinTrustType } from '../model/role.within.trust.type.model';
 import { getIndividualTrusteesFromTrust, getFormerTrusteesFromTrust } from './trusts';
 import { getTrustInReview, moveTrustOutOfReview } from './update/review_trusts';
 import { saveAndContinue } from './save.and.continue';
@@ -178,8 +179,16 @@ export const postTrustInvolvedPage = async (
             return safeRedirect(res, config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL);
           case TrusteeType.INDIVIDUAL:
             return safeRedirect(res, config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL);
+          case TrusteeType.RELEVANT_PERIOD_INDIVIDUAL_BENEFICIARY:
+            req.body.typeOfTrustee = TrusteeType.INDIVIDUAL;
+            req.body.roleWithinTrustType = RoleWithinTrustType.BENEFICIARY;
+            return safeRedirect(res, config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
           case TrusteeType.LEGAL_ENTITY:
             return safeRedirect(res, config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL);
+          case TrusteeType.RELEVANT_PERIOD_LEGAL_ENTITY:
+            req.body.typeOfTrustee = TrusteeType.LEGAL_ENTITY;
+            req.body.roleWithinTrustType = RoleWithinTrustType.BENEFICIARY;
+            return safeRedirect(res, config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
           default:
             throw new Error("Unexpected trustee type received");
       }
@@ -197,7 +206,16 @@ export const postTrustInvolvedPage = async (
         case TrusteeType.INDIVIDUAL:
           url += config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL;
           break;
+        case TrusteeType.RELEVANT_PERIOD_INDIVIDUAL_BENEFICIARY:
+          req.body.typeOfTrustee = TrusteeType.INDIVIDUAL;
+          req.body.roleWithinTrustType = RoleWithinTrustType.BENEFICIARY;
+          url += config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL;
+          break;
         case TrusteeType.LEGAL_ENTITY:
+          url += config.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL;
+          break;
+        case TrusteeType.RELEVANT_PERIOD_LEGAL_ENTITY:
+          req.body.typeOfTrustee = TrusteeType.LEGAL_ENTITY;
           url += config.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL;
           break;
         default:

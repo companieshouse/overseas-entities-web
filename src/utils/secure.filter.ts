@@ -54,7 +54,7 @@ export const postFilterPage = async (req: Request, res: Response, next: NextFunc
         if (appData[Transactionkey] && appData[OverseasEntityKey]) {
           await updateOverseasEntity(req, session, appData);
         } else {
-          throw new Error("Invalid request");
+          throw new Error("Error: is_secure_register filter cannot be updated - transaction_id or overseas_entity_id is missing");
         }
         nextPageUrl = getUrlWithTransactionIdAndSubmissionId(isSecureRegisterNo, appData[Transactionkey] as string, appData[OverseasEntityKey] as string);
       }

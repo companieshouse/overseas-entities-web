@@ -93,7 +93,7 @@ export const setReviewedDateOfBirth = (req: Request, dob: InputDate) => {
 };
 
 export const padWithZero = (input: string, maxLength: number, fillString: string): string => {
-  if (input && input.length > 1){
+  if (input && input.toString().length > 1){
     return input;
   }
   return String(input).padStart(maxLength, fillString);

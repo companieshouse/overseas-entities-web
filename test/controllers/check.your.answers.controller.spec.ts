@@ -76,7 +76,8 @@ import {
   CHANGE_LINK_BO_INDIVIDUAL,
   CHANGE_LINK_MO_INDIVIDUAL,
   CHANGE_LINK_MO_CORPORATE,
-  BACK_BUTTON_CLASS
+  BACK_BUTTON_CLASS,
+  TRUST_INVOLVED
 } from "../__mocks__/text.mock";
 import {
   ERROR,
@@ -489,6 +490,7 @@ describe("GET tests", () => {
     expect(resp.text).not.toContain(BENEFICIAL_OWNER_TYPE_LINK); // back button
     expect(resp.text).toContain(TRUST_INFORMATION_LINK); // back button
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TRUST_TITLE);
+    expect(resp.text).not.toContain(TRUST_INVOLVED);
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with trust data and feature flags set to on`, async () => {
@@ -521,6 +523,7 @@ describe("GET tests", () => {
     expect(resp.text).toContain(`${TRUST_DETAILS_URL}/${TRUST_WITH_ID.trust_id}`);
     expect(resp.text).toContain(TRUST_WITH_ID.trust_name);
     expect(resp.text).toMatch(/31\s+December\s+1999/m);
+    expect(resp.text).not.toContain(TRUST_INVOLVED);
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with no trust data`, async () => {
@@ -545,6 +548,7 @@ describe("GET tests", () => {
     expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_LINK);
     expect(resp.text).not.toContain(TRUST_INFORMATION_LINK);
     expect(resp.text).not.toContain(CHECK_YOUR_ANSWERS_PAGE_TRUST_TITLE);
+    expect(resp.text).not.toContain(TRUST_INVOLVED);
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE}`, async () => {

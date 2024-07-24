@@ -14,9 +14,14 @@
 {% endif %}
 
 {% if pageParams.isTrustFeatureEnabled %}
-  {% if pageParams.isRegistration %}
+  {% set isRegistration = pageParams.isRegistration %}
+  {% if isRegistration  %}
     {% set changeLinkUrl = OE_CONFIGS.TRUST_DETAILS_URL %}
   {% else %}
+    {% set trustStillInvolved = trust.trust_still_involved_in_overseas_entity %}
+    {% set isTrustStillInvolved = trustStillInvolved === "Yes" %}  
+    {% set isTrustNotStillInvolved = trustStillInvolved === "No" %}    
+    {% set trustCeasedDate = dateMacros.formatDate(trust.ceased_date_day, trust.ceased_date_month, trust.ceased_date_year) %}
     {% if manageTrusts %}
       {% set changeLinkUrl = OE_CONFIGS.UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_CHANGE_HANDLER_URL %}
     {% else %}
@@ -71,7 +76,37 @@
             "change-beneficial-owner-button"
           ) ]
         } if not inNoChangeJourney
-      }
+      },
+      {
+        key: {
+          text: "Is the trust still involved in the overseas entity?"
+        },
+        value: {
+          text: trustStillInvolved
+        },
+        actions: {
+          items: [ CREATE_CHANGE_LINK(
+            changeLinkUrl + "/" + trust.trust_id + OE_CONFIGS.TRUST_STILL_INVOLVED,
+            "Trust " + trust.trust_name + " - still involved",
+            "change-trust-still-involved-button"
+          ) ]
+        } 
+      } if not isRegistration and not inNoChangeJourney,
+      {
+        key: {
+          text: "Date the trust stopped being associated to the overseas entity"
+        },
+        value: {
+          text: trustCeasedDate
+        },
+        actions: {
+          items: [ CREATE_CHANGE_LINK(
+            changeLinkUrl + "/" + trust.trust_id + OE_CONFIGS.TRUST_CEASED_DATE,
+            "Trust " + trust.trust_name + " - ceased date",
+            "change-trust-ceased-date-button"
+          ) ]
+        } 
+      } if not isRegistration and not inNoChangeJourney and isTrustNotStillInvolved
     ]
 }) }}
   <br>

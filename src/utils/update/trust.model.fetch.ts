@@ -148,11 +148,14 @@ export const mapIndividualTrusteeData = (trustee: IndividualTrusteeData, trust: 
     ura_address_line_1: "",
     ura_address_locality: "",
     ura_address_country: "",
-    ura_address_postal_code: ""
+    ura_address_postal_code: "",
+
+    is_service_address_same_as_usual_residential_address: yesNoResponse.No
   };
 
   mapUsualResidentialAddress(individualTrustee, trustee);
   mapServiceAddress(individualTrustee, trustee);
+  individualTrustee.is_service_address_same_as_usual_residential_address = trustee.serviceAddress?.isServiceAddressSameAsUsualResidentialAddress ? yesNoResponse.Yes : yesNoResponse.No;
 
   if (individualTrustee.type === RoleWithinTrustType.INTERESTED_PERSON) {
     const appointmentDate = mapInputDate(trustee.appointmentDate);
@@ -251,6 +254,7 @@ export const mapCorporateTrusteeData = (trustee: CorporateTrusteeData, trust: Tr
 
   mapRegisteredOfficeAddress(corporateTrustee, trustee);
   mapServiceAddress(corporateTrustee, trustee);
+  corporateTrustee.is_service_address_same_as_principal_address = trustee.serviceAddress?.isServiceAddressSameAsPrincipalAddress ? yesNoResponse.Yes : yesNoResponse.No;
 
   trust.CORPORATES?.push(corporateTrustee);
 };

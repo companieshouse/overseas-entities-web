@@ -79,6 +79,7 @@ export interface TrustIndividual {
   sa_address_postal_code?: string;
   sa_address_care_of?: string;
   sa_address_po_box?: string;
+  is_service_address_same_as_usual_residential_address?: yesNoResponse;
   still_involved?: string;
   ceased_date_day?: string;
   ceased_date_month?: string;

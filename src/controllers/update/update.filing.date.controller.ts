@@ -3,7 +3,6 @@ import { Session } from "@companieshouse/node-session-handler";
 
 import { createAndLogErrorRequest, logger } from "../../utils/logger";
 import * as config from "../../config";
-import { isActiveFeature } from "../../utils/feature.flag";
 import { getApplicationData, setExtraData, mapFieldsToDataObject, mapDataObjectToFields } from "../../utils/application.data";
 import { postTransaction } from "../../service/transaction.service";
 import { createOverseasEntity, updateOverseasEntity } from "../../service/overseas.entities.service";
@@ -12,14 +11,14 @@ import { FilingDateKey, FilingDateKeys } from '../../model/date.model';
 import { ApplicationData } from "../../model/application.model";
 import { getConfirmationStatementNextMadeUpToDateAsIsoString } from "../../service/company.profile.service";
 import { convertIsoDateToInputDate } from "../../utils/date";
+import { checkRelevantPeriod } from "../../utils/relevant.period";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const appData = getApplicationData(req.session);
-
-    const backLinkUrl = !isActiveFeature(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD) ? config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL : config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL;
+    const backLinkUrl = !checkRelevantPeriod(appData) ? config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL : config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL + config.RELEVANT_PERIOD_QUERY_PARAM;
 
     return res.render(config.UPDATE_FILING_DATE_PAGE, {
       backLinkUrl: backLinkUrl,

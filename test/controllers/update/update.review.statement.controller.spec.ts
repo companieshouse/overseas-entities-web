@@ -5,6 +5,7 @@ jest.mock('../../../src/service/overseas.entities.service');
 jest.mock('../../../src/service/payment.service');
 jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/company.authentication.middleware');
+jest.mock('../../../src/middleware/navigation/update/has.overseas.entity.middleware');
 jest.mock('../../../src/middleware/navigation/update/has.beneficial.owners.or.managing.officers.update.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/application.data');
@@ -20,13 +21,14 @@ import { logger } from "../../../src/utils/logger";
 import request from "supertest";
 import app from "../../../src/app";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
+import { hasOverseasEntity } from "../../../src/middleware/navigation/update/has.overseas.entity.middleware";
 
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { postTransaction, closeTransaction } from "../../../src/service/transaction.service";
 import { updateOverseasEntity } from "../../../src/service/overseas.entities.service";
 import { startPaymentsSession } from "../../../src/service/payment.service";
-import { getApplicationData, setExtraData } from "../../../src/utils/application.data";
+import { checkActiveBOExists, checkActiveMOExists, getApplicationData, setExtraData } from "../../../src/utils/application.data";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { getBeneficialOwnersPrivateData, getPrivateOeDetails } from "../../../src/service/private.overseas.entity.details";
 import { APPLICATION_DATA_CH_REF_UPDATE_MOCK, APPLICATION_DATA_MOCK_WITH_OWNER_UPDATE_REVIEW_DATA, APPLICATION_DATA_UPDATE_BO_MOCK, APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW, ENTITY_OBJECT_MOCK, ERROR, OVERSEAS_ENTITY_ID, PAYMENT_LINK_JOURNEY, TRANSACTION_CLOSED_RESPONSE, TRANSACTION_ID, APPLICATION_DATA_UPDATE_MO_PRIVATE_DATA_MOCK, APPLICATION_DATA_REMOVE_BO_MOCK, APPLICATION_DATA_UPDATE_BO_TRUSTS_PRIVATE_DATA_MOCK } from "../../__mocks__/session.mock";
@@ -49,6 +51,9 @@ mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Respo
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
+const mockHasOverseasEntityMiddleware = hasOverseasEntity as jest.Mock;
+mockHasOverseasEntityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+
 const mockGetPrivateOeDetails = getPrivateOeDetails as jest.Mock;
 const mockGetBeneficialOwnersPrivateData = getBeneficialOwnersPrivateData as jest.Mock;
 const mockSetExtraData = setExtraData as jest.Mock;
@@ -68,6 +73,9 @@ mockPaymentsSession.mockReturnValue( "CONFIRMATION_URL" );
 
 const mockGetTodaysDate = getTodaysDate as jest.Mock;
 
+const mockCheckActiveMOExists = checkActiveMOExists as jest.Mock;
+const mockCheckActiveBOExists = checkActiveBOExists as jest.Mock;
+
 describe("Update review overseas entity information controller tests", () => {
 
   beforeEach(() => {
@@ -76,6 +84,8 @@ describe("Update review overseas entity information controller tests", () => {
     mockGetApplicationData.mockReturnValue({
       ...APPLICATION_DATA_CH_REF_UPDATE_MOCK,
     });
+    mockCheckActiveMOExists.mockReturnValue(true);
+    mockCheckActiveBOExists.mockReturnValue(true);
   });
 
   describe("GET tests", () => {
@@ -104,7 +114,7 @@ describe("Update review overseas entity information controller tests", () => {
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS);
       expect(resp.text).toContain(NO_CHANGE_REVIEW_STATEMENT_WHO_CAN_WE_CONTACT);
       expect(resp.text).toContain(CONTINUE_BUTTON_TEXT);
-      expect(mockIsActiveFeature).toHaveBeenCalledTimes(5);
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(3);
       expect(mockGetPrivateOeDetails).toHaveBeenCalledTimes(1);
       expect(mockGetBeneficialOwnersPrivateData).toHaveBeenCalledTimes(1);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
@@ -125,7 +135,7 @@ describe("Update review overseas entity information controller tests", () => {
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS);
       expect(resp.text).toContain(NO_CHANGE_REVIEW_STATEMENT_WHO_CAN_WE_CONTACT);
       expect(resp.text).toContain(CONTINUE_BUTTON_TEXT);
-      expect(mockIsActiveFeature).toHaveBeenCalledTimes(5);
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(3);
       expect(mockGetPrivateOeDetails).toHaveBeenCalledTimes(1);
       expect(mockSetExtraData).toHaveBeenCalledTimes(0);
       expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(0);
@@ -147,11 +157,10 @@ describe("Update review overseas entity information controller tests", () => {
     });
 
     test(`renders the ${UPDATE_REVIEW_STATEMENT_PAGE} page without trust still involved fields`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION
-      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_TRUSTS_WEB
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
+      mockCheckActiveBOExists.mockReturnValueOnce(false);
 
       mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_BO_TRUSTS_PRIVATE_DATA_MOCK);
       const resp = await request(app).get(UPDATE_REVIEW_STATEMENT_URL);
@@ -168,6 +177,7 @@ describe("Update review overseas entity information controller tests", () => {
 
     test(`renders the ${UPDATE_REVIEW_STATEMENT_PAGE} page with managing officer private data set in app data`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
+      mockCheckActiveBOExists.mockReturnValueOnce(false);
       mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_MO_PRIVATE_DATA_MOCK);
       const resp = await request(app).get(UPDATE_REVIEW_STATEMENT_URL);
 

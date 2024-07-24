@@ -4,7 +4,6 @@ import * as config from "../config";
 import { ApplicationData } from "../model/application.model";
 import { getApplicationData, setExtraData } from "../utils/application.data";
 import { RegistrableBeneficialOwnerKey } from "../model/update.type.model";
-import { isActiveFeature } from "./feature.flag";
 import { yesNoResponse } from "../model/data.types.model";
 import { Session } from "@companieshouse/node-session-handler";
 import { saveAndContinue } from "./save.and.continue";
@@ -28,8 +27,7 @@ export const getRegistrableBeneficialOwner = (req: Request, res: Response, next:
       templateName: templateName,
       ...appData,
       [RegistrableBeneficialOwnerKey]: appData.update?.[RegistrableBeneficialOwnerKey],
-      noChangeFlag,
-      statementValidationFlag: isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION)
+      noChangeFlag
     });
   } catch (error) {
     next(error);
@@ -49,20 +47,13 @@ export const postRegistrableBeneficialOwner = async (req: Request, res: Response
     await saveAndContinue(req, session);
 
     if (isRemoveJourney(req)) {
-      const redirectUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION)
-        ? config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL
-        : config.REMOVE_CONFIRM_STATEMENT_URL;
-
-      return res.redirect(redirectUrl);
+      return res.redirect(config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL);
     }
 
     if (noChangeFlag) {
       noChangeHandler(req, res);
     } else {
-      const redirectUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION)
-        ? config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL
-        : config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL;
-      return res.redirect(redirectUrl);
+      return res.redirect(config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL);
     }
   } catch (error) {
     next(error);
@@ -70,11 +61,5 @@ export const postRegistrableBeneficialOwner = async (req: Request, res: Response
 };
 
 const noChangeHandler = (req: Request, res: Response) => {
-  const redirectUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION)
-    ? config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL
-    : config.UPDATE_REVIEW_STATEMENT_URL;
-
-  return res.redirect(redirectUrl);
-
+  return res.redirect(config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL);
 };
-

@@ -35,7 +35,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const session = req.session as Session;
 
     if (ownedLandKey === '1') {
-      return res.redirect(config.RELEVANT_PERIOD_INTERRUPT_URL);
+      return res.redirect(config.RELEVANT_PERIOD_INTERRUPT_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
     } else {
       const appData: ApplicationData = getApplicationData(session);
       if (!appData[Transactionkey]) {

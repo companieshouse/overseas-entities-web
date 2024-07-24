@@ -20,7 +20,7 @@ describe('saveAndContinue test suite', () => {
   });
 
   test('should call updateOverseasEntity if feature flag is true', async () => {
-    await saveAndContinue(req, req.session as Session, true);
+    await saveAndContinue(req, req.session as Session);
     expect(mockUpdateOverseasEntity).toBeCalledWith(req, req.session);
   });
 

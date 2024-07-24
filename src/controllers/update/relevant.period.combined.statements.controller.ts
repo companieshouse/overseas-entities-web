@@ -25,7 +25,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(req.session);
 
     return res.render(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE, {
-      backLinkUrl: config.RELEVANT_PERIOD_INTERRUPT_PAGE,
+      backLinkUrl: config.RELEVANT_PERIOD_INTERRUPT_PAGE + config.RELEVANT_PERIOD_QUERY_PARAM,
       templateName: config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE,
       ...appData,
     });
@@ -57,7 +57,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     setExtraData(session, appData);
     await saveAndContinue(req, session);
 
-    return res.redirect(config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL);
+    return res.redirect(config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

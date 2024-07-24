@@ -6,8 +6,11 @@ import {
   postBeneficialOwnerIndividual,
   updateBeneficialOwnerIndividual
 } from "../../utils/beneficial.owner.individual";
+import { checkRelevantPeriod } from "../../utils/relevant.period";
+import { ApplicationData } from "../../model";
+import { getApplicationData } from "../../utils/application.data";
 
-import { UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL } from "../../config";
+import { UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL, RELEVANT_PERIOD_QUERY_PARAM } from "../../config";
 
 export const get = (req: Request, res: Response) => {
   getBeneficialOwnerIndividual(req, res, UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
@@ -18,7 +21,13 @@ export const getById = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
-  postBeneficialOwnerIndividual(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+  const appData: ApplicationData = getApplicationData(req.session);
+  if (checkRelevantPeriod(appData)) {
+    postBeneficialOwnerIndividual(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
+  } else {
+    postBeneficialOwnerIndividual(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+  }
+
 };
 
 export const update = (req: Request, res: Response, next: NextFunction) => {

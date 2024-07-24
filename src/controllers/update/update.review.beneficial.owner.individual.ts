@@ -1,7 +1,8 @@
 import {
   UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
-  UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE
+  UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
+  RELEVANT_PERIOD_QUERY_PARAM
 } from "../../config";
 import { NextFunction, Request, Response } from "express";
 import { getApplicationData, mapDataObjectToFields, removeFromApplicationData, setApplicationData } from "../../utils/application.data";
@@ -16,6 +17,7 @@ import { AddressKeys, EntityNumberKey, InputDate } from "../../model/data.types.
 import { addCeasedDateToTemplateOptions } from "../../utils/update/ceased_date_util";
 import { CeasedDateKey, HaveDayOfBirthKey } from "../../model/date.model";
 import { ServiceAddressKey, ServiceAddressKeys, UsualResidentialAddressKey, UsualResidentialAddressKeys } from "../../model/address.model";
+import { checkRelevantPeriod } from "../../utils/relevant.period";
 
 export const get = (req: Request, res: Response) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
@@ -74,7 +76,11 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
       await saveAndContinue(req, session);
     }
-    res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+    if (checkRelevantPeriod(appData)) {
+      return res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
+    } else {
+      return res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+    }
   } catch (error) {
     next(error);
   }

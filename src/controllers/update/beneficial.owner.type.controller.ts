@@ -131,11 +131,7 @@ export const postSubmit = async (req: Request, res: Response, next: NextFunction
       return res.redirect(getTrustLandingUrl(appData));
     }
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION)) {
-      return res.redirect(config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL);
-    }
-
-    return res.redirect(config.UPDATE_CHECK_YOUR_ANSWERS_URL);
+    return res.redirect(config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

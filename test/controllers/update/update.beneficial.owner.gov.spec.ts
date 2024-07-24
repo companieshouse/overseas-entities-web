@@ -6,6 +6,7 @@ jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/utils/save.and.continue');
 jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
+jest.mock('../../../src/utils/relevant.period');
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
 import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
@@ -72,6 +73,7 @@ import { BeneficialOwnerGov, BeneficialOwnerGovKey } from "../../../src/model/be
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
+import { checkRelevantPeriod } from "../../../src/utils/relevant.period";
 
 mockRemoveJourneyMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
@@ -96,6 +98,7 @@ const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const DUMMY_DATA_OBJECT = { dummy: "data" };
+const mockCheckRelevantPeriod = checkRelevantPeriod as jest.Mock;
 
 describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
 
@@ -175,12 +178,13 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
   describe("POST tests", () => {
     test(`redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
       mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_GOV_OBJECT_MOCK);
+      mockCheckRelevantPeriod.mockReturnValueOnce(true);
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
         .send(UPDATE_BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
@@ -254,7 +258,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
 
     test(`Service address from the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page is present when same address is set to no`, async () => {
       mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
-
+      mockCheckRelevantPeriod.mockReturnValueOnce(true);
       await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
         .send(UPDATE_BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
@@ -267,7 +271,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
 
     test(`Service address from the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} is empty when same address is set to yes`, async () => {
       mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
-
+      mockCheckRelevantPeriod.mockReturnValueOnce(true);
       await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
         .send(UPDATE_BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
@@ -692,13 +696,13 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
   describe("UPDATE tests", () => {
     test(`redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
       mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_GOV_OBJECT_MOCK);
-
+      mockCheckRelevantPeriod.mockReturnValueOnce(true);
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL + BO_GOV_ID_URL)
         .send(UPDATE_BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
@@ -717,6 +721,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
     test("replaces existing Government Beneficial Owner object on submit", async () => {
       const newGovData: BeneficialOwnerGov = { id: BO_GOV_ID, name: "new name" };
       mockPrepareData.mockReturnValueOnce(newGovData);
+      mockCheckRelevantPeriod.mockReturnValueOnce(true);
 
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL + BO_GOV_ID_URL)
@@ -729,12 +734,13 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(BeneficialOwnerGovKey);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`Service address from the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page is present when same address is set to no`, async () => {
       mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
+      mockCheckRelevantPeriod.mockReturnValueOnce(true);
 
       await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL + BO_GOV_ID_URL)
@@ -748,6 +754,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
 
     test(`Service address from the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page is empty when same address is set to yes`, async () => {
       mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
+      mockCheckRelevantPeriod.mockReturnValueOnce(true);
 
       await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL + BO_GOV_ID_URL)

@@ -17,7 +17,6 @@ export const getBeneficialOwnerStatements = (req: Request, res: Response, next: 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     let backLinkUrl: string;
-    let statementValidationFlag: boolean = false;
     let noChangeFlag: boolean = false;
     let templateName: string;
     const appData = getApplicationData(req.session);
@@ -26,8 +25,7 @@ export const getBeneficialOwnerStatements = (req: Request, res: Response, next: 
       templateName = config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE;
       noChangeFlag = true;
     } else {
-      statementValidationFlag = isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION);
-      backLinkUrl = getChangeBackLinkUrl(registrationFlag, statementValidationFlag, appData, req);
+      backLinkUrl = getChangeBackLinkUrl(registrationFlag, appData, req);
       templateName = config.BENEFICIAL_OWNER_STATEMENTS_PAGE;
     }
     return res.render(templateName, {
@@ -35,7 +33,6 @@ export const getBeneficialOwnerStatements = (req: Request, res: Response, next: 
       templateName: templateName,
       [BeneficialOwnerStatementKey]: appData[BeneficialOwnerStatementKey],
       registrationFlag,
-      statementValidationFlag,
       noChangeFlag,
       entity_number: appData[EntityNumberKey],
       entity_name: appData[EntityNameKey]
@@ -46,7 +43,7 @@ export const getBeneficialOwnerStatements = (req: Request, res: Response, next: 
   }
 };
 
-const getChangeBackLinkUrl = (registrationFlag: boolean, statementValidationFlag: boolean, appData: ApplicationData, req: Request) => {
+const getChangeBackLinkUrl = (registrationFlag: boolean, appData: ApplicationData, req: Request) => {
   let backLinkUrl: string = config.ENTITY_URL;
   if (registrationFlag) {
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
@@ -54,7 +51,7 @@ const getChangeBackLinkUrl = (registrationFlag: boolean, statementValidationFlag
     }
   } else {
     const containsTrusts = isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS) && containsTrustData(getTrustArray(appData));
-    const noTrustsUrl = statementValidationFlag ? config.UPDATE_BENEFICIAL_OWNER_TYPE_URL : config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL;
+    const noTrustsUrl = config.UPDATE_BENEFICIAL_OWNER_TYPE_URL;
     backLinkUrl = containsTrusts ? config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL : noTrustsUrl;
   }
   return backLinkUrl;

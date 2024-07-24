@@ -6,6 +6,7 @@ jest.mock('../../src/middleware/navigation/has.beneficial.owners.statement.middl
 jest.mock('../../src/utils/feature.flag');
 jest.mock('../../src/middleware/service.availability.middleware');
 jest.mock("../../src/utils/url");
+jest.mock('../../src/utils/relevant.period');
 
 import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
 import { describe, expect, jest, test, beforeEach } from "@jest/globals";
@@ -86,6 +87,7 @@ import { DateTime } from "luxon";
 import { isActiveFeature } from "../../src/utils/feature.flag";
 import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
 import { getUrlWithParamsToPath } from "../../src/utils/url";
+import { checkRelevantPeriod } from "../../src/utils/relevant.period";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockHasBeneficialOwnersStatementMiddleware = hasBeneficialOwnersStatement as jest.Mock;
@@ -105,6 +107,7 @@ const mockGetApplicationData = getApplicationData as jest.Mock;
 const DUMMY_DATA_OBJECT = { dummy: "data" };
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
+const mockCheckRelevantPeriod = checkRelevantPeriod as jest.Mock;
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -1289,6 +1292,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
 
     test("Catch error when removing data", async () => {
       mockRemoveFromApplicationData.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
+      mockCheckRelevantPeriod.mockReturnValueOnce(true);
       const resp = await request(app).get(BENEFICIAL_OWNER_OTHER_URL + REMOVE + BO_OTHER_ID_URL);
 
       expect(resp.status).toEqual(500);

@@ -232,6 +232,8 @@ describe("OVERSEAS ENTITY UPDATE DETAILS controller", () => {
 
   describe("POST tests", () => {
     test("redirect to UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE page after a successful post from OVERSEAS ENTITY UPDATE DETAILS page", async () => {
+      const appData = getMockAppDataWithoutEmail();
+      mockGetApplicationData.mockReturnValueOnce(appData);
       mockPrepareData.mockReturnValueOnce(ENTITY_OBJECT_MOCK);
       const resp = await request(app)
         .post(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL)
@@ -266,6 +268,8 @@ describe("OVERSEAS ENTITY UPDATE DETAILS controller", () => {
     });
 
     test("redirect to the next page page after a successful post from OVERSEAS ENTITY UPDATE DETAILS page without the register option", async () => {
+      const appData = getMockAppDataWithoutEmail();
+      mockGetApplicationData.mockReturnValueOnce(appData);
       mockPrepareData.mockReturnValueOnce( { ...ENTITY_OBJECT_MOCK, [IsOnRegisterInCountryFormedInKey]: "", [EntityNumberKey]: COMPANY_NUMBER } );
       const resp = await request(app)
         .post(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL)

@@ -42,7 +42,7 @@
 
       {% set feature_flag_relevant_period = OE_CONFIGS.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD %}
       {% if reviewedTrustsRows.length > 0 %}
-      {% if feature_flag_relevant_period === "true" %}
+      {% if feature_flag_relevant_period === "true" and pageData.isRelevantPeriod %}
       <div class="govuk-summary-card">
         <div class="govuk-summary-card__title-wrapper">
           <h2 class="govuk-summary-card__title"> What you have reviewed </h2>
@@ -98,7 +98,7 @@
 
       <form method="post">
         {% include "includes/csrf_token.html" %}
-        {% if feature_flag_relevant_period === "true" and isUpdate %}
+        {% if feature_flag_relevant_period === "true" and pageData.isRelevantPeriod %}
         {% include "includes/page-templates/pre-registration-radio-button.html" %}
         {% else %}
         {% set fieldParam = {

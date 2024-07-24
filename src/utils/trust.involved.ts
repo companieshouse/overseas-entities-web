@@ -216,7 +216,8 @@ export const postTrustInvolvedPage = async (
           break;
         case TrusteeType.RELEVANT_PERIOD_LEGAL_ENTITY:
           req.body.typeOfTrustee = TrusteeType.LEGAL_ENTITY;
-          url += config.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL;
+          req.body.roleWithinTrustType = RoleWithinTrustType.BENEFICIARY;
+          url += config.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL + config.RELEVANT_PERIOD_QUERY_PARAM;
           break;
         default:
           logger.info("TODO: On validation No trustee selected, re-displaying page");
@@ -243,11 +244,7 @@ const getBackLinkUrl = (isUpdate: boolean, trustId: string, isReview: boolean, r
   if (isReview) {
     return config.UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL;
   } else if (isUpdate) {
-    let backLinkUrl = `${config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL}/${trustId}`;
-    if (req.query["relevant-period"] === "true") {
-      backLinkUrl += config.RELEVANT_PERIOD_QUERY_PARAM;
-    }
-    return backLinkUrl;
+    return `${config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL}/${trustId}`;
   } else {
     let backLinUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
       ? getUrlWithParamsToPath(config.TRUST_ENTRY_WITH_PARAMS_URL, req)

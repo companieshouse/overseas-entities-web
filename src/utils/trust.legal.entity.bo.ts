@@ -29,6 +29,8 @@ type TrustLegalEntityBeneificalOwnerPageProperties = {
   pageData: {
     trustData: CommonTrustData,
     roleWithinTrustType: typeof RoleWithinTrustType;
+    relevant_period: boolean;
+    entity_name: string;
   },
   formData?: TrustLegalEntityForm,
   errors?: FormattedValidationErrors,
@@ -44,6 +46,8 @@ const getPageProperties = (
   errors?: FormattedValidationErrors,
 ): TrustLegalEntityBeneificalOwnerPageProperties => {
 
+  const relevant_period = req.query['relevant-period'] === "true";
+  const trustData = CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId, false);
   return {
     backLinkUrl: getTrustInvolvedUrl(isUpdate, trustId, req),
     templateName: getPageTemplate(isUpdate),
@@ -51,12 +55,14 @@ const getPageProperties = (
       title: LEGAL_ENTITY_BO_TEXTS.title,
     },
     pageData: {
-      trustData: CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId, false),
-      roleWithinTrustType: RoleWithinTrustType
+      trustData: trustData,
+      roleWithinTrustType: RoleWithinTrustType,
+      relevant_period: relevant_period,
+      entity_name: trustData.trustName,
     },
     formData,
     errors,
-    url: getUrl(isUpdate),
+    url: relevant_period ? getUrl(isUpdate) + config.RELEVANT_PERIOD_QUERY_PARAM : getUrl(isUpdate),
     isUpdate
   };
 };

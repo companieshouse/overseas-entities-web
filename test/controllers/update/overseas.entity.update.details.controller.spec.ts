@@ -231,7 +231,7 @@ describe("OVERSEAS ENTITY UPDATE DETAILS controller", () => {
   });
 
   describe("POST tests", () => {
-    test("redirect to BENEFICIAL_OWNER_STATEMENTS_PAGE page after a successful post from OVERSEAS ENTITY UPDATE DETAILS page", async () => {
+    test("redirect to UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE page after a successful post from OVERSEAS ENTITY UPDATE DETAILS page", async () => {
       mockPrepareData.mockReturnValueOnce(ENTITY_OBJECT_MOCK);
       const resp = await request(app)
         .post(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL)

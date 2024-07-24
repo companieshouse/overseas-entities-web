@@ -4,7 +4,6 @@ import { logger } from "../../utils/logger";
 import * as config from "../../config";
 import { ApplicationData } from "../../model";
 import { getApplicationData } from "../../utils/application.data";
-import { isActiveFeature } from "../../utils/feature.flag";
 import { checkRelevantPeriod } from "../../utils/relevant.period";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {

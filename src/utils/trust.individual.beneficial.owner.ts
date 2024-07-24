@@ -25,10 +25,12 @@ type TrustIndividualBeneificalOwnerPageProperties = {
   templateName: string;
   pageData: {
     trustData: PageModel.CommonTrustData,
-    roleWithinTrustType: typeof RoleWithinTrustType;
+    roleWithinTrustType: typeof RoleWithinTrustType,
+    relevant_period: boolean,
+    entity_name: string;
   },
   pageParams: {
-    title: string;
+    title: string
   },
   formData?: PageModel.IndividualTrusteesFormCommon,
   errors?: FormattedValidationErrors,
@@ -44,6 +46,9 @@ const getPageProperties = (
   errors?: FormattedValidationErrors,
 ): TrustIndividualBeneificalOwnerPageProperties => {
 
+  const relevant_period: boolean = req.query['relevant_period'] === "true";
+  const trustData = CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId, false);
+
   return {
     backLinkUrl: getTrustInvolvedUrl(isUpdate, trustId, req),
     templateName: getPageTemplate(isUpdate),
@@ -51,12 +56,14 @@ const getPageProperties = (
       title: INDIVIDUAL_BO_TEXTS.title,
     },
     pageData: {
-      trustData: CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId, false),
-      roleWithinTrustType: RoleWithinTrustType
+      trustData: trustData,
+      roleWithinTrustType: RoleWithinTrustType,
+      relevant_period: relevant_period,
+      entity_name: trustData.trustName,
     },
     formData,
     errors,
-    url: getUrl(isUpdate),
+    url: relevant_period ? getUrl(isUpdate) + config.RELEVANT_PERIOD_QUERY_PARAM : getUrl(isUpdate),
     isUpdate
   };
 };
@@ -138,7 +145,7 @@ const getPageTemplate = (isUpdate: boolean) => {
 };
 
 const getTrustInvolvedUrl = (isUpdate: boolean, trustId: string, req: Request) => {
-  if (isUpdate) {
+  if (isUpdate ) {
     return `${config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL}/${trustId}${config.TRUST_INVOLVED_URL}`;
   } else {
     let entryUrl = `${config.TRUST_ENTRY_URL}`;

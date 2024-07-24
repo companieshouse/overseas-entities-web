@@ -209,7 +209,7 @@ export const postTrustInvolvedPage = async (
         case TrusteeType.RELEVANT_PERIOD_INDIVIDUAL_BENEFICIARY:
           req.body.typeOfTrustee = TrusteeType.INDIVIDUAL;
           req.body.roleWithinTrustType = RoleWithinTrustType.BENEFICIARY;
-          url += config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL;
+          url += config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL + config.RELEVANT_PERIOD_QUERY_PARAM;
           break;
         case TrusteeType.LEGAL_ENTITY:
           url += config.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL;

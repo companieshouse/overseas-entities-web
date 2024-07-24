@@ -28,6 +28,7 @@ import {
   SECURE_UPDATE_FILTER_URL,
   REMOVE_SERVICE_NAME,
   REMOVE_CONFIRM_STATEMENT_URL,
+  UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL,
   UPDATE_DUE_DILIGENCE_CHANGE_AGENT_CODE,
 } from "../../../src/config";
 import app from "../../../src/app";
@@ -36,7 +37,6 @@ import {
   SERVICE_UNAVAILABLE,
   ANY_MESSAGE_ERROR,
   UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE,
-  UPDATE_CHECK_YOUR_ANSWERS_BACK_LINK,
   CHANGE_LINK,
   CHANGE_LINK_ENTITY_NAME,
   CHANGE_LINK_ENTITY_EMAIL,
@@ -61,7 +61,6 @@ import {
   UPDATE_CHANGE_LINK_REVIEWED_BO_OTHER,
   CHECK_YOUR_ANSWERS_PAGE_TRUST_TITLE,
   UPDATE_CHECK_YOUR_ANSWERS_WITH_STATEMENT_VALIDATION_BACK_LINK,
-  UPDATE_TRUSTS_ASSOCIATED_BACK_LINK,
   HOME_ADDRESS_LINE1,
   CHECK_YOUR_ANSWERS_PAGE_TITLE,
   REMOVE_CHECK_YOUR_ANSWERS_PAGE_TITLE,
@@ -216,15 +215,15 @@ describe("CHECK YOUR ANSWERS controller", () => {
     });
 
     test.each([
-      ["on remove journey", APPLICATION_DATA_REMOVE_BO_MOCK ],
-      ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK ]
-    ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with contact details section %s`, async (_journeyType, mockAppData) => {
+      ["on remove journey", APPLICATION_DATA_REMOVE_BO_MOCK, REMOVE_CONFIRM_STATEMENT_URL],
+      ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK, UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL]
+    ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with contact details section %s`, async (_journeyType, mockAppData, backLink) => {
       mockGetApplicationData.mockReturnValue(mockAppData);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE);
-      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_BACK_LINK);
+      expect(resp.text).toContain(backLink);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(CHANGE_LINK);
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS);
@@ -268,16 +267,16 @@ describe("CHECK YOUR ANSWERS controller", () => {
     });
 
     test.each([
-      ["on remove journey", APPLICATION_DATA_REMOVE_BO_MOCK ],
-      ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK ]
-    ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} with statement validation off and trusts flag on with trust details section %s`, async (_journeyType, mockAppData) => {
+      ["on remove journey", APPLICATION_DATA_REMOVE_BO_MOCK, REMOVE_CONFIRM_STATEMENT_URL],
+      ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK, UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL]
+    ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} with statement validation off and trusts flag on with trust details section %s`, async (_journeyType, mockAppData, backLink) => {
       mockGetApplicationData.mockReturnValue(mockAppData);
       mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(false);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE);
-      expect(resp.text).toContain(UPDATE_TRUSTS_ASSOCIATED_BACK_LINK);
+      expect(resp.text).toContain(backLink);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(CHANGE_LINK);
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS);
@@ -295,15 +294,15 @@ describe("CHECK YOUR ANSWERS controller", () => {
     });
 
     test.each([
-      ["on remove journey", APPLICATION_DATA_CH_REF_REMOVE_MOCK ],
-      ["on update journey", APPLICATION_DATA_CH_REF_UPDATE_MOCK ]
-    ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with contact details section with (ceased) existing BO %s`, async (_journeyType, mockAppData) => {
+      ["on remove journey", APPLICATION_DATA_CH_REF_REMOVE_MOCK, REMOVE_CONFIRM_STATEMENT_URL],
+      ["on update journey", APPLICATION_DATA_CH_REF_UPDATE_MOCK, UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL]
+    ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with contact details section with (ceased) existing BO %s`, async (_journeyType, mockAppData, backLink) => {
       mockGetApplicationData.mockReturnValue(mockAppData);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE);
-      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_BACK_LINK);
+      expect(resp.text).toContain(backLink);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(CHANGE_LINK);
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS);
@@ -319,15 +318,15 @@ describe("CHECK YOUR ANSWERS controller", () => {
     });
 
     test.each([
-      ["on remove journey", APPLICATION_DATA_REMOVE_BO_MOCK, REMOVE_CHECK_YOUR_ANSWERS_PAGE_TITLE ],
-      ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK, CHECK_YOUR_ANSWERS_PAGE_TITLE ]
-    ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page %s`, async (_journeyType, mockAppData, pageTitle) => {
+      ["on remove journey", APPLICATION_DATA_REMOVE_BO_MOCK, REMOVE_CHECK_YOUR_ANSWERS_PAGE_TITLE, REMOVE_CONFIRM_STATEMENT_URL],
+      ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK, CHECK_YOUR_ANSWERS_PAGE_TITLE, UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL]
+    ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page %s`, async (_journeyType, mockAppData, pageTitle, backLink) => {
       mockGetApplicationData.mockReturnValue(mockAppData);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(pageTitle);
-      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_BACK_LINK);
+      expect(resp.text).toContain(backLink);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_TITLE);
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE);

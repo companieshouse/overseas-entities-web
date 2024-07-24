@@ -102,9 +102,9 @@ const setWebApplicationData = (session: Session, appData: ApplicationData, trans
   appData[Transactionkey] = transactionId;
   appData[OverseasEntityKey] = overseaEntityId;
 
-  if (Object.keys(appData[OverseasEntityDueDiligenceKey] || {}).length) {
+  if (Object.keys(appData[OverseasEntityDueDiligenceKey] ?? {}).length) {
     appData[WhoIsRegisteringKey] = WhoIsRegisteringType.SOMEONE_ELSE;
-  } else if (Object.keys(appData[DueDiligenceKey] || {}).length){
+  } else if (Object.keys(appData[DueDiligenceKey] ?? {}).length){
     appData[WhoIsRegisteringKey] = WhoIsRegisteringType.AGENT;
   }
 

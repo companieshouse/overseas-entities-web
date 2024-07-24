@@ -8,7 +8,7 @@ import { getApplicationData, mapDataObjectToFields, removeFromApplicationData, s
 import { logger } from "../../utils/logger";
 import { CeasedDateKey } from "../../model/date.model";
 import { addCeasedDateToTemplateOptions } from "../../utils/update/ceased_date_util";
-import { BeneficialOwnerOtherKey } from "../../model/beneficial.owner.other.model";
+import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../../model/beneficial.owner.other.model";
 import { Session } from "@companieshouse/node-session-handler";
 import { ApplicationDataType } from "../../model";
 import { setBeneficialOwnerData } from "../../utils/beneficial.owner.other";
@@ -63,13 +63,24 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const booIndex = req.query.index;
     const appData = getApplicationData(req.session);
 
-    if (booIndex !== undefined && appData.beneficial_owners_corporate && appData.beneficial_owners_corporate[Number(booIndex)].id === req.body["id"]){
-      const boId = appData.beneficial_owners_corporate[Number(booIndex)].id;
+    if (booIndex !== undefined && appData.beneficial_owners_corporate && appData.beneficial_owners_corporate[Number(booIndex)].id === req.body["id"]) {
+      const boData: BeneficialOwnerOther = appData.beneficial_owners_corporate[Number(booIndex)];
+      const boId = boData.id;
+
+      let trustIds: string[] = [];
+      if (boData.trust_ids) {
+        trustIds = boData.trust_ids;
+      }
+
       removeFromApplicationData(req, BeneficialOwnerOtherKey, boId);
 
       const session = req.session as Session;
 
       const data: ApplicationDataType = setBeneficialOwnerData(req.body, uuidv4());
+
+      if (trustIds.length > 0) {
+        (data as BeneficialOwnerOther).trust_ids = trustIds;
+      }
 
       setApplicationData(req.session, data, BeneficialOwnerOtherKey);
 

@@ -7,6 +7,7 @@ import { saveAndContinue } from "../utils/save.and.continue";
 import { ApplicationDataType, ApplicationData } from "../model";
 import { logger } from "../utils/logger";
 import {
+  BeneficialOwnerIndividual,
   BeneficialOwnerIndividualKey,
   BeneficialOwnerIndividualKeys
 } from "../model/beneficial.owner.individual.model";
@@ -119,11 +120,24 @@ export const updateBeneficialOwnerIndividual = async (req: Request, res: Respons
   try {
     logger.debugRequest(req, `UPDATE ${req.route.path}`);
 
+    const id = req.params[ID];
+    const boData: BeneficialOwnerIndividual = getFromApplicationData(req, BeneficialOwnerIndividualKey, id, true);
+
+    let trustIds: string[] = [];
+    if (boData.trust_ids) {
+      trustIds = boData.trust_ids;
+    }
+
     // Remove old Beneficial Owner
-    removeFromApplicationData(req, BeneficialOwnerIndividualKey, req.params[ID]);
+    removeFromApplicationData(req, BeneficialOwnerIndividualKey, id);
 
     // Set Beneficial Owner data
-    const data: ApplicationDataType = setBeneficialOwnerData(req.body, req.params[ID]);
+    const data: ApplicationDataType = setBeneficialOwnerData(req.body, id);
+
+    if (trustIds.length > 0) {
+      (data as BeneficialOwnerIndividual).trust_ids = trustIds;
+    }
+
     const session = req.session as Session;
 
     // Save new Beneficial Owner

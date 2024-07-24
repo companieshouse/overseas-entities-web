@@ -5,7 +5,7 @@ import { saveAndContinue } from "./save.and.continue";
 import { ApplicationData, ApplicationDataType } from "../model";
 import { getApplicationData, getFromApplicationData, mapDataObjectToFields, mapFieldsToDataObject, prepareData, removeFromApplicationData, setApplicationData } from "./application.data";
 import { addCeasedDateToTemplateOptions } from "../utils/update/ceased_date_util";
-import { BeneficialOwnerOtherKey, BeneficialOwnerOtherKeys } from "../model/beneficial.owner.other.model";
+import { BeneficialOwnerOther, BeneficialOwnerOtherKey, BeneficialOwnerOtherKeys } from "../model/beneficial.owner.other.model";
 import {
   AddressKeys,
   BeneficialOwnerNoc,
@@ -104,11 +104,23 @@ export const updateBeneficialOwnerOther = async (req: Request, res: Response, ne
   try {
     logger.debugRequest(req, `UPDATE ${req.route.path}`);
 
+    const id = req.params[ID];
+    const boData: BeneficialOwnerOther = getFromApplicationData(req, BeneficialOwnerOtherKey, id, true);
+
+    let trustIds: string[] = [];
+    if (boData.trust_ids) {
+      trustIds = boData.trust_ids;
+    }
+
     // Remove old Beneficial Owner
-    removeFromApplicationData(req, BeneficialOwnerOtherKey, req.params[ID]);
+    removeFromApplicationData(req, BeneficialOwnerOtherKey, id);
 
     // Set Beneficial Owner data
-    const data: ApplicationDataType = setBeneficialOwnerData(req.body, req.params[ID]);
+    const data: ApplicationDataType = setBeneficialOwnerData(req.body, id);
+
+    if (trustIds.length > 0) {
+      (data as BeneficialOwnerOther).trust_ids = trustIds;
+    }
 
     // Save new Beneficial Owner
     const session = req.session as Session;

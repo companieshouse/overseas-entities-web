@@ -69,7 +69,7 @@ import {
   NatureOfControlType, PublicRegisterNameKey, RegistrationNumberKey,
   yesNoResponse
 } from "../../src/model/data.types.model";
-import { BeneficialOwnerOtherKey } from "../../src/model/beneficial.owner.other.model";
+import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../../src/model/beneficial.owner.other.model";
 import {
   BENEFICIAL_OWNER_OTHER_WITH_INVALID_CHARS_MOCK,
   BENEFICIAL_OWNER_OTHER_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK,
@@ -1198,6 +1198,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
 
   describe("UPDATE tests", () => {
     test(`Redirects to the ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
+      mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_OTHER_OBJECT_MOCK);
       mockPrepareData.mockReturnValueOnce({ ...BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS });
       const resp = await request(app).post(BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL)
         .send(BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS);
@@ -1218,6 +1219,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
     });
 
     test(`Replaces existing object on submit`, async () => {
+      mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_OTHER_OBJECT_MOCK);
       mockPrepareData.mockReturnValueOnce({ ...BENEFICIAL_OWNER_OTHER_REPLACE });
       const resp = await request(app)
         .post(BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL)
@@ -1226,8 +1228,12 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(BeneficialOwnerOtherKey);
       expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(BO_OTHER_ID);
 
-      expect(mockSetApplicationData.mock.calls[0][1].id).toEqual(BO_OTHER_ID);
+      const data = mockSetApplicationData.mock.calls[0][1];
+      expect(data.id).toEqual(BO_OTHER_ID);
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(BeneficialOwnerOtherKey);
+
+      // Ensure that trust ids on the original BO aren't lost during the update
+      expect((data as BeneficialOwnerOther).trust_ids).toEqual(BENEFICIAL_OWNER_OTHER_OBJECT_MOCK.trust_ids);
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
@@ -1235,6 +1241,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
     });
 
     test(`Service address from the ${BENEFICIAL_OWNER_OTHER_PAGE} is present when same address is set to no`, async () => {
+      mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_OTHER_OBJECT_MOCK);
       mockPrepareData.mockReturnValueOnce({ ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO });
       await request(app)
         .post(BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL)
@@ -1246,6 +1253,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
     });
 
     test(`Service address from the ${BENEFICIAL_OWNER_OTHER_PAGE} is empty when same address is set to yes`, async () => {
+      mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_OTHER_OBJECT_MOCK);
       mockPrepareData.mockReturnValueOnce({ ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES });
       await request(app)
         .post(BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL)
@@ -1257,6 +1265,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
     });
 
     test(`Public register data from the ${BENEFICIAL_OWNER_OTHER_PAGE} is present when is on register set to yes`, async () => {
+      mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_OTHER_OBJECT_MOCK);
       mockPrepareData.mockReturnValueOnce({ ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES });
       await request(app).post(BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL)
         .send(BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES);
@@ -1267,6 +1276,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
     });
 
     test(`Public register data from the ${BENEFICIAL_OWNER_OTHER_PAGE} is empty when is on register set to no`, async () => {
+      mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_OTHER_OBJECT_MOCK);
       mockPrepareData.mockReturnValueOnce({ ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO });
       await request(app).post(BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL)
         .send(BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO);

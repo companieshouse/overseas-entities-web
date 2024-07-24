@@ -30,6 +30,7 @@ import {
   JourneyType,
   REMOVE_CONFIRM_STATEMENT_URL,
   FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS,
+  FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
 } from "../config";
 import { RoleWithinTrustType } from "../model/role.within.trust.type.model";
 import { fetchManagingOfficersPrivateData } from "./update/fetch.managing.officers.private.data";

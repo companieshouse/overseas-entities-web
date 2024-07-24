@@ -22,7 +22,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
         backLinkUrl: `${config.OVERSEAS_ENTITY_QUERY_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`,
         updateUrl: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
         templateName: config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
-        appData,
+        ...appData,
         registrationDate: update.date_of_creation
       });
     }
@@ -31,7 +31,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       backLinkUrl: config.OVERSEAS_ENTITY_QUERY_URL,
       updateUrl: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
       templateName: config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
-      appData,
+      ...appData,
       registrationDate: update.date_of_creation
     });
 

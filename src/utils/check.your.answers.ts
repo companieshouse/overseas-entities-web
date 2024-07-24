@@ -69,7 +69,7 @@ export const getDataForReview = async (req: Request, res: Response, next: NextFu
         overseasEntityHeading: OVERSEAS_ENTITY_SECTION_HEADING,
         whoIsCompletingChangeLink: WHO_IS_MAKING_UPDATE_URL,
         roleTypes: RoleWithinTrustType,
-        appData,
+        ...appData,
         pageParams: {
           isRegistration: false,
           isRemove: true,
@@ -90,7 +90,7 @@ export const getDataForReview = async (req: Request, res: Response, next: NextFu
       overseasEntityHeading: OVERSEAS_ENTITY_SECTION_HEADING,
       whoIsCompletingChangeLink: WHO_IS_MAKING_UPDATE_URL,
       roleTypes: RoleWithinTrustType,
-      appData,
+      ...appData,
       pageParams: {
         isRegistration: false,
         noChangeFlag: isNoChangeJourney,

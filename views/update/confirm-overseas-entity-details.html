@@ -36,7 +36,7 @@
                 }
               },
               {
-                text: appData.entity_name,
+                text: entity_name,
                 attributes: {
                   "id": "oe_entity_name_value"
                 }
@@ -50,7 +50,7 @@
                 }
               },
               {
-                text: appData.entity_number,
+                text: entity_number,
                 attributes: {
                   "id": "oe_entity_number_value"
                 }
@@ -64,7 +64,7 @@
                 }
               },
               {
-                text: "" if appData.entity === undefined else appData.entity.incorporation_country,
+                text: "" if entity === undefined else entity.incorporation_country,
                 attributes: {
                   "id": "oe_entity_incorporation_country_value"
                 }

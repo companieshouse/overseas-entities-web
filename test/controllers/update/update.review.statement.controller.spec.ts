@@ -156,11 +156,11 @@ describe("Update review overseas entity information controller tests", () => {
       expect(resp.text).toContain(NO_CHANGE_REVIEW_STATEMENT_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE);
     });
 
-    // Skipping for now will fix when all feature flags have been rmeoved
-    test.skip(`renders the ${UPDATE_REVIEW_STATEMENT_PAGE} page without trust still involved fields`, async () => {
+    test(`renders the ${UPDATE_REVIEW_STATEMENT_PAGE} page without trust still involved fields`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_TRUSTS_WEB
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
+      mockCheckActiveBOExists.mockReturnValueOnce(false);
 
       mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_BO_TRUSTS_PRIVATE_DATA_MOCK);
       const resp = await request(app).get(UPDATE_REVIEW_STATEMENT_URL);

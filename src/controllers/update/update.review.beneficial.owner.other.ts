@@ -67,10 +67,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       const boData: BeneficialOwnerOther = appData.beneficial_owners_corporate[Number(booIndex)];
       const boId = boData.id;
 
-      let trustIds: string[] = [];
-      if (boData.trust_ids) {
-        trustIds = boData.trust_ids;
-      }
+      const trustIds: string[] = boData?.trust_ids?.length ? [...boData.trust_ids] : [];
 
       removeFromApplicationData(req, BeneficialOwnerOtherKey, boId);
 
@@ -79,7 +76,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       const data: ApplicationDataType = setBeneficialOwnerData(req.body, uuidv4());
 
       if (trustIds.length > 0) {
-        (data as BeneficialOwnerOther).trust_ids = trustIds;
+        (data as BeneficialOwnerOther).trust_ids = [...trustIds];
       }
 
       setApplicationData(req.session, data, BeneficialOwnerOtherKey);

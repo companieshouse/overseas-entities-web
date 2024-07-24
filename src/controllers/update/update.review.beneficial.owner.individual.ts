@@ -61,10 +61,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       const dob = boData.date_of_birth as InputDate;
       const haveDayOfBirth = boData.have_day_of_birth;
 
-      let trustIds: string[] = [];
-      if (boData.trust_ids) {
-        trustIds = boData.trust_ids;
-      }
+      const trustIds: string[] = boData?.trust_ids?.length ? [...boData.trust_ids] : [];
 
       removeFromApplicationData(req, BeneficialOwnerIndividualKey, boId);
 
@@ -78,7 +75,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       }
 
       if (trustIds.length > 0) {
-        (data as BeneficialOwnerIndividual).trust_ids = trustIds;
+        (data as BeneficialOwnerIndividual).trust_ids = [...trustIds];
       }
 
       setApplicationData(req.session, data, BeneficialOwnerIndividualKey);

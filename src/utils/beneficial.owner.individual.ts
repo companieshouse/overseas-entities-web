@@ -123,10 +123,7 @@ export const updateBeneficialOwnerIndividual = async (req: Request, res: Respons
     const id = req.params[ID];
     const boData: BeneficialOwnerIndividual = getFromApplicationData(req, BeneficialOwnerIndividualKey, id, true);
 
-    let trustIds: string[] = [];
-    if (boData.trust_ids) {
-      trustIds = boData.trust_ids;
-    }
+    const trustIds: string[] = boData?.trust_ids?.length ? [...boData.trust_ids] : [];
 
     // Remove old Beneficial Owner
     removeFromApplicationData(req, BeneficialOwnerIndividualKey, id);
@@ -135,7 +132,7 @@ export const updateBeneficialOwnerIndividual = async (req: Request, res: Respons
     const data: ApplicationDataType = setBeneficialOwnerData(req.body, id);
 
     if (trustIds.length > 0) {
-      (data as BeneficialOwnerIndividual).trust_ids = trustIds;
+      (data as BeneficialOwnerIndividual).trust_ids = [...trustIds];
     }
 
     const session = req.session as Session;

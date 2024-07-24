@@ -7,6 +7,7 @@ import { getUrlWithTransactionIdAndSubmissionId, isRemoveJourney } from "../util
 import * as config from "../config";
 import { isActiveFeature } from "./feature.flag";
 import { updateOverseasEntity } from "../service/overseas.entities.service";
+import { Session } from "@companieshouse/node-session-handler";
 
 export const getFilterPage = (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string): void => {
   try {
@@ -40,17 +41,18 @@ export const postFilterPage = async (req: Request, res: Response, next: NextFunc
     const appData: ApplicationData = getApplicationData(req.session);
     const isSecureRegister = (req.body[IsSecureRegisterKey]).toString();
     appData[IsSecureRegisterKey] = isSecureRegister;
+    const session = req.session as Session;
 
     let nextPageUrl: string = "";
 
     if (isSecureRegister === "1") {
-      return res.redirect(isSecureRegisterYes);
+      nextPageUrl = isSecureRegisterYes;
     }
     if (isSecureRegister === "0") {
       nextPageUrl = isSecureRegisterNo;
       if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
         if (appData[Transactionkey] && appData[OverseasEntityKey]) {
-          await updateOverseasEntity(req, req.session, appData);
+          await updateOverseasEntity(req, session, appData);
         } else {
           throw new Error("Invalid request");
         }

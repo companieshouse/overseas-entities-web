@@ -33,7 +33,7 @@ export const getFilterPage = (req: Request, res: Response, next: NextFunction, t
   }
 };
 
-export const postFilterPage = async (req: Request, res: Response, next: NextFunction, isSecureRegisterYes: string, isSecureRegisterNo: string): Promise<void> => {
+export const postFilterPage = async (req: Request, res: Response, next: NextFunction, isSecureRegisterYesUrl: string, isSecureRegisterNoUrl: string): Promise<void> => {
   try {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
@@ -46,17 +46,17 @@ export const postFilterPage = async (req: Request, res: Response, next: NextFunc
     let nextPageUrl: string = "";
 
     if (isSecureRegister === "1") {
-      nextPageUrl = isSecureRegisterYes;
+      nextPageUrl = isSecureRegisterYesUrl;
     }
     if (isSecureRegister === "0") {
-      nextPageUrl = isSecureRegisterNo;
+      nextPageUrl = isSecureRegisterNoUrl;
       if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
         if (appData[Transactionkey] && appData[OverseasEntityKey]) {
           await updateOverseasEntity(req, session, appData);
         } else {
           throw new Error("Error: is_secure_register filter cannot be updated - transaction_id or overseas_entity_id is missing");
         }
-        nextPageUrl = getUrlWithTransactionIdAndSubmissionId(isSecureRegisterNo, appData[Transactionkey] as string, appData[OverseasEntityKey] as string);
+        nextPageUrl = getUrlWithTransactionIdAndSubmissionId(isSecureRegisterNoUrl, appData[Transactionkey] as string, appData[OverseasEntityKey] as string);
       }
     }
     if (isRemoveJourney(req)) {

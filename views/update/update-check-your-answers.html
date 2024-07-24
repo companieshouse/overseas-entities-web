@@ -43,8 +43,6 @@
   {% set removeStatementDate = dateMacros.formatDate(pageParams.today["day"], pageParams.today["month"], pageParams.today["year"]) %}
 {% endif %}
 
-{% set updateStatementValidationEnabled = OE_CONFIGS.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION === "true" %}
-
 {% block pageTitle %}
   {% include "includes/update-page-title.html" %}
 {% endblock %}
@@ -222,10 +220,7 @@
         {% endfor %}
       {% endif %}
 
-      {% if updateStatementValidationEnabled %}
-        <br>
-        {% include "includes/check-your-answers/beneficial-owner-statements.html" %}
-      {% endif %}
+      {% include "includes/check-your-answers/beneficial-owner-statements.html" %}
 
       {% if isRemoveJourney %}
         <h2 class="govuk-heading-m">Removal statement</h2>

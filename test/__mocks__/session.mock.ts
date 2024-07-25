@@ -324,7 +324,7 @@ export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.Benefi
   non_legal_firm_members_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
   is_on_sanctions_list: 0,
   ...START_DATE,
-  trust_ids: []
+  trust_ids: ["6"]
 };
 
 export const BENEFICIAL_OWNER_OTHER_NO_TRUSTEE_OBJECT_MOCK: beneficialOwnerOtherType.BeneficialOwnerOther = {
@@ -383,7 +383,7 @@ export const UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType
   non_legal_firm_members_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
   is_on_sanctions_list: 0,
   ...START_DATE,
-  trust_ids: []
+  trust_ids: ["8"]
 };
 
 export const UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_REQ_MOCK = {
@@ -473,7 +473,7 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualT
   trustees_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS],
   non_legal_firm_members_nature_of_control_types: [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS],
   is_on_sanctions_list: 1,
-  trust_ids: []
+  trust_ids: ["5"]
 };
 
 export const BENEFICIAL_OWNER_INDIVIDUAL_NO_TRUSTEE_OBJECT_MOCK: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {

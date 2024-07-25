@@ -46,7 +46,9 @@ const getPageProperties = (
   errors?: FormattedValidationErrors,
 ): TrustLegalEntityBeneificalOwnerPageProperties => {
 
+  let appData: ApplicationData = {};
   const relevant_period = req.query['relevant-period'] === "true";
+  relevant_period ? appData = getApplicationData(req.session) : {};
   const trustData = CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId, false);
   return {
     backLinkUrl: getTrustInvolvedUrl(isUpdate, trustId, req),
@@ -58,7 +60,7 @@ const getPageProperties = (
       trustData: trustData,
       roleWithinTrustType: RoleWithinTrustType,
       relevant_period: relevant_period,
-      entity_name: trustData.trustName,
+      entity_name: appData.entity_name ? appData.entity_name : trustData.trustName,
     },
     formData,
     errors,

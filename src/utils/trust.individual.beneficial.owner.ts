@@ -46,9 +46,10 @@ const getPageProperties = (
   errors?: FormattedValidationErrors,
 ): TrustIndividualBeneificalOwnerPageProperties => {
 
-  const relevant_period: boolean = req.query['relevant_period'] === "true";
+  let appData: ApplicationData = {};
+  const relevant_period = req.query['relevant-period'] === "true";
+  relevant_period ? appData = getApplicationData(req.session) : {};
   const trustData = CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId, false);
-
   return {
     backLinkUrl: getTrustInvolvedUrl(isUpdate, trustId, req),
     templateName: getPageTemplate(isUpdate),
@@ -59,7 +60,7 @@ const getPageProperties = (
       trustData: trustData,
       roleWithinTrustType: RoleWithinTrustType,
       relevant_period: relevant_period,
-      entity_name: trustData.trustName,
+      entity_name: appData.entity_name ? appData.entity_name : trustData.trustName,
     },
     formData,
     errors,
@@ -81,7 +82,7 @@ export const getTrustIndividualBo = (req: Request, res: Response, next: NextFunc
       trusteeId
     );
     const pageProps = getPageProperties(req, trustId, isUpdate, formData);
-
+    console.log("template Name" + pageProps.templateName);
     return res.render(pageProps.templateName, pageProps);
   } catch (error) {
     logger.errorRequest(req, error);

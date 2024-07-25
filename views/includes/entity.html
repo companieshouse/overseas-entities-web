@@ -2,25 +2,26 @@
 {% set inChangeJourney = not inNoChangeJourney %}
 
 {% set formattedPrincipalAddressHtml %}
-  {% set address = appData.entity.principal_address %}
+  {% set address = entity.principal_address %}
   {% include "includes/display_address.html" %}
 {% endset %}
 
 {% set formattedServiceAddressHtml %}
-  {% if appData.entity.is_service_address_same_as_principal_address == 1 %}
+  {% if entity.is_service_address_same_as_principal_address == 1 %}
     The correspondence address is the same as the entity's principal or registered office address
   {% else %}
-    {% set address = appData.entity.service_address %}
+    {% set address = entity.service_address %}
     {% include "includes/display_address.html" %}
   {% endif %}
 {% endset %}
 
 {% set formattedPublicRegister %}
-  {% if appData.entity.is_on_register_in_country_formed_in == 1 %}
+  {% if entity.is_on_register_in_country_formed_in == 1 %}
     {% if inNoChangeJourney %}
-      {{ appData.entity.public_register_name | safe }}
+      {{ entity.public_register_name | safe }}
     {% else %}
-      {{ appData.entity.public_register_name | safe }} / {{ appData.entity.public_register_jurisdiction | safe }} / {{ appData.entity.registration_number | safe }}
+      {{ entity.public_register_name | safe }} / {{ entity.public_register_jurisdiction | safe }} / {{
+      entity.registration_number | safe }}
     {% endif %}
   {% else %}
     No
@@ -42,10 +43,10 @@
 {% endif %}
 
 {% set isEmailPrivate %}
-    {% if not appData.entity.email and inNoChangeJourney %}
+    {% if not entity.email and inNoChangeJourney %}
       <strong class="govuk-tag govuk-tag--blue">CANNOT BE DISPLAYED</strong>
-    {% elif appData.entity.email %}
-      {{ appData.entity.email }}
+    {% elif entity.email %}
+    {{ entity.email }}
     {% endif %}
 {% endset %}
 
@@ -56,7 +57,7 @@
         text: "Jurisdiction"
       },
       value: {
-        text: appData.entity.public_register_jurisdiction
+        text: entity.public_register_jurisdiction
       }
     }
   %}
@@ -65,7 +66,7 @@
       text: "Registration number"
     },
     value: {
-      text: appData.entity.registration_number
+      text: entity.registration_number
     }
   }
   %}
@@ -78,7 +79,7 @@
       text: "Country it was formed in"
     },
     value: {
-      text: appData.entity.incorporation_country
+      text: entity.incorporation_country
     },
     actions: {
       items: [CREATE_CHANGE_LINK(
@@ -96,13 +97,8 @@
       text: "Country it was formed in"
     },
     value: {
-      text: appData.entity.incorporation_country
-    },
-    actions: {
-      items: [
-        "Country it was formed in"
-      ]
-    } if inChangeJourney
+      text: entity.incorporation_country
+    }
   }
   %}
 {% endif %}
@@ -117,7 +113,7 @@
           text: "Name of the overseas entity"
         },
         value: {
-          text: appData.entity_name
+          text: entity_name
         },
         actions: {
           items : [entityNameLink]
@@ -174,7 +170,7 @@
           text: "Legal form"
         },
         value: {
-          text: appData.entity.legal_form
+          text: entity.legal_form
         },
         actions: {
           items: [CREATE_CHANGE_LINK(
@@ -189,7 +185,7 @@
           text: "Governing law"
         },
         value: {
-          text: appData.entity.law_governed
+          text: entity.law_governed
         },
         actions: {
           items: [CREATE_CHANGE_LINK(

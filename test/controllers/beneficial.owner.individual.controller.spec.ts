@@ -77,7 +77,7 @@ import {
   BENEFICIAL_OWNER_INDIVIDUAL_WITH_MAX_LENGTH_FIELDS_MOCK
 } from '../__mocks__/validation.mock';
 
-import { BeneficialOwnerIndividualKey } from '../../src/model/beneficial.owner.individual.model';
+import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from '../../src/model/beneficial.owner.individual.model';
 import { AddressKeys, EntityNumberKey } from '../../src/model/data.types.model';
 import { saveAndContinue } from "../../src/utils/save.and.continue";
 import { ErrorMessages } from '../../src/validation/error.messages';
@@ -1665,6 +1665,8 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
   describe("UPDATE tests", () => {
     test(`redirects to the ${BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
+      mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
+
       mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
       const resp = await request(app)
         .post(BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)
@@ -1687,6 +1689,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
     });
 
     test(`replaces existing object on submit`, async () => {
+      mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
       mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_REPLACE);
       const resp = await request(app)
         .post(BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)
@@ -1695,14 +1698,20 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(BeneficialOwnerIndividualKey);
       expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(BO_IND_ID);
 
+      const data = mockSetApplicationData.mock.calls[0][1];
+      expect(data.id).toEqual(BO_IND_ID);
       expect(mockSetApplicationData.mock.calls[0][1].id).toEqual(BO_IND_ID);
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(BeneficialOwnerIndividualKey);
+
+      // Ensure that trust ids on the original BO aren't lost during the update
+      expect((data as BeneficialOwnerIndividual).trust_ids).toEqual(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK.trust_ids);
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
     });
 
     test(`Service address from the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} is present when same address is set to no`, async () => {
+      mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
       mockPrepareData.mockReturnValueOnce( { ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO } );
       await request(app)
         .post(BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)
@@ -1714,6 +1723,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
     });
 
     test(`Service address from the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} is empty when same address is set to yes`, async () => {
+      mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
       mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
       await request(app)
         .post(BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)

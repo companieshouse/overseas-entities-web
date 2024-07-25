@@ -20,7 +20,6 @@ import app from "../../../src/app";
 import {
   UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_PAGE,
   UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL,
-  UPDATE_REVIEW_STATEMENT_URL,
   UPDATE_STATEMENT_VALIDATION_ERRORS_URL
 } from "../../../src/config";
 import { getApplicationData, setExtraData } from "../../../src/utils/application.data";
@@ -124,25 +123,25 @@ describe("No change registrable beneficial owner", () => {
   });
 
   describe("POST tests", () => {
-    test(`Test redirect to ${UPDATE_REVIEW_STATEMENT_URL} page when 'no reasonable cause' is selected`, async () => {
+    test(`Test redirect to ${UPDATE_STATEMENT_VALIDATION_ERRORS_URL} page when 'no reasonable cause' is selected`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
       const resp = await request(app)
         .post(UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL)
         .send({ [RegistrableBeneficialOwnerKey]: "1" });
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_REVIEW_STATEMENT_URL);
+      expect(resp.header.location).toEqual(UPDATE_STATEMENT_VALIDATION_ERRORS_URL);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 
-    test(`with statement validation flag off, redirects to the review-update-statement page when 'has reasonable cause' is selected`, async () => {
+    test(`redirects to the update-statement-validation-errors page when 'has reasonable cause' is selected`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
       const resp = await request(app)
         .post(UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL)
         .send({ [RegistrableBeneficialOwnerKey]: "0" });
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_REVIEW_STATEMENT_URL);
+      expect(resp.header.location).toEqual(UPDATE_STATEMENT_VALIDATION_ERRORS_URL);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 

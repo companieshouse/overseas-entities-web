@@ -24,7 +24,7 @@ export const companyAuthentication = async (req: Request, res: Response, next: N
 
     const appData: ApplicationData = getApplicationData(req.session);
     let entityNumber: string | undefined = appData?.[EntityNumberKey];
-    let returnURL = !isActiveFeature(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD) ? UPDATE_FILING_DATE_URL : RELEVANT_PERIOD_OWNED_LAND_FILTER_URL;
+    let returnURL = !isActiveFeature(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD) ? UPDATE_FILING_DATE_URL : RELEVANT_PERIOD_OWNED_LAND_FILTER_URL + config.RELEVANT_PERIOD_QUERY_PARAM;
     if (isRemoveJourney(req)) {
       logger.debugRequest(req, "Remove journey proceed directly to the presenter page");
       returnURL = `${OVERSEAS_ENTITY_PRESENTER_URL}${JOURNEY_REMOVE_QUERY_PARAM}`;

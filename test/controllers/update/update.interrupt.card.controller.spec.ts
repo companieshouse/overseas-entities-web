@@ -8,7 +8,7 @@ import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddlewa
 import { NextFunction, Request, Response } from "express";
 import { expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
-
+import * as config from "../../../src/config";
 import app from "../../../src/app";
 import { JOURNEY_REMOVE_QUERY_PARAM, UPDATE_INTERRUPT_CARD_URL, OVERSEAS_ENTITY_QUERY_URL, UPDATE_ANY_TRUSTS_INVOLVED_URL, SECURE_UPDATE_FILTER_URL } from "../../../src/config";
 import { INTERRUPT_CARD_PAGE_TITLE, REMOVE_INTERRUPT_CARD_TEXT, BEFORE_START_PAGE_LINK_AUTHENTICATION, BEFORE_START_PAGE_LINK_VERIFICATION } from "../../__mocks__/text.mock";
@@ -88,7 +88,7 @@ describe("UPDATE INTERRUPT CARD controller", () => {
 
     test("catch error when rendering the page", async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-      const resp = await request(app).get(UPDATE_INTERRUPT_CARD_URL);
+      const resp = await request(app).get(UPDATE_INTERRUPT_CARD_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
@@ -97,7 +97,7 @@ describe("UPDATE INTERRUPT CARD controller", () => {
 
   describe("POST tests", () => {
     test(`redirect to ${OVERSEAS_ENTITY_QUERY_URL}`, async () => {
-      const resp = await request(app).post(UPDATE_INTERRUPT_CARD_URL);
+      const resp = await request(app).post(UPDATE_INTERRUPT_CARD_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain("overseas-entity-query");

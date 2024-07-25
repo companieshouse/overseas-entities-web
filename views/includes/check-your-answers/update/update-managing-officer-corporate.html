@@ -44,7 +44,7 @@
   {% if isNewMo %}
     {% set changeLinkUrl = OE_CONFIGS.UPDATE_MANAGING_OFFICER_CORPORATE_URL + '/' + moId %}
   {% else %}
-    {% set moIndex = appData.managing_officers_corporate.indexOf(moc) %}
+    {% set moIndex = managing_officers_corporate.indexOf(moc) %}
     {% set changeLinkUrl = OE_CONFIGS.UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_URL + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex %}
   {% endif %}
 {% endif %}

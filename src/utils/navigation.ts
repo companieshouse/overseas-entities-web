@@ -103,7 +103,7 @@ export const NAVIGATION: Navigation = {
   [config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL]: {
     currentPage: config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
     previousPage: (appData: ApplicationData, req: Request) => getUpdateOrRemoveBackLink(req, config.OVERSEAS_ENTITY_QUERY_URL),
-    nextPage: [config.UPDATE_FILING_DATE_PAGE, config.PRESENTER_URL, config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE]
+    nextPage: [config.UPDATE_FILING_DATE_PAGE, config.PRESENTER_URL, config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE + config.RELEVANT_PERIOD_QUERY_PARAM]
   },
   [config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL]: {
     currentPage: config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE,
@@ -112,17 +112,17 @@ export const NAVIGATION: Navigation = {
   },
   [config.RELEVANT_PERIOD_INTERRUPT_URL]: {
     currentPage: config.RELEVANT_PERIOD_INTERRUPT_PAGE,
-    previousPage: () => config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL,
-    nextPage: [config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE]
+    previousPage: () => config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL + config.RELEVANT_PERIOD_QUERY_PARAM,
+    nextPage: [config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE ]
   },
   [config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL]: {
     currentPage: config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE,
-    previousPage: () => config.RELEVANT_PERIOD_INTERRUPT_URL,
+    previousPage: () => config.RELEVANT_PERIOD_INTERRUPT_URL + config.RELEVANT_PERIOD_QUERY_PARAM,
     nextPage: [config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL]
   },
   [config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL]: {
     currentPage: config.RELEVANT_PERIOD_REVIEW_STATEMENTS_PAGE,
-    previousPage: () => config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL,
+    previousPage: () => config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL + config.RELEVANT_PERIOD_QUERY_PARAM,
     nextPage: [config.UPDATE_FILING_DATE_URL]
   },
   [config.WHO_IS_MAKING_UPDATE_URL]: {
@@ -554,7 +554,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.REMOVE_SOLD_ALL_LAND_FILTER_URL]: {
     currentPage: config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE,
-    previousPage: () => `${config.UPDATE_CONTINUE_WITH_SAVED_FILING_PAGE}${config.JOURNEY_REMOVE_QUERY_PARAM}`,
+    previousPage: () => `${config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`,
     nextPage: [config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL]
   },
   [config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL]: {

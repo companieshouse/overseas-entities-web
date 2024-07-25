@@ -1144,7 +1144,6 @@ router.route(config.UPDATE_ANY_TRUSTS_INVOLVED_URL)
 
 router.route(config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL)
   .all(
-    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION),
     authentication,
     companyAuthentication,
     navigation.hasUpdatePresenter,

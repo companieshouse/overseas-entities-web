@@ -20,7 +20,7 @@
 {% endblock %}
 
 {% set isProtectedInformation %}
-  {% if appData.is_secure_register == 1 %}
+  {% if is_secure_register == 1 %}
     Yes
   {% else %}
     No
@@ -28,7 +28,7 @@
 {% endset %}
 
 {% set hasSoldAllLand %}
-  {% if appData.remove.has_sold_all_land == 1 %}
+  {% if remove.has_sold_all_land == 1 %}
     Yes
   {% else %}
     No
@@ -36,7 +36,7 @@
 {% endset %}
 
 {% set IsListedAsPropertyOwner %}
-  {% if appData.remove.is_listed_as_property_owner == 1 %}
+  {% if remove.is_listed_as_property_owner == 1 %}
     Yes
   {% else %}
     No
@@ -44,23 +44,24 @@
 {% endset %}
 
 {% set noChange %}
-  {% if appData.update.no_change == 1 %}
+  {% if update.no_change == 1 %}
     No, I do not need to make changes
   {% endif %}
 {% endset %}
 
-{% set updateStatementDate = dateMacros.formatDate(appData.update.filing_date["day"], appData.update.filing_date["month"], appData.update.filing_date["year"]) %}
+{% set updateStatementDate = dateMacros.formatDate(update.filing_date["day"], update.filing_date["month"],
+update.filing_date["year"]) %}
 
 {% if isRemoveJourney %}
   {% set removeStatementDate = dateMacros.formatDate(pageParams.today["day"], pageParams.today["month"], pageParams.today["year"]) %}
 {% endif %}
 
 {% set identifiedStatementText %}
-    {% if appData.beneficial_owners_statement == "ALL_IDENTIFIED_ALL_DETAILS" %}
+    {% if beneficial_owners_statement == "ALL_IDENTIFIED_ALL_DETAILS" %}
       All beneficial owners have been identified and all required information has been provided.
-    {% elif appData.beneficial_owners_statement == "SOME_IDENTIFIED_ALL_DETAILS" %}
+    {% elif beneficial_owners_statement == "SOME_IDENTIFIED_ALL_DETAILS" %}
       Some beneficial owners have been identified and all required information has been provided.
-    {% elif appData.beneficial_owners_statement == "NONE_IDENTIFIED" %}
+    {% elif beneficial_owners_statement == "NONE_IDENTIFIED" %}
       No beneficial owners have been identified
     {% endif %}
 {% endset %}
@@ -73,10 +74,11 @@
   {% endif %}
 {% endset %}
 
-{% set addTrustsEnabled = OE_CONFIGS.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS === 'true' %}
-{% set manageTrustsEnabled = OE_CONFIGS.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS === 'true' %}
-{% set hasExistingTrusts = appData.update and appData.update.review_trusts and appData.update.review_trusts.length > 0 %}
+{% set addTrustsEnabled = pageParams.addTrustsEnabled %}
+{% set manageTrustsEnabled = pageParams.manageTrustsEnabled %}
+{% set hasExistingTrusts = update and update.review_trusts and update.review_trusts.length > 0 %}
 {% set hasBosWithTrusteeNOC = pageParams.hasAnyBosWithTrusteeNocs %}
+
 
 {% block content %}
   <div class="govuk-grid-row">
@@ -85,14 +87,14 @@
       {% include "includes/list/errors.html" %}
 
       <span class="govuk-caption-xl govuk-!-padding-bottom-1">
-        {% if appData.entity_name %}
-            {{ appData.entity_name }}
+        {% if entity_name %}
+          {{ entity_name }}
         {% else %}
             {{ entityName }}
         {% endif %}
         -
-        {% if appData.entity_number %}
-            {{ appData.entity_number }}
+        {% if entity_number %}
+          {{ entity_number }}
         {% else %}
             {{ entityNumber }}
         {% endif %}
@@ -207,9 +209,9 @@
     <br>
 
 {% set ceasedStatementText %}
-    {% if appData.update.registrable_beneficial_owner == 1 %}
+    {% if update.registrable_beneficial_owner == 1 %}
     The entity has reasonable cause to believe that at least one person has become or ceased to be a registrable beneficial owner during the update period.
-    {% elif appData.update.registrable_beneficial_owner == 0 %}
+    {% elif update.registrable_beneficial_owner == 0 %}
     The entity has no reasonable cause to believe that anyone has become or ceased to be a registrable beneficial owner during the update period.
     {% endif %}
 {% endset %}
@@ -271,9 +273,9 @@
 
   {% set hideChangeLinksForNonEditableFields = true %}
 
-  {% set bois = appData.update.review_beneficial_owners_individual or [] %}
-  {% set bocs = appData.update.review_beneficial_owners_corporate or [] %}
-  {% set bogs = appData.update.review_beneficial_owners_government_or_public_authority or [] %}
+  {% set bois = update.review_beneficial_owners_individual or [] %}
+  {% set bocs = update.review_beneficial_owners_corporate or [] %}
+  {% set bogs = update.review_beneficial_owners_government_or_public_authority or [] %}
 
   {% if bois | length or bocs | length or bogs | length %}
     <br>
@@ -289,8 +291,8 @@
     {% endfor %}
   {% endif %}
 
-  {% set mois = appData.update.review_managing_officers_individual or [] %}
-  {% set mocs = appData.update.review_managing_officers_corporate or [] %}
+  {% set mois = update.review_managing_officers_individual or [] %}
+  {% set mocs = update.review_managing_officers_corporate or [] %}
 
   {% if mois | length or mocs | length %}
     <br>
@@ -304,18 +306,16 @@
   {% endif %}
 
   {% if addTrustsEnabled and manageTrustsEnabled %}
-
     {% if hasExistingTrusts %}
       <br>
       <h2 class="govuk-heading-l">Trusts</h2>
-      {% for trust in appData.update.review_trusts %}
+      {% for trust in update.review_trusts %}
         {% set trust_heading = trust.trust_name %}
         {% include "includes/check-your-answers/trusts.html" %}
       {% endfor %}
     {% endif %}
 
   {% elif addTrustsEnabled and pageParams.hasAnyBosWithTrusteeNocs %}
-
     <br>
     <h2 class="govuk-heading-l">Trusts</h2>
     <p class="govuk-body govuk-!-margin-bottom-9">Trust information cannot be displayed.</p>

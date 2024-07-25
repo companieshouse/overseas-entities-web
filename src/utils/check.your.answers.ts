@@ -23,16 +23,14 @@ import {
   CHS_URL,
   UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL,
   FEATURE_FLAG_ENABLE_TRUSTS_WEB,
-  FEATURE_FLAG_ENABLE_UPDATE_TRUSTS,
   UPDATE_CHECK_YOUR_ANSWERS_PAGE,
   UPDATE_REVIEW_STATEMENT_PAGE,
-  UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL,
-  UPDATE_BENEFICIAL_OWNER_TYPE_URL,
-  FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION,
   UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL,
   UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL,
   JourneyType,
   REMOVE_CONFIRM_STATEMENT_URL,
+  FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS,
+  FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
 } from "../config";
 import { RoleWithinTrustType } from "../model/role.within.trust.type.model";
 import { fetchManagingOfficersPrivateData } from "./update/fetch.managing.officers.private.data";
@@ -44,7 +42,6 @@ export const getDataForReview = async (req: Request, res: Response, next: NextFu
   const session = req.session as Session;
   const appData = getApplicationData(session);
   const hasAnyBosWithTrusteeNocs = isNoChangeJourney ? checkEntityReviewRequiresTrusts(appData) : checkEntityRequiresTrusts(appData);
-
   const backLinkUrl = getBackLinkUrl(isNoChangeJourney, hasAnyBosWithTrusteeNocs, isRemoveJourney(req));
   const templateName = getTemplateName(isNoChangeJourney);
   const isRPStatementExists = checkRPStatementsExist(appData);
@@ -65,38 +62,42 @@ export const getDataForReview = async (req: Request, res: Response, next: NextFu
     if (isRemoveJourney(req)) {
       return res.render(templateName, {
         journey: JourneyType.remove,
-        backLinkUrl: backLinkUrl,
+        backLinkUrl,
         templateName: templateName,
         changeLinkUrl: OVERSEAS_ENTITY_UPDATE_DETAILS_URL,
         overseasEntityHeading: OVERSEAS_ENTITY_SECTION_HEADING,
         whoIsCompletingChangeLink: WHO_IS_MAKING_UPDATE_URL,
         roleTypes: RoleWithinTrustType,
-        appData,
+        ...appData,
         pageParams: {
           isRegistration: false,
           isRemove: true,
           noChangeFlag: isNoChangeJourney,
           isTrustFeatureEnabled: isActiveFeature(FEATURE_FLAG_ENABLE_TRUSTS_WEB),
           hasAnyBosWithTrusteeNocs,
-          today: getTodaysDate()
+          today: getTodaysDate(),
+          addTrustsEnabled: isActiveFeature(FEATURE_FLAG_ENABLE_UPDATE_TRUSTS),
+          manageTrustsEnabled: isActiveFeature(FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS)
         },
       });
     }
 
     return res.render(templateName, {
-      backLinkUrl: backLinkUrl,
+      backLinkUrl,
       templateName: templateName,
       changeLinkUrl: OVERSEAS_ENTITY_UPDATE_DETAILS_URL,
       overseasEntityHeading: OVERSEAS_ENTITY_SECTION_HEADING,
       whoIsCompletingChangeLink: WHO_IS_MAKING_UPDATE_URL,
       roleTypes: RoleWithinTrustType,
-      appData,
+      ...appData,
       pageParams: {
         isRegistration: false,
         isRPStatementExists: isRPStatementExists,
         noChangeFlag: isNoChangeJourney,
         isTrustFeatureEnabled: isActiveFeature(FEATURE_FLAG_ENABLE_TRUSTS_WEB),
         hasAnyBosWithTrusteeNocs,
+        addTrustsEnabled: isActiveFeature(FEATURE_FLAG_ENABLE_UPDATE_TRUSTS),
+        manageTrustsEnabled: isActiveFeature(FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS)
       },
     });
   } catch (error) {
@@ -156,11 +157,10 @@ const getBackLinkUrl = (isNoChangeJourney: boolean, hasAnyBosWithTrusteeNocs: bo
     return UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL;
   } else {
     let backLinkUrl: string;
-    backLinkUrl = (isActiveFeature(FEATURE_FLAG_ENABLE_UPDATE_TRUSTS) && hasAnyBosWithTrusteeNocs) ? UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL : UPDATE_BENEFICIAL_OWNER_TYPE_URL;
     if (isRemove) {
-      backLinkUrl = isActiveFeature(FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION) ? REMOVE_CONFIRM_STATEMENT_URL : backLinkUrl;
+      backLinkUrl = REMOVE_CONFIRM_STATEMENT_URL;
     } else {
-      backLinkUrl = isActiveFeature(FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION) ? UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL : backLinkUrl;
+      backLinkUrl = UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL;
     }
     return backLinkUrl;
   }

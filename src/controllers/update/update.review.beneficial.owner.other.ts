@@ -1,14 +1,15 @@
 import {
   UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
-  UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_PAGE
+  UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_PAGE,
+  RELEVANT_PERIOD_QUERY_PARAM
 } from "../../config";
 import { NextFunction, Request, Response } from "express";
 import { getApplicationData, mapDataObjectToFields, removeFromApplicationData, setApplicationData } from "../../utils/application.data";
 import { logger } from "../../utils/logger";
 import { CeasedDateKey } from "../../model/date.model";
 import { addCeasedDateToTemplateOptions } from "../../utils/update/ceased_date_util";
-import { BeneficialOwnerOtherKey } from "../../model/beneficial.owner.other.model";
+import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../../model/beneficial.owner.other.model";
 import { Session } from "@companieshouse/node-session-handler";
 import { ApplicationDataType } from "../../model";
 import { setBeneficialOwnerData } from "../../utils/beneficial.owner.other";
@@ -21,6 +22,7 @@ import {
   ServiceAddressKeys
 } from "../../model/address.model";
 import { AddressKeys, EntityNumberKey } from "../../model/data.types.model";
+import { checkRelevantPeriod } from "../../utils/relevant.period";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -63,20 +65,31 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const booIndex = req.query.index;
     const appData = getApplicationData(req.session);
 
-    if (booIndex !== undefined && appData.beneficial_owners_corporate && appData.beneficial_owners_corporate[Number(booIndex)].id === req.body["id"]){
-      const boId = appData.beneficial_owners_corporate[Number(booIndex)].id;
+    if (booIndex !== undefined && appData.beneficial_owners_corporate && appData.beneficial_owners_corporate[Number(booIndex)].id === req.body["id"]) {
+      const boData: BeneficialOwnerOther = appData.beneficial_owners_corporate[Number(booIndex)];
+      const boId = boData.id;
+
+      const trustIds: string[] = boData?.trust_ids?.length ? [...boData.trust_ids] : [];
+
       removeFromApplicationData(req, BeneficialOwnerOtherKey, boId);
 
       const session = req.session as Session;
 
       const data: ApplicationDataType = setBeneficialOwnerData(req.body, uuidv4());
 
+      if (trustIds.length > 0) {
+        (data as BeneficialOwnerOther).trust_ids = [...trustIds];
+      }
+
       setApplicationData(req.session, data, BeneficialOwnerOtherKey);
 
       await saveAndContinue(req, session, false);
     }
-
-    return res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+    if (checkRelevantPeriod(appData)) {
+      return res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
+    } else {
+      return res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+    }
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

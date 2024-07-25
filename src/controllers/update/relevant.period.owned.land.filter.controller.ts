@@ -36,7 +36,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const session = req.session as Session;
 
     if (ownedLandKey === '1') {
-      return res.redirect(config.RELEVANT_PERIOD_INTERRUPT_URL);
+      return res.redirect(config.RELEVANT_PERIOD_INTERRUPT_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
     } else {
       if (isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_SAVE_AND_RESUME)) {
         const appData: ApplicationData = getApplicationData(session);

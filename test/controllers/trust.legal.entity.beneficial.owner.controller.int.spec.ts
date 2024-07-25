@@ -79,7 +79,7 @@ describe("Legal entity beneficial owner integration tests", () => {
       expect(decodedHTML).toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER_LEGAL_ENTITY_BO);
       expect(decodedHTML).toContain(ErrorMessages.ADDRESS_LINE1_LEGAL_ENTITY_BO);
       expect(decodedHTML).toContain(ErrorMessages.CITY_OR_TOWN_LEGAL_ENTITY_BO);
-      expect(decodedHTML).toContain(ErrorMessages.COUNTRY_LEGAL_ENTITY_BO);
+      expect(decodedHTML).toContain(ErrorMessages.COUNTRY_BO);
       expect(decodedHTML).not.toContain(ErrorMessages.PUBLIC_REGISTER_JURISDICTION);
       expect(decodedHTML).not.toContain(ErrorMessages.ENTITY_REGISTRATION_NUMBER);
       expect(decodedHTML).not.toContain(ErrorMessages.PUBLIC_REGISTER_NAME);
@@ -124,7 +124,7 @@ describe("Legal entity beneficial owner integration tests", () => {
       expect(decodedHTML).toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER_LEGAL_ENTITY_BO);
       expect(decodedHTML).toContain(ErrorMessages.ADDRESS_LINE1_LEGAL_ENTITY_BO);
       expect(decodedHTML).toContain(ErrorMessages.CITY_OR_TOWN_LEGAL_ENTITY_BO);
-      expect(decodedHTML).toContain(ErrorMessages.COUNTRY_LEGAL_ENTITY_BO);
+      expect(decodedHTML).toContain(ErrorMessages.COUNTRY_BO);
 
       // Date Interested Person Errors
       expect(decodedHTML).toContain(ErrorMessages.ENTER_DATE_INTERESTED_PERSON_LEGAL_ENTITY_BO);
@@ -216,7 +216,7 @@ describe("Legal entity beneficial owner integration tests", () => {
       expect(decodedHTML).toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER_LEGAL_ENTITY_BO);
       expect(decodedHTML).toContain(ErrorMessages.ADDRESS_LINE1_LEGAL_ENTITY_BO);
       expect(decodedHTML).toContain(ErrorMessages.CITY_OR_TOWN_LEGAL_ENTITY_BO);
-      expect(decodedHTML).toContain(ErrorMessages.COUNTRY_LEGAL_ENTITY_BO);
+      expect(decodedHTML).toContain(ErrorMessages.COUNTRY_BO);
       expect(decodedHTML).not.toContain(ErrorMessages.PUBLIC_REGISTER_JURISDICTION);
       expect(decodedHTML).not.toContain(ErrorMessages.ENTITY_REGISTRATION_NUMBER);
       expect(decodedHTML).not.toContain(ErrorMessages.PUBLIC_REGISTER_NAME);
@@ -261,7 +261,7 @@ describe("Legal entity beneficial owner integration tests", () => {
       expect(decodedHTML).toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER_LEGAL_ENTITY_BO);
       expect(decodedHTML).toContain(ErrorMessages.ADDRESS_LINE1_LEGAL_ENTITY_BO);
       expect(decodedHTML).toContain(ErrorMessages.CITY_OR_TOWN_LEGAL_ENTITY_BO);
-      expect(decodedHTML).toContain(ErrorMessages.COUNTRY_LEGAL_ENTITY_BO);
+      expect(decodedHTML).toContain(ErrorMessages.COUNTRY_BO);
 
       // Date Interested Person Errors
       expect(decodedHTML).toContain(ErrorMessages.ENTER_DATE_INTERESTED_PERSON_LEGAL_ENTITY_BO);

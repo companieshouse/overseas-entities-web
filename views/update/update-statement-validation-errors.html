@@ -2,23 +2,23 @@
 
 {% set title = "The statements you've chosen do not match the information provided in this update" %}
 
-{% set entityName = appData.entity_name %}
-{% set entityNumber = appData.entity_number %}
+{% set entityName = entity_name %}
+{% set entityNumber = entity_number %}
 
 {% set identifiedBOsStatement %}
-  {% if appData.beneficial_owners_statement == "ALL_IDENTIFIED_ALL_DETAILS" -%}
+  {% if beneficial_owners_statement == "ALL_IDENTIFIED_ALL_DETAILS" -%}
     All beneficial owners have been identified and I can provide all the required information
-  {%- elif appData.beneficial_owners_statement == "SOME_IDENTIFIED_ALL_DETAILS" -%}
+  {%- elif beneficial_owners_statement == "SOME_IDENTIFIED_ALL_DETAILS" -%}
     Some beneficial owners have been identified and I can provide all required information
-  {%- elif appData.beneficial_owners_statement == "NONE_IDENTIFIED" -%}
+  {%- elif beneficial_owners_statement == "NONE_IDENTIFIED" -%}
     No beneficial owners have been identified
   {%- endif %}
 {% endset %}
 
 {% set newOrCeasedBOsStatement %}
-  {% if appData.update.registrable_beneficial_owner == 1 -%}
+  {% if update.registrable_beneficial_owner == 1 -%}
     The entity has reasonable cause to believe that at least one person has become or ceased to be a registrable beneficial owner during the update period.
-  {%- elif appData.update.registrable_beneficial_owner == 0 -%}
+  {%- elif update.registrable_beneficial_owner == 0 -%}
     The entity has no reasonable cause to believe that anyone has become or ceased to be a registrable beneficial owner during the update period.
   {%- endif %}
 {% endset %}

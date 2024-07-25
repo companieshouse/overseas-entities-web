@@ -48,7 +48,7 @@ const getPageProperties = (
 
   let appData: ApplicationData = {};
   const relevant_period = req.query['relevant-period'] === "true";
-  relevant_period ? appData = getApplicationData(req.session) : {};
+  appData = relevant_period ? getApplicationData(req.session) : {};
   const trustData = CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId, false);
   return {
     backLinkUrl: getTrustInvolvedUrl(isUpdate, trustId, req),

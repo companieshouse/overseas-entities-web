@@ -126,6 +126,11 @@
         {% include "includes/check-your-answers/beneficial-owner-statements.html" %}
       {% endif %}
 
+      {% if pageParams.isRPStatementExists %}
+      <br>
+      {% include "includes/check-your-answers/relevant-period-statements.html" %}
+      {% endif %}
+
       {% set bois = appData.beneficial_owners_individual or [] %}
       {% set existingBOIs = bois | selectattr('ch_reference') %}
       {% set newBOIs = bois | rejectattr('ch_reference') %}

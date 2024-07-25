@@ -11,6 +11,7 @@ import { validationResult } from 'express-validator';
 import { isActiveFeature } from './feature.flag';
 import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
 import { getUrlWithParamsToPath } from './url';
+import { checkRelevantPeriod } from './relevant.period';
 
 export const ADD_TRUST_TEXTS = {
   title: 'Trusts associated with the overseas entity',
@@ -26,7 +27,8 @@ type TrustInvolvedPageProperties = {
     subtitle: string
   },
   pageData: {
-    trustData: Trust[]
+    trustData: Trust[],
+    isRelevantPeriod: boolean,
   },
   formData?: PageModel.AddTrust,
   errors?: FormattedValidationErrors,
@@ -47,7 +49,8 @@ const getPageProperties = (
     backLinkUrl: getBackLinkUrl(isUpdate, req),
     ...appData,
     pageData: {
-      trustData: getTrustArray(appData)
+      trustData: getTrustArray(appData),
+      isRelevantPeriod: isUpdate ? checkRelevantPeriod(appData) : false,
     },
     pageParams: {
       title: ADD_TRUST_TEXTS.title,
@@ -139,11 +142,7 @@ const newTrustPage = (isUpdate: boolean, req: Request) => {
 
 const nextPage = (isUpdate: boolean, req: Request) => {
   if (isUpdate) {
-    return (
-      isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION)
-        ? config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL
-        : config.UPDATE_CHECK_YOUR_ANSWERS_URL
-    );
+    return config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL;
   } else {
     return isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
       ? getUrlWithParamsToPath(config.CHECK_YOUR_ANSWERS_WITH_PARAMS_URL, req)

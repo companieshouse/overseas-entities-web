@@ -22,7 +22,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
         backLinkUrl: `${config.OVERSEAS_ENTITY_QUERY_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`,
         updateUrl: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
         templateName: config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
-        appData,
+        ...appData,
         registrationDate: update.date_of_creation
       });
     }
@@ -31,7 +31,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       backLinkUrl: config.OVERSEAS_ENTITY_QUERY_URL,
       updateUrl: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
       templateName: config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
-      appData,
+      ...appData,
       registrationDate: update.date_of_creation
     });
 
@@ -56,7 +56,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     }
 
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD)) {
-      return res.redirect(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
+      return res.redirect(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
     }
     return res.redirect(config.UPDATE_FILING_DATE_URL);
   } catch (errors) {

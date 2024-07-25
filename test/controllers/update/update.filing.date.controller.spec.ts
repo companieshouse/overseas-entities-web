@@ -1,3 +1,4 @@
+
 jest.mock("ioredis");
 jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/middleware/authentication.middleware');
@@ -9,6 +10,7 @@ jest.mock('../../../src/service/overseas.entities.service');
 jest.mock("../../../src/utils/feature.flag" );
 jest.mock('../../../src/middleware/navigation/update/has.overseas.entity.middleware');
 jest.mock("../../../src/service/company.profile.service");
+jest.mock('../../../src/utils/relevant.period');
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
 import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
@@ -27,6 +29,7 @@ import { getApplicationData, mapDataObjectToFields } from "../../../src/utils/ap
 import { OverseasEntityKey, Transactionkey } from '../../../src/model/data.types.model';
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { hasOverseasEntity } from "../../../src/middleware/navigation/update/has.overseas.entity.middleware";
+import { checkRelevantPeriod } from "../../../src/utils/relevant.period";
 
 import {
   APPLICATION_DATA_MOCK,
@@ -91,6 +94,8 @@ mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Respons
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue(true);
 
+const mockCheckRelevantPeriod = checkRelevantPeriod as jest.Mock;
+
 const FILING_DATE_FORM_DATA = {
   "filing_date-day": "1",
   "filing_date-month": "4",
@@ -106,7 +111,7 @@ describe("Update Filing Date controller", () => {
 
   describe("GET tests", () => {
     test('renders the update-filing-date page when FEATURE_FLAG_ENABLE_RELEVANT_PERIOD is not active,', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockCheckRelevantPeriod.mockReturnValueOnce(false);
       const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
 
       expect(resp.status).toEqual(200);
@@ -119,17 +124,17 @@ describe("Update Filing Date controller", () => {
     });
 
     test('renders the update-filing-date page when FEATURE_FLAG_ENABLE_RELEVANT_PERIOD is active,', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockCheckRelevantPeriod.mockReturnValueOnce(true);
       const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain("/update-an-overseas-entity/relevant-period-owned-land-filter");
+      expect(resp.text).toContain("/update-an-overseas-entity/registered-owner-during-pre-registration-period?relevant-period=true");
     });
 
     test('renders the update-filing-date page with no update session data', async () => {
       const mockData = { ...UPDATE_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS, entity_number: 'OE111129' };
       mockGetApplicationData.mockReturnValueOnce(mockData);
-      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockCheckRelevantPeriod.mockReturnValueOnce(false);
 
       const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
 
@@ -145,7 +150,7 @@ describe("Update Filing Date controller", () => {
     test('renders the update-filing-date page with update session data', async () => {
       const mockData = { ...APPLICATION_DATA_MOCK };
       mockGetApplicationData.mockReturnValueOnce(mockData);
-      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockCheckRelevantPeriod.mockReturnValueOnce(false);
 
       const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
 
@@ -161,7 +166,7 @@ describe("Update Filing Date controller", () => {
     test('does not fetch private overseas entity data to app data if already exists', async () => {
       const mockData = { ...APPLICATION_DATA_MOCK };
       mockGetApplicationData.mockReturnValueOnce(mockData);
-      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockCheckRelevantPeriod.mockReturnValueOnce(false);
 
       const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
 
@@ -275,7 +280,6 @@ describe("Update Filing Date controller", () => {
       expect(mockTransactionService).toHaveBeenCalledTimes(1);
       expect(mockCreateOverseasEntity).toHaveBeenCalledTimes(1);
       expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
-
       expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${config.OVERSEAS_ENTITY_PRESENTER_URL}`);
     });
 

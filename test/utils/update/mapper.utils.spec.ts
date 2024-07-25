@@ -1,4 +1,5 @@
-import { lowerCaseAllWordsExceptFirstLetters, mapBOIndividualName, mapInputDate, splitOriginatingRegistryName } from "../../../src/utils/update/mapper.utils";
+import { InputDate } from "@companieshouse/api-sdk-node/dist/services/overseas-entities/types";
+import { lowerCaseAllWordsExceptFirstLetters, mapBOIndividualName, mapDateOfBirth, mapInputDate, splitOriginatingRegistryName } from "../../../src/utils/update/mapper.utils";
 
 describe("Test mapping utils", () => {
   test("does map date of creation for month format containing single digit ", () => {
@@ -52,6 +53,58 @@ describe("Test mapping utils", () => {
     const nameElements = { forename: "First", surname: "surname" };
     const firstName = mapBOIndividualName(nameElements);
     expect(firstName).toEqual("First");
+  });
+
+  describe("mapDateOfBirth", () => {
+    it("should return the same as the input", () => {
+      const date = {
+        day: "05",
+        month: "08",
+        year: "1983"
+      };
+      const dateMapped = mapDateOfBirth(date);
+      expect(dateMapped).toEqual({ day: "05", month: "08", year: "1983" });
+    });
+
+    it("should add the zero to the day", () => {
+      const date = {
+        day: "5",
+        month: "08",
+        year: "1983"
+      };
+      const dateMapped = mapDateOfBirth(date);
+      expect(dateMapped).toEqual({ day: "05", month: "08", year: "1983" });
+    });
+
+    it("should add the zero to the day and convert it to a string", () => {
+      const date = {
+        day: 5,
+        month: "08",
+        year: "1983"
+      };
+      const dateMapped = mapDateOfBirth(date as unknown as InputDate);
+      expect(dateMapped).toEqual({ day: "05", month: "08", year: "1983" });
+    });
+
+    it("should add the zero to the month", () => {
+      const date = {
+        day: "05",
+        month: "8",
+        year: "1983"
+      };
+      const dateMapped = mapDateOfBirth(date);
+      expect(dateMapped).toEqual({ day: "05", month: "08", year: "1983" });
+    });
+
+    it("should add the zero to the day and convert it to a string", () => {
+      const date = {
+        day: "05",
+        month: 8,
+        year: "1983"
+      };
+      const dateMapped = mapDateOfBirth(date as unknown as InputDate);
+      expect(dateMapped).toEqual({ day: "05", month: "08", year: "1983" });
+    });
   });
 
   describe("lowerCaseAllWordsExceptFirstLetters", () => {

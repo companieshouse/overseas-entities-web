@@ -157,6 +157,7 @@ export const TRUST_NOT_ASSOCIATED_WITH_BENEFICIAL_OWNER_TEXT = "This trust is no
 export const TRUST_CEASED_DATE_TEXT = "When did this trust stop being associated with the overseas entity";
 export const TRUST_SELECT_TRUSTEES_TEXT = "Which of the overseas entity’s beneficial owners are trustees of this trust";
 export const TRUST_ENTER_CEASED_DATE = "Enter the date the trust stopped being associated with this overseas entity";
+export const TRUSTEE_STILL_INVOLVED_TEXT = "Are they still involved in the trust";
 
 export const CHANGE_LINK_INDIVIDUAL_BO_LABEL = "Individual beneficial owner ";
 export const CHANGE_LINK_INDIVIDUAL_BO_FIRST_NAME = CHANGE_LINK_INDIVIDUAL_BO_LABEL + "Ivan Drago - first name";
@@ -250,6 +251,9 @@ export const CONFIRMATION_UPDATE_TEXT = "if the update statement has been accept
 export const UPDATE_TELL_US_ABOUT_TRUST_HEADING = "Tell us about the trust";
 export const UPDATE_TELL_US_ABOUT_TRUST_QUESTION = "What is the name of the trust?";
 export const UPDATE_TELL_US_ABOUT_THE_INDIVIDUAL_HEADING = "Tell us about the individual";
+export const UPDATE_TELL_US_ABOUT_THE_INDIVIDUAL_BENEFICIARY_HEADING = "Tell us about the individual beneficiary";
+export const UPDATE_WHAT_IS_THEIR_FIRST_NAME = "What is their first name?";
+export const UPDATE_ARE_THEY_STILL_INVOLVED_IN_THE_TRUST = "Are they still involved in the trust?";
 export const UPDATE_TRUSTS_ASSOCIATED_BACK_LINK = "/update-an-overseas-entity/update-trusts-associated-with-overseas-entity";
 export const HOME_ADDRESS_LINE1 = "addressLine1";
 export const UPDATE_TRUSTS_ASSOCIATED_ADDED_HEADING = "What you have added so far";
@@ -305,3 +309,26 @@ export const UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_TABLE_HEADING = "<th scope=\"
 export const UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_TITLE = "Tell us about the legal entity";
 export const BACK_BUTTON_CLASS = "govuk-back-link";
 
+// Trust field keys
+export const TRUST_NAME = "Trust name";
+export const TRUST_CREATION_DATE = "Date the trust was created";
+export const TRUSTS_ADDED = "Trusts you have added";
+export const TRUSTS_REVIEWED = "Trusts you have reviewed";
+export const TRUST_INVOLVED = "Is the trust still involved in the overseas entity?";
+export const TRUST_CEASED_DATE = "Date the trust stopped being associated to the overseas entity";
+
+// Trustee field keys
+export const TRUSTEE_INDIVIDUAL_TITLE = "Individual for";
+export const TRUSTEE_INDIVIDUAL_FIRSTNAME = "First name";
+export const TRUSTEE_INDIVIDUAL_LASTNAME = "Last name";
+export const TRUSTEE_INDIVIDUAL_DATE_OF_BIRTH = "Date of birth";
+export const TRUSTEE_INDIVIDUAL_NATIONALITY = "Nationality";
+export const TRUSTEE_ROLE = "Role within the trust";
+export const TRUSTEE_INDIVIDUAL_INVOLVED = "Are they still involved in the trust?";
+export const TRUSTEE_INDIVIDUAL_CEASED_DATE = "Date they ceased to be involved in the trust";
+export const TRUSTEE_LEGAL_ENTITY_TITLE = "Legal Entity for";
+export const TRUSTEE_LEGAL_ENTITY_NAME = "Name";
+export const TRUSTEE_LEGAL_ENTITY_LEGAL_AUTHORITY = "Governing Law";
+export const TRUSTEE_LEGAL_ENTITY_LEGAL_FORM = "Legal form";
+export const TRUSTEE_LEGAL_ENTITY_INVOLVED = "Is it still involved in the trust?";
+export const TRUSTEE_LEGAL_ENTITY_CEASED_DATE = "Date it ceased to be involved in the trust";

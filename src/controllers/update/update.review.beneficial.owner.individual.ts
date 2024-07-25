@@ -1,12 +1,13 @@
 import {
   UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
-  UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE
+  UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
+  RELEVANT_PERIOD_QUERY_PARAM
 } from "../../config";
 import { NextFunction, Request, Response } from "express";
 import { getApplicationData, mapDataObjectToFields, removeFromApplicationData, setApplicationData } from "../../utils/application.data";
 import { logger } from "../../utils/logger";
-import { BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
+import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
 import { ApplicationDataType } from "../../model";
 import { setBeneficialOwnerData } from "../../utils/beneficial.owner.individual";
 import { v4 as uuidv4 } from "uuid";
@@ -16,6 +17,7 @@ import { AddressKeys, EntityNumberKey, InputDate } from "../../model/data.types.
 import { addCeasedDateToTemplateOptions } from "../../utils/update/ceased_date_util";
 import { CeasedDateKey, HaveDayOfBirthKey } from "../../model/date.model";
 import { ServiceAddressKey, ServiceAddressKeys, UsualResidentialAddressKey, UsualResidentialAddressKeys } from "../../model/address.model";
+import { checkRelevantPeriod } from "../../utils/relevant.period";
 
 export const get = (req: Request, res: Response) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
@@ -55,14 +57,18 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const boiIndex = req.query.index;
     const appData = getApplicationData(req.session);
 
-    if (boiIndex !== undefined && appData.beneficial_owners_individual && appData.beneficial_owners_individual[Number(boiIndex)].id === req.body["id"]){
-      const boId = appData.beneficial_owners_individual[Number(boiIndex)].id;
-      const dob = appData.beneficial_owners_individual[Number(boiIndex)].date_of_birth as InputDate;
-      const haveDayOfBirth = appData.beneficial_owners_individual[Number(boiIndex)].have_day_of_birth;
+    if (boiIndex !== undefined && appData.beneficial_owners_individual && appData.beneficial_owners_individual[Number(boiIndex)].id === req.body["id"]) {
+      const boData: BeneficialOwnerIndividual = appData.beneficial_owners_individual[Number(boiIndex)];
+      const boId = boData.id;
+      const dob = boData.date_of_birth as InputDate;
+      const haveDayOfBirth = boData.have_day_of_birth;
+
+      const trustIds: string[] = boData?.trust_ids?.length ? [...boData.trust_ids] : [];
 
       removeFromApplicationData(req, BeneficialOwnerIndividualKey, boId);
 
       setReviewedDateOfBirth(req, dob);
+
       const session = req.session as Session;
 
       const data: ApplicationDataType = setBeneficialOwnerData(req.body, uuidv4());
@@ -70,11 +76,19 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         data[HaveDayOfBirthKey] = haveDayOfBirth;
       }
 
+      if (trustIds.length > 0) {
+        (data as BeneficialOwnerIndividual).trust_ids = [...trustIds];
+      }
+
       setApplicationData(req.session, data, BeneficialOwnerIndividualKey);
 
       await saveAndContinue(req, session, false);
     }
-    res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+    if (checkRelevantPeriod(appData)) {
+      return res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
+    } else {
+      return res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+    }
   } catch (error) {
     next(error);
   }
@@ -87,7 +101,7 @@ export const setReviewedDateOfBirth = (req: Request, dob: InputDate) => {
 };
 
 export const padWithZero = (input: string, maxLength: number, fillString: string): string => {
-  if (input && input.length > 1){
+  if (input && input.toString().length > 1){
     return input;
   }
   return String(input).padStart(maxLength, fillString);

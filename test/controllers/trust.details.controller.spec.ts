@@ -128,6 +128,7 @@ describe('Trust Details controller', () => {
       session: {} as Session,
       route: '',
       method: '',
+      query: {},
     } as Request;
   });
 
@@ -174,6 +175,7 @@ describe('Trust Details controller', () => {
               expectBoIndividualItems,
               expectBoOtherItems,
             ],
+            relevantPeriod: false
           },
         }),
       );

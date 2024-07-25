@@ -1,6 +1,8 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
-
+    {% if pageData.relevantPeriod %}
+      {% include "includes/page-templates/important-banner.html" %}
+    {% endif %}
     {% include "includes/list/errors.html" %}
 
     {# Check if there are any beneficial owners. If the length of the 'beneficialOwners' array is 0, then 'isTrustToBeCeased' will be true #}
@@ -26,11 +28,21 @@
 
       <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ formData.name }}</span>
     {% endif %}
-    <h1 class="govuk-heading-xl">{{ pageParams.title }}</h1>
-    <p class="govuk-caption-l govuk-!-margin-bottom-8">{{ pageParams.subtitle }}</p>
+
+    {% if pageData.relevantPeriod %}
+      <h1 class="govuk-heading-xl">Tell us about the trust involved in the pre-registration period</h1>
+
+      {{ govukInsetText({
+        text: "You need to enter information that is correct as at the date the trust stopped being associated with the overseas entity."
+      }) }}
+    {% else %}
+      <h1 class="govuk-heading-xl">{{ pageParams.title }}</h1>
+
+      <p class="govuk-caption-l govuk-!-margin-bottom-8">{{ pageParams.subtitle }}</p>
+    {% endif %}
 
     <form class="form" method="post">
-      {% include "includes/csrf_token.html" %} 
+      {% include "includes/csrf_token.html" %}
 
       {% set fieldParam = {
         name: 'name',
@@ -45,23 +57,24 @@
       {% set date_classes_month = "govuk-input--width-2 govuk-input" %}
       {% set date_classes_day = "govuk-input--width-2 govuk-input" %}
 
+      {% set ceasedParam = {
+        name: 'ceasedDate',
+        label: 'When did this trust stop being associated with the overseas entity?',
+        hint: "For example, 27 3 2007. This trust's information must be correct to this date.",
+        error: errors.ceasedDate if errors,
+        value: {
+          'Day': formData.ceasedDateDay,
+          'Month': formData.ceasedDateMonth,
+          'Year': formData.ceasedDateYear
+        }
+      } %}
       {% if isReview %}
         <h1 class="govuk-heading-m govuk-!-margin-0">Date the trust was created:</h1>
         <label class="govuk-label govuk-!-margin-bottom-7">{{ formatted_creation_date }}</label>
         <br>
-        
+
         {% if isTrustToBeCeased %}
-          {% set fieldParam = {
-            name: 'ceasedDate',
-            label: 'When did this trust stop being associated with the overseas entity?',
-            hint: "For example, 27 3 2007. This trust's information must be correct to this date.",
-            error: errors.ceasedDate if errors,
-            value: {
-              'Day': formData.ceasedDateDay,
-              'Month': formData.ceasedDateMonth,
-              'Year': formData.ceasedDateYear
-            }
-          } %}
+          {% set fieldParam = ceasedParam %}
           {% include "includes/inputs/date-input.html" %}
         {% endif %}
       {% else %}
@@ -81,10 +94,15 @@
       {% set isUpdateOrRemoveJourney = (isUpdate or journey === "remove") %}
 
       {% if not isTrustToBeCeased and isUpdateOrRemoveJourney %}
-        {% set ceasedDateLabel = "When did this trust stop being associated with the overseas entity?" %}
-        {% set ceasedDateHint = "For example, 27 3 2007. This trust's information must be correct to this date." %}
-        {% set stillInvolvedLegendText = "Is the trust still involved in the overseas entity?" %}
-        {% include "includes/inputs/date/trust-ceased-date-input.html" %}
+        {% if pageData.relevantPeriod %}
+          {% set fieldParam = ceasedParam %}
+          {% include "includes/inputs/date-input.html" %}
+        {% else %}
+          {% set ceasedDateLabel = "When did this trust stop being associated with the overseas entity?" %}
+          {% set ceasedDateHint = "For example, 27 3 2007. This trust's information must be correct to this date." %}
+          {% set stillInvolvedLegendText = "Is the trust still involved in the overseas entity?" %}
+          {% include "includes/inputs/date/trust-ceased-date-input.html" %}
+        {% endif %}
       {% endif %}
 
       {% set boItems = [] %}
@@ -144,12 +162,17 @@
       }) }}
 
       <input type="hidden" name="trustId" value="{{ formData.trustId }}"/>
-      
+
       {% if isReview %}
         <input type="hidden" name="createdDateDay" value="{{ formData.createdDateDay }}"/>
         <input type="hidden" name="createdDateMonth" value="{{ formData.createdDateMonth }}"/>
         <input type="hidden" name="createdDateYear" value="{{ formData.createdDateYear }}"/>
       {% endif %}
+
+      {% if pageData.relevantPeriod %}
+        <input type="hidden" name="stillInvolved" value="0"/>
+      {% endif %}
+
       {% include "includes/save-and-continue-button.html" %}
     </form>
   </div>

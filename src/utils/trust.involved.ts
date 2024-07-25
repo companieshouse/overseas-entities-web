@@ -7,10 +7,12 @@ import { validationResult } from 'express-validator/src/validation-result';
 import { logger } from './logger';
 import { safeRedirect } from './http.ext';
 import { getApplicationData, setExtraData } from './application.data';
+import { checkRelevantPeriod } from './relevant.period';
 import { mapCommonTrustDataToPage } from './trust/common.trust.data.mapper';
 import { mapTrustWhoIsInvolvedToPage } from './trust/who.is.involved.mapper';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
 import { IndividualTrustee, TrustHistoricalBeneficialOwner } from '../model/trust.model';
+import { RoleWithinTrustType } from '../model/role.within.trust.type.model';
 import { getIndividualTrusteesFromTrust, getFormerTrusteesFromTrust } from './trusts';
 import { getTrustInReview, moveTrustOutOfReview } from './update/review_trusts';
 import { saveAndContinue } from './save.and.continue';
@@ -69,7 +71,6 @@ const getPageProperties = (
   let trustId;
   let individualTrusteeData;
   let formerTrusteeData;
-  let isRelevantPeriod;
 
   if (isReview) {
     const trustInReview = getTrustInReview(appData);
@@ -87,12 +88,6 @@ const getPageProperties = (
     trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
     individualTrusteeData = getIndividualTrusteesFromTrust(appData, trustId, isReview);
     formerTrusteeData = getFormerTrusteesFromTrust(appData, trustId, isReview);
-  }
-
-  if (isUpdate) {
-    isRelevantPeriod = (appData.update?.change_bo_relevant_period === "CHANGE_BO_RELEVANT_PERIOD" ||
-      appData.update?.trustee_involved_relevant_period === "TRUSTEE_INVOLVED_RELEVANT_PERIOD" ||
-      appData.update?.change_beneficiary_relevant_period === "CHANGE_BENEFICIARY_RELEVANT_PERIOD");
   }
 
   return {
@@ -113,7 +108,7 @@ const getPageProperties = (
       beneficialOwnerUrlDetach: `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_BENEFICIAL_OWNER_DETACH_URL}`,
       isUpdate: isUpdate,
       isReview: isReview,
-      isRelevantPeriod: isRelevantPeriod,
+      isRelevantPeriod: isUpdate ? checkRelevantPeriod(appData) : false,
     },
     formData,
     errors,
@@ -184,8 +179,16 @@ export const postTrustInvolvedPage = async (
             return safeRedirect(res, config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL);
           case TrusteeType.INDIVIDUAL:
             return safeRedirect(res, config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL);
+          case TrusteeType.RELEVANT_PERIOD_INDIVIDUAL_BENEFICIARY:
+            req.body.typeOfTrustee = TrusteeType.INDIVIDUAL;
+            req.body.roleWithinTrustType = RoleWithinTrustType.BENEFICIARY;
+            return safeRedirect(res, config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
           case TrusteeType.LEGAL_ENTITY:
             return safeRedirect(res, config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL);
+          case TrusteeType.RELEVANT_PERIOD_LEGAL_ENTITY:
+            req.body.typeOfTrustee = TrusteeType.LEGAL_ENTITY;
+            req.body.roleWithinTrustType = RoleWithinTrustType.BENEFICIARY;
+            return safeRedirect(res, config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
           default:
             throw new Error("Unexpected trustee type received");
       }
@@ -203,7 +206,16 @@ export const postTrustInvolvedPage = async (
         case TrusteeType.INDIVIDUAL:
           url += config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL;
           break;
+        case TrusteeType.RELEVANT_PERIOD_INDIVIDUAL_BENEFICIARY:
+          req.body.typeOfTrustee = TrusteeType.INDIVIDUAL;
+          req.body.roleWithinTrustType = RoleWithinTrustType.BENEFICIARY;
+          url += config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL;
+          break;
         case TrusteeType.LEGAL_ENTITY:
+          url += config.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL;
+          break;
+        case TrusteeType.RELEVANT_PERIOD_LEGAL_ENTITY:
+          req.body.typeOfTrustee = TrusteeType.LEGAL_ENTITY;
           url += config.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL;
           break;
         default:
@@ -231,7 +243,11 @@ const getBackLinkUrl = (isUpdate: boolean, trustId: string, isReview: boolean, r
   if (isReview) {
     return config.UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL;
   } else if (isUpdate) {
-    return `${config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL}/${trustId}`;
+    let backLinkUrl = `${config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL}/${trustId}`;
+    if (req.query["relevant-period"] === "true") {
+      backLinkUrl += config.RELEVANT_PERIOD_QUERY_PARAM;
+    }
+    return backLinkUrl;
   } else {
     let backLinUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
       ? getUrlWithParamsToPath(config.TRUST_ENTRY_WITH_PARAMS_URL, req)

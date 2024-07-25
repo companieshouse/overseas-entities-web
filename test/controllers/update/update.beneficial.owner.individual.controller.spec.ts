@@ -5,6 +5,7 @@ jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/utils/save.and.continue');
 jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
+jest.mock('../../../src/utils/relevant.period');
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
 import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
@@ -20,7 +21,8 @@ import {
   UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
   UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL,
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
-  UPDATE_BENEFICIAL_OWNER_TYPE_PAGE
+  UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
+  RELEVANT_PERIOD_QUERY_PARAM
 } from "../../../src/config";
 import {
   getFromApplicationData,
@@ -61,7 +63,8 @@ import {
   UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_MOCK_FOR_CEASE_VALIDATION,
   UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK,
 } from '../../__mocks__/session.mock';
-import { BeneficialOwnerIndividualKey } from '../../../src/model/beneficial.owner.individual.model';
+
+import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from '../../../src/model/beneficial.owner.individual.model';
 import { AddressKeys } from '../../../src/model/data.types.model';
 import {
   BENEFICIAL_OWNER_INDIVIDUAL_WITH_INVALID_CHARS_MOCK,
@@ -76,6 +79,7 @@ import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/ha
 import * as config from "../../../src/config";
 import { DateTime } from "luxon";
 import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
+import { checkRelevantPeriod } from "../../../src/utils/relevant.period";
 
 mockRemoveJourneyMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
@@ -98,6 +102,7 @@ const mockPrepareData = prepareData as jest.Mock;
 const mockRemoveFromApplicationData = removeFromApplicationData as unknown as jest.Mock;
 const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockCheckRelevantPeriod = checkRelevantPeriod as jest.Mock;
 
 const DUMMY_DATA_OBJECT = { dummy: "data" };
 
@@ -173,13 +178,13 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
   describe("POST tests", () => {
     test(`redirects to ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
       mockPrepareData.mockImplementationOnce( () => UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK );
-
+      mockCheckRelevantPeriod.mockReturnValueOnce(true);
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
@@ -196,6 +201,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
     test(`redirect to the ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page after a successful post from ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with service address data`, async () => {
       mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO );
+      mockCheckRelevantPeriod.mockReturnValueOnce(true);
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send({
@@ -243,7 +249,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
     test(`adds data to the session and redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
       mockPrepareData.mockImplementationOnce( () => UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK );
-
+      mockCheckRelevantPeriod.mockReturnValueOnce(true);
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
@@ -254,7 +260,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(BeneficialOwnerIndividualKey);
       expect(resp.status).toEqual(302);
 
-      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
     });
 
     test("catch error when posting data", async () => {
@@ -324,6 +330,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
     test(`Service address from the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page is present when same address is set to no`, async () => {
       mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
+      mockCheckRelevantPeriod.mockReturnValueOnce(true);
       await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
@@ -335,6 +342,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
     test(`Service address from the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page is empty when same address is set to yes`, async () => {
       mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
+      mockCheckRelevantPeriod.mockReturnValueOnce(true);
       await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
@@ -948,6 +956,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
   describe("UPDATE tests", () => {
     test(`redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
+      mockGetFromApplicationData.mockReturnValueOnce(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
       mockPrepareData.mockReturnValueOnce(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)
@@ -970,6 +979,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
     });
 
     test(`replaces existing object on submit`, async () => {
+      mockGetFromApplicationData.mockReturnValueOnce(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
       mockPrepareData.mockReturnValueOnce({ id: BO_IND_ID, name: "new name" });
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)
@@ -978,14 +988,19 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(BeneficialOwnerIndividualKey);
       expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(BO_IND_ID);
 
-      expect(mockSetApplicationData.mock.calls[0][1].id).toEqual(BO_IND_ID);
+      const data = mockSetApplicationData.mock.calls[0][1];
+      expect(data.id).toEqual(BO_IND_ID);
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(BeneficialOwnerIndividualKey);
+
+      // Ensure that trust ids on the original BO aren't lost during the update
+      expect((data as BeneficialOwnerIndividual).trust_ids).toEqual(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK.trust_ids);
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
     });
 
     test(`Service address from the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} is present when same address is set to no`, async () => {
+      mockGetFromApplicationData.mockReturnValueOnce(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
       mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
       await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)
@@ -997,6 +1012,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
     });
 
     test(`Service address from the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} is empty when same address is set to yes`, async () => {
+      mockGetFromApplicationData.mockReturnValueOnce(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
       mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
       await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)

@@ -52,7 +52,7 @@ import {
   yesNoResponse,
   IsRemoveKey
 } from "../../src/model/data.types.model";
-import { TrustKey, Trust } from "../../src/model/trust.model";
+import { TrustKey, Trust, TrustIndividual } from "../../src/model/trust.model";
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../src/model/who.is.making.filing.model";
 import { DUE_DILIGENCE_OBJECT_MOCK } from "./due.diligence.mock";
 import { ADDRESS } from "./fields/address.mock";
@@ -61,6 +61,7 @@ import { ANY_MESSAGE_ERROR } from "./text.mock";
 import { EntityKey } from "../../src/model/entity.model";
 import { OverseasEntityDueDiligenceKey } from "../../src/model/overseas.entity.due.diligence.model";
 import { BeneficialOwnerPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
+import { RoleWithinTrustType } from "../../src/model/role.within.trust.type.model";
 
 export const BO_GOV_ID = "10722c3c-9301-4f46-ad8b-b30f5dcd76a0";
 export const BO_GOV_ID_URL = "/" + BO_GOV_ID;
@@ -323,7 +324,7 @@ export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.Benefi
   non_legal_firm_members_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
   is_on_sanctions_list: 0,
   ...START_DATE,
-  trust_ids: []
+  trust_ids: ["6"]
 };
 
 export const BENEFICIAL_OWNER_OTHER_NO_TRUSTEE_OBJECT_MOCK: beneficialOwnerOtherType.BeneficialOwnerOther = {
@@ -382,7 +383,7 @@ export const UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType
   non_legal_firm_members_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
   is_on_sanctions_list: 0,
   ...START_DATE,
-  trust_ids: []
+  trust_ids: ["8"]
 };
 
 export const UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_REQ_MOCK = {
@@ -472,7 +473,7 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualT
   trustees_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS],
   non_legal_firm_members_nature_of_control_types: [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS],
   is_on_sanctions_list: 1,
-  trust_ids: []
+  trust_ids: ["5"]
 };
 
 export const BENEFICIAL_OWNER_INDIVIDUAL_NO_TRUSTEE_OBJECT_MOCK: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
@@ -614,7 +615,7 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK = {
 
 export const REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA = {
   ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
-  ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK.ceased_date = { day: "01", month: "04", year: "1920" },
+  ceased_date: { day: "01", month: "04", year: "1920" },
   is_still_bo: "1",
   ...RESIDENTIAL_ADDRESS_MOCK,
   ...START_DATE
@@ -622,7 +623,7 @@ export const REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_WITH_FULL_D
 
 export const REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_HAVE_DAY_OF_BIRTH = {
   ...UPDATE_BENEFICIAL_OWNER_HAVE_DAY_OF_BIRTH_OBJECT_MOCK,
-  ...UPDATE_BENEFICIAL_OWNER_HAVE_DAY_OF_BIRTH_OBJECT_MOCK.ceased_date = { day: "01", month: "04", year: "1920" },
+  ceased_date: { day: "01", month: "04", year: "1920" },
   is_still_bo: "1",
   ...RESIDENTIAL_ADDRESS_MOCK,
   ...START_DATE
@@ -630,7 +631,7 @@ export const REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_HAVE_DAY_OF
 
 export const REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_PARTIAL = {
   ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
-  ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK.ceased_date = { day: "01", month: "04", year: "1920" },
+  ceased_date: { day: "01", month: "04", year: "1920" },
   is_still_bo: "1",
 };
 
@@ -876,6 +877,59 @@ export const REVIEW_BENEFICIAL_OWNER_GOV_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA = {
   ...START_DATE
 };
 
+export const REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_WITH_REVIEW_TRUST = {
+  id: "/company/OE001022/persons-with-significant-control/individual-beneficial-owner/zWGKy0aCHpuDaTWHfRrLNR3Pkr4",
+  ch_reference: "zWGKy0aCHpuDaTWHfRrLNR3Pkr4",
+  first_name: "Individual",
+  last_name: "Beneficial Owner",
+  nationality: "Afghan",
+  date_of_birth: { "day": "05", "month": "08", "year": "1983" },
+  is_service_address_same_as_usual_residential_address: 0,
+  service_address: {
+    property_name_number: "1",
+    line_1: "Individual Beneficial Owner Road",
+    line_2: "Individual Beneficial Owner Village",
+    town: "Individual Beneficial Owner City",
+    county: "Individual Beneficial Owner County",
+    country: "United Kingdom",
+    postcode: "INDBO1"
+  },
+  start_date: {
+    day: "24",
+    month: "1",
+    year: "2024"
+  },
+  is_on_sanctions_list: 0,
+  beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+  non_legal_firm_members_nature_of_control_types: [],
+  trustees_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+  trust_ids: ["1"]
+};
+
+export const REVIEW_BENEFICIAL_OWNER_CORPORATE_WITH_REVIEW_TRUST = {
+  id: "/company/OE001022/persons-with-significant-control/corporate-entity-beneficial-owner/XNsrmgVpfhT4sXdTlVqsdDXoCHA",
+  ch_reference: "XNsrmgVpfhT4sXdTlVqsdDXoCHA",
+  name: "Other Legal Bo",
+  service_address: { "property_name_number": "1",
+    line_1: "Other Legal Road",
+    line_2: "Other Legal Village",
+    town: "Other Legal City",
+    country: "Australia" },
+  legal_form: "Legal Form",
+  law_governed: "Governing Law",
+  is_on_register_in_country_formed_in: 0,
+  start_date: {
+    day: "24",
+    month: "1",
+    year: "2024"
+  },
+  is_on_sanctions_list: 0,
+  beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+  non_legal_firm_members_nature_of_control_type: [],
+  trustees_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+  trust_ids: ["1"]
+};
+
 export const UPDATE_REVIEW_BENEFICIAL_OWNER_MOCK_DATA = {
   ...UPDATE_BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
   ch_reference: undefined,
@@ -1063,7 +1117,7 @@ export const UPDATE_MANAGING_OFFICER_SINGLE_NATIONALITY_MOCK: managingOfficerTyp
   last_name: "Wabb",
   has_former_names: yesNoResponse.Yes,
   former_names: "Jimmothy James Jimminny, Finn McCumhaill, Test Tester",
-  date_of_birth: { day: "1", month: "02", year: "1900" },
+  date_of_birth: { day: "01", month: "02", year: "1900" },
   nationality: "country1",
   usual_residential_address: ADDRESS,
   service_address: ADDRESS,
@@ -1079,7 +1133,7 @@ export const UPDATE_MANAGING_OFFICER_DUAL_NATIONALITY_MOCK: managingOfficerType.
   last_name: "Wabb",
   has_former_names: yesNoResponse.Yes,
   former_names: "Jimmothy James Jimminny, Finn McCumhaill, Test Tester",
-  date_of_birth: { day: "1", month: "02", year: "1900" },
+  date_of_birth: { day: "01", month: "02", year: "1900" },
   nationality: "country1",
   second_nationality: "country2",
   usual_residential_address: ADDRESS,
@@ -1587,6 +1641,84 @@ export const TRUST_PARTIAL_DATE: Trust = {
   unable_to_obtain_all_trust_info: "No"
 };
 
+export const REVIEW_TRUST: Trust = {
+  trust_id: "1",
+  ch_reference: "_ecba-4TzUTXaln-g8daGtvS4a0",
+  trust_name: "Trust name",
+  creation_date_day: "27",
+  creation_date_month: "3",
+  creation_date_year: "2007",
+  trust_still_involved_in_overseas_entity: "",
+  unable_to_obtain_all_trust_info: "No",
+  INDIVIDUALS: [
+    {
+      id: "1",
+      ch_references: "CNFca5mzOxn9O_TW04SXGGolD-Y",
+      forename: "INDIE",
+      other_forenames: "",
+      surname: "BENO",
+      dob_day: "16",
+      dob_month: "8",
+      dob_year: "1982",
+      nationality: "Bahraini",
+      type: "Settlor",
+      ura_address_premises: "1",
+      ura_address_line_1: "INDIVIDUAL  ROAD",
+      ura_address_locality: "INDIVIDUAL CITY",
+      ura_address_country: "United Kingdom",
+      ura_address_postal_code: "INDBO1",
+      ura_address_line_2: "INDIVIDUAL VILLAGE",
+      ura_address_region: "INDIVIDUAL COUNTY",
+      ura_address_care_of: "",
+      ura_address_po_box: "",
+      sa_address_premises: "1",
+      sa_address_line_1: "INDIVIDUAL  ROAD",
+      sa_address_line_2: "INDIVIDUAL VILLAGE",
+      sa_address_locality: "INDIVIDUAL CITY",
+      sa_address_region: "INDIVIDUAL COUNTY",
+      sa_address_country: "United Kingdom",
+      sa_address_postal_code: "INDBO1",
+      sa_address_care_of: "",
+      sa_address_po_box: ""
+    }
+  ],
+  CORPORATES: [
+    {
+      id: "1",
+      ch_references: "gUGj2sjjPhh7AooOzdPr4LMa3Ms",
+      type: "Interested_Person",
+      name: "LEGAL ENTITY ",
+      date_became_interested_person_day: "10",
+      date_became_interested_person_month: "9",
+      date_became_interested_person_year: "2021",
+      is_on_register_in_country_formed_in: 0,
+      identification_legal_authority: "GOVERNING LAW",
+      identification_legal_form: "LEGAL FORM",
+      identification_place_registered: "",
+      identification_registration_number: "",
+      identification_country_registration: "",
+      ro_address_premises: "1",
+      ro_address_line_1: "LEGAL ROAD",
+      ro_address_locality: "LEGAL CITY",
+      ro_address_region: "",
+      ro_address_country: "Guam",
+      ro_address_postal_code: "",
+      is_service_address_same_as_principal_address: 0,
+      ro_address_line_2: "",
+      ro_address_care_of: "",
+      ro_address_po_box: "",
+      sa_address_premises: "1",
+      sa_address_line_1: "LEGAL ROAD",
+      sa_address_line_2: "",
+      sa_address_locality: "LEGAL CITY",
+      sa_address_region: "",
+      sa_address_country: "Guam",
+      sa_address_postal_code: "",
+      sa_address_care_of: "",
+      sa_address_po_box: "" }],
+  HISTORICAL_BO: []
+};
+
 export const OVER_SEAS_ENTITY_MOCK_DATA: CompanyProfile = {
   companyName: "acme",
   dateOfCreation: "1872-06-26",
@@ -1707,6 +1839,72 @@ export const TRUST_WITH_ID: Trust = {
   creation_date_year: "1999",
   trust_still_involved_in_overseas_entity: "Yes",
   unable_to_obtain_all_trust_info: "No"
+};
+
+export const INDIVIUAL_TRUSTEE: TrustIndividual = {
+  id: "1",
+  ch_references: "CNFca5mzOxn9O_TW04SXGGolD-Y",
+  forename: "INDIE",
+  other_forenames: "",
+  surname: "BENO",
+  dob_day: "16",
+  dob_month: "8",
+  dob_year: "1982",
+  nationality: "Bahraini",
+  type: RoleWithinTrustType.SETTLOR,
+  ura_address_premises: "1",
+  ura_address_line_1: "INDIVIDUAL  ROAD",
+  ura_address_locality: "INDIVIDUAL CITY",
+  ura_address_country: "United Kingdom",
+  ura_address_postal_code: "INDBO1",
+  ura_address_line_2: "INDIVIDUAL VILLAGE",
+  ura_address_region: "INDIVIDUAL COUNTY",
+  ura_address_care_of: "",
+  ura_address_po_box: "",
+  sa_address_premises: "1",
+  sa_address_line_1: "INDIVIDUAL  ROAD",
+  sa_address_line_2: "INDIVIDUAL VILLAGE",
+  sa_address_locality: "INDIVIDUAL CITY",
+  sa_address_region: "INDIVIDUAL COUNTY",
+  sa_address_country: "United Kingdom",
+  sa_address_postal_code: "INDBO1",
+  sa_address_care_of: "",
+  sa_address_po_box: ""
+};
+
+export const CORPORATE_TRUSTEE = {
+  id: "1",
+  ch_references: "gUGj2sjjPhh7AooOzdPr4LMa3Ms",
+  type: "Interested_Person",
+  name: "Legal E trustee",
+  date_became_interested_person_day: "10",
+  date_became_interested_person_month: "9",
+  date_became_interested_person_year: "2021",
+  is_on_register_in_country_formed_in: 0,
+  identification_legal_authority: "GOVERNING LAW",
+  identification_legal_form: "LEGAL FORM",
+  identification_place_registered: "",
+  identification_registration_number: "",
+  identification_country_registration: "",
+  ro_address_premises: "1",
+  ro_address_line_1: "LEGAL ROAD",
+  ro_address_locality: "LEGAL CITY",
+  ro_address_region: "",
+  ro_address_country: "Guam",
+  ro_address_postal_code: "",
+  is_service_address_same_as_principal_address: 0,
+  ro_address_line_2: "",
+  ro_address_care_of: "",
+  ro_address_po_box: "",
+  sa_address_premises: "1",
+  sa_address_line_1: "LEGAL ROAD",
+  sa_address_line_2: "",
+  sa_address_locality: "LEGAL CITY",
+  sa_address_region: "",
+  sa_address_country: "Guam",
+  sa_address_postal_code: "",
+  sa_address_care_of: "",
+  sa_address_po_box: ""
 };
 
 export const APPLICATION_DATA_MOCK: ApplicationData = {
@@ -2123,6 +2321,20 @@ export const APPLICATION_DATA_UPDATE_MO_MOCK: ApplicationData = {
   [managingOfficerType.ManagingOfficerKey]: [UPDATE_REVIEW_MANAGING_OFFICER_MOCK],
   [EntityNumberKey]: COMPANY_NUMBER,
   [updateType.UpdateKey]: UPDATE_OBJECT_MOCK
+};
+
+export const APPLICATION_DATA_UPDATE_BO_TRUSTS_PRIVATE_DATA_MOCK: ApplicationData = {
+  ...APPLICATION_DATA_UPDATE_MO_MOCK,
+  [updateType.UpdateKey]: {
+    date_of_creation: {
+      day: "23",
+      month: "2",
+      year: "2024"
+    },
+    review_beneficial_owners_individual: [REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_WITH_REVIEW_TRUST],
+    review_beneficial_owners_corporate: [REVIEW_BENEFICIAL_OWNER_CORPORATE_WITH_REVIEW_TRUST],
+    review_trusts: [REVIEW_TRUST],
+  }
 };
 
 export const APPLICATION_DATA_UPDATE_MO_PRIVATE_DATA_MOCK: ApplicationData = {

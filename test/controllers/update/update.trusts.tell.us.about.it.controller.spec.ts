@@ -18,6 +18,7 @@ import {
   UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL,
   UPDATE_TRUSTS_SUBMISSION_INTERRUPT_URL,
   UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL,
+  RELEVANT_PERIOD_QUERY_PARAM
 } from '../../../src/config';
 import { authentication } from '../../../src/middleware/authentication.middleware';
 import { companyAuthentication } from '../../../src/middleware/company.authentication.middleware';
@@ -26,7 +27,17 @@ import { getApplicationData } from '../../../src/utils/application.data';
 import { isActiveFeature } from '../../../src/utils/feature.flag';
 
 import { APPLICATION_DATA_UPDATE_NO_TRUSTS_MOCK, APPLICATION_DATA_MOCK, APPLICATION_DATA_UPDATE_NO_BO_TRUSTEES_MOCK } from '../../__mocks__/session.mock';
-import { PAGE_TITLE_ERROR, PAGE_NOT_FOUND_TEXT, UPDATE_TELL_US_ABOUT_TRUST_HEADING, UPDATE_TELL_US_ABOUT_TRUST_QUESTION, ERROR_LIST, TRUST_CEASED_DATE_TEXT, TRUST_NOT_ASSOCIATED_WITH_BENEFICIAL_OWNER_TEXT, TRUST_ENTER_CEASED_DATE } from '../../__mocks__/text.mock';
+import {
+  PAGE_TITLE_ERROR,
+  PAGE_NOT_FOUND_TEXT,
+  UPDATE_TELL_US_ABOUT_TRUST_HEADING,
+  UPDATE_TELL_US_ABOUT_TRUST_QUESTION,
+  ERROR_LIST,
+  TRUST_CEASED_DATE_TEXT,
+  TRUST_NOT_ASSOCIATED_WITH_BENEFICIAL_OWNER_TEXT,
+  TRUST_ENTER_CEASED_DATE,
+  RELEVANT_PERIOD
+} from '../../__mocks__/text.mock';
 import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.mock';
 import { saveAndContinue } from '../../../src/utils/save.and.continue';
 
@@ -63,6 +74,16 @@ describe('Update - Trusts - Tell us about the trust', () => {
       expect(resp.text).toContain(UPDATE_TELL_US_ABOUT_TRUST_QUESTION);
       expect(resp.text).toContain(UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL);
       expect(resp.text).toContain(saveAndContinueButtonText);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+    });
+
+    test('when manage trusts feature flag is on, and relevant query param is passed in url important banner is displayed', async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
+      mockGetApplicationData.mockReturnValue( { ...APPLICATION_DATA_MOCK } );
+      const resp = await request(app).get(UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL + "/2" + "?relevant-period=true");
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_TELL_US_ABOUT_TRUST_HEADING);
+      expect(resp.text).toContain(RELEVANT_PERIOD);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 
@@ -141,6 +162,25 @@ describe('Update - Trusts - Tell us about the trust', () => {
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + "/2" + TRUST_INVOLVED_URL);
+    });
+
+    test('when feature flag is on, relevant query param is set, and posting valid data, redirect to update-trusts-individuals-or-entities-involved page with relevant query param', async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockGetApplicationData.mockReturnValue( { ...APPLICATION_DATA_MOCK } );
+      const resp = await request(app).post(UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL + RELEVANT_PERIOD_QUERY_PARAM).send({
+        name: 'Trust name',
+        createdDateDay: '8',
+        createdDateMonth: '7',
+        createdDateYear: '2023',
+        beneficialOwnersIds: '45e4283c-6b05-42da-ac9d-1f7bf9fe9c85',
+        stillInvolved: '1',
+        hasAllInfo: '0',
+        trustId: ''
+      });
+
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + "/3" + TRUST_INVOLVED_URL + RELEVANT_PERIOD_QUERY_PARAM);
     });
 
     test('when feature flag is off, 404 is returned', async () => {

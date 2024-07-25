@@ -1,4 +1,5 @@
 import { body, check } from "express-validator";
+
 import { ErrorMessages } from "./error.messages";
 import { legal_entity_usual_residential_service_address_validations, principal_address_validations } from "./fields/address.validation";
 import { dateBecameIPLegalEntityBeneficialOwner, trusteeLegalEntityCeasedDateValidations } from "./fields/date.validation";

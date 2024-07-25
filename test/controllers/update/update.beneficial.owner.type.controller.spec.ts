@@ -12,6 +12,7 @@ jest.mock('../../../src/utils/trusts');
 jest.mock('../../../src/utils/update/review_trusts');
 jest.mock('../../../src/utils/update/trust.model.fetch');
 jest.mock('../../../src/utils/save.and.continue');
+jest.mock('../../../src/utils/relevant.period');
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
 import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
@@ -74,6 +75,7 @@ import { retrieveTrustData } from "../../../src/utils/update/trust.model.fetch";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import { BeneficialOwnerTypeChoice, BeneficialOwnerTypeKey } from "../../../src/model/beneficial.owner.type.model";
 import { RELEVANT_PERIOD_QUERY_PARAM } from "../../../src/config";
+import { checkRelevantPeriod } from "../../../src/utils/relevant.period";
 
 mockRemoveJourneyMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
@@ -108,6 +110,7 @@ const mockSetExtraData = setExtraData as jest.Mock;
 const mockMoveReviewableTrustsIntoReview = moveReviewableTrustsIntoReview as jest.Mock;
 
 const mockResetReviewStatusOnAllTrustsToBeReviewed = resetReviewStatusOnAllTrustsToBeReviewed as jest.Mock;
+const mockCheckRelevantPeriod = checkRelevantPeriod as jest.Mock;
 
 describe("BENEFICIAL OWNER TYPE controller", () => {
   let appData;
@@ -346,7 +349,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.header.location).toContain(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
     });
 
-    test('redirects to check your answers if manage trusts feature flag is on but no trusts to review', async () => {
+    test('redirects to beneficial owner statements page if manage trusts feature flag is on but no trusts to review', async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
       mockRetrieveTrustData.mockReturnValueOnce(Promise.resolve());
       mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
@@ -363,10 +366,10 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(mockHasTrustsToReview).toHaveBeenCalled();
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toContain(config.UPDATE_CHECK_YOUR_ANSWERS_URL);
+      expect(resp.header.location).toContain(config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL);
     });
 
-    test('redirects to check your answers if manage trusts feature flag is on and already reviewed trusts', async () => {
+    test('redirects to beneficial owner statements page if manage trusts feature flag is on and already reviewed trusts', async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
       mockGetApplicationData.mockReturnValueOnce({ update: { trust_data_fetched: true } });
       mockHasTrustsToReview.mockReturnValueOnce(false);
@@ -379,7 +382,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(mockHasTrustsToReview).toHaveBeenCalled();
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toContain(config.UPDATE_CHECK_YOUR_ANSWERS_URL);
+      expect(resp.header.location).toContain(config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL);
     });
 
     test('redirects to add trusts if manage trusts flag is off, add trusts flag is on, and trusts are required', async () => {
@@ -416,8 +419,8 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     test('redirects to statement validation if statement validation flag is on, both trusts flags are off', async () => {
       mockIsActiveFeature
         .mockReturnValueOnce(false)
-        .mockReturnValueOnce(false)
         .mockReturnValueOnce(true);
+      mockCheckRelevantPeriod.mockReturnValueOnce(true);
 
       const resp = await request(app)
         .post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
@@ -426,17 +429,17 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.header.location).toContain(config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL);
     });
 
-    test('redirects to check your answers if all flags are off', async () => {
+    test('redirects to beneficial owner statements page if all flags are off', async () => {
       mockIsActiveFeature
         .mockReturnValueOnce(false)
-        .mockReturnValueOnce(false)
         .mockReturnValueOnce(false);
+      mockCheckRelevantPeriod.mockReturnValueOnce(true);
 
       const resp = await request(app)
         .post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toContain(config.UPDATE_CHECK_YOUR_ANSWERS_URL);
+      expect(resp.header.location).toContain(config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL);
     });
 
     test(`redirects to the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL + "?relevant-period=true"} page when the relevant_period=true and Other leegal entity button selected`, async () => {

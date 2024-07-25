@@ -16,9 +16,6 @@ import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
 import {
-  REMOVE_CONFIRM_STATEMENT_PAGE,
-  REMOVE_CONFIRM_STATEMENT_URL,
-  UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
   UPDATE_REGISTRABLE_BENEFICIAL_OWNER_PAGE,
   UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL,
   UPDATE_STATEMENT_VALIDATION_ERRORS_URL
@@ -122,30 +119,8 @@ describe("Update registrable beneficial owner controller tests", () => {
   });
 
   describe("POST tests", () => {
-    test(`with statement validation off, redirect to update-beneficial-owner-bo-mo-review page when ${yesNoResponse.Yes} is selected`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
-      const resp = await request(app)
-        .post(UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL)
-        .send({ [RegistrableBeneficialOwnerKey]: yesNoResponse.Yes });
 
-      expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
-      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
-    });
-
-    test(`with statement validation off, redirect to update-beneficial-owner-bo-mo-review page when ${yesNoResponse.Yes} is selected`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
-
-      const resp = await request(app)
-        .post(UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL)
-        .send({ [RegistrableBeneficialOwnerKey]: yesNoResponse.Yes });
-
-      expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
-      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
-    });
-
-    test(`with statement validation on, redirect to update-statement-validation-errors page when ${yesNoResponse.Yes} is selected`, async () => {
+    test(`redirect to update-statement-validation-errors page when ${yesNoResponse.Yes} is selected`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
       mockIsActiveFeature.mockReturnValueOnce(true);
       mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
@@ -160,7 +135,7 @@ describe("Update registrable beneficial owner controller tests", () => {
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
-    test(`with statement validation on, redirects to the update-statement-validation-errors page when ${yesNoResponse.No} is selected`, async () => {
+    test(`redirects to the update-statement-validation-errors page when ${yesNoResponse.No} is selected`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
       mockIsActiveFeature.mockReturnValueOnce(true);
       mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
@@ -175,26 +150,10 @@ describe("Update registrable beneficial owner controller tests", () => {
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
-    test(`with statement validation off, redirects to the ${REMOVE_CONFIRM_STATEMENT_PAGE} when on the remove journey`, async () => {
+    test(`redirects to the update-statement-validation-errors page when on the remove journey`, async () => {
       mockIsRemoveJourney.mockReturnValueOnce(true);
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
-      mockIsActiveFeature.mockReturnValueOnce(false);
-      mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
 
-      const resp = await request(app)
-        .post(UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL)
-        .send({ [RegistrableBeneficialOwnerKey]: yesNoResponse.Yes });
-
-      expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(REMOVE_CONFIRM_STATEMENT_URL);
-      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
-      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
-    });
-
-    test(`with statement validation on, redirects to the update-statement-validation-errors page when on the remove journey`, async () => {
-      mockIsRemoveJourney.mockReturnValueOnce(true);
-      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
-      mockIsActiveFeature.mockReturnValueOnce(true);
       mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
 
       const resp = await request(app)

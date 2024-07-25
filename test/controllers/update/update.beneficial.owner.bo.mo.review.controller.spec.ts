@@ -6,6 +6,7 @@ jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
 jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/utils/feature.flag');
+jest.mock('../../../src/utils/relevant.period');
 
 import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import { NextFunction, Request, Response } from "express";
@@ -31,6 +32,7 @@ import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/ha
 import { logger } from "../../../src/utils/logger";
 import { UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_TITLE } from "../../__mocks__/text.mock";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
+import { checkRelevantPeriod } from "../../../src/utils/relevant.period";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockHasUpdatePresenter = hasUpdatePresenter as jest.Mock;
@@ -48,6 +50,7 @@ mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Respons
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
+const mockCheckRelevantPeriod = checkRelevantPeriod as jest.Mock;
 
 describe("BENEFICIAL OWNER BO MO REVIEW controller", () => {
 
@@ -90,11 +93,14 @@ describe("BENEFICIAL OWNER BO MO REVIEW controller", () => {
 
   describe("POST tests", () => {
     test(`redirect to ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE}`, async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
+      mockIsActiveFeature.mockReturnValue(true);
+      mockCheckRelevantPeriod.mockReturnValueOnce(true);
+
       const resp = await request(app).post(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(resp.header.location).toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
     });
 
     test(`catch error on POST action for ${config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE} page`, async () => {

@@ -562,7 +562,8 @@ export const UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndi
   trustees_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS],
   non_legal_firm_members_nature_of_control_types: [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS],
   is_on_sanctions_list: 1,
-  trust_ids: []
+  trust_ids: [],
+  relevant_period: undefined,
 };
 
 export const UPDATE_BENEFICIAL_OWNER_HAVE_DAY_OF_BIRTH_OBJECT_MOCK: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {

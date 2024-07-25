@@ -1,9 +1,12 @@
+import { APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock";
+
 jest.mock("ioredis");
 jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/application.data');
 jest.mock("../../../src/utils/feature.flag" );
+jest.mock("../../../src/utils/url");
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
 import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
@@ -40,10 +43,12 @@ import { authentication } from "../../../src/middleware/authentication.middlewar
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { logger } from "../../../src/utils/logger";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
+import { isRemoveJourney } from "../../../src/utils/url";
 
 mockRemoveJourneyMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
+const mockIsRemoveJourney = isRemoveJourney as jest.Mock;
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -58,6 +63,8 @@ describe("SECURE UPDATE FILTER controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockIsActiveFeature.mockReset();
+    mockIsRemoveJourney.mockReset();
   });
 
   describe("GET tests", () => {
@@ -75,7 +82,10 @@ describe("SECURE UPDATE FILTER controller", () => {
     });
 
     test(`renders the ${SECURE_UPDATE_FILTER_PAGE} page for remove`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ });
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockGetApplicationData.mockReturnValueOnce({});
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockIsRemoveJourney.mockReturnValueOnce(true);
       const resp = await request(app).get(`${SECURE_UPDATE_FILTER_URL}${JOURNEY_REMOVE_QUERY_PARAM}`);
 
       expect(resp.status).toEqual(200);
@@ -113,14 +123,18 @@ describe("SECURE UPDATE FILTER controller", () => {
 
   describe("POST tests", () => {
     test.each([
-      ["update-any-trusts-involved if FEATURE_FLAG_ENABLE_UPDATE_TRUSTS = false", UPDATE_ANY_TRUSTS_INVOLVED_URL, false],
+      ["update-any-trusts-involved if FEATURE_FLAG_ENABLE_UPDATE_TRUSTS = false and REDIS_removal flag is OFF", UPDATE_ANY_TRUSTS_INVOLVED_URL, false],
       ["update-interrupt-card if FEATURE_FLAG_ENABLE_UPDATE_TRUSTS = true", UPDATE_INTERRUPT_CARD_URL, true]
     ])(`redirect to %s`, async (_, url, flagValue) => {
       mockIsActiveFeature.mockReturnValueOnce(flagValue);
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockIsRemoveJourney.mockReturnValueOnce(false);
 
       const resp = await request(app)
         .post(SECURE_UPDATE_FILTER_URL)
-        .send({ is_secure_register: '0' });
+        .send({ is_secure_register: "0" });
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(url);
@@ -154,8 +168,12 @@ describe("SECURE UPDATE FILTER controller", () => {
   });
 
   describe("POST tests for remove journey", () => {
-    test(`redirect to ${UPDATE_INTERRUPT_CARD_URL}${JOURNEY_REMOVE_QUERY_PARAM} when no is selected`, async () => {
+    test(`redirect to ${UPDATE_INTERRUPT_CARD_URL}${JOURNEY_REMOVE_QUERY_PARAM} when no is selected and REDIS_removal flag is OFF`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockIsRemoveJourney.mockReturnValueOnce(true);
 
       const resp = await request(app)
         .post(`${SECURE_UPDATE_FILTER_URL}${JOURNEY_REMOVE_QUERY_PARAM}`)
@@ -166,8 +184,12 @@ describe("SECURE UPDATE FILTER controller", () => {
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 
-    test(`redirect to ${UPDATE_USE_PAPER_URL}${JOURNEY_REMOVE_QUERY_PARAM} when yes is selected`, async () => {
+    test(`redirect to ${UPDATE_USE_PAPER_URL}${JOURNEY_REMOVE_QUERY_PARAM} when yes is selected and REDIS_removal flag is OFF`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockIsRemoveJourney.mockReturnValueOnce(true);
 
       const resp = await request(app)
         .post(`${SECURE_UPDATE_FILTER_URL}${JOURNEY_REMOVE_QUERY_PARAM}`)
@@ -179,6 +201,11 @@ describe("SECURE UPDATE FILTER controller", () => {
     });
 
     test("renders the current page with error message", async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockIsRemoveJourney.mockReturnValueOnce(true);
       const resp = await request(app)
         .post(`${SECURE_UPDATE_FILTER_URL}${JOURNEY_REMOVE_QUERY_PARAM}`);
 

@@ -1,3 +1,5 @@
+import { APPLICATION_DATA_MOCK } from "../__mocks__/session.mock";
+
 jest.mock("ioredis");
 jest.mock("../../src/utils/logger");
 jest.mock('../../src/middleware/authentication.middleware');
@@ -5,6 +7,10 @@ jest.mock('../../src/utils/application.data');
 jest.mock('../../src/middleware/navigation/has.sold.land.middleware');
 jest.mock("../../src/middleware/service.availability.middleware");
 jest.mock("../../src/middleware/navigation/remove/remove.journey.middleware");
+jest.mock('../../src/service/transaction.service');
+jest.mock('../../src/service/overseas.entities.service');
+jest.mock('../../src/utils/feature.flag');
+jest.mock("../../src/utils/url");
 
 import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
 import { NextFunction, Request, Response } from "express";
@@ -34,6 +40,9 @@ import { authentication } from "../../src/middleware/authentication.middleware";
 import { logger } from "../../src/utils/logger";
 import { hasSoldLand } from "../../src/middleware/navigation/has.sold.land.middleware";
 import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
+import { isActiveFeature } from "../../src/utils/feature.flag";
+import { isRemoveJourney, getUrlWithTransactionIdAndSubmissionId } from "./../../src/utils/url";
+import { updateOverseasEntity } from "../../src/service/overseas.entities.service";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockAuthenticationMiddleware = authentication as jest.Mock;
@@ -45,16 +54,23 @@ mockHasSoldLandMiddleware.mockImplementation((req: Request, res: Response, next:
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetExtraData = setExtraData as jest.Mock;
+const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 mockRemoveJourneyMiddleware.mockClear();
 
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
+const mockIsRemoveJourney = isRemoveJourney as jest.Mock;
+const mockGetUrlWithTransactionIdAndSubmissionId = getUrlWithTransactionIdAndSubmissionId as jest.Mock;
+
 describe( "SECURE REGISTER FILTER controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockIsActiveFeature.mockReset();
+    mockIsRemoveJourney.mockReset();
   });
 
   describe("GET tests", () => {
@@ -98,20 +114,62 @@ describe( "SECURE REGISTER FILTER controller", () => {
   });
 
   describe("POST tests", () => {
-    test(`renders the ${config.USE_PAPER_PAGE} page when yes is selected`, async () => {
+    test(`renders the ${config.USE_PAPER_PAGE} page when yes is selected and REDIS_removal flag is set to OFF`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockGetApplicationData.mockReturnValueOnce({});
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockIsRemoveJourney.mockReturnValueOnce(false);
       const resp = await request(app)
         .post(config.SECURE_REGISTER_FILTER_URL)
-        .send({ is_secure_register: '1' });
+        .send({ is_secure_register: "1" });
       expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.USE_PAPER_URL);
+      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+      expect(mockUpdateOverseasEntity).not.toHaveBeenCalled();
+    });
+
+    test(`renders the ${config.USE_PAPER_PAGE} page when yes is selected and REDIS_removal flag is set to ON`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockIsRemoveJourney.mockReturnValueOnce(false);
+      mockUpdateOverseasEntity.mockReturnValueOnce(true);
+      const resp = await request(app)
+        .post(config.SECURE_REGISTER_FILTER_URL)
+        .send({ is_secure_register: "1" });
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.USE_PAPER_URL);
+      expect(mockUpdateOverseasEntity).not.toHaveBeenCalled();
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 
-    test("redirect to interrupt card page if user selects no", async () => {
+    test(`renders the ${config.USE_PAPER_PAGE} page when no is selected and REDIS_removal flag is set to OFF`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockGetApplicationData.mockReturnValueOnce({});
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockIsRemoveJourney.mockReturnValueOnce(false);
       const resp = await request(app)
         .post(config.SECURE_REGISTER_FILTER_URL)
-        .send({ is_secure_register: '0' });
+        .send({ is_secure_register: "0" });
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.INTERRUPT_CARD_URL);
+      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+      expect(mockUpdateOverseasEntity).not.toHaveBeenCalled();
+    });
+
+    test(`renders the ${config.USE_PAPER_PAGE} page when no is selected and REDIS_removal flag is set to ON`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockIsRemoveJourney.mockReturnValueOnce(false);
+      mockUpdateOverseasEntity.mockReturnValueOnce(true);
+      mockGetUrlWithTransactionIdAndSubmissionId.mockReturnValueOnce(config.INTERRUPT_CARD_WITH_PARAMS_URL);
+      const resp = await request(app)
+        .post(config.SECURE_REGISTER_FILTER_URL)
+        .send({ is_secure_register: "0" });
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.INTERRUPT_CARD_WITH_PARAMS_URL);
+      expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 

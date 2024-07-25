@@ -16,15 +16,15 @@ export const getFilterPage = (req: Request, res: Response, next: NextFunction, t
 
     if (isRemoveJourney(req)) {
       return res.render(templateName, {
+        templateName,
         journey: config.JourneyType.remove,
         backLinkUrl: config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL,
-        templateName: templateName,
         [IsSecureRegisterKey]: appData[IsSecureRegisterKey]
       });
     }
     return res.render(templateName, {
-      backLinkUrl: backLinkUrl,
-      templateName: templateName,
+      backLinkUrl,
+      templateName,
       [IsSecureRegisterKey]: appData[IsSecureRegisterKey]
     });
   } catch (error) {

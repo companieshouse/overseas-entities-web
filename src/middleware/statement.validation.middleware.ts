@@ -1,9 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import { isActiveFeature } from "../utils/feature.flag";
 import { checkActiveBOExists, checkActiveMOExists, getApplicationData, hasAddedOrCeasedBO } from "../utils/application.data";
 
 import {
-  FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION,
   UPDATE_CHECK_YOUR_ANSWERS_URL,
   UPDATE_REVIEW_STATEMENT_URL,
   SECURE_UPDATE_FILTER_URL,
@@ -19,9 +17,8 @@ import { isRemoveJourney } from "../utils/url";
 
 export const statementValidationErrorsGuard = (req: Request, res: Response, next: NextFunction) => {
   const hasStatementErrors = req['statementErrorList']?.length;
-  const flagEnabled = isActiveFeature(FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION);
 
-  if (flagEnabled && hasStatementErrors) {
+  if (hasStatementErrors) {
     return next();
   }
 
@@ -37,9 +34,8 @@ export const statementValidationErrorsGuard = (req: Request, res: Response, next
 
 export const summaryPagesGuard = (req: Request, res: Response, next: NextFunction) => {
   const hasStatementErrors = req['statementErrorList']?.length;
-  const flagEnabled = isActiveFeature(FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION);
 
-  if (!flagEnabled || !hasStatementErrors) {
+  if (!hasStatementErrors) {
     return next();
   }
 
@@ -47,10 +43,6 @@ export const summaryPagesGuard = (req: Request, res: Response, next: NextFunctio
 };
 
 export const validateStatements = (req: Request, _: Response, next: NextFunction) => {
-  if (!isActiveFeature(FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION)) {
-    next();
-    return;
-  }
 
   const appData: ApplicationData = getApplicationData(req.session as Session);
   const errorList: string[] = [];

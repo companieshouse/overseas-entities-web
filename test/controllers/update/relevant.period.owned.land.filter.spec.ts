@@ -137,11 +137,11 @@ describe("owned land filter page tests", () => {
   describe("POST tests", () => {
     test(`renders the ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL} page when yes is selected`, async () => {
       const resp = await request(app)
-        .post(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL)
+        .post(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL + config.RELEVANT_PERIOD_QUERY_PARAM)
         .send({ owned_land_relevant_period: "1" });
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_INTERRUPT_URL);
+      expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_INTERRUPT_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
     });
     test(`renders the ${config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL} page when no is selected`, async () => {
       const appData = { ...APPLICATION_DATA_MOCK, [UpdateKey]: UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE };

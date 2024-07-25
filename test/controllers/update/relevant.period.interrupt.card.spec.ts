@@ -80,10 +80,10 @@ describe("relevant interrupt card page tests", () => {
   describe("POST tests", () => {
     test(`renders the ${config.RELEVANT_PERIOD_INTERRUPT_URL} page when yes is selected`, async () => {
       const resp = await request(app)
-        .post(config.RELEVANT_PERIOD_INTERRUPT_URL);
+        .post(config.RELEVANT_PERIOD_INTERRUPT_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
+      expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
     });
     test("catch error when posting the page", async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });

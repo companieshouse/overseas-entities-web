@@ -53,7 +53,7 @@ const renderPage = (res: Response, appData: ApplicationData, inNoChangeJourney: 
   res.render(UPDATE_STATEMENT_VALIDATION_ERRORS_PAGE, {
     backLinkUrl: ceasedBOStatement(inNoChangeJourney),
     templateName: UPDATE_STATEMENT_VALIDATION_ERRORS_PAGE,
-    appData,
+    ...appData,
     statementErrorList,
     errors,
   })

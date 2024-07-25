@@ -11,7 +11,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(req.session);
 
     return res.render(config.RELEVANT_PERIOD_INTERRUPT_PAGE, {
-      backLinkUrl: config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL,
+      backLinkUrl: config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL + config.RELEVANT_PERIOD_QUERY_PARAM,
       templateName: config.RELEVANT_PERIOD_INTERRUPT_PAGE,
       ...appData
     });
@@ -25,7 +25,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.RELEVANT_PERIOD_INTERRUPT_PAGE}`);
 
-    return res.redirect(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL); // redirects to statement 3 page
+    return res.redirect(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL + config.RELEVANT_PERIOD_QUERY_PARAM); // redirects to statement 3 page
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

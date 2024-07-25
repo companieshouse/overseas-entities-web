@@ -22,36 +22,36 @@
       <br>
       {% include "includes/check-your-answers/beneficial-owner-statements.html" %}
 
-      {% if (appData.beneficial_owners_individual and appData.beneficial_owners_individual.length > 0)
-        or (appData.beneficial_owners_corporate and appData.beneficial_owners_corporate.length > 0)
-        or (appData.beneficial_owners_government_or_public_authority and appData.beneficial_owners_government_or_public_authority.length > 0) %}
+      {% if (beneficial_owners_individual and beneficial_owners_individual.length > 0)
+      or (beneficial_owners_corporate and beneficial_owners_corporate.length > 0)
+      or (beneficial_owners_government_or_public_authority and beneficial_owners_government_or_public_authority.length > 0) %}
         <br><h2 class="govuk-heading-l">Beneficial owner details</h2>
-        {% for boi in appData.beneficial_owners_individual %}
+        {% for boi in beneficial_owners_individual %}
           {% include "includes/check-your-answers/beneficial-owner-individual.html" %}
         {% endfor %}
-        {% for boc in appData.beneficial_owners_corporate %}
+        {% for boc in beneficial_owners_corporate %}
           {% include "includes/check-your-answers/beneficial-owner-other.html" %}
         {% endfor %}
-        {% for bog in appData.beneficial_owners_government_or_public_authority %}
+        {% for bog in beneficial_owners_government_or_public_authority %}
           {% include "includes/check-your-answers/beneficial-owner-gov.html" %}
         {% endfor %}
       {% endif %}
 
-      {% if (appData.managing_officers_individual and appData.managing_officers_individual.length > 0)
-          or (appData.managing_officers_corporate and appData.managing_officers_corporate.length > 0) %}
+      {% if (managing_officers_individual and managing_officers_individual.length > 0)
+      or (managing_officers_corporate and managing_officers_corporate.length > 0) %}
         <br><h2 class="govuk-heading-l">Managing officer details</h2>
-        {% for moi in appData.managing_officers_individual %}
+        {% for moi in managing_officers_individual %}
           {% include "includes/check-your-answers/managing-officer-individual.html" %}
         {% endfor %}
-        {% for moc in appData.managing_officers_corporate %}
+        {% for moc in managing_officers_corporate %}
           {% include "includes/check-your-answers/managing-officer-corporate.html" %}
         {% endfor %}
       {% endif %}
 
-      {% if (appData.trusts and appData.trusts.length > 0) %}
+      {% if (trusts and trusts.length > 0) %}
         <br><h2 class="govuk-heading-l">Trusts</h2>
         {% set trust_count = 0 %}
-        {% for trust in appData.trusts %}
+        {% for trust in trusts %}
           {% set trust_count = trust_count + 1 %}
           {% set trust_heading = "Trust " + trust_count %}
           {% include "includes/check-your-answers/trusts.html" %}

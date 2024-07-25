@@ -186,6 +186,7 @@
 
       {% if pageData.relevant_period %}
         <input type="hidden" name="roleWithinTrust" value= "{{ pageData.roleWithinTrustType.BENEFICIARY }}" />
+        <input type="hidden" name="relevant_period" value= "true" />
       {% endif %}
 
       {% include "includes/save-and-continue-button.html" %}

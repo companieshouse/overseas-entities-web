@@ -102,10 +102,14 @@ const setWebApplicationData = (session: Session, appData: ApplicationData, trans
   appData[Transactionkey] = transactionId;
   appData[OverseasEntityKey] = overseaEntityId;
 
-  if (Object.keys(appData[OverseasEntityDueDiligenceKey] ?? {}).length) {
-    appData[WhoIsRegisteringKey] = WhoIsRegisteringType.SOMEONE_ELSE;
-  } else if (Object.keys(appData[DueDiligenceKey] ?? {}).length){
-    appData[WhoIsRegisteringKey] = WhoIsRegisteringType.AGENT;
+  if (appData[OverseasEntityDueDiligenceKey]) {
+    if (Object.keys(appData[OverseasEntityDueDiligenceKey]).length) {
+      appData[WhoIsRegisteringKey] = WhoIsRegisteringType.SOMEONE_ELSE;
+    }
+  } else if (appData[DueDiligenceKey]) {
+    if (Object.keys(appData[DueDiligenceKey]).length) {
+      appData[WhoIsRegisteringKey] = WhoIsRegisteringType.AGENT;
+    }
   }
 
   if (isActiveFeature(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB)) {

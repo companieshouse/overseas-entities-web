@@ -16,7 +16,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     return res.render(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE, {
       backLinkUrl: backLinkUrl,
       templateName: config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE,
-      appData
+      ...appData
     });
   } catch (error) {
     logger.errorRequest(req, error);

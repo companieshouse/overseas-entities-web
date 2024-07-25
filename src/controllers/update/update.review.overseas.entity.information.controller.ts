@@ -16,7 +16,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     return res.render(config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE, {
       templateName: config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE,
       backLinkUrl: getBackLinkUrl(appData),
-      appData
+      ...appData
     });
   } catch (errors) {
     logger.errorRequest(req, errors);

@@ -1,11 +1,11 @@
 {% set inNoChangeJourney = pageParams.noChangeFlag %}
 
-{% if inNoChangeJourney and appData.update %}
-  {% set individuals = appData.update.review_beneficial_owners_individual %}
-  {% set corporates = appData.update.review_beneficial_owners_corporate %}
+{% if inNoChangeJourney and update %}
+{% set individuals = update.review_beneficial_owners_individual %}
+{% set corporates = update.review_beneficial_owners_corporate %}
 {% else %}
-  {% set individuals = appData.beneficial_owners_individual %}
-  {% set corporates = appData.beneficial_owners_corporate %}
+  {% set individuals = beneficial_owners_individual %}
+  {% set corporates = beneficial_owners_corporate %}
 {% endif %}
 
 <ul class="govuk-list govuk-list--bullet">

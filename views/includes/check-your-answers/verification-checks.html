@@ -5,7 +5,7 @@
 
 {% if pageParams.isRegistration %}
   {% set whoIsCompletingText = "Who is completing this registration" %}
-  {% if appData.who_is_registering == "agent" %}
+  {% if who_is_registering == "agent" %}
     {% set whoIsCompleting = ukAgent %}
     {% set agentChangeLink = OE_CONFIGS.DUE_DILIGENCE_CHANGE_AGENT_CODE %}
     {% set dateChangeLink = OE_CONFIGS.DUE_DILIGENCE_CHANGE_IDENTITY_DATE %}
@@ -27,7 +27,7 @@
   {% endif %}
 {% else %}
   {% set whoIsCompletingText = "Who is completing this update" %}
-  {% if appData.who_is_registering == "agent" %}
+  {% if who_is_registering == "agent" %}
     {% set whoIsCompleting = ukAgent %}
     {% set agentChangeLink = OE_CONFIGS.UPDATE_DUE_DILIGENCE_CHANGE_AGENT_CODE %}
     {% set dateChangeLink = OE_CONFIGS.UPDATE_DUE_DILIGENCE_CHANGE_IDENTITY_DATE %}
@@ -49,14 +49,14 @@
   {% endif %}
 {% endif %}
 
-{% if ( appData.due_diligence and appData.due_diligence | length ) %}
-  {% set dueDiligence = appData.due_diligence %}
+{% if ( due_diligence and due_diligence | length ) %}
+{% set dueDiligence = due_diligence %}
   {% set agentCode = {
     key: {
       text: "Agent assurance code"
     },
     value: {
-      text: appData.due_diligence.agent_code
+      text: due_diligence.agent_code
     },
     actions: {
       items: [ CREATE_CHANGE_LINK(
@@ -67,7 +67,7 @@
     }
   } %}
 {% else %}
-  {% set dueDiligence = appData.overseas_entity_due_diligence %}
+  {% set dueDiligence = overseas_entity_due_diligence %}
   {% set agentCode = "" %}
 {% endif %}
 

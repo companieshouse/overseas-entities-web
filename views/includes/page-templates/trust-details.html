@@ -169,10 +169,10 @@
         <input type="hidden" name="createdDateYear" value="{{ formData.createdDateYear }}"/>
       {% endif %}
 
-        {% if pageData.relevantPeriod %}
-            <input type="hidden" name="stillInvolved" value="0"/>
-            <input type="hidden" name="relevant_period" value= "true" />
-        {% endif %}
+      {% if pageData.relevantPeriod %}
+          <input type="hidden" name="stillInvolved" value="0"/>
+          <input type="hidden" name="relevant_period" value= "true" />
+      {% endif %}
 
       {% include "includes/save-and-continue-button.html" %}
     </form>

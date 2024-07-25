@@ -17,7 +17,7 @@ const addressErrorMessages: ErrorMessagesOptional = {
   propertyValueError: ErrorMessages.PROPERTY_NAME_OR_NUMBER_INDIVIDUAL_BO,
   addressLine1Error: ErrorMessages.ADDRESS_LINE1_INDIVIDUAL_BO,
   townValueError: ErrorMessages.CITY_OR_TOWN_INDIVIDUAL_BO,
-  countryValueError: ErrorMessages.COUNTRY_INDIVIDUAL_BO,
+  countryValueError: ErrorMessages.COUNTRY_BO,
 };
 
 const secondNationalityErrors: DefaultErrorsSecondNationality = {

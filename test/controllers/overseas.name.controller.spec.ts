@@ -26,7 +26,7 @@ import {
   OVERSEAS_NAME_WITH_PARAMS_URL,
   PRESENTER_PAGE,
 } from "../../src/config";
-import { getApplicationData } from "../../src/utils/application.data";
+import { getApplicationData, setExtraData } from "../../src/utils/application.data";
 import {
   ANY_MESSAGE_ERROR,
   FOUND_REDIRECT_TO,
@@ -64,6 +64,8 @@ mockIsSecureRegisterMiddleware.mockImplementation((req: Request, res: Response, 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 mockGetApplicationData.mockReturnValue( APPLICATION_DATA_MOCK );
 
+const mockSetExtraData = setExtraData as jest.Mock;
+
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
@@ -88,6 +90,7 @@ describe("Overseas Name controller", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockIsActiveFeature.mockReset();
+    mockSetExtraData.mockReset();
   });
 
   describe("GET tests", () => {
@@ -179,12 +182,28 @@ describe("Overseas Name controller", () => {
       expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${PRESENTER_URL}`);
     });
 
-    test(`redirect to the ${PRESENTER_PAGE} page with transaction and overseas entity already created`, async () => {
+    test(`redirect to the ${PRESENTER_PAGE} page with transaction and overseas entity already created with the REDIS_flag ON`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_SAVE_AND_RESUME
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
       const mockData = { ...APPLICATION_DATA_MOCK };
-      mockGetApplicationData.mockReturnValueOnce({}); // Needed at the setExtraData
-      mockGetApplicationData.mockReturnValueOnce(mockData); // Needed inside the feature flag
+      mockGetApplicationData.mockReturnValueOnce(mockData);
+      const resp = await request(app).post(OVERSEAS_NAME_URL).send({ [EntityNameKey]: OVERSEAS_NAME_MOCK });
+
+      expect(resp.status).toEqual(302);
+      expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
+      expect(mockTransactionService).not.toHaveBeenCalled();
+      expect(mockCreateOverseasEntity).not.toHaveBeenCalled();
+
+      expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${MOCKED_PAGE_URL}`);
+    });
+
+    test(`redirect to the ${PRESENTER_PAGE} page with transaction and overseas entity already created with the REDIS_flag OFF`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_SAVE_AND_RESUME
+      mockIsActiveFeature.mockReturnValueOnce(false); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+
+      const mockData = { ...APPLICATION_DATA_MOCK };
+      mockGetApplicationData.mockReturnValueOnce(mockData);
       const resp = await request(app).post(OVERSEAS_NAME_URL).send({ [EntityNameKey]: OVERSEAS_NAME_MOCK });
 
       expect(resp.status).toEqual(302);
@@ -195,22 +214,43 @@ describe("Overseas Name controller", () => {
       expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${PRESENTER_URL}`);
     });
 
-    test(`redirect to the ${PRESENTER_PAGE} page after a successful creation of transaction and overseas entity`, async () => {
+    test(`redirect to the ${PRESENTER_PAGE} page after a successful creation of transaction and overseas entity with REDIS_removal flag set to OFF`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_SAVE_AND_RESUME
+      mockIsActiveFeature.mockReturnValueOnce(false); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
-      const mockData = { ...APPLICATION_DATA_MOCK, [Transactionkey]: "", [OverseasEntityKey]: "" };
-      mockGetApplicationData.mockReturnValueOnce({}); // Needed at the setExtraData
-      mockGetApplicationData.mockReturnValueOnce(mockData); // Needed inside the feature flag
+      const mockData = { ...APPLICATION_DATA_MOCK, [Transactionkey]: null, [OverseasEntityKey]: null };
+      mockGetApplicationData.mockReturnValueOnce(mockData);
+      mockSetExtraData.mockReturnValue(true);
       const resp = await request(app).post(OVERSEAS_NAME_URL).send({ [EntityNameKey]: OVERSEAS_NAME_MOCK });
 
       expect(resp.status).toEqual(302);
-      expect(mockData[Transactionkey]).toEqual(TRANSACTION_ID);
-      expect(mockData[OverseasEntityKey]).toEqual(OVERSEAS_ENTITY_ID);
+      expect(mockSetExtraData.mock.calls[0][1][Transactionkey]).toEqual(TRANSACTION_ID);
+      expect(mockSetExtraData.mock.calls[0][1][OverseasEntityKey]).toEqual(OVERSEAS_ENTITY_ID);
       expect(mockTransactionService).toHaveBeenCalledTimes(1);
       expect(mockCreateOverseasEntity).toHaveBeenCalledTimes(1);
       expect(mockUpdateOverseasEntity).not.toHaveBeenCalled();
 
       expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${PRESENTER_URL}`);
+    });
+
+    test(`redirect to the ${PRESENTER_PAGE} page after a successful update of transaction and overseas entity with REDIS_removal flag set to ON`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_SAVE_AND_RESUME
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+
+      const mockData = { ...APPLICATION_DATA_MOCK };
+      mockGetApplicationData.mockReturnValueOnce(mockData);
+      const resp = await request(app).post(OVERSEAS_NAME_URL).send({ [EntityNameKey]: OVERSEAS_NAME_MOCK });
+
+      expect(resp.status).toEqual(302);
+      expect(mockData[Transactionkey]).toEqual(TRANSACTION_ID);
+      expect(mockData[OverseasEntityKey]).toEqual(OVERSEAS_ENTITY_ID);
+      expect(mockTransactionService).not.toHaveBeenCalledTimes(1);
+      expect(mockCreateOverseasEntity).not.toHaveBeenCalledTimes(1);
+      expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
+      expect(mockSetExtraData.mock.calls[0][1][Transactionkey]).toEqual(TRANSACTION_ID);
+      expect(mockSetExtraData.mock.calls[0][1][OverseasEntityKey]).toEqual(OVERSEAS_ENTITY_ID);
+
+      expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${MOCKED_PAGE_URL}`);
     });
 
     test(`renders the current page with ${ErrorMessages.ENTITY_NAME} error messages`, async () => {
@@ -282,25 +322,6 @@ describe("Overseas Name controller", () => {
       expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
       expect(mockTransactionService).not.toHaveBeenCalled();
       expect(mockCreateOverseasEntity).not.toHaveBeenCalled();
-
-      expect(resp.text).toContain(MOCKED_PAGE_URL);
-    });
-
-    test(`redirect to the ${PRESENTER_PAGE} page after a successful creation of transaction and overseas entity`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_SAVE_AND_RESUME
-      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-
-      const mockData = { ...APPLICATION_DATA_MOCK, [Transactionkey]: "", [OverseasEntityKey]: "" };
-      mockGetApplicationData.mockReturnValueOnce({}); // Needed at the setExtraData
-      mockGetApplicationData.mockReturnValueOnce(mockData); // Needed inside the feature flag
-      const resp = await request(app).post(OVERSEAS_NAME_WITH_PARAMS_URL).send({ [EntityNameKey]: OVERSEAS_NAME_MOCK });
-
-      expect(resp.status).toEqual(302);
-      expect(mockData[Transactionkey]).toEqual(TRANSACTION_ID);
-      expect(mockData[OverseasEntityKey]).toEqual(OVERSEAS_ENTITY_ID);
-      expect(mockTransactionService).toHaveBeenCalledTimes(1);
-      expect(mockCreateOverseasEntity).toHaveBeenCalledTimes(1);
-      expect(mockUpdateOverseasEntity).not.toHaveBeenCalled();
 
       expect(resp.text).toContain(MOCKED_PAGE_URL);
     });

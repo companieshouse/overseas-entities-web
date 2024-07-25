@@ -141,11 +141,16 @@ router.post(config.STARTING_NEW_URL, authentication, ...validator.startingNew, c
 
 router.get(config.SOLD_LAND_FILTER_URL, authentication, soldLandFilter.get);
 router.post(config.SOLD_LAND_FILTER_URL, authentication, ...validator.soldLandFilter, checkValidations, soldLandFilter.post);
+router.get(config.SOLD_LAND_FILTER_WITH_PARAMS_URL, authentication, soldLandFilter.get);
+router.post(config.SOLD_LAND_FILTER_WITH_PARAMS_URL, authentication, ...validator.soldLandFilter, checkValidations, soldLandFilter.post);
 
 router.get(config.CANNOT_USE_URL, authentication, cannotUse.get);
 
 router.get(config.SECURE_REGISTER_FILTER_URL, authentication, navigation.hasSoldLand, secureRegisterFilter.get);
 router.post(config.SECURE_REGISTER_FILTER_URL, authentication, navigation.hasSoldLand, ...validator.secureRegisterFilter, checkValidations, secureRegisterFilter.post);
+
+router.get(config.SECURE_REGISTER_FILTER_WITH_PARAMS_URL, authentication, navigation.hasSoldLand, secureRegisterFilter.get);
+router.post(config.SECURE_REGISTER_FILTER_WITH_PARAMS_URL, authentication, navigation.hasSoldLand, ...validator.secureRegisterFilter, checkValidations, secureRegisterFilter.post);
 
 router.get(config.USE_PAPER_URL, authentication, navigation.hasSoldLand, usePaper.get);
 
@@ -683,7 +688,7 @@ router.route(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL)
     navigation.hasUpdatePresenter
   )
   .get(updateBeneficialOwnerType.get)
-  .post(...validator.updateBeneficialOwnerAndManagingOfficerType, checkValidations, updateBeneficialOwnerType.post);
+  .post(...validator.updateBeneficialOwnerAndManagingOfficerType, updateBeneficialOwnerType.post);
 
 router.post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL, authentication, navigation.hasUpdatePresenter, updateBeneficialOwnerType.postSubmit);
 
@@ -1139,7 +1144,6 @@ router.route(config.UPDATE_ANY_TRUSTS_INVOLVED_URL)
 
 router.route(config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL)
   .all(
-    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION),
     authentication,
     companyAuthentication,
     navigation.hasUpdatePresenter,

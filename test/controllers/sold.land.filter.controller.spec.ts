@@ -2,6 +2,9 @@ jest.mock("ioredis");
 jest.mock("../../src/utils/logger");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
+jest.mock('../../src/utils/feature.flag');
+jest.mock('../../src/service/transaction.service');
+jest.mock('../../src/service/overseas.entities.service');
 
 import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
 
@@ -20,11 +23,19 @@ import {
   SOLD_LAND_FILTER_PAGE_TITLE,
 } from "../__mocks__/text.mock";
 
+import {
+  OVERSEAS_ENTITY_ID,
+  TRANSACTION_ID
+} from "../__mocks__/session.mock";
+
 import { ErrorMessages } from '../../src/validation/error.messages';
 
 import { deleteApplicationData, getApplicationData, setExtraData } from "../../src/utils/application.data";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { logger } from "../../src/utils/logger";
+import { isActiveFeature } from "../../src/utils/feature.flag";
+import { createOverseasEntity, updateOverseasEntity } from "../../src/service/overseas.entities.service";
+import { postTransaction } from "../../src/service/transaction.service";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockDeleteApplicationData = deleteApplicationData as jest.Mock;
@@ -36,10 +47,21 @@ const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetExtraData = setExtraData as jest.Mock;
 
+const mockTransactionService = postTransaction as jest.Mock;
+mockTransactionService.mockReturnValue(TRANSACTION_ID);
+
+const mockCreateOverseasEntity = createOverseasEntity as jest.Mock;
+mockCreateOverseasEntity.mockReturnValue(OVERSEAS_ENTITY_ID);
+
+const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
+
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
+
 describe("SOLD LAND FILTER controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockIsActiveFeature.mockReset();
   });
 
   describe("GET tests", () => {
@@ -106,7 +128,8 @@ describe("SOLD LAND FILTER controller", () => {
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 
-    test(`redirects to the ${config.SECURE_REGISTER_FILTER_PAGE} page when no is selected`, async () => {
+    test(`redirects to the ${config.SECURE_REGISTER_FILTER_PAGE} page when no is selected and REDIS_removal flag is OFF`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false);
       const resp = await request(app)
         .post(config.SOLD_LAND_FILTER_URL)
         .send({ has_sold_land: '0' });
@@ -114,6 +137,23 @@ describe("SOLD LAND FILTER controller", () => {
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.SECURE_REGISTER_FILTER_URL);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+    });
+
+    test(`creates transaction and overseas entity and redirects to the ${config.SECURE_REGISTER_FILTER_PAGE} page when no is selected and REDIS_removal flag is ON`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockGetApplicationData.mockReturnValueOnce({});
+      mockGetApplicationData.mockReturnValueOnce({});
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockIsActiveFeature.mockReturnValueOnce(true);
+
+      const resp = await request(app).post(config.SOLD_LAND_FILTER_URL).send({ has_sold_land: '0' });
+
+      const redirectUrl = "/register-an-overseas-entity/transaction/" + TRANSACTION_ID + "/submission/" + OVERSEAS_ENTITY_ID + "/secure-register-filter";
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(redirectUrl);
+      expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(0);
+      expect(mockTransactionService).toHaveBeenCalledTimes(1);
+      expect(mockCreateOverseasEntity).toHaveBeenCalledTimes(1);
     });
 
     test("renders the current page with error message", async () => {

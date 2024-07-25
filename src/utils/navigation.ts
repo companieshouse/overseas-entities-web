@@ -554,7 +554,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.REMOVE_SOLD_ALL_LAND_FILTER_URL]: {
     currentPage: config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE,
-    previousPage: () => `${config.UPDATE_CONTINUE_WITH_SAVED_FILING_PAGE}${config.JOURNEY_REMOVE_QUERY_PARAM}`,
+    previousPage: () => `${config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`,
     nextPage: [config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL]
   },
   [config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL]: {

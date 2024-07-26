@@ -115,13 +115,14 @@ describe('Update Trust Individual Beneficial Owner Controller', () => {
       session: {} as Session,
       route: '',
       method: '',
-      body: { 'body': 'dummy' }
+      body: { 'body': 'dummy' },
+      query: {}
     } as Request;
   });
 
   describe('GET unit tests', () => {
 
-    xtest(`renders the ${UPDATE_TRUSTS_INDIVIDUAL_BENEFICIAL_OWNER_PAGE} page`, () => {
+    test(`renders the ${UPDATE_TRUSTS_INDIVIDUAL_BENEFICIAL_OWNER_PAGE} page`, () => {
 
       const expectMapResult = { dummyKey: 'EXPECT-MAP-RESULT' };
       (mapIndividualTrusteeByIdFromSessionToPage as jest.Mock).mockReturnValueOnce(expectMapResult);

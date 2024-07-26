@@ -48,7 +48,7 @@ const getPageProperties = (
 
   let appData: ApplicationData = {};
   const relevant_period = req.query['relevant-period'] === "true";
-  relevant_period ? appData = getApplicationData(req.session) : {};
+  appData = relevant_period ? getApplicationData(req.session) : {};
   const trustData = CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId, false);
   return {
     backLinkUrl: getTrustInvolvedUrl(isUpdate, trustId, req),
@@ -145,7 +145,7 @@ const getPageTemplate = (isUpdate: boolean) => {
 };
 
 const getTrustInvolvedUrl = (isUpdate: boolean, trustId: string, req: Request) => {
-  if (isUpdate ) {
+  if (isUpdate) {
     return `${config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL}/${trustId}${config.TRUST_INVOLVED_URL}`;
   } else {
     let entryUrl = `${config.TRUST_ENTRY_URL}`;

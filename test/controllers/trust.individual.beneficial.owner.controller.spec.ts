@@ -99,13 +99,14 @@ describe('Trust Individual Beneficial Owner Controller', () => {
       session: {} as Session,
       route: '',
       method: '',
-      body: { 'body': 'dummy' }
+      body: { 'body': 'dummy' },
+      query: {}
     } as Request;
   });
 
   describe('GET unit tests', () => {
 
-    xtest(`renders the ${TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE} page`, () => {
+    test(`renders the ${TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE} page`, () => {
 
       const expectMapResult = { dummyKey: 'EXPECT-MAP-RESULT' };
       (mapIndividualTrusteeByIdFromSessionToPage as jest.Mock).mockReturnValueOnce(expectMapResult);
@@ -120,8 +121,6 @@ describe('Trust Individual Beneficial Owner Controller', () => {
         expect.objectContaining({
           pageData: expect.objectContaining({
             trustData: mockTrust1Data,
-            relevant_period: true,
-            entity_name: "TESTING SERVICE ADDRESS",
           }),
           formData: expectMapResult
         }),

@@ -30,7 +30,7 @@ type TrustIndividualBeneificalOwnerPageProperties = {
     entity_name: string;
   },
   pageParams: {
-    title: string
+    title: string;
   },
   formData?: PageModel.IndividualTrusteesFormCommon,
   errors?: FormattedValidationErrors,

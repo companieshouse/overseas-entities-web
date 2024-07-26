@@ -9,7 +9,7 @@
 {% if isRemoveJourney %}
 {% set title = "Check your answers before submitting" %}
 {% else %}
-{% if feature_flag_relevant_period === "true" %}
+{% if feature_flag_relevant_period === "true" or pageParams.isRPStatementExists %}
 {% set title = "Check your answers before submitting" %}
 {% else %}
 {% set title = "Check your answers before sending your application" %}
@@ -63,7 +63,7 @@
       {% if isRemoveJourney %}
         <span class="govuk-caption-l govuk-!-padding-bottom-1">{{ entity_name }} - {{ entity_number }}</span>
         {% else %}
-      {% if feature_flag_relevant_period === "true" %}
+      {% if feature_flag_relevant_period === "true" or pageParams.isRPStatementExists %}
       <span class="govuk-caption-l govuk-!-padding-bottom-1">{{ entity_name }} - {{ entity_number }}</span>
       {% endif %}
       {% endif %}
@@ -123,7 +123,7 @@
         <br>
       {% endif %}
 
-      {% if feature_flag_relevant_period === "true" %}
+      {% if feature_flag_relevant_period === "true" or pageParams.isRPStatementExists %}
       {% include "includes/check-your-answers/relevant-period-check-your-answers.html" %}
       {% endif %}
       {% include "includes/check-your-answers/presenter.html" %}

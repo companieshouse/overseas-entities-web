@@ -166,7 +166,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain("name=\"is_still_bo\" type=\"radio\" value=\"1\" checked");
     });
 
-    test(`renders ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with relevant period banner`, async () => {
+    test(`renders ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with relevant period banner when inserting a relevant period object`, async () => {
       mockGetFromApplicationData.mockReturnValueOnce({ ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK, relevant_period: true });
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
 

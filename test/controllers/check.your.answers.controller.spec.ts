@@ -98,16 +98,14 @@ import {
   BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
   MANAGING_OFFICER_OBJECT_MOCK,
   OVERSEAS_NAME_MOCK,
-  TRANSACTION_ID,
-  OVERSEAS_ENTITY_ID,
 } from "../__mocks__/session.mock";
 
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
 import { startPaymentsSession } from "../../src/service/payment.service";
 import { getApplicationData } from "../../src/utils/application.data";
-import { postTransaction, closeTransaction } from "../../src/service/transaction.service";
-import { createOverseasEntity, updateOverseasEntity } from "../../src/service/overseas.entities.service";
+import { closeTransaction } from "../../src/service/transaction.service";
+import { updateOverseasEntity } from "../../src/service/overseas.entities.service";
 
 import { dueDiligenceType, entityType, overseasEntityDueDiligenceType } from "../../src/model";
 import { hasBOsOrMOs } from "../../src/middleware/navigation/has.beneficial.owners.or.managing.officers.middleware";
@@ -134,12 +132,6 @@ mockHasBOsOrMOsMiddleware.mockImplementation((req: Request, res: Response, next:
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
-
-const mockTransactionService = postTransaction as jest.Mock;
-mockTransactionService.mockReturnValue( TRANSACTION_ID );
-
-const mockOverseasEntity = createOverseasEntity as jest.Mock;
-mockOverseasEntity.mockReturnValue( OVERSEAS_ENTITY_ID );
 
 const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
 

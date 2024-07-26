@@ -166,6 +166,22 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain("name=\"is_still_bo\" type=\"radio\" value=\"1\" checked");
     });
 
+    test(`renders ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with relevant period banner when inserting a relevant period object`, async () => {
+      mockGetFromApplicationData.mockReturnValueOnce({ ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK, relevant_period: true });
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
+
+      const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
+      expect(resp.text).toContain(saveAndContinueButtonText);
+      expect(resp.text).toContain(RELEVANT_PERIOD);
+      expect(resp.text).toContain(RELEVANT_PERIOD_INDIVIDUAL_INFORMATION);
+      expect(resp.text).toContain("Ivan");
+      expect(resp.text).toContain("Drago");
+      expect(resp.text).toContain("Russian");
+    });
+
     test(`catch error when rendering the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page`, async () => {
       mockGetFromApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL);

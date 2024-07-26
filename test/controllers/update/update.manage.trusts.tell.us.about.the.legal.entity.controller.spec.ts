@@ -353,6 +353,34 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       expect(response.text).not.toContain(PAGE_TITLE_ERROR);
     });
 
+    test('render page with the important banner when we insert a relevant period trustee into the page', async () => {
+      const appData = { entity_number: 'OE999999', entity_name: 'Overseas Entity Name' };
+      const trustInReview = { trust_id: 'trust-in-review-1', trust_name: 'Overseas Entity Name', review_status: { in_review: false } };
+      const trustee = {
+        id: 'legal_entity_trustee_3',
+        relevant_period: true
+      };
+      mockIsActiveFeature.mockReturnValue(true);
+      mockGetApplicationData.mockReturnValue(appData);
+      mockGetTrustInReview.mockReturnValue(trustInReview);
+      mockGetTrustee.mockReturnValue(trustee);
+      const response = await request(app).get(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL);
+
+      // Assert
+      expect(response.status).toEqual(200);
+      expect(response.text).toContain(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_TITLE);
+      expect(response.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
+
+      expect(mockGetTrustInReview).toHaveBeenCalledWith(appData);
+      expect(mockGetTrustInReview).toHaveBeenCalledTimes(1);
+      expect(mockGetTrustee).toHaveBeenCalledTimes(1);
+
+      expect(response.text).toContain(CONTINUE_BUTTON_TEXT);
+      expect(response.text).toContain("govuk-notification-banner");
+      expect(response.text).toContain(RELEVANT_PERIOD);
+      expect(response.text).not.toContain(PAGE_TITLE_ERROR);
+    });
+
     test('when there is a legal entity to display, the page is rendered with fields populated', async () => {
       const appData = { entity_number: 'OE123456', entity_name: 'Test OE' };
       const trustInReview = { trust_id: '1199', trust_name: 'Trust 1', review_status: { in_review: true } };

@@ -45,6 +45,8 @@ export const getBeneficialOwnerOtherById = (req: Request, res: Response, next: N
   try {
     logger.debugRequest(req, `GET BY ID ${req.route.path}`);
 
+    const appData = getApplicationData(req.session);
+
     const id = req.params[ID];
     const data = getFromApplicationData(req, BeneficialOwnerOtherKey, id, true);
 
@@ -59,7 +61,8 @@ export const getBeneficialOwnerOtherById = (req: Request, res: Response, next: N
       ...data,
       ...principalAddress,
       ...serviceAddress,
-      [StartDateKey]: startDate
+      [StartDateKey]: startDate,
+      entity_name: appData.entity_name
     };
 
     // Redis removal work - Add extra template options if Redis Remove flag is true and on Registration journey
@@ -67,8 +70,6 @@ export const getBeneficialOwnerOtherById = (req: Request, res: Response, next: N
     if (isRegistration) {
       addActiveSubmissionBasePathToTemplateData(templateOptions, req);
     }
-
-    const appData = getApplicationData(req.session);
 
     if (EntityNumberKey in appData && appData[EntityNumberKey]) {
       return res.render(templateName, addCeasedDateToTemplateOptions(templateOptions, appData, data));

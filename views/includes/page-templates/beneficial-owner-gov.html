@@ -34,11 +34,11 @@
       {% include "includes/save-and-continue-button.html" %}
       {% set nameToBeRemoved = name %}
 
+      {% include "includes/inputs/relevant-period-input.html" %}
+
       {% if not entity_number %}
         {% include "includes/remove-button.html" %}
       {% endif %}
-
-      {% include "includes/inputs/relevant-period-input.html" %}
     </form>
   </div>
 </div>

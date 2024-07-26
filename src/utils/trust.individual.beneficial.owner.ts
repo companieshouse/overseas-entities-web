@@ -82,7 +82,6 @@ export const getTrustIndividualBo = (req: Request, res: Response, next: NextFunc
       trusteeId
     );
     const pageProps = getPageProperties(req, trustId, isUpdate, formData);
-    console.log("template Name" + pageProps.templateName);
     return res.render(pageProps.templateName, pageProps);
   } catch (error) {
     logger.errorRequest(req, error);

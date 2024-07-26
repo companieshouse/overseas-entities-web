@@ -33,7 +33,7 @@ export const getFilterPage = (req: Request, res: Response, next: NextFunction, t
   }
 };
 
-export const postFilterPage = async (req: Request, res: Response, next: NextFunction, isSecureRegisterYesUrl: string, isSecureRegisterNoUrl: string): Promise<void> => {
+export const postFilterPage = async (req: Request, res: Response, next: NextFunction, isSecureRegisterYesUrl: string, isSecureRegisterNoUrl: string, isRegistrationJourney: boolean = false): Promise<void> => {
   try {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
@@ -50,7 +50,7 @@ export const postFilterPage = async (req: Request, res: Response, next: NextFunc
     }
     if (isSecureRegister === "0") {
       nextPageUrl = isSecureRegisterNoUrl;
-      if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+      if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistrationJourney) {
         if (appData[Transactionkey] && appData[OverseasEntityKey]) {
           await updateOverseasEntity(req, session, appData);
         } else {

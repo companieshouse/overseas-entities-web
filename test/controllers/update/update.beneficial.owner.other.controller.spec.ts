@@ -161,6 +161,20 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).toContain("name=\"is_still_bo\" type=\"radio\" value=\"1\" checked");
     });
 
+    test("Renders the page through GET, with relevant period content, when insertin a relevant period object", async () => {
+      mockGetFromApplicationData.mockReturnValueOnce({ ...UPDATE_BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS, relevant_period: true });
+      const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(RELEVANT_PERIOD);
+      expect(resp.text).toContain(RELEVANT_PERIOD_OTHER_LEGAL_ENTITY_INFORMATION);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
+      expect(resp.text).toContain("TestCorporation");
+      expect(resp.text).toContain("TheLaw");
+      expect(resp.text).toContain("addressLine1");
+      expect(resp.text).toContain("town");
+    });
+
     test("Should render the error page", async () => {
       mockGetFromApplicationData.mockImplementationOnce(() => { throw new Error(MESSAGE_ERROR); });
       const response = await request(app).get(UPDATE_BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL);

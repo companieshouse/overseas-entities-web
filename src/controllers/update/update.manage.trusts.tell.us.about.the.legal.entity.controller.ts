@@ -33,7 +33,6 @@ const getPageProperties = (trust, formData, errors?: FormattedValidationErrors) 
         trustName: trust?.trust_name,
       },
       roleWithinTrustType: RoleWithinTrustType,
-      relevant_period: false,
       entity_name: trust?.trust_name,
     },
     formData,
@@ -44,7 +43,7 @@ const getPageProperties = (trust, formData, errors?: FormattedValidationErrors) 
 
 const getPagePropertiesRelevantPeriod = (isRelevantPeriod, trust, formData, entityName, errors?: FormattedValidationErrors) => {
   const pageProps = getPageProperties(trust, formData, errors);
-  pageProps.pageData.relevant_period = isRelevantPeriod;
+  pageProps.formData.relevant_period = isRelevantPeriod;
   pageProps.pageData.entity_name = entityName;
   return pageProps;
 };

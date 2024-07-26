@@ -566,6 +566,11 @@ export const UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndi
   relevant_period: undefined,
 };
 
+export const RELEVANT_PERIOD_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
+  ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+  relevant_period: true,
+};
+
 export const UPDATE_BENEFICIAL_OWNER_HAVE_DAY_OF_BIRTH_OBJECT_MOCK: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
   id: BO_IND_ID,
   ch_reference: "",
@@ -1630,6 +1635,17 @@ export const TRUST_NO_DATE: Trust = {
   creation_date_year: "",
   trust_still_involved_in_overseas_entity: "Yes",
   unable_to_obtain_all_trust_info: "No"
+};
+
+export const TRUST_RELEVANT_PERIOD: Trust = {
+  trust_id: "0",
+  trust_name: "name of trust",
+  creation_date_day: "31",
+  creation_date_month: "12",
+  creation_date_year: "1999",
+  trust_still_involved_in_overseas_entity: "Yes",
+  unable_to_obtain_all_trust_info: "No",
+  relevant_period: true
 };
 
 export const TRUST_PARTIAL_DATE: Trust = {

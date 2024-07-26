@@ -38,13 +38,13 @@
 
       {% include "includes/inset-text.html" %}
 
+      {% include "includes/inputs/relevant-period-input.html" %}
+
       {% include "includes/save-and-continue-button.html" %}
       {% set nameToBeRemoved = name %}
       {% if not entity_number %}
         {% include "includes/remove-button.html" %}
       {% endif %}
-
-      {% include "includes/inputs/relevant-period-input.html" %}
     </form>
   </div>
 </div>

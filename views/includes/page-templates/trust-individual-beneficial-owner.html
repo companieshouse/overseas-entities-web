@@ -27,7 +27,7 @@
   <div class="govuk-grid-column-two-thirds">
     {% include "includes/list/errors.html" %}
 
-    {% if pageData.relevant_period %}
+    {% if formData.relevant_period %}
       {% set entity_name = pageData.entity_name %}
       {% include "includes/page-templates/important-banner.html" %}
       {% set pageTitle = pageParams.title + " beneficiary" %}
@@ -37,7 +37,7 @@
     <h1 class="govuk-heading-xl govuk-!-margin-0">{{ pageTitle }}</h1>
     <br>
 
-    {% if pageData.relevant_period %}
+    {% if formData.relevant_period %}
       <p class="govuk-body">You can add more later.</p>
       <div class="govuk-inset-text">
         <p>The information you enter for this pre-registration beneficiary must be correct as at the date they ceased to be involved in the trust.</p>
@@ -94,7 +94,7 @@
         {% include "includes/inputs/date-input.html" %}
       {% endif %}
 
-      {% if not pageData.relevant_period %}
+      {% if not formData.relevant_period %}
         {% set interestedPersonDateHtml %}
           {% set fieldParam = {
             label: 'What date did they become an interested person?',
@@ -184,7 +184,7 @@
         <input type="hidden" name="dateOfBirthYear" value="{{ formData.dateOfBirthYear }}"/>
       {% endif %}
 
-      {% if pageData.relevant_period %}
+      {% if formData.relevant_period %}
         <input type="hidden" name="roleWithinTrust" value= "{{ pageData.roleWithinTrustType.BENEFICIARY }}" />
         <input type="hidden" name="relevant_period" value= "true" />
       {% endif %}

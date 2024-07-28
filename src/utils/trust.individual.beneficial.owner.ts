@@ -25,7 +25,9 @@ type TrustIndividualBeneificalOwnerPageProperties = {
   templateName: string;
   pageData: {
     trustData: PageModel.CommonTrustData,
-    roleWithinTrustType: typeof RoleWithinTrustType;
+    roleWithinTrustType: typeof RoleWithinTrustType,
+    relevant_period: boolean,
+    entity_name: string;
   },
   pageParams: {
     title: string;
@@ -44,6 +46,11 @@ const getPageProperties = (
   errors?: FormattedValidationErrors,
 ): TrustIndividualBeneificalOwnerPageProperties => {
 
+  let appData: ApplicationData = {};
+  const relevant_period = req.query['relevant-period'] === "true";
+  appData = relevant_period ? getApplicationData(req.session) : {};
+  const trustData = CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId, false);
+
   return {
     backLinkUrl: getTrustInvolvedUrl(isUpdate, trustId, req),
     templateName: getPageTemplate(isUpdate),
@@ -51,12 +58,14 @@ const getPageProperties = (
       title: INDIVIDUAL_BO_TEXTS.title,
     },
     pageData: {
-      trustData: CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId, false),
-      roleWithinTrustType: RoleWithinTrustType
+      trustData: trustData,
+      roleWithinTrustType: RoleWithinTrustType,
+      relevant_period: relevant_period,
+      entity_name: appData.entity_name ? appData.entity_name : trustData.trustName,
     },
     formData,
     errors,
-    url: getUrl(isUpdate),
+    url: relevant_period ? getUrl(isUpdate) + config.RELEVANT_PERIOD_QUERY_PARAM : getUrl(isUpdate),
     isUpdate
   };
 };

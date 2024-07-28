@@ -99,7 +99,8 @@ describe('Trust Individual Beneficial Owner Controller', () => {
       session: {} as Session,
       route: '',
       method: '',
-      body: { 'body': 'dummy' }
+      body: { 'body': 'dummy' },
+      query: {}
     } as Request;
   });
 

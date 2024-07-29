@@ -253,7 +253,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
       expect(resp.text).toContain(UPDATE_WHAT_IS_THEIR_FIRST_NAME);
       expect(resp.text).toContain(UPDATE_ARE_THEY_STILL_INVOLVED_IN_THE_TRUST);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-      expect(resp.text).toContain(CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
     });
   });
 

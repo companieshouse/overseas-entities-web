@@ -174,7 +174,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
-      expect(resp.text).toContain(saveAndContinueButtonText);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).toContain(RELEVANT_PERIOD);
       expect(resp.text).toContain(RELEVANT_PERIOD_INDIVIDUAL_INFORMATION);
       expect(resp.text).toContain("Ivan");

@@ -183,7 +183,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).toContain("a11");
       expect(resp.text).toContain("name=\"is_on_sanctions_list\" type=\"radio\" value=\"1\" checked");
       expect(resp.text).toContain("name=\"is_still_bo\" type=\"radio\" value=\"1\" checked");
-      expect(resp.text).toContain(saveAndContinueButtonText);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
     });
 
     test("Should render the error page", async () => {

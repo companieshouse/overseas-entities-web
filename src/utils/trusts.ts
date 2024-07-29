@@ -108,6 +108,10 @@ const containsTrustData = (trusts: Trust[]): boolean => {
   return (trusts.length > 0);
 };
 
+const containsReviewTrustData = (reviewTrusts: Trust[]): boolean => {
+  return (reviewTrusts.length > 0);
+};
+
 /**
  * Get Trust object from application object in session
  *
@@ -125,6 +129,15 @@ const getTrustByIdFromApp = (appData: ApplicationData, trustId: string): Trust =
  */
 const getTrustArray = (appData: ApplicationData): Trust[] => {
   return appData[TrustKey] ?? [];
+};
+
+/**
+ * Get Review Trust array from application object in session
+ *
+ * @param appData Application Data in Session
+ */
+const getReviewTrustArray = (appData: ApplicationData): Trust[] => {
+  return appData?.update?.review_trusts ?? [];
 };
 
 /**
@@ -376,94 +389,104 @@ const saveIndividualTrusteeInTrust = (trust: Trust, trusteeData: IndividualTrust
  */
 const mapTrustApiReturnModelToWebModel = (appData: ApplicationData) => {
 
-  if (containsTrustData(getTrustArray(appData))) {
+  const trusts = getTrustArray(appData);
+  if (containsTrustData(trusts)) {
+    for (const trust of trusts ?? []) {
+      mapTrustees(trust);
+    }
+  }
 
-    for (const trust of appData.trusts ?? []) {
-
-      trust.CORPORATES = (trust.CORPORATES || []).map(corporateTrustee => {
-
-        const apiData: any = corporateTrustee;
-
-        return {
-          id: uuidv4(),
-          type: getRoleWithinTrustType(apiData.type) as RoleWithinTrustType,
-          name: apiData.name,
-          date_became_interested_person_day: apiData?.date_became_interested_person_day,
-          date_became_interested_person_month: apiData?.date_became_interested_person_month,
-          date_became_interested_person_year: apiData?.date_became_interested_person_year,
-          ro_address_premises: apiData.registered_office_address.property_name_number,
-          ro_address_line_1: apiData.registered_office_address.line_1,
-          ro_address_line_2: apiData?.registered_office_address.line_2,
-          ro_address_locality: apiData.registered_office_address.locality,
-          ro_address_region: apiData.registered_office_address.county,
-          ro_address_country: apiData.registered_office_address.country,
-          ro_address_postal_code: apiData.registered_office_address.postcode,
-          ro_address_care_of: apiData?.registered_office_address.care_of,
-          ro_address_po_box: apiData?.registered_office_address.po_box,
-          sa_address_premises: apiData?.service_address.property_name_number,
-          sa_address_line_1: apiData.service_address?.line_1,
-          sa_address_line_2: apiData.service_address?.line_2,
-          sa_address_locality: apiData.service_address?.locality,
-          sa_address_region: apiData.service_address?.county,
-          sa_address_country: apiData.service_address?.country,
-          sa_address_postal_code: apiData.service_address?.postcode,
-          sa_address_care_of: apiData.service_address?.care_of,
-          sa_address_po_box: apiData.service_address?.po_box,
-          identification_legal_authority: apiData.identification_legal_authority,
-          identification_legal_form: apiData.identification_legal_form,
-          identification_place_registered: apiData?.identification_place_registered,
-          identification_country_registration: apiData?.identification_country_registration,
-          identification_registration_number: apiData?.identification_registration_number,
-          is_service_address_same_as_principal_address: apiData.is_service_address_same_as_principal_address,
-          is_on_register_in_country_formed_in: apiData?.is_on_register_in_country_formed_in,
-        };
-      });
-
-      trust.INDIVIDUALS = (trust.INDIVIDUALS || []).map(trustIndividual => {
-
-        const apiData: any = trustIndividual;
-
-        return {
-          id: uuidv4(),
-          type: getRoleWithinTrustType(apiData.type) as RoleWithinTrustType,
-          forename: apiData.forename,
-          other_forenames: apiData.other_forenames,
-          surname: apiData.surname,
-          dob_day: apiData.dob_day,
-          dob_month: apiData.dob_month,
-          dob_year: apiData.dob_year,
-          nationality: apiData.nationality,
-          second_nationality: apiData?.second_nationality,
-          ura_address_premises: apiData.usual_residential_address?.property_name_number,
-          ura_address_line_1: apiData.usual_residential_address?.line_1,
-          ura_address_line_2: apiData.usual_residential_address?.line_2,
-          ura_address_locality: apiData.usual_residential_address?.locality,
-          ura_address_region: apiData.usual_residential_address?.county,
-          ura_address_country: apiData.usual_residential_address?.country,
-          ura_address_postal_code: apiData.usual_residential_address?.postcode,
-          ura_address_care_of: apiData?.usual_residential_address.care_of,
-          ura_address_po_box: apiData?.usual_residential_address.po_box,
-          is_service_address_same_as_usual_residential_address: apiData.is_service_address_same_as_usual_residential_address,
-          sa_address_premises: apiData.service_address?.property_name_number,
-          sa_address_line_1: apiData.service_address?.line_1,
-          sa_address_line_2: apiData.service_address?.line_2,
-          sa_address_locality: apiData.service_address?.locality,
-          sa_address_region: apiData.service_address?.county,
-          sa_address_country: apiData.service_address?.country,
-          sa_address_postal_code: apiData.service_address?.postcode,
-          sa_address_care_of: apiData.service_address?.care_of,
-          sa_address_po_box: apiData.service_address?.po_box,
-          date_became_interested_person_day: apiData?.date_became_interested_person_day,
-          date_became_interested_person_month: apiData?.date_became_interested_person_month,
-          date_became_interested_person_year: apiData?.date_became_interested_person_year,
-        };
-      });
-
-      trust.HISTORICAL_BO = (trust.HISTORICAL_BO as TrustHistoricalBeneficialOwner[]).map(
-        hbo => {return { id: uuidv4(), ...hbo, corporate_indicator: convertBooleanToYesNoResponse(hbo.corporate_indicator), }; } );
+  const reviewTrusts = getReviewTrustArray(appData);
+  if (containsReviewTrustData(reviewTrusts)) {
+    for (const trust of reviewTrusts ?? []) {
+      mapTrustees(trust);
     }
   }
 };
+
+function mapTrustees(trust: Trust) {
+  trust.CORPORATES = (trust.CORPORATES || []).map(corporateTrustee => {
+
+    const apiData: any = corporateTrustee;
+
+    return {
+      id: uuidv4(),
+      type: getRoleWithinTrustType(apiData.type) as RoleWithinTrustType,
+      name: apiData.name,
+      date_became_interested_person_day: apiData?.date_became_interested_person_day,
+      date_became_interested_person_month: apiData?.date_became_interested_person_month,
+      date_became_interested_person_year: apiData?.date_became_interested_person_year,
+      ro_address_premises: apiData.registered_office_address.property_name_number,
+      ro_address_line_1: apiData.registered_office_address.line_1,
+      ro_address_line_2: apiData?.registered_office_address.line_2,
+      ro_address_locality: apiData.registered_office_address.locality,
+      ro_address_region: apiData.registered_office_address.county,
+      ro_address_country: apiData.registered_office_address.country,
+      ro_address_postal_code: apiData.registered_office_address.postcode,
+      ro_address_care_of: apiData?.registered_office_address.care_of,
+      ro_address_po_box: apiData?.registered_office_address.po_box,
+      sa_address_premises: apiData?.service_address.property_name_number,
+      sa_address_line_1: apiData.service_address?.line_1,
+      sa_address_line_2: apiData.service_address?.line_2,
+      sa_address_locality: apiData.service_address?.locality,
+      sa_address_region: apiData.service_address?.county,
+      sa_address_country: apiData.service_address?.country,
+      sa_address_postal_code: apiData.service_address?.postcode,
+      sa_address_care_of: apiData.service_address?.care_of,
+      sa_address_po_box: apiData.service_address?.po_box,
+      identification_legal_authority: apiData.identification_legal_authority,
+      identification_legal_form: apiData.identification_legal_form,
+      identification_place_registered: apiData?.identification_place_registered,
+      identification_country_registration: apiData?.identification_country_registration,
+      identification_registration_number: apiData?.identification_registration_number,
+      is_service_address_same_as_principal_address: apiData.is_service_address_same_as_principal_address,
+      is_on_register_in_country_formed_in: apiData?.is_on_register_in_country_formed_in,
+    };
+  });
+
+  trust.INDIVIDUALS = (trust.INDIVIDUALS || []).map(trustIndividual => {
+
+    const apiData: any = trustIndividual;
+
+    return {
+      id: uuidv4(),
+      type: getRoleWithinTrustType(apiData.type) as RoleWithinTrustType,
+      forename: apiData.forename,
+      other_forenames: apiData.other_forenames,
+      surname: apiData.surname,
+      dob_day: apiData.dob_day,
+      dob_month: apiData.dob_month,
+      dob_year: apiData.dob_year,
+      nationality: apiData.nationality,
+      second_nationality: apiData?.second_nationality,
+      ura_address_premises: apiData.usual_residential_address?.property_name_number,
+      ura_address_line_1: apiData.usual_residential_address?.line_1,
+      ura_address_line_2: apiData.usual_residential_address?.line_2,
+      ura_address_locality: apiData.usual_residential_address?.locality,
+      ura_address_region: apiData.usual_residential_address?.county,
+      ura_address_country: apiData.usual_residential_address?.country,
+      ura_address_postal_code: apiData.usual_residential_address?.postcode,
+      ura_address_care_of: apiData?.usual_residential_address.care_of,
+      ura_address_po_box: apiData?.usual_residential_address.po_box,
+      is_service_address_same_as_usual_residential_address: apiData.is_service_address_same_as_usual_residential_address,
+      sa_address_premises: apiData.service_address?.property_name_number,
+      sa_address_line_1: apiData.service_address?.line_1,
+      sa_address_line_2: apiData.service_address?.line_2,
+      sa_address_locality: apiData.service_address?.locality,
+      sa_address_region: apiData.service_address?.county,
+      sa_address_country: apiData.service_address?.country,
+      sa_address_postal_code: apiData.service_address?.postcode,
+      sa_address_care_of: apiData.service_address?.care_of,
+      sa_address_po_box: apiData.service_address?.po_box,
+      date_became_interested_person_day: apiData?.date_became_interested_person_day,
+      date_became_interested_person_month: apiData?.date_became_interested_person_month,
+      date_became_interested_person_year: apiData?.date_became_interested_person_year,
+    };
+  });
+
+  trust.HISTORICAL_BO = (trust.HISTORICAL_BO as TrustHistoricalBeneficialOwner[]).map(
+    hbo => { return { id: uuidv4(), ...hbo, corporate_indicator: convertBooleanToYesNoResponse(hbo.corporate_indicator), }; });
+}
 
 function getRoleWithinTrustType(type: any): RoleWithinTrustType | undefined {
 

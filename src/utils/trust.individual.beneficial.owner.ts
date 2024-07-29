@@ -27,7 +27,7 @@ type TrustIndividualBeneificalOwnerPageProperties = {
     trustData: PageModel.CommonTrustData,
     roleWithinTrustType: typeof RoleWithinTrustType,
     relevant_period: boolean,
-    entity_name: string;
+    entity_name: string
   },
   pageParams: {
     title: string;
@@ -46,10 +46,6 @@ const getPageProperties = (
   errors?: FormattedValidationErrors,
 ): TrustIndividualBeneificalOwnerPageProperties => {
 
-  let appData: ApplicationData = {};
-  const relevant_period = req.query['relevant-period'] === "true";
-  appData = relevant_period ? getApplicationData(req.session) : {};
-  const trustData = CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId, false);
   return {
     backLinkUrl: getTrustInvolvedUrl(isUpdate, trustId, req),
     templateName: getPageTemplate(isUpdate),
@@ -57,16 +53,23 @@ const getPageProperties = (
       title: INDIVIDUAL_BO_TEXTS.title,
     },
     pageData: {
-      trustData: trustData,
+      trustData: CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId, false),
       roleWithinTrustType: RoleWithinTrustType,
-      relevant_period: relevant_period,
-      entity_name: appData.entity_name ? appData.entity_name : trustData.trustName,
+      relevant_period: false,
+      entity_name: trustId
     },
     formData,
     errors,
-    url: relevant_period ? getUrl(isUpdate) + config.RELEVANT_PERIOD_QUERY_PARAM : getUrl(isUpdate),
+    url: getUrl(isUpdate),
     isUpdate
   };
+};
+
+const getPagePropertiesRelevantPeriod = (isRelevantPeriod, req, trustId, isUpdate, formData, entityName) => {
+  const pageProps = getPageProperties(req, trustId, isUpdate, formData);
+  pageProps.pageData.relevant_period = isRelevantPeriod;
+  pageProps.pageData.entity_name = entityName;
+  return pageProps;
 };
 
 export const getTrustIndividualBo = (req: Request, res: Response, next: NextFunction, isUpdate: boolean): void => {
@@ -75,13 +78,17 @@ export const getTrustIndividualBo = (req: Request, res: Response, next: NextFunc
     const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
     const trusteeId = req.params[config.ROUTE_PARAM_TRUSTEE_ID];
     const appData: ApplicationData = getApplicationData(req.session);
+    const isRelevantPeriod = req.query['relevant-period'];
 
     const formData: PageModel.IndividualTrusteesFormCommon = mapIndividualTrusteeByIdFromSessionToPage(
       appData,
       trustId,
       trusteeId
     );
-    const pageProps = getPageProperties(req, trustId, isUpdate, formData);
+    let pageProps = getPageProperties(req, trustId, isUpdate, formData);
+    if (isRelevantPeriod) {
+      pageProps = getPagePropertiesRelevantPeriod(isRelevantPeriod, req, trustId, isUpdate, formData, appData.entity_name);
+    }
     return res.render(pageProps.templateName, pageProps);
   } catch (error) {
     logger.errorRequest(req, error);

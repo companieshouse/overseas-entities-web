@@ -136,7 +136,6 @@ export const postTrustLegalEntityBo = async (req: Request, res: Response, next: 
     return safeRedirect(res, getTrustInvolvedUrl(isUpdate, trustId, req));
   } catch (error) {
     logger.errorRequest(req, error);
-
     return next(error);
   }
 };

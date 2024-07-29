@@ -276,10 +276,6 @@ export const SELECT_IF_REGISTER_DURING_PRE_REG_PERIOD = "Select yes if the overs
 export const RELEVANT_PERIOD_EXTRA_INFO_REQUIRED = "Based on the pre-registration statement you provided earlier in this service";
 export const RELEVANT_PERIOD_INDIVIDUAL_INFORMATION = "You need to enter information that is correct as at the date they ceased to be a registrable beneficial owner.";
 export const RELEVANT_PERIOD_OTHER_LEGAL_ENTITY_INFORMATION = "You need to enter information that is correct as at the date it ceased to be a registrable beneficial owner.";
-export const RELEVANT_CHECK_YOUR_ANSWER_HEADING = "Check your answers before submitting";
-export const RELEVANT_SECURE_REGISTER_CHANGE_LINK = "/update-an-overseas-entity/secure-update-filter";
-export const RELEVANT_SECURE_FILTER_PAGE_HEADING = "Do any beneficial owners or managing officers have personal information protected at Companies House?";
-export const RELEVANT_PERIOD_OWNED_LAND_CHANGE_LINK = "/update-an-overseas-entity/registered-owner-during-pre-registration-period";
 
 // Remove journey
 export const REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE = "Has the overseas entity disposed of all relevant property or land in the UK?";

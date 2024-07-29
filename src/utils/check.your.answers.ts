@@ -6,9 +6,8 @@ import { Session } from "@companieshouse/node-session-handler";
 import { ApplicationData } from "../model";
 import { getApplicationData } from "../utils/application.data";
 import { isActiveFeature } from "../utils/feature.flag";
-import { createOverseasEntity } from "../service/overseas.entities.service";
 import { OverseasEntityKey, Transactionkey } from "../model/data.types.model";
-import { closeTransaction, postTransaction } from "../service/transaction.service";
+import { closeTransaction } from "../service/transaction.service";
 import { startPaymentsSession } from "../service/payment.service";
 import { checkEntityRequiresTrusts, checkEntityReviewRequiresTrusts } from "./trusts";
 import { fetchOverseasEntityEmailAddress } from "./update/fetch.overseas.entity.email";
@@ -18,7 +17,6 @@ import {
   OVERSEAS_ENTITY_UPDATE_DETAILS_URL,
   OVERSEAS_ENTITY_SECTION_HEADING,
   WHO_IS_MAKING_UPDATE_URL,
-  FEATURE_FLAG_ENABLE_UPDATE_SAVE_AND_RESUME,
   UPDATE_AN_OVERSEAS_ENTITY_URL,
   CHS_URL,
   UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL,
@@ -115,14 +113,8 @@ export const postDataForReview = async (req: Request, res: Response, next: NextF
       return res.redirect(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL);
     }
 
-    let transactionID: string, overseasEntityID: string;
-    if (isActiveFeature(FEATURE_FLAG_ENABLE_UPDATE_SAVE_AND_RESUME)) {
-      transactionID = appData[Transactionkey] as string;
-      overseasEntityID = appData[OverseasEntityKey] as string;
-    } else {
-      transactionID = await postTransaction(req, session);
-      overseasEntityID = await createOverseasEntity(req, session, transactionID);
-    }
+    const transactionID = appData[Transactionkey] as string;
+    const overseasEntityID = appData[OverseasEntityKey] as string;
 
     const transactionClosedResponse = await closeTransaction(req, session, transactionID, overseasEntityID);
     logger.infoRequest(req, `Transaction Closed, ID: ${transactionID}`);

@@ -49,15 +49,15 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     if (req.body[DoYouWantToRemoveKey] === '1') {
       switch (req.params[PARAM_BO_MO_TYPE]) {
           case PARAM_BENEFICIAL_OWNER_INDIVIDUAL:
-            return removeBeneficialOwnerIndividual(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL, false);
+            return removeBeneficialOwnerIndividual(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
           case PARAM_BENEFICIAL_OWNER_GOV:
-            return removeBeneficialOwnerGov(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL, false);
+            return removeBeneficialOwnerGov(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
           case PARAM_BENEFICIAL_OWNER_OTHER:
-            return removeBeneficialOwnerOther(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL, false);
+            return removeBeneficialOwnerOther(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
           case PARAM_MANAGING_OFFICER_INDIVIDUAL:
-            return removeManagingOfficer(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL, false);
+            return removeManagingOfficer(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
           case PARAM_MANAGING_OFFICER_CORPORATE:
-            return removeManagingOfficerCorporate(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL, false);
+            return removeManagingOfficerCorporate(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
           default:
             break;
       }

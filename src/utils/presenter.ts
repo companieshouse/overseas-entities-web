@@ -38,7 +38,7 @@ export const getPresenterPage = (req: Request, res: Response, next: NextFunction
   }
 };
 
-export const postPresenterPage = async (req: Request, res: Response, next: NextFunction, redirectUrl: string, registrationFlag: boolean): Promise<void> => {
+export const postPresenterPage = async (req: Request, res: Response, next: NextFunction, redirectUrl: string): Promise<void> => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
@@ -50,7 +50,7 @@ export const postPresenterPage = async (req: Request, res: Response, next: NextF
         const transactionID = await postTransaction(req, session);
         appData[Transactionkey] = transactionID;
         appData[IsRemoveKey] = true;
-        appData[OverseasEntityKey] = await createOverseasEntity(req, session, transactionID, true);
+        appData[OverseasEntityKey] = await createOverseasEntity(req, session, transactionID);
         setExtraData(req.session, appData);
       }
     }
@@ -58,7 +58,7 @@ export const postPresenterPage = async (req: Request, res: Response, next: NextF
     const data = prepareData(req.body, PresenterKeys);
     setApplicationData(session, data, PresenterKey);
 
-    await saveAndContinue(req, session, registrationFlag);
+    await saveAndContinue(req, session);
 
     return res.redirect(redirectUrl);
   } catch (error) {

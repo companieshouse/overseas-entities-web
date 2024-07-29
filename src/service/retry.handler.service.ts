@@ -16,7 +16,7 @@ import { refreshToken } from "./refresh.token.service";
  * @param req Request object
  * @param session Session object
  * @param otherParams Parameters passed to the callback:
- *        For the postOverseasEntity call we have (transactionID, appData, isSaveAndResumeFeatureActive)
+ *        For the postOverseasEntity call we have (transactionID, appData)
  *        For the putOverseasEntity call we have (transactionID, overseasEntityID, appData)
  *        For the getOverseasEntity call we have (transactionID, overseasEntityID)
  *        For the postTransaction call we have (transaction as Transaction)

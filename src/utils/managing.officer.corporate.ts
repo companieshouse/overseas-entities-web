@@ -91,7 +91,7 @@ export const getManagingOfficerCorporateById = (req: Request, res: Response, nex
   }
 };
 
-export const postManagingOfficerCorporate = async(req: Request, res: Response, next: NextFunction, nextPage: string, registrationFlag: boolean): Promise<void> => {
+export const postManagingOfficerCorporate = async(req: Request, res: Response, next: NextFunction, nextPage: string): Promise<void> => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
@@ -100,7 +100,7 @@ export const postManagingOfficerCorporate = async(req: Request, res: Response, n
     const session = req.session as Session;
     setApplicationData(session, data, ManagingOfficerCorporateKey);
 
-    await saveAndContinue(req, session, registrationFlag);
+    await saveAndContinue(req, session);
 
     return res.redirect(nextPage);
   } catch (error) {
@@ -109,7 +109,7 @@ export const postManagingOfficerCorporate = async(req: Request, res: Response, n
   }
 };
 
-export const updateManagingOfficerCorporate = async(req: Request, res: Response, next: NextFunction, nextPage: string, registrationFlag: boolean): Promise<void> => {
+export const updateManagingOfficerCorporate = async(req: Request, res: Response, next: NextFunction, nextPage: string): Promise<void> => {
   try {
     logger.debugRequest(req, `UPDATE ${req.route.path}`);
 
@@ -123,7 +123,7 @@ export const updateManagingOfficerCorporate = async(req: Request, res: Response,
     const session = req.session as Session;
     setApplicationData(session, data, ManagingOfficerCorporateKey);
 
-    await saveAndContinue(req, session, registrationFlag);
+    await saveAndContinue(req, session);
 
     return res.redirect(nextPage);
   } catch (error) {
@@ -132,14 +132,14 @@ export const updateManagingOfficerCorporate = async(req: Request, res: Response,
   }
 };
 
-export const removeManagingOfficerCorporate = async(req: Request, res: Response, next: NextFunction, nextPage: string, registrationFlag: boolean): Promise<void> => {
+export const removeManagingOfficerCorporate = async(req: Request, res: Response, next: NextFunction, nextPage: string): Promise<void> => {
   try {
     logger.debugRequest(req, `REMOVE ${req.route.path}`);
 
     removeFromApplicationData(req, ManagingOfficerCorporateKey, req.params[ID]);
     const session = req.session as Session;
 
-    await saveAndContinue(req, session, registrationFlag);
+    await saveAndContinue(req, session);
 
     return res.redirect(nextPage);
   } catch (error) {

@@ -38,7 +38,7 @@ export const getDueDiligence = (req: Request, res: Response, next: NextFunction,
   }
 };
 
-export const postDueDiligence = async (req: Request, res: Response, next: NextFunction, redirectUrl: string, registrationFlag: boolean): Promise<void> => {
+export const postDueDiligence = async (req: Request, res: Response, next: NextFunction, redirectUrl: string): Promise<void> => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
@@ -52,7 +52,7 @@ export const postDueDiligence = async (req: Request, res: Response, next: NextFu
     // Empty DueDiligence object
     setApplicationData(session, {}, DueDiligenceKey);
 
-    await saveAndContinue(req, session, registrationFlag);
+    await saveAndContinue(req, session);
 
     return res.redirect(redirectUrl);
   } catch (error) {

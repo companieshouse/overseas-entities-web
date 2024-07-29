@@ -76,9 +76,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       [EntityNameKey]: entityName
     });
 
-    await saveAndContinue(req, session, false);
-    const redirectUrl = config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL;
-    return res.redirect(redirectUrl);
+    await saveAndContinue(req, session);
+    return res.redirect(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
 
   } catch (error) {
     logger.errorRequest(req, error);

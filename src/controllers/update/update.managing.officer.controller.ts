@@ -9,7 +9,7 @@ export const get = (req: Request, res: Response) => {
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
-  postManagingOfficer(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL, false);
+  postManagingOfficer(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
 };
 
 export const getById = (req: Request, res: Response, next: NextFunction) => {
@@ -17,9 +17,9 @@ export const getById = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const update = (req: Request, res: Response, next: NextFunction) => {
-  updateManagingOfficer(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL, false);
+  updateManagingOfficer(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
 };
 
 export const remove = (req: Request, res: Response, next: NextFunction) => {
-  removeManagingOfficer(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL, false);
+  removeManagingOfficer(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
 };

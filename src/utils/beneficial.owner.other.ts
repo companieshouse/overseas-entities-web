@@ -83,7 +83,7 @@ export const getBeneficialOwnerOtherById = (req: Request, res: Response, next: N
   }
 };
 
-export const postBeneficialOwnerOther = async (req: Request, res: Response, next: NextFunction, nextPage: string, registrationFlag: boolean): Promise<void> => {
+export const postBeneficialOwnerOther = async (req: Request, res: Response, next: NextFunction, nextPage: string): Promise<void> => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
@@ -92,7 +92,7 @@ export const postBeneficialOwnerOther = async (req: Request, res: Response, next
     const session = req.session as Session;
     setApplicationData(session, data, BeneficialOwnerOtherKey);
 
-    await saveAndContinue(req, session, registrationFlag);
+    await saveAndContinue(req, session);
 
     return res.redirect(nextPage);
   } catch (error) {
@@ -101,7 +101,7 @@ export const postBeneficialOwnerOther = async (req: Request, res: Response, next
   }
 };
 
-export const updateBeneficialOwnerOther = async (req: Request, res: Response, next: NextFunction, nextPage: string, registrationFlag: boolean): Promise<void> => {
+export const updateBeneficialOwnerOther = async (req: Request, res: Response, next: NextFunction, nextPage: string): Promise<void> => {
   try {
     logger.debugRequest(req, `UPDATE ${req.route.path}`);
 
@@ -124,7 +124,7 @@ export const updateBeneficialOwnerOther = async (req: Request, res: Response, ne
     const session = req.session as Session;
     setApplicationData(session, data, BeneficialOwnerOtherKey);
 
-    await saveAndContinue(req, session, registrationFlag);
+    await saveAndContinue(req, session);
 
     return res.redirect(nextPage);
   } catch (error) {
@@ -133,14 +133,14 @@ export const updateBeneficialOwnerOther = async (req: Request, res: Response, ne
   }
 };
 
-export const removeBeneficialOwnerOther = async (req: Request, res: Response, next: NextFunction, nextPage: string, registrationFlag: boolean): Promise<void> => {
+export const removeBeneficialOwnerOther = async (req: Request, res: Response, next: NextFunction, nextPage: string): Promise<void> => {
   try {
     logger.debugRequest(req, `REMOVE ${req.route.path}`);
 
     removeFromApplicationData(req, BeneficialOwnerOtherKey, req.params[ID]);
     const session = req.session as Session;
 
-    await saveAndContinue(req, session, registrationFlag);
+    await saveAndContinue(req, session);
 
     return res.redirect(nextPage);
   } catch (error) {

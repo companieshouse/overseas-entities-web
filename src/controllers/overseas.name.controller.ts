@@ -42,21 +42,19 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = { ...(getApplicationData(session)), [EntityNameKey]: entityName };
     let nextPageUrl = config.PRESENTER_URL;
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022)) {
-
-      if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
-        await updateOverseasEntity(req, session, appData);
-        nextPageUrl = getUrlWithTransactionIdAndSubmissionId(config.PRESENTER_WITH_PARAMS_URL, appData[Transactionkey] as string, appData[OverseasEntityKey] as string);
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+      await updateOverseasEntity(req, session, appData);
+      nextPageUrl = getUrlWithTransactionIdAndSubmissionId(config.PRESENTER_WITH_PARAMS_URL, appData[Transactionkey] as string, appData[OverseasEntityKey] as string);
+    } else {
+      if (!appData[Transactionkey]) {
+        const transactionID = await postTransaction(req, session);
+        appData[Transactionkey] = transactionID;
+        appData[OverseasEntityKey] = await createOverseasEntity(req, session, transactionID);
       } else {
-        if (!appData[Transactionkey]) {
-          const transactionID = await postTransaction(req, session);
-          appData[Transactionkey] = transactionID;
-          appData[OverseasEntityKey] = await createOverseasEntity(req, session, transactionID, true);
-        } else {
-          await updateOverseasEntity(req, session);
-        }
+        await updateOverseasEntity(req, session);
       }
     }
+
     setExtraData(req.session, appData);
     return res.redirect(nextPageUrl);
   } catch (error) {

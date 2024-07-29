@@ -60,7 +60,7 @@ export const post = async (req: Request, resp: Response, next: NextFunction) => 
     }
 
     setExtraData(session, appData);
-    await saveAndContinue(req, session, false);
+    await saveAndContinue(req, session);
 
     return resp.redirect(redirectUrl);
 

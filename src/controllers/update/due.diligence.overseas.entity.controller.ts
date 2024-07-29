@@ -12,5 +12,5 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
-  postDueDiligence(req, res, next, UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL, false);
+  postDueDiligence(req, res, next, UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL);
 };

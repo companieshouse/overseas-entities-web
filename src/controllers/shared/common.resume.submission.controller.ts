@@ -18,8 +18,8 @@ import {
   Transactionkey
 } from "../../model/data.types.model";
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../model/who.is.making.filing.model";
-import { OverseasEntityDueDiligence, OverseasEntityDueDiligenceKey } from "../../model/overseas.entity.due.diligence.model";
-import { DueDiligence, DueDiligenceKey } from "../../model/due.diligence.model";
+import { OverseasEntityDueDiligenceKey } from "../../model/overseas.entity.due.diligence.model";
+import { DueDiligenceKey } from "../../model/due.diligence.model";
 import { BeneficialOwnerGov, BeneficialOwnerGovKey } from "../../model/beneficial.owner.gov.model";
 import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
 import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../../model/beneficial.owner.other.model";
@@ -30,7 +30,7 @@ import { startPaymentsSession } from "../../service/payment.service";
 import { getTransaction } from "../../service/transaction.service";
 import { mapTrustApiReturnModelToWebModel } from "../../utils/trusts";
 
-export const getResumePage = async (req: Request, res: Response, next: NextFunction, isSaveAndResumeFeatureActive: boolean, resumePage: string) => {
+export const getResumePage = async (req: Request, res: Response, next: NextFunction, resumePage: string) => {
   try {
     logger.debugRequest(req, `GET a saved OE submission`);
 
@@ -40,33 +40,31 @@ export const getResumePage = async (req: Request, res: Response, next: NextFunct
 
     logger.infoRequest(req, `Resuming OE - ${infoMsg}`);
 
-    if (isSaveAndResumeFeatureActive) {
-      const appData: ApplicationData = await getOverseasEntity(req, transactionId, overseaEntityId);
+    const appData: ApplicationData = await getOverseasEntity(req, transactionId, overseaEntityId);
 
-      if (!Object.keys(appData || {}).length) {
-        throw createAndLogErrorRequest(req, `Error on resuming OE - ${infoMsg}`);
-      }
+    if (!Object.keys(appData || {}).length) {
+      throw createAndLogErrorRequest(req, `Error on resuming OE - ${infoMsg}`);
+    }
 
-      const session = req.session as Session;
-      setWebApplicationData(session, appData, transactionId, overseaEntityId);
+    const session = req.session as Session;
+    setWebApplicationData(session, appData, transactionId, overseaEntityId);
 
-      const transactionResource = await getTransaction(req, transactionId);
+    const transactionResource = await getTransaction(req, transactionId);
 
-      if (transactionResource.status === config.CLOSED_PENDING_PAYMENT) {
-        const headersPaymentUrl = {
-          headers: {
-            [config.PAYMENT_REQUIRED_HEADER]: config.PAYMENTS_API_URL + config.PAYMENTS
-          }
-        };
+    if (transactionResource.status === config.CLOSED_PENDING_PAYMENT) {
+      const headersPaymentUrl = {
+        headers: {
+          [config.PAYMENT_REQUIRED_HEADER]: config.PAYMENTS_API_URL + config.PAYMENTS
+        }
+      };
 
-        const baseURL = `${config.CHS_URL}${isRegistration ? config.REGISTER_AN_OVERSEAS_ENTITY_URL : config.UPDATE_AN_OVERSEAS_ENTITY_URL}`;
+      const baseURL = `${config.CHS_URL}${isRegistration ? config.REGISTER_AN_OVERSEAS_ENTITY_URL : config.UPDATE_AN_OVERSEAS_ENTITY_URL}`;
 
-        const redirectPath = await startPaymentsSession(req, session, transactionId, overseaEntityId, headersPaymentUrl, baseURL);
+      const redirectPath = await startPaymentsSession(req, session, transactionId, overseaEntityId, headersPaymentUrl, baseURL);
 
-        logger.infoRequest(req, `Payments Session created on Resume link with, Trans_ID: ${transactionId}, OE_ID: ${overseaEntityId}. Redirect to: ${redirectPath}`);
+      logger.infoRequest(req, `Payments Session created on Resume link with, Trans_ID: ${transactionId}, OE_ID: ${overseaEntityId}. Redirect to: ${redirectPath}`);
 
-        return res.redirect(redirectPath);
-      }
+      return res.redirect(redirectPath);
     }
 
     return res.redirect(resumePage);
@@ -104,9 +102,9 @@ const setWebApplicationData = (session: Session, appData: ApplicationData, trans
   appData[Transactionkey] = transactionId;
   appData[OverseasEntityKey] = overseaEntityId;
 
-  if (Object.keys(appData[OverseasEntityDueDiligenceKey] as OverseasEntityDueDiligence).length) {
+  if (appData[OverseasEntityDueDiligenceKey] && Object.keys(appData[OverseasEntityDueDiligenceKey]).length) {
     appData[WhoIsRegisteringKey] = WhoIsRegisteringType.SOMEONE_ELSE;
-  } else if (Object.keys(appData[DueDiligenceKey] as DueDiligence).length){
+  } else if (appData[DueDiligenceKey] && Object.keys(appData[DueDiligenceKey]).length){
     appData[WhoIsRegisteringKey] = WhoIsRegisteringType.AGENT;
   }
 

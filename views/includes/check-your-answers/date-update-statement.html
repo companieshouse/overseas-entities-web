@@ -1,7 +1,7 @@
 {% import "includes/date-macros.html" as dateMacros %}
 
 {% set dateUpdateStatement = "Date of the update statement" %}
-{% set filing_date = dateMacros.formatDate(appData.update.filing_date["day"], appData.update.filing_date["month"], appData.update.filing_date["year"]) %}
+{% set filing_date = dateMacros.formatDate(update.filing_date["day"], update.filing_date["month"], update.filing_date["year"]) %}
 {% set filingDatePage = OE_CONFIGS.UPDATE_FILING_DATE_PAGE %}
 
 <h2 class="govuk-heading-l">Date of the update statement</h2>

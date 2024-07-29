@@ -68,6 +68,7 @@ export const CREATE_OE__MSG_ERROR = "Something went wrong creating Overseas Enti
 export const FOUND_REDIRECT_TO = "Found. Redirecting to";
 export const REDIRECT_TO_SIGN_IN_PAGE = "User not authenticated, redirecting to sign in page, status_code=302";
 export const SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS_TEXT = "The correspondence address is the same as the entity's principal or registered office address";
+export const CHECK_YOUR_ANSWERS_PAGE_DATE_OF_UPDATE_STATEMENT_TITLE = "Date of the update statement";
 export const CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_TITLE = "Has the overseas entity identified any registrable beneficial owners?";
 export const CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_SUB_TEXT = "Some beneficial owners have been identified and I can provide all required information";
 export const CHECK_YOUR_ANSWERS_PAGE_RP_NO_BENEFICIAL_OWNER_STATEMENTS_TITLE = "Beneficial owner statement";

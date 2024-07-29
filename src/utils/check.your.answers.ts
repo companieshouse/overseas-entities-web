@@ -36,6 +36,7 @@ import { RoleWithinTrustType } from "../model/role.within.trust.type.model";
 import { fetchManagingOfficersPrivateData } from "./update/fetch.managing.officers.private.data";
 import { isRemoveJourney } from "./url";
 import { getTodaysDate } from "./date";
+import { checkRPStatementsExist } from "./relevant.period";
 
 export const getDataForReview = async (req: Request, res: Response, next: NextFunction, isNoChangeJourney: boolean) => {
   const session = req.session as Session;
@@ -43,6 +44,7 @@ export const getDataForReview = async (req: Request, res: Response, next: NextFu
   const hasAnyBosWithTrusteeNocs = isNoChangeJourney ? checkEntityReviewRequiresTrusts(appData) : checkEntityRequiresTrusts(appData);
   const backLinkUrl = getBackLinkUrl(isNoChangeJourney, hasAnyBosWithTrusteeNocs, isRemoveJourney(req));
   const templateName = getTemplateName(isNoChangeJourney);
+  const isRPStatementExists = checkRPStatementsExist(appData);
 
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
@@ -90,6 +92,7 @@ export const getDataForReview = async (req: Request, res: Response, next: NextFu
       ...appData,
       pageParams: {
         isRegistration: false,
+        isRPStatementExists: isRPStatementExists,
         noChangeFlag: isNoChangeJourney,
         isTrustFeatureEnabled: isActiveFeature(FEATURE_FLAG_ENABLE_TRUSTS_WEB),
         hasAnyBosWithTrusteeNocs,

@@ -7,7 +7,7 @@ export const get = (req: Request, res: Response) => {
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
-  postManagingOfficerCorporate(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL, false);
+  postManagingOfficerCorporate(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
 };
 
 export const getById = (req: Request, res: Response, next: NextFunction) => {
@@ -15,9 +15,9 @@ export const getById = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const update = (req: Request, res: Response, next: NextFunction) => {
-  updateManagingOfficerCorporate(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL, false);
+  updateManagingOfficerCorporate(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
 };
 
 export const remove = (req: Request, res: Response, next: NextFunction) => {
-  removeManagingOfficerCorporate(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL, false);
+  removeManagingOfficerCorporate(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
 };

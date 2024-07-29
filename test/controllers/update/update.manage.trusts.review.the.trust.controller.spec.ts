@@ -20,9 +20,8 @@ import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.a
 import { getApplicationData } from '../../../src/utils/application.data';
 import { isActiveFeature } from '../../../src/utils/feature.flag';
 import { APPLICATION_DATA_MOCK, BENEFICIAL_OWNER_INDIVIDUAL_NO_TRUSTEE_OBJECT_MOCK, BENEFICIAL_OWNER_OTHER_NO_TRUSTEE_OBJECT_MOCK, TRUST } from '../../__mocks__/session.mock';
-import { PAGE_TITLE_ERROR, PAGE_NOT_FOUND_TEXT, ERROR_LIST, UPDATE_REVIEW_THE_TRUST, ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE, TRUST_NOT_ASSOCIATED_WITH_BENEFICIAL_OWNER_TEXT, TRUST_CEASED_DATE_TEXT, TRUST_SELECT_TRUSTEES_TEXT } from '../../__mocks__/text.mock';
+import { PAGE_TITLE_ERROR, PAGE_NOT_FOUND_TEXT, ERROR_LIST, UPDATE_REVIEW_THE_TRUST, ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE, TRUST_NOT_ASSOCIATED_WITH_BENEFICIAL_OWNER_TEXT, TRUST_CEASED_DATE_TEXT, TRUST_SELECT_TRUSTEES_TEXT, SAVE_AND_CONTINUE_BUTTON_TEXT } from '../../__mocks__/text.mock';
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
-import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.mock';
 import { ErrorMessages } from "../../../src/validation/error.messages";
 import { getReviewTrustById, hasTrustsToReview, updateTrustInReviewList } from '../../../src/utils/update/review_trusts';
 import { UpdateKey } from '../../../src/model/update.type.model';
@@ -105,7 +104,7 @@ describe('Update - Manage Trusts - Review the trust', () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain("Review the trust");
       expect(resp.text).toContain(UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
-      expect(resp.text).toContain(saveAndContinueButtonText);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).toContain(TRUST_CEASED_DATE_TEXT);
       expect(resp.text).toContain("Is the trust still involved in the overseas entity?");
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
@@ -123,7 +122,7 @@ describe('Update - Manage Trusts - Review the trust', () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain("Review the trust");
       expect(resp.text).toContain(UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
-      expect(resp.text).toContain(saveAndContinueButtonText);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).toContain(TRUST_NOT_ASSOCIATED_WITH_BENEFICIAL_OWNER_TEXT);
       expect(resp.text).toContain(TRUST_CEASED_DATE_TEXT);
       expect(resp.text).not.toContain(TRUST_SELECT_TRUSTEES_TEXT);

@@ -16,11 +16,7 @@ export const getEntityBackLink = (data: ApplicationData, req: Request): string =
 };
 
 export const getSoldLandFilterBackLink = (): string => {
-  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022)) {
-    return config.LANDING_PAGE_STARTING_NEW_URL;
-  } else {
-    return config.LANDING_PAGE_URL;
-  }
+  return config.LANDING_PAGE_STARTING_NEW_URL;
 };
 
 export const getUpdateOrRemoveBackLink = (req: Request, backLinkUrl: string): string => {
@@ -554,7 +550,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.REMOVE_SOLD_ALL_LAND_FILTER_URL]: {
     currentPage: config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE,
-    previousPage: () => `${config.UPDATE_CONTINUE_WITH_SAVED_FILING_PAGE}${config.JOURNEY_REMOVE_QUERY_PARAM}`,
+    previousPage: () => `${config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`,
     nextPage: [config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL]
   },
   [config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL]: {

@@ -56,11 +56,11 @@ import {
   PUBLIC_REGISTER_HINT_TEXT,
   RELEVANT_PERIOD,
   RELEVANT_PERIOD_OTHER_LEGAL_ENTITY_INFORMATION,
+  SAVE_AND_CONTINUE_BUTTON_TEXT,
   SERVICE_UNAVAILABLE,
   SHOW_INFORMATION_ON_PUBLIC_REGISTER,
   TRUSTS_NOC_HEADING,
 } from "../../__mocks__/text.mock";
-import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.mock';
 import {
   AddressKeys,
   IsOnSanctionsListKey,
@@ -126,7 +126,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).toContain(config.UPDATE_LANDING_PAGE_URL);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
-      expect(resp.text).toContain(saveAndContinueButtonText);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
       expect(resp.text).toContain(SHOW_INFORMATION_ON_PUBLIC_REGISTER);
       expect(resp.text).not.toContain(TRUSTS_NOC_HEADING);
@@ -140,7 +140,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).not.toContain(JURISDICTION_FIELD_LABEL);
       expect(resp.text).toContain(PUBLIC_REGISTER_HINT_TEXT);
-      expect(resp.text).toContain(saveAndContinueButtonText);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
     });
   });
 
@@ -157,8 +157,22 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).toContain("town");
       expect(resp.text).toContain("country");
       expect(resp.text).toContain("BY 2");
-      expect(resp.text).toContain(saveAndContinueButtonText);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).toContain("name=\"is_still_bo\" type=\"radio\" value=\"1\" checked");
+    });
+
+    test("Renders the page through GET, with relevant period content, when insertin a relevant period object", async () => {
+      mockGetFromApplicationData.mockReturnValueOnce({ ...UPDATE_BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS, relevant_period: true });
+      const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(RELEVANT_PERIOD);
+      expect(resp.text).toContain(RELEVANT_PERIOD_OTHER_LEGAL_ENTITY_INFORMATION);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
+      expect(resp.text).toContain("TestCorporation");
+      expect(resp.text).toContain("TheLaw");
+      expect(resp.text).toContain("addressLine1");
+      expect(resp.text).toContain("town");
     });
 
     test("Should render the error page", async () => {

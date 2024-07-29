@@ -15,7 +15,7 @@ export enum ErrorMessages {
   ROLE_AND_RESPONSIBILITIES_CORPORATE = "Enter a description of the corporate managing officer’s role and responsibilities",
   ROLE_AND_RESPONSIBILITIES_INDIVIDUAL = "Enter a description of the individual managing officer’s role and responsibilities",
   NATIONALITY = "Enter the individual person’s nationality",
-  NATIONALITY_INDIVIDUAL_BO = "Start typing, then select a nationality from the list",
+  NATIONALITY_INDIVIDUAL_BO = "Enter the individual person’s nationality",
   SECOND_NATIONALITY_IS_SAME = "Second nationality must be different to their first nationality",
   SECOND_NATIONALITY_IS_SAME_INDIVIDUAL_BO = "Second nationality should not be the same as the nationality given",
   NATIONALITIES_TOO_LONG = "The nationalities you have chosen are longer than 50 characters in total, please choose fewer nationalities",
@@ -58,8 +58,7 @@ export enum ErrorMessages {
   CITY_OR_TOWN_LEGAL_ENTITY_BO = "Enter the city or town",
   COUNTY = "Enter a county",
   COUNTRY = "Select a country from the list",
-  COUNTRY_INDIVIDUAL_BO = "Start typing, then select a country from the list",
-  COUNTRY_LEGAL_ENTITY_BO = "Start typing, then select a country from the list",
+  COUNTRY_BO = "Select a country from the list",
   UK_COUNTRY = "Select a country",
   POSTCODE = "Enter a postcode",
 

@@ -82,7 +82,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
       setApplicationData(req.session, data, BeneficialOwnerIndividualKey);
 
-      await saveAndContinue(req, session, false);
+      await saveAndContinue(req, session);
     }
     if (checkRelevantPeriod(appData)) {
       return res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);

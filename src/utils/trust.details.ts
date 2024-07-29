@@ -36,7 +36,6 @@ type TrustDetailPageProperties = {
   };
   pageData: {
     beneficialOwners: PageModel.TrustBeneficialOwnerListItem[];
-    relevantPeriod: boolean
   };
   formData: PageModel.TrustDetailsForm,
   errors?: FormattedValidationErrors,
@@ -68,7 +67,6 @@ const getPageProperties = (
     },
     pageData: {
       beneficialOwners: boAvailableForTrust,
-      relevantPeriod: req.query["relevant-period"] === "true",
     },
     ...appData,
     formData,
@@ -77,6 +75,12 @@ const getPageProperties = (
     errors,
     url: getUrl(isUpdate),
   };
+};
+
+const getPagePropertiesRelevantPeriod = (req, formData, isUpdate, isReview, errors?: FormattedValidationErrors) => {
+  const pageProps = getPageProperties(req, formData, isUpdate, isReview, errors);
+  pageProps.formData.relevant_period = true;
+  return pageProps;
 };
 
 export const getTrustDetails = (req: Request, res: Response, next: NextFunction, isUpdate: boolean, isReview: boolean): void => {
@@ -99,7 +103,12 @@ export const getTrustDetails = (req: Request, res: Response, next: NextFunction,
       isReview,
     );
 
-    const pageProps = getPageProperties(req, formData, isUpdate, isReview);
+    let pageProps;
+    if (req.query["relevant-period"] === "true") {
+      pageProps = getPagePropertiesRelevantPeriod(req, formData, isUpdate, isReview);
+    } else {
+      pageProps = getPageProperties(req, formData, isUpdate, isReview);
+    }
 
     return res.render(pageProps.templateName, pageProps);
   } catch (error) {
@@ -197,7 +206,7 @@ export const postTrustDetails = async (req: Request, res: Response, next: NextFu
     const session = req.session as Session;
     setExtraData(session, appData);
 
-    await saveAndContinue(req, session, !(isReview || isUpdate));
+    await saveAndContinue(req, session);
 
     return safeRedirect(res, getNextPage(isUpdate, details.trust_id, req, isReview));
   } catch (error) {

@@ -51,6 +51,7 @@ export const mapIndividualTrusteeToSession = (
     ceased_date_day: formData.stillInvolved === "0" ? formData.ceasedDateDay : "",
     ceased_date_month: formData.stillInvolved === "0" ? formData.ceasedDateMonth : "",
     ceased_date_year: formData.stillInvolved === "0" ? formData.ceasedDateYear : "",
+    relevant_period: formData.relevant_period,
   };
 
   let interestedPersonData = {};
@@ -134,7 +135,8 @@ export const mapIndividualTrusteeFromSessionToPage = (
     stillInvolved: stillInvolvedInTrust,
     ceasedDateDay: trustee.ceased_date_day,
     ceasedDateMonth: trustee.ceased_date_month,
-    ceasedDateYear: trustee.ceased_date_year
+    ceasedDateYear: trustee.ceased_date_year,
+    relevant_period: trustee.relevant_period,
   };
 
   if (trustee.type === RoleWithinTrustType.INTERESTED_PERSON){

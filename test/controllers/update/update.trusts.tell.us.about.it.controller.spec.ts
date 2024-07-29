@@ -26,7 +26,12 @@ import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.a
 import { getApplicationData } from '../../../src/utils/application.data';
 import { isActiveFeature } from '../../../src/utils/feature.flag';
 
-import { APPLICATION_DATA_UPDATE_NO_TRUSTS_MOCK, APPLICATION_DATA_MOCK, APPLICATION_DATA_UPDATE_NO_BO_TRUSTEES_MOCK } from '../../__mocks__/session.mock';
+import {
+  APPLICATION_DATA_UPDATE_NO_TRUSTS_MOCK,
+  APPLICATION_DATA_MOCK,
+  APPLICATION_DATA_UPDATE_NO_BO_TRUSTEES_MOCK,
+  TRUST_RELEVANT_PERIOD
+} from '../../__mocks__/session.mock';
 import {
   PAGE_TITLE_ERROR,
   PAGE_NOT_FOUND_TEXT,
@@ -36,9 +41,9 @@ import {
   TRUST_CEASED_DATE_TEXT,
   TRUST_NOT_ASSOCIATED_WITH_BENEFICIAL_OWNER_TEXT,
   TRUST_ENTER_CEASED_DATE,
-  RELEVANT_PERIOD
+  RELEVANT_PERIOD,
+  SAVE_AND_CONTINUE_BUTTON_TEXT
 } from '../../__mocks__/text.mock';
-import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.mock';
 import { saveAndContinue } from '../../../src/utils/save.and.continue';
 
 mockCsrfProtectionMiddleware.mockClear();
@@ -73,14 +78,24 @@ describe('Update - Trusts - Tell us about the trust', () => {
       expect(resp.text).toContain(UPDATE_TELL_US_ABOUT_TRUST_HEADING);
       expect(resp.text).toContain(UPDATE_TELL_US_ABOUT_TRUST_QUESTION);
       expect(resp.text).toContain(UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL);
-      expect(resp.text).toContain(saveAndContinueButtonText);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 
     test('when manage trusts feature flag is on, and relevant query param is passed in url important banner is displayed', async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
       mockGetApplicationData.mockReturnValue( { ...APPLICATION_DATA_MOCK } );
-      const resp = await request(app).get(UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL + "/2" + "?relevant-period=true");
+      const resp = await request(app).get(UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL + "?relevant-period=true");
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_TELL_US_ABOUT_TRUST_HEADING);
+      expect(resp.text).toContain(RELEVANT_PERIOD);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+    });
+
+    test('when manage trusts feature flag is on, and relevant period trust is inserted into page', async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
+      mockGetApplicationData.mockReturnValue( { ...APPLICATION_DATA_MOCK, trusts: [TRUST_RELEVANT_PERIOD] } );
+      const resp = await request(app).get(UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL + "/0");
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_TELL_US_ABOUT_TRUST_HEADING);
       expect(resp.text).toContain(RELEVANT_PERIOD);
@@ -95,7 +110,7 @@ describe('Update - Trusts - Tell us about the trust', () => {
       expect(resp.text).toContain(UPDATE_TELL_US_ABOUT_TRUST_HEADING);
       expect(resp.text).toContain(UPDATE_TELL_US_ABOUT_TRUST_QUESTION);
       expect(resp.text).toContain(UPDATE_TRUSTS_SUBMISSION_INTERRUPT_URL);
-      expect(resp.text).toContain(saveAndContinueButtonText);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 

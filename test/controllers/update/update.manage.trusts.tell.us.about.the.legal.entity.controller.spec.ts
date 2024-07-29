@@ -35,13 +35,13 @@ import { isActiveFeature } from '../../../src/utils/feature.flag';
 import { TRUST } from '../../__mocks__/session.mock';
 import {
   ANY_MESSAGE_ERROR,
-  CONTINUE_BUTTON_TEXT,
   PAGE_NOT_FOUND_TEXT,
   PAGE_TITLE_ERROR,
   SERVICE_UNAVAILABLE,
   UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_TITLE,
   ERROR_LIST,
-  RELEVANT_PERIOD
+  RELEVANT_PERIOD,
+  SAVE_AND_CONTINUE_BUTTON_TEXT
 } from '../../__mocks__/text.mock';
 import { TRUST_WITH_ID } from '../../__mocks__/session.mock';
 import { UpdateKey } from '../../../src/model/update.type.model';
@@ -239,7 +239,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       expect(mockGetTrustInReview).toHaveBeenCalledTimes(1);
       expect(mockGetTrustee).toHaveBeenCalledTimes(1);
 
-      expect(response.text).toContain(CONTINUE_BUTTON_TEXT);
+      expect(response.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(response.text).not.toContain(PAGE_TITLE_ERROR);
     });
 
@@ -266,7 +266,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       expect(mockGetTrustInReview).toHaveBeenCalledTimes(1);
       expect(mockGetTrustee).toHaveBeenCalledTimes(1);
 
-      expect(response.text).toContain(CONTINUE_BUTTON_TEXT);
+      expect(response.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(response.text).not.toContain(PAGE_TITLE_ERROR);
     });
 
@@ -292,7 +292,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       expect(mockGetTrustInReview).toHaveBeenCalledTimes(1);
       expect(mockGetTrustee).toHaveBeenCalledTimes(1);
 
-      expect(response.text).toContain(CONTINUE_BUTTON_TEXT);
+      expect(response.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(response.text).not.toContain("govuk-notification-banner");
       expect(response.text).not.toContain(RELEVANT_PERIOD);
       expect(response.text).not.toContain(PAGE_TITLE_ERROR);
@@ -320,7 +320,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       expect(mockGetTrustInReview).toHaveBeenCalledTimes(1);
       expect(mockGetTrustee).toHaveBeenCalledTimes(1);
 
-      expect(response.text).toContain(CONTINUE_BUTTON_TEXT);
+      expect(response.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(response.text).not.toContain(ROLE_WITHIN_TRUST_QUESTION_TEXT);
       expect(response.text).not.toContain(PAGE_TITLE_ERROR);
     });
@@ -347,7 +347,35 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       expect(mockGetTrustInReview).toHaveBeenCalledTimes(1);
       expect(mockGetTrustee).toHaveBeenCalledTimes(1);
 
-      expect(response.text).toContain(CONTINUE_BUTTON_TEXT);
+      expect(response.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(response.text).toContain("govuk-notification-banner");
+      expect(response.text).toContain(RELEVANT_PERIOD);
+      expect(response.text).not.toContain(PAGE_TITLE_ERROR);
+    });
+
+    test('render page with the important banner when we insert a relevant period trustee into the page', async () => {
+      const appData = { entity_number: 'OE999999', entity_name: 'Overseas Entity Name' };
+      const trustInReview = { trust_id: 'trust-in-review-1', trust_name: 'Overseas Entity Name', review_status: { in_review: false } };
+      const trustee = {
+        id: 'legal_entity_trustee_3',
+        relevant_period: true
+      };
+      mockIsActiveFeature.mockReturnValue(true);
+      mockGetApplicationData.mockReturnValue(appData);
+      mockGetTrustInReview.mockReturnValue(trustInReview);
+      mockGetTrustee.mockReturnValue(trustee);
+      const response = await request(app).get(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL);
+
+      // Assert
+      expect(response.status).toEqual(200);
+      expect(response.text).toContain(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_TITLE);
+      expect(response.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
+
+      expect(mockGetTrustInReview).toHaveBeenCalledWith(appData);
+      expect(mockGetTrustInReview).toHaveBeenCalledTimes(1);
+      expect(mockGetTrustee).toHaveBeenCalledTimes(1);
+
+      expect(response.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(response.text).toContain("govuk-notification-banner");
       expect(response.text).toContain(RELEVANT_PERIOD);
       expect(response.text).not.toContain(PAGE_TITLE_ERROR);
@@ -385,7 +413,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       expect(response.text).toContain('Pruitt');
       expect(response.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
 
-      expect(response.text).toContain(CONTINUE_BUTTON_TEXT);
+      expect(response.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(response.text).not.toContain(PAGE_TITLE_ERROR);
 
       expect(response.text).toContain('name="stillInvolved" type="radio" value="0" checked');

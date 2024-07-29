@@ -9,7 +9,7 @@
 {% if isRemoveJourney %}
 {% set title = "Check your answers before submitting" %}
 {% else %}
-{% if feature_flag_relevant_period === "true" or pageParams.isRPStatementExists %}
+{% if pageParams.isRPStatementExists %}
 {% set title = "Check your answers before submitting" %}
 {% else %}
 {% set title = "Check your answers before sending your application" %}
@@ -222,7 +222,7 @@
           {% include "includes/check-your-answers/trusts.html" %}
         {% endfor %}
       {% endif %}
-      
+
       {% if (newTrusts and newTrusts.length > 0) %}
         <br><h2 class="govuk-heading-l">Trusts you have added</h2>
         {% for trust in newTrusts %}
@@ -258,7 +258,7 @@
       }) }}
 
       <p class="govuk-body">All information submitted must be correct on <strong>{{ removeStatementDate }}.</strong></p>
-      
+
       {% endif %}
 
       <br>

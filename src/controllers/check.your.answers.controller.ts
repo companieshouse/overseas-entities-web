@@ -47,7 +47,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       templateName: config.CHECK_YOUR_ANSWERS_PAGE,
       roleTypes: RoleWithinTrustType,
       requiresTrusts,
-      appData,
+      ...appData,
       changeLinkUrl,
       overseasEntityHeading,
       whoIsCompletingChangeLink,

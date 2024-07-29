@@ -33,7 +33,6 @@ const getPageProperties = (trust, formData, trustee: TrustIndividual, errors?: F
         trustName: trust?.trust_name
       },
       roleWithinTrustType: RoleWithinTrustType,
-      relevant_period: false,
       entity_name: trust?.trust_name,
     },
     formData,
@@ -123,7 +122,7 @@ const getBackLink = (individualsReviewed: boolean) => {
 
 const getPagePropertiesRelevantPeriod = (relevant_period, trust, formData, trustee: TrustIndividual, entityName, errors?: FormattedValidationErrors) => {
   const pageProps = getPageProperties(trust, formData, trustee, errors);
-  pageProps.pageData.relevant_period = relevant_period;
+  pageProps.formData.relevant_period = relevant_period;
   pageProps.pageData.entity_name = entityName;
   return pageProps;
 };

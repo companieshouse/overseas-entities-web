@@ -234,6 +234,27 @@ describe('Update - Manage Trusts - Review individuals', () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
     });
+
+    test('render page with the important banner when we insert a relevant period trustee into the page', async () => {
+      const appData = { entity_number: 'OE999999', entity_name: 'Overseas Entity Name' };
+      const trustInReview = { trust_id: 'trust-in-review-1', trust_name: 'Overseas Entity Name', review_status: { in_review: false } };
+      const trustee = {
+        id: 'trustee-individual-2',
+        relevant_period: true
+      };
+      mockIsActiveFeature.mockReturnValue(true);
+      mockGetApplicationData.mockReturnValue(appData);
+      mockGetTrustInReview.mockReturnValue(trustInReview);
+      mockGetTrustee.mockReturnValue(trustee);
+      const resp = await request(app).get(`${UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL}`);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(RELEVANT_PERIOD);
+      expect(resp.text).toContain(UPDATE_TELL_US_ABOUT_THE_INDIVIDUAL_BENEFICIARY_HEADING);
+      expect(resp.text).toContain(UPDATE_WHAT_IS_THEIR_FIRST_NAME);
+      expect(resp.text).toContain(UPDATE_ARE_THEY_STILL_INVOLVED_IN_THE_TRUST);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(CONTINUE_BUTTON_TEXT);
+    });
   });
 
   describe('POST tests', () => {

@@ -3,10 +3,10 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
     {% include "includes/list/errors.html" %}
-    
+
     <form class="form" method="post">
       {% include "includes/page-templates/relevant-period-common-code.html" %}
-      {% include "includes/csrf_token.html" %}  
+      {% include "includes/csrf_token.html" %}
       {% include "includes/inputs/fields/name-input.html" %}
 
       {% include "includes/inputs/address/principal-address-input.html" %}
@@ -33,6 +33,8 @@
 
       {% include "includes/save-and-continue-button.html" %}
       {% set nameToBeRemoved = name %}
+
+      {% include "includes/inputs/relevant-period-input.html" %}
 
       {% if not entity_number %}
         {% include "includes/remove-button.html" %}

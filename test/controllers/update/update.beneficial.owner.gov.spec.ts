@@ -166,6 +166,26 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
     });
 
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with relevant period content, when inserting a relevent period object`, async () => {
+      mockGetFromApplicationData.mockReturnValueOnce({ ...UPDATE_BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS, relevant_period: true });
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
+      const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_GOV_URL + BO_GOV_ID_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
+      expect(resp.text).toContain(RELEVANT_PERIOD);
+      expect(resp.text).toContain(RELEVANT_PERIOD_INFORMATION);
+      expect(resp.text).toContain("my company name");
+      expect(resp.text).toContain("addressLine1");
+      expect(resp.text).toContain("town");
+      expect(resp.text).toContain("country");
+      expect(resp.text).toContain("LegalForm");
+      expect(resp.text).toContain("a11");
+      expect(resp.text).toContain("name=\"is_on_sanctions_list\" type=\"radio\" value=\"1\" checked");
+      expect(resp.text).toContain("name=\"is_still_bo\" type=\"radio\" value=\"1\" checked");
+      expect(resp.text).toContain(saveAndContinueButtonText);
+    });
+
     test("Should render the error page", async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
       const response = await request(app).get(UPDATE_BENEFICIAL_OWNER_GOV_URL + BO_GOV_ID_URL);

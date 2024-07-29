@@ -7,7 +7,7 @@ import {
 import { NextFunction, Request, Response } from "express";
 import { getApplicationData, mapDataObjectToFields, removeFromApplicationData, setApplicationData } from "../../utils/application.data";
 import { logger } from "../../utils/logger";
-import { BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
+import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
 import { ApplicationDataType } from "../../model";
 import { setBeneficialOwnerData } from "../../utils/beneficial.owner.individual";
 import { v4 as uuidv4 } from "uuid";
@@ -57,19 +57,27 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const boiIndex = req.query.index;
     const appData = getApplicationData(req.session);
 
-    if (boiIndex !== undefined && appData.beneficial_owners_individual && appData.beneficial_owners_individual[Number(boiIndex)].id === req.body["id"]){
-      const boId = appData.beneficial_owners_individual[Number(boiIndex)].id;
-      const dob = appData.beneficial_owners_individual[Number(boiIndex)].date_of_birth as InputDate;
-      const haveDayOfBirth = appData.beneficial_owners_individual[Number(boiIndex)].have_day_of_birth;
+    if (boiIndex !== undefined && appData.beneficial_owners_individual && appData.beneficial_owners_individual[Number(boiIndex)].id === req.body["id"]) {
+      const boData: BeneficialOwnerIndividual = appData.beneficial_owners_individual[Number(boiIndex)];
+      const boId = boData.id;
+      const dob = boData.date_of_birth as InputDate;
+      const haveDayOfBirth = boData.have_day_of_birth;
+
+      const trustIds: string[] = boData?.trust_ids?.length ? [...boData.trust_ids] : [];
 
       removeFromApplicationData(req, BeneficialOwnerIndividualKey, boId);
 
       setReviewedDateOfBirth(req, dob);
+
       const session = req.session as Session;
 
       const data: ApplicationDataType = setBeneficialOwnerData(req.body, uuidv4());
       if (haveDayOfBirth) {
         data[HaveDayOfBirthKey] = haveDayOfBirth;
+      }
+
+      if (trustIds.length > 0) {
+        (data as BeneficialOwnerIndividual).trust_ids = [...trustIds];
       }
 
       setApplicationData(req.session, data, BeneficialOwnerIndividualKey);

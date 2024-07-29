@@ -44,6 +44,8 @@ export const getBeneficialOwnerGovById = (req: Request, res: Response, next: Nex
   try {
     logger.debugRequest(req, `GET BY ID ${req.route.path}`);
 
+    const appData = getApplicationData(req.session);
+
     const id = req.params[ID];
     const data = getFromApplicationData(req, BeneficialOwnerGovKey, id, true);
 
@@ -58,9 +60,9 @@ export const getBeneficialOwnerGovById = (req: Request, res: Response, next: Nex
       ...data,
       ...principalAddress,
       ...serviceAddress,
-      [StartDateKey]: startDate
+      [StartDateKey]: startDate,
+      entity_name: appData.entity_name
     };
-    const appData = getApplicationData(req.session);
 
     // Redis removal work - Add extra template options if Redis Remove flag is true and on Registration journey
     const isRegistration: boolean = req.path.startsWith(config.LANDING_URL);

@@ -39,6 +39,7 @@ export interface Trust {
   HISTORICAL_BO?: TrustHistoricalBeneficialOwner[];
   CORPORATES?: TrustCorporate[];
   review_status?: TrustReviewStatus;
+  relevant_period?: boolean;
 }
 
 export interface TrustReviewStatus {
@@ -84,6 +85,7 @@ export interface TrustIndividual {
   ceased_date_day?: string;
   ceased_date_month?: string;
   ceased_date_year?: string;
+  relevant_period?: boolean;
 }
 
 interface TrustHistoricalBeneficialOwnerCommon {
@@ -163,6 +165,7 @@ export type TrustCorporate = {
   ceased_date_month?: string;
   ceased_date_year?: string;
   still_involved?: string;
+  relevant_period?: boolean;
 };
 
 export interface BeneficialOwnerItem {

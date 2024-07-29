@@ -7,6 +7,7 @@ import { saveAndContinue } from "../utils/save.and.continue";
 import { ApplicationDataType, ApplicationData } from "../model";
 import { logger } from "../utils/logger";
 import {
+  BeneficialOwnerIndividual,
   BeneficialOwnerIndividualKey,
   BeneficialOwnerIndividualKeys
 } from "../model/beneficial.owner.individual.model";
@@ -57,6 +58,8 @@ export const getBeneficialOwnerIndividualById = (req: Request, res: Response, ne
   try {
     logger.debugRequest(req, `GET BY ID ${req.route.path}`);
 
+    const appData = getApplicationData(req.session);
+
     const id = req.params[ID];
     const data = getFromApplicationData(req, BeneficialOwnerIndividualKey, id, true);
 
@@ -73,7 +76,8 @@ export const getBeneficialOwnerIndividualById = (req: Request, res: Response, ne
       ...usualResidentialAddress,
       ...serviceAddress,
       [DateOfBirthKey]: dobDate,
-      [StartDateKey]: startDate
+      [StartDateKey]: startDate,
+      entity_name: appData.entity_name
     };
 
     // Redis removal work - Add extra template options if Redis Remove flag is true and on Registration journey
@@ -81,8 +85,6 @@ export const getBeneficialOwnerIndividualById = (req: Request, res: Response, ne
     if (isRegistration) {
       addActiveSubmissionBasePathToTemplateData(templateOptions, req);
     }
-
-    const appData = getApplicationData(req.session);
 
     if (EntityNumberKey in appData && appData[EntityNumberKey]) {
       return res.render(templateName, addCeasedDateToTemplateOptions(templateOptions, appData, data));
@@ -119,11 +121,21 @@ export const updateBeneficialOwnerIndividual = async (req: Request, res: Respons
   try {
     logger.debugRequest(req, `UPDATE ${req.route.path}`);
 
+    const id = req.params[ID];
+    const boData: BeneficialOwnerIndividual = getFromApplicationData(req, BeneficialOwnerIndividualKey, id, true);
+
+    const trustIds: string[] = boData?.trust_ids?.length ? [...boData.trust_ids] : [];
+
     // Remove old Beneficial Owner
-    removeFromApplicationData(req, BeneficialOwnerIndividualKey, req.params[ID]);
+    removeFromApplicationData(req, BeneficialOwnerIndividualKey, id);
 
     // Set Beneficial Owner data
-    const data: ApplicationDataType = setBeneficialOwnerData(req.body, req.params[ID]);
+    const data: ApplicationDataType = setBeneficialOwnerData(req.body, id);
+
+    if (trustIds.length > 0) {
+      (data as BeneficialOwnerIndividual).trust_ids = [...trustIds];
+    }
+
     const session = req.session as Session;
 
     // Save new Beneficial Owner

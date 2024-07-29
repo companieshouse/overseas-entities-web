@@ -12,7 +12,7 @@ const addressErrorMessages: ErrorMessagesOptional = {
   propertyValueError: ErrorMessages.PROPERTY_NAME_OR_NUMBER_LEGAL_ENTITY_BO,
   addressLine1Error: ErrorMessages.ADDRESS_LINE1_LEGAL_ENTITY_BO,
   townValueError: ErrorMessages.CITY_OR_TOWN_LEGAL_ENTITY_BO,
-  countryValueError: ErrorMessages.COUNTRY_LEGAL_ENTITY_BO,
+  countryValueError: ErrorMessages.COUNTRY_BO,
 };
 
 export const trustLegalEntityBeneficialOwnerValidator = [

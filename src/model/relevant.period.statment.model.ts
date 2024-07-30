@@ -1,4 +1,4 @@
-
+export const RelevantPeriodNoChangeKey = "relevant_period_no_change";
 export const RelevantPeriodStatementsKey = "relevant_period_combined_statements";
 export const ChangeBoRelevantPeriodKey = "change_bo_relevant_period";
 export const TrusteeInvolvedRelevantPeriodKey = "trustee_involved_relevant_period";

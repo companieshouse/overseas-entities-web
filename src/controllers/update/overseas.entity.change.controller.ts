@@ -51,7 +51,9 @@ export const post = async (req: Request, resp: Response, next: NextFunction) => 
       appData.update.no_change = noChangeStatement === "1";
     }
 
-    if (noChangeStatement === "1") {
+    const relevantPeriodChangeStatement = config.RELEVANT_PERIOD_QUERY_PARAM ? appData.update?.relevant_period_no_change : true;
+
+    if (noChangeStatement === "1" && relevantPeriodChangeStatement) {
       await resetDataForNoChange(req, appData);
       redirectUrl = config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL;
     } else {

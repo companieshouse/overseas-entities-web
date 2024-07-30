@@ -96,7 +96,6 @@ import {
   TRUSTEE_LEGAL_ENTITY_CEASED_DATE,
   RELEVANT_SECURE_REGISTER_CHANGE_LINK,
   RELEVANT_SECURE_FILTER_PAGE_HEADING,
-  RELEVANT_CHECK_YOUR_ANSWER_HEADING,
   RELEVANT_PERIOD_OWNED_LAND_CHANGE_LINK
 } from "../../__mocks__/text.mock";
 import {
@@ -357,7 +356,6 @@ describe("CHECK YOUR ANSWERS controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(OVERSEAS_NAME_MOCK);
-      expect(resp.text).toContain(RELEVANT_CHECK_YOUR_ANSWER_HEADING);
       expect(resp.text).toContain(RELEVANT_SECURE_FILTER_PAGE_HEADING);
       expect(resp.text).toContain(RELEVANT_SECURE_REGISTER_CHANGE_LINK);
       expect(resp.text).toContain(RELEVANT_PERIOD_OWNED_LAND_CHANGE_LINK);

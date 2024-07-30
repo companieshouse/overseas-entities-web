@@ -5,15 +5,10 @@
   {% set isRemoveJourney = true %}
 {% endif %}
 
-{% set feature_flag_relevant_period = OE_CONFIGS.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD %}
 {% if isRemoveJourney %}
-{% set title = "Check your answers before submitting" %}
+  {% set title = "Check your answers before submitting" %}
 {% else %}
-{% if feature_flag_relevant_period === "true" or pageParams.isRPStatementExists %}
-{% set title = "Check your answers before submitting" %}
-{% else %}
-{% set title = "Check your answers before sending your application" %}
-{% endif %}
+  {% set title = "Check your answers before sending your application" %}
 {% endif %}
 
 {% set hasSoldAllLand %}
@@ -62,10 +57,10 @@
 
       {% if isRemoveJourney %}
         <span class="govuk-caption-l govuk-!-padding-bottom-1">{{ entity_name }} - {{ entity_number }}</span>
-        {% else %}
-      {% if feature_flag_relevant_period === "true" or pageParams.isRPStatementExists %}
-      <span class="govuk-caption-l govuk-!-padding-bottom-1">{{ entity_name }} - {{ entity_number }}</span>
-      {% endif %}
+      {% else %}
+        {% if pageParams.isRPStatementExists %}
+          <span class="govuk-caption-l govuk-!-padding-bottom-1">{{ entity_name }} - {{ entity_number }}</span>
+        {% endif %}
       {% endif %}
 
       <h1 class="govuk-heading-xl">{{ title }}</h1>
@@ -123,9 +118,10 @@
         <br>
       {% endif %}
 
-      {% if feature_flag_relevant_period === "true" or pageParams.isRPStatementExists %}
-      {% include "includes/check-your-answers/relevant-period-check-your-answers.html" %}
+      {% if pageParams.isRPStatementExists %}
+        {% include "includes/check-your-answers/relevant-period-check-your-answers.html" %}
       {% endif %}
+
       {% include "includes/check-your-answers/presenter.html" %}
       {% include "includes/check-your-answers/verification-checks.html" %}
       <br>

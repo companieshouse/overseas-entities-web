@@ -18,8 +18,8 @@ import {
   Transactionkey
 } from "../../model/data.types.model";
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../model/who.is.making.filing.model";
-import { OverseasEntityDueDiligence, OverseasEntityDueDiligenceKey } from "../../model/overseas.entity.due.diligence.model";
-import { DueDiligence, DueDiligenceKey } from "../../model/due.diligence.model";
+import { OverseasEntityDueDiligenceKey } from "../../model/overseas.entity.due.diligence.model";
+import { DueDiligenceKey } from "../../model/due.diligence.model";
 import { BeneficialOwnerGov, BeneficialOwnerGovKey } from "../../model/beneficial.owner.gov.model";
 import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
 import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../../model/beneficial.owner.other.model";
@@ -104,12 +104,11 @@ const setWebApplicationData = (session: Session, appData: ApplicationData, trans
   appData[Transactionkey] = transactionId;
   appData[OverseasEntityKey] = overseaEntityId;
 
-  if (Object.keys(appData[OverseasEntityDueDiligenceKey] as OverseasEntityDueDiligence).length) {
+  if (appData[OverseasEntityDueDiligenceKey] && Object.keys(appData[OverseasEntityDueDiligenceKey]).length) {
     appData[WhoIsRegisteringKey] = WhoIsRegisteringType.SOMEONE_ELSE;
-  } else if (Object.keys(appData[DueDiligenceKey] as DueDiligence).length){
+  } else if (appData[DueDiligenceKey] && Object.keys(appData[DueDiligenceKey]).length){
     appData[WhoIsRegisteringKey] = WhoIsRegisteringType.AGENT;
   }
-
   if (isActiveFeature(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB)) {
     mapTrustApiReturnModelToWebModel(appData);
   }

@@ -404,13 +404,13 @@ const mapTrustApiReturnModelToWebModel = (appData: ApplicationData) => {
   }
 };
 
-function mapTrustees(trust: Trust) {
-  trust.CORPORATES = (trust.CORPORATES || []).map(corporateTrustee => {
+const mapTrustees = (trust: Trust) => {
+  trust.CORPORATES = (trust?.CORPORATES || []).map(corporateTrustee => {
 
     const apiData: any = corporateTrustee;
 
     return {
-      id: uuidv4(),
+      id: apiData?.id ?? uuidv4(),
       type: getRoleWithinTrustType(apiData.type) as RoleWithinTrustType,
       name: apiData.name,
       date_became_interested_person_day: apiData?.date_became_interested_person_day,
@@ -440,16 +440,16 @@ function mapTrustees(trust: Trust) {
       identification_country_registration: apiData?.identification_country_registration,
       identification_registration_number: apiData?.identification_registration_number,
       is_service_address_same_as_principal_address: apiData.is_service_address_same_as_principal_address,
-      is_on_register_in_country_formed_in: apiData?.is_on_register_in_country_formed_in,
+      is_on_register_in_country_formed_in: apiData?.is_on_register_in_country_formed_in
     };
   });
 
-  trust.INDIVIDUALS = (trust.INDIVIDUALS || []).map(trustIndividual => {
+  trust.INDIVIDUALS = (trust?.INDIVIDUALS || []).map(trustIndividual => {
 
     const apiData: any = trustIndividual;
 
     return {
-      id: uuidv4(),
+      id: apiData?.id ?? uuidv4(),
       type: getRoleWithinTrustType(apiData.type) as RoleWithinTrustType,
       forename: apiData.forename,
       other_forenames: apiData.other_forenames,
@@ -484,20 +484,24 @@ function mapTrustees(trust: Trust) {
     };
   });
 
-  trust.HISTORICAL_BO = (trust.HISTORICAL_BO as TrustHistoricalBeneficialOwner[]).map(
-    hbo => { return { id: uuidv4(), ...hbo, corporate_indicator: convertBooleanToYesNoResponse(hbo.corporate_indicator), }; });
-}
+  trust.HISTORICAL_BO = (trust?.HISTORICAL_BO as TrustHistoricalBeneficialOwner[] || []).map(
+    hbo => { return { id: hbo?.id ?? uuidv4(), ...hbo, corporate_indicator: convertBooleanToYesNoResponse(hbo.corporate_indicator), }; });
+};
 
 function getRoleWithinTrustType(type: any): RoleWithinTrustType | undefined {
 
   switch (type) {
       case "BENEFICIARY":
+      case RoleWithinTrustType.BENEFICIARY:
         return RoleWithinTrustType.BENEFICIARY;
       case "SETTLOR":
+      case RoleWithinTrustType.SETTLOR:
         return RoleWithinTrustType.SETTLOR;
       case "GRANTOR":
+      case RoleWithinTrustType.GRANTOR:
         return RoleWithinTrustType.GRANTOR;
       case "INTERESTED_PERSON":
+      case RoleWithinTrustType.INTERESTED_PERSON:
         return RoleWithinTrustType.INTERESTED_PERSON;
       default:
         break;

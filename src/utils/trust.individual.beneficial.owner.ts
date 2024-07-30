@@ -76,7 +76,7 @@ export const getTrustIndividualBo = (req: Request, res: Response, next: NextFunc
     const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
     const trusteeId = req.params[config.ROUTE_PARAM_TRUSTEE_ID];
     const appData: ApplicationData = getApplicationData(req.session);
-    const isRelevantPeriod = req.query['relevant-period'] !== undefined;
+    const isRelevantPeriod = req.query['relevant-period'];
 
     const formData: PageModel.IndividualTrusteesFormCommon = mapIndividualTrusteeByIdFromSessionToPage(
       appData,
@@ -85,8 +85,7 @@ export const getTrustIndividualBo = (req: Request, res: Response, next: NextFunc
     );
     const pageProps = getPageProperties(req, trustId, isUpdate, formData);
     if (isRelevantPeriod) {
-      const pagePropsRP = getPagePropertiesRelevantPeriod(isRelevantPeriod, req, trustId, isUpdate, formData, appData.entity_name);
-      return res.render(pagePropsRP.templateName, getPagePropertiesRelevantPeriod(isRelevantPeriod, req, trustId, isUpdate, formData, appData.entity_name));
+      return res.render(pageProps.templateName, getPagePropertiesRelevantPeriod(isRelevantPeriod, req, trustId, isUpdate, formData, appData.entity_name));
     } else {
       return res.render(pageProps.templateName, pageProps);
     }
@@ -120,7 +119,7 @@ export const postTrustIndividualBo = async (req: Request, res: Response, next: N
         formatValidationError(errorList.array()),
       );
 
-      const isRelevantPeriod = req.query['relevant-period'] !== undefined;
+      const isRelevantPeriod = req.query['relevant-period'];
       if (isRelevantPeriod) {
         return res.render(pageProps.templateName, getPagePropertiesRelevantPeriod(isRelevantPeriod, req, trustId, isUpdate, formData, appData.entity_name, formatValidationError(errorList.array())));
       } else {

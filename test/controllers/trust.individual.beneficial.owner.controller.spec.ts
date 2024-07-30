@@ -111,7 +111,7 @@ describe('Trust Individual Beneficial Owner Controller', () => {
       const expectMapResult = { dummyKey: 'EXPECT-MAP-RESULT' };
       (mapIndividualTrusteeByIdFromSessionToPage as jest.Mock).mockReturnValueOnce(expectMapResult);
       (mapCommonTrustDataToPage as jest.Mock).mockReturnValue(mockTrust1Data);
-      mockIsActiveFeature.mockReturnValue(true);
+      mockIsActiveFeature.mockReturnValueOnce(true);
       mockReq.query = { "relevant-period": "true" };
       mockGetApplicationData.mockReturnValue(mockAppData);
 
@@ -220,7 +220,7 @@ describe('Trust Individual Beneficial Owner Controller', () => {
       expect(hasTrustWithIdRegister).toBeCalledTimes(1);
     });
 
-    test.skip('successfully access POST method', async () => {
+    test('successfully access POST method', async () => {
 
       (validationResult as any as jest.Mock).mockImplementationOnce(() => ({
         isEmpty: jest.fn().mockReturnValue(true),

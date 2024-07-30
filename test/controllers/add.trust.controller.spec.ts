@@ -58,6 +58,7 @@ describe("Add Trust Controller Tests", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockIsActiveFeature.mockReset();
 
     mockAppData = {
       [TrustKey]: [mockTrust1Data],

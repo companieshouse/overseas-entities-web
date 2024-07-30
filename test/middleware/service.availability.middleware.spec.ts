@@ -35,15 +35,8 @@ describe("service availability middleware tests", () => {
     expect(response.text).not.toContain("Service offline - Register an overseas entity");
   });
 
-  test("update disabled should return service offline page", async () => {
-    mockIsActiveFeature.mockReturnValueOnce(false).mockReturnValueOnce(false);
-    const response = await request(app).get("/update-an-overseas-entity");
-
-    expect(response.text).toContain("Service offline - Register an overseas entity");
-  });
-
-  test("update enabled should not return service offline page", async () => {
-    mockIsActiveFeature.mockReturnValueOnce(false).mockReturnValueOnce(true);
+  test("update journey should not return service offline page", async () => {
+    mockIsActiveFeature.mockReturnValueOnce(false); // SHOW_SERVICE_OFFLINE_PAGE
     const response = await request(app).get("/update-an-overseas-entity");
 
     expect(response.text).not.toContain("Service offline - Register an overseas entity");
@@ -74,9 +67,7 @@ describe("service availability middleware tests", () => {
   });
 
   test("should NOT return service offline page when query param journey=remove", async () => {
-    mockIsActiveFeature
-      .mockReturnValueOnce(false) // SHOW_SERVICE_OFFLINE_PAGE
-      .mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_ROE_UPDATE
+    mockIsActiveFeature.mockReturnValueOnce(false); // SHOW_SERVICE_OFFLINE_PAGE
     const response = await request(app).get("/update-an-overseas-entity/somepage?journey=remove");
 
     expect(response.text).not.toContain("Service offline - Apply to remove an overseas entity from the register");

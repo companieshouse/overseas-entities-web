@@ -468,7 +468,6 @@ describe('Trust Details controller', () => {
       // The ceased date should only be visible when the page is in review mode on the update journey so
       // check it doesn't show in this registration journey
       mockIsActiveFeature.mockReturnValueOnce(false); // SHOW_SERVICE_OFFLINE_PAGE
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_ROE_UPDATE
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
 
       const resp = await request(app).get(pageUrl);

@@ -139,8 +139,8 @@ export const postTrustIndividualBo = async (req: Request, res: Response, next: N
         trustId,
         isUpdate,
         formData,
-        appData.entity_name,
-        formatValidationError(errorList.array()),
+        undefined,
+        formatValidationError(errorList.array())
       );
       return res.render(pageProps.templateName, pageProps);
     }

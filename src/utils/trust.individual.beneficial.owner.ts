@@ -15,7 +15,6 @@ import { Session } from '@companieshouse/node-session-handler';
 import { saveAndContinue } from './save.and.continue';
 import { isActiveFeature } from './feature.flag';
 import { getUrlWithParamsToPath } from './url';
-import { IndividualTrusteesFormCommon } from "../model/trust.page.model";
 
 export const INDIVIDUAL_BO_TEXTS = {
   title: 'Tell us about the individual',
@@ -27,7 +26,7 @@ type TrustIndividualBeneificalOwnerPageProperties = {
   pageData: {
     trustData: PageModel.CommonTrustData,
     roleWithinTrustType: typeof RoleWithinTrustType,
-    relevant_period: boolean,
+    relevant_period?: boolean,
     entity_name?: string;
   },
   pageParams: {
@@ -44,7 +43,6 @@ const getPageProperties = (
   trustId: string,
   isUpdate: boolean,
   formData?: PageModel.IndividualTrusteesFormCommon,
-  entityName?: string,
   errors?: FormattedValidationErrors,
 ): TrustIndividualBeneificalOwnerPageProperties => {
 
@@ -56,9 +54,7 @@ const getPageProperties = (
     },
     pageData: {
       trustData: CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId, false),
-      roleWithinTrustType: RoleWithinTrustType,
-      relevant_period: false,
-      entity_name: entityName
+      roleWithinTrustType: RoleWithinTrustType
     },
     formData,
     errors,
@@ -67,31 +63,11 @@ const getPageProperties = (
   };
 };
 
-const getPagePropertiesRelevantPeriod = (
-  req: Request,
-  trustId: string,
-  isUpdate: boolean,
-  formData?: IndividualTrusteesFormCommon,
-  entityName?: string,
-  errors?: FormattedValidationErrors,
-): TrustIndividualBeneificalOwnerPageProperties => {
-  return {
-    backLinkUrl: getTrustInvolvedUrl(isUpdate, trustId, req),
-    templateName: getPageTemplate(isUpdate),
-    pageParams: {
-      title: INDIVIDUAL_BO_TEXTS.title,
-    },
-    pageData: {
-      trustData: CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId, false),
-      roleWithinTrustType: RoleWithinTrustType,
-      relevant_period: true,
-      entity_name: entityName
-    },
-    formData,
-    errors,
-    url: getUrl(isUpdate),
-    isUpdate
-  };
+const getPagePropertiesRelevantPeriod = (isRelevantPeriod, req, trustId, isUpdate, formData, entityName, errors?: FormattedValidationErrors) => {
+  const pageProps = getPageProperties(req, trustId, isUpdate, formData, errors);
+  pageProps.pageData.relevant_period = isRelevantPeriod;
+  pageProps.pageData.entity_name = entityName;
+  return pageProps;
 };
 
 export const getTrustIndividualBo = (req: Request, res: Response, next: NextFunction, isUpdate: boolean): void => {
@@ -107,11 +83,12 @@ export const getTrustIndividualBo = (req: Request, res: Response, next: NextFunc
       trustId,
       trusteeId
     );
-    let pageProps = getPageProperties(req, trustId, isUpdate, formData);
+    const pageProps = getPageProperties(req, trustId, isUpdate, formData);
     if (isRelevantPeriod) {
-      pageProps = getPagePropertiesRelevantPeriod(req, trustId, isUpdate, formData, appData.entity_name);
+      return res.render(pageProps.templateName, getPagePropertiesRelevantPeriod(isRelevantPeriod, req, trustId, isUpdate, formData, appData.entity_name));
+    } else {
+      return res.render(pageProps.templateName, pageProps);
     }
-    return res.render(pageProps.templateName, pageProps);
   } catch (error) {
     logger.errorRequest(req, error);
     return next(error);
@@ -139,10 +116,15 @@ export const postTrustIndividualBo = async (req: Request, res: Response, next: N
         trustId,
         isUpdate,
         formData,
-        undefined,
-        formatValidationError(errorList.array())
+        formatValidationError(errorList.array()),
       );
-      return res.render(pageProps.templateName, pageProps);
+      const isRelevantPeriod = req.query['relevant-period'];
+
+      if (isRelevantPeriod) {
+        return res.render(pageProps.templateName, getPagePropertiesRelevantPeriod(isRelevantPeriod, req, trustId, isUpdate, formData, appData.entity_name, formatValidationError(errorList.array())));
+      } else {
+        return res.render(pageProps.templateName, pageProps);
+      }
     }
 
     const trustUpdate = saveIndividualTrusteeInTrust(

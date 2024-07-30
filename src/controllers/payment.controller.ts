@@ -3,11 +3,9 @@ import { CreatePaymentRequest } from "@companieshouse/api-sdk-node/dist/services
 
 import { logger, createAndLogErrorRequest } from "../utils/logger";
 import {
-  CHECK_YOUR_ANSWERS_URL,
   CONFIRMATION_URL,
   CONFIRMATION_WITH_PARAMS_URL,
   FEATURE_FLAG_ENABLE_REDIS_REMOVAL,
-  FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022,
   PAYMENT_FAILED_URL,
   PAYMENT_FAILED_WITH_PARAMS_URL,
   PAYMENT_PAID
@@ -50,19 +48,12 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       return res.redirect(confirmationPageUrl);
     } else {
       // Dealing with failures payment (User cancelled, Insufficient funds, Payment error ...)
-      if (isActiveFeature(FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022)) {
-        logger.debugRequest(req, `Overseas Entity id: ${ appData[OverseasEntityKey] }, Payment status: ${status}, Redirecting to: ${PAYMENT_FAILED_URL}`);
-        let nextPageUrl = PAYMENT_FAILED_URL;
-        if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)){
-          nextPageUrl = getUrlWithParamsToPath(PAYMENT_FAILED_WITH_PARAMS_URL, req);
-        }
-        return res.redirect(nextPageUrl);
-
-      } else {
-        logger.debugRequest(req, `Overseas Entity id: ${ appData[OverseasEntityKey] }, Payment status: ${status}, Redirecting to: ${CHECK_YOUR_ANSWERS_URL}`);
-        // Redirect to CHECK_YOUR_ANSWERS. Try again eventually
-        return res.redirect(CHECK_YOUR_ANSWERS_URL);
+      logger.debugRequest(req, `Overseas Entity id: ${ appData[OverseasEntityKey] }, Payment status: ${status}, Redirecting to: ${PAYMENT_FAILED_URL}`);
+      let nextPageUrl = PAYMENT_FAILED_URL;
+      if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)){
+        nextPageUrl = getUrlWithParamsToPath(PAYMENT_FAILED_WITH_PARAMS_URL, req);
       }
+      return res.redirect(nextPageUrl);
     }
   } catch (error) {
     logger.errorRequest(req, error);

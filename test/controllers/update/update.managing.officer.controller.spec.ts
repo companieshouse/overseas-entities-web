@@ -62,7 +62,8 @@ import {
   SECOND_NATIONALITY,
   SECOND_NATIONALITY_HINT,
   SERVICE_UNAVAILABLE,
-  MANAGING_OFFICER_PAGE_HEADING
+  MANAGING_OFFICER_PAGE_HEADING,
+  SAVE_AND_CONTINUE_BUTTON_TEXT
 } from '../../__mocks__/text.mock';
 import { ApplicationDataType, managingOfficerType } from '../../../src/model';
 import { ErrorMessages } from '../../../src/validation/error.messages';
@@ -76,7 +77,6 @@ import {
   MANAGING_OFFICER_INDIVIDUAL_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK,
   MANAGING_OFFICER_INDIVIDUAL_WITH_MAX_LENGTH_FIELDS_MOCK
 } from '../../__mocks__/validation.mock';
-import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.mock';
 import { FormerNamesKey, ManagingOfficerIndividual, ManagingOfficerKey } from '../../../src/model/managing.officer.model';
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
 import { DateTime } from "luxon";
@@ -126,7 +126,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
       expect(resp.text).toContain(UPDATE_LANDING_PAGE_URL);
       expect(resp.text).toContain(UPDATE_MANAGING_OFFICER_PAGE_TITLE);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-      expect(resp.text).toContain(saveAndContinueButtonText);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).toContain(SECOND_NATIONALITY);
       expect(resp.text).toContain(SECOND_NATIONALITY_HINT);
       expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
@@ -729,7 +729,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
-      expect(resp.text).toContain(saveAndContinueButtonText);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).toContain("some first name");
     });
 

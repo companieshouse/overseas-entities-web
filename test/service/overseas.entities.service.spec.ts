@@ -48,7 +48,7 @@ describe(`Overseas Entity Service test suite`, () => {
     const response = await createOverseasEntity(req, session, TRANSACTION_ID);
 
     expect(response).toEqual(OVERSEAS_ENTITY_ID);
-    expect(mockMakeApiCallWithRetry).toBeCalledWith(serviceNameOE, "postOverseasEntity", req, session, TRANSACTION_ID, APPLICATION_DATA_MOCK, false);
+    expect(mockMakeApiCallWithRetry).toBeCalledWith(serviceNameOE, "postOverseasEntity", req, session, TRANSACTION_ID, APPLICATION_DATA_MOCK);
     expect(mockInfoRequestLog).toHaveBeenCalledWith(req, `Calling 'postOverseasEntity' for transaction id '${TRANSACTION_ID}'`);
     expect(mockInfoRequestLog).toHaveBeenCalledWith(req, `Response from 'postOverseasEntity' for transaction id '${TRANSACTION_ID}': ${JSON.stringify(mockResponse)}`);
   });
@@ -56,10 +56,10 @@ describe(`Overseas Entity Service test suite`, () => {
   test(`createOverseasEntity should respond with created httpStatusCode when application data is supplied directly in the method call`, async () => {
     const mockResponse = { httpStatusCode: 201, resource: { id: OVERSEAS_ENTITY_ID } };
     mockMakeApiCallWithRetry.mockReturnValueOnce(mockResponse);
-    const response = await createOverseasEntity(req, session, TRANSACTION_ID, false, APPLICATION_DATA_MOCK);
+    const response = await createOverseasEntity(req, session, TRANSACTION_ID, APPLICATION_DATA_MOCK);
 
     expect(response).toEqual(OVERSEAS_ENTITY_ID);
-    expect(mockMakeApiCallWithRetry).toBeCalledWith(serviceNameOE, "postOverseasEntity", req, session, TRANSACTION_ID, APPLICATION_DATA_MOCK, false);
+    expect(mockMakeApiCallWithRetry).toBeCalledWith(serviceNameOE, "postOverseasEntity", req, session, TRANSACTION_ID, APPLICATION_DATA_MOCK);
     expect(mockInfoRequestLog).toHaveBeenCalledWith(req, `Calling 'postOverseasEntity' for transaction id '${TRANSACTION_ID}'`);
     expect(mockInfoRequestLog).toHaveBeenCalledWith(req, `Response from 'postOverseasEntity' for transaction id '${TRANSACTION_ID}': ${JSON.stringify(mockResponse)}`);
   });

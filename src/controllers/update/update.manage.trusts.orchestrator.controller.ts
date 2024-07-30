@@ -131,5 +131,5 @@ const shouldGoToReviewLegalEntities = (trustInReview: Trust) => {
 
 const saveAppData = async (req: Request, appData: ApplicationData) => {
   setExtraData(req.session, appData);
-  await saveAndContinue(req, req.session as Session, false);
+  await saveAndContinue(req, req.session as Session);
 };

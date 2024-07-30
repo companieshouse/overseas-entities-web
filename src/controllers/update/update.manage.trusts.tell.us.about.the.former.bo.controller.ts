@@ -69,7 +69,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     setExtraData(session, appData);
-    await saveAndContinue(req, session, true);
+    await saveAndContinue(req, session);
 
     return res.redirect(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
   } catch (error) {

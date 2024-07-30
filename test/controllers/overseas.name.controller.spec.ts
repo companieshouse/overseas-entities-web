@@ -183,7 +183,6 @@ describe("Overseas Name controller", () => {
     });
 
     test(`redirect to the ${PRESENTER_PAGE} page with transaction and overseas entity already created with the REDIS_flag ON`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_SAVE_AND_RESUME
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
       const mockData = { ...APPLICATION_DATA_MOCK };
@@ -199,7 +198,6 @@ describe("Overseas Name controller", () => {
     });
 
     test(`redirect to the ${PRESENTER_PAGE} page with transaction and overseas entity already created with the REDIS_flag OFF`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_SAVE_AND_RESUME
       mockIsActiveFeature.mockReturnValueOnce(false); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
       const mockData = { ...APPLICATION_DATA_MOCK };
@@ -215,7 +213,6 @@ describe("Overseas Name controller", () => {
     });
 
     test(`redirect to the ${PRESENTER_PAGE} page after a successful creation of transaction and overseas entity with REDIS_removal flag set to OFF`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_SAVE_AND_RESUME
       mockIsActiveFeature.mockReturnValueOnce(false); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
       const mockData = { ...APPLICATION_DATA_MOCK, [Transactionkey]: null, [OverseasEntityKey]: null };
@@ -297,7 +294,6 @@ describe("Overseas Name controller", () => {
 
   describe("POST with url params tests", () => {
     test(`redirect to the ${PRESENTER_PAGE} page after a successful post from ${OVERSEAS_NAME_PAGE} page`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_SAVE_AND_RESUME
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_ROE_UPDATE
 
       const resp = await request(app).post(OVERSEAS_NAME_WITH_PARAMS_URL).send({ [EntityNameKey]: OVERSEAS_NAME_MOCK });
@@ -309,7 +305,6 @@ describe("Overseas Name controller", () => {
     });
 
     test(`redirect to the ${PRESENTER_PAGE} page with transaction and overseas entity already created`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_SAVE_AND_RESUME
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_ROE_UPDATE
 
       const mockData = { ...APPLICATION_DATA_MOCK };

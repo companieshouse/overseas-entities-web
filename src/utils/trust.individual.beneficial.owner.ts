@@ -120,7 +120,7 @@ export const postTrustIndividualBo = async (req: Request, res: Response, next: N
     const session = req.session as Session;
     setExtraData(session, appData);
 
-    await saveAndContinue(req, session, true);
+    await saveAndContinue(req, session);
 
     return safeRedirect(res, getTrustInvolvedUrl(isUpdate, trustId, req));
   } catch (error) {

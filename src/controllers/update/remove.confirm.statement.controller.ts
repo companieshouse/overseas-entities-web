@@ -32,7 +32,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     remove[IsNotProprietorOfLandKey] = true ;
     setApplicationData(req.session, remove, RemoveKey);
 
-    await saveAndContinue(req, req.session as Session, false);
+    await saveAndContinue(req, req.session as Session);
 
     const inNoChangeJourney = !!appData.update?.no_change;
     const nextPage = inNoChangeJourney ? `${config.UPDATE_REVIEW_STATEMENT_URL}` : `${config.UPDATE_CHECK_YOUR_ANSWERS_URL}`;

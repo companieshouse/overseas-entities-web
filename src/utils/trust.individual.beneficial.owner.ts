@@ -15,6 +15,7 @@ import { Session } from '@companieshouse/node-session-handler';
 import { saveAndContinue } from './save.and.continue';
 import { isActiveFeature } from './feature.flag';
 import { getUrlWithParamsToPath } from './url';
+import { IndividualTrusteesFormCommon } from "../model/trust.page.model";
 
 export const INDIVIDUAL_BO_TEXTS = {
   title: 'Tell us about the individual',
@@ -27,7 +28,7 @@ type TrustIndividualBeneificalOwnerPageProperties = {
     trustData: PageModel.CommonTrustData,
     roleWithinTrustType: typeof RoleWithinTrustType,
     relevant_period: boolean,
-    entity_name: string
+    entity_name?: string;
   },
   pageParams: {
     title: string;
@@ -43,6 +44,7 @@ const getPageProperties = (
   trustId: string,
   isUpdate: boolean,
   formData?: PageModel.IndividualTrusteesFormCommon,
+  entityName?: string,
   errors?: FormattedValidationErrors,
 ): TrustIndividualBeneificalOwnerPageProperties => {
 
@@ -56,7 +58,7 @@ const getPageProperties = (
       trustData: CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId, false),
       roleWithinTrustType: RoleWithinTrustType,
       relevant_period: false,
-      entity_name: trustId
+      entity_name: entityName
     },
     formData,
     errors,
@@ -65,11 +67,31 @@ const getPageProperties = (
   };
 };
 
-const getPagePropertiesRelevantPeriod = (isRelevantPeriod, req, trustId, isUpdate, formData, entityName) => {
-  const pageProps = getPageProperties(req, trustId, isUpdate, formData);
-  pageProps.pageData.relevant_period = isRelevantPeriod;
-  pageProps.pageData.entity_name = entityName;
-  return pageProps;
+const getPagePropertiesRelevantPeriod = (
+  req: Request,
+  trustId: string,
+  isUpdate: boolean,
+  formData?: IndividualTrusteesFormCommon,
+  entityName?: string,
+  errors?: FormattedValidationErrors,
+): TrustIndividualBeneificalOwnerPageProperties => {
+  return {
+    backLinkUrl: getTrustInvolvedUrl(isUpdate, trustId, req),
+    templateName: getPageTemplate(isUpdate),
+    pageParams: {
+      title: INDIVIDUAL_BO_TEXTS.title,
+    },
+    pageData: {
+      trustData: CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId, false),
+      roleWithinTrustType: RoleWithinTrustType,
+      relevant_period: true,
+      entity_name: entityName
+    },
+    formData,
+    errors,
+    url: getUrl(isUpdate),
+    isUpdate
+  };
 };
 
 export const getTrustIndividualBo = (req: Request, res: Response, next: NextFunction, isUpdate: boolean): void => {
@@ -87,7 +109,7 @@ export const getTrustIndividualBo = (req: Request, res: Response, next: NextFunc
     );
     let pageProps = getPageProperties(req, trustId, isUpdate, formData);
     if (isRelevantPeriod) {
-      pageProps = getPagePropertiesRelevantPeriod(isRelevantPeriod, req, trustId, isUpdate, formData, appData.entity_name);
+      pageProps = getPagePropertiesRelevantPeriod(req, trustId, isUpdate, formData, appData.entity_name);
     }
     return res.render(pageProps.templateName, pageProps);
   } catch (error) {
@@ -117,6 +139,7 @@ export const postTrustIndividualBo = async (req: Request, res: Response, next: N
         trustId,
         isUpdate,
         formData,
+        appData.entity_name,
         formatValidationError(errorList.array()),
       );
       return res.render(pageProps.templateName, pageProps);

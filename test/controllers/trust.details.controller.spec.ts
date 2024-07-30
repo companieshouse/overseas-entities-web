@@ -175,7 +175,6 @@ describe('Trust Details controller', () => {
               expectBoIndividualItems,
               expectBoOtherItems,
             ],
-            relevantPeriod: false
           },
         }),
       );

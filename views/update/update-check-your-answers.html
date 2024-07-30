@@ -154,7 +154,7 @@
       {% if newBOIs | length or newBOCs | length or newBOGs | length %}
         {% set hideChangeLinksForNonEditableFields = false %}
         <br>
-        <h2 class="govuk-heading-l">Beneficial owners you have added</h2>
+        <h2 class="govuk-heading-l">Beneficial owners in the Update period</h2>
         {% for boi in newBOIs %}
           {% include "includes/check-your-answers/beneficial-owner-individual.html" %}
         {% endfor %}

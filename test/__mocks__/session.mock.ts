@@ -1678,7 +1678,7 @@ export const REVIEW_TRUST: Trust = {
       dob_month: "8",
       dob_year: "1982",
       nationality: "Bahraini",
-      type: "Settlor",
+      type: RoleWithinTrustType.SETTLOR,
       ura_address_premises: "1",
       ura_address_line_1: "INDIVIDUAL  ROAD",
       ura_address_locality: "INDIVIDUAL CITY",

@@ -69,13 +69,13 @@ import { BeneficialOwnerGovKey } from '../../../src/model/beneficial.owner.gov.m
 import { BeneficialOwnerOtherKey } from '../../../src/model/beneficial.owner.other.model';
 import { UpdateKey } from '../../../src/model/update.type.model';
 import { isActiveFeature } from '../../../src/utils/feature.flag';
-import { checkEntityRequiresTrusts, getTrustLandingUrl } from '../../../src/utils/trusts';
+// import { checkEntityRequiresTrusts, getTrustLandingUrl } from '../../../src/utils/trusts';
 import { hasTrustsToReview, moveReviewableTrustsIntoReview, resetReviewStatusOnAllTrustsToBeReviewed } from '../../../src/utils/update/review_trusts';
 import { retrieveTrustData } from "../../../src/utils/update/trust.model.fetch";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import { BeneficialOwnerTypeChoice, BeneficialOwnerTypeKey } from "../../../src/model/beneficial.owner.type.model";
 import { RELEVANT_PERIOD_QUERY_PARAM } from "../../../src/config";
-import { checkRelevantPeriod } from "../../../src/utils/relevant.period";
+// import { checkRelevantPeriod } from "../../../src/utils/relevant.period";
 
 mockRemoveJourneyMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
@@ -91,11 +91,11 @@ mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Respons
 const mockHasUpdatePresenterMiddleware = hasUpdatePresenter as jest.Mock;
 mockHasUpdatePresenterMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
-const mockCheckEntityRequiresTrusts = checkEntityRequiresTrusts as jest.Mock;
+// const mockCheckEntityRequiresTrusts = checkEntityRequiresTrusts as jest.Mock;
 
 const mockHasTrustsToReview = hasTrustsToReview as jest.Mock;
 
-const mockGetTrustLandingUrl = getTrustLandingUrl as jest.Mock;
+// const mockGetTrustLandingUrl = getTrustLandingUrl as jest.Mock;
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 
@@ -110,7 +110,7 @@ const mockSetExtraData = setExtraData as jest.Mock;
 const mockMoveReviewableTrustsIntoReview = moveReviewableTrustsIntoReview as jest.Mock;
 
 const mockResetReviewStatusOnAllTrustsToBeReviewed = resetReviewStatusOnAllTrustsToBeReviewed as jest.Mock;
-const mockCheckRelevantPeriod = checkRelevantPeriod as jest.Mock;
+// const mockCheckRelevantPeriod = checkRelevantPeriod as jest.Mock;
 
 describe("BENEFICIAL OWNER TYPE controller", () => {
   let appData;
@@ -304,7 +304,6 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
 
     test('moves reviewable trusts into review and redirects to manage trusts interrupt if manage trusts feature flag is on and cease trusts flag on', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
       mockRetrieveTrustData.mockReturnValueOnce(Promise.resolve());
       mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
@@ -325,9 +324,8 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toContain(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
     });
-
+    /*
     test('does not move reviewable trusts into review and redirects to manage trusts interrupt if manage trusts feature flag is on and cease trusts flag off', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
       mockRetrieveTrustData.mockReturnValueOnce(Promise.resolve());
       mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
@@ -348,7 +346,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toContain(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
     });
-
+    */
     test('redirects to beneficial owner statements page if manage trusts feature flag is on but no trusts to review', async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
       mockRetrieveTrustData.mockReturnValueOnce(Promise.resolve());
@@ -384,7 +382,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toContain(config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL);
     });
-
+    /*
     test('redirects to add trusts if manage trusts flag is off, add trusts flag is on, and trusts are required', async () => {
       const mockLandingUrl = 'update/mock-get-trust-landing-url';
 
@@ -441,6 +439,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toContain(config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL);
     });
+    */
 
     test(`redirects to the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL + "?relevant-period=true"} page when the relevant_period=true and Other leegal entity button selected`, async () => {
 

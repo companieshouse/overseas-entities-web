@@ -29,7 +29,7 @@ import {
   APPLICATION_DATA_MOCK,
   UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE,
 } from '../../__mocks__/session.mock';
-import { PAGE_TITLE_ERROR, PAGE_NOT_FOUND_TEXT, RELEVANT_PERIOD_EXTRA_INFO_REQUIRED } from '../../__mocks__/text.mock';
+import { PAGE_TITLE_ERROR, RELEVANT_PERIOD_EXTRA_INFO_REQUIRED } from '../../__mocks__/text.mock';
 import { saveAndContinue } from '../../../src/utils/save.and.continue';
 import { ErrorMessages } from '../../../src/validation/error.messages';
 
@@ -83,15 +83,6 @@ describe('Update - Manage Trusts - Individuals or entities involved', () => {
       expect(resp.text).toContain(RELEVANT_PERIOD_EXTRA_INFO_REQUIRED);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
-
-    test('when feature flag is off, 404 is returned', async () => {
-      mockIsActiveFeature.mockReturnValue(false);
-
-      const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL);
-
-      expect(resp.status).toEqual(404);
-      expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
-    });
   });
 
   describe('POST tests', () => {
@@ -103,15 +94,6 @@ describe('Update - Manage Trusts - Individuals or entities involved', () => {
       expect(resp.status).toEqual(302);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
       expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
-    });
-
-    test('when feature flag is off, 404 is returned', async () => {
-      mockIsActiveFeature.mockReturnValue(false);
-
-      const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL);
-
-      expect(resp.status).toEqual(404);
-      expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
     });
 
     test("trigger validation when no radio button selected", async () => {

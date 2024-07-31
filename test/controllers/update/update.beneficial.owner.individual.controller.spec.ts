@@ -48,6 +48,7 @@ import {
   TRUSTS_NOC_HEADING,
   RELEVANT_PERIOD,
   RELEVANT_PERIOD_INDIVIDUAL_INFORMATION,
+  SAVE_AND_CONTINUE_BUTTON_TEXT,
 } from '../../__mocks__/text.mock';
 import {
   APPLICATION_DATA_UPDATE_BO_MOCK,
@@ -71,7 +72,6 @@ import {
   BENEFICIAL_OWNER_INDIVIDUAL_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK,
   BENEFICIAL_OWNER_INDIVIDUAL_WITH_MAX_LENGTH_FIELDS_MOCK
 } from '../../__mocks__/validation.mock';
-import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.mock';
 import { ErrorMessages } from '../../../src/validation/error.messages';
 import { ServiceAddressKey, ServiceAddressKeys } from "../../../src/model/address.model";
 import { ApplicationDataType } from '../../../src/model';
@@ -124,7 +124,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(config.UPDATE_LANDING_PAGE_URL);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
-      expect(resp.text).toContain(saveAndContinueButtonText);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).toContain(SECOND_NATIONALITY);
       expect(resp.text).toContain(SECOND_NATIONALITY_HINT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
@@ -157,7 +157,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
-      expect(resp.text).toContain(saveAndContinueButtonText);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).toContain("Ivan");
       expect(resp.text).toContain("Drago");
       expect(resp.text).toContain("Russian");
@@ -174,7 +174,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
-      expect(resp.text).toContain(saveAndContinueButtonText);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).toContain(RELEVANT_PERIOD);
       expect(resp.text).toContain(RELEVANT_PERIOD_INDIVIDUAL_INFORMATION);
       expect(resp.text).toContain("Ivan");

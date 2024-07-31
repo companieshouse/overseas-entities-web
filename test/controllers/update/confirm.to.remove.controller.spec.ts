@@ -1,5 +1,6 @@
 jest.mock("ioredis");
 jest.mock("../../../src/utils/logger");
+jest.mock("../../../src/utils/save.and.continue");
 jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/utils/application.data');
@@ -59,6 +60,7 @@ mockHasGivenValidBoMoDetailsMiddleware.mockImplementation((req: Request, res: Re
 
 const mockRemoveFromApplicationData = removeFromApplicationData as jest.Mock;
 const mockFindBoOrMo = findBoOrMo as jest.Mock;
+
 const mockGetApplicationData = getApplicationData as jest.Mock;
 mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
 

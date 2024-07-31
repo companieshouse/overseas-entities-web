@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { createAndLogErrorRequest, logger } from "../../utils/logger";
 import * as config from "../../config";
-import { isActiveFeature } from "../../utils/feature.flag";
 import { getPreviousPageUrl, isRemoveJourney } from "../../utils/url";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
@@ -20,7 +19,6 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     return res.render(config.UPDATE_SIGN_OUT_PAGE, {
       previousPage,
       url: config.UPDATE_AN_OVERSEAS_ENTITY_URL,
-      saveAndResume: isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_SAVE_AND_RESUME),
       journey
     });
   } catch (error) {

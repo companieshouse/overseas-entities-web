@@ -26,5 +26,5 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)){
     nextPageUrl = getUrlWithParamsToPath(ENTITY_WITH_PARAMS_URL, req);
   }
-  postDueDiligencePage(req, res, next, nextPageUrl, true);
+  postDueDiligencePage(req, res, next, nextPageUrl);
 };

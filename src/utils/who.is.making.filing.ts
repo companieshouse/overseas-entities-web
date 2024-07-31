@@ -56,7 +56,7 @@ export const postWhoIsFiling = async (
       if (appData[Transactionkey] && appData[OverseasEntityKey]) {
         await updateOverseasEntity(req, session, appData);
       } else {
-        throw new Error("Error: who_is_registering filter cannot be updated - transaction_id or overseas_entity_id is missing");
+        throw new Error("Error: who_is_registering filter page cannot be updated - transaction_id or overseas_entity_id is missing");
       }
     }
     setExtraData(session, appData);

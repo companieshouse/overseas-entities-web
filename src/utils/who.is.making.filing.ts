@@ -4,6 +4,11 @@ import { logger } from "./logger";
 import { ApplicationData } from "../model";
 import { getApplicationData, setExtraData } from "./application.data";
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../model/who.is.making.filing.model";
+import { Session } from "@companieshouse/node-session-handler";
+import { isActiveFeature } from "./feature.flag";
+import * as config from "../config";
+import { OverseasEntityKey, Transactionkey } from "../model/data.types.model";
+import { updateOverseasEntity } from "../service/overseas.entities.service";
 
 export const getWhoIsFiling = (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string): void => {
   try {
@@ -12,7 +17,7 @@ export const getWhoIsFiling = (req: Request, res: Response, next: NextFunction, 
 
     return res.render(templateName, {
       backLinkUrl,
-      templateName: templateName,
+      templateName,
       [WhoIsRegisteringKey]: appData[WhoIsRegisteringKey]
     });
   } catch (error) {
@@ -21,18 +26,41 @@ export const getWhoIsFiling = (req: Request, res: Response, next: NextFunction, 
   }
 };
 
-export const postWhoIsFiling = (req: Request, res: Response, next: NextFunction, agentUrl: string, oeUrl: string) => {
+export const postWhoIsFiling = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+  agentUrl: string,
+  oeUrl: string,
+  isRegistrationJourney: boolean = false
+): Promise<void> => {
+
   try {
+
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
+
+    const appData: ApplicationData = getApplicationData(req.session);
     const whoIsRegistering = req.body[WhoIsRegisteringKey];
+    appData[WhoIsRegisteringKey] = whoIsRegistering;
+    const session = req.session as Session;
 
-    setExtraData(req.session, { ...getApplicationData(req.session), [WhoIsRegisteringKey]: whoIsRegistering });
+    let nextPageUrl: string = "";
 
-    if (whoIsRegistering === WhoIsRegisteringType.AGENT){
-      return res.redirect(agentUrl);
-    } else {
-      return res.redirect(oeUrl);
+    if (whoIsRegistering === WhoIsRegisteringType.AGENT) {
+      nextPageUrl = agentUrl;
     }
+    if (whoIsRegistering === WhoIsRegisteringType.SOMEONE_ELSE) {
+      nextPageUrl = oeUrl;
+    }
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistrationJourney) {
+      if (appData[Transactionkey] && appData[OverseasEntityKey]) {
+        await updateOverseasEntity(req, session, appData);
+      } else {
+        throw new Error("Error: who_is_registering filter cannot be updated - transaction_id or overseas_entity_id is missing");
+      }
+    }
+    setExtraData(session, appData);
+    return res.redirect(nextPageUrl);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

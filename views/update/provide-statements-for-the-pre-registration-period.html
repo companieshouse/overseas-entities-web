@@ -38,14 +38,17 @@
             [
             {
             value: "change_bo_relevant_period",
+            checked: update.change_bo_relevant_period === "CHANGE_BO_RELEVANT_PERIOD",
             text: "At least one person became or ceased to be a <strong>registrable beneficial owner</strong>, that it has not already provided information about" | safe
             },
             {
             value: "trustee_involved_relevant_period",
+            checked: update.trustee_involved_relevant_period === "TRUSTEE_INVOLVED_RELEVANT_PERIOD",
             text: "There was at least one person that was a <strong>registrable beneficial owner due to being a trustee of a trust</strong>, that the entity has not already provided information about" | safe
             },
             {
             value: "change_beneficiary_relevant_period",
+            checked: update.change_beneficiary_relevant_period === "CHANGE_BENEFICIARY_RELEVANT_PERIOD",
             text: "At least one person became or ceased to be a  <strong>beneficiary of a trust</strong> involved in the overseas entity, that it has not already provided information about" | safe
             },
             {
@@ -53,6 +56,7 @@
             },
             {
             value: "none_of_these",
+            checked: update.change_bo_relevant_period === "NO_CHANGE_BO_RELEVANT_PERIOD" and update.change_beneficiary_relevant_period === "NO_CHANGE_BENEFICIARY_RELEVANT_PERIOD" and update.trustee_involved_relevant_period === "NO_TRUSTEE_INVOLVED_RELEVANT_PERIOD",
             text: "<strong>None of these</strong> – the information provided at registration was the same throughout the pre-registration period" | safe,
             behaviour: "exclusive"
             }

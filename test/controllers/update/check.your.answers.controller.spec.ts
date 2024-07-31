@@ -93,7 +93,20 @@ import {
   TRUSTEE_INDIVIDUAL_INVOLVED,
   TRUSTEE_LEGAL_ENTITY_INVOLVED,
   TRUSTEE_INDIVIDUAL_CEASED_DATE,
-  TRUSTEE_LEGAL_ENTITY_CEASED_DATE
+  TRUSTEE_LEGAL_ENTITY_CEASED_DATE,
+  CHECK_YOUR_ANSWERS_PAGE_RP_BENEFICIAL_OWNER_STATEMENTS_TITLE,
+  CHECK_YOUR_ANSWERS_PAGE_RP_BENEFICIAL_OWNER_STATEMENTS_SUB_TEXT,
+  CHECK_YOUR_ANSWERS_PAGE_RP_TRUST_STATEMENTS_TITLE,
+  CHECK_YOUR_ANSWERS_PAGE_RP_TRUST_STATEMENTS_SUB_TEXT,
+  CHECK_YOUR_ANSWERS_PAGE_RP_BENEFICIARY_STATEMENTS_TITLE,
+  CHECK_YOUR_ANSWERS_PAGE_RP_BENEFICIARY_STATEMENTS_SUB_TEXT,
+  UPDATE_CHANGE_LINK_RP_BO_STATEMENT,
+  CHECK_YOUR_ANSWERS_PAGE_RP_NO_BENEFICIAL_OWNER_STATEMENTS_TITLE,
+  CHECK_YOUR_ANSWERS_PAGE_RP_NO_BENEFICIAL_OWNER_STATEMENTS_SUB_TEXT,
+  CHECK_YOUR_ANSWERS_PAGE_RP_NO_TRUST_STATEMENTS_TITLE,
+  CHECK_YOUR_ANSWERS_PAGE_RP_NO_TRUST_STATEMENTS_SUB_TEXT,
+  CHECK_YOUR_ANSWERS_PAGE_RP_NO_BENEFICIARY_STATEMENTS_TITLE,
+  CHECK_YOUR_ANSWERS_PAGE_RP_NO_BENEFICIARY_STATEMENTS_SUB_TEXT
 } from "../../__mocks__/text.mock";
 import {
   ERROR,
@@ -114,6 +127,8 @@ import {
   INDIVIUAL_TRUSTEE,
   CORPORATE_TRUSTEE,
   TRUST_WITH_ID,
+  UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE,
+  UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE,
 } from "../../__mocks__/session.mock";
 import { DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/due.diligence.mock";
 import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/overseas.entity.due.diligence.mock";
@@ -230,6 +245,105 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_WHO_CAN_WE_CONTACT);
       expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_TITLE);
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE);
+      expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_FULL_NAME);
+      expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_EMAIL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_INDIVIDUAL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_GOVERNMENT);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_OTHER);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_MO_INDIVIDUAL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_MO_CORPORATE);
+    });
+
+    test.each([
+      ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK ]
+    ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with relevant period statement all of the above selected detail section %s`, async () => {
+      const appData = {
+        ...APPLICATION_DATA_UPDATE_BO_MOCK,
+        update: UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE
+      };
+
+      mockGetApplicationData.mockReturnValue(appData);
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(CHANGE_LINK);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_WHO_CAN_WE_CONTACT);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_TITLE);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_RP_BENEFICIAL_OWNER_STATEMENTS_TITLE);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_RP_BENEFICIAL_OWNER_STATEMENTS_SUB_TEXT);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_RP_TRUST_STATEMENTS_TITLE);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_RP_TRUST_STATEMENTS_SUB_TEXT);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_RP_BENEFICIARY_STATEMENTS_TITLE);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_RP_BENEFICIARY_STATEMENTS_SUB_TEXT);
+      expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_FULL_NAME);
+      expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_EMAIL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_RP_BO_STATEMENT);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_INDIVIDUAL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_GOVERNMENT);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_OTHER);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_MO_INDIVIDUAL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_MO_CORPORATE);
+    });
+
+    test.each([
+      ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK ]
+    ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with relevant period statement none of the above selected detail section %s`, async () => {
+      const appData = {
+        ...APPLICATION_DATA_UPDATE_BO_MOCK,
+        update: UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE
+      };
+
+      mockGetApplicationData.mockReturnValue(appData);
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(CHANGE_LINK);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_WHO_CAN_WE_CONTACT);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_TITLE);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_RP_NO_BENEFICIAL_OWNER_STATEMENTS_TITLE);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_RP_NO_BENEFICIAL_OWNER_STATEMENTS_SUB_TEXT);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_RP_NO_TRUST_STATEMENTS_TITLE);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_RP_NO_TRUST_STATEMENTS_SUB_TEXT);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_RP_NO_BENEFICIARY_STATEMENTS_TITLE);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_RP_NO_BENEFICIARY_STATEMENTS_SUB_TEXT);
+      expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_FULL_NAME);
+      expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_EMAIL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_RP_BO_STATEMENT);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_INDIVIDUAL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_GOVERNMENT);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_OTHER);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_MO_INDIVIDUAL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_MO_CORPORATE);
+    });
+
+    test.each([
+      ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK ]
+    ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with relevant period statement not selected relevant journey %s`, async (_journeyType, mockAppData) => {
+      mockGetApplicationData.mockReturnValue(mockAppData);
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(CHANGE_LINK);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_WHO_CAN_WE_CONTACT);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_TITLE);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE);
+      expect(resp.text).not.toContain(CHECK_YOUR_ANSWERS_PAGE_RP_BENEFICIAL_OWNER_STATEMENTS_TITLE);
+      expect(resp.text).not.toContain(CHECK_YOUR_ANSWERS_PAGE_RP_BENEFICIAL_OWNER_STATEMENTS_SUB_TEXT);
+      expect(resp.text).not.toContain(CHECK_YOUR_ANSWERS_PAGE_RP_TRUST_STATEMENTS_TITLE);
+      expect(resp.text).not.toContain(CHECK_YOUR_ANSWERS_PAGE_RP_TRUST_STATEMENTS_SUB_TEXT);
+      expect(resp.text).not.toContain(CHECK_YOUR_ANSWERS_PAGE_RP_BENEFICIARY_STATEMENTS_TITLE);
+      expect(resp.text).not.toContain(CHECK_YOUR_ANSWERS_PAGE_RP_BENEFICIARY_STATEMENTS_SUB_TEXT);
       expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_FULL_NAME);
       expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_EMAIL);
       expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_INDIVIDUAL);

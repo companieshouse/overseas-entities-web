@@ -94,6 +94,9 @@ import {
   TRUSTEE_LEGAL_ENTITY_INVOLVED,
   TRUSTEE_INDIVIDUAL_CEASED_DATE,
   TRUSTEE_LEGAL_ENTITY_CEASED_DATE,
+  RELEVANT_SECURE_REGISTER_CHANGE_LINK,
+  RELEVANT_SECURE_FILTER_PAGE_HEADING,
+  RELEVANT_PERIOD_OWNED_LAND_CHANGE_LINK,
   CHECK_YOUR_ANSWERS_PAGE_RP_BENEFICIAL_OWNER_STATEMENTS_TITLE,
   CHECK_YOUR_ANSWERS_PAGE_RP_BENEFICIAL_OWNER_STATEMENTS_SUB_TEXT,
   CHECK_YOUR_ANSWERS_PAGE_RP_TRUST_STATEMENTS_TITLE,
@@ -451,6 +454,23 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).toContain(CHANGE_LINK_ENTITY_EMAIL);
       expect(resp.text).toContain(CHANGE_LINK_ENTITY_LEGAL_FORM);
       expect(resp.text).toContain(CHANGE_LINK_ENTITY_GOVERNING_LAW);
+    });
+
+    test.each([
+      ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK ]
+    ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with relevant period statement all of the above selected detail section %s`, async () => {
+      const appData = {
+        ...APPLICATION_DATA_UPDATE_BO_MOCK,
+        update: UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE, UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE
+      };
+      mockGetApplicationData.mockReturnValue(appData);
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(OVERSEAS_NAME_MOCK);
+      expect(resp.text).toContain(RELEVANT_SECURE_FILTER_PAGE_HEADING);
+      expect(resp.text).toContain(RELEVANT_SECURE_REGISTER_CHANGE_LINK);
+      expect(resp.text).toContain(RELEVANT_PERIOD_OWNED_LAND_CHANGE_LINK);
     });
 
     test.each([

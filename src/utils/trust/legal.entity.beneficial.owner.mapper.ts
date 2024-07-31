@@ -45,6 +45,7 @@ const mapLegalEntityToSession = (
     ceased_date_day: formData.stillInvolved === "0" ? formData.ceasedDateDay : "",
     ceased_date_month: formData.stillInvolved === "0" ? formData.ceasedDateMonth : "",
     ceased_date_year: formData.stillInvolved === "0" ? formData.ceasedDateYear : "",
+    relevant_period: formData.relevant_period,
   };
 
   let publicRegisterData = {};
@@ -145,6 +146,7 @@ const mapLegalEntityTrusteeFromSessionToPage = (
     ceasedDateDay: trustee.ceased_date_day,
     ceasedDateMonth: trustee.ceased_date_month,
     ceasedDateYear: trustee.ceased_date_year,
+    relevant_period: trustee.relevant_period,
   } as Page.TrustLegalEntityForm;
 
   const stillInvolvedInTrust: string =

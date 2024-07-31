@@ -44,12 +44,12 @@ import {
   ERROR_LIST,
   FOUND_REDIRECT_TO,
   PAGE_TITLE_ERROR,
+  SAVE_AND_CONTINUE_BUTTON_TEXT,
   SERVICE_UNAVAILABLE,
   UPDATE_DATE_OF_UPDATE_STATEMENT_TEXT,
 } from "../../__mocks__/text.mock";
 
 import { FILING_DATE_REQ_BODY_MOCK } from '../../__mocks__/fields/date.mock';
-import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.mock';
 
 import { NextFunction } from "express";
 import { ErrorMessages } from "../../../src/validation/error.messages";
@@ -117,7 +117,7 @@ describe("Update Filing Date controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain("Date of the update statement");
       expect(resp.text).toContain(BACK_LINK_FOR_UPDATE_FILING_DATE);
-      expect(resp.text).toContain(saveAndContinueButtonText);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(UPDATE_DATE_OF_UPDATE_STATEMENT_TEXT);
       expect(resp.text).toContain('href="test"');
@@ -141,7 +141,7 @@ describe("Update Filing Date controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain("Date of the update statement");
       expect(resp.text).toContain(BACK_LINK_FOR_UPDATE_FILING_DATE);
-      expect(resp.text).toContain(saveAndContinueButtonText);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(UPDATE_DATE_OF_UPDATE_STATEMENT_TEXT);
       expect(resp.text).toContain('href="test"');
@@ -157,7 +157,7 @@ describe("Update Filing Date controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain("Date of the update statement");
       expect(resp.text).toContain(BACK_LINK_FOR_UPDATE_FILING_DATE);
-      expect(resp.text).toContain(saveAndContinueButtonText);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(UPDATE_DATE_OF_UPDATE_STATEMENT_TEXT);
       expect(resp.text).toContain('href="test"');
@@ -173,7 +173,7 @@ describe("Update Filing Date controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain("Date of the update statement");
       expect(resp.text).toContain(BACK_LINK_FOR_UPDATE_FILING_DATE);
-      expect(resp.text).toContain(saveAndContinueButtonText);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(UPDATE_DATE_OF_UPDATE_STATEMENT_TEXT);
       expect(resp.text).toContain('href="test"');

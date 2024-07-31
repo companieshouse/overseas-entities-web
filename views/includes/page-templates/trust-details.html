@@ -1,9 +1,9 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
-    {% if pageData.relevantPeriod %}
+    {% include "includes/list/errors.html" %}
+    {% if formData.relevant_period %}
       {% include "includes/page-templates/important-banner.html" %}
     {% endif %}
-    {% include "includes/list/errors.html" %}
 
     {# Check if there are any beneficial owners. If the length of the 'beneficialOwners' array is 0, then 'isTrustToBeCeased' will be true #}
     {# and can be used to show the ceased date - only for 'review' mode (review mode is only in update journey) #}
@@ -29,7 +29,7 @@
       <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ formData.name }}</span>
     {% endif %}
 
-    {% if pageData.relevantPeriod %}
+    {% if formData.relevant_period %}
       <h1 class="govuk-heading-xl">Tell us about the trust involved in the pre-registration period</h1>
 
       {{ govukInsetText({
@@ -94,7 +94,7 @@
       {% set isUpdateOrRemoveJourney = (isUpdate or journey === "remove") %}
 
       {% if not isTrustToBeCeased and isUpdateOrRemoveJourney %}
-        {% if pageData.relevantPeriod %}
+        {% if formData.relevant_period %}
           {% set fieldParam = ceasedParam %}
           {% include "includes/inputs/date-input.html" %}
         {% else %}
@@ -110,7 +110,7 @@
       {% for bo in pageData.beneficialOwners %}
         {% set boItems = (
           boItems.push({
-            id: "trustBeneficialOwners",
+            id: "beneficialOwnersIds",
             value: bo.id,
             text: bo.name,
             checked: true if bo.id in beneficialOwnersIds
@@ -169,8 +169,9 @@
         <input type="hidden" name="createdDateYear" value="{{ formData.createdDateYear }}"/>
       {% endif %}
 
-      {% if pageData.relevantPeriod %}
-        <input type="hidden" name="stillInvolved" value="0"/>
+      {% if formData.relevant_period %}
+          <input type="hidden" name="stillInvolved" value="0"/>
+          <input type="hidden" name="relevant_period" value= "true" />
       {% endif %}
 
       {% include "includes/save-and-continue-button.html" %}

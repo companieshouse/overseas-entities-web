@@ -52,7 +52,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     setTrusteesAsReviewed(appData, TrusteeType.INDIVIDUAL);
 
     setExtraData(req.session, appData);
-    await saveAndContinue(req, req.session as Session, false);
+    await saveAndContinue(req, req.session as Session);
 
     return res.redirect(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
   } catch (error) {

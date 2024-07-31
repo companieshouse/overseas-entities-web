@@ -65,6 +65,7 @@ const mapDetailToPage = (
     hasAllInfo: unableToObtainAllTrustInfo,
     beneficialOwnersIds: trustBoIds,
     stillInvolved: stillInvolvedInOverseasEntity,
+    relevant_period: trustData.relevant_period,
   };
 };
 
@@ -92,6 +93,7 @@ const mapDetailToSession = (
     ceased_date_year: isTrustToBeCeased ? formData.ceasedDateYear : undefined,
     trust_still_involved_in_overseas_entity: stillInvolved,
     unable_to_obtain_all_trust_info: (formData.hasAllInfo === "0") ? "Yes" : "No",
+    relevant_period: formData.relevant_period,
   };
 };
 

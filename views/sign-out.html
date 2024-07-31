@@ -21,9 +21,9 @@
 
 {% set isUpdateOrRemoveJourney = (journey === "update" or journey === "remove") %}
 
-{% if saveAndResume and (journey == "register") %}
+{% if (journey == "register") %}
   {% set hintText = "We will save your application." %}
-{% elif saveAndResume and isUpdateOrRemoveJourney %}
+{% elif isUpdateOrRemoveJourney %}
   {% set hintText = "We will save your filing." %}
 {% else %}
   {% set hintText = "Your answers will not be saved. You will need to start again if you want to "+journey+" an overseas entity and tell us about its beneficial owners." %}
@@ -37,10 +37,9 @@
 
     <form method="post">
       {% include "includes/csrf_token.html" %}
-      {# Need to have hidden fields for the journey and saveAndResume values so that when the template gets rendered by the validation middleware, #}
-      {#   the journey and saveAndResume values are not lost and passed back into the template for rendering #}
+      {# Need to have hidden fields for the journey value so that when the template gets rendered by the validation middleware, #}
+      {#   the journey value is not lost and passed back into the template for rendering #}
       <input type="hidden" name="journey" value="{{ journey }}"/>
-      <input type="hidden" name="saveAndResume" value="{{ saveAndResume }}"/>
 
       {{ govukRadios({
         errorMessage: errors.sign_out if errors,
@@ -81,26 +80,25 @@
         classes: "govuk-visually-hidden"
       }) }}
 
-      {% if saveAndResume %}
-        <details class="govuk-details" data-module="govuk-details" data-event-id="find-saved-information-details">
-          <summary class="govuk-details__summary">
-          <span class="govuk-details__summary-text">
-            {% if journey === "register" %}
-              How do I find my saved applications?
-            {% elif isUpdateOrRemoveJourney %}
-              How do I find my saved filing?
-            {% endif %}
-          </span>
-          </summary>  
-          <div class="govuk-details__text">
-            {% if journey === "register" %}
-              Sign in to your Companies House account and select Your filings to access your saved applications.
-            {% elif isUpdateOrRemoveJourney %}
-              When you sign back in to this service, we'll ask you if you want to continue with a saved filing.
-            {% endif %}
-          </div>
-        </details>
-      {% endif %}
+      <details class="govuk-details" data-module="govuk-details" data-event-id="find-saved-information-details">
+        <summary class="govuk-details__summary">
+        <span class="govuk-details__summary-text">
+          {% if journey === "register" %}
+            How do I find my saved applications?
+          {% elif isUpdateOrRemoveJourney %}
+            How do I find my saved filing?
+          {% endif %}
+        </span>
+        </summary>  
+        <div class="govuk-details__text">
+          {% if journey === "register" %}
+            Sign in to your Companies House account and select Your filings to access your saved applications.
+          {% elif isUpdateOrRemoveJourney %}
+            When you sign back in to this service, we'll ask you if you want to continue with a saved filing.
+          {% endif %}
+        </div>
+      </details>
+      
       
       {% if journey === "register" %}
         {% include "includes/continue-button.html" %}

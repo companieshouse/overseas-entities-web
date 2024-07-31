@@ -11,7 +11,6 @@ export const createOverseasEntity = async (
   req: Request,
   session: Session,
   transactionId: string,
-  isSaveAndResumeFeatureActive: boolean = false,
   data?: ApplicationData
 ): Promise<string> => {
 
@@ -25,8 +24,7 @@ export const createOverseasEntity = async (
     req,
     session,
     transactionId,
-    appData,
-    isSaveAndResumeFeatureActive
+    appData
   );
 
   if (response.httpStatusCode !== 201) {

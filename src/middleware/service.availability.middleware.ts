@@ -6,11 +6,8 @@ import { isActiveFeature } from "../utils/feature.flag";
 
 import {
   FEATURE_FLAG_ENABLE_ROE_UPDATE,
-  FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022,
-  RESUME,
   SERVICE_OFFLINE_PAGE,
   SHOW_SERVICE_OFFLINE_PAGE,
-  STARTING_NEW_URL,
   UPDATE_LANDING_URL
 } from "../config";
 import { logger } from "../utils/logger";
@@ -24,14 +21,6 @@ export const serviceAvailabilityMiddleware = (req: Request, res: Response, next:
 
   if (!isActiveFeature(FEATURE_FLAG_ENABLE_ROE_UPDATE) && req.path.startsWith(UPDATE_LANDING_URL)) {
     logger.infoRequest(req, "Feature update is disabled - displaying service offline page");
-    return res.render(SERVICE_OFFLINE_PAGE);
-  }
-
-  if (
-    (req.path === STARTING_NEW_URL || req.path.endsWith(`/${RESUME}`))
-    &&
-    !isActiveFeature(FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022)) {
-    logger.infoRequest(req, "Save and resume flag is disabled - displaying service offline page");
     return res.render(SERVICE_OFFLINE_PAGE);
   }
 

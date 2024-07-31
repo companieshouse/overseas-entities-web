@@ -5,6 +5,8 @@
   {% set isRemoveJourney = true %}
 {% endif %}
 
+{% set feature_flag_relevant_period = OE_CONFIGS.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD %}
+
 {% if isRemoveJourney %}
   {% set title = "Check your answers before submitting" %}
 {% else %}
@@ -58,7 +60,7 @@
       {% if isRemoveJourney %}
         <span class="govuk-caption-l govuk-!-padding-bottom-1">{{ entity_name }} - {{ entity_number }}</span>
       {% else %}
-        {% if pageParams.isRPStatementExists %}
+        {% if feature_flag_relevant_period === "true" %}
           <span class="govuk-caption-l govuk-!-padding-bottom-1">{{ entity_name }} - {{ entity_number }}</span>
         {% endif %}
       {% endif %}
@@ -118,7 +120,7 @@
         <br>
       {% endif %}
 
-      {% if pageParams.isRPStatementExists %}
+      {% if feature_flag_relevant_period === "true" %}
         {% include "includes/check-your-answers/relevant-period-check-your-answers.html" %}
       {% endif %}
 

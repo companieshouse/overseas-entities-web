@@ -468,9 +468,9 @@ describe("CHECK YOUR ANSWERS controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(OVERSEAS_NAME_MOCK);
-      expect(resp.text).toContain(RELEVANT_SECURE_FILTER_PAGE_HEADING);
-      expect(resp.text).toContain(RELEVANT_SECURE_REGISTER_CHANGE_LINK);
-      expect(resp.text).toContain(RELEVANT_PERIOD_OWNED_LAND_CHANGE_LINK);
+      expect(resp.text).not.toContain(RELEVANT_SECURE_FILTER_PAGE_HEADING);
+      expect(resp.text).not.toContain(RELEVANT_SECURE_REGISTER_CHANGE_LINK);
+      expect(resp.text).not.toContain(RELEVANT_PERIOD_OWNED_LAND_CHANGE_LINK);
     });
 
     test.each([

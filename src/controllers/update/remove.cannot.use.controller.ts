@@ -4,7 +4,7 @@ import { logger } from "../../utils/logger";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `GET ${config.SIGN_OUT_PAGE}`);
+    logger.debugRequest(req, `GET ${config.REMOVE_CANNOT_USE_PAGE}`);
 
     let backLinkUrl = "";
     const previousPage = req.query[config.PREVIOUS_PAGE_QUERY_PARAM];

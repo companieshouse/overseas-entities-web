@@ -1,8 +1,8 @@
 import { Session } from "@companieshouse/node-session-handler";
 import { NextFunction, Request, Response } from "express";
 
-import { createOverseasEntity, updateOverseasEntity } from "../service/overseas.entities.service";
-import { closeTransaction, postTransaction } from "../service/transaction.service";
+import { updateOverseasEntity } from "../service/overseas.entities.service";
+import { closeTransaction } from "../service/transaction.service";
 
 import * as config from "../config";
 import { isActiveFeature } from "../utils/feature.flag";
@@ -69,15 +69,9 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const session = req.session as Session;
     const appData: ApplicationData = getApplicationData(session);
 
-    let transactionID, overseasEntityID;
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022)) {
-      transactionID = appData[Transactionkey] as string;
-      overseasEntityID = appData[OverseasEntityKey] as string;
-      await updateOverseasEntity(req, session);
-    } else {
-      transactionID = await postTransaction(req, session);
-      overseasEntityID = await createOverseasEntity(req, session, transactionID);
-    }
+    const transactionID = appData[Transactionkey] as string;
+    const overseasEntityID = appData[OverseasEntityKey] as string;
+    await updateOverseasEntity(req, session);
 
     const transactionClosedResponse = await closeTransaction(req, session, transactionID, overseasEntityID);
     logger.infoRequest(req, `Transaction Closed, ID: ${transactionID}`);

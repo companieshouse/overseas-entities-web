@@ -57,6 +57,10 @@
 
       {% if isRemoveJourney %}
         <span class="govuk-caption-l govuk-!-padding-bottom-1">{{ entity_name }} - {{ entity_number }}</span>
+      {% else %}
+        {% if pageParams.isRPStatementExists %}
+          <span class="govuk-caption-l govuk-!-padding-bottom-1">{{ entity_name }} - {{ entity_number }}</span>
+        {% endif %}
       {% endif %}
 
       <h1 class="govuk-heading-xl">{{ title }}</h1>
@@ -114,6 +118,10 @@
         <br>
       {% endif %}
 
+      {% if pageParams.isRPStatementExists %}
+        {% include "includes/check-your-answers/relevant-period-check-your-answers.html" %}
+      {% endif %}
+
       {% include "includes/check-your-answers/presenter.html" %}
       {% include "includes/check-your-answers/verification-checks.html" %}
       <br>
@@ -122,6 +130,11 @@
       {% if not updateStatementValidationEnabled %}
         <br>
         {% include "includes/check-your-answers/beneficial-owner-statements.html" %}
+      {% endif %}
+
+      {% if pageParams.isRPStatementExists %}
+      <br>
+      {% include "includes/check-your-answers/relevant-period-statements.html" %}
       {% endif %}
 
       {% set bois = beneficial_owners_individual or [] %}
@@ -154,7 +167,7 @@
       {% if newBOIs | length or newBOCs | length or newBOGs | length %}
         {% set hideChangeLinksForNonEditableFields = false %}
         <br>
-        <h2 class="govuk-heading-l">Beneficial owners you have added</h2>
+        <h2 class="govuk-heading-l">Beneficial owners in the Update period</h2>
         {% for boi in newBOIs %}
           {% include "includes/check-your-answers/beneficial-owner-individual.html" %}
         {% endfor %}

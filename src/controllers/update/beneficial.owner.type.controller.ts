@@ -111,7 +111,7 @@ export const postSubmit = async (req: Request, res: Response, next: NextFunction
 
         await retrieveTrustData(req, appData);
         setExtraData(req.session, appData);
-        await saveAndContinue(req, session, false);
+        await saveAndContinue(req, session);
       }
 
       // Move any trusts that have been reviewed back into review so user can review data again if

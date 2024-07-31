@@ -41,9 +41,9 @@ import {
   TRUST_CEASED_DATE_TEXT,
   TRUST_NOT_ASSOCIATED_WITH_BENEFICIAL_OWNER_TEXT,
   TRUST_ENTER_CEASED_DATE,
-  RELEVANT_PERIOD
+  RELEVANT_PERIOD,
+  SAVE_AND_CONTINUE_BUTTON_TEXT
 } from '../../__mocks__/text.mock';
-import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.mock';
 import { saveAndContinue } from '../../../src/utils/save.and.continue';
 
 mockCsrfProtectionMiddleware.mockClear();
@@ -77,7 +77,7 @@ describe('Update - Trusts - Tell us about the trust', () => {
       expect(resp.text).toContain(UPDATE_TELL_US_ABOUT_TRUST_HEADING);
       expect(resp.text).toContain(UPDATE_TELL_US_ABOUT_TRUST_QUESTION);
       expect(resp.text).toContain(UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL);
-      expect(resp.text).toContain(saveAndContinueButtonText);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 
@@ -109,7 +109,7 @@ describe('Update - Trusts - Tell us about the trust', () => {
       expect(resp.text).toContain(UPDATE_TELL_US_ABOUT_TRUST_HEADING);
       expect(resp.text).toContain(UPDATE_TELL_US_ABOUT_TRUST_QUESTION);
       expect(resp.text).toContain(UPDATE_TRUSTS_SUBMISSION_INTERRUPT_URL);
-      expect(resp.text).toContain(saveAndContinueButtonText);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 

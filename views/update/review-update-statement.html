@@ -5,6 +5,8 @@
   {% set isRemoveJourney = true %}
 {% endif %}
 
+{% set feature_flag_relevant_period = OE_CONFIGS.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD %}
+
 {% if isRemoveJourney %}
   {% set title = "Review the information before submitting" %}
 {% else %}
@@ -68,7 +70,7 @@ update.filing_date["year"]) %}
 
 {% set beneficialOwerSectionHeading %}
   {% if not pageParams.noChangeFlag %}
-    Beneficial owners you have added
+    Beneficial owners in the Update period
   {% else %}
     Beneficial owners
   {% endif %}
@@ -103,83 +105,91 @@ update.filing_date["year"]) %}
       {% if isRemoveJourney %}
         <h1 class="govuk-heading-xl">Review the information before submitting</h1>
       {% else %}
-        <h1 class="govuk-heading-xl">Review the information before submitting this update statement</h1>
+        {% if feature_flag_relevant_period === "true" and not pageParams.isRPStatementExists %}
+          <h1 class="govuk-heading-xl">Check your answers before submitting</h1>
+        {% else %}
+          <h1 class="govuk-heading-xl">Review the information before submitting this update statement</h1>
+        {% endif %}
       {% endif %}
 
-      {{ govukSummaryList({
-        rows: [
-          {
-            key: {
-              text: "Has the overseas entity disposed of all relevant property or land in the UK?"
+      {% if feature_flag_relevant_period === "true" and not pageParams.isRPStatementExists %}
+      {% include "includes/check-your-answers/relevant-period-check-your-answers.html" %}
+      {% else %}
+        {{ govukSummaryList({
+          rows: [
+            {
+              key: {
+                text: "Has the overseas entity disposed of all relevant property or land in the UK?"
+              },
+              value: {
+                text: hasSoldAllLand
+              }
+            } if isRemoveJourney,
+            {
+              key: {
+                text: "Is the overseas entity currently listed on any land registry records as the registered owner of property or land in the UK?"
+              },
+              value: {
+                text: IsListedAsPropertyOwner
+              }
+            } if isRemoveJourney,
+            {
+              key: {
+                text: "Do any beneficial owners or managing officers have personal information protected at Companies House?"
+              },
+              value: {
+                text: isProtectedInformation
+              },
+              attributes: {
+                "data-event-id": "nochange-changelink-beneficial-owner-review-statement-button"
+              },
+              actions: {
+                items: [ CREATE_CHANGE_LINK(
+                  OE_CONFIGS.SECURE_UPDATE_FILTER_CHANGELINK,
+                  isProtectedInformation,
+                  "nochange-changelink-beneficial-owner-review-statement-button"
+                ) ]
+              } if not isRemoveJourney
             },
-            value: {
-              text: hasSoldAllLand
-            }
-          } if isRemoveJourney,
-          {
-            key: {
-              text: "Is the overseas entity currently listed on any land registry records as the registered owner of property or land in the UK?"
-            },
-            value: {
-              text: IsListedAsPropertyOwner
-            }
-          } if isRemoveJourney,
-          {
-            key: {
-              text: "Do any beneficial owners or managing officers have personal information protected at Companies House?"
-            },
-            value: {
-              text: isProtectedInformation
-            },
-            attributes: {
-              "data-event-id": "nochange-changelink-beneficial-owner-review-statement-button"
-            },
-            actions: {
-              items: [ CREATE_CHANGE_LINK(
-                OE_CONFIGS.SECURE_UPDATE_FILTER_CHANGELINK,
-                isProtectedInformation,
-                "nochange-changelink-beneficial-owner-review-statement-button"
-              ) ]
+            {
+              key: {
+                text: "Date of the update statement"
+              },
+              value: {
+                text: updateStatementDate
+              },
+              attributes: {
+                "data-event-id":  "nochange-changelink-filingdate-review-statement-button"
+              },
+              actions: {
+                items: [ CREATE_CHANGE_LINK(
+                  OE_CONFIGS.UPDATE_FILING_DATE_CHANGELINK,
+                  updateStatementDate,
+                  "nochange-changelink-filingdate-review-statement-button"
+                ) ]
+              }
+            } if not isRemoveJourney,
+            {
+              key: {
+                text: "Do you need to make any changes to this overseas entity for the update period?"
+              },
+              value: {
+                text: noChange
+              },
+              attributes: {
+                "data-event-id": "nochange-changelink-entity-review-statement-button"
+              },
+              actions: {
+                items: [ CREATE_CHANGE_LINK(
+                  OE_CONFIGS.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_CHANGELINK,
+                  noChange,
+                  "nochange-changelink-entity-review-statement-button"
+                ) ]
+              }
             } if not isRemoveJourney
-          },
-          {
-            key: {
-              text: "Date of the update statement"
-            },
-            value: {
-              text: updateStatementDate
-            },
-            attributes: {
-              "data-event-id":  "nochange-changelink-filingdate-review-statement-button"
-            },
-            actions: {
-              items: [ CREATE_CHANGE_LINK(
-                OE_CONFIGS.UPDATE_FILING_DATE_CHANGELINK,
-                updateStatementDate,
-                "nochange-changelink-filingdate-review-statement-button"
-              ) ]
-            }
-          } if not isRemoveJourney,
-          {
-            key: {
-              text: "Do you need to make any changes to this overseas entity for the update period?"
-            },
-            value: {
-              text: noChange
-            },
-            attributes: {
-              "data-event-id": "nochange-changelink-entity-review-statement-button"
-            },
-            actions: {
-              items: [ CREATE_CHANGE_LINK(
-                OE_CONFIGS.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_CHANGELINK,
-                noChange,
-                "nochange-changelink-entity-review-statement-button"
-              ) ]
-            }
-          } if not isRemoveJourney
-        ]
-    }) }}
+          ]
+      }) }}
+    {% endif %}
     <br>
 
     {% if isRemoveJourney %}

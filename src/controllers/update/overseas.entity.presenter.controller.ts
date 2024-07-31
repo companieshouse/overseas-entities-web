@@ -7,5 +7,5 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
-  postPresenterPage(req, res, next, config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL, false);
+  postPresenterPage(req, res, next, config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL);
 };

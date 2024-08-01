@@ -320,7 +320,6 @@ describe('Update - Manage Trusts - Review the trust', () => {
     });
 
     test(`renders the update-manage-trusts-review-the-trust page with error messages`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
       mockIsActiveFeature.mockReturnValueOnce(false);
       mockIsActiveFeature.mockReturnValueOnce(true);
 
@@ -349,9 +348,9 @@ describe('Update - Manage Trusts - Review the trust', () => {
       expect(resp.text).toContain(UPDATE_REVIEW_THE_TRUST);
       expect(resp.text).toContain(ERROR_LIST);
       expect(resp.text).toContain(ErrorMessages.TRUST_NAME_2);
-      // expect(resp.text).not.toContain(ErrorMessages.TRUST_INVOLVED_BOS);
+      expect(resp.text).not.toContain(ErrorMessages.TRUST_INVOLVED_BOS);
       expect(resp.text).toContain(ErrorMessages.TRUST_HAS_ALL_INFO);
-      // expect(resp.text).toContain(ErrorMessages.ENTER_DATE_OF_TRUST_CEASED);
+      expect(resp.text).toContain(ErrorMessages.ENTER_DATE_OF_TRUST_CEASED);
       expect(mockUpdateTrustInReviewList).not.toHaveBeenCalled();
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });

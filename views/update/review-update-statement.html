@@ -314,6 +314,7 @@ update.filing_date["year"]) %}
     {% endfor %}
   {% endif %}
 
+  {% if addTrustsEnabled %}
     {% if hasExistingTrusts %}
       <br>
       <h2 class="govuk-heading-l">Trusts</h2>
@@ -321,8 +322,13 @@ update.filing_date["year"]) %}
         {% set trust_heading = trust.trust_name %}
         {% include "includes/check-your-answers/trusts.html" %}
       {% endfor %}
+    {% elif pageParams.hasAnyBosWithTrusteeNocs %}
+      <br>
+      <h2 class="govuk-heading-l">Trusts</h2>
+      <p class="govuk-body govuk-!-margin-bottom-9">Trust information cannot be displayed.</p>
     {% endif %}
-
+  {% endif %}
+  
     {% if isRemoveJourney %}
       {% set isStatementCorrectText = "Is all the information in this application correct?" %}
     {% else %}

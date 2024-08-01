@@ -103,6 +103,9 @@ export const postSubmit = async (req: Request, res: Response, next: NextFunction
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const appData: ApplicationData = getApplicationData(req.session);
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS) && checkEntityRequiresTrusts(appData)) {
+      return res.redirect(getTrustLandingUrl(appData));
+    }
 
     if (!appData.update?.trust_data_fetched) {
       const session = req.session as Session;
@@ -122,13 +125,9 @@ export const postSubmit = async (req: Request, res: Response, next: NextFunction
 
     if (hasTrustsToReview(appData)) {
       return res.redirect(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
+    } else {
+      return res.redirect(config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL);
     }
-
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS) && checkEntityRequiresTrusts(appData)) {
-      return res.redirect(getTrustLandingUrl(appData));
-    }
-
-    return res.redirect(config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

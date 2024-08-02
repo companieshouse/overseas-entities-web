@@ -2,268 +2,283 @@
 {% import "includes/date-macros.html" as dateMacros %}
 
 {% if (journey == "remove") %}
-{% set isRemoveJourney = true %}
+  {% set isRemoveJourney = true %}
 {% endif %}
 
+{% set feature_flag_relevant_period = OE_CONFIGS.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD %}
+
 {% if isRemoveJourney %}
-{% set title = "Check your answers before submitting" %}
+  {% set title = "Check your answers before submitting" %}
 {% else %}
-{% set title = "Check your answers before sending your application" %}
+  {% set title = "Check your answers before sending your application" %}
 {% endif %}
 
 {% set hasSoldAllLand %}
-{% if remove.has_sold_all_land == 1 %}
-Yes
-{% else %}
-No
-{% endif %}
+  {% if remove.has_sold_all_land == 1 %}
+    Yes
+  {% else %}
+    No
+  {% endif %}
 {% endset %}
 
 {% set IsListedAsPropertyOwner %}
-{% if remove.is_listed_as_property_owner == 1 %}
-Yes
-{% else %}
-No
-{% endif %}
+  {% if remove.is_listed_as_property_owner == 1 %}
+    Yes
+  {% else %}
+    No
+  {% endif %}
 {% endset %}
 
 {% set isProtectedInformation %}
-{% if is_secure_register == 1 %}
-Yes
-{% else %}
-No
-{% endif %}
+  {% if is_secure_register == 1 %}
+    Yes
+  {% else %}
+    No
+  {% endif %}
 {% endset %}
 
 {% set removeStatementText %}
-I confirm that the overseas entity is not registered as the proprietor of a relevant interest in land, as outlined in Section 9 of the Economic Crime (Transparency and Enforcement) Act 2022.
+  I confirm that the overseas entity is not registered as the proprietor of a relevant interest in land, as outlined in Section 9 of the Economic Crime (Transparency and Enforcement) Act 2022.
 {% endset %}
 
 {% if isRemoveJourney %}
-{% set removeStatementDate = dateMacros.formatDate(pageParams.today["day"], pageParams.today["month"], pageParams.today["year"]) %}
+  {% set removeStatementDate = dateMacros.formatDate(pageParams.today["day"], pageParams.today["month"], pageParams.today["year"]) %}
 {% endif %}
 
 {% block pageTitle %}
-{% include "includes/update-page-title.html" %}
+  {% include "includes/update-page-title.html" %}
 {% endblock %}
 
 {% block backLink %}
-{% include "includes/back-link.html" %}
+  {% include "includes/back-link.html" %}
 {% endblock %}
 
 {% block content %}
-<div class="govuk-grid-row">
-  <div class="govuk-grid-column-two-thirds-from-desktop">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds-from-desktop">
 
-    {% if isRemoveJourney %}
-    <span class="govuk-caption-l govuk-!-padding-bottom-1">{{ entity_name }} - {{ entity_number }}</span>
-    {% endif %}
+      {% if isRemoveJourney %}
+        <span class="govuk-caption-l govuk-!-padding-bottom-1">{{ entity_name }} - {{ entity_number }}</span>
+      {% else %}
+        {% if feature_flag_relevant_period === "true" %}
+          <span class="govuk-caption-l govuk-!-padding-bottom-1">{{ entity_name }} - {{ entity_number }}</span>
+        {% endif %}
+      {% endif %}
 
-    <h1 class="govuk-heading-xl">{{ title }}</h1>
+      <h1 class="govuk-heading-xl">{{ title }}</h1>
 
-    {% if isRemoveJourney %}
-    {{ govukSummaryList({
-    rows: [
-    {
-    key: {
-    text: "Has the overseas entity disposed of all relevant property or land in the UK?"
-    },
-    value: {
-    text: hasSoldAllLand
-    },
-    actions: {
-    items: [ CREATE_CHANGE_LINK(
-    OE_CONFIGS.REMOVE_SOLD_ALL_LAND_FILTER_URL,
-    hasSoldAllLand,
-    "has-sold-all-land-change-link"
-    ) ]
-    }
-    },
-    {
-    key: {
-    text: "Is the overseas entity currently listed on any land registry records as the registered owner of property or land in the UK?"
-    },
-    value: {
-    text: IsListedAsPropertyOwner
-    },
-    actions: {
-    items: [ CREATE_CHANGE_LINK(
-    OE_CONFIGS.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL,
-    IsListedAsPropertyOwner,
-    "is-listed-as-property-owner-change-link"
-    ) ]
-    }
-    },
-    {
-    key: {
-    text: "Do any beneficial owners or managing officers have personal information protected at Companies House?"
-    },
-    value: {
-    text: isProtectedInformation
-    },
-    actions: {
-    items: [ CREATE_CHANGE_LINK(
-    OE_CONFIGS.SECURE_UPDATE_FILTER_URL,
-    isProtectedInformation,
-    "has-protected-information-change-link"
-    ) ]
-    }
-    }
-    ]
-    }) }}
-    <br>
-    {% endif %}
-
-    {% include "includes/check-your-answers/presenter.html" %}
-    {% include "includes/check-your-answers/verification-checks.html" %}
-    <br>
-    {% include "includes/entity.html" %}
-
-    {% if not updateStatementValidationEnabled %}
-    <br>
-    {% include "includes/check-your-answers/beneficial-owner-statements.html" %}
-    {% endif %}
-
-    {% set bois = beneficial_owners_individual or [] %}
-    {% set existingBOIs = bois | selectattr('ch_reference') %}
-    {% set newBOIs = bois | rejectattr('ch_reference') %}
-
-    {% set bocs = beneficial_owners_corporate or [] %}
-    {% set existingBOCs = bocs | selectattr('ch_reference') %}
-    {% set newBOCs = bocs | rejectattr('ch_reference') %}
-
-    {% set bogs = beneficial_owners_government_or_public_authority or [] %}
-    {% set existingBOGs = bogs | selectattr('ch_reference') %}
-    {% set newBOGs = bogs | rejectattr('ch_reference') %}
-
-    {% if existingBOIs | length or existingBOCs | length or existingBOGs | length %}
-    {% set hideChangeLinksForNonEditableFields = true %}
-    <br>
-    <h2 class="govuk-heading-l">Beneficial owners you have reviewed</h2>
-    {% for boi in existingBOIs %}
-    {% include "includes/check-your-answers/beneficial-owner-individual.html" %}
-    {% endfor %}
-    {% for boc in existingBOCs %}
-    {% include "includes/check-your-answers/beneficial-owner-other.html" %}
-    {% endfor %}
-    {% for bog in existingBOGs %}
-    {% include "includes/check-your-answers/beneficial-owner-gov.html" %}
-    {% endfor %}
-    {% endif %}
-
-    {% if newBOIs | length or newBOCs | length or newBOGs | length %}
-    {% set hideChangeLinksForNonEditableFields = false %}
-    <br>
-    <h2 class="govuk-heading-l">Beneficial owners you have added</h2>
-    {% for boi in newBOIs %}
-    {% include "includes/check-your-answers/beneficial-owner-individual.html" %}
-    {% endfor %}
-    {% for boc in newBOCs %}
-    {% include "includes/check-your-answers/beneficial-owner-other.html" %}
-    {% endfor %}
-    {% for bog in newBOGs %}
-    {% include "includes/check-your-answers/beneficial-owner-gov.html" %}
-    {% endfor %}
-    {% endif %}
-
-    {% set mois = managing_officers_individual or [] %}
-    {% set existingMOIs = mois | selectattr('ch_reference') %}
-    {% set newMOIs = mois | rejectattr('ch_reference') %}
-
-    {% set mocs = managing_officers_corporate or [] %}
-    {% set existingMOCs = mocs | selectattr('ch_reference') %}
-    {% set newMOCs = mocs | rejectattr('ch_reference') %}
-
-    {% if existingMOIs | length or existingMOCs | length %}
-    {% set hideChangeLinksForNonEditableFields = true %}
-    <br>
-    <h2 class="govuk-heading-l">Managing officers you have reviewed</h2>
-    {% for moi in existingMOIs %}
-    {% include "includes/check-your-answers/update/update-managing-officer-individual.html" %}
-    {% endfor %}
-    {% for moc in existingMOCs %}
-    {% include "includes/check-your-answers/update/update-managing-officer-corporate.html" %}
-    {% endfor %}
-    {% endif %}
-
-    {% if newMOIs | length or newMOCs | length %}
-    {% set hideChangeLinksForNonEditableFields = false %}
-    <br>
-    <h2 class="govuk-heading-l">Managing officers you have added</h2>
-    {% for moi in newMOIs %}
-    {% include "includes/check-your-answers/update/update-managing-officer-individual.html" %}
-    {% endfor %}
-    {% for moc in newMOCs %}
-    {% include "includes/check-your-answers/update/update-managing-officer-corporate.html" %}
-    {% endfor %}
-    {% endif %}
-
-    {% set trusts = trusts or [] %}
-    {% set existingTrusts = trusts | selectattr('ch_reference') %}
-    {% set newTrusts = trusts | rejectattr('ch_reference') %}
-
-    {% if (existingTrusts and existingTrusts.length > 0) %}
-    <br><h2 class="govuk-heading-l">Trusts you have reviewed</h2>
-    {% for trust in existingTrusts %}
-    {% set trust_heading = trust.trust_name %}
-    {% set manageTrusts = true %}
-    {% include "includes/check-your-answers/trusts.html" %}
-    {% endfor %}
-    {% endif %}
-
-    {% if (newTrusts and newTrusts.length > 0) %}
-    <br><h2 class="govuk-heading-l">Trusts you have added</h2>
-    {% for trust in newTrusts %}
-    {% set trust_heading = trust.trust_name %}
-    {% set manageTrusts = false %}
-    {% include "includes/check-your-answers/trusts.html" %}
-    {% endfor %}
-    {% endif %}
-
-    {% include "includes/check-your-answers/beneficial-owner-statements.html" %}
-
-    {% if isRemoveJourney %}
-    <h2 class="govuk-heading-m">Removal statement</h2>
-
-    {{ govukSummaryList({
-    rows: [
-    {
-    key: {
-    text: "Statement"
-    },
-    value: {
-    text: 	removeStatementText
-    },
-    actions: {
-    items: [ CREATE_CHANGE_LINK(
-    OE_CONFIGS.REMOVE_CONFIRM_STATEMENT_URL,
-    removeStatementText,
-    "remove-statement-declaration-change-link"
-    ) ]
-    }
-    }
-    ]
-    }) }}
-
-    <p class="govuk-body">All information submitted must be correct on <strong>{{ removeStatementDate }}.</strong></p>
-
-    {% endif %}
-
-    <br>
-    <form method="post">
-      {% include "includes/csrf_token.html" %}
-      <div class="govuk-button-group">
-        {{ govukButton({
-        text: "Continue to payment",
-        attributes: {
-        "id": "submit",
-        "data-event-id": "continue-to-payment-page-button"
-        }
+      {% if isRemoveJourney %}
+        {{ govukSummaryList({
+          rows: [
+            {
+              key: {
+                text: "Has the overseas entity disposed of all relevant property or land in the UK?"
+              },
+              value: {
+                text: hasSoldAllLand
+              },
+              actions: {
+                items: [ CREATE_CHANGE_LINK(
+                  OE_CONFIGS.REMOVE_SOLD_ALL_LAND_FILTER_URL,
+                  hasSoldAllLand,
+                  "has-sold-all-land-change-link"
+                ) ]
+              }
+            },
+            {
+              key: {
+                text: "Is the overseas entity currently listed on any land registry records as the registered owner of property or land in the UK?"
+              },
+              value: {
+                text: IsListedAsPropertyOwner
+              },
+              actions: {
+                items: [ CREATE_CHANGE_LINK(
+                  OE_CONFIGS.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL,
+                  IsListedAsPropertyOwner,
+                  "is-listed-as-property-owner-change-link"
+                ) ]
+              }
+            },
+            {
+              key: {
+                text: "Do any beneficial owners or managing officers have personal information protected at Companies House?"
+              },
+              value: {
+                text: isProtectedInformation
+              },
+              actions: {
+                items: [ CREATE_CHANGE_LINK(
+                  OE_CONFIGS.SECURE_UPDATE_FILTER_URL,
+                  isProtectedInformation,
+                  "has-protected-information-change-link"
+                ) ]
+              }
+            }
+          ]
         }) }}
+        <br>
+      {% endif %}
 
-        {% include "includes/print-button.html" %}
-      </div>
-    </form>
+      {% if feature_flag_relevant_period === "true" %}
+        {% include "includes/check-your-answers/relevant-period-check-your-answers.html" %}
+      {% endif %}
+
+      {% include "includes/check-your-answers/presenter.html" %}
+      {% include "includes/check-your-answers/verification-checks.html" %}
+      <br>
+      {% include "includes/entity.html" %}
+
+      {% if not updateStatementValidationEnabled %}
+        <br>
+        {% include "includes/check-your-answers/beneficial-owner-statements.html" %}
+      {% endif %}
+
+      {% if pageParams.isRPStatementExists %}
+      <br>
+      {% include "includes/check-your-answers/relevant-period-statements.html" %}
+      {% endif %}
+
+      {% set bois = beneficial_owners_individual or [] %}
+      {% set existingBOIs = bois | selectattr('ch_reference') %}
+      {% set newBOIs = bois | rejectattr('ch_reference') %}
+
+      {% set bocs = beneficial_owners_corporate or [] %}
+      {% set existingBOCs = bocs | selectattr('ch_reference') %}
+      {% set newBOCs = bocs | rejectattr('ch_reference') %}
+
+      {% set bogs = beneficial_owners_government_or_public_authority or [] %}
+      {% set existingBOGs = bogs | selectattr('ch_reference') %}
+      {% set newBOGs = bogs | rejectattr('ch_reference') %}
+
+      {% if existingBOIs | length or existingBOCs | length or existingBOGs | length %}
+        {% set hideChangeLinksForNonEditableFields = true %}
+        <br>
+        <h2 class="govuk-heading-l">Beneficial owners you have reviewed</h2>
+        {% for boi in existingBOIs %}
+          {% include "includes/check-your-answers/beneficial-owner-individual.html" %}
+        {% endfor %}
+        {% for boc in existingBOCs %}
+          {% include "includes/check-your-answers/beneficial-owner-other.html" %}
+        {% endfor %}
+        {% for bog in existingBOGs %}
+          {% include "includes/check-your-answers/beneficial-owner-gov.html" %}
+        {% endfor %}
+      {% endif %}
+
+      {% if newBOIs | length or newBOCs | length or newBOGs | length %}
+        {% set hideChangeLinksForNonEditableFields = false %}
+        <br>
+        <h2 class="govuk-heading-l">Beneficial owners in the Update period</h2>
+        {% for boi in newBOIs %}
+          {% include "includes/check-your-answers/beneficial-owner-individual.html" %}
+        {% endfor %}
+        {% for boc in newBOCs %}
+          {% include "includes/check-your-answers/beneficial-owner-other.html" %}
+        {% endfor %}
+        {% for bog in newBOGs %}
+          {% include "includes/check-your-answers/beneficial-owner-gov.html" %}
+        {% endfor %}
+      {% endif %}
+
+      {% set mois = managing_officers_individual or [] %}
+      {% set existingMOIs = mois | selectattr('ch_reference') %}
+      {% set newMOIs = mois | rejectattr('ch_reference') %}
+
+      {% set mocs = managing_officers_corporate or [] %}
+      {% set existingMOCs = mocs | selectattr('ch_reference') %}
+      {% set newMOCs = mocs | rejectattr('ch_reference') %}
+
+      {% if existingMOIs | length or existingMOCs | length %}
+        {% set hideChangeLinksForNonEditableFields = true %}
+        <br>
+        <h2 class="govuk-heading-l">Managing officers you have reviewed</h2>
+        {% for moi in existingMOIs %}
+          {% include "includes/check-your-answers/update/update-managing-officer-individual.html" %}
+        {% endfor %}
+        {% for moc in existingMOCs %}
+          {% include "includes/check-your-answers/update/update-managing-officer-corporate.html" %}
+        {% endfor %}
+      {% endif %}
+
+      {% if newMOIs | length or newMOCs | length %}
+        {% set hideChangeLinksForNonEditableFields = false %}
+        <br>
+        <h2 class="govuk-heading-l">Managing officers you have added</h2>
+        {% for moi in newMOIs %}
+          {% include "includes/check-your-answers/update/update-managing-officer-individual.html" %}
+        {% endfor %}
+        {% for moc in newMOCs %}
+          {% include "includes/check-your-answers/update/update-managing-officer-corporate.html" %}
+        {% endfor %}
+      {% endif %}
+
+      {% set trusts = trusts or [] %}
+      {% set existingTrusts = trusts | selectattr('ch_reference') %}
+      {% set newTrusts = trusts | rejectattr('ch_reference') %}
+
+      {% if (existingTrusts and existingTrusts.length > 0) %}
+        <br><h2 class="govuk-heading-l">Trusts you have reviewed</h2>
+        {% for trust in existingTrusts %}
+          {% set trust_heading = trust.trust_name %}
+          {% set manageTrusts = true %}
+          {% include "includes/check-your-answers/trusts.html" %}
+        {% endfor %}
+      {% endif %}
+
+      {% if (newTrusts and newTrusts.length > 0) %}
+        <br><h2 class="govuk-heading-l">Trusts you have added</h2>
+        {% for trust in newTrusts %}
+          {% set trust_heading = trust.trust_name %}
+          {% set manageTrusts = false %}
+          {% include "includes/check-your-answers/trusts.html" %}
+        {% endfor %}
+      {% endif %}
+
+      {% include "includes/check-your-answers/beneficial-owner-statements.html" %}
+
+      {% if isRemoveJourney %}
+        <h2 class="govuk-heading-m">Removal statement</h2>
+
+        {{ govukSummaryList({
+          rows: [
+            {
+              key: {
+                text: "Statement"
+              },
+              value: {
+                text: 	removeStatementText
+              },
+              actions: {
+                items: [ CREATE_CHANGE_LINK(
+                  OE_CONFIGS.REMOVE_CONFIRM_STATEMENT_URL,
+                  removeStatementText,
+                  "remove-statement-declaration-change-link"
+                ) ]
+              }
+            }
+          ]
+      }) }}
+
+      <p class="govuk-body">All information submitted must be correct on <strong>{{ removeStatementDate }}.</strong></p>
+
+      {% endif %}
+
+      <br>
+      <form method="post">
+        {% include "includes/csrf_token.html" %}
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Continue to payment",
+            attributes: {
+              "id": "submit",
+              "data-event-id": "continue-to-payment-page-button"
+            }
+          }) }}
+
+          {% include "includes/print-button.html" %}
+        </div>
+      </form>
+    </div>
   </div>
-</div>
 {% endblock %}

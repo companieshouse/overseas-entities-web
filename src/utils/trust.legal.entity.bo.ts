@@ -29,10 +29,9 @@ type TrustLegalEntityBeneificalOwnerPageProperties = {
   pageData: {
     trustData: CommonTrustData,
     roleWithinTrustType: typeof RoleWithinTrustType;
-    relevant_period: boolean;
-    entity_name: string;
+    entity_name?: string;
   },
-  formData?: TrustLegalEntityForm,
+  formData: TrustLegalEntityForm,
   errors?: FormattedValidationErrors,
   url: string,
   isUpdate: boolean
@@ -42,13 +41,10 @@ const getPageProperties = (
   req: Request,
   trustId: string,
   isUpdate: boolean,
-  formData?: TrustLegalEntityForm,
+  formData: TrustLegalEntityForm,
   errors?: FormattedValidationErrors,
 ): TrustLegalEntityBeneificalOwnerPageProperties => {
 
-  let appData: ApplicationData = {};
-  const relevant_period = req.query['relevant-period'] === "true";
-  appData = relevant_period ? getApplicationData(req.session) : {};
   const trustData = CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId, false);
   return {
     backLinkUrl: getTrustInvolvedUrl(isUpdate, trustId, req),
@@ -59,14 +55,19 @@ const getPageProperties = (
     pageData: {
       trustData: trustData,
       roleWithinTrustType: RoleWithinTrustType,
-      relevant_period: relevant_period,
-      entity_name: appData.entity_name ? appData.entity_name : trustData.trustName,
     },
     formData,
     errors,
-    url: relevant_period ? getUrl(isUpdate) + config.RELEVANT_PERIOD_QUERY_PARAM : getUrl(isUpdate),
+    url: getUrl(isUpdate),
     isUpdate
   };
+};
+
+const getPagePropertiesRelevantPeriod = (isRelevantPeriod, req, trustId, isUpdate, formData, entityName, errors?: FormattedValidationErrors) => {
+  const pageProps = getPageProperties(req, trustId, isUpdate, formData, errors);
+  pageProps.formData.relevant_period = isRelevantPeriod;
+  pageProps.pageData.entity_name = entityName;
+  return pageProps;
 };
 
 export const getTrustLegalEntityBo = (req: Request, res: Response, next: NextFunction, isUpdate: boolean): void => {
@@ -76,13 +77,20 @@ export const getTrustLegalEntityBo = (req: Request, res: Response, next: NextFun
     const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
     const trusteeId = req.params[config.ROUTE_PARAM_TRUSTEE_ID];
     const appData: ApplicationData = getApplicationData(req.session);
+    const isRelevantPeriod = req.query['relevant-period'];
 
     const formData: TrustLegalEntityForm = mapLegalEntityTrusteeByIdFromSessionToPage(
       appData,
       trustId,
       trusteeId
     );
-    const pageProps = getPageProperties(req, trustId, isUpdate, formData);
+
+    let pageProps: TrustLegalEntityBeneificalOwnerPageProperties;
+    if (isRelevantPeriod) {
+      pageProps = getPagePropertiesRelevantPeriod(isRelevantPeriod, req, trustId, isUpdate, formData, appData.entity_name);
+    } else {
+      pageProps = getPageProperties(req, trustId, isUpdate, formData);
+    }
 
     return res.render(pageProps.templateName, pageProps);
   } catch (error) {

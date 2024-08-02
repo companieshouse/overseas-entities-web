@@ -32,7 +32,7 @@ type TrustIndividualBeneificalOwnerPageProperties = {
   pageParams: {
     title: string;
   },
-  formData?: PageModel.IndividualTrusteesFormCommon,
+  formData: PageModel.IndividualTrusteesFormCommon,
   errors?: FormattedValidationErrors,
   url: string,
   isUpdate: boolean
@@ -42,7 +42,7 @@ const getPageProperties = (
   req: Request,
   trustId: string,
   isUpdate: boolean,
-  formData?: PageModel.IndividualTrusteesFormCommon,
+  formData: PageModel.IndividualTrusteesFormCommon,
   errors?: FormattedValidationErrors,
 ): TrustIndividualBeneificalOwnerPageProperties => {
 
@@ -65,7 +65,7 @@ const getPageProperties = (
 
 const getPagePropertiesRelevantPeriod = (isRelevantPeriod, req, trustId, isUpdate, formData, entityName, errors?: FormattedValidationErrors) => {
   const pageProps = getPageProperties(req, trustId, isUpdate, formData, errors);
-  pageProps.pageData.relevant_period = isRelevantPeriod;
+  pageProps.formData.relevant_period = isRelevantPeriod;
   pageProps.pageData.entity_name = entityName;
   return pageProps;
 };

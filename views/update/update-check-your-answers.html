@@ -142,18 +142,20 @@
       {% set bois = beneficial_owners_individual or [] %}
       {% set existingBOIs = bois | selectattr('ch_reference') %}
       {% set newBOIs = bois | rejectattr('ch_reference') %}
-      {% set newBOIs = bois | rejectattr('relevant_period') %}
       {% set rpBOIs = newBOIs | selectattr('relevant_period') %}
+      {% set newBOIs = newBOIs | rejectattr('relevant_period') %}
 
       {% set bocs = beneficial_owners_corporate or [] %}
       {% set existingBOCs = bocs | selectattr('ch_reference') %}
-      {% set newBOCs = bocs | rejectattr('relevant_period') %}
-      {% set rpBOIs = newBOCs | selectattr('relevant_period') %}
+      {% set newBOCs = bocs | rejectattr('ch_reference') %}
+      {% set rpBOCs = newBOCs | selectattr('relevant_period') %}
+      {% set newBOCs = newBOCs | rejectattr('relevant_period') %}
 
       {% set bogs = beneficial_owners_government_or_public_authority or [] %}
       {% set existingBOGs = bogs | selectattr('ch_reference') %}
-      {% set newBOGs = bogs | rejectattr('relevant_period') %}
-      {% set rpBOGs = newBOCs | selectattr('relevant_period') %}
+      {% set newBOGs = bogs | rejectattr('ch_reference') %}
+      {% set rpBOGs = newBOGs | selectattr('relevant_period') %}
+      {% set newBOGs = newBOGs | rejectattr('relevant_period') %}
 
       {% if existingBOIs | length or existingBOCs | length or existingBOGs | length %}
         {% set hideChangeLinksForNonEditableFields = true %}
@@ -185,7 +187,7 @@
         {% endfor %}
       {% endif %}
 
-      {% if newBOIs | length or newBOCs | length or newBOGs | length %}
+      {% if rpBOIs | length or rpBOCs | length or rpBOGs | length %}
         {% set hideChangeLinksForNonEditableFields = false %}
         <br>
         <h2 class="govuk-heading-l">Beneficial owners in the Pre-registration period</h2>

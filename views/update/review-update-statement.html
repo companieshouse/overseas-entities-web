@@ -321,11 +321,7 @@ update.filing_date["year"]) %}
       {% for trust in update.review_trusts %}
         {% set trust_heading = trust.trust_name %}
         {% include "includes/check-your-answers/trusts.html" %}
-      {% endfor %}
-    {% elif pageParams.hasAnyBosWithTrusteeNocs %}
-      <br>
-      <h2 class="govuk-heading-l">Trusts</h2>
-      <p class="govuk-body govuk-!-margin-bottom-9">Trust information cannot be displayed.</p>
+      {% endfor %}   
     {% endif %}
   {% endif %}
   

@@ -52,9 +52,9 @@ export const post = async (req: Request, resp: Response, next: NextFunction) => 
       appData.update.no_change = noChangeStatement === "1";
     }
 
-    const relevantNoPeriodChangeStatement = isActiveFeature(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD) ? !checkRelevantPeriod(appData) : true;
+    const relevantNoPeriodChange = isActiveFeature(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD) ? !checkRelevantPeriod(appData) : true;
 
-    if (noChangeStatement === "1" && relevantNoPeriodChangeStatement) {
+    if (noChangeStatement === "1" && relevantNoPeriodChange) {
       await resetDataForNoChange(req, appData);
       redirectUrl = config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL;
     } else {

@@ -8,7 +8,6 @@ import { OwnedLandKey } from "../../model/update.type.model";
 import {
   ChangeBeneficiaryRelevantPeriodKey,
   ChangeBoRelevantPeriodKey,
-  RelevantPeriodNoChangeKey,
   TrusteeInvolvedRelevantPeriodKey
 } from "../../model/relevant.period.statment.model";
 import { OverseasEntityKey, Transactionkey } from "../../model/data.types.model";
@@ -48,7 +47,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     if (appData.update) {
-      appData.update[RelevantPeriodNoChangeKey] = ownedLandKey === "0";
+      appData.update[OwnedLandKey] = ownedLandKey === "1";
     }
 
     if (ownedLandKey === '1') {

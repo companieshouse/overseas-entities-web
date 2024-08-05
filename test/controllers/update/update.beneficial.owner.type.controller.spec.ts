@@ -359,9 +359,9 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.header.location).toContain(config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL);
     });
 
-    test.only('redirects to add trusts if update trusts flag is on, and trusts are required', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
+    test('redirects to add trusts if update trusts flag is on, and trusts are required', async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
       const mockLandingUrl = 'update/mock-get-trust-landing-url';
       mockGetApplicationData.mockReturnValueOnce(appData);
       mockIsActiveFeature

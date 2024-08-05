@@ -12,6 +12,7 @@ jest.mock('../../src/utils/trust/who.is.involved.mapper');
 jest.mock('../../src/utils/trusts');
 jest.mock('../../src/utils/feature.flag');
 jest.mock('../../src/utils/url');
+jest.mock('../../src/utils/relevant.period');
 
 import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
 import { constants } from 'http2';
@@ -93,6 +94,7 @@ describe('Trust Involved controller', () => {
       route: '',
       method: '',
       body: {},
+      query: {},
     } as Request;
   });
 
@@ -243,17 +245,6 @@ describe('Trust Involved controller', () => {
       ],
     ];
 
-    const dpPostRelevantPeriodUpdateTrustee = [
-      [
-        TrusteeType.RELEVANT_PERIOD_LEGAL_ENTITY,
-        "/" + UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE + "/" + TRUST_WITH_ID.trust_id + "/" + TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + RELEVANT_PERIOD_QUERY_PARAM,
-      ],
-      // TODO Implement individual beneficiary page for relevant period
-      // [
-      //  TrusteeType.RELEVANT_PERIOD_INDIVIDUAL_BENEFICIARY,
-      //  "/" + UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE + "/" + TRUST_WITH_ID.trust_id + "/" + TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE + RELEVANT_PERIOD_QUERY_PARAM,
-      // ],
-    ];
     test.each(dpPostTrustee)(
       'success push with %p type',
       async (typeOfTrustee: string, expectedUrl: string) => {
@@ -303,26 +294,6 @@ describe('Trust Involved controller', () => {
         const isReview: boolean = false;
         await postTrustInvolvedPage(mockReq, mockRes, mockNext, isUpdate, isReview);
 
-        expect(mockRes.redirect).toBeCalledWith(`${UPDATE_LANDING_URL}${expectedUrl}`);
-      },
-    );
-
-    test.each(dpPostRelevantPeriodUpdateTrustee)(
-      'success push with %p type',
-      async (typeOfTrustee: string, expectedUrl: string) => {
-        mockReq.body = {
-          typeOfTrustee,
-        };
-
-        (validationResult as any as jest.Mock).mockImplementationOnce(() => ({
-          isEmpty: jest.fn().mockReturnValue(true),
-        }));
-        const isUpdate: boolean = true;
-        const isReview: boolean = false;
-        await postTrustInvolvedPage(mockReq, mockRes, mockNext, isUpdate, isReview);
-
-        // TODO Implement individual beneficiary page for relevant period
-        console.log('TODO Implement individual beneficiary page for relevant period on URL:' + expectedUrl);
         expect(mockRes.redirect).toBeCalledWith(`${UPDATE_LANDING_URL}${expectedUrl}`);
       },
     );
@@ -573,3 +544,4 @@ describe('Trust Involved controller', () => {
     });
   });
 });
+

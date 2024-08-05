@@ -218,7 +218,7 @@
       {% set newTrusts = trusts | rejectattr('ch_reference') %}
 
       {% if (existingTrusts and existingTrusts.length > 0) %}
-        <br><h2 class="govuk-heading-l">Trusts in the Update period</h2>
+        <br><h2 class="govuk-heading-l">Trusts you have reviewed</h2>
         {% for trust in existingTrusts %}
           {% set trust_heading = trust.trust_name %}
           {% set manageTrusts = true %}
@@ -227,7 +227,7 @@
       {% endif %}
       
       {% if (newTrusts and newTrusts.length > 0) %}
-        <br><h2 class="govuk-heading-l">Trusts you have added</h2>
+        <br><h2 class="govuk-heading-l">Trusts in the Update period</h2>
         {% for trust in newTrusts %}
           {% set trust_heading = trust.trust_name %}
           {% set manageTrusts = false %}

@@ -12,7 +12,7 @@
     "sonarqube-base-branch": "sonar-scanner",
     "sonarqube-pull-request": "sonar-scanner -D sonar.pullrequest.base=main",
     "sonarqube": "branch=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD); if [[ $branch == \"HEAD\" ]]; then echo $branch && npm run sonarqube-base-branch; else echo $branch && npm run sonarqube-pull-request; fi;",
-    "test": "jest --maxWorkers=50%",
+    "test": "jest",
     "coverage": "jest --coverage --forceExit --passWithNoTests",
     "prepare": "husky install"
   },

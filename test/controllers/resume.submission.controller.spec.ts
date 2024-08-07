@@ -8,6 +8,7 @@ jest.mock('../../src/utils/application.data');
 jest.mock("../../src/utils/feature.flag" );
 jest.mock("../../src/utils/logger");
 jest.mock("../../src/utils/trusts");
+jest.mock("../../src/utils/url");
 
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
@@ -47,6 +48,7 @@ import { OverseasEntityDueDiligenceKey } from '../../src/model/overseas.entity.d
 import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from '../__mocks__/overseas.entity.due.diligence.mock';
 import { MOCK_GET_TRANSACTION_RESPONSE } from '../__mocks__/transaction.mock';
 import { mapTrustApiReturnModelToWebModel } from '../../src/utils/trusts';
+import { getUrlWithTransactionIdAndSubmissionId } from "../../src/utils/url";
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -71,6 +73,8 @@ const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockMapTrustApiReturnModelToWebModel = mapTrustApiReturnModelToWebModel as jest.Mock;
+
+const mockGetUrlWithTransactionIdAndSubmissionId = getUrlWithTransactionIdAndSubmissionId as jest.Mock;
 
 const baseURL = `${config.CHS_URL}${config.REGISTER_AN_OVERSEAS_ENTITY_URL}`;
 
@@ -187,6 +191,7 @@ describe("Resume submission controller", () => {
     expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
     expect(mockMapTrustApiReturnModelToWebModel).toHaveBeenCalledTimes(1);
     expect(mockIsActiveFeature).toHaveBeenCalledTimes(2);
+    expect(mockGetUrlWithTransactionIdAndSubmissionId).not.toHaveBeenCalled();
   });
 
   test(`Redirect to starting payment page after resuming the OverseasEntity object and trusts feature flag on and REDIS_flag set to ON`, async () => {
@@ -218,6 +223,7 @@ describe("Resume submission controller", () => {
     expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
     expect(mockMapTrustApiReturnModelToWebModel).toHaveBeenCalledTimes(1);
     expect(mockIsActiveFeature).toHaveBeenCalledTimes(2);
+    expect(mockGetUrlWithTransactionIdAndSubmissionId).toHaveBeenCalledTimes(1);
   });
 
   test(`Should throw an error on Resuming the OverseasEntity`, async () => {

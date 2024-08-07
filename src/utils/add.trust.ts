@@ -46,8 +46,7 @@ const getPageProperties = (
 
   const appData = getApplicationData(req.session);
 
-  // note: isUpdate will also be true for the Remove journey as we are re-using the Update journey for Remove,
-  //       so isUpdate covers both Update and Remove journeys
+  // note: isUpdate covers both Update and Remove journeys, so when on Remove journey isUpdate will be true.
   return {
     templateName: getPageTemplate(isUpdate),
     backLinkUrl: getBackLinkUrl(isUpdate, req),

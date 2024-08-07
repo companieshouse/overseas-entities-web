@@ -158,7 +158,8 @@ describe("Resume submission controller", () => {
     expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
   });
 
-  test(`Redirect to starting payment page after resuming the OverseasEntity object and trusts feature flag on`, async () => {
+  test(`Redirect to starting payment page after resuming the OverseasEntity object and trusts feature flag on and REDIS_flag set to OFF`, async () => {
+    mockIsActiveFeature.mockReturnValueOnce( false ); // REDIS flag
     mockIsActiveFeature.mockReturnValueOnce( true ); // trusts feature flag
     mockGetOverseasEntity.mockReturnValueOnce( {
       ...APPLICATION_DATA_MOCK,
@@ -185,6 +186,38 @@ describe("Resume submission controller", () => {
     expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
     expect(mockMapTrustApiReturnModelToWebModel).toHaveBeenCalledTimes(1);
+    expect(mockIsActiveFeature).toHaveBeenCalledTimes(2);
+  });
+
+  test(`Redirect to starting payment page after resuming the OverseasEntity object and trusts feature flag on and REDIS_flag set to ON`, async () => {
+    mockIsActiveFeature.mockReturnValueOnce( true ); // REDIS flag
+    mockIsActiveFeature.mockReturnValueOnce( true ); // trusts feature flag
+    mockGetOverseasEntity.mockReturnValueOnce( {
+      ...APPLICATION_DATA_MOCK,
+      [OverseasEntityDueDiligenceKey]: {}
+    } );
+    mockGetTransactionService.mockReturnValueOnce( MOCK_GET_TRANSACTION_RESPONSE.resource );
+    mockStartPaymentsSessionService.mockReturnValueOnce( FULL_PAYMENT_REDIRECT_PATH );
+
+    const errorMsg = `Trans_ID: ${TRANSACTION_ID}, OE_ID: ${OVERSEAS_ENTITY_ID}. Redirect to: ${FULL_PAYMENT_REDIRECT_PATH}`;
+    const resp = await request(app).get(RESUME_SUBMISSION_URL);
+
+    expect(resp.status).toEqual(302);
+    expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${FULL_PAYMENT_REDIRECT_PATH}`);
+    expect(mockStartPaymentsSessionService).toHaveBeenCalledWith(
+      expect.anything(),
+      undefined,
+      TRANSACTION_ID,
+      OVERSEAS_ENTITY_ID,
+      { headers: PAYMENT_HEADER },
+      baseURL
+    );
+    expect(mockInfoRequest).toHaveBeenCalledWith( expect.anything(), `Payments Session created on Resume link with, ${errorMsg}`);
+    expect(mockGetOverseasEntity).toHaveBeenCalledTimes(1);
+    expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+    expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
+    expect(mockMapTrustApiReturnModelToWebModel).toHaveBeenCalledTimes(1);
+    expect(mockIsActiveFeature).toHaveBeenCalledTimes(2);
   });
 
   test(`Should throw an error on Resuming the OverseasEntity`, async () => {

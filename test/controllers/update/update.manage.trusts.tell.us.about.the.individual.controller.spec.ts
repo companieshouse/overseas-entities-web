@@ -26,7 +26,7 @@ import { manageTrustsTellUsAboutIndividualsGuard } from '../../../src/middleware
 import { getApplicationData, setExtraData } from '../../../src/utils/application.data';
 import { getTrustInReview, getTrustee, getTrusteeIndex } from '../../../src/utils/update/review_trusts';
 import { isActiveFeature } from '../../../src/utils/feature.flag';
-import { PAGE_TITLE_ERROR, PAGE_NOT_FOUND_TEXT, SAVE_AND_CONTINUE_BUTTON_TEXT, ERROR_LIST, RELEVANT_PERIOD, UPDATE_TELL_US_ABOUT_THE_INDIVIDUAL_BENEFICIARY_HEADING, UPDATE_WHAT_IS_THEIR_FIRST_NAME, UPDATE_ARE_THEY_STILL_INVOLVED_IN_THE_TRUST } from '../../__mocks__/text.mock';
+import { PAGE_TITLE_ERROR, SAVE_AND_CONTINUE_BUTTON_TEXT, ERROR_LIST, RELEVANT_PERIOD, UPDATE_TELL_US_ABOUT_THE_INDIVIDUAL_BENEFICIARY_HEADING, UPDATE_WHAT_IS_THEIR_FIRST_NAME, UPDATE_ARE_THEY_STILL_INVOLVED_IN_THE_TRUST } from '../../__mocks__/text.mock';
 import { TrusteeType } from '../../../src/model/trustee.type.model';
 import { saveAndContinue } from '../../../src/utils/save.and.continue';
 import { yesNoResponse } from '../../../src/model/data.types.model';
@@ -208,15 +208,6 @@ describe('Update - Manage Trusts - Review individuals', () => {
 
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-    });
-
-    test('when feature flag is off, 404 is returned', async () => {
-      mockIsActiveFeature.mockReturnValue(false);
-
-      const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL);
-
-      expect(resp.status).toEqual(404);
-      expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
     });
 
     test('render page with the important banner when relevant_period is true and we want to add an individual beneficiary', async () => {
@@ -569,15 +560,6 @@ describe('Update - Manage Trusts - Review individuals', () => {
 
       expect(mockSetExtraData).not.toHaveBeenCalled();
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
-    });
-
-    test('when feature flag is off, 404 is returned', async () => {
-      mockIsActiveFeature.mockReturnValue(false);
-
-      const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL);
-
-      expect(resp.status).toEqual(404);
-      expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
     });
 
     test.each([

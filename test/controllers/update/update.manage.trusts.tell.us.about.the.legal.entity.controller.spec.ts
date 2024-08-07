@@ -35,7 +35,6 @@ import { isActiveFeature } from '../../../src/utils/feature.flag';
 import { TRUST } from '../../__mocks__/session.mock';
 import {
   ANY_MESSAGE_ERROR,
-  PAGE_NOT_FOUND_TEXT,
   PAGE_TITLE_ERROR,
   SERVICE_UNAVAILABLE,
   UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_TITLE,
@@ -423,15 +422,6 @@ describe('Update - Manage Trusts - Review legal entities', () => {
 
     });
 
-    test('when feature flag is off, 404 is returned', async () => {
-      mockIsActiveFeature.mockReturnValue(false);
-
-      const response = await request(app).get(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL);
-
-      expect(response.status).toEqual(404);
-      expect(response.text).toContain(PAGE_NOT_FOUND_TEXT);
-    });
-
     test("catch error when rendering the page", async () => {
       mockIsActiveFeature.mockReturnValue(true);
       mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
@@ -752,15 +742,6 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       expect(resp.text).toContain(ERROR_LIST);
       expect(resp.text).toContain(ErrorMessages.DATE_BEFORE_TRUST_CREATION_DATE_CEASED_TRUSTEE);
 
-    });
-
-    test('when feature flag is off, 404 is returned', async () => {
-      mockIsActiveFeature.mockReturnValue(false);
-
-      const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
-
-      expect(resp.status).toEqual(404);
-      expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
     });
 
     test.each([

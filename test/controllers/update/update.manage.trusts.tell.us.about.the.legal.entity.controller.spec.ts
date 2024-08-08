@@ -321,7 +321,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       expect(mockGetTrustInReview).toHaveBeenCalledTimes(1);
       expect(mockGetTrustee).toHaveBeenCalledTimes(1);
 
-      expect(response.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(response.text).toContain(CONTINUE_BUTTON_TEXT);
       expect(response.text).toContain(CORRECT_AS_AT_DATE_INVOLVEMENT_CEASED_INSET_TEXT);
       expect(response.text).toContain("govuk-inset-text");
       expect(response.text).not.toContain(PAGE_TITLE_ERROR);

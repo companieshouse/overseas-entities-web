@@ -104,7 +104,8 @@ describe('Update - Manage Trusts - Review individuals', () => {
       stillInvolved: '0',
       ceasedDateDay: '21',
       ceasedDateMonth: '10',
-      ceasedDateYear: '2023'
+      ceasedDateYear: '2023',
+      start_date: '01-01-01'
     };
   });
 
@@ -289,6 +290,121 @@ describe('Update - Manage Trusts - Review individuals', () => {
         ceased_date_day: '21',
         ceased_date_month: '10',
         ceased_date_year: '2023',
+        relevant_period: undefined,
+        start_date: '01-01-01'
+      };
+
+      const trustInReview = {
+        trust_id: 'trust-1',
+        review_status: { in_review: true },
+        INDIVIDUALS: [{
+          id: 'trustee-id-2',
+          ch_references: 'existing-ch-references',
+          type: RoleWithinTrustType.SETTLOR,
+          forename: 'Existing Trustee',
+          surname: 'Existing Surname',
+          dob_day: '31',
+          dob_month: '12',
+          dob_year: '2002',
+          nationality: 'Tanzanian',
+          second_nationality: 'Thai',
+          ura_address_premises: 'Existing usual premises',
+          ura_address_line_1: 'Existing usual line 2',
+          ura_address_line_2: 'Existing usual line 2',
+          ura_address_locality: 'Existing usual locality',
+          ura_address_region: 'Existing usual region',
+          ura_address_country: 'Existing usual country',
+          ura_address_care_of: '',
+          ura_address_postal_code: 'Existing usual postcode',
+          ura_address_po_box: '',
+          sa_address_premises: 'Existing service premises',
+          sa_address_line_1: 'Existing service line 1',
+          sa_address_line_2: 'Existing service line 2',
+          sa_address_locality: 'Existing service locality',
+          sa_address_region: 'Existing service region',
+          sa_address_country: 'Existing service country',
+          sa_address_care_of: '',
+          sa_address_postal_code: 'Existing service postcode',
+          sa_address_po_box: '',
+          is_service_address_same_as_usual_residential_address: yesNoResponse.No,
+          still_involved: 'No',
+          ceased_date_day: '21',
+          ceased_date_month: '10',
+          ceased_date_year: '2023',
+          start_date_day: '05',
+          start_date_month: '05',
+          start_date_year: '2020'
+        }]
+      };
+
+      const appData = {
+        entity_number: 'OE988669',
+        entity_name: 'Tell us about the individual OE 1',
+        update: { review_trusts: [trustInReview] }
+      };
+
+      mockIsActiveFeature.mockReturnValue(true);
+      mockGetApplicationData.mockReturnValue(appData);
+      mockGetTrustInReview.mockReturnValue(trustInReview);
+      mockGetTrusteeIndex.mockReturnValue(0);
+
+      const resp = await request(app)
+        .post(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL)
+        .send({
+          ...formSubmission,
+        });
+
+      expect(resp.status).toBe(302);
+      expect(resp.header.location).toBe(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
+
+      expect(appData.update.review_trusts[0].INDIVIDUALS[0]).toEqual(expectedTrustee);
+
+      expect(mockSetExtraData).toHaveBeenCalled();
+      expect(mockSaveAndContinue).toHaveBeenCalled();
+    });
+
+    test('when a valid trust submission is provided, and the trust id is of an existing trust, the trust is updated in the model', async () => {
+      const formSubmission = {
+        ...DEFAULT_FORM_SUBMISSION
+      };
+
+      const expectedTrustee = {
+        id: 'trustee-id-2',
+        type: RoleWithinTrustType.GRANTOR,
+        ch_references: "existing-ch-references",
+        forename: 'Trust',
+        other_forenames: '',
+        surname: 'Ee',
+        dob_day: '1',
+        dob_month: '2',
+        dob_year: '2022',
+        nationality: 'Afghan',
+        second_nationality: 'English',
+        ura_address_premises: 'Usual 1',
+        ura_address_line_1: 'Usual New Line 1',
+        ura_address_line_2: 'Usual New Line 2',
+        ura_address_locality: 'Usual New Town',
+        ura_address_region: 'Usual New County',
+        ura_address_country: 'Usual New Country',
+        ura_address_postal_code: 'Usual NE994WS',
+        ura_address_care_of: '',
+        ura_address_po_box: '',
+        is_service_address_same_as_usual_residential_address: yesNoResponse.No,
+        sa_address_care_of: '',
+        sa_address_po_box: '',
+        sa_address_premises: 'Service 1',
+        sa_address_line_1: 'Service New Line 1',
+        sa_address_line_2: 'Service New Line 2',
+        sa_address_locality: 'Service New Town',
+        sa_address_region: 'Service New County',
+        sa_address_country: 'Service New Country',
+        sa_address_postal_code: 'Service NE994WS',
+        still_involved: 'No',
+        ceased_date_day: '21',
+        ceased_date_month: '10',
+        ceased_date_year: '2023',
+        relevant_period: undefined,
+        start_date: '01-01-01'
       };
 
       const trustInReview = {
@@ -409,6 +525,9 @@ describe('Update - Manage Trusts - Review individuals', () => {
         ceased_date_day: '',
         ceased_date_month: '',
         ceased_date_year: '',
+        "ch_references": undefined,
+        "relevant_period": undefined,
+        "start_date": "01-01-01",
       };
 
       const existingTrustee = {

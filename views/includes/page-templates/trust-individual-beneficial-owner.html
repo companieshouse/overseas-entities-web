@@ -168,6 +168,8 @@
         {% set ceasedDateLabel = "Date they ceased to be involved in the trust" %}
         {% set ceasedDateHint = "For example, 27 1 2023" %}
         {% set stillInvolvedLegendText = "Are they still involved in the trust?" %}
+        {% set dateText = "When did they become an individual beneficiary for the overseas entity?" %}
+        {% include "includes/inputs/date/start-date-input.html" %}
         {% include "includes/inputs/date/trust-ceased-date-input.html" %}
       {% endif %}
 

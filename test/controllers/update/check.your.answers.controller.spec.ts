@@ -109,7 +109,8 @@ import {
   CHECK_YOUR_ANSWERS_PAGE_RP_NO_TRUST_STATEMENTS_TITLE,
   CHECK_YOUR_ANSWERS_PAGE_RP_NO_TRUST_STATEMENTS_SUB_TEXT,
   CHECK_YOUR_ANSWERS_PAGE_RP_NO_BENEFICIARY_STATEMENTS_TITLE,
-  CHECK_YOUR_ANSWERS_PAGE_RP_NO_BENEFICIARY_STATEMENTS_SUB_TEXT
+  CHECK_YOUR_ANSWERS_PAGE_RP_NO_BENEFICIARY_STATEMENTS_SUB_TEXT,
+  CHECK_YOUR_ANSWERS_PAGE_RP_BENEFICIAL_OWNER_TITLE
 } from "../../__mocks__/text.mock";
 import {
   ERROR,
@@ -132,6 +133,9 @@ import {
   TRUST_WITH_ID,
   UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE,
   UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE,
+  RELEVANT_PERIOD_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+  RELEVANT_PERIOD_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
+  RELEVANT_PERIOD_BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
 } from "../../__mocks__/session.mock";
 import { DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/due.diligence.mock";
 import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/overseas.entity.due.diligence.mock";
@@ -270,6 +274,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE);
+      expect(resp.text).toContain("Beneficial owners in the Update period");
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(CHANGE_LINK);
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS);
@@ -354,6 +359,22 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_OTHER);
       expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_MO_INDIVIDUAL);
       expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_MO_CORPORATE);
+    });
+
+    test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with relevant period beneficial owner section`, async () => {
+      const appData = {
+        ...APPLICATION_DATA_UPDATE_BO_MOCK,
+        beneficial_owners_individual: [RELEVANT_PERIOD_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK],
+        beneficial_owners_corporate: [RELEVANT_PERIOD_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK],
+        beneficial_owners_government_or_public_authority: [RELEVANT_PERIOD_BENEFICIAL_OWNER_GOV_OBJECT_MOCK]
+      };
+
+      mockGetApplicationData.mockReturnValue(appData);
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_RP_BENEFICIAL_OWNER_TITLE);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_INDIVIDUAL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_GOVERNMENT);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_OTHER);
     });
 
     test.each([

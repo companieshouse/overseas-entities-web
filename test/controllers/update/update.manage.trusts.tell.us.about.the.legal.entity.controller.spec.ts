@@ -190,6 +190,7 @@ const DEFAULT_FORM_SUBMISSION = {
 };
 
 const ROLE_WITHIN_TRUST_QUESTION_TEXT = "What is its role within the trust?";
+const CORRECT_AS_AT_DATE_INVOLVEMENT_CEASED_INSET_TEXT = "The information you enter for this pre-registration beneficiary must be correct as at the date they ceased to be involved in the trust.";
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 mockGetApplicationData.mockReturnValue({
@@ -295,6 +296,34 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       expect(response.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(response.text).not.toContain("govuk-notification-banner");
       expect(response.text).not.toContain(RELEVANT_PERIOD);
+      expect(response.text).not.toContain(PAGE_TITLE_ERROR);
+    });
+
+    test('when feature flag is on for adding legal entity for pre-reg period, add page is returned with inset text', async () => {
+      // Arrange
+      const appData = { entity_number: 'OE444466', entity_name: 'Overseas Entity Name' };
+      const trustInReview = { trust_id: '4466', trust_name: 'TRUST+4', review_status: { in_review: true } };
+
+      mockIsActiveFeature.mockReturnValue(true);
+      mockGetApplicationData.mockReturnValue(appData);
+      mockGetTrustInReview.mockReturnValue(trustInReview);
+      mockGetTrustee.mockReturnValue(undefined);
+
+      // Act
+      const response = await request(app).get(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL + RELEVANT_PERIOD_QUERY_PARAM);
+
+      // Assert
+      expect(response.status).toEqual(200);
+      expect(response.text).toContain(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_TITLE);
+      expect(response.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
+
+      expect(mockGetTrustInReview).toHaveBeenCalledWith(appData);
+      expect(mockGetTrustInReview).toHaveBeenCalledTimes(1);
+      expect(mockGetTrustee).toHaveBeenCalledTimes(1);
+
+      expect(response.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(response.text).toContain(CORRECT_AS_AT_DATE_INVOLVEMENT_CEASED_INSET_TEXT);
+      expect(response.text).toContain("govuk-inset-text");
       expect(response.text).not.toContain(PAGE_TITLE_ERROR);
     });
 

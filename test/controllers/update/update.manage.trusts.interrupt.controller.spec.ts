@@ -19,8 +19,7 @@ import { getApplicationData } from '../../../src/utils/application.data';
 import { isActiveFeature } from '../../../src/utils/feature.flag';
 
 import { APPLICATION_DATA_MOCK } from '../../__mocks__/session.mock';
-import { PAGE_TITLE_ERROR, PAGE_NOT_FOUND_TEXT } from '../../__mocks__/text.mock';
-import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.mock';
+import { PAGE_TITLE_ERROR, SAVE_AND_CONTINUE_BUTTON_TEXT } from '../../__mocks__/text.mock';
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockGetApplicationData = getApplicationData as jest.Mock;
@@ -52,37 +51,19 @@ describe('Update - Manage Trusts - Interrupt', () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain("You&#39;re about to review trust information");
       expect(resp.text).toContain(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
-      expect(resp.text).toContain(saveAndContinueButtonText);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-    });
-
-    test('when feature flag is off, 404 is returned', async () => {
-      mockIsActiveFeature.mockReturnValue(false);
-
-      const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
-
-      expect(resp.status).toEqual(404);
-      expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
     });
   });
 
   describe('POST tests', () => {
-    test('when feature flag is on, redirect to review the trust page', async () => {
+    test('redirect to review the trust page', async () => {
       mockIsActiveFeature.mockReturnValue(true);
 
       const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
-    });
-
-    test('when feature flag is off, 404 is returned', async () => {
-      mockIsActiveFeature.mockReturnValue(false);
-
-      const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
-
-      expect(resp.status).toEqual(404);
-      expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
     });
   });
 });

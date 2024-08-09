@@ -27,11 +27,27 @@
   <div class="govuk-grid-column-two-thirds">
     {% include "includes/list/errors.html" %}
 
+    {% if formData.relevant_period %}
+      {% set entity_name = pageData.entity_name %}
+      {% include "includes/page-templates/important-banner.html" %}
+      {% set pageTitle = pageParams.title + " beneficiary" %}
+    {% endif %}
+
     <span class="govuk-caption-l">{{ trustName }}</span>
     <h1 class="govuk-heading-xl govuk-!-margin-0">{{ pageTitle }}</h1>
-    <br> <p class="govuk-body">You can add more later.</p> <br>
+    <br>
 
-    <form class="form" method="post"> 
+    {% if formData.relevant_period %}
+      <p class="govuk-body">You can add more later.</p>
+      <div class="govuk-inset-text">
+        <p>The information you enter for this pre-registration beneficiary must be correct as at the date they ceased to be involved in the trust.</p>
+      </div>
+      <br>
+    {% else %}
+      <p class="govuk-body">You can add more later.</p> <br>
+    {% endif %}
+
+    <form class="form" method="post">
       {% include "includes/csrf_token.html" %}
 
       <input type="hidden" name="trusteeId" value="{{ trusteeId }}"/>
@@ -78,65 +94,67 @@
         {% include "includes/inputs/date-input.html" %}
       {% endif %}
 
-      {% set interestedPersonDateHtml %}
-        {% set fieldParam = {
-          label: 'What date did they become an interested person?',
-          name: 'dateBecameIP',
-          value: {
-            'Day': formData.dateBecameIPDay,
-            'Month': formData.dateBecameIPMonth,
-            'Year': formData.dateBecameIPYear
-          },
-          classes: 'govuk-fieldset__legend--s',
-          error: errors.dateBecameIP if errors
-        } %}
-        <br>
-
-        {% include "includes/inputs/date-input.html" %}
-      {% endset -%}
-
-      {% set fieldParam = {
-        name: 'roleWithinTrust',
-        label: 'What is their role within the trust?',
-        value: formData.roleWithinTrust,
-        error: errors.roleWithinTrust if errors,
-        items: [
-          {
-            value: pageData.roleWithinTrustType.BENEFICIARY,
-            text: "Beneficiary",
-            checked: formData.roleWithinTrust == pageData.roleWithinTrustType.BENEFICIARY,
-            attributes: {
-              "data-event-id": "beneficiary-type-radio-option"
-            }
-          }, {
-            value: pageData.roleWithinTrustType.SETTLOR,
-            text: "Settlor",
-            checked: formData.roleWithinTrust == pageData.roleWithinTrustType.SETTLOR,
-            attributes: {
-              "data-event-id": "settlor-type-radio-option"
-            }
-          }, {
-            value: pageData.roleWithinTrustType.GRANTOR,
-            text: "Grantor",
-            checked: formData.roleWithinTrust == pageData.roleWithinTrustType.GRANTOR,
-            attributes: {
-              "data-event-id": "grantor-type-radio-option"
-            }
-          }, {
-            value: pageData.roleWithinTrustType.INTERESTED_PERSON,
-            text: "Interested Person",
-            checked: formData.roleWithinTrust == pageData.roleWithinTrustType.INTERESTED_PERSON,
-            attributes: {
-              "data-event-id": "interested-person-type-radio-option"
+      {% if not formData.relevant_period %}
+        {% set interestedPersonDateHtml %}
+          {% set fieldParam = {
+            label: 'What date did they become an interested person?',
+            name: 'dateBecameIP',
+            value: {
+              'Day': formData.dateBecameIPDay,
+              'Month': formData.dateBecameIPMonth,
+              'Year': formData.dateBecameIPYear
             },
-            conditional: {
-              html: interestedPersonDateHtml
-            }
-          }
-        ]
-      } %}
+            classes: 'govuk-fieldset__legend--s',
+            error: errors.dateBecameIP if errors
+          } %}
+          <br>
 
-      {% include "includes/inputs/radio-input.html" %}
+          {% include "includes/inputs/date-input.html" %}
+        {% endset -%}
+
+        {% set fieldParam = {
+          name: 'roleWithinTrust',
+          label: 'What is their role within the trust?',
+          value: formData.roleWithinTrust,
+          error: errors.roleWithinTrust if errors,
+          items: [
+            {
+              value: pageData.roleWithinTrustType.BENEFICIARY,
+              text: "Beneficiary",
+              checked: formData.roleWithinTrust == pageData.roleWithinTrustType.BENEFICIARY,
+              attributes: {
+                "data-event-id": "beneficiary-type-radio-option"
+              }
+            }, {
+              value: pageData.roleWithinTrustType.SETTLOR,
+              text: "Settlor",
+              checked: formData.roleWithinTrust == pageData.roleWithinTrustType.SETTLOR,
+              attributes: {
+                "data-event-id": "settlor-type-radio-option"
+              }
+            }, {
+              value: pageData.roleWithinTrustType.GRANTOR,
+              text: "Grantor",
+              checked: formData.roleWithinTrust == pageData.roleWithinTrustType.GRANTOR,
+              attributes: {
+                "data-event-id": "grantor-type-radio-option"
+              }
+            }, {
+              value: pageData.roleWithinTrustType.INTERESTED_PERSON,
+              text: "Interested Person",
+              checked: formData.roleWithinTrust == pageData.roleWithinTrustType.INTERESTED_PERSON,
+              attributes: {
+                "data-event-id": "interested-person-type-radio-option"
+              },
+              conditional: {
+                html: interestedPersonDateHtml
+              }
+            }
+          ]
+        } %}
+        {% include "includes/inputs/radio-input.html" %}
+
+      {% endif %}
 
       {% include "includes/inputs/nationality/nationality.html" %}
 
@@ -152,7 +170,7 @@
         {% set stillInvolvedLegendText = "Are they still involved in the trust?" %}
         {% include "includes/inputs/date/trust-ceased-date-input.html" %}
       {% endif %}
-      
+
       {{ govukInsetText({
         html: '
           <h2 class="govuk-heading-m">What information we’ll show on the public register</h2>
@@ -164,6 +182,11 @@
         <input type="hidden" name="dateOfBirthDay" value="{{ formData.dateOfBirthDay }}"/>
         <input type="hidden" name="dateOfBirthMonth" value="{{ formData.dateOfBirthMonth }}"/>
         <input type="hidden" name="dateOfBirthYear" value="{{ formData.dateOfBirthYear }}"/>
+      {% endif %}
+
+      {% if formData.relevant_period %}
+        <input type="hidden" name="roleWithinTrust" value= "{{ pageData.roleWithinTrustType.BENEFICIARY }}" />
+        <input type="hidden" name="relevant_period" value= "true" />
       {% endif %}
 
       {% include "includes/save-and-continue-button.html" %}

@@ -26,12 +26,13 @@ import { manageTrustsTellUsAboutIndividualsGuard } from '../../../src/middleware
 import { getApplicationData, setExtraData } from '../../../src/utils/application.data';
 import { getTrustInReview, getTrustee, getTrusteeIndex } from '../../../src/utils/update/review_trusts';
 import { isActiveFeature } from '../../../src/utils/feature.flag';
-import { PAGE_TITLE_ERROR, PAGE_NOT_FOUND_TEXT, CONTINUE_BUTTON_TEXT, ERROR_LIST } from '../../__mocks__/text.mock';
+import { PAGE_TITLE_ERROR, SAVE_AND_CONTINUE_BUTTON_TEXT, ERROR_LIST, RELEVANT_PERIOD, UPDATE_TELL_US_ABOUT_THE_INDIVIDUAL_BENEFICIARY_HEADING, UPDATE_WHAT_IS_THEIR_FIRST_NAME, UPDATE_ARE_THEY_STILL_INVOLVED_IN_THE_TRUST } from '../../__mocks__/text.mock';
 import { TrusteeType } from '../../../src/model/trustee.type.model';
 import { saveAndContinue } from '../../../src/utils/save.and.continue';
 import { yesNoResponse } from '../../../src/model/data.types.model';
 import { RoleWithinTrustType } from '../../../src/model/role.within.trust.type.model';
 import { ErrorMessages } from "../../../src/validation/error.messages";
+import { RELEVANT_PERIOD_QUERY_PARAM } from '../../../src/config';
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockAuthenticationMiddleware = authentication as jest.Mock;
@@ -112,7 +113,6 @@ describe('Update - Manage Trusts - Review individuals', () => {
       const appData = { entity_number: 'OE988669', entity_name: 'Tell us about the individual OE 1' };
       const trustInReview = { trust_id: 'trust-in-review-1', trust_name: 'Veggie Trust', review_status: { in_review: true } };
 
-      mockIsActiveFeature.mockReturnValue(true);
       mockGetApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
       mockGetTrustee.mockReturnValue(undefined);
@@ -130,7 +130,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
       expect(resp.text).toContain('Tell us about the individual');
       expect(resp.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL);
 
-      expect(resp.text).toContain(CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 
@@ -177,7 +177,6 @@ describe('Update - Manage Trusts - Review individuals', () => {
         ceased_date_year: "2022"
       };
 
-      mockIsActiveFeature.mockReturnValue(true);
       mockGetApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
       mockGetTrustee.mockReturnValue(trustee);
@@ -207,17 +206,45 @@ describe('Update - Manage Trusts - Review individuals', () => {
 
       expect(resp.text).not.toContain('id="dateOfBirthDay"');
 
-      expect(resp.text).toContain(CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 
-    test('when feature flag is off, 404 is returned', async () => {
-      mockIsActiveFeature.mockReturnValue(false);
+    test('render page with the important banner when relevant_period is true and we want to add an individual beneficiary', async () => {
+      const appData = { entity_number: 'OE999999', entity_name: 'Overseas Entity Name' };
+      const trustInReview = { trust_id: 'trust-in-review-1', trust_name: 'Overseas Entity Name', review_status: { in_review: true } };
+      mockIsActiveFeature.mockReturnValue(true);
+      mockGetApplicationData.mockReturnValue(appData);
+      mockGetTrustInReview.mockReturnValue(trustInReview);
+      const resp = await request(app).get(`${UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL}${RELEVANT_PERIOD_QUERY_PARAM}`);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(RELEVANT_PERIOD);
+      expect(resp.text).toContain(UPDATE_TELL_US_ABOUT_THE_INDIVIDUAL_BENEFICIARY_HEADING);
+      expect(resp.text).toContain(UPDATE_WHAT_IS_THEIR_FIRST_NAME);
+      expect(resp.text).toContain(UPDATE_ARE_THEY_STILL_INVOLVED_IN_THE_TRUST);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+    });
 
-      const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL);
-
-      expect(resp.status).toEqual(404);
-      expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
+    test('render page with the important banner when we insert a relevant period trustee into the page', async () => {
+      const appData = { entity_number: 'OE999999', entity_name: 'Overseas Entity Name' };
+      const trustInReview = { trust_id: 'trust-in-review-1', trust_name: 'Overseas Entity Name', review_status: { in_review: false } };
+      const trustee = {
+        id: 'trustee-individual-2',
+        relevant_period: true
+      };
+      mockIsActiveFeature.mockReturnValue(true);
+      mockGetApplicationData.mockReturnValue(appData);
+      mockGetTrustInReview.mockReturnValue(trustInReview);
+      mockGetTrustee.mockReturnValue(trustee);
+      const resp = await request(app).get(`${UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL}`);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(RELEVANT_PERIOD);
+      expect(resp.text).toContain(UPDATE_TELL_US_ABOUT_THE_INDIVIDUAL_BENEFICIARY_HEADING);
+      expect(resp.text).toContain(UPDATE_WHAT_IS_THEIR_FIRST_NAME);
+      expect(resp.text).toContain(UPDATE_ARE_THEY_STILL_INVOLVED_IN_THE_TRUST);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
     });
   });
 
@@ -533,15 +560,6 @@ describe('Update - Manage Trusts - Review individuals', () => {
 
       expect(mockSetExtraData).not.toHaveBeenCalled();
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
-    });
-
-    test('when feature flag is off, 404 is returned', async () => {
-      mockIsActiveFeature.mockReturnValue(false);
-
-      const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL);
-
-      expect(resp.status).toEqual(404);
-      expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
     });
 
     test.each([

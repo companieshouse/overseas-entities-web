@@ -1,0 +1,99 @@
+{% set rpBOStatementText %}
+    {% if update.change_bo_relevant_period == "CHANGE_BO_RELEVANT_PERIOD" %}
+        The entity has reasonable cause to believe that at least one person became or ceased to be a registrable beneficial owner during the pre-registration period, that it has not already provided information about.
+    {% elif update.change_bo_relevant_period == "NO_CHANGE_BO_RELEVANT_PERIOD" %}
+        The entity has no reasonable cause to believe that anyone became or ceased to be a registrable beneficial owner during the pre-registration period, that it has not already provided information about.
+    {% endif %}
+{% endset %}
+
+{% set rpTrustStatementText %}
+    {% if update.trustee_involved_relevant_period == "TRUSTEE_INVOLVED_RELEVANT_PERIOD" %}
+        The entity has reasonable cause to believe that at least one person was a registrable beneficial owner due to being a trustee of a trust during the pre-registration period, that the entity has not already provided information about.
+    {% elif update.trustee_involved_relevant_period == "NO_TRUSTEE_INVOLVED_RELEVANT_PERIOD" %}
+        The entity has no reasonable cause to believe that anyone was a registrable beneficial owner due to being a trustee of a trust during the pre-registration period, that it has not already provided information about.
+    {% endif %}
+{% endset %}
+
+{% set rpBeneficiaryStatementText %}
+    {% if update.change_beneficiary_relevant_period == "CHANGE_BENEFICIARY_RELEVANT_PERIOD" %}
+        The entity has reasonable cause to believe that at least one person became or ceased to be a beneficiary of a trust involved in the overseas entity during the pre-registration period, that it has not already provided information about.
+    {% elif update.change_beneficiary_relevant_period == "NO_CHANGE_BENEFICIARY_RELEVANT_PERIOD" %}
+        The entity has no reasonable cause to believe that anyone became or ceased to be a beneficiary of a trust involved in the overseas entity during the pre-registration period, that it has not already provided information about.
+    {% endif %}
+{% endset %}
+
+
+{% if not pageParams.isRegistration %}
+  <h2 class="govuk-heading-l">Statements for pre-registration period</h2>
+    <div class="govuk-inset-text">
+        The overseas entity's pre-registration period is between 28 February 2022 and 18 September 2022
+    </div>
+
+  <h2 class="govuk-heading-m">Beneficial owner statement</h2>
+
+  {{ govukSummaryList({
+      rows: [
+        {
+          key: {
+            text: "Statement"
+          },
+          value: {
+            text: rpBOStatementText
+          },
+          actions: {
+            items: [ CREATE_CHANGE_LINK(
+              OE_CONFIGS.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE,
+              rpBOStatementText,
+              "update-change-rp-beneficial-owner-statement-button"
+            ) ]
+          }
+        }
+      ]
+  }) }}
+
+  <h2 class="govuk-heading-m">Trusts statement</h2>
+
+  {{ govukSummaryList({
+      rows: [
+        {
+          key: {
+            text: "Statement"
+          },
+          value: {
+            text: rpTrustStatementText
+          },
+          actions: {
+            items: [ CREATE_CHANGE_LINK(
+              OE_CONFIGS.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE,
+              rpTrustStatementText,
+              "update-change-registrable-beneficial-owner-statement-button"
+            ) ]
+          }
+        }
+      ]
+  }) }}
+
+
+  <h2 class="govuk-heading-m">Beneficiaries statement</h2>
+
+  {{ govukSummaryList({
+      rows: [
+        {
+          key: {
+            text: "Statement"
+          },
+          value: {
+            text: rpBeneficiaryStatementText
+          },
+          actions: {
+            items: [ CREATE_CHANGE_LINK(
+              OE_CONFIGS.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE,
+              rpBeneficiaryStatementText,
+              "update-change-rp-beneficiaries-statement-button"
+            ) ]
+          }
+        }
+      ]
+  }) }}
+
+{% endif %}

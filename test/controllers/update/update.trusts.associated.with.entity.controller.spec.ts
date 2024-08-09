@@ -13,7 +13,6 @@ import { NextFunction } from 'express';
 import app from '../../../src/app';
 import {
   UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL,
-  UPDATE_CHECK_YOUR_ANSWERS_URL,
   UPDATE_TRUSTS_TELL_US_ABOUT_IT_PAGE,
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
   UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL,
@@ -25,8 +24,7 @@ import { getApplicationData } from '../../../src/utils/application.data';
 import { isActiveFeature } from '../../../src/utils/feature.flag';
 
 import { APPLICATION_DATA_MOCK, TRUST } from '../../__mocks__/session.mock';
-import { PAGE_TITLE_ERROR, PAGE_NOT_FOUND_TEXT, UPDATE_TRUSTS_ASSOCIATED_ADDED_HEADING, UPDATE_MANAGE_TRUSTS_REVIEWED_HEADING } from '../../__mocks__/text.mock';
-import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.mock';
+import { PAGE_TITLE_ERROR, PAGE_NOT_FOUND_TEXT, UPDATE_TRUSTS_ASSOCIATED_ADDED_HEADING, UPDATE_MANAGE_TRUSTS_REVIEWED_HEADING, SAVE_AND_CONTINUE_BUTTON_TEXT } from '../../__mocks__/text.mock';
 import { Trust, TrustKey } from '../../../src/model/trust.model';
 import { wordCount } from '../../utils/test.utils';
 
@@ -60,7 +58,7 @@ describe('Update - Trusts - Trusts associated with the overseas entity', () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain('Trusts associated with the overseas entity');
       expect(resp.text).toContain(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
-      expect(resp.text).toContain(saveAndContinueButtonText);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 
@@ -82,7 +80,7 @@ describe('Update - Trusts - Trusts associated with the overseas entity', () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain('Trusts associated with the overseas entity');
-      expect(resp.text).toContain(saveAndContinueButtonText);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).toContain(UPDATE_TRUSTS_ASSOCIATED_ADDED_HEADING);
       expect(resp.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEWED_HEADING);
       expect(resp.text).toContain("href=\"update-tell-us-about-the-trust/#name\" data-event-id=\"change-trust-button\"");
@@ -153,7 +151,7 @@ describe('Update - Trusts - Trusts associated with the overseas entity', () => {
       const resp = await request(app).post(UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL).send({ addTrust: '0' });
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_CHECK_YOUR_ANSWERS_URL);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL);
     });
 
     test('when trusts feature flag is on and statement validation flag is on, and no trusts are to be added, redirect to beneficial owner statements page', async () => {

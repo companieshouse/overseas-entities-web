@@ -28,6 +28,7 @@ import {
   SECURE_UPDATE_FILTER_URL,
   REMOVE_SERVICE_NAME,
   REMOVE_CONFIRM_STATEMENT_URL,
+  UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL,
   UPDATE_DUE_DILIGENCE_CHANGE_AGENT_CODE,
 } from "../../../src/config";
 import app from "../../../src/app";
@@ -36,7 +37,6 @@ import {
   SERVICE_UNAVAILABLE,
   ANY_MESSAGE_ERROR,
   UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE,
-  UPDATE_CHECK_YOUR_ANSWERS_BACK_LINK,
   CHANGE_LINK,
   CHANGE_LINK_ENTITY_NAME,
   CHANGE_LINK_ENTITY_EMAIL,
@@ -61,7 +61,6 @@ import {
   UPDATE_CHANGE_LINK_REVIEWED_BO_OTHER,
   CHECK_YOUR_ANSWERS_PAGE_TRUST_TITLE,
   UPDATE_CHECK_YOUR_ANSWERS_WITH_STATEMENT_VALIDATION_BACK_LINK,
-  UPDATE_TRUSTS_ASSOCIATED_BACK_LINK,
   HOME_ADDRESS_LINE1,
   CHECK_YOUR_ANSWERS_PAGE_TITLE,
   REMOVE_CHECK_YOUR_ANSWERS_PAGE_TITLE,
@@ -94,7 +93,23 @@ import {
   TRUSTEE_INDIVIDUAL_INVOLVED,
   TRUSTEE_LEGAL_ENTITY_INVOLVED,
   TRUSTEE_INDIVIDUAL_CEASED_DATE,
-  TRUSTEE_LEGAL_ENTITY_CEASED_DATE
+  TRUSTEE_LEGAL_ENTITY_CEASED_DATE,
+  RELEVANT_SECURE_REGISTER_CHANGE_LINK,
+  RELEVANT_SECURE_FILTER_PAGE_HEADING,
+  RELEVANT_PERIOD_OWNED_LAND_CHANGE_LINK,
+  CHECK_YOUR_ANSWERS_PAGE_RP_BENEFICIAL_OWNER_STATEMENTS_TITLE,
+  CHECK_YOUR_ANSWERS_PAGE_RP_BENEFICIAL_OWNER_STATEMENTS_SUB_TEXT,
+  CHECK_YOUR_ANSWERS_PAGE_RP_TRUST_STATEMENTS_TITLE,
+  CHECK_YOUR_ANSWERS_PAGE_RP_TRUST_STATEMENTS_SUB_TEXT,
+  CHECK_YOUR_ANSWERS_PAGE_RP_BENEFICIARY_STATEMENTS_TITLE,
+  CHECK_YOUR_ANSWERS_PAGE_RP_BENEFICIARY_STATEMENTS_SUB_TEXT,
+  UPDATE_CHANGE_LINK_RP_BO_STATEMENT,
+  CHECK_YOUR_ANSWERS_PAGE_RP_NO_BENEFICIAL_OWNER_STATEMENTS_TITLE,
+  CHECK_YOUR_ANSWERS_PAGE_RP_NO_BENEFICIAL_OWNER_STATEMENTS_SUB_TEXT,
+  CHECK_YOUR_ANSWERS_PAGE_RP_NO_TRUST_STATEMENTS_TITLE,
+  CHECK_YOUR_ANSWERS_PAGE_RP_NO_TRUST_STATEMENTS_SUB_TEXT,
+  CHECK_YOUR_ANSWERS_PAGE_RP_NO_BENEFICIARY_STATEMENTS_TITLE,
+  CHECK_YOUR_ANSWERS_PAGE_RP_NO_BENEFICIARY_STATEMENTS_SUB_TEXT
 } from "../../__mocks__/text.mock";
 import {
   ERROR,
@@ -115,6 +130,8 @@ import {
   INDIVIUAL_TRUSTEE,
   CORPORATE_TRUSTEE,
   TRUST_WITH_ID,
+  UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE,
+  UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE,
 } from "../../__mocks__/session.mock";
 import { DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/due.diligence.mock";
 import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/overseas.entity.due.diligence.mock";
@@ -216,21 +233,120 @@ describe("CHECK YOUR ANSWERS controller", () => {
     });
 
     test.each([
-      ["on remove journey", APPLICATION_DATA_REMOVE_BO_MOCK ],
-      ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK ]
-    ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with contact details section %s`, async (_journeyType, mockAppData) => {
+      ["on remove journey", APPLICATION_DATA_REMOVE_BO_MOCK, REMOVE_CONFIRM_STATEMENT_URL],
+      ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK, UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL]
+    ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with contact details section %s`, async (_journeyType, mockAppData, backLink) => {
       mockGetApplicationData.mockReturnValue(mockAppData);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE);
-      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_BACK_LINK);
+      expect(resp.text).toContain(backLink);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(CHANGE_LINK);
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS);
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_WHO_CAN_WE_CONTACT);
       expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_TITLE);
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE);
+      expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_FULL_NAME);
+      expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_EMAIL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_INDIVIDUAL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_GOVERNMENT);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_OTHER);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_MO_INDIVIDUAL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_MO_CORPORATE);
+    });
+
+    test.each([
+      ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK ]
+    ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with relevant period statement all of the above selected detail section %s`, async () => {
+      const appData = {
+        ...APPLICATION_DATA_UPDATE_BO_MOCK,
+        update: UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE
+      };
+
+      mockGetApplicationData.mockReturnValue(appData);
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(CHANGE_LINK);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_WHO_CAN_WE_CONTACT);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_TITLE);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_RP_BENEFICIAL_OWNER_STATEMENTS_TITLE);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_RP_BENEFICIAL_OWNER_STATEMENTS_SUB_TEXT);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_RP_TRUST_STATEMENTS_TITLE);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_RP_TRUST_STATEMENTS_SUB_TEXT);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_RP_BENEFICIARY_STATEMENTS_TITLE);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_RP_BENEFICIARY_STATEMENTS_SUB_TEXT);
+      expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_FULL_NAME);
+      expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_EMAIL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_RP_BO_STATEMENT);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_INDIVIDUAL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_GOVERNMENT);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_OTHER);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_MO_INDIVIDUAL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_MO_CORPORATE);
+    });
+
+    test.each([
+      ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK ]
+    ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with relevant period statement none of the above selected detail section %s`, async () => {
+      const appData = {
+        ...APPLICATION_DATA_UPDATE_BO_MOCK,
+        update: UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE
+      };
+
+      mockGetApplicationData.mockReturnValue(appData);
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(CHANGE_LINK);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_WHO_CAN_WE_CONTACT);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_TITLE);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_RP_NO_BENEFICIAL_OWNER_STATEMENTS_TITLE);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_RP_NO_BENEFICIAL_OWNER_STATEMENTS_SUB_TEXT);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_RP_NO_TRUST_STATEMENTS_TITLE);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_RP_NO_TRUST_STATEMENTS_SUB_TEXT);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_RP_NO_BENEFICIARY_STATEMENTS_TITLE);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_RP_NO_BENEFICIARY_STATEMENTS_SUB_TEXT);
+      expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_FULL_NAME);
+      expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_EMAIL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_RP_BO_STATEMENT);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_INDIVIDUAL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_GOVERNMENT);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_OTHER);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_MO_INDIVIDUAL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_MO_CORPORATE);
+    });
+
+    test.each([
+      ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK ]
+    ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with relevant period statement not selected relevant journey %s`, async (_journeyType, mockAppData) => {
+      mockGetApplicationData.mockReturnValue(mockAppData);
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(CHANGE_LINK);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_WHO_CAN_WE_CONTACT);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_TITLE);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE);
+      expect(resp.text).not.toContain(CHECK_YOUR_ANSWERS_PAGE_RP_BENEFICIAL_OWNER_STATEMENTS_TITLE);
+      expect(resp.text).not.toContain(CHECK_YOUR_ANSWERS_PAGE_RP_BENEFICIAL_OWNER_STATEMENTS_SUB_TEXT);
+      expect(resp.text).not.toContain(CHECK_YOUR_ANSWERS_PAGE_RP_TRUST_STATEMENTS_TITLE);
+      expect(resp.text).not.toContain(CHECK_YOUR_ANSWERS_PAGE_RP_TRUST_STATEMENTS_SUB_TEXT);
+      expect(resp.text).not.toContain(CHECK_YOUR_ANSWERS_PAGE_RP_BENEFICIARY_STATEMENTS_TITLE);
+      expect(resp.text).not.toContain(CHECK_YOUR_ANSWERS_PAGE_RP_BENEFICIARY_STATEMENTS_SUB_TEXT);
       expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_FULL_NAME);
       expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_EMAIL);
       expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_INDIVIDUAL);
@@ -268,16 +384,16 @@ describe("CHECK YOUR ANSWERS controller", () => {
     });
 
     test.each([
-      ["on remove journey", APPLICATION_DATA_REMOVE_BO_MOCK ],
-      ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK ]
-    ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} with statement validation off and trusts flag on with trust details section %s`, async (_journeyType, mockAppData) => {
+      ["on remove journey", APPLICATION_DATA_REMOVE_BO_MOCK, REMOVE_CONFIRM_STATEMENT_URL],
+      ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK, UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL]
+    ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} with statement validation off and trusts flag on with trust details section %s`, async (_journeyType, mockAppData, backLink) => {
       mockGetApplicationData.mockReturnValue(mockAppData);
       mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(false);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE);
-      expect(resp.text).toContain(UPDATE_TRUSTS_ASSOCIATED_BACK_LINK);
+      expect(resp.text).toContain(backLink);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(CHANGE_LINK);
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS);
@@ -295,15 +411,15 @@ describe("CHECK YOUR ANSWERS controller", () => {
     });
 
     test.each([
-      ["on remove journey", APPLICATION_DATA_CH_REF_REMOVE_MOCK ],
-      ["on update journey", APPLICATION_DATA_CH_REF_UPDATE_MOCK ]
-    ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with contact details section with (ceased) existing BO %s`, async (_journeyType, mockAppData) => {
+      ["on remove journey", APPLICATION_DATA_CH_REF_REMOVE_MOCK, REMOVE_CONFIRM_STATEMENT_URL],
+      ["on update journey", APPLICATION_DATA_CH_REF_UPDATE_MOCK, UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL]
+    ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with contact details section with (ceased) existing BO %s`, async (_journeyType, mockAppData, backLink) => {
       mockGetApplicationData.mockReturnValue(mockAppData);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE);
-      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_BACK_LINK);
+      expect(resp.text).toContain(backLink);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(CHANGE_LINK);
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS);
@@ -319,15 +435,15 @@ describe("CHECK YOUR ANSWERS controller", () => {
     });
 
     test.each([
-      ["on remove journey", APPLICATION_DATA_REMOVE_BO_MOCK, REMOVE_CHECK_YOUR_ANSWERS_PAGE_TITLE ],
-      ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK, CHECK_YOUR_ANSWERS_PAGE_TITLE ]
-    ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page %s`, async (_journeyType, mockAppData, pageTitle) => {
+      ["on remove journey", APPLICATION_DATA_REMOVE_BO_MOCK, REMOVE_CHECK_YOUR_ANSWERS_PAGE_TITLE, REMOVE_CONFIRM_STATEMENT_URL],
+      ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK, CHECK_YOUR_ANSWERS_PAGE_TITLE, UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL]
+    ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page %s`, async (_journeyType, mockAppData, pageTitle, backLink) => {
       mockGetApplicationData.mockReturnValue(mockAppData);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(pageTitle);
-      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_BACK_LINK);
+      expect(resp.text).toContain(backLink);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_TITLE);
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE);
@@ -338,6 +454,23 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).toContain(CHANGE_LINK_ENTITY_EMAIL);
       expect(resp.text).toContain(CHANGE_LINK_ENTITY_LEGAL_FORM);
       expect(resp.text).toContain(CHANGE_LINK_ENTITY_GOVERNING_LAW);
+    });
+
+    test.each([
+      ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK ]
+    ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with relevant period statement all of the above selected detail section %s`, async () => {
+      const appData = {
+        ...APPLICATION_DATA_UPDATE_BO_MOCK,
+        update: UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE, UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE
+      };
+      mockGetApplicationData.mockReturnValue(appData);
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(OVERSEAS_NAME_MOCK);
+      expect(resp.text).not.toContain(RELEVANT_SECURE_FILTER_PAGE_HEADING);
+      expect(resp.text).not.toContain(RELEVANT_SECURE_REGISTER_CHANGE_LINK);
+      expect(resp.text).not.toContain(RELEVANT_PERIOD_OWNED_LAND_CHANGE_LINK);
     });
 
     test.each([

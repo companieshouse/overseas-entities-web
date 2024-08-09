@@ -28,6 +28,7 @@ import {
   UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO,
   UPDATE_BENEFICIAL_OWNER_OTHER_MOCK_FOR_CEASE_VALIDATION,
   APPLICATION_DATA_UPDATE_BO_MOCK,
+  UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
 } from "../../__mocks__/session.mock";
 import {
   getFromApplicationData, mapFieldsToDataObject,
@@ -55,18 +56,18 @@ import {
   PUBLIC_REGISTER_HINT_TEXT,
   RELEVANT_PERIOD,
   RELEVANT_PERIOD_OTHER_LEGAL_ENTITY_INFORMATION,
+  SAVE_AND_CONTINUE_BUTTON_TEXT,
   SERVICE_UNAVAILABLE,
   SHOW_INFORMATION_ON_PUBLIC_REGISTER,
   TRUSTS_NOC_HEADING,
 } from "../../__mocks__/text.mock";
-import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.mock';
 import {
   AddressKeys,
   IsOnSanctionsListKey,
   NatureOfControlType, PublicRegisterNameKey, RegistrationNumberKey,
   yesNoResponse
 } from "../../../src/model/data.types.model";
-import { BeneficialOwnerOtherKey } from "../../../src/model/beneficial.owner.other.model";
+import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../../../src/model/beneficial.owner.other.model";
 import {
   BENEFICIAL_OWNER_OTHER_WITH_INVALID_CHARS_MOCK,
   BENEFICIAL_OWNER_OTHER_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK,
@@ -125,7 +126,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).toContain(config.UPDATE_LANDING_PAGE_URL);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
-      expect(resp.text).toContain(saveAndContinueButtonText);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
       expect(resp.text).toContain(SHOW_INFORMATION_ON_PUBLIC_REGISTER);
       expect(resp.text).not.toContain(TRUSTS_NOC_HEADING);
@@ -139,7 +140,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).not.toContain(JURISDICTION_FIELD_LABEL);
       expect(resp.text).toContain(PUBLIC_REGISTER_HINT_TEXT);
-      expect(resp.text).toContain(saveAndContinueButtonText);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
     });
   });
 
@@ -156,8 +157,22 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).toContain("town");
       expect(resp.text).toContain("country");
       expect(resp.text).toContain("BY 2");
-      expect(resp.text).toContain(saveAndContinueButtonText);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).toContain("name=\"is_still_bo\" type=\"radio\" value=\"1\" checked");
+    });
+
+    test("Renders the page through GET, with relevant period content, when insertin a relevant period object", async () => {
+      mockGetFromApplicationData.mockReturnValueOnce({ ...UPDATE_BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS, relevant_period: true });
+      const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(RELEVANT_PERIOD);
+      expect(resp.text).toContain(RELEVANT_PERIOD_OTHER_LEGAL_ENTITY_INFORMATION);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
+      expect(resp.text).toContain("TestCorporation");
+      expect(resp.text).toContain("TheLaw");
+      expect(resp.text).toContain("addressLine1");
+      expect(resp.text).toContain("town");
     });
 
     test("Should render the error page", async () => {
@@ -740,6 +755,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
 
   describe("UPDATE tests", () => {
     test(`Redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
+      mockGetFromApplicationData.mockReturnValueOnce(UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK);
       mockPrepareData.mockReturnValueOnce({ ...UPDATE_BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS });
       const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL)
         .send(UPDATE_BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS);
@@ -760,6 +776,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
     });
 
     test(`Replaces existing object on submit`, async () => {
+      mockGetFromApplicationData.mockReturnValueOnce(UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK);
       mockPrepareData.mockReturnValueOnce({ id: BO_OTHER_ID, name: "new name" });
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL)
@@ -768,8 +785,12 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(BeneficialOwnerOtherKey);
       expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(BO_OTHER_ID);
 
-      expect(mockSetApplicationData.mock.calls[0][1].id).toEqual(BO_OTHER_ID);
+      const data = mockSetApplicationData.mock.calls[0][1];
+      expect(data.id).toEqual(BO_OTHER_ID);
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(BeneficialOwnerOtherKey);
+
+      // Ensure that trust ids on the original BO aren't lost during the update
+      expect((data as BeneficialOwnerOther).trust_ids).toEqual(UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK.trust_ids);
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
@@ -777,6 +798,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
     });
 
     test(`Service address from the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page is present when same address is set to no`, async () => {
+      mockGetFromApplicationData.mockReturnValueOnce(UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK);
       mockPrepareData.mockReturnValueOnce({ ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO });
       await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL)
@@ -788,6 +810,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
     });
 
     test(`Service address from the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page is empty when same address is set to yes`, async () => {
+      mockGetFromApplicationData.mockReturnValueOnce(UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK);
       mockPrepareData.mockReturnValueOnce({ ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES });
       await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL)
@@ -799,6 +822,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
     });
 
     test(`Public register data from the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page is present when is on register set to yes`, async () => {
+      mockGetFromApplicationData.mockReturnValueOnce(UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK);
       mockPrepareData.mockReturnValueOnce({ ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES });
       await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL)
         .send({ ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES, is_still_bo: '1' });
@@ -810,6 +834,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
     });
 
     test(`Public register data from the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page is empty when is on register set to no`, async () => {
+      mockGetFromApplicationData.mockReturnValueOnce(UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK);
       mockPrepareData.mockReturnValueOnce({ ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO });
       await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL)
         .send({ ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO, is_still_bo: '1' });

@@ -1,17 +1,5 @@
-{% set textContinueButton = "Continue" %}
-
-{% if (OE_CONFIGS.UPDATE_LANDING_URL in backLinkUrl) %}
-  {% if OE_CONFIGS.FEATURE_FLAG_ENABLE_UPDATE_SAVE_AND_RESUME === "true" %}
-    {% set textContinueButton = "Save and continue" %}
-  {% endif %}
-{% else %}
-  {% if OE_CONFIGS.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 === "true" %}
-    {% set textContinueButton = "Save and continue" %}
-  {% endif %}
-{% endif %}
-
 {{ govukButton({
-  text: textContinueButton,
+  text: "Save and continue",
   attributes: {
     "id": "submit"
   }

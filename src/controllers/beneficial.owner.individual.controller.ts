@@ -28,15 +28,15 @@ export const getById = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
-  postBeneficialOwnerIndividual(req, res, next, getBeneficialOwnerTypeUrl(req), true);
+  postBeneficialOwnerIndividual(req, res, next, getBeneficialOwnerTypeUrl(req));
 };
 
 export const update = (req: Request, res: Response, next: NextFunction) => {
-  updateBeneficialOwnerIndividual(req, res, next, getBeneficialOwnerTypeUrl(req), true);
+  updateBeneficialOwnerIndividual(req, res, next, getBeneficialOwnerTypeUrl(req));
 };
 
 export const remove = (req: Request, res: Response, next: NextFunction) => {
-  removeBeneficialOwnerIndividual(req, res, next, getBeneficialOwnerTypeUrl(req), true);
+  removeBeneficialOwnerIndividual(req, res, next, getBeneficialOwnerTypeUrl(req));
 };
 
 const getBeneficialOwnerTypeUrl = (req: Request): string => {

@@ -22,7 +22,7 @@ import { checkBOsDetailsEntered, getApplicationData } from '../../../src/utils/a
 import { isActiveFeature } from '../../../src/utils/feature.flag';
 
 import { TRUST } from '../../__mocks__/session.mock';
-import { PAGE_TITLE_ERROR, PAGE_NOT_FOUND_TEXT, UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_FORMER_BO_TITLE, ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE } from '../../__mocks__/text.mock';
+import { PAGE_TITLE_ERROR, UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_FORMER_BO_TITLE, ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE } from '../../__mocks__/text.mock';
 import { UpdateKey } from '../../../src/model/update.type.model';
 import { Trust, TrustHistoricalBeneficialOwner } from '../../../src/model/trust.model';
 import { yesNoResponse } from '../../../src/model/data.types.model';
@@ -146,15 +146,6 @@ describe('Update - Manage Trusts - Review former beneficial owners', () => {
       expect(resp.text).toContain(SECURE_UPDATE_FILTER_URL);
     });
 
-    test('when feature flag is off, 404 is returned', async () => {
-      mockIsActiveFeature.mockReturnValue(false);
-
-      const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL);
-
-      expect(resp.status).toEqual(404);
-      expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
-    });
-
     test("catch error when rendering the page", async () => {
       mockIsActiveFeature.mockReturnValue(true);
       mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
@@ -240,15 +231,6 @@ describe('Update - Manage Trusts - Review former beneficial owners', () => {
       expect(resp.text).toContain("Enter the date they became a beneficial owner");
       expect(resp.text).toContain("Enter the date they stopped being a beneficial owner");
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
-    });
-
-    test('when feature flag is off, 404 is returned', async () => {
-      mockIsActiveFeature.mockReturnValue(false);
-
-      const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL);
-
-      expect(resp.status).toEqual(404);
-      expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
     });
 
     test("catch error when posting", async () => {

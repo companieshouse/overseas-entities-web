@@ -1,4 +1,5 @@
 import { body, check } from "express-validator";
+
 import { ErrorMessages } from "./error.messages";
 import { legal_entity_usual_residential_service_address_validations, principal_address_validations } from "./fields/address.validation";
 import { dateBecameIPLegalEntityBeneficialOwner, trusteeLegalEntityCeasedDateValidations } from "./fields/date.validation";
@@ -11,7 +12,7 @@ const addressErrorMessages: ErrorMessagesOptional = {
   propertyValueError: ErrorMessages.PROPERTY_NAME_OR_NUMBER_LEGAL_ENTITY_BO,
   addressLine1Error: ErrorMessages.ADDRESS_LINE1_LEGAL_ENTITY_BO,
   townValueError: ErrorMessages.CITY_OR_TOWN_LEGAL_ENTITY_BO,
-  countryValueError: ErrorMessages.COUNTRY_LEGAL_ENTITY_BO,
+  countryValueError: ErrorMessages.COUNTRY_BO,
 };
 
 export const trustLegalEntityBeneficialOwnerValidator = [

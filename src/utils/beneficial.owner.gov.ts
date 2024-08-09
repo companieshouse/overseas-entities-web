@@ -44,6 +44,8 @@ export const getBeneficialOwnerGovById = (req: Request, res: Response, next: Nex
   try {
     logger.debugRequest(req, `GET BY ID ${req.route.path}`);
 
+    const appData = getApplicationData(req.session);
+
     const id = req.params[ID];
     const data = getFromApplicationData(req, BeneficialOwnerGovKey, id, true);
 
@@ -58,9 +60,9 @@ export const getBeneficialOwnerGovById = (req: Request, res: Response, next: Nex
       ...data,
       ...principalAddress,
       ...serviceAddress,
-      [StartDateKey]: startDate
+      [StartDateKey]: startDate,
+      entity_name: appData.entity_name
     };
-    const appData = getApplicationData(req.session);
 
     // Redis removal work - Add extra template options if Redis Remove flag is true and on Registration journey
     const isRegistration: boolean = req.path.startsWith(config.LANDING_URL);
@@ -79,7 +81,7 @@ export const getBeneficialOwnerGovById = (req: Request, res: Response, next: Nex
   }
 };
 
-export const postBeneficialOwnerGov = async (req: Request, res: Response, next: NextFunction, nextPage: string, registrationFlag: boolean): Promise<void> => {
+export const postBeneficialOwnerGov = async (req: Request, res: Response, next: NextFunction, nextPage: string): Promise<void> => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
@@ -88,7 +90,7 @@ export const postBeneficialOwnerGov = async (req: Request, res: Response, next: 
     const session = req.session as Session;
     setApplicationData(session, data, BeneficialOwnerGovKey);
 
-    await saveAndContinue(req, session, registrationFlag);
+    await saveAndContinue(req, session);
 
     return res.redirect(nextPage);
   } catch (error) {
@@ -97,7 +99,7 @@ export const postBeneficialOwnerGov = async (req: Request, res: Response, next: 
   }
 };
 
-export const updateBeneficialOwnerGov = async (req: Request, res: Response, next: NextFunction, nextPage: string, registrationFlag: boolean): Promise<void> => {
+export const updateBeneficialOwnerGov = async (req: Request, res: Response, next: NextFunction, nextPage: string): Promise<void> => {
   try {
     logger.debugRequest(req, `UPDATE ${req.route.path}`);
     const id = req.params[ID];
@@ -112,7 +114,7 @@ export const updateBeneficialOwnerGov = async (req: Request, res: Response, next
     const session = req.session as Session;
     setApplicationData(session, data, BeneficialOwnerGovKey);
 
-    await saveAndContinue(req, session, registrationFlag);
+    await saveAndContinue(req, session);
 
     return res.redirect(nextPage);
   } catch (error) {
@@ -121,14 +123,14 @@ export const updateBeneficialOwnerGov = async (req: Request, res: Response, next
   }
 };
 
-export const removeBeneficialOwnerGov = async (req: Request, res: Response, next: NextFunction, nextPage: string, registrationFlag: boolean): Promise<void> => {
+export const removeBeneficialOwnerGov = async (req: Request, res: Response, next: NextFunction, nextPage: string): Promise<void> => {
   try {
     logger.debugRequest(req, `REMOVE ${req.route.path}`);
 
     removeFromApplicationData(req, BeneficialOwnerGovKey, req.params[ID]);
     const session = req.session as Session;
 
-    await saveAndContinue(req, session, registrationFlag);
+    await saveAndContinue(req, session);
 
     return res.redirect(nextPage);
   } catch (error) {

@@ -6,7 +6,6 @@ import { ApplicationData } from "../../model";
 import { getApplicationData, setExtraData } from "../../utils/application.data";
 import { OwnedLandKey } from "../../model/update.type.model";
 import { ChangeBeneficiaryRelevantPeriodKey, ChangeBoRelevantPeriodKey, TrusteeInvolvedRelevantPeriodKey } from "../../model/relevant.period.statment.model";
-import { isActiveFeature } from "../../utils/feature.flag";
 import { OverseasEntityKey, Transactionkey } from "../../model/data.types.model";
 import { postTransaction } from "../../service/transaction.service";
 import { createOverseasEntity } from "../../service/overseas.entities.service";
@@ -36,23 +35,21 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const session = req.session as Session;
 
     if (ownedLandKey === '1') {
-      return res.redirect(config.RELEVANT_PERIOD_INTERRUPT_URL);
+      return res.redirect(config.RELEVANT_PERIOD_INTERRUPT_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
     } else {
-      if (isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_SAVE_AND_RESUME)) {
-        const appData: ApplicationData = getApplicationData(session);
-        if (!appData[Transactionkey]) {
-          const transactionID = await postTransaction(req, session);
-          appData[Transactionkey] = transactionID;
-          appData[OverseasEntityKey] = await createOverseasEntity(req, session, transactionID, true);
-        }
-        if (appData.update) {
-          appData.update[ChangeBoRelevantPeriodKey] = undefined;
-          appData.update[TrusteeInvolvedRelevantPeriodKey] = undefined;
-          appData.update[ChangeBeneficiaryRelevantPeriodKey] = undefined;
-        }
-        setExtraData(session, appData);
-        await saveAndContinue(req, session, false);
+      const appData: ApplicationData = getApplicationData(session);
+      if (!appData[Transactionkey]) {
+        const transactionID = await postTransaction(req, session);
+        appData[Transactionkey] = transactionID;
+        appData[OverseasEntityKey] = await createOverseasEntity(req, session, transactionID);
       }
+      if (appData.update) {
+        appData.update[ChangeBoRelevantPeriodKey] = undefined;
+        appData.update[TrusteeInvolvedRelevantPeriodKey] = undefined;
+        appData.update[ChangeBeneficiaryRelevantPeriodKey] = undefined;
+      }
+      setExtraData(session, appData);
+      await saveAndContinue(req, session);
       return res.redirect(config.UPDATE_FILING_DATE_URL);
     }
   } catch (error) {

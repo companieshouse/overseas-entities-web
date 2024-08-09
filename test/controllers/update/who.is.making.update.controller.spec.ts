@@ -5,6 +5,9 @@ jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
+jest.mock('../../../src/utils/feature.flag');
+jest.mock('../../../src/service/transaction.service');
+jest.mock('../../../src/service/overseas.entities.service');
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
 import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
@@ -38,6 +41,9 @@ import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.a
 import { logger } from "../../../src/utils/logger";
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../../src/model/who.is.making.filing.model";
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
+import { isActiveFeature } from "../../../src/utils/feature.flag";
+import { updateOverseasEntity } from "../../../src/service/overseas.entities.service";
+import { APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock";
 
 mockRemoveJourneyMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
@@ -57,10 +63,14 @@ const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetExtraData = setExtraData as jest.Mock;
 
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
+const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
+
 describe("Who is making update controller tests", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockIsActiveFeature.mockReset();
   });
 
   describe("GET tests", () => {
@@ -101,23 +111,63 @@ describe("Who is making update controller tests", () => {
   });
 
   describe("POST tests", () => {
-    test(`redirect to ${UPDATE_DUE_DILIGENCE_PAGE} page when ${WhoIsRegisteringType.AGENT} is selected`, async () => {
+    test(`redirect to ${UPDATE_DUE_DILIGENCE_PAGE} page when ${WhoIsRegisteringType.AGENT} is selected and REDIS_flag is set to OFF`, async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockUpdateOverseasEntity.mockReturnValueOnce(false);
       const resp = await request(app)
         .post(WHO_IS_MAKING_UPDATE_URL)
         .send({ [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT });
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_DUE_DILIGENCE_URL);
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(1);
+      expect(mockUpdateOverseasEntity).not.toHaveBeenCalled();
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 
-    test(`redirects to the ${UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE} page when ${WhoIsRegisteringType.SOMEONE_ELSE} is selected`, async () => {
+    test(`redirect to ${UPDATE_DUE_DILIGENCE_PAGE} page when ${WhoIsRegisteringType.AGENT} is selected and REDIS_flag is set to ON`, async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockUpdateOverseasEntity.mockReturnValueOnce(false);
+      const resp = await request(app)
+        .post(WHO_IS_MAKING_UPDATE_URL)
+        .send({ [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(UPDATE_DUE_DILIGENCE_URL);
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(1);
+      expect(mockUpdateOverseasEntity).not.toHaveBeenCalled();
+      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+    });
+
+    test(`redirects to the ${UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE} page when ${WhoIsRegisteringType.SOMEONE_ELSE} is selected and REDIS_flag is set to OFF`, async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockUpdateOverseasEntity.mockReturnValueOnce(false);
       const resp = await request(app)
         .post(WHO_IS_MAKING_UPDATE_URL)
         .send({ [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE });
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL);
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(1);
+      expect(mockUpdateOverseasEntity).not.toHaveBeenCalled();
+      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+    });
+
+    test(`redirects to the ${UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE} page when ${WhoIsRegisteringType.SOMEONE_ELSE} is selected and REDIS_flag is set to ON`, async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockUpdateOverseasEntity.mockReturnValueOnce(false);
+      const resp = await request(app)
+        .post(WHO_IS_MAKING_UPDATE_URL)
+        .send({ [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL);
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(1);
+      expect(mockUpdateOverseasEntity).not.toHaveBeenCalled();
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 

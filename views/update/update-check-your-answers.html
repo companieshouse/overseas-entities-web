@@ -5,6 +5,8 @@
   {% set isRemoveJourney = true %}
 {% endif %}
 
+{% set feature_flag_relevant_period = OE_CONFIGS.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD %}
+
 {% if isRemoveJourney %}
   {% set title = "Check your answers before submitting" %}
 {% else %}
@@ -12,7 +14,7 @@
 {% endif %}
 
 {% set hasSoldAllLand %}
-  {% if appData.remove.has_sold_all_land == 1 %}
+  {% if remove.has_sold_all_land == 1 %}
     Yes
   {% else %}
     No
@@ -20,7 +22,7 @@
 {% endset %}
 
 {% set IsListedAsPropertyOwner %}
-  {% if appData.remove.is_listed_as_property_owner == 1 %}
+  {% if remove.is_listed_as_property_owner == 1 %}
     Yes
   {% else %}
     No
@@ -28,7 +30,7 @@
 {% endset %}
 
 {% set isProtectedInformation %}
-  {% if appData.is_secure_register == 1 %}
+  {% if is_secure_register == 1 %}
     Yes
   {% else %}
     No
@@ -43,8 +45,6 @@
   {% set removeStatementDate = dateMacros.formatDate(pageParams.today["day"], pageParams.today["month"], pageParams.today["year"]) %}
 {% endif %}
 
-{% set updateStatementValidationEnabled = OE_CONFIGS.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION === "true" %}
-
 {% block pageTitle %}
   {% include "includes/update-page-title.html" %}
 {% endblock %}
@@ -58,7 +58,11 @@
     <div class="govuk-grid-column-two-thirds-from-desktop">
 
       {% if isRemoveJourney %}
-        <span class="govuk-caption-l govuk-!-padding-bottom-1">{{ appData.entity_name }} - {{ appData.entity_number }}</span>
+        <span class="govuk-caption-l govuk-!-padding-bottom-1">{{ entity_name }} - {{ entity_number }}</span>
+      {% else %}
+        {% if feature_flag_relevant_period === "true" %}
+          <span class="govuk-caption-l govuk-!-padding-bottom-1">{{ entity_name }} - {{ entity_number }}</span>
+        {% endif %}
       {% endif %}
 
       <h1 class="govuk-heading-xl">{{ title }}</h1>
@@ -116,25 +120,29 @@
         <br>
       {% endif %}
 
+      {% if feature_flag_relevant_period === "true" %}
+        {% include "includes/check-your-answers/relevant-period-check-your-answers.html" %}
+      {% endif %}
+
       {% include "includes/check-your-answers/presenter.html" %}
       {% include "includes/check-your-answers/verification-checks.html" %}
       <br>
       {% include "includes/entity.html" %}
 
-      {% if not updateStatementValidationEnabled %}
-        <br>
-        {% include "includes/check-your-answers/beneficial-owner-statements.html" %}
+      {% if pageParams.isRPStatementExists %}
+      <br>
+      {% include "includes/check-your-answers/relevant-period-statements.html" %}
       {% endif %}
 
-      {% set bois = appData.beneficial_owners_individual or [] %}
+      {% set bois = beneficial_owners_individual or [] %}
       {% set existingBOIs = bois | selectattr('ch_reference') %}
       {% set newBOIs = bois | rejectattr('ch_reference') %}
 
-      {% set bocs = appData.beneficial_owners_corporate or [] %}
+      {% set bocs = beneficial_owners_corporate or [] %}
       {% set existingBOCs = bocs | selectattr('ch_reference') %}
       {% set newBOCs = bocs | rejectattr('ch_reference') %}
 
-      {% set bogs = appData.beneficial_owners_government_or_public_authority or [] %}
+      {% set bogs = beneficial_owners_government_or_public_authority or [] %}
       {% set existingBOGs = bogs | selectattr('ch_reference') %}
       {% set newBOGs = bogs | rejectattr('ch_reference') %}
 
@@ -156,7 +164,7 @@
       {% if newBOIs | length or newBOCs | length or newBOGs | length %}
         {% set hideChangeLinksForNonEditableFields = false %}
         <br>
-        <h2 class="govuk-heading-l">Beneficial owners you have added</h2>
+        <h2 class="govuk-heading-l">Beneficial owners in the Update period</h2>
         {% for boi in newBOIs %}
           {% include "includes/check-your-answers/beneficial-owner-individual.html" %}
         {% endfor %}
@@ -168,11 +176,11 @@
         {% endfor %}
       {% endif %}
 
-      {% set mois = appData.managing_officers_individual or [] %}
+      {% set mois = managing_officers_individual or [] %}
       {% set existingMOIs = mois | selectattr('ch_reference') %}
       {% set newMOIs = mois | rejectattr('ch_reference') %}
 
-      {% set mocs = appData.managing_officers_corporate or [] %}
+      {% set mocs = managing_officers_corporate or [] %}
       {% set existingMOCs = mocs | selectattr('ch_reference') %}
       {% set newMOCs = mocs | rejectattr('ch_reference') %}
 
@@ -200,7 +208,7 @@
         {% endfor %}
       {% endif %}
 
-      {% set trusts = appData.trusts or [] %}
+      {% set trusts = trusts or [] %}
       {% set existingTrusts = trusts | selectattr('ch_reference') %}
       {% set newTrusts = trusts | rejectattr('ch_reference') %}
 
@@ -222,10 +230,7 @@
         {% endfor %}
       {% endif %}
 
-      {% if updateStatementValidationEnabled %}
-        <br>
-        {% include "includes/check-your-answers/beneficial-owner-statements.html" %}
-      {% endif %}
+      {% include "includes/check-your-answers/beneficial-owner-statements.html" %}
 
       {% if isRemoveJourney %}
         <h2 class="govuk-heading-m">Removal statement</h2>

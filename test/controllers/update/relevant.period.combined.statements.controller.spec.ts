@@ -109,19 +109,19 @@ describe("POST tests", () => {
       .send({ relevant_period_combined_statements: "change_bo_relevant_period" });
 
     expect(resp.status).toEqual(302);
-    expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL);
+    expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
   });
 
   test('should send redirect when anything is sent', async () => {
     // Arrange
     const resp = await request(app)
       // Act
-      .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
+      .post(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL + config.RELEVANT_PERIOD_QUERY_PARAM)
       .send({ relevant_period_combined_statements: "ANYTHING" });
 
     // Assert
     expect(resp.status).toEqual(302);
-    expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL);
+    expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
   });
 
   test('when feature flag is off, 404 is returned', async () => {

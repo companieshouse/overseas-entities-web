@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { validationResult } from 'express-validator';
-
+import { validationResult } from "express-validator";
 import { Session } from '@companieshouse/node-session-handler';
 
 import {
@@ -34,6 +33,7 @@ const getPageProperties = (trust, formData, errors?: FormattedValidationErrors) 
         trustName: trust?.trust_name,
       },
       roleWithinTrustType: RoleWithinTrustType,
+      entity_name: trust?.trust_name,
     },
     formData,
     errors,
@@ -41,19 +41,30 @@ const getPageProperties = (trust, formData, errors?: FormattedValidationErrors) 
   };
 };
 
+const getPagePropertiesRelevantPeriod = (isRelevantPeriod, trust, formData, entityName, errors?: FormattedValidationErrors) => {
+  const pageProps = getPageProperties(trust, formData, errors);
+  pageProps.formData.relevant_period = isRelevantPeriod;
+  pageProps.pageData.entity_name = entityName;
+  return pageProps;
+};
+
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-
     const appData = getApplicationData(req.session);
     const trusteeId = req.params[ROUTE_PARAM_TRUSTEE_ID];
+    const isRelevantPeriod = req.query['relevant-period'];
 
     const trust = getTrustInReview(appData) as Trust;
     const trustee = getTrustee(trust, trusteeId, TrusteeType.LEGAL_ENTITY) as TrustCorporate;
 
     const formData = trustee ? mapLegalEntityTrusteeFromSessionToPage(trustee) : {};
 
-    return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE, getPageProperties(trust, formData));
+    if (isRelevantPeriod) {
+      return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE, getPagePropertiesRelevantPeriod(isRelevantPeriod, trust, formData, appData.entity_name));
+    } else {
+      return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE, getPageProperties(trust, formData));
+    }
   } catch (error) {
     next(error);
   }
@@ -62,19 +73,25 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-
     const appData = getApplicationData(req.session);
     const trusteeId = req.params[ROUTE_PARAM_TRUSTEE_ID];
     const trust = getTrustInReview(appData) as Trust;
 
+    const isRelevantPeriod = req.query['relevant-period'];
+    const formData = req.body as TrustLegalEntityForm;
     const errorList = validationResult(req);
-    const formData: TrustLegalEntityForm = req.body as TrustLegalEntityForm;
-
     if (!errorList.isEmpty()) {
-      return res.render(
-        UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE,
-        getPageProperties(trust, formData, formatValidationError(errorList.array())),
-      );
+      if (isRelevantPeriod) {
+        return res.render(
+          UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE,
+          getPagePropertiesRelevantPeriod(isRelevantPeriod, trust, formData, appData.entity_name, formatValidationError(errorList.array())),
+        );
+      } else {
+        return res.render(
+          UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE,
+          getPageProperties(trust, formData, formatValidationError(errorList.array())),
+        );
+      }
     }
 
     const trusteeIndex = getTrusteeIndex(trust, trusteeId, TrusteeType.LEGAL_ENTITY);
@@ -98,7 +115,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
 const saveAppData = async(req: Request, appData: ApplicationData) => {
   setExtraData(req.session, appData);
-  await saveAndContinue(req, req.session as Session, false);
+  await saveAndContinue(req, req.session as Session);
 };
 
 const getBackLink = (legalEntitiesReviewed: boolean) => {

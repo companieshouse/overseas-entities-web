@@ -23,7 +23,8 @@ import {
   UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL,
   UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL,
   UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL,
-  TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL
+  TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL,
+  RELEVANT_PERIOD_QUERY_PARAM
 } from '../../../src/config';
 import { authentication } from '../../../src/middleware/authentication.middleware';
 import { companyAuthentication } from '../../../src/middleware/company.authentication.middleware';
@@ -34,12 +35,12 @@ import { isActiveFeature } from '../../../src/utils/feature.flag';
 import { TRUST } from '../../__mocks__/session.mock';
 import {
   ANY_MESSAGE_ERROR,
-  CONTINUE_BUTTON_TEXT,
-  PAGE_NOT_FOUND_TEXT,
   PAGE_TITLE_ERROR,
   SERVICE_UNAVAILABLE,
   UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_TITLE,
-  ERROR_LIST
+  ERROR_LIST,
+  RELEVANT_PERIOD,
+  SAVE_AND_CONTINUE_BUTTON_TEXT
 } from '../../__mocks__/text.mock';
 import { TRUST_WITH_ID } from '../../__mocks__/session.mock';
 import { UpdateKey } from '../../../src/model/update.type.model';
@@ -187,6 +188,8 @@ const DEFAULT_FORM_SUBMISSION = {
   stillInvolved: "1",
 };
 
+const ROLE_WITHIN_TRUST_QUESTION_TEXT = "What is its role within the trust?";
+
 const mockGetApplicationData = getApplicationData as jest.Mock;
 mockGetApplicationData.mockReturnValue({
   [UpdateKey]: {
@@ -235,7 +238,145 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       expect(mockGetTrustInReview).toHaveBeenCalledTimes(1);
       expect(mockGetTrustee).toHaveBeenCalledTimes(1);
 
-      expect(response.text).toContain(CONTINUE_BUTTON_TEXT);
+      expect(response.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(response.text).not.toContain(PAGE_TITLE_ERROR);
+    });
+
+    test('when feature flag is on, page is returned with role within trust question for adding new legal entity', async () => {
+      // Arrange
+      const appData = { entity_number: 'OE654321', entity_name: 'Testin\' OE' };
+      const trustInReview = { trust_id: '2288', trust_name: 'not-for-profit trust', review_status: { in_review: true } };
+
+      mockIsActiveFeature.mockReturnValue(true);
+      mockGetApplicationData.mockReturnValue(appData);
+      mockGetTrustInReview.mockReturnValue(trustInReview);
+      mockGetTrustee.mockReturnValue(undefined);
+
+      // Act
+      const response = await request(app).get(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL);
+
+      // Assert
+      expect(response.status).toEqual(200);
+      expect(response.text).toContain(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_TITLE);
+      expect(response.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
+      expect(response.text).toContain(ROLE_WITHIN_TRUST_QUESTION_TEXT);
+
+      expect(mockGetTrustInReview).toHaveBeenCalledWith(appData);
+      expect(mockGetTrustInReview).toHaveBeenCalledTimes(1);
+      expect(mockGetTrustee).toHaveBeenCalledTimes(1);
+
+      expect(response.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(response.text).not.toContain(PAGE_TITLE_ERROR);
+    });
+
+    test('when feature flag is on for adding new legal entity, existing page is returned with no important pre-reg period banner', async () => {
+      // Arrange
+      const appData = { entity_number: 'OE333777', entity_name: 'Overseas Entity Name' };
+      const trustInReview = { trust_id: '3377', trust_name: 'Trust-3', review_status: { in_review: true } };
+
+      mockIsActiveFeature.mockReturnValue(true);
+      mockGetApplicationData.mockReturnValue(appData);
+      mockGetTrustInReview.mockReturnValue(trustInReview);
+      mockGetTrustee.mockReturnValue(undefined);
+
+      // Act
+      const response = await request(app).get(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL);
+
+      // Assert
+      expect(response.status).toEqual(200);
+      expect(response.text).toContain(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_TITLE);
+      expect(response.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
+
+      expect(mockGetTrustInReview).toHaveBeenCalledWith(appData);
+      expect(mockGetTrustInReview).toHaveBeenCalledTimes(1);
+      expect(mockGetTrustee).toHaveBeenCalledTimes(1);
+
+      expect(response.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(response.text).not.toContain("govuk-notification-banner");
+      expect(response.text).not.toContain(RELEVANT_PERIOD);
+      expect(response.text).not.toContain(PAGE_TITLE_ERROR);
+    });
+
+    test('when feature flag is on for adding legal entity for pre-reg period, add page is returned with no role within trust question', async () => {
+      // Arrange
+      const appData = { entity_number: 'OE444666', entity_name: 'Overseas Entity Name' };
+      const trustInReview = { trust_id: '4466', trust_name: 'TRUST+4', review_status: { in_review: true } };
+
+      mockIsActiveFeature.mockReturnValue(true);
+      mockGetApplicationData.mockReturnValue(appData);
+      mockGetTrustInReview.mockReturnValue(trustInReview);
+      mockGetTrustee.mockReturnValue(undefined);
+
+      // Act
+      const response = await request(app).get(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL + RELEVANT_PERIOD_QUERY_PARAM);
+
+      // Assert
+      expect(response.status).toEqual(200);
+      expect(response.text).toContain(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_TITLE);
+      expect(response.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
+
+      expect(mockGetTrustInReview).toHaveBeenCalledWith(appData);
+      expect(mockGetTrustInReview).toHaveBeenCalledTimes(1);
+      expect(mockGetTrustee).toHaveBeenCalledTimes(1);
+
+      expect(response.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(response.text).not.toContain(ROLE_WITHIN_TRUST_QUESTION_TEXT);
+      expect(response.text).not.toContain(PAGE_TITLE_ERROR);
+    });
+
+    test('when feature flag is on for adding new legal entity for pre-reg period, page is returned with important pre-reg period banner', async () => {
+      // Arrange
+      const appData = { entity_number: 'OE555555', entity_name: 'Overseas Entity Name' };
+      const trustInReview = { trust_id: '5555', trust_name: 'TRUST_5', review_status: { in_review: true } };
+
+      mockIsActiveFeature.mockReturnValue(true);
+      mockGetApplicationData.mockReturnValue(appData);
+      mockGetTrustInReview.mockReturnValue(trustInReview);
+      mockGetTrustee.mockReturnValue(undefined);
+
+      // Act
+      const response = await request(app).get(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL + RELEVANT_PERIOD_QUERY_PARAM);
+
+      // Assert
+      expect(response.status).toEqual(200);
+      expect(response.text).toContain(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_TITLE);
+      expect(response.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
+
+      expect(mockGetTrustInReview).toHaveBeenCalledWith(appData);
+      expect(mockGetTrustInReview).toHaveBeenCalledTimes(1);
+      expect(mockGetTrustee).toHaveBeenCalledTimes(1);
+
+      expect(response.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(response.text).toContain("govuk-notification-banner");
+      expect(response.text).toContain(RELEVANT_PERIOD);
+      expect(response.text).not.toContain(PAGE_TITLE_ERROR);
+    });
+
+    test('render page with the important banner when we insert a relevant period trustee into the page', async () => {
+      const appData = { entity_number: 'OE999999', entity_name: 'Overseas Entity Name' };
+      const trustInReview = { trust_id: 'trust-in-review-1', trust_name: 'Overseas Entity Name', review_status: { in_review: false } };
+      const trustee = {
+        id: 'legal_entity_trustee_3',
+        relevant_period: true
+      };
+      mockIsActiveFeature.mockReturnValue(true);
+      mockGetApplicationData.mockReturnValue(appData);
+      mockGetTrustInReview.mockReturnValue(trustInReview);
+      mockGetTrustee.mockReturnValue(trustee);
+      const response = await request(app).get(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL);
+
+      // Assert
+      expect(response.status).toEqual(200);
+      expect(response.text).toContain(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_TITLE);
+      expect(response.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
+
+      expect(mockGetTrustInReview).toHaveBeenCalledWith(appData);
+      expect(mockGetTrustInReview).toHaveBeenCalledTimes(1);
+      expect(mockGetTrustee).toHaveBeenCalledTimes(1);
+
+      expect(response.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(response.text).toContain("govuk-notification-banner");
+      expect(response.text).toContain(RELEVANT_PERIOD);
       expect(response.text).not.toContain(PAGE_TITLE_ERROR);
     });
 
@@ -271,7 +412,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       expect(response.text).toContain('Pruitt');
       expect(response.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
 
-      expect(response.text).toContain(CONTINUE_BUTTON_TEXT);
+      expect(response.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(response.text).not.toContain(PAGE_TITLE_ERROR);
 
       expect(response.text).toContain('name="stillInvolved" type="radio" value="0" checked');
@@ -279,15 +420,6 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       expect(response.text).toContain('name="ceasedDateMonth" type="text" value="01"');
       expect(response.text).toContain('name="ceasedDateYear" type="text" value="2024"');
 
-    });
-
-    test('when feature flag is off, 404 is returned', async () => {
-      mockIsActiveFeature.mockReturnValue(false);
-
-      const response = await request(app).get(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL);
-
-      expect(response.status).toEqual(404);
-      expect(response.text).toContain(PAGE_NOT_FOUND_TEXT);
     });
 
     test("catch error when rendering the page", async () => {
@@ -610,15 +742,6 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       expect(resp.text).toContain(ERROR_LIST);
       expect(resp.text).toContain(ErrorMessages.DATE_BEFORE_TRUST_CREATION_DATE_CEASED_TRUSTEE);
 
-    });
-
-    test('when feature flag is off, 404 is returned', async () => {
-      mockIsActiveFeature.mockReturnValue(false);
-
-      const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
-
-      expect(resp.status).toEqual(404);
-      expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
     });
 
     test.each([

@@ -43,6 +43,7 @@ import {
   PAGE_TITLE_ERROR,
   SERVICE_UNAVAILABLE,
   SHOW_INFORMATION_ON_PUBLIC_REGISTER,
+  SAVE_AND_CONTINUE_BUTTON_TEXT,
 } from "../../__mocks__/text.mock";
 import {
   UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
@@ -67,7 +68,6 @@ import {
   MANAGING_OFFICER_CORPORATE_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK,
   MANAGING_OFFICER_CORPORATE_WITH_MAX_LENGTH_FIELDS_MOCK
 } from "../../__mocks__/validation.mock";
-import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.mock';
 import {
   getApplicationData,
   getFromApplicationData,
@@ -128,7 +128,7 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
       expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
       expect(resp.text).toContain(UPDATE_LANDING_PAGE_URL);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-      expect(resp.text).toContain(saveAndContinueButtonText);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
       expect(resp.text).toContain(SHOW_INFORMATION_ON_PUBLIC_REGISTER);
     });
@@ -456,7 +456,7 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
-      expect(resp.text).toContain(saveAndContinueButtonText);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).toContain("Joe Bloggs");
     });
 

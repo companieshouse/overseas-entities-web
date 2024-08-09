@@ -37,24 +37,21 @@ const mockRequestWithParams = {
 describe("NAVIGATION utils", () => {
 
   test(`getEntityBackLink returns ${config.DUE_DILIGENCE_URL} when ${WhoIsRegisteringType.AGENT} selected`, () => {
-    const entityBackLink = getEntityBackLink({ [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT });
+    const mockRequest = { query: {} } as Request;
+    const entityBackLink = getEntityBackLink({ [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT }, mockRequest);
     expect(entityBackLink).toEqual(config.DUE_DILIGENCE_URL);
   });
 
   test(`getEntityBackLink returns ${config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL} when ${WhoIsRegisteringType.SOMEONE_ELSE} selected`, () => {
-    const entityBackLink = getEntityBackLink({ [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE });
+    const mockRequest = { query: {} } as Request;
+    const entityBackLink = getEntityBackLink({ [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE }, mockRequest);
     expect(entityBackLink).toEqual(config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
   });
 
-  test(`getSoldLandFilterBackLink returns ${config.LANDING_PAGE_STARTING_NEW_URL} when FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 is active`, () => {
+  test(`getSoldLandFilterBackLink returns ${config.LANDING_PAGE_STARTING_NEW_URL}`, () => {
     mockIsActiveFeature.mockReturnValueOnce(true);
     const soldLandFilterBackLink = getSoldLandFilterBackLink();
     expect(soldLandFilterBackLink).toEqual(config.LANDING_PAGE_STARTING_NEW_URL);
-  });
-
-  test(`getSoldLandFilterBackLink returns ${config.LANDING_PAGE_URL} when FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 is not active`, () => {
-    const soldLandFilterBackLink = getSoldLandFilterBackLink();
-    expect(soldLandFilterBackLink).toEqual(config.LANDING_PAGE_URL);
   });
 
   test(`getRemoveBackLink returns a URL with the 'journey' query parameter present when on the Remove journey`, () => {
@@ -97,11 +94,6 @@ describe("NAVIGATION utils", () => {
 
   test(`NAVIGATION returns ${config.LANDING_PAGE_URL} when calling previousPage on ${config.STARTING_NEW_URL} object`, () => {
     const navigation = NAVIGATION[config.STARTING_NEW_URL].previousPage();
-    expect(navigation).toEqual(config.LANDING_PAGE_URL);
-  });
-
-  test(`NAVIGATION returns ${config.LANDING_PAGE_URL} when calling previousPage on ${config.SOLD_LAND_FILTER_URL} object`, () => {
-    const navigation = NAVIGATION[config.SOLD_LAND_FILTER_URL].previousPage();
     expect(navigation).toEqual(config.LANDING_PAGE_URL);
   });
 
@@ -337,19 +329,19 @@ describe("NAVIGATION utils", () => {
   test(`NAVIGATION returns ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL} when calling previousPage on ${config.RELEVANT_PERIOD_INTERRUPT_URL} object`, () => {
     const mockRequest = { query: {} } as Request;
     const navigation = NAVIGATION[config.RELEVANT_PERIOD_INTERRUPT_URL].previousPage(undefined, mockRequest);
-    expect(navigation).toEqual(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
+    expect(navigation).toEqual(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
   });
 
   test(`NAVIGATION returns ${config.RELEVANT_PERIOD_INTERRUPT_URL} when calling previousPage on ${config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL} object`, () => {
     const mockRequest = { query: {} } as Request;
     const navigation = NAVIGATION[config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL].previousPage(undefined, mockRequest);
-    expect(navigation).toEqual(config.RELEVANT_PERIOD_INTERRUPT_URL);
+    expect(navigation).toEqual(config.RELEVANT_PERIOD_INTERRUPT_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
   });
 
   test(`NAVIGATION returns ${config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL} when calling previousPage on ${config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL} object`, () => {
     const mockRequest = { query: {} } as Request;
     const navigation = NAVIGATION[config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL].previousPage(undefined, mockRequest);
-    expect(navigation).toEqual(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL);
+    expect(navigation).toEqual(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
   });
 
   test(`NAVIGATION returns ${config.UPDATE_INTERRUPT_CARD_URL} when calling previousPage on ${config.OVERSEAS_ENTITY_QUERY_URL} object`, () => {

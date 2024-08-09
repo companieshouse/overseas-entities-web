@@ -5,6 +5,7 @@ jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/utils/save.and.continue');
 jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
+jest.mock('../../../src/utils/relevant.period');
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
 import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
@@ -20,7 +21,8 @@ import {
   UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
   UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL,
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
-  UPDATE_BENEFICIAL_OWNER_TYPE_PAGE
+  UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
+  RELEVANT_PERIOD_QUERY_PARAM
 } from "../../../src/config";
 import {
   getFromApplicationData,
@@ -46,6 +48,7 @@ import {
   TRUSTS_NOC_HEADING,
   RELEVANT_PERIOD,
   RELEVANT_PERIOD_INDIVIDUAL_INFORMATION,
+  SAVE_AND_CONTINUE_BUTTON_TEXT,
 } from '../../__mocks__/text.mock';
 import {
   APPLICATION_DATA_UPDATE_BO_MOCK,
@@ -61,14 +64,14 @@ import {
   UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_MOCK_FOR_CEASE_VALIDATION,
   UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK,
 } from '../../__mocks__/session.mock';
-import { BeneficialOwnerIndividualKey } from '../../../src/model/beneficial.owner.individual.model';
+
+import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from '../../../src/model/beneficial.owner.individual.model';
 import { AddressKeys } from '../../../src/model/data.types.model';
 import {
   BENEFICIAL_OWNER_INDIVIDUAL_WITH_INVALID_CHARS_MOCK,
   BENEFICIAL_OWNER_INDIVIDUAL_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK,
   BENEFICIAL_OWNER_INDIVIDUAL_WITH_MAX_LENGTH_FIELDS_MOCK
 } from '../../__mocks__/validation.mock';
-import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.mock';
 import { ErrorMessages } from '../../../src/validation/error.messages';
 import { ServiceAddressKey, ServiceAddressKeys } from "../../../src/model/address.model";
 import { ApplicationDataType } from '../../../src/model';
@@ -76,6 +79,7 @@ import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/ha
 import * as config from "../../../src/config";
 import { DateTime } from "luxon";
 import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
+import { checkRelevantPeriod } from "../../../src/utils/relevant.period";
 
 mockRemoveJourneyMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
@@ -98,6 +102,7 @@ const mockPrepareData = prepareData as jest.Mock;
 const mockRemoveFromApplicationData = removeFromApplicationData as unknown as jest.Mock;
 const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockCheckRelevantPeriod = checkRelevantPeriod as jest.Mock;
 
 const DUMMY_DATA_OBJECT = { dummy: "data" };
 
@@ -119,7 +124,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(config.UPDATE_LANDING_PAGE_URL);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
-      expect(resp.text).toContain(saveAndContinueButtonText);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).toContain(SECOND_NATIONALITY);
       expect(resp.text).toContain(SECOND_NATIONALITY_HINT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
@@ -152,13 +157,29 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
-      expect(resp.text).toContain(saveAndContinueButtonText);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).toContain("Ivan");
       expect(resp.text).toContain("Drago");
       expect(resp.text).toContain("Russian");
       expect(resp.text).toContain(SECOND_NATIONALITY);
       expect(resp.text).toContain(SECOND_NATIONALITY_HINT);
       expect(resp.text).toContain("name=\"is_still_bo\" type=\"radio\" value=\"1\" checked");
+    });
+
+    test(`renders ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with relevant period banner when inserting a relevant period object`, async () => {
+      mockGetFromApplicationData.mockReturnValueOnce({ ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK, relevant_period: true });
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
+
+      const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContain(RELEVANT_PERIOD);
+      expect(resp.text).toContain(RELEVANT_PERIOD_INDIVIDUAL_INFORMATION);
+      expect(resp.text).toContain("Ivan");
+      expect(resp.text).toContain("Drago");
+      expect(resp.text).toContain("Russian");
     });
 
     test(`catch error when rendering the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page`, async () => {
@@ -173,13 +194,13 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
   describe("POST tests", () => {
     test(`redirects to ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
       mockPrepareData.mockImplementationOnce( () => UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK );
-
+      mockCheckRelevantPeriod.mockReturnValueOnce(true);
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
@@ -196,6 +217,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
     test(`redirect to the ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page after a successful post from ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with service address data`, async () => {
       mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO );
+      mockCheckRelevantPeriod.mockReturnValueOnce(true);
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send({
@@ -243,7 +265,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
     test(`adds data to the session and redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
       mockPrepareData.mockImplementationOnce( () => UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK );
-
+      mockCheckRelevantPeriod.mockReturnValueOnce(true);
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
@@ -254,7 +276,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(BeneficialOwnerIndividualKey);
       expect(resp.status).toEqual(302);
 
-      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
     });
 
     test("catch error when posting data", async () => {
@@ -324,6 +346,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
     test(`Service address from the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page is present when same address is set to no`, async () => {
       mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
+      mockCheckRelevantPeriod.mockReturnValueOnce(true);
       await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
@@ -335,6 +358,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
     test(`Service address from the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page is empty when same address is set to yes`, async () => {
       mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
+      mockCheckRelevantPeriod.mockReturnValueOnce(true);
       await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
@@ -948,6 +972,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
   describe("UPDATE tests", () => {
     test(`redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
+      mockGetFromApplicationData.mockReturnValueOnce(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
       mockPrepareData.mockReturnValueOnce(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)
@@ -970,6 +995,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
     });
 
     test(`replaces existing object on submit`, async () => {
+      mockGetFromApplicationData.mockReturnValueOnce(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
       mockPrepareData.mockReturnValueOnce({ id: BO_IND_ID, name: "new name" });
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)
@@ -978,14 +1004,19 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(BeneficialOwnerIndividualKey);
       expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(BO_IND_ID);
 
-      expect(mockSetApplicationData.mock.calls[0][1].id).toEqual(BO_IND_ID);
+      const data = mockSetApplicationData.mock.calls[0][1];
+      expect(data.id).toEqual(BO_IND_ID);
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(BeneficialOwnerIndividualKey);
+
+      // Ensure that trust ids on the original BO aren't lost during the update
+      expect((data as BeneficialOwnerIndividual).trust_ids).toEqual(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK.trust_ids);
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
     });
 
     test(`Service address from the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} is present when same address is set to no`, async () => {
+      mockGetFromApplicationData.mockReturnValueOnce(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
       mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
       await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)
@@ -997,6 +1028,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
     });
 
     test(`Service address from the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} is empty when same address is set to yes`, async () => {
+      mockGetFromApplicationData.mockReturnValueOnce(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
       mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
       await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)

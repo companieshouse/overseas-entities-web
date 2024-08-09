@@ -34,6 +34,14 @@ import {
   TRUST_INVOLVED_PAGE,
   TRUST_INVOLVED_URL,
   TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL,
+  RELEVANT_PERIOD_QUERY_PARAM,
+  UPDATE_LANDING_URL,
+  UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE,
+  UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE,
+  UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE,
+  TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE,
+  TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE,
+  UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_PAGE,
 } from '../../src/config';
 import { get, post } from "../../src/controllers/trust.involved.controller";
 import { authentication } from '../../src/middleware/authentication.middleware';
@@ -46,6 +54,7 @@ import { mapTrustWhoIsInvolvedToPage } from '../../src/utils/trust/who.is.involv
 import { getFormerTrusteesFromTrust, getIndividualTrusteesFromTrust } from '../../src/utils/trusts';
 import { isActiveFeature } from '../../src/utils/feature.flag';
 import { getUrlWithParamsToPath } from '../../src/utils/url';
+import { postTrustInvolvedPage } from "../../src/utils/trust.involved";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
@@ -204,6 +213,46 @@ describe('Trust Involved controller', () => {
       ],
     ];
 
+    const dpPostReviewTrustee = [
+      [
+        TrusteeType.HISTORICAL,
+        "/" + UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_PAGE,
+      ],
+      [
+        TrusteeType.INDIVIDUAL,
+        "/" + UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE,
+      ],
+      [
+        TrusteeType.RELEVANT_PERIOD_INDIVIDUAL_BENEFICIARY,
+        "/" + UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE + RELEVANT_PERIOD_QUERY_PARAM,
+      ],
+      [
+        TrusteeType.RELEVANT_PERIOD_LEGAL_ENTITY,
+        "/" + UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE + RELEVANT_PERIOD_QUERY_PARAM,
+      ],
+    ];
+
+    const dpPostUpdateTrustee = [
+      [
+        TrusteeType.INDIVIDUAL,
+        "/" + UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE + "/" + TRUST_WITH_ID.trust_id + "/" + TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE,
+      ],
+      [
+        TrusteeType.LEGAL_ENTITY,
+        "/" + UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE + "/" + TRUST_WITH_ID.trust_id + "/" + TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE,
+      ],
+    ];
+
+    const dpPostRelevantPeriodUpdateTrustee = [
+      [
+        TrusteeType.RELEVANT_PERIOD_INDIVIDUAL_BENEFICIARY,
+        "/" + UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE + "/" + TRUST_WITH_ID.trust_id + "/" + TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE + RELEVANT_PERIOD_QUERY_PARAM,
+      ],
+      [
+        TrusteeType.RELEVANT_PERIOD_LEGAL_ENTITY,
+        "/" + UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE + "/" + TRUST_WITH_ID.trust_id + "/" + TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + RELEVANT_PERIOD_QUERY_PARAM,
+      ],
+    ];
     test.each(dpPostTrustee)(
       'success push with %p type',
       async (typeOfTrustee: string, expectedUrl: string) => {
@@ -219,6 +268,61 @@ describe('Trust Involved controller', () => {
 
         expect(mockRes.redirect).toBeCalledTimes(1);
         expect(mockRes.redirect).toBeCalledWith(`${TRUST_ENTRY_URL}/${trustId}${expectedUrl}`);
+      },
+    );
+    test.each(dpPostReviewTrustee)(
+      'success push with %p type',
+      async (typeOfTrustee: string, expectedUrl: string) => {
+        mockReq.body = {
+          typeOfTrustee,
+        };
+
+        (validationResult as any as jest.Mock).mockImplementationOnce(() => ({
+          isEmpty: jest.fn().mockReturnValue(true),
+        }));
+        const isUpdate: boolean = true;
+        const isReview: boolean = true;
+        await postTrustInvolvedPage(mockReq, mockRes, mockNext, isUpdate, isReview);
+
+        expect(mockRes.redirect).toBeCalledWith(`${UPDATE_LANDING_URL}${expectedUrl}`);
+      },
+    );
+
+    test.each(dpPostUpdateTrustee)(
+      'success push with %p type',
+      async (typeOfTrustee: string, expectedUrl: string) => {
+        mockReq.body = {
+          typeOfTrustee,
+        };
+
+        (validationResult as any as jest.Mock).mockImplementationOnce(() => ({
+          isEmpty: jest.fn().mockReturnValue(true),
+        }));
+        const isUpdate: boolean = true;
+        const isReview: boolean = false;
+        await postTrustInvolvedPage(mockReq, mockRes, mockNext, isUpdate, isReview);
+
+        expect(mockRes.redirect).toBeCalledWith(`${UPDATE_LANDING_URL}${expectedUrl}`);
+      },
+    );
+
+    test.each(dpPostRelevantPeriodUpdateTrustee)(
+      'success push with %p type',
+      async (typeOfTrustee: string, expectedUrl: string) => {
+        mockReq.body = {
+          typeOfTrustee,
+        };
+
+        (validationResult as any as jest.Mock).mockImplementationOnce(() => ({
+          isEmpty: jest.fn().mockReturnValue(true),
+        }));
+        const isUpdate: boolean = true;
+        const isReview: boolean = false;
+        await postTrustInvolvedPage(mockReq, mockRes, mockNext, isUpdate, isReview);
+
+        // TODO Implement pages for relevant period
+        console.log('TODO Implement pages for relevant period on URL:' + expectedUrl);
+        // expect(mockRes.redirect).toBeCalledWith(`${UPDATE_LANDING_URL}${expectedUrl}`);
       },
     );
 

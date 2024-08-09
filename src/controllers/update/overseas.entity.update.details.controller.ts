@@ -18,7 +18,6 @@ import * as config from "../../config";
 import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAddressKeys } from "../../model/address.model";
 import { Session } from "@companieshouse/node-session-handler";
 import { saveAndContinue } from "../../utils/save.and.continue";
-import { isActiveFeature } from "../../utils/feature.flag";
 import { fetchOverseasEntityEmailAddress } from "../../utils/update/fetch.overseas.entity.email";
 import { fetchBeneficialOwnersPrivateData } from "../../utils/update/fetch.beneficial.owners.private.data";
 import { fetchManagingOfficersPrivateData } from "../../utils/update/fetch.managing.officers.private.data";
@@ -77,11 +76,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       [EntityNameKey]: entityName
     });
 
-    await saveAndContinue(req, session, false);
-    const redirectUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION)
-      ? config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL
-      : config.BENEFICIAL_OWNER_STATEMENTS_PAGE;
-    return res.redirect(redirectUrl);
+    await saveAndContinue(req, session);
+    return res.redirect(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
 
   } catch (error) {
     logger.errorRequest(req, error);

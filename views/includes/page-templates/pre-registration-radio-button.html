@@ -6,35 +6,35 @@
 
 
 {% set fieldParam = {
-name: 'addTrust',
-error: errors.addTrust,
-items: [
-{
-value: "addTrustYes",
-text: "Yes - for the current filing period",
-attributes: {
-"data-event-id": "add-trust-yes-radio-option"
-},
-checked: formData.addTrust == "addTrustYes"
-}, {
-value: "preRegistration",
-text: "Yes - for the pre-registration period",
-checked: formData.preRegistrationPeriod == "preRegistration"
-}, {
-value: "noTrust",
-text: "No",
-attributes: {
-"data-event-id": "add-trust-no-radio-option"
-},
-checked: formData.addTrust == "noTrust"
-}
-] } %}
+    name: 'addTrust',
+    error: errors.addTrust,
+    items: [
+        {
+            value: "addTrustYes",
+            text: "Yes - for the current filing period",
+            attributes: {
+                "data-event-id": "add-trust-yes-radio-option"
+            },
+            checked: formData.addTrust == "addTrustYes"
+        }, {
+            value: "preRegistration",
+            text: "Yes - for the pre-registration period",
+            checked: formData.preRegistrationPeriod == "preRegistration"
+        }, {
+            value: "noTrust",
+            text: "No",
+            attributes: {
+                "data-event-id": "add-trust-no-radio-option"
+            },
+            checked: formData.addTrust == "noTrust"
+        }
+    ]
+} %}
 
 {% include "includes/inputs/radio-input.html" %}
 
 {% if isUpdate %}
-{% include "includes/save-and-continue-button.html" %}
+    {% include "includes/save-and-continue-button.html" %}
 {% else %}
-{% include "includes/continue-button.html" %}
-
+    {% include "includes/continue-button.html" %}
 {% endif %}

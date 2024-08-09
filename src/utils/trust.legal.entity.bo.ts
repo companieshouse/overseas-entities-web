@@ -20,7 +20,7 @@ export const LEGAL_ENTITY_BO_TEXTS = {
   title: 'Tell us about the legal entity',
 };
 
-type TrustLegalEntityBeneificalOwnerPageProperties = {
+type TrustLegalEntityBeneficialOwnerPageProperties = {
   backLinkUrl: string,
   templateName: string;
   pageParams: {
@@ -28,7 +28,8 @@ type TrustLegalEntityBeneificalOwnerPageProperties = {
   },
   pageData: {
     trustData: CommonTrustData,
-    roleWithinTrustType: typeof RoleWithinTrustType;
+    roleWithinTrustType: typeof RoleWithinTrustType,
+    entity_name?: string;
   },
   formData?: TrustLegalEntityForm,
   errors?: FormattedValidationErrors,
@@ -42,7 +43,7 @@ const getPageProperties = (
   isUpdate: boolean,
   formData?: TrustLegalEntityForm,
   errors?: FormattedValidationErrors,
-): TrustLegalEntityBeneificalOwnerPageProperties => {
+): TrustLegalEntityBeneficialOwnerPageProperties => {
 
   return {
     backLinkUrl: getTrustInvolvedUrl(isUpdate, trustId, req),
@@ -76,6 +77,11 @@ export const getTrustLegalEntityBo = (req: Request, res: Response, next: NextFun
     );
     const pageProps = getPageProperties(req, trustId, isUpdate, formData);
 
+    // conditionally toggle display of relevant period page text and role within trust type will default to Beneficiary
+    if ((req.query["relevant-period"] === "true" || (trusteeId && pageProps.formData?.relevant_period)) && pageProps.formData) {
+      pageProps.formData.relevant_period = true;
+      setEntityNameInRelevantPeriodPageBanner(pageProps, appData ? appData.entity_name : pageProps.pageData.trustData.trustName);
+    }
     return res.render(pageProps.templateName, pageProps);
   } catch (error) {
     logger.errorRequest(req, error);
@@ -107,6 +113,7 @@ export const postTrustLegalEntityBo = async (req: Request, res: Response, next: 
         formData,
         formatValidationError(errorList.array()),
       );
+      setEntityNameInRelevantPeriodPageBanner(pageProps, appData ? appData.entity_name : pageProps.pageData.trustData.trustName);
       return res.render(pageProps.templateName, pageProps);
     }
 
@@ -156,3 +163,11 @@ const getUrl = (isUpdate: boolean) => (
     ? config.UPDATE_AN_OVERSEAS_ENTITY_URL
     : config.REGISTER_AN_OVERSEAS_ENTITY_URL
 );
+
+const setEntityNameInRelevantPeriodPageBanner = (pageProps: TrustLegalEntityBeneficialOwnerPageProperties, entityName: string | undefined) => {
+  // name the entity for the page template
+  if (pageProps.pageData && entityName !== undefined) {
+    pageProps.pageData.entity_name = entityName;
+  }
+  return pageProps;
+};

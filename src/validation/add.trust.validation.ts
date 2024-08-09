@@ -13,11 +13,7 @@ const isAddTrustToBeValidated = (req: Request): boolean => {
   const appData: ApplicationData = getApplicationData(req.session);
   const isUpdateOrRemoveJourney: boolean = !!appData.entity_number;
 
-  if (!isUpdateOrRemoveJourney) {
-    return true;
-  }
-
-  if (!hasNoBoAssignableToTrust(appData)) {
+  if (!isUpdateOrRemoveJourney || !hasNoBoAssignableToTrust(appData)) {
     return true;
   }
 

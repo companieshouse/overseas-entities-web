@@ -55,13 +55,13 @@ describe('Update - Trusts - Trusts associated with the overseas entity', () => {
   describe('GET tests', () => {
     test.each([
       [
-        "are BO's eligible for trusts",
+        "are BOs eligible for trusts",
         "with",
         { ...APPLICATION_DATA_MOCK },
         true
       ],
       [
-        "are no BO's eligible for trusts",
+        "are no BOs eligible for trusts",
         "without",
         {
           ...APPLICATION_DATA_MOCK,
@@ -190,7 +190,7 @@ describe('Update - Trusts - Trusts associated with the overseas entity', () => {
       expect(resp.header.location).toContain(UPDATE_TRUSTS_TELL_US_ABOUT_IT_PAGE);
     });
 
-    test("when FEATURE_FLAG_ENABLE_UPDATE_TRUSTS feature flag is on and BO's are eligible for trusts and no add trust option selected on page, add trust button validation should return error message", async () => {
+    test("when FEATURE_FLAG_ENABLE_UPDATE_TRUSTS feature flag is on and BOs are eligible for trusts and no add trust option selected on page, add trust button validation should return error message", async () => {
       mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
       mockGetApplicationData.mockReturnValue( { ...APPLICATION_DATA_MOCK } );
 
@@ -202,7 +202,7 @@ describe('Update - Trusts - Trusts associated with the overseas entity', () => {
 
     test("when FEATURE_FLAG_ENABLE_UPDATE_TRUSTS feature flag is on " +
       "and FEATURE_FLAG_ENABLE_RELEVANT_PERIOD is on " +
-      "and no BO's are eligible for trusts and is a relevant period and no add trust option selected on page, add trust button validation should run", async () => {
+      "and no BOs are eligible for trusts and is a relevant period and no add trust option selected on page, add trust button validation should run", async () => {
       mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
       mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_RELEVANT_PERIOD
 
@@ -222,7 +222,7 @@ describe('Update - Trusts - Trusts associated with the overseas entity', () => {
       expect(resp.text).toContain(ErrorMessages.ADD_TRUST);
     });
 
-    test("when FEATURE_FLAG_ENABLE_UPDATE_TRUSTS feature flag is on and no BO's are eligible for trusts and no add trust option selected on page, add trust button validation should not run", async () => {
+    test("when FEATURE_FLAG_ENABLE_UPDATE_TRUSTS feature flag is on and no BOs are eligible for trusts and no add trust option selected on page, add trust button validation should not run", async () => {
       mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
       mockGetApplicationData.mockReturnValue( {
         ...APPLICATION_DATA_MOCK,

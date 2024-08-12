@@ -77,7 +77,6 @@ update.filing_date["year"]) %}
 {% endset %}
 
 {% set addTrustsEnabled = pageParams.addTrustsEnabled %}
-{% set manageTrustsEnabled = pageParams.manageTrustsEnabled %}
 {% set hasExistingTrusts = update and update.review_trusts and update.review_trusts.length > 0 %}
 {% set hasBosWithTrusteeNOC = pageParams.hasAnyBosWithTrusteeNocs %}
 
@@ -315,23 +314,17 @@ update.filing_date["year"]) %}
     {% endfor %}
   {% endif %}
 
-  {% if addTrustsEnabled and manageTrustsEnabled %}
+  {% if addTrustsEnabled %}
     {% if hasExistingTrusts %}
       <br>
       <h2 class="govuk-heading-l">Trusts</h2>
       {% for trust in update.review_trusts %}
         {% set trust_heading = trust.trust_name %}
         {% include "includes/check-your-answers/trusts.html" %}
-      {% endfor %}
+      {% endfor %}   
     {% endif %}
-
-  {% elif addTrustsEnabled and pageParams.hasAnyBosWithTrusteeNocs %}
-    <br>
-    <h2 class="govuk-heading-l">Trusts</h2>
-    <p class="govuk-body govuk-!-margin-bottom-9">Trust information cannot be displayed.</p>
-
   {% endif %}
-
+  
     {% if isRemoveJourney %}
       {% set isStatementCorrectText = "Is all the information in this application correct?" %}
     {% else %}

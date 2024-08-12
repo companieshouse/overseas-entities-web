@@ -29,7 +29,7 @@ import { getApplicationData, setExtraData } from '../../../src/utils/application
 import { getTrustInReview, setTrusteesAsReviewed } from '../../../src/utils/update/review_trusts';
 import { isActiveFeature } from '../../../src/utils/feature.flag';
 import { RoleWithinTrustType } from '../../../src/model/role.within.trust.type.model';
-import { PAGE_TITLE_ERROR, PAGE_NOT_FOUND_TEXT } from '../../__mocks__/text.mock';
+import { PAGE_TITLE_ERROR } from '../../__mocks__/text.mock';
 import { TrusteeType } from '../../../src/model/trustee.type.model';
 import { saveAndContinue } from '../../../src/utils/save.and.continue';
 
@@ -209,15 +209,6 @@ describe('Update - Manage Trusts - Review individuals', () => {
       expect(response.text).toContain('Status');
       expect(response.text).toContain('Removed');
     });
-
-    test('when feature flag is off, 404 is returned', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(false);
-
-      const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL);
-
-      expect(resp.status).toEqual(404);
-      expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
-    });
   });
 
   describe('POST tests', () => {
@@ -249,15 +240,6 @@ describe('Update - Manage Trusts - Review individuals', () => {
       expect(mockSetTrusteesAsReviewed).toHaveBeenCalledWith(appData, TrusteeType.INDIVIDUAL);
       expect(mockSetExtraData).toHaveBeenCalled();
       expect(mockSaveAndContinue).toHaveBeenCalled();
-    });
-
-    test('when feature flag is off, 404 is returned', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(false);
-
-      const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL);
-
-      expect(resp.status).toEqual(404);
-      expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
     });
   });
 });

@@ -213,6 +213,8 @@
       {% set trusts = trusts or [] %}
       {% set existingTrusts = trusts | selectattr('ch_reference') %}
       {% set newTrusts = trusts | rejectattr('ch_reference') %}
+      {% set rpTrusts = newTrusts | selectattr('relevant_period') %}
+      {% set newTrusts = newTrusts | rejectattr('relevant_period') %}
 
       {% if (existingTrusts and existingTrusts.length > 0) %}
         <br><h2 class="govuk-heading-l">Trusts you have reviewed</h2>
@@ -230,6 +232,15 @@
           {% set manageTrusts = false %}
           {% include "includes/check-your-answers/trusts.html" %}
         {% endfor %}
+      {% endif %}
+
+      {% if (rpTrusts and rpTrusts.length > 0) %}
+      <br><h2 class="govuk-heading-l">Trusts in pre-registration period</h2>
+      {% for trust in rpTrusts %}
+      {% set trust_heading = trust.trust_name %}
+      {% set manageTrusts = false %}
+      {% include "includes/check-your-answers/trusts.html" %}
+      {% endfor %}
       {% endif %}
 
       {% include "includes/check-your-answers/beneficial-owner-statements.html" %}

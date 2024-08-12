@@ -689,6 +689,27 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
       expect(resp.text).toContain(ErrorMessages.INVALID_AML_NUMBER);
     });
 
+    test(`redirects to the ${ENTITY_PAGE} page after a successful post from ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page when identity date contains spaces`, async () => {
+      const dueDiligenceMock = { ...OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK };
+      const twoMonthOldDate = getTwoMonthOldDate();
+      dueDiligenceMock["identity_date-day"] = " " + twoMonthOldDate.day.toString() + " ";
+      dueDiligenceMock["identity_date-month"] = " " + twoMonthOldDate.month.toString() + " ";
+      dueDiligenceMock["identity_date-year"] = " " + twoMonthOldDate.year.toString() + " ";
+      mockPrepareData.mockReturnValueOnce( dueDiligenceMock );
+      const resp = await request(app)
+        .post(OVERSEAS_ENTITY_DUE_DILIGENCE_URL)
+        .send(dueDiligenceMock);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${ENTITY_URL}`);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+
+      // Additionally check that date fields are trimmed before they're saved in the session
+      const data: ApplicationDataType = mockPrepareData.mock.calls[0][0];
+      expect(data["identity_date-day"]).toEqual(twoMonthOldDate.day.toString());
+      expect(data["identity_date-month"]).toEqual(twoMonthOldDate.month.toString());
+      expect(data["identity_date-year"]).toEqual(twoMonthOldDate.year.toString());
+    });
   });
 
   describe("POST with url params tests", () => {
@@ -1142,4 +1163,29 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
 
   });
 
+  test(`redirects to the ${ENTITY_PAGE} page after a successful post from ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page when identity date contains spaces`, async () => {
+    mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+
+    const dueDiligenceMock = { ...OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK };
+    const twoMonthOldDate = getTwoMonthOldDate();
+    dueDiligenceMock["identity_date-day"] = " " + twoMonthOldDate.day.toString() + " ";
+    dueDiligenceMock["identity_date-month"] = " " + twoMonthOldDate.month.toString() + " ";
+    dueDiligenceMock["identity_date-year"] = " " + twoMonthOldDate.year.toString() + " ";
+    mockPrepareData.mockReturnValueOnce( dueDiligenceMock );
+    const resp = await request(app)
+      .post(OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_PARAMS_URL)
+      .send(dueDiligenceMock);
+
+    expect(resp.status).toEqual(302);
+    expect(resp.text).toContain(NEXT_PAGE_URL);
+    expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(ENTITY_WITH_PARAMS_URL);
+    expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
+
+    // Additionally check that date fields are trimmed before they're saved in the session
+    const data: ApplicationDataType = mockPrepareData.mock.calls[0][0];
+    expect(data["identity_date-day"]).toEqual(twoMonthOldDate.day.toString());
+    expect(data["identity_date-month"]).toEqual(twoMonthOldDate.month.toString());
+    expect(data["identity_date-year"]).toEqual(twoMonthOldDate.year.toString());
+  });
 });

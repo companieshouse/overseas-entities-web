@@ -4,15 +4,15 @@ import { NextFunction, Request, Response } from "express";
 
 export const dateValidations = (dateContext: dateContext) => {
   return [
-    body(dateContext.dayInput.name)
+    body(dateContext.dayInput.name).trim()
       .if(body(dateContext.monthInput.name).notEmpty({ ignore_whitespace: true }))
       .if(body(dateContext.yearInput.name).notEmpty({ ignore_whitespace: true }))
       .custom((value, { req }) => checkDayFieldForErrors(dateContext.dayInput.errors, req.body[dateContext.dayInput.name])),
-    body(dateContext.monthInput.name)
+    body(dateContext.monthInput.name).trim()
       .if(body(dateContext.dayInput.name).notEmpty({ ignore_whitespace: true }))
       .if(body(dateContext.yearInput.name).notEmpty({ ignore_whitespace: true }))
       .custom((value, { req }) => checkMonthFieldForErrors(dateContext.monthInput.errors, req.body[dateContext.monthInput.name])),
-    body(dateContext.yearInput.name)
+    body(dateContext.yearInput.name).trim()
       .if(body(dateContext.dayInput.name).notEmpty({ ignore_whitespace: true }))
       .if(body(dateContext.monthInput.name).notEmpty({ ignore_whitespace: true }))
       .custom((value, { req }) => checkYearFieldForErrors(dateContext.yearInput.errors, req.body[dateContext.yearInput.name])),
@@ -23,17 +23,17 @@ export const dateValidations = (dateContext: dateContext) => {
 
 export const conditionalDateValidations = (dateContextWithCondition: dateContextWithCondition) => {
   return [
-    body(dateContextWithCondition.dayInput.name)
+    body(dateContextWithCondition.dayInput.name).trim()
       .if(body(dateContextWithCondition.condition.elementName).equals(dateContextWithCondition.condition.expectedValue))
       .if(body(dateContextWithCondition.monthInput.name).notEmpty({ ignore_whitespace: true }))
       .if(body(dateContextWithCondition.yearInput.name).notEmpty({ ignore_whitespace: true }))
       .custom((value, { req }) => checkDayFieldForErrors(dateContextWithCondition.dayInput.errors, req.body[dateContextWithCondition.dayInput.name])),
-    body(dateContextWithCondition.monthInput.name)
+    body(dateContextWithCondition.monthInput.name).trim()
       .if(body(dateContextWithCondition.condition.elementName).equals(dateContextWithCondition.condition.expectedValue))
       .if(body(dateContextWithCondition.dayInput.name).notEmpty({ ignore_whitespace: true }))
       .if(body(dateContextWithCondition.yearInput.name).notEmpty({ ignore_whitespace: true }))
       .custom((value, { req }) => checkMonthFieldForErrors(dateContextWithCondition.monthInput.errors, req.body[dateContextWithCondition.monthInput.name])),
-    body(dateContextWithCondition.yearInput.name)
+    body(dateContextWithCondition.yearInput.name).trim()
       .if(body(dateContextWithCondition.condition.elementName).equals(dateContextWithCondition.condition.expectedValue))
       .if(body(dateContextWithCondition.dayInput.name).notEmpty({ ignore_whitespace: true }))
       .if(body(dateContextWithCondition.monthInput.name).notEmpty({ ignore_whitespace: true }))

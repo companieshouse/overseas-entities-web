@@ -1,3 +1,4 @@
+const mockTrim = jest.fn();
 const mockNotEmpty = jest.fn();
 const mockCustom = jest.fn();
 const mockNot = jest.fn();
@@ -10,6 +11,7 @@ const mockIsEmpty = jest.fn();
 
 jest.mock('express-validator', () => ({
   body: jest.fn().mockImplementation(() => ({
+    trim: mockTrim.mockReturnThis(),
     notEmpty: mockNotEmpty.mockReturnThis(),
     isLength: mockIsLength.mockReturnThis(),
     custom: mockCustom.mockReturnThis(),

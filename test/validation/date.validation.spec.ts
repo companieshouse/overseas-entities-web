@@ -1,10 +1,12 @@
 const mockIf = jest.fn();
+const mockTrim = jest.fn();
 const mockCustom = jest.fn();
 const mockEquals = jest.fn();
 const mockNotEmpty = jest.fn();
 
 jest.mock('express-validator', () => ({
   body: jest.fn().mockImplementation(() => ({
+    trim: mockTrim.mockReturnThis(),
     custom: mockCustom.mockReturnThis(),
     equals: mockEquals.mockReturnThis(),
     if: mockIf.mockReturnThis(),
@@ -368,7 +370,7 @@ describe("test date method", () => {
   });
 });
 
-describe("test day,month and year error checkers", () => {
+describe("test day, month and year error checkers", () => {
   const errors = {
     noDayError: ErrorMessages.DAY,
     noMonthError: ErrorMessages.MONTH,

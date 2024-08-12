@@ -18,7 +18,7 @@ import { SECURE_UPDATE_FILTER_URL, UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL, UPDATE
 import { authentication } from '../../../src/middleware/authentication.middleware';
 import { companyAuthentication } from '../../../src/middleware/company.authentication.middleware';
 import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
-import { checkBOsDetailsEntered, getApplicationData } from '../../../src/utils/application.data';
+import { checkBOsDetailsEntered, getApplicationData, setExtraData } from '../../../src/utils/application.data';
 import { isActiveFeature } from '../../../src/utils/feature.flag';
 
 import { TRUST } from '../../__mocks__/session.mock';
@@ -31,7 +31,8 @@ import { saveAndContinue } from '../../../src/utils/save.and.continue';
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockGetApplicationData = getApplicationData as jest.Mock;
-mockGetApplicationData.mockReturnValue({
+
+const mockApplicationData: ApplicationData = {
   [UpdateKey]: {
     review_trusts: [
       {
@@ -74,7 +75,7 @@ mockGetApplicationData.mockReturnValue({
       } as Trust
     ]
   }
-} as ApplicationData);
+};
 
 mockRemoveJourneyMiddleware.mockClear();
 
@@ -98,6 +99,9 @@ const mockSaveAndContinue = saveAndContinue as jest.Mock;
 describe('Update - Manage Trusts - Review former beneficial owners', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+
+    const clonedMockApplicationData = JSON.parse(JSON.stringify(mockApplicationData));
+    mockGetApplicationData.mockReturnValue(clonedMockApplicationData);
   });
 
   describe('GET tests', () => {
@@ -167,6 +171,14 @@ describe('Update - Manage Trusts - Review former beneficial owners', () => {
   });
 
   describe('POST tests', () => {
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+
+      const clonedMockApplicationData = JSON.parse(JSON.stringify(mockApplicationData));
+      mockGetApplicationData.mockReturnValue(clonedMockApplicationData);
+    });
+
     test('when feature flag is on, and adding new legal former BO, redirects to update-manage-trusts-orchestrator', async () => {
       mockIsActiveFeature.mockReturnValue(true);
 
@@ -240,6 +252,39 @@ describe('Update - Manage Trusts - Review former beneficial owners', () => {
       expect(resp.text).toContain("Enter the date they became a beneficial owner");
       expect(resp.text).toContain("Enter the date they stopped being a beneficial owner");
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
+    });
+
+    test('Redirects to update-manage-trusts-orchestrator wih no validation errors when dates contain spaces', async () => {
+      mockIsActiveFeature.mockReturnValue(true);
+
+      const mockSetExtraData = setExtraData as jest.Mock;
+
+      const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL).send({
+        type: 'legalEntity',
+        corporate_name: 'Corporate BO',
+        startDateDay: ' 18 ',
+        startDateMonth: ' 9 ',
+        startDateYear: ' 2022 ',
+        endDateDay: ' 20 ',
+        endDateMonth: ' 10 ',
+        endDateYear: ' 2023 ',
+        boId: ''
+      });
+
+      expect(resp.status).toEqual(302);
+      expect(mockSaveAndContinue).toHaveBeenCalled();
+      expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
+
+      // Additionally check that date fields are trimmed before they're saved in the session
+      const data = mockSetExtraData.mock.calls[0][1];
+      const corporateBo = data["update"]["review_trusts"][0]["HISTORICAL_BO"][2];
+
+      expect(corporateBo["notified_date_day"]).toEqual("18");
+      expect(corporateBo["notified_date_month"]).toEqual("9");
+      expect(corporateBo["notified_date_year"]).toEqual("2022");
+      expect(corporateBo["ceased_date_day"]).toEqual("20");
+      expect(corporateBo["ceased_date_month"]).toEqual("10");
+      expect(corporateBo["ceased_date_year"]).toEqual("2023");
     });
 
     test('when feature flag is off, 404 is returned', async () => {

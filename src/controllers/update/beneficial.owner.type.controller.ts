@@ -123,7 +123,7 @@ export const postSubmit = async (req: Request, res: Response, next: NextFunction
       return res.redirect(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
     }
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS) && checkEntityRequiresTrusts(appData)) {
+    if (checkEntityRequiresTrusts(appData)) {
       return res.redirect(getTrustLandingUrl(appData));
     }
 

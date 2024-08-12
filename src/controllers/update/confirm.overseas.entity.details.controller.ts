@@ -47,7 +47,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
     const appData: ApplicationData = getApplicationData(req.session as Session);
 
-    if (!isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS) && checkEntityReviewRequiresTrusts(appData)) {
+    if (checkEntityReviewRequiresTrusts(appData)) {
       return res.redirect(config.UPDATE_TRUSTS_SUBMIT_BY_PAPER_URL);
     }
 

@@ -8,7 +8,6 @@ export const get = (req: Request, res: Response) => {
   const backLinkUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
     ? getUrlWithTransactionIdAndSubmissionId(config.SECURE_REGISTER_FILTER_WITH_PARAMS_URL, req.params[config.ROUTE_PARAM_TRANSACTION_ID], req.params[config.ROUTE_PARAM_SUBMISSION_ID])
     : config.SECURE_REGISTER_FILTER_URL;
-  console.log(backLinkUrl);
   return res.render(config.USE_PAPER_PAGE, {
     backLinkUrl,
     templateName: config.USE_PAPER_PAGE,

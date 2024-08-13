@@ -302,7 +302,6 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
 
     test('moves reviewable trusts into review and redirects to manage trusts interrupt if update trust flag off and cease trusts flag on', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
       mockRetrieveTrustData.mockReturnValueOnce(Promise.resolve());
       mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
@@ -361,7 +360,6 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
     test('redirects to add trusts if update trusts flag is on, and trusts are required', async () => {
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
       const mockLandingUrl = 'update/mock-get-trust-landing-url';
       mockGetApplicationData.mockReturnValueOnce(appData);
       mockIsActiveFeature
@@ -378,7 +376,6 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     test('does not redirect to add trusts if update trusts flag is on, and trusts are not required', async () => {
       const mockLandingUrl = 'update/mock-get-trust-landing-url';
       mockGetApplicationData.mockReturnValueOnce(appData);
-      mockIsActiveFeature.mockReturnValueOnce(true);
       mockCheckEntityRequiresTrusts.mockReturnValueOnce(false);
       mockGetTrustLandingUrl.mockReturnValueOnce(mockLandingUrl);
 
@@ -389,7 +386,6 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
 
     test('does not move reviewable trusts into review and redirects to manage trusts interrupt if update trust flag off and cease trusts flag off', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
       mockRetrieveTrustData.mockReturnValueOnce(Promise.resolve());
       mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());

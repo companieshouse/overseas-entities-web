@@ -24,7 +24,7 @@ import { getApplicationData } from '../../../src/utils/application.data';
 import { isActiveFeature } from '../../../src/utils/feature.flag';
 
 import { APPLICATION_DATA_MOCK, TRUST } from '../../__mocks__/session.mock';
-import { PAGE_TITLE_ERROR, PAGE_NOT_FOUND_TEXT, UPDATE_TRUSTS_ASSOCIATED_ADDED_HEADING, UPDATE_MANAGE_TRUSTS_REVIEWED_HEADING, SAVE_AND_CONTINUE_BUTTON_TEXT } from '../../__mocks__/text.mock';
+import { PAGE_TITLE_ERROR, UPDATE_TRUSTS_ASSOCIATED_ADDED_HEADING, UPDATE_MANAGE_TRUSTS_REVIEWED_HEADING, SAVE_AND_CONTINUE_BUTTON_TEXT } from '../../__mocks__/text.mock';
 import { Trust, TrustKey } from '../../../src/model/trust.model';
 import { wordCount } from '../../utils/test.utils';
 
@@ -96,7 +96,6 @@ describe('Update - Trusts - Trusts associated with the overseas entity', () => {
         "when trust ceased date feature flag on, reviewed trust status will", true, 1, 2
       ],
     ])('%s be shown in summary table', async (_, ceasedDateFeatureFlagValue, expectedRemovedCount, expectedActiveCount) => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
       mockIsActiveFeature.mockReturnValueOnce(ceasedDateFeatureFlagValue); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
 
       // trust with ch_references indicates a reviewable trust (ie it would be an existing trust that has come from chips)
@@ -132,19 +131,19 @@ describe('Update - Trusts - Trusts associated with the overseas entity', () => {
       expect(wordCount("Removed", resp.text)).toEqual(expectedRemovedCount);
       expect(wordCount("Active", resp.text)).toEqual(expectedActiveCount);
     });
-
-    test('when feature flag is off, 404 is returned', async () => {
-      mockIsActiveFeature.mockReturnValue(false);
-
-      const resp = await request(app).get(UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL);
-
-      expect(resp.status).toEqual(404);
-      expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
-    });
   });
 
   describe('POST tests', () => {
-    test('when feature flag is on, and no trusts are to be added, redirect to check your answers page', async () => {
+    test('when no trusts are to be added, redirect to check your answers page', async () => {
+      mockGetApplicationData.mockReturnValue( APPLICATION_DATA_MOCK );
+
+      const resp = await request(app).post(UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL).send({ addTrust: '0' });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL);
+    });
+
+    test('when statement validation flag is on, and no trusts are to be added, redirect to beneficial owner statements page', async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
       mockGetApplicationData.mockReturnValue( APPLICATION_DATA_MOCK );
 
@@ -154,33 +153,13 @@ describe('Update - Trusts - Trusts associated with the overseas entity', () => {
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL);
     });
 
-    test('when trusts feature flag is on and statement validation flag is on, and no trusts are to be added, redirect to beneficial owner statements page', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(true);
-      mockGetApplicationData.mockReturnValue( APPLICATION_DATA_MOCK );
-
-      const resp = await request(app).post(UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL).send({ addTrust: '0' });
-
-      expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL);
-    });
-
-    test('when feature flag is on, and trusts are to be added, redirect to add trust page', async () => {
-      mockIsActiveFeature.mockReturnValue(true);
+    test('when trusts are to be added, redirect to add trust page', async () => {
       mockGetApplicationData.mockReturnValue( APPLICATION_DATA_MOCK );
 
       const resp = await request(app).post(UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL).send({ addTrust: 'addTrustYes' });
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toContain(UPDATE_TRUSTS_TELL_US_ABOUT_IT_PAGE);
-    });
-
-    test('when feature flag is off, 404 is returned', async () => {
-      mockIsActiveFeature.mockReturnValue(false);
-
-      const resp = await request(app).post(UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL);
-
-      expect(resp.status).toEqual(404);
-      expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
     });
   });
 });

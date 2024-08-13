@@ -114,7 +114,7 @@ describe("Update review overseas entity information controller tests", () => {
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS);
       expect(resp.text).toContain(NO_CHANGE_REVIEW_STATEMENT_WHO_CAN_WE_CONTACT);
       expect(resp.text).toContain(CONTINUE_BUTTON_TEXT);
-      expect(mockIsActiveFeature).toHaveBeenCalledTimes(2);
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(1);
       expect(mockGetPrivateOeDetails).toHaveBeenCalledTimes(1);
       expect(mockGetBeneficialOwnersPrivateData).toHaveBeenCalledTimes(1);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
@@ -135,7 +135,7 @@ describe("Update review overseas entity information controller tests", () => {
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS);
       expect(resp.text).toContain(NO_CHANGE_REVIEW_STATEMENT_WHO_CAN_WE_CONTACT);
       expect(resp.text).toContain(CONTINUE_BUTTON_TEXT);
-      expect(mockIsActiveFeature).toHaveBeenCalledTimes(2);
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(1);
       expect(mockGetPrivateOeDetails).toHaveBeenCalledTimes(1);
       expect(mockSetExtraData).toHaveBeenCalledTimes(0);
       expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(0);
@@ -158,7 +158,6 @@ describe("Update review overseas entity information controller tests", () => {
 
     test(`renders the ${UPDATE_REVIEW_STATEMENT_PAGE} page without trust still involved fields`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_TRUSTS_WEB
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
       mockCheckActiveBOExists.mockReturnValueOnce(false);
 
       mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_BO_TRUSTS_PRIVATE_DATA_MOCK);

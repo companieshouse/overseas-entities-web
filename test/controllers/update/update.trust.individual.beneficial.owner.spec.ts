@@ -22,7 +22,7 @@ import { Session } from '@companieshouse/node-session-handler';
 import request from "supertest";
 import app from "../../../src/app";
 import { get, post } from "../../../src/controllers/update/update.trusts.individual.beneficial.owner.controller";
-import { ANY_MESSAGE_ERROR, PAGE_NOT_FOUND_TEXT, PAGE_TITLE_ERROR, TRUSTEE_STILL_INVOLVED_TEXT, UPDATE_TELL_US_ABOUT_THE_INDIVIDUAL_HEADING } from '../../__mocks__/text.mock';
+import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR, TRUSTEE_STILL_INVOLVED_TEXT, UPDATE_TELL_US_ABOUT_THE_INDIVIDUAL_HEADING } from '../../__mocks__/text.mock';
 import { authentication } from '../../../src/middleware/authentication.middleware';
 import { hasTrustWithIdUpdate } from '../../../src/middleware/navigation/has.trust.middleware';
 import {
@@ -238,24 +238,6 @@ describe('Update Trust Individual Beneficial Owner Controller', () => {
       expect(authentication).toBeCalledTimes(1);
       expect(hasTrustWithIdUpdate).toBeCalledTimes(1);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
-    });
-
-    test('when feature flag for update trusts is off GET returns 404', async () => {
-      mockIsActiveFeature.mockReturnValue(false);
-
-      const resp = await request(app).get(pageUrl);
-
-      expect(resp.status).toEqual(404);
-      expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
-    });
-
-    test('when feature flag for update trusts is off POST returns 404', async () => {
-      mockIsActiveFeature.mockReturnValue(false);
-
-      const resp = await request(app).post(pageUrl).send({});
-
-      expect(resp.status).toEqual(404);
-      expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
     });
   });
 });

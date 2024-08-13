@@ -100,7 +100,10 @@ describe('Update - Manage Trusts - Review former beneficial owners', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
+    // This performs a deep copy of the mock application data object, to ensure that the HISTORICAL_BO list is
+    // created new each time and doesn't grow
     const clonedMockApplicationData = JSON.parse(JSON.stringify(mockApplicationData));
+
     mockGetApplicationData.mockReturnValue(clonedMockApplicationData);
   });
 
@@ -166,7 +169,10 @@ describe('Update - Manage Trusts - Review former beneficial owners', () => {
     beforeEach(() => {
       jest.clearAllMocks();
 
-      const clonedMockApplicationData = JSON.parse(JSON.stringify(mockApplicationData));
+    // This performs a deep copy of the mock application data object, to ensure that the HISTORICAL_BO list is
+    // created new each time and doesn't grow
+    const clonedMockApplicationData = JSON.parse(JSON.stringify(mockApplicationData));
+
       mockGetApplicationData.mockReturnValue(clonedMockApplicationData);
     });
 

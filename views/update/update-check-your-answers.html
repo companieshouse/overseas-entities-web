@@ -126,7 +126,7 @@
 
       {% if pageParams.isRPStatementExists %}
       <br>
-      {% include "includes/check-your-answers/relevant-period-statements.html" %}
+        {% include "includes/check-your-answers/relevant-period-statements.html" %}
       {% endif %}
 
       {% include "includes/check-your-answers/date-update-statement.html" %}
@@ -256,7 +256,7 @@
       {% endif %}
 
       {% if (rpTrusts and rpTrusts.length > 0) %}
-      <br><h2 class="govuk-heading-l">Trusts in pre-registration period</h2>
+        <br><h2 class="govuk-heading-l">Trusts in pre-registration period</h2>
       {% for trust in rpTrusts %}
       {% set trust_heading = trust.trust_name %}
       {% set manageTrusts = false %}

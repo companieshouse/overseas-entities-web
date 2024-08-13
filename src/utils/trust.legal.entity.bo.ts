@@ -20,7 +20,7 @@ export const LEGAL_ENTITY_BO_TEXTS = {
   title: 'Tell us about the legal entity',
 };
 
-type TrustLegalEntityBeneificalOwnerPageProperties = {
+type TrustLegalEntityBeneficialOwnerPageProperties = {
   backLinkUrl: string,
   templateName: string;
   pageParams: {
@@ -28,7 +28,8 @@ type TrustLegalEntityBeneificalOwnerPageProperties = {
   },
   pageData: {
     trustData: CommonTrustData,
-    roleWithinTrustType: typeof RoleWithinTrustType;
+    roleWithinTrustType: typeof RoleWithinTrustType,
+    entity_name?: string;
   },
   formData?: TrustLegalEntityForm,
   errors?: FormattedValidationErrors,
@@ -42,7 +43,7 @@ const getPageProperties = (
   isUpdate: boolean,
   formData?: TrustLegalEntityForm,
   errors?: FormattedValidationErrors,
-): TrustLegalEntityBeneificalOwnerPageProperties => {
+): TrustLegalEntityBeneficialOwnerPageProperties => {
 
   return {
     backLinkUrl: getTrustInvolvedUrl(isUpdate, trustId, req),
@@ -61,6 +62,16 @@ const getPageProperties = (
   };
 };
 
+export const getRelevantPeriodPageProperties = (
+  req: Request,
+  trustId: string,
+  isUpdate: boolean,
+  formData?: TrustLegalEntityForm,
+  errors?: FormattedValidationErrors,
+): TrustLegalEntityBeneficialOwnerPageProperties => {
+  return getPageProperties(req, trustId, isUpdate, formData, errors);
+};
+
 export const getTrustLegalEntityBo = (req: Request, res: Response, next: NextFunction, isUpdate: boolean): void => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
@@ -68,14 +79,19 @@ export const getTrustLegalEntityBo = (req: Request, res: Response, next: NextFun
     const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
     const trusteeId = req.params[config.ROUTE_PARAM_TRUSTEE_ID];
     const appData: ApplicationData = getApplicationData(req.session);
+    const isRelevantPeriod = req.query ? req.query["relevant-period"] === "true" : false;
 
     const formData: TrustLegalEntityForm = mapLegalEntityTrusteeByIdFromSessionToPage(
       appData,
       trustId,
       trusteeId
     );
-    const pageProps = getPageProperties(req, trustId, isUpdate, formData);
-
+    // conditionally toggle display of relevant period page text and role within trust type will default to Beneficiary
+    const pageProps = isRelevantPeriod ? getRelevantPeriodPageProperties(req, trustId, isUpdate, formData) : getPageProperties(req, trustId, isUpdate, formData);
+    if ((isRelevantPeriod || (trusteeId && pageProps.formData?.relevant_period)) && pageProps.formData) {
+      pageProps.formData.relevant_period = true;
+      setEntityNameInRelevantPeriodPageBanner(pageProps, appData ? appData.entity_name : pageProps.pageData.trustData.trustName);
+    }
     return res.render(pageProps.templateName, pageProps);
   } catch (error) {
     logger.errorRequest(req, error);
@@ -107,6 +123,7 @@ export const postTrustLegalEntityBo = async (req: Request, res: Response, next: 
         formData,
         formatValidationError(errorList.array()),
       );
+      setEntityNameInRelevantPeriodPageBanner(pageProps, appData ? appData.entity_name : pageProps.pageData.trustData.trustName);
       return res.render(pageProps.templateName, pageProps);
     }
 
@@ -156,3 +173,11 @@ const getUrl = (isUpdate: boolean) => (
     ? config.UPDATE_AN_OVERSEAS_ENTITY_URL
     : config.REGISTER_AN_OVERSEAS_ENTITY_URL
 );
+
+export const setEntityNameInRelevantPeriodPageBanner = (pageProps: TrustLegalEntityBeneficialOwnerPageProperties, entityName: string | undefined) => {
+  // name the entity for the page template
+  if (pageProps && pageProps.pageData && entityName !== undefined) {
+    pageProps.pageData.entity_name = entityName;
+  }
+  return pageProps;
+};

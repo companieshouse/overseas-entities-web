@@ -112,8 +112,8 @@ update.filing_date["year"]) %}
         {% endif %}
       {% endif %}
 
-      {% if feature_flag_relevant_period === "true" and not pageParams.isRPStatementExists %}
-      {% include "includes/check-your-answers/relevant-period-check-your-answers.html" %}
+      {% if feature_flag_relevant_period === "true" %}
+        {% include "includes/check-your-answers/relevant-period-check-your-answers.html" %}
       {% else %}
         {{ govukSummaryList({
           rows: [

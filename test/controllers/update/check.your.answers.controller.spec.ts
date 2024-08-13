@@ -109,7 +109,12 @@ import {
   CHECK_YOUR_ANSWERS_PAGE_RP_NO_TRUST_STATEMENTS_TITLE,
   CHECK_YOUR_ANSWERS_PAGE_RP_NO_TRUST_STATEMENTS_SUB_TEXT,
   CHECK_YOUR_ANSWERS_PAGE_RP_NO_BENEFICIARY_STATEMENTS_TITLE,
-  CHECK_YOUR_ANSWERS_PAGE_RP_NO_BENEFICIARY_STATEMENTS_SUB_TEXT, TRUSTS_ADDED_RELEVANT_PERIOD
+
+  CHECK_YOUR_ANSWERS_PAGE_RP_NO_BENEFICIARY_STATEMENTS_SUB_TEXT, 
+  TRUSTS_ADDED_RELEVANT_PERIOD,
+  CHECK_YOUR_ANSWERS_PAGE_RP_NO_BENEFICIARY_STATEMENTS_SUB_TEXT,
+  CHECK_YOUR_ANSWERS_PAGE_DATE_OF_UPDATE_STATEMENT_TITLE,
+  CHECK_YOUR_ANSWERS_CHANGES_TO_THE_UPDATE_PERIOD_TITLE,
 } from "../../__mocks__/text.mock";
 import {
   ERROR,
@@ -131,7 +136,7 @@ import {
   CORPORATE_TRUSTEE,
   TRUST_WITH_ID,
   UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE,
-  UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE,
+  UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE
 } from "../../__mocks__/session.mock";
 import { DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/due.diligence.mock";
 import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/overseas.entity.due.diligence.mock";
@@ -381,6 +386,37 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_MO_INDIVIDUAL);
       expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_MO_CORPORATE);
       expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TRUST_TITLE);
+    });
+
+    test.each([
+      ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK ]
+    ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} date of filing test %s`, async () => {
+      const appData = {
+        ...APPLICATION_DATA_UPDATE_BO_MOCK,
+        update: UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE
+      };
+      mockGetApplicationData.mockReturnValue(appData);
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_DATE_OF_UPDATE_STATEMENT_TITLE);
+      expect(resp.text).toContain("1");
+      expect(resp.text).toContain("January");
+      expect(resp.text).toContain("2022");
+    });
+
+    test.each([
+      ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK ]
+    ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} changes to the update period %s`, async () => {
+      const appData = {
+        ...APPLICATION_DATA_UPDATE_BO_MOCK,
+        update: UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE
+      };
+      mockGetApplicationData.mockReturnValue(appData);
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_CHANGES_TO_THE_UPDATE_PERIOD_TITLE);
+      expect(resp.text).toContain("Do you need to make any changes to this overseas entity?");
+      expect(resp.text).toContain("Yes");
     });
 
     test.each([

@@ -26,7 +26,8 @@ export const UpdateKeys: string[] = [
   "review_managing_officers_individual",
   "review_managing_officers_corporate",
   "filing_date",
-  "no_change"
+  "no_change",
+  "owned_land_relevant_period"
 ];
 
 export interface Update {
@@ -45,6 +46,7 @@ export interface Update {
   review_managing_officers_corporate?: ManagingOfficerCorporate[];
   filing_date?: InputDate;
   no_change?: boolean;
+  owned_land_relevant_period?: boolean;
   trust_data_fetched?: boolean;
   review_trusts?: Trust[];
 }

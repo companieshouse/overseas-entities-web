@@ -249,7 +249,7 @@ export const mapCorporateTrusteeData = (trustee: CorporateTrusteeData, trust: Tr
     ro_address_country: "",
     ro_address_postal_code: "",
 
-    is_service_address_same_as_principal_address: yesNoResponse.No
+    is_service_address_same_as_principal_address: yesNoResponse.No,
   };
 
   mapRegisteredOfficeAddress(corporateTrustee, trustee);

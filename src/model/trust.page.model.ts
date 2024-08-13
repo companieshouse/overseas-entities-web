@@ -15,6 +15,9 @@ type TrustDetailsForm = {
   stillInvolved?: string;
   beneficialOwnersIds: string[];
   hasAllInfo: string;
+  startDateDay?: string;
+  startDateMonth?: string;
+  startDateYear?: string;
   relevant_period?: boolean;
 };
 
@@ -131,6 +134,9 @@ type TrustLegalEntityForm = {
   ceasedDateDay?: string;
   ceasedDateMonth?: string;
   ceasedDateYear?: string;
+  startDateDay: string;
+  startDateMonth: string;
+  startDateYear: string;
   stillInvolved?: string;
   relevant_period?: boolean;
 };

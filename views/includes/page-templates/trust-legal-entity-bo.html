@@ -139,7 +139,20 @@
     {% set public_register_jurisdiction = formData.public_register_jurisdiction %}
     {% set registration_number = formData.registration_number %}
     {% include "includes/inputs/fields/is-on-register-in-country-formed-input.html" %}
-
+    
+    {% if formData.relevant_period %}
+    {% set fieldParam = {
+      name: 'startDate',
+      value: {
+        'Day': formData.startDateDay,
+        'Month': formData.startDateMonth,
+        'Year': formData.startDateYear
+      },
+      label: "When did they become a beneficiary?",
+      error: errors.startDate if errors
+    } %}
+    {% include "includes/inputs/date-input.html" %}
+    {% endif %}
 
     {% set isUpdateOrRemoveJourney = (isUpdate or journey === "remove") %}
 

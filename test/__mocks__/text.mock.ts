@@ -331,6 +331,7 @@ export const BACK_BUTTON_CLASS = "govuk-back-link";
 // Trust field keys
 export const TRUST_NAME = "Trust name";
 export const TRUST_CREATION_DATE = "Date the trust was created";
+export const TRUSTS_ADDED_RELEVANT_PERIOD = "Trusts in pre-registration period";
 export const TRUSTS_ADDED = "Trusts in the Update period";
 export const TRUSTS_REVIEWED = "Trusts you have reviewed";
 export const TRUST_INVOLVED = "Is the trust still involved in the overseas entity?";

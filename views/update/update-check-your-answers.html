@@ -124,22 +124,17 @@
         {% include "includes/check-your-answers/relevant-period-check-your-answers.html" %}
       {% endif %}
 
-      {% include "includes/check-your-answers/presenter.html" %}
+      {% if pageParams.isRPStatementExists %}
+      <br>
+        {% include "includes/check-your-answers/relevant-period-statements.html" %}
+      {% endif %}
+
       {% include "includes/check-your-answers/date-update-statement.html" %}
+      {% include "includes/check-your-answers/presenter.html" %}
       {% include "includes/check-your-answers/make-changes-oe-update-period.html" %}
       {% include "includes/check-your-answers/verification-checks.html" %}
       <br>
       {% include "includes/entity.html" %}
-
-      {% if not updateStatementValidationEnabled %}
-        <br>
-        {% include "includes/check-your-answers/beneficial-owner-statements.html" %}
-      {% endif %}
-
-      {% if pageParams.isRPStatementExists %}
-      <br>
-      {% include "includes/check-your-answers/relevant-period-statements.html" %}
-      {% endif %}
 
       {% set bois = beneficial_owners_individual or [] %}
       {% set existingBOIs = bois | selectattr('ch_reference') %}

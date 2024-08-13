@@ -144,14 +144,20 @@
       {% set bois = beneficial_owners_individual or [] %}
       {% set existingBOIs = bois | selectattr('ch_reference') %}
       {% set newBOIs = bois | rejectattr('ch_reference') %}
+      {% set rpBOIs = newBOIs | selectattr('relevant_period') %}
+      {% set newBOIs = newBOIs | rejectattr('relevant_period') %}
 
       {% set bocs = beneficial_owners_corporate or [] %}
       {% set existingBOCs = bocs | selectattr('ch_reference') %}
       {% set newBOCs = bocs | rejectattr('ch_reference') %}
+      {% set rpBOCs = newBOCs | selectattr('relevant_period') %}
+      {% set newBOCs = newBOCs | rejectattr('relevant_period') %}
 
       {% set bogs = beneficial_owners_government_or_public_authority or [] %}
       {% set existingBOGs = bogs | selectattr('ch_reference') %}
       {% set newBOGs = bogs | rejectattr('ch_reference') %}
+      {% set rpBOGs = newBOGs | selectattr('relevant_period') %}
+      {% set newBOGs = newBOGs | rejectattr('relevant_period') %}
 
       {% if existingBOIs | length or existingBOCs | length or existingBOGs | length %}
         {% set hideChangeLinksForNonEditableFields = true %}
@@ -179,6 +185,21 @@
           {% include "includes/check-your-answers/beneficial-owner-other.html" %}
         {% endfor %}
         {% for bog in newBOGs %}
+          {% include "includes/check-your-answers/beneficial-owner-gov.html" %}
+        {% endfor %}
+      {% endif %}
+
+      {% if rpBOIs | length or rpBOCs | length or rpBOGs | length %}
+        {% set hideChangeLinksForNonEditableFields = false %}
+        <br>
+        <h2 class="govuk-heading-l">Beneficial owners in the Pre-registration period</h2>
+        {% for boi in rpBOIs %}
+          {% include "includes/check-your-answers/beneficial-owner-individual.html" %}
+        {% endfor %}
+        {% for boc in rpBOCs %}
+          {% include "includes/check-your-answers/beneficial-owner-other.html" %}
+        {% endfor %}
+        {% for bog in rpBOGs %}
           {% include "includes/check-your-answers/beneficial-owner-gov.html" %}
         {% endfor %}
       {% endif %}

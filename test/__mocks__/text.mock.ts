@@ -84,6 +84,7 @@ export const CHECK_YOUR_ANSWERS_PAGE_RP_TRUST_STATEMENTS_TITLE = "Trusts stateme
 export const CHECK_YOUR_ANSWERS_PAGE_RP_TRUST_STATEMENTS_SUB_TEXT = "The entity has reasonable cause to believe that at least one person was a registrable beneficial owner due to being a trustee of a trust during the pre-registration period, that the entity has not already provided information about.";
 export const CHECK_YOUR_ANSWERS_PAGE_RP_BENEFICIARY_STATEMENTS_TITLE = "Beneficiaries statement";
 export const CHECK_YOUR_ANSWERS_PAGE_RP_BENEFICIARY_STATEMENTS_SUB_TEXT = "The entity has reasonable cause to believe that at least one person became or ceased to be a beneficiary of a trust involved in the overseas entity during the pre-registration period, that it has not already provided information about.";
+export const CHECK_YOUR_ANSWERS_PAGE_RP_BENEFICIAL_OWNER_TITLE = "Beneficial owners in the Pre-registration period";
 export const CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_OLE_SUB_TITLE = "Other legal entity beneficial owner";
 export const CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_GOV_SUB_TITLE = "Government or public authority beneficial owner";
 export const CHECK_YOUR_ANSWERS_PAGE_MANAGING_OFFICER_TITLE = "Managing officer details";

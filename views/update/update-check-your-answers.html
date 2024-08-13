@@ -185,18 +185,18 @@
       {% endif %}
 
       {% if rpBOIs | length or rpBOCs | length or rpBOGs | length %}
-      {% set hideChangeLinksForNonEditableFields = false %}
-      <br>
-      <h2 class="govuk-heading-l">Beneficial owners in the Pre-registration period</h2>
-      {% for boi in rpBOIs %}
-      {% include "includes/check-your-answers/beneficial-owner-individual.html" %}
-      {% endfor %}
-      {% for boc in rpBOCs %}
-      {% include "includes/check-your-answers/beneficial-owner-other.html" %}
-      {% endfor %}
-      {% for bog in rpBOGs %}
-      {% include "includes/check-your-answers/beneficial-owner-gov.html" %}
-      {% endfor %}
+        {% set hideChangeLinksForNonEditableFields = false %}
+        <br>
+        <h2 class="govuk-heading-l">Beneficial owners in the Pre-registration period</h2>
+        {% for boi in rpBOIs %}
+          {% include "includes/check-your-answers/beneficial-owner-individual.html" %}
+        {% endfor %}
+        {% for boc in rpBOCs %}
+          {% include "includes/check-your-answers/beneficial-owner-other.html" %}
+        {% endfor %}
+        {% for bog in rpBOGs %}
+          {% include "includes/check-your-answers/beneficial-owner-gov.html" %}
+        {% endfor %}
       {% endif %}
 
       {% set mois = managing_officers_individual or [] %}

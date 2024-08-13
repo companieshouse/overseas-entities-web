@@ -32,7 +32,7 @@ import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.a
 import { getApplicationData, setExtraData } from '../../../src/utils/application.data';
 import { isActiveFeature } from '../../../src/utils/feature.flag';
 
-import { TRUST } from '../../__mocks__/session.mock';
+import { TRUST, TRUST_RELEVANT_PERIOD } from '../../__mocks__/session.mock';
 import {
   ANY_MESSAGE_ERROR,
   PAGE_NOT_FOUND_TEXT,
@@ -190,6 +190,7 @@ const DEFAULT_FORM_SUBMISSION = {
 };
 
 const ROLE_WITHIN_TRUST_QUESTION_TEXT = "What is its role within the trust?";
+const IMPORTANT_BANNER_TEXT = "You need to provide some information about the overseas entity from the pre-registration period.";
 const CORRECT_AS_AT_DATE_INVOLVEMENT_CEASED_INSET_TEXT = "The information you enter for this pre-registration beneficiary must be correct as at the date they ceased to be involved in the trust.";
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
@@ -780,6 +781,123 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       expect(resp.status).toBe(200);
       expect(resp.text).toContain(ERROR_LIST);
       expect(resp.text).toContain(ErrorMessages.DATE_BEFORE_TRUST_CREATION_DATE_CEASED_TRUSTEE);
+
+    });
+
+    test('do not show banner and do not show inset text if validation fails when relevant period false', async () => {
+      const formSubmission = {
+        trusteeId: 'trustee-id-3',
+        roleWithinTrust: RoleWithinTrustType.SETTLOR,
+        forename: '',
+        surname: 'Ee',
+        dateOfBirthDay: '1',
+        dateOfBirthMonth: '2',
+        dateOfBirthYear: '2022',
+        nationality: 'Afghan',
+        second_nationality: 'English',
+        usual_residential_address_property_name_number: 'Usual 1',
+        usual_residential_address_line_1: 'Usual New Line 1',
+        usual_residential_address_line_2: 'Usual New Line 2',
+        usual_residential_address_town: 'Usual New Town',
+        usual_residential_address_county: 'Usual New County',
+        usual_residential_address_country: 'Usual New Country',
+        usual_residential_address_postcode: 'Usual NE994WS',
+        usual_address_po_box: '',
+        usual_address_care_of: '',
+        service_address_property_name_number: 'Service 1',
+        service_address_line_1: 'Service New Line 1',
+        service_address_line_2: 'Service New Line 2',
+        service_address_town: 'Service New Town',
+        service_address_county: 'Service New County',
+        service_address_country: 'Service New Country',
+        service_address_postcode: 'Service NE994WS',
+        service_address_po_box: '',
+        service_address_care_of: '',
+        is_service_address_same_as_usual_residential_address: yesNoResponse.No,
+        interestedPersonStartDateDay: '2',
+        interestedPersonStartDateMonth: '8',
+        interestedPersonStartDateYear: '2023',
+        stillInvolved: '0',
+        ceasedDateDay: '10',
+        ceasedDateMonth: '01',
+        ceasedDateYear: '2023',
+        relevant_period: false,
+      };
+      const trustInReview = {
+        trust_id: 'trust-in-review-1',
+        trust_name: 'Trust One',
+        creation_date_day: '01',
+        creation_date_month: '03',
+        creation_date_year: '2023',
+        review_status: { in_review: true }
+      } as Trust;
+      const appData = {
+        entity_number: 'OE988669',
+        entity_name: 'Tell us about the individual OE 1'
+      };
+
+      mockIsActiveFeature.mockReturnValue(true);
+      const spyGetTrustByIdFromApp = jest.spyOn(trusts, "getTrustByIdFromApp");
+      spyGetTrustByIdFromApp.mockReturnValueOnce(trustInReview);
+      mockGetApplicationData.mockReturnValueOnce(appData);
+
+      const resp = await request(app)
+        .post(UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + "/" + trustId + TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL + RELEVANT_PERIOD_QUERY_PARAM)
+        .send({
+          ...formSubmission,
+        });
+
+      expect(resp.status).toBe(200);
+      expect(resp.text).toContain(ERROR_LIST);
+      expect(resp.text).not.toContain(IMPORTANT_BANNER_TEXT);
+      expect(resp.text).not.toContain('<strong>Tell us about the individual OE 1</strong>');
+      expect(resp.text).not.toContain(CORRECT_AS_AT_DATE_INVOLVEMENT_CEASED_INSET_TEXT);
+
+    });
+
+    test('show banner and inset text if validation fails when relevant period is set to true', async () => {
+      const formSubmission = {
+        id: 'trustee-id-4',
+        roleWithinTrust: RoleWithinTrustType.BENEFICIARY,
+        type: 'relevantPeriodlegalEntity',
+        name: "Legal Entity Beneficiary",
+        ro_address_premises: 'Legal Entity House',
+        ro_address_line_1: '1 Legal Entity Road',
+        ro_address_locality: 'Legal Entity Locality',
+        ro_address_region: 'Legal Entity Region',
+        ro_address_country: 'UK',
+        ro_address_postcode: 'LE1 2ST',
+        identification_legal_authority: 'Legal Entity Legal Authority',
+        identification_legal_form: 'Legal Entity Legal Form',
+        is_service_address_same_as_principal_address: yesNoResponse.No,
+        is_on_register_in_country_formed_in: yesNoResponse.Yes,
+        stillInvolved: '0',
+        ceasedDateDay: '10',
+        ceasedDateMonth: '01',
+        ceasedDateYear: '2023',
+        relevant_period: true,
+      };
+
+      const appData = {
+        entity_number: 'OE988669',
+        entity_name: 'Tell us about the individual OE 1'
+      };
+
+      mockIsActiveFeature.mockReturnValue(true);
+      const spyGetTrustByIdFromApp = jest.spyOn(trusts, "getTrustByIdFromApp");
+      spyGetTrustByIdFromApp.mockReturnValueOnce(TRUST_RELEVANT_PERIOD);
+      mockGetApplicationData.mockReturnValueOnce(appData);
+
+      const resp = await request(app)
+        .post(UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + "/" + trustId + TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL + RELEVANT_PERIOD_QUERY_PARAM)
+        .send({
+          ...formSubmission,
+        });
+
+      expect(resp.status).toBe(200);
+      expect(resp.text).toContain(ERROR_LIST);
+      expect(resp.text).toContain(IMPORTANT_BANNER_TEXT);
+      expect(resp.text).toContain(CORRECT_AS_AT_DATE_INVOLVEMENT_CEASED_INSET_TEXT);
 
     });
 

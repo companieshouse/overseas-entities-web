@@ -149,6 +149,63 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
         });
       });
 
+      test('Map start_date to session when relevant_period is true', () => {
+
+        const mockFormData = {
+          ...mockFormDataBasic,
+          roleWithinTrust: RoleWithinTrustType.INTERESTED_PERSON,
+          interestedPersonStartDateDay: "01",
+          interestedPersonStartDateMonth: "01",
+          interestedPersonStartDateYear: "2020",
+          is_service_address_same_as_principal_address: yesNoResponse.Yes,
+          is_on_register_in_country_formed_in: yesNoResponse.Yes,
+          startDateDay: "11",
+          startDateMonth: "12",
+          startDateYear: "2012",
+        };
+
+        expect(mapLegalEntityToSession(mockFormData as TrustLegalEntityForm)).toEqual({
+          id: mockFormData.legalEntityId,
+          type: mockFormData.roleWithinTrust,
+          name: mockFormData.legalEntityName,
+          date_became_interested_person_day: mockFormData.interestedPersonStartDateDay,
+          date_became_interested_person_month: mockFormData.interestedPersonStartDateMonth,
+          date_became_interested_person_year: mockFormData.interestedPersonStartDateYear,
+          ro_address_premises: mockFormData.principal_address_property_name_number,
+          ro_address_line_1: mockFormData.principal_address_line_1,
+          ro_address_line_2: mockFormData.principal_address_line_2,
+          ro_address_locality: mockFormData.principal_address_town,
+          ro_address_region: mockFormData.principal_address_county,
+          ro_address_country: mockFormData.principal_address_country,
+          ro_address_postal_code: mockFormData.principal_address_postcode,
+          ro_address_care_of: "",
+          ro_address_po_box: "",
+          sa_address_premises: "",
+          sa_address_line_1: "",
+          sa_address_line_2: "",
+          sa_address_locality: "",
+          sa_address_region: "",
+          sa_address_country: "",
+          sa_address_postal_code: "",
+          sa_address_care_of: "",
+          sa_address_po_box: "",
+          identification_legal_authority: mockFormData.governingLaw,
+          identification_legal_form: mockFormData.legalForm,
+          identification_place_registered: mockFormData.public_register_name,
+          identification_country_registration: mockFormData.public_register_jurisdiction,
+          identification_registration_number: mockFormData.registration_number,
+          is_service_address_same_as_principal_address: mockFormData.is_service_address_same_as_principal_address,
+          is_on_register_in_country_formed_in: mockFormData.is_on_register_in_country_formed_in,
+          ceased_date_day: mockFormData.ceasedDateDay,
+          ceased_date_month: mockFormData.ceasedDateMonth,
+          ceased_date_year: mockFormData.ceasedDateYear,
+          start_date_day: mockFormData.startDateDay,
+          start_date_month: mockFormData.startDateMonth,
+          start_date_year: mockFormData.startDateYear,
+          still_involved: "No",
+        });
+      });
+
       test('test generateId', () => {
         const expectNewId = '9999';
         jest.spyOn(uuid, 'v4').mockReturnValue(expectNewId);

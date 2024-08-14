@@ -39,9 +39,6 @@ export interface Trust {
   HISTORICAL_BO?: TrustHistoricalBeneficialOwner[];
   CORPORATES?: TrustCorporate[];
   review_status?: TrustReviewStatus;
-  start_date_day?: string;
-  start_date_month?: string;
-  start_date_year?: string;
   relevant_period?: boolean;
 }
 

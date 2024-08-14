@@ -9,7 +9,7 @@
 {% set errorMessage = errors.beneficial_owner_nature_of_control_types if errors %}
 {% include "includes/inputs/nature-of-control-checkboxes/beneficial-owner-nature-of-control-types.html" %}
 
-{% if not isBeneficialOwnerGov and (not entity_number or OE_CONFIGS.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS === 'true') %}
+{% if not isBeneficialOwnerGov %}
   {% set errorMessage = {} if errors.beneficial_owner_nature_of_control_types %}
   {% include "includes/inputs/nature-of-control-checkboxes/trustees-nature-of-control-types.html" %}
 {% endif %}

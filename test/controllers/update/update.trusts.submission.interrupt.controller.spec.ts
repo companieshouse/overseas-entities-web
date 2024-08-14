@@ -59,10 +59,8 @@ describe('Update - Trusts - Submission Interrupt', () => {
   });
 
   describe('GET tests', () => {
-    test('when FEATURE_FLAG_ENABLE_UPDATE_TRUSTS is on and there are BOs with Trustee NOCs, page is returned', async () => {
-      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
+    test('when there are BOs with Trustee NOCs, page is returned', async () => {
       mockCheckEntityRequiresTrusts.mockReturnValue(true);
-
       const resp = await request(app).get(UPDATE_TRUSTS_SUBMISSION_INTERRUPT_URL);
 
       expect(resp.status).toEqual(200);
@@ -72,7 +70,7 @@ describe('Update - Trusts - Submission Interrupt', () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 
-    test('when FEATURE_FLAG_ENABLE_UPDATE_TRUSTS is on, and there are no BOs with Trustee NOCs, redirect to check your answers', async () => {
+    test('when there are no BOs with Trustee NOCs, redirect to check your answers', async () => {
       mockCheckEntityRequiresTrusts.mockReturnValue(false);
 
       const resp = await request(app).get(UPDATE_TRUSTS_SUBMISSION_INTERRUPT_URL);

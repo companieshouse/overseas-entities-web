@@ -129,7 +129,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
       expect(resp.text).toContain(SHOW_INFORMATION_ON_PUBLIC_REGISTER);
-      expect(resp.text).not.toContain(TRUSTS_NOC_HEADING);
+      expect(resp.text).toContain(TRUSTS_NOC_HEADING);
     });
 
     test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page without public register jurisdiction field`, async () => {

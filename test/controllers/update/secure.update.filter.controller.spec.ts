@@ -164,7 +164,6 @@ describe("SECURE UPDATE FILTER controller", () => {
 
   describe("POST tests for remove journey", () => {
     test(`redirect to ${UPDATE_INTERRUPT_CARD_URL}${JOURNEY_REMOVE_QUERY_PARAM} when no is selected and REDIS_removal flag is OFF`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
       mockIsActiveFeature.mockReturnValueOnce(false);
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockIsActiveFeature.mockReturnValueOnce(false);
@@ -180,7 +179,6 @@ describe("SECURE UPDATE FILTER controller", () => {
     });
 
     test(`redirect to ${UPDATE_USE_PAPER_URL}${JOURNEY_REMOVE_QUERY_PARAM} when yes is selected and REDIS_removal flag is OFF`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
       mockIsActiveFeature.mockReturnValueOnce(false);
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockIsActiveFeature.mockReturnValueOnce(false);
@@ -196,7 +194,6 @@ describe("SECURE UPDATE FILTER controller", () => {
     });
 
     test("renders the current page with error message", async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
       mockIsActiveFeature.mockReturnValueOnce(false);
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockIsActiveFeature.mockReturnValueOnce(false);

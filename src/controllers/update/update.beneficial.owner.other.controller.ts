@@ -11,7 +11,12 @@ import { ApplicationData } from "../../model";
 import { getApplicationData } from "../../utils/application.data";
 
 export const get = (req: Request, res: Response) => {
-  getBeneficialOwnerOther(req, res, UPDATE_BENEFICIAL_OWNER_OTHER_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+  const appData: ApplicationData = getApplicationData(req.session);
+  if (checkRelevantPeriod(appData)) {
+    getBeneficialOwnerOther(req, res, UPDATE_BENEFICIAL_OWNER_OTHER_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
+  } else {
+    getBeneficialOwnerOther(req, res, UPDATE_BENEFICIAL_OWNER_OTHER_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+  }
 };
 
 export const getById = (req: Request, res: Response, next: NextFunction) => {

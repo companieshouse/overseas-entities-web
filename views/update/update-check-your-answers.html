@@ -158,6 +158,7 @@
         {% set hideChangeLinksForNonEditableFields = true %}
         <br>
         <h2 class="govuk-heading-l">Beneficial owners you have reviewed</h2>
+
         {% for boi in existingBOIs %}
           {% include "includes/check-your-answers/beneficial-owner-individual.html" %}
         {% endfor %}

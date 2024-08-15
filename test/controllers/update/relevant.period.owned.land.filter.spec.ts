@@ -39,6 +39,7 @@ import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/ha
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { yesNoResponse } from "../../../src/model/data.types.model";
+import { UpdateKey } from "../../../src/model/update.type.model";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
 
 mockCsrfProtectionMiddleware.mockClear();

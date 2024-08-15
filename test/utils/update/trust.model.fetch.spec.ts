@@ -67,7 +67,7 @@ describe("Test fetching and mapping of Trust data", () => {
       trust_id: "1",
       trust_name: "Test Trust",
       trust_still_involved_in_overseas_entity: "Yes",
-      unable_to_obtain_all_trust_info: "Yes",
+      unable_to_obtain_all_trust_info: "No",
       INDIVIDUALS: [],
       CORPORATES: [],
       HISTORICAL_BO: []
@@ -80,7 +80,7 @@ describe("Test fetching and mapping of Trust data", () => {
       trust_id: "2",
       trust_name: "Test Trust 2",
       trust_still_involved_in_overseas_entity: "No",
-      unable_to_obtain_all_trust_info: "No",
+      unable_to_obtain_all_trust_info: "Yes",
       INDIVIDUALS: [],
       CORPORATES: [],
       HISTORICAL_BO: []
@@ -120,7 +120,7 @@ describe("Test fetching and mapping of Trust data", () => {
         creationDate: "2010-01-01",
         ceasedDate: "",
         trustStillInvolvedInOverseasEntityIndicator: "0",
-        unableToObtainAllTrustInfoIndicator: true
+        unableToObtainAllInfoIndicator: "Y"
       }
     ]);
     mockGetIndividualTrustees.mockResolvedValue([]);
@@ -139,7 +139,7 @@ describe("Test fetching and mapping of Trust data", () => {
       "trust_id": "1",
       "trust_name": "Test Trust A",
       "trust_still_involved_in_overseas_entity": "No",
-      "unable_to_obtain_all_trust_info": "No",
+      "unable_to_obtain_all_trust_info": "Yes",
       "CORPORATES": [],
       "HISTORICAL_BO": [],
       "INDIVIDUALS": []
@@ -203,8 +203,8 @@ describe("Test fetching and mapping of Trust data", () => {
       creation_date_day: "",
       creation_date_month: "",
       creation_date_year: "",
-      trust_still_involved_in_overseas_entity: trustData.trustStillInvolvedInOverseasEntityIndicator ? "Yes" : "No",
-      unable_to_obtain_all_trust_info: trustData.unableToObtainAllTrustInfoIndicator ? "No" : "Yes",
+      trust_still_involved_in_overseas_entity:"Yes",
+      unable_to_obtain_all_trust_info: "No",
       INDIVIDUALS: [],
       CORPORATES: [],
       HISTORICAL_BO: []

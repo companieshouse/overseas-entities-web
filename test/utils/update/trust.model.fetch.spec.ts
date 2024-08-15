@@ -203,7 +203,7 @@ describe("Test fetching and mapping of Trust data", () => {
       creation_date_day: "",
       creation_date_month: "",
       creation_date_year: "",
-      trust_still_involved_in_overseas_entity:"Yes",
+      trust_still_involved_in_overseas_entity: "Yes",
       unable_to_obtain_all_trust_info: "No",
       INDIVIDUALS: [],
       CORPORATES: [],

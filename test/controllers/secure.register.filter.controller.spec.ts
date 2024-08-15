@@ -138,13 +138,12 @@ describe( "SECURE REGISTER FILTER controller", () => {
         .post(config.SECURE_REGISTER_FILTER_URL)
         .send({ is_secure_register: "1" });
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.USE_PAPER_WITH_PARAMS_URL);
+      expect(resp.header.location).toEqual(config.USE_PAPER_URL);
       expect(mockUpdateOverseasEntity).not.toHaveBeenCalled();
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 
-    test(`renders the ${config.INTERRUPT_CARD_PAGE} page when no is selected and REDIS_removal flag is set to OFF`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(false);
+    test(`renders the ${config.USE_PAPER_PAGE} page when no is selected and REDIS_removal flag is set to OFF`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(false);
       mockGetApplicationData.mockReturnValueOnce({});
       mockIsActiveFeature.mockReturnValueOnce(false);
@@ -158,8 +157,7 @@ describe( "SECURE REGISTER FILTER controller", () => {
       expect(mockUpdateOverseasEntity).not.toHaveBeenCalled();
     });
 
-    test(`renders the ${config.INTERRUPT_CARD_PAGE} page when no is selected and REDIS_removal flag is set to ON`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
+    test(`renders the ${config.USE_PAPER_PAGE} page when no is selected and REDIS_removal flag is set to ON`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockIsActiveFeature.mockReturnValueOnce(true);
@@ -167,7 +165,7 @@ describe( "SECURE REGISTER FILTER controller", () => {
       mockUpdateOverseasEntity.mockReturnValueOnce(true);
       mockGetUrlWithTransactionIdAndSubmissionId.mockReturnValueOnce(config.INTERRUPT_CARD_WITH_PARAMS_URL);
       const resp = await request(app)
-        .post(config.SECURE_REGISTER_FILTER_WITH_PARAMS_URL)
+        .post(config.SECURE_REGISTER_FILTER_URL)
         .send({ is_secure_register: "0" });
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.INTERRUPT_CARD_WITH_PARAMS_URL);

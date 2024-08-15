@@ -54,11 +54,7 @@ export const postFilterPage = async (
 
     if (isSecureRegister === "1") {
       nextPageUrl = isSecureRegisterYesUrl;
-      if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistrationJourney) {
-        nextPageUrl = getUrlWithTransactionIdAndSubmissionId(isSecureRegisterYesUrl, appData[Transactionkey] as string, appData[OverseasEntityKey] as string);
-      }
     }
-
     if (isSecureRegister === "0") {
       nextPageUrl = isSecureRegisterNoUrl;
       if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistrationJourney) {
@@ -70,7 +66,6 @@ export const postFilterPage = async (
         nextPageUrl = getUrlWithTransactionIdAndSubmissionId(isSecureRegisterNoUrl, appData[Transactionkey] as string, appData[OverseasEntityKey] as string);
       }
     }
-
     if (isRemoveJourney(req)) {
       nextPageUrl = `${nextPageUrl}${config.JOURNEY_REMOVE_QUERY_PARAM}`;
     }

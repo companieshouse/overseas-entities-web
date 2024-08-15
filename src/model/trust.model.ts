@@ -1,7 +1,7 @@
 import { BeneficialOwnerIndividual } from '../model/beneficial.owner.individual.model';
 import { BeneficialOwnerOther } from '../model/beneficial.owner.other.model';
 import { BeneficialOwnerTypeChoice } from '../model/beneficial.owner.type.model';
-import { InputDate, yesNoResponse } from './data.types.model';
+import { yesNoResponse } from './data.types.model';
 import { RoleWithinTrustType } from './role.within.trust.type.model';
 
 export const TrustKey = "trusts";
@@ -81,7 +81,9 @@ export interface TrustIndividual {
   sa_address_care_of?: string;
   sa_address_po_box?: string;
   is_service_address_same_as_usual_residential_address?: yesNoResponse;
-  start_date?: InputDate;
+  start_date_day?: string;
+  start_date_month?: string;
+  start_date_year?: string;
   still_involved?: string;
   ceased_date_day?: string;
   ceased_date_month?: string;

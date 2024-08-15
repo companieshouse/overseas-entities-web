@@ -48,7 +48,9 @@ export const mapIndividualTrusteeToSession = (
     sa_address_care_of: '',
     sa_address_po_box: '',
     still_involved: stillInvolved,
-    start_date: formData.start_date,
+    start_date_day: formData.startDateDay,
+    start_date_month: formData.startDateMonth,
+    start_date_year: formData.startDateYear,
     ceased_date_day: formData.stillInvolved === "0" ? formData.ceasedDateDay : "",
     ceased_date_month: formData.stillInvolved === "0" ? formData.ceasedDateMonth : "",
     ceased_date_year: formData.stillInvolved === "0" ? formData.ceasedDateYear : "",
@@ -137,6 +139,9 @@ export const mapIndividualTrusteeFromSessionToPage = (
     ceasedDateDay: trustee.ceased_date_day,
     ceasedDateMonth: trustee.ceased_date_month,
     ceasedDateYear: trustee.ceased_date_year,
+    startDateDay: trustee.start_date_day,
+    startDateMonth: trustee.start_date_month,
+    startDateYear: trustee.start_date_year,
     relevant_period: trustee.relevant_period,
   };
 

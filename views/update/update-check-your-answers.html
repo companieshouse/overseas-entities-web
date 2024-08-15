@@ -125,7 +125,7 @@
       {% endif %}
 
       {% if pageParams.isRPStatementExists %}
-      <br>
+        <br>
         {% include "includes/check-your-answers/relevant-period-statements.html" %}
       {% endif %}
 
@@ -133,8 +133,8 @@
       {% include "includes/check-your-answers/presenter.html" %}
       {% include "includes/check-your-answers/make-changes-oe-update-period.html" %}
       {% include "includes/check-your-answers/verification-checks.html" %}
-      <br>
       {% include "includes/entity.html" %}
+      {% if pageParams.isRPStatementExists %}
 
       {% set bois = beneficial_owners_individual or [] %}
       {% set existingBOIs = bois | selectattr('ch_reference') %}

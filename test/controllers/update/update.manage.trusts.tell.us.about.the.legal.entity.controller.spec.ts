@@ -35,7 +35,6 @@ import { isActiveFeature } from '../../../src/utils/feature.flag';
 import { TRUST, TRUST_RELEVANT_PERIOD } from '../../__mocks__/session.mock';
 import {
   ANY_MESSAGE_ERROR,
-  PAGE_NOT_FOUND_TEXT,
   PAGE_TITLE_ERROR,
   SERVICE_UNAVAILABLE,
   UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_TITLE,
@@ -451,15 +450,6 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       expect(response.text).toContain('name="ceasedDateMonth" type="text" value="01"');
       expect(response.text).toContain('name="ceasedDateYear" type="text" value="2024"');
 
-    });
-
-    test('when feature flag is off, 404 is returned', async () => {
-      mockIsActiveFeature.mockReturnValue(false);
-
-      const response = await request(app).get(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL);
-
-      expect(response.status).toEqual(404);
-      expect(response.text).toContain(PAGE_NOT_FOUND_TEXT);
     });
 
     test("catch error when rendering the page", async () => {

@@ -78,8 +78,16 @@ export const mapTrustData = (trustData: TrustData, appData: ApplicationData) => 
   if (trustData.trustStillInvolvedInOverseasEntityIndicator === null || trustData.trustStillInvolvedInOverseasEntityIndicator === undefined) {
     stillInvolved = "";
   }
-
-  const trust: Trust = {
+  
+  let unableToObtainAllInfo = "";
+  if (trustData["unableToObtainAllInfoIndicator"] === "N"){
+    unableToObtainAllInfo = "No";
+  }
+   if (trustData["unableToObtainAllInfoIndicator"] === "Y"){
+    unableToObtainAllInfo ="Yes";
+   }
+ 
+const trust: Trust = {
     trust_id: (((appData.update?.review_trusts ?? []).length) + 1).toString(),
     ch_reference: trustData.hashedTrustId,
     trust_name: trustData.trustName,
@@ -87,11 +95,12 @@ export const mapTrustData = (trustData: TrustData, appData: ApplicationData) => 
     creation_date_month: dateOfBirth?.month ?? "",
     creation_date_year: dateOfBirth?.year ?? "",
     trust_still_involved_in_overseas_entity: stillInvolved,
-    unable_to_obtain_all_trust_info: trustData.unableToObtainAllTrustInfoIndicator ? "No" : "Yes",
+    unable_to_obtain_all_trust_info: unableToObtainAllInfo,
     INDIVIDUALS: [],
     CORPORATES: [],
     HISTORICAL_BO: []
   };
+  console.log("£££" + JSON.stringify(trust))
   appData.update?.review_trusts?.push(trust);
   return trust;
 };

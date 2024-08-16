@@ -296,6 +296,7 @@ export const RELEVANT_CHECK_YOUR_ANSWER_HEADING = "Check your answers before sub
 export const RELEVANT_SECURE_REGISTER_CHANGE_LINK = "/update-an-overseas-entity/secure-update-filter";
 export const RELEVANT_SECURE_FILTER_PAGE_HEADING = "Do any beneficial owners or managing officers have personal information protected at Companies House?";
 export const RELEVANT_PERIOD_OWNED_LAND_CHANGE_LINK = "/update-an-overseas-entity/registered-owner-during-pre-registration-period";
+export const IMPORTANT_BANNER_TEXT = "You need to provide some information about the overseas entity from the pre-registration period.";
 
 // Remove journey
 export const REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE = "Has the overseas entity disposed of all relevant property or land in the UK?";

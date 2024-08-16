@@ -210,12 +210,17 @@ describe('Update - Manage Trusts - Review individuals', () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 
-    test('render page with the important banner when relevant_period is true and we want to add an individual beneficiary', async () => {
+    test('render page with the important banner when relevant_period is true for trust and we want to add an individual beneficiary', async () => {
       const appData = { entity_number: 'OE999999', entity_name: 'Overseas Entity Name' };
-      const trustInReview = { trust_id: 'trust-in-review-1', trust_name: 'Overseas Entity Name', review_status: { in_review: true } };
+      const trustInReview = { trust_id: 'trust-in-review-1', trust_name: 'Overseas Entity Name', review_status: { in_review: true }, relevant_period: true };
+      const trustee = {
+        id: 'trustee-individual-2',
+        relevant_period: true
+      };
       mockIsActiveFeature.mockReturnValue(true);
       mockGetApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
+      mockGetTrustee.mockReturnValue(trustee);
       const resp = await request(app).get(`${UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL}${RELEVANT_PERIOD_QUERY_PARAM}`);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(RELEVANT_PERIOD);

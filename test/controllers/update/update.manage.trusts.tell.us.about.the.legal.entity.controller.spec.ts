@@ -304,11 +304,14 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       // Arrange
       const appData = { entity_number: 'OE444466', entity_name: 'Overseas Entity Name' };
       const trustInReview = { trust_id: '4466', trust_name: 'TRUST+4', review_status: { in_review: true } };
-
+      const trustee = {
+        id: 'legal_entity_trustee_3',
+        relevant_period: true
+      };
       mockIsActiveFeature.mockReturnValue(true);
       mockGetApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
-      mockGetTrustee.mockReturnValue(undefined);
+      mockGetTrustee.mockReturnValue(trustee);
 
       // Act
       const response = await request(app).get(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL + RELEVANT_PERIOD_QUERY_PARAM);
@@ -332,11 +335,14 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       // Arrange
       const appData = { entity_number: 'OE444666', entity_name: 'Overseas Entity Name' };
       const trustInReview = { trust_id: '4466', trust_name: 'TRUST+4', review_status: { in_review: true } };
-
+      const trustee = {
+        id: 'legal_entity_trustee_3',
+        relevant_period: true
+      };
       mockIsActiveFeature.mockReturnValue(true);
       mockGetApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
-      mockGetTrustee.mockReturnValue(undefined);
+      mockGetTrustee.mockReturnValue(trustee);
 
       // Act
       const response = await request(app).get(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL + RELEVANT_PERIOD_QUERY_PARAM);
@@ -359,11 +365,14 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       // Arrange
       const appData = { entity_number: 'OE555555', entity_name: 'Overseas Entity Name' };
       const trustInReview = { trust_id: '5555', trust_name: 'TRUST_5', review_status: { in_review: true } };
-
+      const trustee = {
+        id: 'legal_entity_trustee_3',
+        relevant_period: true
+      };
       mockIsActiveFeature.mockReturnValue(true);
       mockGetApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
-      mockGetTrustee.mockReturnValue(undefined);
+      mockGetTrustee.mockReturnValue(trustee);
 
       // Act
       const response = await request(app).get(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL + RELEVANT_PERIOD_QUERY_PARAM);

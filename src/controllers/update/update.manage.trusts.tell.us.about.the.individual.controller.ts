@@ -33,7 +33,7 @@ const getPageProperties = (trust, formData, trustee: TrustIndividual, errors?: F
         trustName: trust?.trust_name
       },
       roleWithinTrustType: RoleWithinTrustType,
-      entity_name: trust?.trust_name,
+      entity_name: null,
     },
     formData,
     errors,
@@ -53,13 +53,12 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const trustee = getTrustee(trust, trusteeId, TrusteeType.INDIVIDUAL) as IndividualTrustee;
 
     const formData = trustee ? mapIndividualTrusteeFromSessionToPage(trustee) : {};
-    const relevant_period = req.query['relevant-period'];
+    const relevant_period = req.query ? req.query["relevant-period"] === "true" : false;
 
-    if (relevant_period) {
-      return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE, getPagePropertiesRelevantPeriod(relevant_period, trust, formData, trustee, appData.entity_name));
-    } else {
-      return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE, getPageProperties(trust, formData, trustee));
-    }
+    const pageProps = getPageProperties(trust, formData, trustee);
+    pageProps.formData.relevant_period = relevant_period || (trustee ? trustee.relevant_period : false);
+    setEntityNameInRelevantPeriodPageBanner(pageProps, appData.entity_name);
+    return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE, pageProps);
 
   } catch (error) {
     next(error);
@@ -124,5 +123,13 @@ const getPagePropertiesRelevantPeriod = (relevant_period, trust, formData, trust
   const pageProps = getPageProperties(trust, formData, trustee, errors);
   pageProps.formData.relevant_period = relevant_period;
   pageProps.pageData.entity_name = entityName;
+  return pageProps;
+};
+
+export const setEntityNameInRelevantPeriodPageBanner = (pageProps, entityName: string | undefined) => {
+  // name the entity for the page template
+  if (pageProps && pageProps.pageData && entityName !== undefined) {
+    pageProps.pageData.entity_name = entityName;
+  }
   return pageProps;
 };

@@ -78,14 +78,14 @@ export const mapTrustData = (trustData: TrustData, appData: ApplicationData) => 
   if (trustData.trustStillInvolvedInOverseasEntityIndicator === null || trustData.trustStillInvolvedInOverseasEntityIndicator === undefined) {
     stillInvolved = "";
   }
-
+  // this part of the code must be removed when the SDK has been updated
   let unableToObtainAllInfo = "";
   if (trustData["unableToObtainAllInfoIndicator"] === "N"){
     unableToObtainAllInfo = "No";
   }
-   if (trustData["unableToObtainAllInfoIndicator"] === "Y"){
+  if (trustData["unableToObtainAllInfoIndicator"] === "Y"){
     unableToObtainAllInfo = "Yes";
-   }
+  }
 
   const trust: Trust = {
     trust_id: (((appData.update?.review_trusts ?? []).length) + 1).toString(),

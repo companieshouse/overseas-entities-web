@@ -16,8 +16,11 @@
 
       {% include "includes/list/errors.html" %}
 
+      <h1 class="govuk-heading-xl govuk-!-margin-bottom-3">{{ title }}</h1>
+
       <form method="post">
         {% include "includes/csrf_token.html" %}
+
         {{ govukRadios({
           errorMessage: errors.has_sold_all_land if errors,
           classes: "govuk-radios",
@@ -25,8 +28,7 @@
           name: "has_sold_all_land",
           fieldset: {
             legend: {
-              text: title,
-              isPageHeading: true,
+              isPageHeading: false,
               classes: "govuk-fieldset__legend--xl"
             }
           },

@@ -3,6 +3,8 @@
 
     {% include "includes/list/errors.html" %}
 
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-3">{{ title }}</h1>
+
     <form method="post">
       {% include "includes/csrf_token.html" %}
       
@@ -10,8 +12,7 @@
         name: 'who_is_registering',
         error: errors.who_is_registering if errors,
         legend: {
-          text: title,
-          isPageHeading: true,
+          isPageHeading: false,
           classes: "govuk-fieldset__legend--xl"
         },
         items: [

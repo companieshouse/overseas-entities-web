@@ -17,6 +17,8 @@
 
       {% include "includes/list/errors.html" %}
 
+      <h1 class="govuk-heading-xl govuk-!-margin-bottom-3">{{ title }}</h1>
+
       <form method="post">
         {% include "includes/csrf_token.html" %}
         {{ govukRadios({
@@ -26,8 +28,7 @@
           name: "has_sold_land",
           fieldset: {
             legend: {
-              text: "Has the entity disposed of any property or land in England, Wales or Scotland since 28 February 2022?",
-              isPageHeading: true,
+              isPageHeading: false,
               classes: "govuk-fieldset__legend--xl"
             }
           },

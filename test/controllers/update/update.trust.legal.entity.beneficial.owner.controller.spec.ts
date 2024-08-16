@@ -99,6 +99,7 @@ describe('Trust Legal Entity Beneficial Owner Controller', () => {
     redirect: jest.fn() as any,
   } as Response;
   const mockNext = jest.fn();
+  const mockRelevantPeriodNext = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -162,6 +163,14 @@ describe('Trust Legal Entity Beneficial Owner Controller', () => {
 
       expect(mockNext).toBeCalledTimes(1);
       expect(mockNext).toBeCalledWith(error);
+    });
+
+    test('execute render outwith the relevant period', () => {
+      const error = new Error(ANY_MESSAGE_ERROR);
+      (mapLegalEntityToSession as jest.Mock).mockImplementation(() => { throw error; });
+
+      get(mockReq, mockRes, mockRelevantPeriodNext);
+      expect(mockRelevantPeriodNext).not.toBeCalled();
     });
   });
 

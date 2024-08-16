@@ -13,7 +13,7 @@ import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/compa
 import { retrieveTrustData } from "../../utils/update/trust.model.fetch";
 import { isRemoveJourney } from "../../utils/url";
 import { checkRelevantPeriod } from "../../utils/relevant.period";
-import {isActiveFeature} from "../../utils/feature.flag";
+import { isActiveFeature } from "../../utils/feature.flag";
 
 export const get = (req: Request, resp: Response, next: NextFunction) => {
   try {

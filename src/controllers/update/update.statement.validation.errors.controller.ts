@@ -15,13 +15,17 @@ import { getApplicationData } from "../../utils/application.data";
 import { ApplicationData } from "../../model/application.model";
 import { FormattedValidationErrors, formatValidationError } from "../../middleware/validation.middleware";
 import { StatementResolutionKey, StatementResolutionType } from "../../model/statement.resolution.model";
+import { isActiveFeature } from "../../utils/feature.flag";
+import * as config from "../../config";
+import { checkRelevantPeriod } from "../../utils/relevant.period";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const appData = getApplicationData(req.session);
-    const inNoChangeJourney = !!appData.update?.no_change;
+    const relevantPeriodNoChange = isActiveFeature(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD) ? !checkRelevantPeriod(appData) : true;
+    const inNoChangeJourney = !!appData.update?.no_change && relevantPeriodNoChange;
 
     return renderPage(res, appData, inNoChangeJourney, req['statementErrorList']);
   } catch (error) {

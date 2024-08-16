@@ -79,7 +79,7 @@ describe( "SECURE REGISTER FILTER controller", () => {
   });
 
   describe("GET tests", () => {
-    test(`renders the the ${config.SECURE_REGISTER_FILTER_PAGE} page`, async () => {
+    test(`renders the ${config.SECURE_REGISTER_FILTER_PAGE} page`, async () => {
       mockGetApplicationData.mockReturnValueOnce({});
       const resp = await request(app).get(SECURE_REGISTER_FILTER_URL);
 
@@ -94,7 +94,7 @@ describe( "SECURE REGISTER FILTER controller", () => {
       expect(resp.text).toContain(NOT_SHOW_INFORMATION_ON_PUBLIC_REGISTER);
     });
 
-    test(`renders the the ${config.SECURE_REGISTER_FILTER_PAGE} page and REDIS_removal flag is set to OFF`, async () => {
+    test(`renders the ${config.SECURE_REGISTER_FILTER_PAGE} page and REDIS_removal flag is set to OFF`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(false);
       mockGetApplicationData.mockReturnValueOnce({});
       mockIsRemoveJourney.mockReturnValue(false);
@@ -111,7 +111,7 @@ describe( "SECURE REGISTER FILTER controller", () => {
       expect(resp.text).toContain(NOT_SHOW_INFORMATION_ON_PUBLIC_REGISTER);
     });
 
-    test(`renders the the ${config.SECURE_REGISTER_FILTER_PAGE} page and REDIS_removal flag is set to ON`, async () => {
+    test(`renders the ${config.SECURE_REGISTER_FILTER_PAGE} page and REDIS_removal flag is set to ON`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
       mockGetApplicationData.mockReturnValueOnce({});
       mockIsRemoveJourney.mockReturnValue(false);

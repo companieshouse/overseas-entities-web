@@ -321,7 +321,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
         .send(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
+      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
@@ -393,7 +393,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(BeneficialOwnerIndividualKey);
       expect(resp.status).toEqual(302);
 
-      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
+      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
     });
 
     test("catch error when posting data", async () => {
@@ -1666,6 +1666,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
   describe("UPDATE tests", () => {
     test(`redirects to the ${BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
       mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
+      mockIsActiveFeature.mockReturnValueOnce(true);
 
       mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
       const resp = await request(app)
@@ -1691,6 +1692,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
     test(`replaces existing object on submit`, async () => {
       mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
       mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_REPLACE);
+      mockIsActiveFeature.mockReturnValueOnce(true);
       const resp = await request(app)
         .post(BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)
         .send(BENEFICIAL_OWNER_INDIVIDUAL_REPLACE);
@@ -1751,6 +1753,8 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
     test(`redirects to the ${BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
       mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
       const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL + REMOVE + BO_IND_ID_URL);
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockCheckRelevantPeriod.mockReturnValueOnce(true);
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
@@ -1768,6 +1772,8 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
     test(`removes the object from session`, async () => {
       const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL + REMOVE + BO_IND_ID_URL);
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockCheckRelevantPeriod.mockReturnValueOnce(true);
 
       expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(BeneficialOwnerIndividualKey);
       expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(BO_IND_ID);
@@ -1800,7 +1806,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
     test(`removes the object from session`, async () => {
       const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL + REMOVE + BO_IND_ID_URL);
-
+      mockCheckRelevantPeriod.mockReturnValueOnce(true);
       expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(BeneficialOwnerIndividualKey);
       expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(BO_IND_ID);
 

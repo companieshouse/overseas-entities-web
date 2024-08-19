@@ -979,7 +979,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
         .send(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
@@ -1012,7 +1012,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect((data as BeneficialOwnerIndividual).trust_ids).toEqual(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK.trust_ids);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
     });
 
     test(`Service address from the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} is present when same address is set to no`, async () => {

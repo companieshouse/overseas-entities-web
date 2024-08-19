@@ -21,6 +21,23 @@ import { IndividualTrustee, Trust, TrustIndividual } from '../../model/trust.mod
 import { RoleWithinTrustType } from '../../model/role.within.trust.type.model';
 import { IndividualTrusteesFormCommon } from '../../model/trust.page.model';
 
+type TrustIndividualBeneficialOwnerPageProperties = { templateName: string,
+  backLinkUrl: string
+  pageParams: {
+    title: string,
+  },
+  pageData: {
+    trustData: {
+      trustName: any
+    },
+    roleWithinTrustType: typeof RoleWithinTrustType,
+      entity_name: string | undefined,
+  },
+  formData: TrustIndividual,
+    errors: FormattedValidationErrors | undefined,
+    uneditableDOB: boolean,
+    isUpdate: boolean };
+
 const getPageProperties = (trust, formData, trustee: TrustIndividual, errors?: FormattedValidationErrors) => {
   return {
     templateName: UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE,
@@ -33,7 +50,7 @@ const getPageProperties = (trust, formData, trustee: TrustIndividual, errors?: F
         trustName: trust?.trust_name
       },
       roleWithinTrustType: RoleWithinTrustType,
-      entity_name: null,
+      entity_name: undefined,
     },
     formData,
     errors,
@@ -77,16 +94,21 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const formData: IndividualTrusteesFormCommon = req.body;
 
     if (!errorList.isEmpty()) {
+      let pageProps: TrustIndividualBeneficialOwnerPageProperties;
       const trustee = getTrustee(trust, trusteeId, TrusteeType.INDIVIDUAL) as IndividualTrustee;
       if (relevant_period) {
+        pageProps = getPagePropertiesRelevantPeriod(relevant_period, trust, formData, trustee, appData.entity_name, formatValidationError(errorList.array()));
+        pageProps.pageData.entity_name = appData.entity_name;
         return res.render(
           UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE,
-          getPagePropertiesRelevantPeriod(relevant_period, trust, formData, trustee, appData.entity_name, formatValidationError(errorList.array())),
+          pageProps,
         );
       } else {
+        pageProps = getPageProperties(trust, formData, trustee, formatValidationError(errorList.array()));
+        pageProps.pageData.entity_name = appData.entity_name;
         return res.render(
           UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE,
-          getPageProperties(trust, formData, trustee, formatValidationError(errorList.array())),
+          pageProps,
         );
       }
     }

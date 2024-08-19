@@ -13,5 +13,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   const nextPageUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
     ? config.INTERRUPT_CARD_WITH_PARAMS_URL
     : config.INTERRUPT_CARD_URL;
-  await postFilterPage(req, res, next, config.USE_PAPER_URL, nextPageUrl, true);
+  const usePaperUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
+    ? config.USE_PAPER_WITH_PARAMS_URL
+    : config.USE_PAPER_URL;
+  await postFilterPage(req, res, next, usePaperUrl, nextPageUrl, true);
 };

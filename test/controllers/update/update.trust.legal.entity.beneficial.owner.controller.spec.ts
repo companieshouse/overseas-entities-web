@@ -27,7 +27,12 @@ import {
   post,
 } from "../../../src/controllers/update/update.trusts.legal.entity.beneficial.owner.controller";
 import { LEGAL_ENTITY_BO_TEXTS } from "../../../src/utils/trust.legal.entity.bo";
-import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR, TRUSTEE_STILL_INVOLVED_TEXT } from "../../__mocks__/text.mock";
+import {
+  ANY_MESSAGE_ERROR,
+  IMPORTANT_BANNER_TEXT,
+  PAGE_TITLE_ERROR,
+  TRUSTEE_STILL_INVOLVED_TEXT
+} from "../../__mocks__/text.mock";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { hasTrustWithIdUpdate } from "../../../src/middleware/navigation/has.trust.middleware";
 import {
@@ -46,7 +51,10 @@ import {
   saveTrustInApp,
 } from "../../../src/utils/trusts";
 import { mapCommonTrustDataToPage } from "../../../src/utils/trust/common.trust.data.mapper";
-import { mapLegalEntityToSession } from "../../../src/utils/trust/legal.entity.beneficial.owner.mapper";
+import {
+  mapLegalEntityToSession,
+  mapLegalEntityTrusteeByIdFromSessionToPage
+} from "../../../src/utils/trust/legal.entity.beneficial.owner.mapper";
 import { RoleWithinTrustType } from "../../../src/model/role.within.trust.type.model";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
@@ -99,6 +107,7 @@ describe('Trust Legal Entity Beneficial Owner Controller', () => {
     redirect: jest.fn() as any,
   } as Response;
   const mockNext = jest.fn();
+  const mockRelevantPeriodNext = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -163,6 +172,14 @@ describe('Trust Legal Entity Beneficial Owner Controller', () => {
       expect(mockNext).toBeCalledTimes(1);
       expect(mockNext).toBeCalledWith(error);
     });
+
+    test('execute render outwith the relevant period', () => {
+      const error = new Error(ANY_MESSAGE_ERROR);
+      (mapLegalEntityToSession as jest.Mock).mockImplementation(() => { throw error; });
+
+      get(mockReq, mockRes, mockRelevantPeriodNext);
+      expect(mockRelevantPeriodNext).not.toBeCalled();
+    });
   });
 
   describe('POST unit tests', () => {
@@ -224,6 +241,25 @@ describe('Trust Legal Entity Beneficial Owner Controller', () => {
 
       expect(resp.text).toContain('dummyName');
 
+      expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
+      expect(resp.text).toContain(LEGAL_ENTITY_BO_TEXTS.title);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(TRUSTEE_STILL_INVOLVED_TEXT);
+
+      expect(authentication).toBeCalledTimes(1);
+      expect(hasTrustWithIdUpdate).toBeCalledTimes(1);
+    });
+
+    test('successfully access GET method and render', async () => {
+      (mapCommonTrustDataToPage as jest.Mock).mockReturnValue({ trustName: 'dummyName' });
+      (mapLegalEntityTrusteeByIdFromSessionToPage as jest.Mock).mockReturnValue({});
+      mockGetApplicationData.mockReturnValue(mockAppData);
+
+      const resp = await request(app).get(pageUrl + "?relevant-period=true").send({ relevant_period: true });
+
+      expect(resp.text).toContain('dummyName');
+
+      expect(resp.text).toContain(IMPORTANT_BANNER_TEXT);
       expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
       expect(resp.text).toContain(LEGAL_ENTITY_BO_TEXTS.title);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);

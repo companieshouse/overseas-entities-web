@@ -65,7 +65,7 @@ describe("UPDATE INTERRUPT CARD controller", () => {
       expect(resp.text).toContain(BEFORE_START_PAGE_LINK_VERIFICATION);
     });
 
-    test(`renders the update-interrupt-card page with back link to update-any-trusts-involved`, async () => {
+    test(`renders the secure-update-filter page with back link to update-any-trusts-involved`, async () => {
       const resp = await request(app).get(UPDATE_INTERRUPT_CARD_URL);
 
       expect(resp.status).toEqual(200);
@@ -73,7 +73,7 @@ describe("UPDATE INTERRUPT CARD controller", () => {
       expect(resp.text).toContain(SECURE_UPDATE_FILTER_URL);
     });
 
-    test(`renders the update-interrupt-card page with correct back link for remove journey`, async () => {
+    test(`renders the secure-update-filter page with correct back link for remove journey`, async () => {
       const resp = await request(app).get(`${UPDATE_INTERRUPT_CARD_URL}${JOURNEY_REMOVE_QUERY_PARAM}`);
 
       expect(resp.status).toEqual(200);

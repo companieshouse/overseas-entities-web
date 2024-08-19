@@ -86,6 +86,20 @@ describe('Trust Utils method tests', () => {
     }
   } as BeneficialOwnerIndividual;
 
+  const mockBoCeasedIndividualWithTrusteeNocRelevantPeriod = {
+    id: '9003',
+    trustees_nature_of_control_types: ['dummyType' as NatureOfControlType],
+    trust_ids: [
+      trustId,
+    ],
+    ceased_date: {
+      day: "1",
+      month: "2",
+      year: "2020"
+    },
+    relevant_period: true
+  } as BeneficialOwnerIndividual;
+
   const mockBoOle1 = {
     id: '8001',
   } as BeneficialOwnerOther;
@@ -109,6 +123,20 @@ describe('Trust Utils method tests', () => {
       month: "2",
       year: "2020"
     }
+  } as BeneficialOwnerOther;
+
+  const mockBoCeasedOleWithTrusteeNocRelevantPeriod = {
+    id: '8003',
+    trustees_nature_of_control_types: ['dummyType' as NatureOfControlType],
+    trust_ids: [
+      trustId,
+    ],
+    ceased_date: {
+      day: "1",
+      month: "2",
+      year: "2020"
+    },
+    relevant_period: true
   } as BeneficialOwnerOther;
 
   let mockAppData = {};
@@ -143,6 +171,15 @@ describe('Trust Utils method tests', () => {
     expect(getBoIndividualAssignableToTrust(mockAppDataWithACeasedIndividualBO)).toEqual([mockBoIndividual1]);
   });
 
+  test('test get Bo Individuals assignable to Trust with relevant period', () => {
+    const mockAppDataWithACeasedIndividualBO = {
+      ...mockAppData
+    };
+    mockAppDataWithACeasedIndividualBO[BeneficialOwnerIndividualKey].push(mockBoCeasedIndividualWithTrusteeNocRelevantPeriod);
+
+    expect(getBoIndividualAssignableToTrust(mockAppDataWithACeasedIndividualBO)).toEqual([mockBoIndividual1, mockBoCeasedIndividualWithTrusteeNocRelevantPeriod]);
+  });
+
   test('test get Bo other legal assigned to trust', () => {
     expect(getTrustBoIndividuals(mockAppData, trustId)).toEqual([mockBoIndividual1]);
   });
@@ -154,6 +191,15 @@ describe('Trust Utils method tests', () => {
     mockAppDataWithACeasedOtherBO[BeneficialOwnerOtherKey].push(mockBoCeasedOleWithTrusteeNoc);
 
     expect(getBoOtherAssignableToTrust(mockAppDataWithACeasedOtherBO)).toEqual([mockBoOle2]);
+  });
+
+  test('test get Bo other legal assignable to Trust with relevant period', () => {
+    const mockAppDataWithACeasedOtherBO = {
+      ...mockAppData
+    };
+    mockAppDataWithACeasedOtherBO[BeneficialOwnerOtherKey].push(mockBoCeasedOleWithTrusteeNocRelevantPeriod);
+
+    expect(getBoOtherAssignableToTrust(mockAppDataWithACeasedOtherBO)).toEqual([mockBoOle2, mockBoCeasedOleWithTrusteeNocRelevantPeriod]);
   });
 
   test('test get Bo other legal assigned to trust', () => {

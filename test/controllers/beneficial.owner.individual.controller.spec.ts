@@ -89,6 +89,7 @@ import { DateTime } from "luxon";
 import { isActiveFeature } from "../../src/utils/feature.flag";
 import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
 import { getUrlWithParamsToPath } from "../../src/utils/url";
+import { checkRelevantPeriod } from "../../src/utils/relevant.period";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockHasBeneficialOwnersStatementMiddleware = hasBeneficialOwnersStatement as jest.Mock;
@@ -115,6 +116,7 @@ mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Respons
 const NEXT_PAGE_URL = "/NEXT_PAGE";
 
 const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
+const mockCheckRelevantPeriod = checkRelevantPeriod as jest.Mock;
 mockGetUrlWithParamsToPath.mockReturnValue(NEXT_PAGE_URL);
 
 describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {

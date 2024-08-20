@@ -11,7 +11,7 @@ export const get = (req: Request, res: Response) => {
   let nextPageUrl = config.OVERSEAS_NAME_URL;
   let backLinkUrl = config.SECURE_REGISTER_FILTER_URL;
 
-  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)){
+  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
     nextPageUrl = getUrlWithParamsToPath(config.OVERSEAS_NAME_WITH_PARAMS_URL, req);
     backLinkUrl = getUrlWithParamsToPath(config.SECURE_REGISTER_FILTER_WITH_PARAMS_URL, req);
   }

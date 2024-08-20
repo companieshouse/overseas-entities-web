@@ -84,7 +84,7 @@ describe( "SECURE REGISTER FILTER controller", () => {
 
   describe("GET tests", () => {
 
-    test(`renders the the ${config.SECURE_REGISTER_FILTER_PAGE} page`, async () => {
+    test(`renders the ${config.SECURE_REGISTER_FILTER_PAGE} page`, async () => {
       mockGetApplicationData.mockReturnValueOnce({});
       const resp = await request(app).get(SECURE_REGISTER_FILTER_URL);
 

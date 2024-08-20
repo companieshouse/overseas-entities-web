@@ -527,6 +527,9 @@ export const MAPPED_FETCH_CORPORATE_TRUSTEE_DATA_MOCK =
     "sa_address_postal_code": "abcd",
     "sa_address_premises": "2",
     "sa_address_region": "Banten",
+    "start_date_day": "1",
+    "start_date_month": "1",
+    "start_date_year": "2020",
     "type": RoleWithinTrustType.SETTLOR
   };
 
@@ -563,6 +566,9 @@ export const MAPPED_FETCH_SECOND_CORPORATE_TRUSTEE_DATA_MOCK =
     "sa_address_postal_code": "",
     "sa_address_premises": "",
     "sa_address_region": "",
+    "start_date_day": "3",
+    "start_date_month": "3",
+    "start_date_year": "2023",
     "type": "Grantor"
   };
 
@@ -599,6 +605,9 @@ export const MAPPED_FETCH_THIRD_CORPORATE_TRUSTEE_DATA_MOCK =
     "sa_address_postal_code": "",
     "sa_address_premises": "",
     "sa_address_region": "",
+    "start_date_day": "30",
+    "start_date_month": "4",
+    "start_date_year": "1990",
     "type": "Interested_Person",
   };
 

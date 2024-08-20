@@ -248,7 +248,9 @@ export const mapCorporateTrusteeData = (trustee: CorporateTrusteeData, trust: Tr
     ro_address_region: "",
     ro_address_country: "",
     ro_address_postal_code: "",
-
+    start_date_day: appointmentDate?.day ?? "",
+    start_date_month: appointmentDate?.month ?? "",
+    start_date_year: appointmentDate?.year ?? "",
     is_service_address_same_as_principal_address: yesNoResponse.No
   };
 

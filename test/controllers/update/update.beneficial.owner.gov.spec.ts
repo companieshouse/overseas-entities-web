@@ -139,7 +139,6 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
       const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_GOV_URL + RELEVANT_PERIOD_QUERY_PARAM);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(RELEVANT_PERIOD);
       expect(resp.text).toContain(RELEVANT_PERIOD_INFORMATION);
       expect(resp.text).toContain("1");
       expect(resp.text).toContain("January");

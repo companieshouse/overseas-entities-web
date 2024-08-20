@@ -411,6 +411,24 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.header.location).toContain(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
     });
 
+    test(`redirects to the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} page when the individual beneficial owner button selected`, async () => {
+      const resp = await request(app)
+        .post(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL)
+        .send({ [BeneficialOwnerTypeKey]: BeneficialOwnerTypeChoice.individual });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL);
+    });
+
+    test(`redirects to the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} page when the other legal entity beneficial owner button selected`, async () => {
+      const resp = await request(app)
+        .post(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL)
+        .send({ [BeneficialOwnerTypeKey]: BeneficialOwnerTypeChoice.otherLegal });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.UPDATE_BENEFICIAL_OWNER_OTHER_URL);
+    });
+
     test(`redirects to the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL + "?relevant-period=true"} page when the relevant_period=true and Other leegal entity button selected`, async () => {
       const resp = await request(app)
         .post(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL)

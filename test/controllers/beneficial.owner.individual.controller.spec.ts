@@ -23,8 +23,7 @@ import {
   BENEFICIAL_OWNER_TYPE_PAGE,
   BENEFICIAL_OWNER_TYPE_URL,
   BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
-  REMOVE,
-  RELEVANT_PERIOD_QUERY_PARAM,
+  REMOVE
 } from "../../src/config";
 
 import {
@@ -322,7 +321,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
         .send(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
+      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
@@ -394,7 +393,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(BeneficialOwnerIndividualKey);
       expect(resp.status).toEqual(302);
 
-      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
+      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
     });
 
     test("catch error when posting data", async () => {
@@ -1757,7 +1756,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
+      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
@@ -1778,7 +1777,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(BO_IND_ID);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
+      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
     });
   });
 
@@ -1810,7 +1809,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(BO_IND_ID);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
+      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
   });

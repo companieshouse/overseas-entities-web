@@ -1,5 +1,6 @@
 jest.mock('../../src/utils/feature.flag');
 jest.mock('../../src/utils/application.data');
+jest.mock('../../src/utils/relevant.period');
 
 import { describe, expect, jest, test } from '@jest/globals';
 import { Request } from "express";
@@ -19,9 +20,11 @@ import {
 
 import { isActiveFeature } from "../../src/utils/feature.flag";
 import { getApplicationData } from "../../src/utils/application.data";
+import { checkRelevantPeriod } from "../../src/utils/relevant.period";
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockCheckRelevantPeriod = checkRelevantPeriod as jest.Mock;
 
 const mockRemoveRequest = { } as Request;
 mockRemoveRequest["query"] = {
@@ -70,9 +73,12 @@ describe("NAVIGATION utils", () => {
     expect(backLink).toEqual(`${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
   });
 
-  xtest(`getRelevantPeriodUrl returns the correct URL with the 'relevant period' query parameter present when we click on the back button`, () => {
-    const mockRequest = { query: {} } as Request;
-    const backLink = getRelevantPeriodUrl(mockRequest);
+  test(`getRelevantPeriodUrl returns the correct URL with the 'relevant period' query parameter present when we click on the back button`, () => {
+    mockCheckRelevantPeriod.mockReturnValueOnce(true);
+    mockGetApplicationData.mockReturnValue({
+      update: { checkRelevantPeriod: true },
+    });
+    const backLink = getRelevantPeriodUrl(mockGetApplicationData);
     expect(backLink).toEqual(`${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL + config.RELEVANT_PERIOD_QUERY_PARAM}`);
   });
 
@@ -372,17 +378,17 @@ describe("NAVIGATION utils", () => {
     expect(navigation).toEqual(`${config.OVERSEAS_ENTITY_QUERY_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
   });
 
-  xtest(`NAVIGATION returns ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} when calling previousPage on ${config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL} object`, () => {
+  test(`NAVIGATION returns ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} when calling previousPage on ${config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL} object`, () => {
     const navigation = NAVIGATION[config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL].previousPage();
     expect(navigation).toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
   });
 
-  xtest(`NAVIGATION returns ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} when calling previousPage on ${config.UPDATE_BENEFICIAL_OWNER_OTHER_URL} object`, () => {
+  test(`NAVIGATION returns ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} when calling previousPage on ${config.UPDATE_BENEFICIAL_OWNER_OTHER_URL} object`, () => {
     const navigation = NAVIGATION[config.UPDATE_BENEFICIAL_OWNER_OTHER_URL].previousPage();
     expect(navigation).toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
   });
 
-  xtest(`NAVIGATION returns ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} when calling previousPage on ${config.UPDATE_BENEFICIAL_OWNER_GOV_URL} object`, () => {
+  test(`NAVIGATION returns ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} when calling previousPage on ${config.UPDATE_BENEFICIAL_OWNER_GOV_URL} object`, () => {
     const navigation = NAVIGATION[config.UPDATE_BENEFICIAL_OWNER_GOV_URL].previousPage();
     expect(navigation).toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
   });

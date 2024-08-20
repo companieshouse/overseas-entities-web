@@ -16,7 +16,7 @@ import { getUrlWithParamsToPath } from "../utils/url";
 export const get = (req: Request, res: Response) => {
   const backLinkUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
     ? getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req)
-    : (config.BENEFICIAL_OWNER_TYPE_URL) ;
+    : config.BENEFICIAL_OWNER_TYPE_URL;
   getBeneficialOwnerIndividual(req, res, config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE, backLinkUrl);
 };
 
@@ -40,7 +40,7 @@ export const remove = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const getBeneficialOwnerTypeUrl = (req: Request): string => {
-  let nextPageUrl = config.BENEFICIAL_OWNER_TYPE_URL ;
+  let nextPageUrl = config.BENEFICIAL_OWNER_TYPE_URL;
   if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)){
     nextPageUrl = getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req);
   }

@@ -23,7 +23,7 @@ import {
   BENEFICIAL_OWNER_TYPE_PAGE,
   BENEFICIAL_OWNER_TYPE_URL,
   BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
-  REMOVE
+  REMOVE,
 } from "../../src/config";
 
 import {

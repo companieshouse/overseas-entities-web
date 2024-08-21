@@ -539,7 +539,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL]: {
     currentPage: config.UPDATE_STATEMENT_VALIDATION_ERRORS_PAGE,
-    previousPage: (appData: ApplicationData) => (isNoChangeJourney(appData))
+    previousPage: (appData: ApplicationData) => isNoChangeJourney(appData)
       ? config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL
       : config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL,
     nextPage: [

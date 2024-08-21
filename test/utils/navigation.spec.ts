@@ -1,5 +1,6 @@
 jest.mock('../../src/utils/feature.flag');
 jest.mock('../../src/utils/application.data');
+jest.mock('../../src/utils/update/no.change.journey');
 
 import { describe, expect, jest, test } from '@jest/globals';
 import { Request } from "express";
@@ -18,9 +19,11 @@ import {
 
 import { isActiveFeature } from "../../src/utils/feature.flag";
 import { getApplicationData } from "../../src/utils/application.data";
+import { isNoChangeJourney } from "../../src/utils/update/no.change.journey";
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockIsNoChangeJourney = isNoChangeJourney as jest.Mock;
 
 const mockRemoveRequest = { } as Request;
 mockRemoveRequest["query"] = {
@@ -477,10 +480,13 @@ describe("NAVIGATION utils", () => {
   });
 
   test(`NAVIGATION returns ${config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL} when in change journey and calling previousPage on ${config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL} object`, () => {
-    mockGetApplicationData.mockReturnValue({
-      update: { no_change: false },
-    });
-    const navigation = NAVIGATION[config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL].previousPage();
+    mockIsNoChangeJourney.mockReturnValueOnce(false);
+    const navigation = NAVIGATION[config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL].previousPage(mockGetApplicationData());
     expect(navigation).toEqual(config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL);
+  });
+  test(`NAVIGATION returns ${config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL} when in no change journey and calling previousPage on ${config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL} object`, () => {
+    mockIsNoChangeJourney.mockReturnValueOnce(true);
+    const navigation = NAVIGATION[config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL].previousPage(mockGetApplicationData());
+    expect(navigation).toEqual(config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL);
   });
 });

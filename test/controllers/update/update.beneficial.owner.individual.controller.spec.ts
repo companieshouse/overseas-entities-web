@@ -116,7 +116,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
   });
 
   describe("GET tests", () => {
-    xtest(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page`, async () => {
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
       mockCheckRelevantPeriod.mockReturnValueOnce(true);
       const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + RELEVANT_PERIOD_QUERY_PARAM);

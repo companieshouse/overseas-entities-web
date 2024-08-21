@@ -40,11 +40,18 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import * as config from "../config";
 import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
+import {checkRelevantPeriod} from "./relevant.period";
+import {
+  RELEVANT_PERIOD_QUERY_PARAM
+} from "../config";
 
 export const getBeneficialOwnerIndividual = (req: Request, res: Response, templateName: string, backLinkUrl: string) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
   const appData: ApplicationData = getApplicationData(req.session);
+  if (checkRelevantPeriod(appData)) {
+    backLinkUrl = backLinkUrl + RELEVANT_PERIOD_QUERY_PARAM;
+  }
 
   return res.render(templateName, {
     backLinkUrl: backLinkUrl,

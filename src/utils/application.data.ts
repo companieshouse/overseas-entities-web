@@ -17,6 +17,7 @@ import { ManagingOfficerIndividual, ManagingOfficerKey } from '../model/managing
 import { PARAM_BENEFICIAL_OWNER_GOV, PARAM_BENEFICIAL_OWNER_INDIVIDUAL, PARAM_BENEFICIAL_OWNER_OTHER, PARAM_MANAGING_OFFICER_CORPORATE, PARAM_MANAGING_OFFICER_INDIVIDUAL } from '../config';
 import { BeneficialOwnerCorporate } from '@companieshouse/api-sdk-node/dist/services/overseas-entities';
 import { Remove } from 'model/remove.type.model';
+import { isNoChangeJourney } from "./update/no.change.journey";
 
 export const getApplicationData = (session: Session | undefined): ApplicationData => {
   return session?.getExtraData(APPLICATION_DATA_KEY) || {} as ApplicationData;
@@ -56,24 +57,24 @@ export const mapDataObjectToFields = (data: any, htmlFields: string[], dataModel
 };
 
 export const allBeneficialOwners = (appData: ApplicationData): Array<BeneficialOwnerIndividual | BeneficialOwnerCorporate | BeneficialOwnerGov> => {
-  if (!appData.update?.no_change) {
+  if (!isNoChangeJourney(appData)) {
     return (appData.beneficial_owners_individual ?? [])
       .concat(
         appData.beneficial_owners_government_or_public_authority ?? [],
         appData.beneficial_owners_corporate ?? []);
   } else {
-    return (appData.update.review_beneficial_owners_individual ?? [])
+    return (appData.update?.review_beneficial_owners_individual ?? [])
       .concat(
-        appData.update.review_beneficial_owners_government_or_public_authority ?? [],
-        appData.update.review_beneficial_owners_corporate ?? []);
+        appData.update?.review_beneficial_owners_government_or_public_authority ?? [],
+        appData.update?.review_beneficial_owners_corporate ?? []);
   }
 };
 
 export const allManagingOfficers = (appData: ApplicationData): Array<ManagingOfficerIndividual | ManagingOfficerCorporate> => {
-  if (!appData.update?.no_change) {
+  if (!isNoChangeJourney(appData)) {
     return (appData.managing_officers_individual ?? []).concat(appData.managing_officers_corporate ?? []);
   } else {
-    return (appData.update.review_managing_officers_individual ?? []).concat(appData.update?.review_managing_officers_corporate ?? []);
+    return (appData.update?.review_managing_officers_individual ?? []).concat(appData.update?.review_managing_officers_corporate ?? []);
   }
 };
 

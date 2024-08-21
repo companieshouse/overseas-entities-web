@@ -11,6 +11,7 @@ import { ApplicationData } from "../../model/application.model";
 import { Transactionkey } from "../../model/data.types.model";
 import { WhoIsRegisteringType } from "../../model/who.is.making.filing.model";
 import { isRemoveJourney } from "../../utils/url";
+import { isNoChangeJourney } from "../../utils/update/no.change.journey";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -33,7 +34,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
         userEmail: getLoggedInUserEmail(req.session),
         verificationCheckDays: 14,
         isRemove: true,
-        noChange: appData.update?.no_change,
+        noChange: isNoChangeJourney(appData),
         templateName: CONFIRMATION_PAGE
       });
     }
@@ -44,7 +45,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       userEmail: getLoggedInUserEmail(req.session),
       verificationCheckDays: 14,
       isUpdate: true,
-      noChange: appData.update?.no_change,
+      noChange: isNoChangeJourney(appData),
       templateName: CONFIRMATION_PAGE
     });
   } catch (error) {

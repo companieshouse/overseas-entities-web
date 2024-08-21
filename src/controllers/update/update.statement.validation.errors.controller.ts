@@ -15,17 +15,14 @@ import { getApplicationData } from "../../utils/application.data";
 import { ApplicationData } from "../../model/application.model";
 import { FormattedValidationErrors, formatValidationError } from "../../middleware/validation.middleware";
 import { StatementResolutionKey, StatementResolutionType } from "../../model/statement.resolution.model";
-import { isActiveFeature } from "../../utils/feature.flag";
-import * as config from "../../config";
-import { checkRelevantPeriod } from "../../utils/relevant.period";
+import { isNoChangeJourney } from "../../utils/update/no.change.journey";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const appData = getApplicationData(req.session);
-    const relevantPeriodNoChange = isActiveFeature(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD) ? !checkRelevantPeriod(appData) : true;
-    const inNoChangeJourney = !!appData.update?.no_change && relevantPeriodNoChange;
+    const inNoChangeJourney: boolean = isNoChangeJourney(appData);
 
     return renderPage(res, appData, inNoChangeJourney, req['statementErrorList']);
   } catch (error) {
@@ -39,7 +36,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
     const appData = getApplicationData(req.session);
     const errors = validationResult(req);
-    const inNoChangeJourney = !!appData.update?.no_change;
+    const inNoChangeJourney = isNoChangeJourney(appData);
 
     if (!errors.isEmpty()) {
       return renderPage(res, appData, inNoChangeJourney, req['statementErrorList'], formatValidationError(errors.array()));

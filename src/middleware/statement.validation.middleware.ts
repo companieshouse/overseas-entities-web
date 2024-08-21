@@ -14,6 +14,7 @@ import { Session } from "@companieshouse/node-session-handler";
 import { RegistrableBeneficialOwnerKey } from "../model/update.type.model";
 import { yesNoResponse } from "../model/data.types.model";
 import { isRemoveJourney } from "../utils/url";
+import { isNoChangeJourney } from "../utils/update/no.change.journey";
 
 export const statementValidationErrorsGuard = (req: Request, res: Response, next: NextFunction) => {
   const hasStatementErrors = req['statementErrorList']?.length;
@@ -27,7 +28,7 @@ export const statementValidationErrorsGuard = (req: Request, res: Response, next
   }
 
   const appData: ApplicationData = getApplicationData(req.session as Session);
-  const redirectUrl = appData.update?.no_change ? UPDATE_REVIEW_STATEMENT_URL : UPDATE_CHECK_YOUR_ANSWERS_URL;
+  const redirectUrl = isNoChangeJourney(appData) ? UPDATE_REVIEW_STATEMENT_URL : UPDATE_CHECK_YOUR_ANSWERS_URL;
 
   return res.redirect(redirectUrl);
 };

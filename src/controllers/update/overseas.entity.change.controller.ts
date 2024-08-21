@@ -13,7 +13,7 @@ import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/compa
 import { isActiveFeature } from "../../utils/feature.flag";
 import { retrieveTrustData } from "../../utils/update/trust.model.fetch";
 import { isRemoveJourney } from "../../utils/url";
-import { checkRelevantPeriod } from "../../utils/relevant.period";
+import { isNoChangeJourney } from "../../utils/update/no.change.journey";
 
 export const get = (req: Request, resp: Response, next: NextFunction) => {
   try {
@@ -52,9 +52,7 @@ export const post = async (req: Request, resp: Response, next: NextFunction) => 
       appData.update.no_change = noChangeStatement === "1";
     }
 
-    const relevantNoPeriodChange = isActiveFeature(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD) ? !checkRelevantPeriod(appData) : true;
-
-    if (noChangeStatement === "1" && relevantNoPeriodChange) {
+    if (isNoChangeJourney(appData)) {
       await resetDataForNoChange(req, appData);
       redirectUrl = config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL;
     } else {

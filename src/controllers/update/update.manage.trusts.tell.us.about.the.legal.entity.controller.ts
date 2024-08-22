@@ -61,7 +61,7 @@ const getPageProperties = (trust, formData, errors?: FormattedValidationErrors) 
 const getPagePropertiesRelevantPeriod = (isRelevantPeriod, trust, formData, entityName, errors?: FormattedValidationErrors) => {
   const pageProps = getPageProperties(trust, formData, errors);
   pageProps.formData.relevant_period = isRelevantPeriod;
-  pageProps.pageData.entity_name = entityName;
+  setEntityNameInRelevantPeriodPageBanner(pageProps, entityName);
   return pageProps;
 };
 
@@ -101,17 +101,14 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       let pageProps: TrustLegalEntityBeneficialOwnerPageProperties;
       if (isRelevantPeriod) {
         pageProps = getPagePropertiesRelevantPeriod(isRelevantPeriod, trust, formData, appData.entity_name, formatValidationError(errorList.array()));
-        pageProps.pageData.entity_name = appData.entity_name;
         return res.render(
-          UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE, pageProps
-          ,
+          UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE, pageProps,
         );
       } else {
         pageProps = getPageProperties(trust, formData, formatValidationError(errorList.array()));
-        pageProps.pageData.entity_name = appData.entity_name;
+        setEntityNameInRelevantPeriodPageBanner(pageProps, appData.entity_name);
         return res.render(
-          UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE, pageProps
-          ,
+          UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE, pageProps,
         );
       }
     }
@@ -146,4 +143,12 @@ const getBackLink = (legalEntitiesReviewed: boolean) => {
   } else {
     return UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL;
   }
+};
+
+export const setEntityNameInRelevantPeriodPageBanner = (pageProps, entityName: string | undefined) => {
+  // name the entity for the page template
+  if (pageProps && pageProps.pageData && entityName !== undefined) {
+    pageProps.pageData.entity_name = entityName;
+  }
+  return pageProps;
 };

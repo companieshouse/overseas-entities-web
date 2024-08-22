@@ -98,14 +98,13 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       const trustee = getTrustee(trust, trusteeId, TrusteeType.INDIVIDUAL) as IndividualTrustee;
       if (relevant_period) {
         pageProps = getPagePropertiesRelevantPeriod(relevant_period, trust, formData, trustee, appData.entity_name, formatValidationError(errorList.array()));
-        pageProps.pageData.entity_name = appData.entity_name;
         return res.render(
           UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE,
           pageProps,
         );
       } else {
         pageProps = getPageProperties(trust, formData, trustee, formatValidationError(errorList.array()));
-        pageProps.pageData.entity_name = appData.entity_name;
+        setEntityNameInRelevantPeriodPageBanner(pageProps, appData.entity_name);
         return res.render(
           UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE,
           pageProps,
@@ -144,7 +143,7 @@ const getBackLink = (individualsReviewed: boolean) => {
 const getPagePropertiesRelevantPeriod = (relevant_period, trust, formData, trustee: TrustIndividual, entityName, errors?: FormattedValidationErrors) => {
   const pageProps = getPageProperties(trust, formData, trustee, errors);
   pageProps.formData.relevant_period = relevant_period;
-  pageProps.pageData.entity_name = entityName;
+  setEntityNameInRelevantPeriodPageBanner(pageProps, entityName);
   return pageProps;
 };
 

@@ -90,7 +90,7 @@ export const getTrustLegalEntityBo = (req: Request, res: Response, next: NextFun
     const pageProps = isRelevantPeriod ? getRelevantPeriodPageProperties(req, trustId, isUpdate, formData) : getPageProperties(req, trustId, isUpdate, formData);
     if ((isRelevantPeriod || (trusteeId && pageProps.formData?.relevant_period)) && pageProps.formData) {
       pageProps.formData.relevant_period = true;
-      setEntityNameInRelevantPeriodPageBanner(pageProps, appData ? appData.entity_name : pageProps.pageData.trustData.trustName);
+      setEntityNameInRelevantPeriodPageBanner(pageProps, appData ? appData.entity_name : pageProps.pageData.entity_name);
     }
     return res.render(pageProps.templateName, pageProps);
   } catch (error) {
@@ -123,7 +123,7 @@ export const postTrustLegalEntityBo = async (req: Request, res: Response, next: 
         formData,
         formatValidationError(errorList.array()),
       );
-      setEntityNameInRelevantPeriodPageBanner(pageProps, appData ? appData.entity_name : pageProps.pageData.trustData.trustName);
+      setEntityNameInRelevantPeriodPageBanner(pageProps, appData ? appData.entity_name : pageProps.pageData.entity_name);
       return res.render(pageProps.templateName, pageProps);
     }
 

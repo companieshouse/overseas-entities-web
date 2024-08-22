@@ -66,7 +66,7 @@ const getPageProperties = (
 const getPagePropertiesRelevantPeriod = (isRelevantPeriod, req, trustId, isUpdate, formData, entityName, errors?: FormattedValidationErrors) => {
   const pageProps = getPageProperties(req, trustId, isUpdate, formData, errors);
   pageProps.formData.relevant_period = isRelevantPeriod;
-  pageProps.pageData.entity_name = entityName;
+  setEntityNameInRelevantPeriodPageBanner(pageProps, entityName);
   return pageProps;
 };
 
@@ -85,10 +85,9 @@ export const getTrustIndividualBo = (req: Request, res: Response, next: NextFunc
     );
     const pageProps = getPageProperties(req, trustId, isUpdate, formData);
     if (isRelevantPeriod) {
-      pageProps.pageData.entity_name = appData ? appData.entity_name : pageProps.pageData.entity_name;
       return res.render(pageProps.templateName, getPagePropertiesRelevantPeriod(isRelevantPeriod, req, trustId, isUpdate, formData, appData.entity_name));
     } else {
-      pageProps.pageData.entity_name = appData ? appData.entity_name : pageProps.pageData.entity_name;
+      setEntityNameInRelevantPeriodPageBanner(pageProps, appData ? appData.entity_name : pageProps.pageData.entity_name);
       return res.render(pageProps.templateName, pageProps);
     }
   } catch (error) {
@@ -123,10 +122,9 @@ export const postTrustIndividualBo = async (req: Request, res: Response, next: N
 
       const isRelevantPeriod = req.query ? req.query["relevant-period"] === "true" : false;
       if (isRelevantPeriod) {
-        pageProps.pageData.entity_name = appData ? appData.entity_name : pageProps.pageData.entity_name;
         return res.render(pageProps.templateName, getPagePropertiesRelevantPeriod(isRelevantPeriod, req, trustId, isUpdate, formData, appData.entity_name, formatValidationError(errorList.array())));
       } else {
-        pageProps.pageData.entity_name = appData ? appData.entity_name : pageProps.pageData.entity_name;
+        setEntityNameInRelevantPeriodPageBanner(pageProps, appData ? appData.entity_name : pageProps.pageData.entity_name);
         return res.render(pageProps.templateName, pageProps);
       }
     }
@@ -178,4 +176,12 @@ const getUrl = (isUpdate: boolean) => {
   } else {
     return config.REGISTER_AN_OVERSEAS_ENTITY_URL;
   }
+};
+
+export const setEntityNameInRelevantPeriodPageBanner = (pageProps, entityName: string | undefined) => {
+  // name the entity for the page template
+  if (pageProps && pageProps.pageData && entityName !== undefined) {
+    pageProps.pageData.entity_name = entityName;
+  }
+  return pageProps;
 };

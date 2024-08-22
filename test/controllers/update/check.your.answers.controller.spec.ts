@@ -139,7 +139,6 @@ import {
   RELEVANT_PERIOD_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
   RELEVANT_PERIOD_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
   RELEVANT_PERIOD_BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
-  UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE
 } from "../../__mocks__/session.mock";
 import { DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/due.diligence.mock";
 import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/overseas.entity.due.diligence.mock";

@@ -8,8 +8,7 @@ export const reviewUpdateStatementChange = [
 ];
 
 export const statementResolution = [
-  body(StatementResolutionKey)
-    .isIn(StatementResolutionTypes).withMessage(ErrorMessages.SELECT_UPDATE_STATEMENT_VALIDATION_RESOLUTION),
+  body(StatementResolutionKey).isIn(StatementResolutionTypes).withMessage(ErrorMessages.SELECT_UPDATE_STATEMENT_VALIDATION_RESOLUTION),
 ];
 
 const checkNoChangeReviewStatement = (value: any, req) => {

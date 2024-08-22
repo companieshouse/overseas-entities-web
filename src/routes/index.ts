@@ -153,6 +153,7 @@ router.get(config.SECURE_REGISTER_FILTER_WITH_PARAMS_URL, authentication, naviga
 router.post(config.SECURE_REGISTER_FILTER_WITH_PARAMS_URL, authentication, navigation.hasSoldLand, ...validator.secureRegisterFilter, checkValidations, secureRegisterFilter.post);
 
 router.get(config.USE_PAPER_URL, authentication, navigation.hasSoldLand, usePaper.get);
+router.get(config.USE_PAPER_WITH_PARAMS_URL, authentication, navigation.hasSoldLand, usePaper.get);
 
 router.get(config.INTERRUPT_CARD_URL, authentication, navigation.isSecureRegister, interruptCard.get);
 router.get(config.INTERRUPT_CARD_WITH_PARAMS_URL, authentication, navigation.isSecureRegister, interruptCard.get);
@@ -694,7 +695,6 @@ router.post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL, authentication, navi
 
 router.route(config.UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL)
   .all(
-    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
     authentication,
     companyAuthentication,
     navigation.isInChangeJourney,
@@ -704,7 +704,6 @@ router.route(config.UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL)
 
 router.route(config.UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_CHANGE_HANDLER_URL + config.TRUST_ID + '?')
   .all(
-    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
     authentication,
     companyAuthentication,
     navigation.hasTrustWithIdUpdate
@@ -713,7 +712,6 @@ router.route(config.UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_CHANGE_HANDLER_URL + confi
 
 router.route(config.UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_CHANGE_HANDLER_URL + config.TRUST_ID + '?' + config.TRUSTEE_TYPE + '?' + config.TRUSTEE_ID + '?')
   .all(
-    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
     authentication,
     companyAuthentication,
     navigation.hasTrusteeWithIdUpdate
@@ -722,7 +720,6 @@ router.route(config.UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_CHANGE_HANDLER_URL + confi
 
 router.route(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL)
   .all(
-    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
     authentication,
     companyAuthentication,
     navigation.hasBOsOrMOsUpdate,
@@ -732,7 +729,6 @@ router.route(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL)
 
 router.route(config.UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL)
   .all(
-    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
     authentication,
     companyAuthentication,
     navigation.reviewTheTrustGuard,
@@ -742,7 +738,6 @@ router.route(config.UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL)
 
 router.route(config.UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL)
   .all(
-    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
     authentication,
     companyAuthentication,
     navigation.isInChangeJourney,
@@ -754,7 +749,6 @@ router.route(config.UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL)
 
 router.route(config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL + config.TRUSTEE_ID + '?')
   .all(
-    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
     authentication,
     companyAuthentication,
     navigation.manageTrustsTellUsAboutFormerBOsGuard,
@@ -764,7 +758,6 @@ router.route(config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL + confi
 
 router.route(config.UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL)
   .all(
-    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
     authentication,
     companyAuthentication,
     navigation.isInChangeJourney,
@@ -776,7 +769,6 @@ router.route(config.UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL)
 
 router.route(config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL + config.TRUSTEE_ID + '?')
   .all(
-    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
     authentication,
     companyAuthentication,
     navigation.isInChangeJourney,
@@ -788,7 +780,6 @@ router.route(config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL + conf
 
 router.route(config.UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL)
   .all(
-    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
     authentication,
     companyAuthentication,
     navigation.isInChangeJourney,
@@ -800,7 +791,6 @@ router.route(config.UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL)
 
 router.route(config.UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL)
   .all(
-    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
     authentication,
     companyAuthentication,
     navigation.hasBOsOrMOsUpdate,
@@ -840,7 +830,6 @@ router.route(config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + config.
 
 router.route(config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL + config.TRUSTEE_ID + '?')
   .all(
-    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
     authentication,
     companyAuthentication,
     navigation.isInChangeJourney,

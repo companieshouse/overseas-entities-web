@@ -109,7 +109,11 @@ import {
   CHECK_YOUR_ANSWERS_PAGE_RP_NO_TRUST_STATEMENTS_TITLE,
   CHECK_YOUR_ANSWERS_PAGE_RP_NO_TRUST_STATEMENTS_SUB_TEXT,
   CHECK_YOUR_ANSWERS_PAGE_RP_NO_BENEFICIARY_STATEMENTS_TITLE,
-  CHECK_YOUR_ANSWERS_PAGE_RP_NO_BENEFICIARY_STATEMENTS_SUB_TEXT
+  CHECK_YOUR_ANSWERS_PAGE_RP_NO_BENEFICIARY_STATEMENTS_SUB_TEXT,
+  CHECK_YOUR_ANSWERS_PAGE_RP_BENEFICIAL_OWNER_TITLE,
+  TRUSTS_ADDED_RELEVANT_PERIOD,
+  CHECK_YOUR_ANSWERS_PAGE_DATE_OF_UPDATE_STATEMENT_TITLE,
+  CHECK_YOUR_ANSWERS_CHANGES_TO_THE_UPDATE_PERIOD_TITLE
 } from "../../__mocks__/text.mock";
 import {
   ERROR,
@@ -132,6 +136,10 @@ import {
   TRUST_WITH_ID,
   UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE,
   UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE,
+  RELEVANT_PERIOD_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+  RELEVANT_PERIOD_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
+  RELEVANT_PERIOD_BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
+  UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE
 } from "../../__mocks__/session.mock";
 import { DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/due.diligence.mock";
 import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/overseas.entity.due.diligence.mock";
@@ -270,6 +278,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE);
+      expect(resp.text).toContain("Beneficial owners in the Update period");
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(CHANGE_LINK);
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS);
@@ -356,6 +365,22 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_MO_CORPORATE);
     });
 
+    test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with relevant period beneficial owner section`, async () => {
+      const appData = {
+        ...APPLICATION_DATA_UPDATE_BO_MOCK,
+        beneficial_owners_individual: [RELEVANT_PERIOD_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK],
+        beneficial_owners_corporate: [RELEVANT_PERIOD_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK],
+        beneficial_owners_government_or_public_authority: [RELEVANT_PERIOD_BENEFICIAL_OWNER_GOV_OBJECT_MOCK]
+      };
+
+      mockGetApplicationData.mockReturnValue(appData);
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_RP_BENEFICIAL_OWNER_TITLE);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_INDIVIDUAL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_GOVERNMENT);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_OTHER);
+    });
+
     test.each([
       ["on remove journey", APPLICATION_DATA_REMOVE_BO_MOCK ],
       ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK ]
@@ -381,6 +406,37 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_MO_INDIVIDUAL);
       expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_MO_CORPORATE);
       expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TRUST_TITLE);
+    });
+
+    test.each([
+      ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK ]
+    ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} date of filing test %s`, async () => {
+      const appData = {
+        ...APPLICATION_DATA_UPDATE_BO_MOCK,
+        update: UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE
+      };
+      mockGetApplicationData.mockReturnValue(appData);
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_DATE_OF_UPDATE_STATEMENT_TITLE);
+      expect(resp.text).toContain("1");
+      expect(resp.text).toContain("January");
+      expect(resp.text).toContain("2022");
+    });
+
+    test.each([
+      ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK ]
+    ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} changes to the update period %s`, async () => {
+      const appData = {
+        ...APPLICATION_DATA_UPDATE_BO_MOCK,
+        update: UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE
+      };
+      mockGetApplicationData.mockReturnValue(appData);
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_CHANGES_TO_THE_UPDATE_PERIOD_TITLE);
+      expect(resp.text).toContain("Do you need to make any changes to this overseas entity?");
+      expect(resp.text).toContain("Yes");
     });
 
     test.each([
@@ -684,6 +740,44 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).toContain("December");
       expect(resp.text).toContain("1999");
       expect(resp.text).toContain(TRUSTS_ADDED);
+      expect(resp.text).not.toContain(TRUSTS_REVIEWED);
+      expect(resp.text).toContain(TRUST_INVOLVED);
+      expect(resp.text).toContain(TRUST_CEASED_DATE);
+      expect(resp.text).toContain("01");
+      expect(resp.text).toContain("February");
+      expect(resp.text).toContain("2004");
+    });
+
+    test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page when an added trust is from the relevant period`, async () => {
+      const trust = {
+        trust_id: "123",
+        trust_name: "wizzz trust",
+        creation_date_day: "31",
+        creation_date_month: "12",
+        creation_date_year: "1999",
+        trust_still_involved_in_overseas_entity: "No",
+        ceased_date_day: "01",
+        ceased_date_month: "02",
+        ceased_date_year: "2004",
+        unable_to_obtain_all_trust_info: "No",
+        relevant_period: true,
+      };
+      const appData = {
+        ...APPLICATION_DATA_UPDATE_BO_MOCK,
+        ["trusts"]: [trust]
+      };
+
+      mockGetApplicationData.mockReturnValue(appData);
+      mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true);
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(TRUST_NAME);
+      expect(resp.text).toContain("wizzz trust");
+      expect(resp.text).toContain(TRUST_CREATION_DATE);
+      expect(resp.text).toContain("31");
+      expect(resp.text).toContain("December");
+      expect(resp.text).toContain("1999");
+      expect(resp.text).toContain(TRUSTS_ADDED_RELEVANT_PERIOD);
       expect(resp.text).not.toContain(TRUSTS_REVIEWED);
       expect(resp.text).toContain(TRUST_INVOLVED);
       expect(resp.text).toContain(TRUST_CEASED_DATE);

@@ -37,7 +37,7 @@ import { isActiveFeature } from '../../../src/utils/feature.flag';
 import { saveAndContinue } from '../../../src/utils/save.and.continue';
 import { ApplicationData } from '../../../src/model';
 import { hasBOsOrMOsUpdate } from '../../../src/middleware/navigation/update/has.beneficial.owners.or.managing.officers.update.middleware';
-import { ANY_MESSAGE_ERROR, PAGE_NOT_FOUND_TEXT, SERVICE_UNAVAILABLE } from '../../__mocks__/text.mock';
+import { ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE } from '../../__mocks__/text.mock';
 import { Trust } from '../../../src/model/trust.model';
 import { UpdateKey } from '../../../src/model/update.type.model';
 import { TrusteeType } from '../../../src/model/trustee.type.model';
@@ -90,18 +90,6 @@ describe('Update - Manage Trusts - Orchestrator', () => {
     mockGetApplicationData.mockReset();
     mockSetExtraData.mockReset();
     mockSaveAndContinue.mockReset();
-  });
-
-  test.each([
-    ['GET', get],
-    ['POST', post],
-  ])('%s - when feature flag is off, 404 is returned', async (_, handler) => {
-    mockIsActiveFeature.mockReturnValue(false);
-
-    const resp = await handler();
-
-    expect(resp.status).toEqual(404);
-    expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
   });
 
   test.each([

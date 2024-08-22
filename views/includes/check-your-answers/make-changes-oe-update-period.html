@@ -1,0 +1,31 @@
+{% set makeChangesOeEntity = "Do you need to make any changes to this overseas entity?" %}
+{% set changesAnswer %}
+    {% if appData.update.no_change == 1 %}
+        No
+    {% else %}
+        Yes
+    {% endif %}
+{% endset %}
+{% set makeOechangesPage = OE_CONFIGS.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE %}
+
+<h2 class="govuk-heading-l">Changes to the update period</h2>
+
+{{ govukSummaryList({
+    rows: [
+        {
+            key: {
+            text: makeChangesOeEntity
+        },
+            value: {
+            text: changesAnswer
+        },
+        actions: {
+            items: [ CREATE_CHANGE_LINK(
+                makeOechangesPage,
+                changesAnswer,
+                "make-oe-change-link"
+            ) ]
+        } if not hidePresenterChangeLink
+    }
+]
+}) }}

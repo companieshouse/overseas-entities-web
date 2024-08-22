@@ -12,35 +12,35 @@ const mockIsActiveFeature = isActiveFeature as jest.Mock;
 
 describe('Test add resign date to template', () => {
 
-  test(`that template optipn is returned with is_stil_bo data`, () => {
+  test(`on change journey when feature flag is off with update changes`, () => {
     expect (isNoChangeJourney({ update: { no_change: false } }))
       .toEqual(false);
   });
 
-  test(`that template optipn is returned with is_stil_bo data`, () => {
+  test(`on no change journey when feature flag is off with no update changes`, () => {
     expect (isNoChangeJourney({ update: { no_change: true } }))
       .toEqual(true);
   });
 
-  test(`that template optipn is returned with is_stil_bo data`, () => {
+  test(`on change journey when feature flag is on, with update changes and relevant period changes`, () => {
     mockIsActiveFeature.mockReturnValueOnce(true);
     expect (isNoChangeJourney({ update: { ...UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE, no_change: false } }))
       .toEqual(false);
   });
 
-  test(`that template optipn is returned with is_stil_bo data`, () => {
+  test(`on change journey when feature flag is on, with no update changes and relevant period changes`, () => {
     mockIsActiveFeature.mockReturnValueOnce(true);
     expect (isNoChangeJourney({ update: { ...UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE, no_change: true } }))
       .toEqual(false);
   });
 
-  test(`that template optipn is returned with is_stil_bo data`, () => {
+  test(`on change journey when feature flag is on, with update changes and no relevant period changes`, () => {
     mockIsActiveFeature.mockReturnValueOnce(true);
     expect (isNoChangeJourney({ update: { ...UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE, no_change: false } }))
       .toEqual(false);
   });
 
-  test(`that template optipn is returned with is_stil_bo data`, () => {
+  test(`on no change journey when feature flag is on, with no update changes and no relevant period changes`, () => {
     mockIsActiveFeature.mockReturnValueOnce(true);
     expect (isNoChangeJourney({ update: { ...UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE, no_change: true } }))
       .toEqual(true);

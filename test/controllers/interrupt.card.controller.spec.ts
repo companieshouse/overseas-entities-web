@@ -86,7 +86,7 @@ describe("INTERRUPT CARD controller", () => {
       expect(resp.text).toContain(INTERRUPT_CARD_PAGE_TITLE);
       expect(resp.text).toContain(LANDING_PAGE_URL);
       expect(resp.text).toContain("Trusts");
-      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(2);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
       expect(mockIsActiveFeature).toHaveBeenCalledTimes(2);
     });
 
@@ -102,7 +102,7 @@ describe("INTERRUPT CARD controller", () => {
       expect(resp.text).toContain(INTERRUPT_CARD_PAGE_TITLE);
       expect(resp.text).toContain(LANDING_PAGE_URL);
       expect(resp.text).toContain(NEXT_PAGE_URL);
-      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(2);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
       expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(OVERSEAS_NAME_WITH_PARAMS_URL);
     });
 

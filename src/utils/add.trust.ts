@@ -36,14 +36,14 @@ type TrustInvolvedPageProperties = {
   isFeatureFlagCeaseTrustsEnabled: boolean
 };
 
-const getPageProperties = (
+const getPageProperties = async (
   req: Request,
   isUpdate: boolean,
   formData?: PageModel.AddTrust,
   errors?: FormattedValidationErrors,
-): TrustInvolvedPageProperties => {
+): Promise<TrustInvolvedPageProperties> => {
 
-  const appData = getApplicationData(req.session);
+  const appData = await getApplicationData(req.session);
 
   return {
     templateName: getPageTemplate(isUpdate),
@@ -65,17 +65,17 @@ const getPageProperties = (
   };
 };
 
-export const getTrusts = (
+export const getTrusts = async (
   req: Request,
   res: Response,
   next: NextFunction,
   isUpdate: boolean
-): void => {
+): Promise<void> => {
 
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const pageProps = getPageProperties(req, isUpdate);
+    const pageProps = await getPageProperties(req, isUpdate);
 
     if (!isUpdate) {
       addActiveSubmissionBasePathToTemplateData(pageProps, req);
@@ -88,12 +88,12 @@ export const getTrusts = (
   }
 };
 
-export const postTrusts = (
+export const postTrusts = async (
   req: Request,
   res: Response,
   next: NextFunction,
   isUpdate: boolean
-) => {
+): Promise<void> => {
   try {
     logger.debugRequest(req, `POST ${getPageTemplate(isUpdate)}`);
     const addNewTrust = req.body["addTrust"];
@@ -101,10 +101,10 @@ export const postTrusts = (
     // check for errors
     const errorList = validationResult(req);
     const formData: PageModel.AddTrust = req.body as PageModel.AddTrust;
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
 
     if (!errorList.isEmpty()) {
-      const pageProps = getPageProperties(
+      const pageProps = await getPageProperties(
         req,
         isUpdate,
         formData,

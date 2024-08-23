@@ -73,11 +73,11 @@ describe("Add Trust Controller Tests", () => {
   });
 
   describe("GET tests", () => {
-    test(`renders the ${config.ADD_TRUST_PAGE} page`, () => {
+    test(`renders the ${config.ADD_TRUST_PAGE} page`, async () => {
 
       (getApplicationData as jest.Mock).mockReturnValue(mockAppData);
 
-      get(mockReq, mockRes, mockNext);
+      await get(mockReq, mockRes, mockNext);
 
       expect(mockRes.redirect).not.toBeCalled();
       expect(mockRes.render).toBeCalledTimes(1);
@@ -101,14 +101,14 @@ describe("Add Trust Controller Tests", () => {
       );
     });
 
-    test('catch error when renders the page', () => {
+    test('catch error when renders the page', async () => {
       const error = new Error(ANY_MESSAGE_ERROR);
 
       (mockRes.render as jest.Mock).mockImplementationOnce(() => {
         throw error;
       });
 
-      get(mockReq, mockRes, mockNext);
+      await get(mockReq, mockRes, mockNext);
 
       expect(mockNext).toBeCalledTimes(1);
       expect(mockNext).toBeCalledWith(error);
@@ -116,7 +116,7 @@ describe("Add Trust Controller Tests", () => {
   });
 
   describe("GET tests with url params", () => {
-    test(`renders the ${config.ADD_TRUST_PAGE} page`, () => {
+    test(`renders the ${config.ADD_TRUST_PAGE} page`, async () => {
       mockGetUrlWithParamsToPath.mockReturnValueOnce(MOCKED_URL);
       (getApplicationData as jest.Mock).mockReturnValue(mockAppData);
 
@@ -124,7 +124,7 @@ describe("Add Trust Controller Tests", () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
-      get(mockReq, mockRes, mockNext);
+      await get(mockReq, mockRes, mockNext);
 
       expect(mockRes.redirect).not.toBeCalled();
       expect(mockRes.render).toBeCalledTimes(1);
@@ -142,7 +142,7 @@ describe("Add Trust Controller Tests", () => {
       expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
     });
 
-    test('catch error when renders the page with url params', () => {
+    test('catch error when renders the page with url params', async () => {
       const error = new Error(ANY_MESSAGE_ERROR);
 
       (mockRes.render as jest.Mock).mockImplementationOnce(() => {
@@ -152,7 +152,7 @@ describe("Add Trust Controller Tests", () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
-      get(mockReq, mockRes, mockNext);
+      await get(mockReq, mockRes, mockNext);
 
       expect(mockNext).toBeCalledTimes(1);
       expect(mockNext).toBeCalledWith(error);
@@ -160,7 +160,7 @@ describe("Add Trust Controller Tests", () => {
   });
 
   describe('POST unit tests', () => {
-    test('select yes - Yes - for the current filing period to add trust', () => {
+    test('select yes - Yes - for the current filing period to add trust', async () => {
       (getApplicationData as jest.Mock).mockReturnValue(mockAppData);
       (generateTrustId as jest.Mock).mockReturnValue(trustId);
 
@@ -168,12 +168,12 @@ describe("Add Trust Controller Tests", () => {
         addTrust: 'addTrustYes',
       };
 
-      post(mockReq, mockRes, mockNext);
+      await post(mockReq, mockRes, mockNext);
 
       expect(mockRes.redirect).toBeCalledTimes(1);
       expect(mockRes.redirect).toBeCalledWith(`${config.TRUST_DETAILS_URL}/${trustId}`);
     });
-    test('select Yes - for the pre-registration period to add trust', () => {
+    test('select Yes - for the pre-registration period to add trust', async () => {
       (getApplicationData as jest.Mock).mockReturnValue(mockAppData);
       (generateTrustId as jest.Mock).mockReturnValue(trustId);
 
@@ -181,25 +181,25 @@ describe("Add Trust Controller Tests", () => {
         addTrust: 'preRegistration',
       };
 
-      post(mockReq, mockRes, mockNext);
+      await post(mockReq, mockRes, mockNext);
 
       expect(mockRes.redirect).toBeCalledTimes(1);
       expect(mockRes.redirect).toBeCalledWith(`${config.TRUST_DETAILS_URL}/${trustId}?relevant-period=true`);
     });
-    test('catches post request errors', () => {
+    test('catches post request errors', async () => {
       (getApplicationData as jest.Mock).mockReturnValue(mockAppData);
       (generateTrustId as jest.Mock).mockReturnValue(trustId);
 
-      post(mockReq, {} as Response, mockNext);
+      await post(mockReq, {} as Response, mockNext);
       expect(mockNext).toBeCalledTimes(1);
     });
 
-    test('select yes to add trust', () => {
+    test('select yes to add trust', async () => {
       mockReq.body = {
         addTrust: '0',
       };
 
-      post(mockReq, mockRes, mockNext);
+      await post(mockReq, mockRes, mockNext);
 
       expect(mockRes.redirect).toBeCalledTimes(1);
       expect(mockRes.redirect).toBeCalledWith(`${config.CHECK_YOUR_ANSWERS_URL}`);
@@ -207,7 +207,7 @@ describe("Add Trust Controller Tests", () => {
   });
 
   describe('POST unit tests with url params', () => {
-    test('select yes to add trust with url params', () => {
+    test('select yes to add trust with url params', async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);// FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       (getApplicationData as jest.Mock).mockReturnValue(mockAppData);
 
@@ -215,7 +215,7 @@ describe("Add Trust Controller Tests", () => {
         addTrust: 'addTrustYes',
       };
 
-      post(mockReq, mockRes, mockNext);
+      await post(mockReq, mockRes, mockNext);
 
       expect(mockRes.redirect).toBeCalledTimes(1);
       expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);

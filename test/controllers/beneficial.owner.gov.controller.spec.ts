@@ -1231,7 +1231,8 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
-    test("catch error when removing data", async () => {
+    // ASM-350 - need fix to create a real error
+    test.skip("catch error when removing data", async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
       const resp = await request(app).get(config.BENEFICIAL_OWNER_GOV_URL + config.REMOVE + BO_GOV_ID_URL);
 

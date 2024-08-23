@@ -132,6 +132,9 @@ type TrustLegalEntityForm = {
   ceasedDateMonth?: string;
   ceasedDateYear?: string;
   stillInvolved?: string;
+  startDateDay: string;
+  startDateMonth: string;
+  startDateYear: string;
   relevant_period?: boolean;
 };
 

@@ -9,11 +9,11 @@ import { isActiveFeature } from "../../utils/feature.flag";
 import { checkEntityReviewRequiresTrusts } from "../../utils/trusts";
 import { isRemoveJourney } from "../../utils/url";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const appData: ApplicationData = getApplicationData(req.session as Session);
+    const appData: ApplicationData = await getApplicationData(req.session as Session);
     const update = appData.update as Update;
 
     if (isRemoveJourney(req)) {
@@ -41,11 +41,11 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
+export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const appData: ApplicationData = getApplicationData(req.session as Session);
+    const appData: ApplicationData = await getApplicationData(req.session as Session);
 
     if (!isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS) && checkEntityReviewRequiresTrusts(appData)) {
       return res.redirect(config.UPDATE_TRUSTS_SUBMIT_BY_PAPER_URL);

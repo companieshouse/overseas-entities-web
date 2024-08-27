@@ -12,11 +12,11 @@ import { Transactionkey } from "../../model/data.types.model";
 import { WhoIsRegisteringType } from "../../model/who.is.making.filing.model";
 import { isRemoveJourney } from "../../utils/url";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
     const referenceNumber = appData[Transactionkey];
 
     // It's necessary to do this check and save the result before deleting the application

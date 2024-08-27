@@ -11,11 +11,11 @@ import { BeneficialOwnerOtherKey } from "../model/beneficial.owner.other.model";
 import { getBeneficialOwnerList } from "../utils/trusts";
 import { saveAndContinue } from "../utils/save.and.continue";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     logger.debugRequest(req, `GET ${config.TRUST_INFO_PAGE}`);
 
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
 
     return res.render(config.TRUST_INFO_PAGE, {
       backLinkUrl: config.BENEFICIAL_OWNER_TYPE_PAGE,
@@ -58,7 +58,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const session = req.session as Session;
 
     for (const trust of data[TrustKey]) {
-      setApplicationData(session, trust, TrustKey);
+      await setApplicationData(session, trust, TrustKey);
     }
 
     await saveAndContinue(req, session);

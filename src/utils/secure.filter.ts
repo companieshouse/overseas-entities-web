@@ -9,10 +9,10 @@ import { isActiveFeature } from "./feature.flag";
 import { updateOverseasEntity } from "../service/overseas.entities.service";
 import { Session } from "@companieshouse/node-session-handler";
 
-export const getFilterPage = (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string): void => {
+export const getFilterPage = async (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string): Promise<void> => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
 
     if (isRemoveJourney(req)) {
       return res.render(templateName, {
@@ -45,7 +45,7 @@ export const postFilterPage = async (
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
     const isSecureRegister = (req.body[IsSecureRegisterKey]).toString();
     appData[IsSecureRegisterKey] = isSecureRegister;
     const session = req.session as Session;

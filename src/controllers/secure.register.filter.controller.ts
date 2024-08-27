@@ -4,8 +4,8 @@ import * as config from "../config";
 import { getFilterPage, postFilterPage } from "../utils/secure.filter";
 import { isActiveFeature } from "../utils/feature.flag";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
-  getFilterPage(req, res, next, config.SECURE_REGISTER_FILTER_PAGE, config.SOLD_LAND_FILTER_URL);
+export const get = async (req: Request, res: Response, next: NextFunction) => {
+  await getFilterPage(req, res, next, config.SECURE_REGISTER_FILTER_PAGE, config.SOLD_LAND_FILTER_URL);
 };
 
 // @todo: remember to remove url parameters after update journey is updated for REDIS removal

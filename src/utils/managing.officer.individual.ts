@@ -40,10 +40,10 @@ import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
 
 const isNewlyAddedMO = (officerData: ManagingOfficerIndividual) => !officerData.ch_reference;
 
-export const getManagingOfficer = (req: Request, res: Response, backLinkUrl: string, templateName: string) => {
+export const getManagingOfficer = async (req: Request, res: Response, backLinkUrl: string, templateName: string) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-  const appData: ApplicationData = getApplicationData(req.session as Session);
+  const appData: ApplicationData = await getApplicationData(req.session as Session);
 
   return res.render(templateName, {
     backLinkUrl: backLinkUrl,
@@ -52,14 +52,14 @@ export const getManagingOfficer = (req: Request, res: Response, backLinkUrl: str
   });
 };
 
-export const getManagingOfficerById = (req: Request, res: Response, next: NextFunction, backLinkUrl: string, templateName: string) => {
+export const getManagingOfficerById = async (req: Request, res: Response, next: NextFunction, backLinkUrl: string, templateName: string) => {
   try {
     logger.debugRequest(req, `${req.method} BY ID ${templateName}`);
 
     const id = req.params[ID];
 
-    const appData = getApplicationData(req.session);
-    const officerData = getFromApplicationData(req, ManagingOfficerKey, id, true);
+    const appData = await getApplicationData(req.session);
+    const officerData = await getFromApplicationData(req, ManagingOfficerKey, id, true);
 
     const newlyAddedMO = isNewlyAddedMO(officerData);
     const inUpdateJourney = !!appData[EntityNumberKey];
@@ -108,7 +108,7 @@ export const postManagingOfficer = async (req: Request, res: Response, next: Nex
     officerData[HaveDayOfBirthKey] = true;
 
     const session = req.session as Session;
-    setApplicationData(session, officerData, ManagingOfficerKey);
+    await setApplicationData(session, officerData, ManagingOfficerKey);
 
     await saveAndContinue(req, session);
 
@@ -123,12 +123,12 @@ export const updateManagingOfficer = async (req: Request, res: Response, next: N
   try {
     logger.debugRequest(req, `UPDATE ${req.route.path}`);
 
-    removeFromApplicationData(req, ManagingOfficerKey, req.params[ID]);
+    await removeFromApplicationData(req, ManagingOfficerKey, req.params[ID]);
 
     const officerData: ApplicationDataType = setOfficerData(req.body, req.params[ID]);
 
     const session = req.session as Session;
-    setApplicationData(session, officerData, ManagingOfficerKey);
+    await setApplicationData(session, officerData, ManagingOfficerKey);
 
     await saveAndContinue(req, session);
 
@@ -143,7 +143,7 @@ export const removeManagingOfficer = async (req: Request, res: Response, next: N
   try {
     logger.debugRequest(req, `REMOVE ${req.route.path}`);
 
-    removeFromApplicationData(req, ManagingOfficerKey, req.params.id);
+    await removeFromApplicationData(req, ManagingOfficerKey, req.params.id);
     const session = req.session as Session;
 
     await saveAndContinue(req, session);

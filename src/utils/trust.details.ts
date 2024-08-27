@@ -43,14 +43,14 @@ type TrustDetailPageProperties = {
   url: string,
 };
 
-const getPageProperties = (
+const getPageProperties = async (
   req: Request,
   formData: PageModel.TrustDetailsForm,
   isUpdate: boolean,
   isReview?: boolean,
   errors?: FormattedValidationErrors,
-): TrustDetailPageProperties => {
-  const appData: ApplicationData = getApplicationData(req.session);
+): Promise<TrustDetailPageProperties> => {
+  const appData: ApplicationData = await getApplicationData(req.session);
 
   const boAvailableForTrust = [
     ...getBoIndividualAssignableToTrust(appData)
@@ -79,17 +79,17 @@ const getPageProperties = (
   };
 };
 
-const getPagePropertiesRelevantPeriod = (req, formData, isUpdate, isReview, errors?: FormattedValidationErrors) => {
-  const pageProps = getPageProperties(req, formData, isUpdate, isReview, errors);
+const getPagePropertiesRelevantPeriod = async (req, formData, isUpdate, isReview, errors?: FormattedValidationErrors): Promise<TrustDetailPageProperties> => {
+  const pageProps = await getPageProperties(req, formData, isUpdate, isReview, errors);
   pageProps.formData.relevant_period = true;
   return pageProps;
 };
 
-export const getTrustDetails = (req: Request, res: Response, next: NextFunction, isUpdate: boolean, isReview: boolean): void => {
+export const getTrustDetails = async (req: Request, res: Response, next: NextFunction, isUpdate: boolean, isReview: boolean): Promise<void> => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
 
     let trustId;
     if (isReview) {
@@ -107,9 +107,9 @@ export const getTrustDetails = (req: Request, res: Response, next: NextFunction,
 
     let pageProps;
     if (req.query["relevant-period"] === "true") {
-      pageProps = getPagePropertiesRelevantPeriod(req, formData, isUpdate, isReview);
+      pageProps = await getPagePropertiesRelevantPeriod(req, formData, isUpdate, isReview);
     } else {
-      pageProps = getPageProperties(req, formData, isUpdate, isReview);
+      pageProps = await getPageProperties(req, formData, isUpdate, isReview);
     }
 
     return res.render(pageProps.templateName, pageProps);
@@ -155,14 +155,14 @@ export const postTrustDetails = async (req: Request, res: Response, next: NextFu
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     //  get trust data from session
-    let appData: ApplicationData = getApplicationData(req.session);
+    let appData: ApplicationData = await getApplicationData(req.session);
 
     // check for errors
     const errorList = validationResult(req);
     const formData: PageModel.TrustDetailsForm = req.body as PageModel.TrustDetailsForm;
 
     if (!errorList.isEmpty()) {
-      const pageProps = getPageProperties(
+      const pageProps = await getPageProperties(
         req,
         formData,
         isUpdate,

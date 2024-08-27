@@ -15,11 +15,11 @@ import { OverseasEntityKey, Transactionkey } from "../model/data.types.model";
 import { RoleWithinTrustType } from "../model/role.within.trust.type.model";
 import { getUrlWithParamsToPath } from "../utils/url";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `GET ${config.CHECK_YOUR_ANSWERS_PAGE}`);
 
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
 
     const requiresTrusts: boolean = checkEntityRequiresTrusts(appData);
     const changeLinkUrl: string = config.ENTITY_URL;
@@ -67,7 +67,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `POST ${config.CHECK_YOUR_ANSWERS_PAGE}`);
 
     const session = req.session as Session;
-    const appData: ApplicationData = getApplicationData(session);
+    const appData: ApplicationData = await getApplicationData(session);
 
     const transactionID = appData[Transactionkey] as string;
     const overseasEntityID = appData[OverseasEntityKey] as string;

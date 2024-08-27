@@ -12,6 +12,11 @@ import {
 import { email_validations } from "./fields/email.validation";
 
 export const overseasEntityDueDiligence = [
+  // Trim all the date fields before validating. This will also ensure that no whitespace is present in the date fields when
+  // saved to the model and then later sent to the API
+  body("identity_date-day").trim(),
+  body("identity_date-month").trim(),
+  body("identity_date-year").trim(),
 
   // to prevent more than 1 error reported on the date fields we check if the year is valid before doing some checks.
   // This means that the year check is checked before some others

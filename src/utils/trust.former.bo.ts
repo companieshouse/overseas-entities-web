@@ -35,41 +35,46 @@ type TrustHistoricalBeneficialOwnerProperties = {
   url: string,
 };
 
-const getPageProperties = (
+const getPageProperties = async (
   req: Request,
   trustId: string,
   isUpdate: boolean,
   formData?: PageModel.TrustHistoricalBeneficialOwnerForm,
   errors?: FormattedValidationErrors,
-): TrustHistoricalBeneficialOwnerProperties => ({
-  backLinkUrl: getTrustInvolvedUrl(isUpdate, trustId, req),
-  templateName: getPageTemplate(isUpdate),
-  pageParams: {
-    title: HISTORICAL_BO_TEXTS.title,
-  },
-  pageData: {
-    trustData: CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId, false),
-    trusteeType: TrusteeType,
-  },
-  formData,
-  errors,
-  url: getUrl(isUpdate),
-});
+): Promise<TrustHistoricalBeneficialOwnerProperties> => {
 
-export const getTrustFormerBo = (req: Request, res: Response, next: NextFunction, isUpdate: boolean): void => {
+  const appData = await getApplicationData(req.session);
+
+  return ({
+    backLinkUrl: getTrustInvolvedUrl(isUpdate, trustId, req),
+    templateName: getPageTemplate(isUpdate),
+    pageParams: {
+      title: HISTORICAL_BO_TEXTS.title,
+    },
+    pageData: {
+      trustData: CommonTrustDataMapper.mapCommonTrustDataToPage(appData, trustId, false),
+      trusteeType: TrusteeType,
+    },
+    formData,
+    errors,
+    url: getUrl(isUpdate),
+  });
+};
+
+export const getTrustFormerBo = async (req: Request, res: Response, next: NextFunction, isUpdate: boolean): Promise<void> => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
     const trusteeId = req.params[config.ROUTE_PARAM_TRUSTEE_ID];
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
 
     const formData: PageModel.TrustHistoricalBeneficialOwnerForm = mapFormerTrusteeByIdFromSessionToPage(
       appData,
       trustId,
       trusteeId
     );
-    const pageProps = getPageProperties(req, trustId, isUpdate, formData);
+    const pageProps = await getPageProperties(req, trustId, isUpdate, formData);
 
     return res.render(pageProps.templateName, pageProps);
   } catch (error) {
@@ -89,7 +94,7 @@ export const postTrustFormerBo = async (req: Request, res: Response, next: NextF
     const boData = mapBeneficialOwnerToSession(req.body);
 
     // get trust data from session
-    let appData: ApplicationData = getApplicationData(req.session);
+    let appData: ApplicationData = await getApplicationData(req.session);
 
     // check for errors
     const errorList = validationResult(req);
@@ -97,7 +102,7 @@ export const postTrustFormerBo = async (req: Request, res: Response, next: NextF
 
     // if no errors present rerender the page
     if (!errorList.isEmpty()) {
-      const pageProps = getPageProperties(
+      const pageProps = await getPageProperties(
         req,
         trustId,
         isUpdate,

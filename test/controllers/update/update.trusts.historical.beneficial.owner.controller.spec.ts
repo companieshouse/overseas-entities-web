@@ -133,7 +133,7 @@ describe('Trust Historical Beneficial Owner Controller', () => {
   });
 
   describe('POST unit tests', () => {
-    test('Save', () => {
+    test('Save', async () => {
       const mockBoData = {} as TrustHistoricalBeneficialOwner;
       (mapBeneficialOwnerToSession as jest.Mock).mockReturnValue(mockBoData);
 
@@ -148,7 +148,7 @@ describe('Trust Historical Beneficial Owner Controller', () => {
       const mockUpdatedAppData = {} as Trust;
       (saveTrustInApp as jest.Mock).mockReturnValue(mockUpdatedAppData);
 
-      post(mockReq, mockRes, mockNext);
+      await post(mockReq, mockRes, mockNext);
 
       expect(mapBeneficialOwnerToSession).toBeCalledTimes(1);
       expect(mapBeneficialOwnerToSession).toBeCalledWith(mockReq.body);

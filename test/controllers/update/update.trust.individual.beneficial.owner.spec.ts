@@ -196,14 +196,14 @@ describe('Update Trust Individual Beneficial Owner Controller', () => {
       );
     });
 
-    test('catch error when renders the page', () => {
+    test('catch error when renders the page', async () => {
       const error = new Error(ANY_MESSAGE_ERROR);
 
       (mapIndividualTrusteeToSession as jest.Mock).mockImplementationOnce(() => {
         throw error;
       });
 
-      post(mockReq, mockRes, mockNext);
+      await post(mockReq, mockRes, mockNext);
 
       expect(mockNext).toBeCalledTimes(1);
       expect(mockNext).toBeCalledWith(error);

@@ -121,11 +121,11 @@ describe('Trust Historical Beneficial Owner Controller', () => {
   });
 
   describe('GET unit tests', () => {
-    test('catch error when renders the page', () => {
+    test('catch error when renders the page', async () => {
       const error = new Error(ANY_MESSAGE_ERROR);
       mockGetApplicationData.mockImplementationOnce(() => { throw error; });
 
-      get(mockReq, mockRes, mockNext);
+      await get(mockReq, mockRes, mockNext);
 
       expect(mockNext).toBeCalledTimes(1);
       expect(mockNext).toBeCalledWith(error);
@@ -202,11 +202,11 @@ describe('Trust Historical Beneficial Owner Controller', () => {
       expect(hasTrustWithIdUpdate).toBeCalledTimes(1);
     });
 
-    test('catch error when renders the page', () => {
+    test('catch error when renders the page', async () => {
       const error = new Error(ANY_MESSAGE_ERROR);
       (mapBeneficialOwnerToSession as jest.Mock).mockImplementationOnce(() => { throw error; });
 
-      post(mockReq, mockRes, mockNext);
+      await post(mockReq, mockRes, mockNext);
 
       expect(mockNext).toBeCalledTimes(1);
       expect(mockNext).toBeCalledWith(error);

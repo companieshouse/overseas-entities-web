@@ -130,13 +130,13 @@ describe('Trust Individual Beneficial Owner Controller', () => {
       );
     });
 
-    test('catch error when renders the page', () => {
+    test('catch error when renders the page', async () => {
       const error = new Error(ANY_MESSAGE_ERROR);
       mockGetApplicationData.mockImplementationOnce(() => {
         throw error;
       });
 
-      get(mockReq, mockRes, mockNext);
+      await get(mockReq, mockRes, mockNext);
 
       expect(mockNext).toBeCalledTimes(1);
       expect(mockNext).toBeCalledWith(error);

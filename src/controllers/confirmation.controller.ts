@@ -8,13 +8,13 @@ import { ApplicationData } from "../model/application.model";
 import { Transactionkey } from "../model/data.types.model";
 import { WhoIsRegisteringType } from "../model/who.is.making.filing.model";
 
-export const get = (req: Request, res: Response) => {
+export const get = async (req: Request, res: Response) => {
   logger.debugRequest(req, `GET ${CONFIRMATION_PAGE}`);
 
-  const appData: ApplicationData = getApplicationData(req.session);
+  const appData: ApplicationData = await getApplicationData(req.session);
   const referenceNumber = appData[Transactionkey];
 
-  deleteApplicationData(req.session);
+  await deleteApplicationData(req.session);
 
   return res.render(CONFIRMATION_PAGE, {
     isAgentRegistering: appData.who_is_registering === WhoIsRegisteringType.AGENT,

@@ -13,10 +13,10 @@ import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/compa
 import { retrieveBoAndMoData } from "../../utils/update/beneficial_owners_managing_officers_data_fetch";
 import { isRemoveJourney } from "../../utils/url";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
 
     if (isRemoveJourney(req)) {
       return res.render(config.OVERSEAS_ENTITY_QUERY_PAGE, {
@@ -51,7 +51,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       return renderGetPageWithError(req, res, entityNumber);
     }
 
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
     if (appData.entity_number !== entityNumber) {
       await addOeToApplicationData(req, appData, entityNumber, companyProfile);
     }

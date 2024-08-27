@@ -18,11 +18,11 @@ import { getUrlWithParamsToPath } from "../utils/url";
 
 // The Payment Platform will redirect the user's browser back to the `redirectUri` supplied when the payment session was created,
 // and this controller is dealing with the completion of the payment journey
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const { status, state } = req.query;
 
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
     const savedPayment = appData[PaymentKey] || {} as CreatePaymentRequest;
 
     logger.infoRequest(req, `Returned state: ${ state }, saved state: ${savedPayment.state}, with status: ${ status }`);

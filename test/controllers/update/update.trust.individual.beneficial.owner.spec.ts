@@ -122,14 +122,14 @@ describe('Update Trust Individual Beneficial Owner Controller', () => {
 
   describe('GET unit tests', () => {
 
-    test(`renders the ${UPDATE_TRUSTS_INDIVIDUAL_BENEFICIAL_OWNER_PAGE} page`, () => {
+    test(`renders the ${UPDATE_TRUSTS_INDIVIDUAL_BENEFICIAL_OWNER_PAGE} page`, async () => {
 
       const expectMapResult = { dummyKey: 'EXPECT-MAP-RESULT' };
       (mapIndividualTrusteeByIdFromSessionToPage as jest.Mock).mockReturnValueOnce(expectMapResult);
       (mapCommonTrustDataToPage as jest.Mock).mockReturnValue(mockTrust1Data);
       mockCheckRelevantPeriod.mockReturnValueOnce(true);
 
-      get(mockReq, mockRes, mockNext);
+      await get(mockReq, mockRes, mockNext);
 
       expect(mockRes.redirect).not.toBeCalled();
       expect(mockRes.render).toBeCalledTimes(1);
@@ -157,7 +157,7 @@ describe('Update Trust Individual Beneficial Owner Controller', () => {
   });
 
   describe('POST unit tests', () => {
-    test('Save', () => {
+    test('Save', async () => {
       const mockTrustee = {} as IndividualTrustee ;
       (mapIndividualTrusteeToSession as jest.Mock).mockReturnValue(mockTrustee);
 
@@ -176,7 +176,7 @@ describe('Update Trust Individual Beneficial Owner Controller', () => {
         isEmpty: jest.fn().mockReturnValue(true),
       }));
 
-      post(mockReq, mockRes, mockNext);
+      await post(mockReq, mockRes, mockNext);
 
       expect(mapIndividualTrusteeToSession).toBeCalledTimes(1);
       expect(mapIndividualTrusteeToSession).toBeCalledWith(mockReq.body);

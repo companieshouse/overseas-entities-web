@@ -106,7 +106,7 @@ describe('Trust Individual Beneficial Owner Controller', () => {
 
   describe('GET unit tests', () => {
 
-    test(`renders the ${TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE} page`, () => {
+    test(`renders the ${TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE} page`, async () => {
 
       const expectMapResult = { dummyKey: 'EXPECT-MAP-RESULT' };
       (mapIndividualTrusteeByIdFromSessionToPage as jest.Mock).mockReturnValueOnce(expectMapResult);
@@ -115,7 +115,7 @@ describe('Trust Individual Beneficial Owner Controller', () => {
       mockReq.query = { "relevant-period": "true" };
       mockGetApplicationData.mockReturnValue(mockAppData);
 
-      get(mockReq, mockRes, mockNext);
+      await get(mockReq, mockRes, mockNext);
 
       expect(mockRes.redirect).not.toBeCalled();
       expect(mockRes.render).toBeCalledTimes(1);

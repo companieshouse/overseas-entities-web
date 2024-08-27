@@ -38,13 +38,14 @@ type TrustIndividualBeneificalOwnerPageProperties = {
   isUpdate: boolean
 };
 
-const getPageProperties = (
+const getPageProperties = async (
   req: Request,
   trustId: string,
   isUpdate: boolean,
   formData: PageModel.IndividualTrusteesFormCommon,
   errors?: FormattedValidationErrors,
-): TrustIndividualBeneificalOwnerPageProperties => {
+): Promise<TrustIndividualBeneificalOwnerPageProperties> => {
+  const appData = await getApplicationData(req.session);
 
   return {
     backLinkUrl: getTrustInvolvedUrl(isUpdate, trustId, req),
@@ -53,7 +54,7 @@ const getPageProperties = (
       title: INDIVIDUAL_BO_TEXTS.title,
     },
     pageData: {
-      trustData: CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId, false),
+      trustData: CommonTrustDataMapper.mapCommonTrustDataToPage(appData, trustId, false),
       roleWithinTrustType: RoleWithinTrustType
     },
     formData,
@@ -63,19 +64,19 @@ const getPageProperties = (
   };
 };
 
-const getPagePropertiesRelevantPeriod = (isRelevantPeriod, req, trustId, isUpdate, formData, entityName, errors?: FormattedValidationErrors) => {
-  const pageProps = getPageProperties(req, trustId, isUpdate, formData, errors);
+const getPagePropertiesRelevantPeriod = async (isRelevantPeriod, req, trustId, isUpdate, formData, entityName, errors?: FormattedValidationErrors): Promise<TrustIndividualBeneificalOwnerPageProperties> => {
+  const pageProps = await getPageProperties(req, trustId, isUpdate, formData, errors);
   pageProps.formData.relevant_period = isRelevantPeriod;
   pageProps.pageData.entity_name = entityName;
   return pageProps;
 };
 
-export const getTrustIndividualBo = (req: Request, res: Response, next: NextFunction, isUpdate: boolean): void => {
+export const getTrustIndividualBo = async (req: Request, res: Response, next: NextFunction, isUpdate: boolean): Promise<void> => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
     const trusteeId = req.params[config.ROUTE_PARAM_TRUSTEE_ID];
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
     const isRelevantPeriod = req.query['relevant-period'];
 
     const formData: PageModel.IndividualTrusteesFormCommon = mapIndividualTrusteeByIdFromSessionToPage(
@@ -83,9 +84,10 @@ export const getTrustIndividualBo = (req: Request, res: Response, next: NextFunc
       trustId,
       trusteeId
     );
-    const pageProps = getPageProperties(req, trustId, isUpdate, formData);
+    const pageProps = await getPageProperties(req, trustId, isUpdate, formData);
     if (isRelevantPeriod) {
-      return res.render(pageProps.templateName, getPagePropertiesRelevantPeriod(isRelevantPeriod, req, trustId, isUpdate, formData, appData.entity_name));
+      const pagePropertiesRelevantPeriod = await getPagePropertiesRelevantPeriod(isRelevantPeriod, req, trustId, isUpdate, formData, appData.entity_name);
+      return res.render(pageProps.templateName, pagePropertiesRelevantPeriod);
     } else {
       return res.render(pageProps.templateName, pageProps);
     }
@@ -95,7 +97,7 @@ export const getTrustIndividualBo = (req: Request, res: Response, next: NextFunc
   }
 };
 
-export const postTrustIndividualBo = async (req: Request, res: Response, next: NextFunction, isUpdate: boolean) => {
+export const postTrustIndividualBo = async (req: Request, res: Response, next: NextFunction, isUpdate: boolean): Promise<void> => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
@@ -104,14 +106,14 @@ export const postTrustIndividualBo = async (req: Request, res: Response, next: N
     const individualTrusteeData = mapIndividualTrusteeToSession(req.body);
 
     // get trust data from session
-    let appData: ApplicationData = getApplicationData(req.session);
+    let appData: ApplicationData = await getApplicationData(req.session);
 
     // check for errors
     const errorList = validationResult(req);
     const formData: PageModel.IndividualTrusteesFormCommon = req.body as PageModel.IndividualTrusteesFormCommon;
     // if no errors present rerender the page
     if (!errorList.isEmpty()) {
-      const pageProps = getPageProperties(
+      const pageProps = await getPageProperties(
         req,
         trustId,
         isUpdate,
@@ -121,7 +123,8 @@ export const postTrustIndividualBo = async (req: Request, res: Response, next: N
 
       const isRelevantPeriod = req.query['relevant-period'];
       if (isRelevantPeriod) {
-        return res.render(pageProps.templateName, getPagePropertiesRelevantPeriod(isRelevantPeriod, req, trustId, isUpdate, formData, appData.entity_name, formatValidationError(errorList.array())));
+        const pagePropertiesRelevantPeriod = await getPagePropertiesRelevantPeriod(isRelevantPeriod, req, trustId, isUpdate, formData, appData.entity_name, formatValidationError(errorList.array()));
+        return res.render(pageProps.templateName, pagePropertiesRelevantPeriod);
       } else {
         return res.render(pageProps.templateName, pageProps);
       }

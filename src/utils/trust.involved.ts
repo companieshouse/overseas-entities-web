@@ -66,7 +66,7 @@ const getPageProperties = async (
   isReview: boolean,
   formData?: TrustWhoIsInvolvedForm,
   errors?: FormattedValidationErrors,
-): Promise <TrustInvolvedPageProperties> => {
+): Promise<TrustInvolvedPageProperties> => {
   const appData = await getApplicationData(req.session);
   let trustId;
   let individualTrusteeData;

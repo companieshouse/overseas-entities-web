@@ -28,8 +28,8 @@ export const getPresenterPage = async (req: Request, res: Response, next: NextFu
     }
 
     return res.render(templateName, {
-      backLinkUrl: backLinkUrl,
-      templateName: templateName,
+      backLinkUrl,
+      templateName,
       ...presenter
     });
   } catch (error) {

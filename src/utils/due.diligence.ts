@@ -28,8 +28,8 @@ export const getDueDiligencePage = async (req: Request, res: Response, next: Nex
     const identityDate = (agentData?.[IdentityDateKey]) ? mapDataObjectToFields(agentData[IdentityDateKey], IdentityDateKeys, InputDateKeys) : {};
 
     return res.render(templateName, {
-      backLinkUrl: backLinkUrl,
-      templateName: templateName,
+      backLinkUrl,
+      templateName,
       ...agentData,
       ...identityAddress,
       [IdentityDateKey]: identityDate

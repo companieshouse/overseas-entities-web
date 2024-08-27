@@ -7,7 +7,7 @@ import { isRemoveJourney } from "../../utils/url";
 export const get = (req: Request, res: Response, _: NextFunction) => {
   logger.debugRequest(req, `GET ${config.UPDATE_CONTINUE_WITH_SAVED_FILING_PAGE}`);
 
-  if (isRemoveJourney(req)){
+  if (isRemoveJourney(req)) {
     return res.render(config.UPDATE_CONTINUE_WITH_SAVED_FILING_PAGE, {
       journey: config.JourneyType.remove,
       backLinkUrl: config.REMOVE_LANDING_PAGE_URL,
@@ -27,7 +27,7 @@ export const post = (req: Request, res: Response, _: NextFunction) => {
     return res.redirect(config.YOUR_FILINGS_PATH);
   }
 
-  if (isRemoveJourney(req)){
+  if (isRemoveJourney(req)) {
     return res.redirect(`${config.REMOVE_SOLD_ALL_LAND_FILTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
   }
 

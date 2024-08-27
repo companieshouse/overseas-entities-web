@@ -8,10 +8,10 @@ import { RemoveKey } from "../../model/remove.type.model";
 import { saveAndContinue } from "../../utils/save.and.continue";
 import { Session } from '@companieshouse/node-session-handler';
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `GET ${config.REMOVE_CONFIRM_STATEMENT_PAGE}`);
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
     return res.render(config.REMOVE_CONFIRM_STATEMENT_PAGE, {
       journey: config.JourneyType.remove,
       backLinkUrl: `${config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL}`,
@@ -26,7 +26,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.REMOVE_CONFIRM_STATEMENT_PAGE}`);
 
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
 
     const remove = getRemove(appData);
     remove[IsNotProprietorOfLandKey] = true ;

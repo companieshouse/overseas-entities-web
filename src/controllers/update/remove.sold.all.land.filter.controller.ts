@@ -7,10 +7,10 @@ import { HasSoldAllLandKey } from "../../model/data.types.model";
 import { getApplicationData, getRemove, setApplicationData } from "../../utils/application.data";
 import { RemoveKey } from "../../model/remove.type.model";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `GET ${config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE}`);
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
     const remove = appData?.[RemoveKey];
 
     return res.render(config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE, {
@@ -24,12 +24,12 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
+export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE}`);
     const hasSoldAllLand = req.body[HasSoldAllLandKey];
 
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
     const remove = getRemove(appData);
 
     remove[HasSoldAllLandKey] = hasSoldAllLand ;

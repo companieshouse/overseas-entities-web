@@ -12,15 +12,15 @@ import { createOverseasEntity, updateOverseasEntity } from "../service/overseas.
 import { Session } from "@companieshouse/node-session-handler";
 import { getUrlWithTransactionIdAndSubmissionId } from "../utils/url";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     logger.debugRequest(req, `GET ${config.SOLD_LAND_FILTER_PAGE}`);
 
     if (req.query[config.LANDING_PAGE_QUERY_PARAM] === '0') {
-      deleteApplicationData(req.session);
+      await deleteApplicationData(req.session);
     }
 
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
 
     return res.render(config.SOLD_LAND_FILTER_PAGE, {
       backLinkUrl: getSoldLandFilterBackLink(),
@@ -40,7 +40,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     const session = req.session as Session;
     const hasSoldLand = (req.body[HasSoldLandKey]).toString();
-    const appData: ApplicationData = getApplicationData(session);
+    const appData: ApplicationData = await getApplicationData(session);
     appData[HasSoldLandKey] = hasSoldLand;
 
     let nextPageUrl: string = "";

@@ -37,13 +37,15 @@ type TrustLegalEntityBeneficialOwnerPageProperties = {
   isUpdate: boolean
 };
 
-const getPageProperties = (
+const getPageProperties = async (
   req: Request,
   trustId: string,
   isUpdate: boolean,
   formData?: TrustLegalEntityForm,
   errors?: FormattedValidationErrors,
-): TrustLegalEntityBeneficialOwnerPageProperties => {
+): Promise<TrustLegalEntityBeneficialOwnerPageProperties> => {
+
+  const appData = await getApplicationData(req.session);
 
   return {
     backLinkUrl: getTrustInvolvedUrl(isUpdate, trustId, req),
@@ -52,7 +54,7 @@ const getPageProperties = (
       title: LEGAL_ENTITY_BO_TEXTS.title,
     },
     pageData: {
-      trustData: CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId, false),
+      trustData: CommonTrustDataMapper.mapCommonTrustDataToPage(appData, trustId, false),
       roleWithinTrustType: RoleWithinTrustType
     },
     formData,
@@ -62,23 +64,23 @@ const getPageProperties = (
   };
 };
 
-export const getRelevantPeriodPageProperties = (
+export const getRelevantPeriodPageProperties = async (
   req: Request,
   trustId: string,
   isUpdate: boolean,
   formData?: TrustLegalEntityForm,
   errors?: FormattedValidationErrors,
-): TrustLegalEntityBeneficialOwnerPageProperties => {
-  return getPageProperties(req, trustId, isUpdate, formData, errors);
+): Promise<TrustLegalEntityBeneficialOwnerPageProperties> => {
+  return await getPageProperties(req, trustId, isUpdate, formData, errors);
 };
 
-export const getTrustLegalEntityBo = (req: Request, res: Response, next: NextFunction, isUpdate: boolean): void => {
+export const getTrustLegalEntityBo = async (req: Request, res: Response, next: NextFunction, isUpdate: boolean): Promise<void> => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
     const trusteeId = req.params[config.ROUTE_PARAM_TRUSTEE_ID];
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
     const isRelevantPeriod = req.query ? req.query["relevant-period"] === "true" : false;
 
     const formData: TrustLegalEntityForm = mapLegalEntityTrusteeByIdFromSessionToPage(
@@ -87,7 +89,7 @@ export const getTrustLegalEntityBo = (req: Request, res: Response, next: NextFun
       trusteeId
     );
     // conditionally toggle display of relevant period page text and role within trust type will default to Beneficiary
-    const pageProps = isRelevantPeriod ? getRelevantPeriodPageProperties(req, trustId, isUpdate, formData) : getPageProperties(req, trustId, isUpdate, formData);
+    const pageProps = isRelevantPeriod ? await getRelevantPeriodPageProperties(req, trustId, isUpdate, formData) : await getPageProperties(req, trustId, isUpdate, formData);
     if ((isRelevantPeriod || (trusteeId && pageProps.formData?.relevant_period)) && pageProps.formData) {
       pageProps.formData.relevant_period = true;
       setEntityNameInRelevantPeriodPageBanner(pageProps, appData ? appData.entity_name : pageProps.pageData.trustData.trustName);
@@ -99,7 +101,7 @@ export const getTrustLegalEntityBo = (req: Request, res: Response, next: NextFun
   }
 };
 
-export const postTrustLegalEntityBo = async (req: Request, res: Response, next: NextFunction, isUpdate: boolean) => {
+export const postTrustLegalEntityBo = async (req: Request, res: Response, next: NextFunction, isUpdate: boolean): Promise<void> => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
@@ -109,14 +111,14 @@ export const postTrustLegalEntityBo = async (req: Request, res: Response, next: 
     const legalEntityBoData = mapLegalEntityToSession(req.body);
 
     //  get trust data from session
-    let appData: ApplicationData = getApplicationData(req.session);
+    let appData: ApplicationData = await getApplicationData(req.session);
 
     // validate request
     const errorList = validationResult(req);
     const formData: TrustLegalEntityForm = req.body as TrustLegalEntityForm;
 
     if (errorList && !errorList.isEmpty()) {
-      const pageProps = getPageProperties(
+      const pageProps = await getPageProperties(
         req,
         trustId,
         isUpdate,

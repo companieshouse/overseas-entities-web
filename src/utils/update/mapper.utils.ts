@@ -76,9 +76,9 @@ type BOMOAddressMapTypes = {
 };
 
 export const mapBOMOAddress: BOMOAddressMapTypes = (address: any) => {
-  logger.info(`************* mapBOMOAddress() ***************`);
+  logger.info(`mapBOMOAddress()`);
   if (!address) {
-    logger.info(`************* no address ***************`);
+    logger.info(`no address to map`);
     return undefined;
   }
 

@@ -159,9 +159,12 @@ const natureOfControlTypeMap = new Map<string, NatureOfControlType>([
 ]);
 
 export const mapIndividualBOPrivateData = (boPrivateData: BeneficialOwnerPrivateData[], beneficialOwner: BeneficialOwnerIndividual) => {
+  logger.info(`************* mapIndividualBOPrivateData(): ***************`);
   for (const boData of boPrivateData) {
+    logger.info(`************* boData.hashedId=${boData.hashedId} , beneficialOwner.ch_reference=${beneficialOwner.ch_reference} **********`);
     if (boData.hashedId === beneficialOwner.ch_reference) {
       beneficialOwner.usual_residential_address = mapBOMOAddress(boData.usualResidentialAddress);
+      logger.info(`************* addressline1=${beneficialOwner.usual_residential_address?.line_1} ************`);
       if (boData.dateOfBirth) {
         beneficialOwner.date_of_birth = mapInputDate(boData.dateOfBirth);
         beneficialOwner.have_day_of_birth = true;

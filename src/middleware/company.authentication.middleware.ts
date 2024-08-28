@@ -22,7 +22,7 @@ export const companyAuthentication = async (req: Request, res: Response, next: N
   try {
     logger.debugRequest(req, `Company Authentication Request`);
 
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
     let entityNumber: string | undefined = appData?.[EntityNumberKey];
     let returnURL = !isActiveFeature(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD) ? UPDATE_FILING_DATE_URL : RELEVANT_PERIOD_OWNED_LAND_FILTER_URL + config.RELEVANT_PERIOD_QUERY_PARAM;
     if (isRemoveJourney(req)) {

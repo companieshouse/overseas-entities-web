@@ -61,7 +61,7 @@ describe('statement validation middleware', () => {
           BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS,
           true
         ]
-      ])(`%s`, (_, statementValue, activeMOExists) => {
+      ])(`%s`, async (_, statementValue, activeMOExists) => {
         const appData = {
           ...APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW,
           [BeneficialOwnerStatementKey]: statementValue,
@@ -78,7 +78,7 @@ describe('statement validation middleware', () => {
         mockHasAddedOrCeasedBO.mockReturnValueOnce(true);
         mockCheckActiveMOExists.mockReturnValueOnce(activeMOExists);
 
-        validateStatements(req, res, next);
+        await validateStatements(req, res, next);
 
         expect(next).toHaveBeenCalled();
         expect(req['statementErrorList']).toEqual([]);
@@ -100,7 +100,7 @@ describe('statement validation middleware', () => {
         'test-ch-reference',
         { day: '1', month: '3', year: '2023' },
       ],
-    ])(`%s`, (_, addedOrCeased, response, ch_reference, ceased_date) => {
+    ])(`%s`, async (_, addedOrCeased, response, ch_reference, ceased_date) => {
       const BOI_MOCK = {
         ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
         ceased_date,
@@ -121,7 +121,7 @@ describe('statement validation middleware', () => {
       mockCheckActiveBOExists.mockReturnValueOnce(true);
       mockHasAddedOrCeasedBO.mockReturnValueOnce(addedOrCeased);
 
-      validateStatements(req, res, next);
+      await validateStatements(req, res, next);
 
       expect(next).toHaveBeenCalled();
       expect(req['statementErrorList']).toEqual([]);
@@ -178,7 +178,7 @@ describe('statement validation middleware', () => {
           true,
           ["There is at least one active managing officer."]
         ]
-      ])(`%s`, (_, statementValue, activeBOExists, activeMOExists, expectedErrorList) => {
+      ])(`%s`, async (_, statementValue, activeBOExists, activeMOExists, expectedErrorList) => {
         const appData = {
           ...APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW,
           [BeneficialOwnerStatementKey]: statementValue,
@@ -196,7 +196,7 @@ describe('statement validation middleware', () => {
         mockCheckActiveMOExists.mockReturnValueOnce(activeMOExists);
         mockHasAddedOrCeasedBO.mockReturnValueOnce(true);
 
-        validateStatements(req, res, next);
+        await validateStatements(req, res, next);
 
         expect(next).toHaveBeenCalled();
         expect(req['statementErrorList']).toEqual(expectedErrorList);
@@ -229,7 +229,7 @@ describe('statement validation middleware', () => {
           { day: '1', month: '3', year: '2023' },
           ['You have added or ceased a beneficial owner as part of this update statement.'],
         ],
-      ])(`%s`, (_, response, hasAddedOrCeased, ch_reference, ceased_date, expectedErrorList) => {
+      ])(`%s`, async (_, response, hasAddedOrCeased, ch_reference, ceased_date, expectedErrorList) => {
         const BOI_MOCK = {
           ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
           ceased_date,
@@ -250,7 +250,7 @@ describe('statement validation middleware', () => {
         mockCheckActiveBOExists.mockReturnValueOnce(true);
         mockHasAddedOrCeasedBO.mockReturnValueOnce(hasAddedOrCeased);
 
-        validateStatements(req, res, next);
+        await validateStatements(req, res, next);
 
         expect(next).toHaveBeenCalled();
         expect(req['statementErrorList']).toEqual(expectedErrorList);

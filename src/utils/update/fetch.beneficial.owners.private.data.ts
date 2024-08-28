@@ -4,7 +4,7 @@ import { ApplicationData } from "../../model";
 import { mapCorporateOrGovernmentBOPrivateData, mapIndividualBOPrivateData } from "./psc.to.beneficial.owner.type.mapper";
 
 export const fetchBeneficialOwnersPrivateData = async (appData: ApplicationData, req) => {
-  logger.info(`******** Fetching private beneficial owners data ********`);
+  logger.info(`Fetching private beneficial owners data`);
   const overseasEntityId = appData.overseas_entity_id;
   const transactionId = appData.transaction_id;
   if (appData.entity === undefined) {
@@ -26,21 +26,22 @@ export const fetchBeneficialOwnersPrivateData = async (appData: ApplicationData,
 
 const mapBeneficialOwnersPrivateData = (boPrivateData, appData: ApplicationData) => {
   const mapIndividualOwners = beneficialOwner => {
-    logger.info(`************* beneficialOwner.ch_reference: ${beneficialOwner.ch_reference} ***************`);
+    logger.info(`mapIndividualOwners: beneficialOwner.ch_reference=${beneficialOwner.ch_reference}`);
     if (beneficialOwner.ch_reference) {
       mapIndividualBOPrivateData(boPrivateData, beneficialOwner);
     }
   };
   const mapCorporateOrGovernmentOwners = beneficialOwner => {
+    logger.info(`mapCorporateOrGovernmentOwners: beneficialOwner.ch_reference=${beneficialOwner.ch_reference}`);
     if (beneficialOwner.ch_reference) {
       mapCorporateOrGovernmentBOPrivateData(boPrivateData, beneficialOwner);
     }
   };
-  logger.info(`************* Mapping individual owners ***************`);
+  logger.info(`Mapping individual owners`);
   appData.update?.review_beneficial_owners_individual?.forEach(mapIndividualOwners);
-  logger.info(`************* Mapping corporate owners ***************`);
+  logger.info(`Mapping corporate owners`);
   appData.update?.review_beneficial_owners_corporate?.forEach(mapCorporateOrGovernmentOwners);
-  logger.info(`************* Mapping gov/public owners ***************`);
+  logger.info(`Mapping gov/public owners`);
   appData.update?.review_beneficial_owners_government_or_public_authority?.forEach(mapCorporateOrGovernmentOwners);
 };
 

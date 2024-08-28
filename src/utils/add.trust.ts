@@ -12,6 +12,7 @@ import { isActiveFeature } from './feature.flag';
 import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
 import { getUrlWithParamsToPath } from './url';
 import { checkRelevantPeriod } from './relevant.period';
+import { ApplicationData } from 'model';
 
 export const ADD_TRUST_TEXTS = {
   title: 'Trusts associated with the overseas entity',
@@ -43,7 +44,7 @@ const getPageProperties = async (
   errors?: FormattedValidationErrors,
 ): Promise<TrustInvolvedPageProperties> => {
 
-  const appData = await getApplicationData(req.session);
+  const appData: ApplicationData = await getApplicationData(req.session);
 
   return {
     templateName: getPageTemplate(isUpdate),
@@ -101,7 +102,7 @@ export const postTrusts = async (
     // check for errors
     const errorList = validationResult(req);
     const formData: PageModel.AddTrust = req.body as PageModel.AddTrust;
-    const appData = await getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
 
     if (!errorList.isEmpty()) {
       const pageProps = await getPageProperties(

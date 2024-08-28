@@ -58,7 +58,7 @@ export const getBeneficialOwnerIndividualById = async (req: Request, res: Respon
   try {
     logger.debugRequest(req, `GET BY ID ${req.route.path}`);
 
-    const appData = await getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
 
     const id = req.params[ID];
     const data = await getFromApplicationData(req, BeneficialOwnerIndividualKey, id, true);

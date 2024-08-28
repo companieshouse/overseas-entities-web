@@ -9,12 +9,13 @@ import { Session } from "@companieshouse/node-session-handler";
 import { saveAndContinue } from "./save.and.continue";
 import { isRemoveJourney } from "../utils/url";
 
-export const getRegistrableBeneficialOwner = (req: Request, res: Response, next: NextFunction, noChangeFlag?: boolean) => {
+export const getRegistrableBeneficialOwner = async (req: Request, res: Response, next: NextFunction, noChangeFlag?: boolean): Promise<void> => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
     let templateName: string;
     let backLinkUrl: string;
+
     if (noChangeFlag) {
       backLinkUrl = config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE;
       templateName = config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_PAGE;
@@ -34,12 +35,13 @@ export const getRegistrableBeneficialOwner = (req: Request, res: Response, next:
   }
 };
 
-export const postRegistrableBeneficialOwner = async (req: Request, res: Response, next: NextFunction, noChangeFlag?: boolean) => {
+export const postRegistrableBeneficialOwner = async (req: Request, res: Response, next: NextFunction, noChangeFlag?: boolean): Promise<void> => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const isRegistrableBeneficialOwner = req.body[RegistrableBeneficialOwnerKey];
     const session = req.session as Session;
-    const appData: ApplicationData = getApplicationData(session);
+    const appData: ApplicationData = await getApplicationData(session);
+
     if (appData.update) {
       appData.update.registrable_beneficial_owner = isRegistrableBeneficialOwner === '1' ? yesNoResponse.Yes : yesNoResponse.No;
     }

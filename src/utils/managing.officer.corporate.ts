@@ -51,7 +51,7 @@ export const getManagingOfficerCorporateById = async (req: Request, res: Respons
 
     const id = req.params[ID];
 
-    const appData = await getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
     const officerData = await getFromApplicationData(req, ManagingOfficerCorporateKey, id, true);
 
     const newlyAddedMO = isNewlyAddedMO(officerData);

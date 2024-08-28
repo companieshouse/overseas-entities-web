@@ -58,7 +58,7 @@ export const getManagingOfficerById = async (req: Request, res: Response, next: 
 
     const id = req.params[ID];
 
-    const appData = await getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
     const officerData = await getFromApplicationData(req, ManagingOfficerKey, id, true);
 
     const newlyAddedMO = isNewlyAddedMO(officerData);

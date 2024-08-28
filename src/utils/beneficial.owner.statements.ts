@@ -19,7 +19,8 @@ export const getBeneficialOwnerStatements = async (req: Request, res: Response, 
     let backLinkUrl: string;
     let noChangeFlag: boolean = false;
     let templateName: string;
-    const appData = await getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
+
     if (noChangeBackLink) {
       backLinkUrl = noChangeBackLink;
       templateName = config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE;

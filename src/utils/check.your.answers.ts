@@ -37,7 +37,7 @@ import { checkRPStatementsExist } from "./relevant.period";
 
 export const getDataForReview = async (req: Request, res: Response, next: NextFunction, isNoChangeJourney: boolean) => {
   const session = req.session as Session;
-  const appData = await getApplicationData(session);
+  const appData: ApplicationData = await getApplicationData(session);
   const hasAnyBosWithTrusteeNocs = isNoChangeJourney ? checkEntityReviewRequiresTrusts(appData) : checkEntityRequiresTrusts(appData);
   const backLinkUrl = getBackLinkUrl(isNoChangeJourney, hasAnyBosWithTrusteeNocs, isRemoveJourney(req));
   const templateName = getTemplateName(isNoChangeJourney);

@@ -46,6 +46,7 @@ export const postPresenterPage = async (req: Request, res: Response, next: NextF
 
     if (isRemoveJourney(req)) {
       const appData: ApplicationData = await getApplicationData(session);
+
       if (!appData[Transactionkey]) {
         const transactionID = await postTransaction(req, session);
         appData[Transactionkey] = transactionID;

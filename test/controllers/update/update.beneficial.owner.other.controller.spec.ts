@@ -222,6 +222,77 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
+    test(`Sets session data and renders the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page when start date contains spaces`, async () => {
+      const beneficialOwnerOtherMock = { ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK, [IsOnSanctionsListKey]: "0" };
+      mockPrepareData.mockReturnValueOnce(beneficialOwnerOtherMock);
+
+      const submissionMock = { ...UPDATE_BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS };
+      submissionMock["start_date-day"] = " 1 ";
+      submissionMock["start_date-month"] = " 1 ";
+      submissionMock["start_date-year"] = " 2022 ";
+
+      const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL)
+        .send(submissionMock);
+
+      expect(resp.status).toEqual(302);
+      const beneficialOwnerOther = mockSetApplicationData.mock.calls[0][1];
+      expect(beneficialOwnerOther.name).toEqual("TestCorporation");
+      expect(beneficialOwnerOther.legal_form).toEqual("TheLegalForm");
+      expect(beneficialOwnerOther.law_governed).toEqual("TheLaw");
+      expect(beneficialOwnerOther.public_register_name).toEqual("ThisRegister");
+      expect(beneficialOwnerOther.registration_number).toEqual("123456789");
+      expect(beneficialOwnerOther.is_on_register_in_country_formed_in).toEqual(yesNoResponse.Yes);
+      expect(beneficialOwnerOther.beneficial_owner_nature_of_control_types).toEqual([NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS]);
+      expect(beneficialOwnerOther.trustees_nature_of_control_types).toEqual([NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS]);
+      expect(beneficialOwnerOther.non_legal_firm_members_nature_of_control_types).toEqual([NatureOfControlType.OVER_25_PERCENT_OF_SHARES]);
+      expect(beneficialOwnerOther[IsOnSanctionsListKey]).toEqual(yesNoResponse.No);
+      expect(mockSetApplicationData.mock.calls[0][2]).toEqual(BeneficialOwnerOtherKey);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+
+      // Additionally check that date fields are trimmed before they're saved in the session
+      const data: ApplicationDataType = mockPrepareData.mock.calls[0][0];
+      expect(data["start_date-day"]).toEqual("1");
+      expect(data["start_date-month"]).toEqual("1");
+      expect(data["start_date-year"]).toEqual("2022");
+    });
+
+    test(`Sets session data and renders the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page when ceased date contains spaces`, async () => {
+      const beneficialOwnerOtherMock = { ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK, [IsOnSanctionsListKey]: "0" };
+      mockPrepareData.mockReturnValueOnce(beneficialOwnerOtherMock);
+
+      const submissionMock = { ...UPDATE_BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS };
+      submissionMock["is_still_bo"] = "0";
+      submissionMock["ceased_date-day"] = " 1 ";
+      submissionMock["ceased_date-month"] = " 1 ";
+      submissionMock["ceased_date-year"] = " 2022 ";
+
+      const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL)
+        .send(submissionMock);
+
+      expect(resp.status).toEqual(302);
+      const beneficialOwnerOther = mockSetApplicationData.mock.calls[0][1];
+      expect(beneficialOwnerOther.name).toEqual("TestCorporation");
+      expect(beneficialOwnerOther.legal_form).toEqual("TheLegalForm");
+      expect(beneficialOwnerOther.law_governed).toEqual("TheLaw");
+      expect(beneficialOwnerOther.public_register_name).toEqual("ThisRegister");
+      expect(beneficialOwnerOther.registration_number).toEqual("123456789");
+      expect(beneficialOwnerOther.is_on_register_in_country_formed_in).toEqual(yesNoResponse.Yes);
+      expect(beneficialOwnerOther.beneficial_owner_nature_of_control_types).toEqual([NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS]);
+      expect(beneficialOwnerOther.trustees_nature_of_control_types).toEqual([NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS]);
+      expect(beneficialOwnerOther.non_legal_firm_members_nature_of_control_types).toEqual([NatureOfControlType.OVER_25_PERCENT_OF_SHARES]);
+      expect(beneficialOwnerOther[IsOnSanctionsListKey]).toEqual(yesNoResponse.No);
+      expect(mockSetApplicationData.mock.calls[0][2]).toEqual(BeneficialOwnerOtherKey);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+
+      // Additionally check that date fields are trimmed before they're saved in the session
+      const data: ApplicationDataType = mockPrepareData.mock.calls[0][0];
+      expect(data["ceased_date-day"]).toEqual("1");
+      expect(data["ceased_date-month"]).toEqual("1");
+      expect(data["ceased_date-year"]).toEqual("2022");
+    });
+
     test(`POST only radio buttons choices and do not redirect to ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
       mockPrepareData.mockReturnValueOnce({ ...BENEFICIAL_OWNER_OTHER_RADIO_BUTTONS_ONLY });
 

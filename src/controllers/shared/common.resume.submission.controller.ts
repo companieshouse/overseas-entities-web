@@ -107,7 +107,6 @@ const setWebApplicationData = (session: Session, appData: ApplicationData, trans
   } else if (appData[DueDiligenceKey] && Object.keys(appData[DueDiligenceKey]).length){
     appData[WhoIsRegisteringKey] = WhoIsRegisteringType.AGENT;
   }
-
   if (isActiveFeature(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB)) {
     mapTrustApiReturnModelToWebModel(appData);
   }

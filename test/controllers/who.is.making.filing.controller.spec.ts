@@ -6,6 +6,8 @@ jest.mock('../../src/utils/feature.flag');
 jest.mock('../../src/middleware/navigation/has.presenter.middleware');
 jest.mock('../../src/middleware/service.availability.middleware');
 jest.mock("../../src/utils/url");
+jest.mock('../../src/service/transaction.service');
+jest.mock('../../src/service/overseas.entities.service');
 
 import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
 import { NextFunction, Request, Response } from "express";
@@ -33,6 +35,8 @@ import { hasPresenter } from "../../src/middleware/navigation/has.presenter.midd
 import { isActiveFeature } from "../../src/utils/feature.flag";
 import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
 import { getUrlWithParamsToPath } from "../../src/utils/url";
+import { updateOverseasEntity } from "../../src/service/overseas.entities.service";
+import { APPLICATION_DATA_MOCK } from "../__mocks__/session.mock";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockHasPresenterMiddleware = hasPresenter as jest.Mock;
@@ -54,6 +58,8 @@ const NEXT_PAGE_URL = "/NEXT_PAGE";
 const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
 mockGetUrlWithParamsToPath.mockReturnValue(NEXT_PAGE_URL);
 
+const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
+
 describe("Who is making filing controller tests", () => {
 
   beforeEach(() => {
@@ -63,6 +69,7 @@ describe("Who is making filing controller tests", () => {
   });
 
   describe("GET tests", () => {
+
     test(`renders the ${config.WHO_IS_MAKING_FILING_PAGE} page`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ });
       const resp = await request(app).get(config.WHO_IS_MAKING_FILING_URL);
@@ -120,6 +127,7 @@ describe("Who is making filing controller tests", () => {
   });
 
   describe("GET with url Params tests", () => {
+
     test(`renders the ${config.WHO_IS_MAKING_FILING_PAGE} page`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT });
       const resp = await request(app).get(config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL);
@@ -159,23 +167,68 @@ describe("Who is making filing controller tests", () => {
   });
 
   describe("POST tests", () => {
-    test(`redirect the ${config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL} page when ${WhoIsRegisteringType.SOMEONE_ELSE} is selected`, async () => {
+
+    test(`redirects to the ${config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL} page when the ${WhoIsRegisteringType.SOMEONE_ELSE} option is selected and REDIS_flag is set to OFF`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockUpdateOverseasEntity.mockReturnValueOnce(false);
       const resp = await request(app)
         .post(config.WHO_IS_MAKING_FILING_URL)
         .send({ [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE });
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(2);
+      expect(mockUpdateOverseasEntity).not.toHaveBeenCalled();
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 
-    test(`redirects to the ${config.DUE_DILIGENCE_URL} page when ${WhoIsRegisteringType.AGENT} is selected`, async () => {
+    test(`redirects to the ${config.OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_PARAMS_URL} page and updates the overseas entity when the ${WhoIsRegisteringType.SOMEONE_ELSE} option is selected and REDIS_flag is set to ON`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockUpdateOverseasEntity.mockReturnValueOnce(true);
+      const resp = await request(app)
+        .post(config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL)
+        .send({ [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(NEXT_PAGE_URL);
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(2);
+      expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
+      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+    });
+
+    test(`redirects to the ${config.DUE_DILIGENCE_URL} page when the ${WhoIsRegisteringType.AGENT} option is selected and the REDIS_flag is set to OFF`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockUpdateOverseasEntity.mockReturnValueOnce(false);
       const resp = await request(app)
         .post(config.WHO_IS_MAKING_FILING_URL)
         .send({ [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT });
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.DUE_DILIGENCE_URL);
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(2);
+      expect(mockUpdateOverseasEntity).not.toHaveBeenCalled();
+      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+    });
+
+    test(`redirects to the ${config.DUE_DILIGENCE_WITH_PARAMS_URL} page and updates the overseas-entity when the ${WhoIsRegisteringType.AGENT} option is selected and the REDIS_flag is set to ON`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockUpdateOverseasEntity.mockReturnValueOnce(true);
+      const resp = await request(app)
+        .post(config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL)
+        .send({ [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(NEXT_PAGE_URL);
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(2);
+      expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 
@@ -206,35 +259,6 @@ describe("Who is making filing controller tests", () => {
   });
 
   describe("POST with url params tests", () => {
-    test(`redirect the ${config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL} page when ${WhoIsRegisteringType.SOMEONE_ELSE} is selected`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-      const resp = await request(app)
-        .post(config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL)
-        .send({ [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE });
-
-      expect(resp.status).toEqual(302);
-      expect(resp.text).toContain(NEXT_PAGE_URL);
-      expect(resp.header.location).toEqual(NEXT_PAGE_URL);
-      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
-      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(2);
-      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.DUE_DILIGENCE_WITH_PARAMS_URL);
-      expect(mockGetUrlWithParamsToPath.mock.calls[1][0]).toEqual(config.OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_PARAMS_URL);
-    });
-
-    test(`redirects to the ${config.DUE_DILIGENCE_URL} page when ${WhoIsRegisteringType.AGENT} is selected`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-      const resp = await request(app)
-        .post(config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL)
-        .send({ [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT });
-
-      expect(resp.status).toEqual(302);
-      expect(resp.text).toContain(NEXT_PAGE_URL);
-      expect(resp.header.location).toEqual(NEXT_PAGE_URL);
-      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
-      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(2);
-      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.DUE_DILIGENCE_WITH_PARAMS_URL);
-      expect(mockGetUrlWithParamsToPath.mock.calls[1][0]).toEqual(config.OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_PARAMS_URL);
-    });
 
     test("renders the current page with error message", async () => {
       const resp = await request(app)

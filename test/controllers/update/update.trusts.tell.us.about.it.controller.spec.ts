@@ -70,7 +70,6 @@ describe('Update - Trusts - Tell us about the trust', () => {
 
   describe('GET tests', () => {
     test('when manage trusts feature flag is on, and there are trusts page is returned', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
       mockGetApplicationData.mockReturnValue( { ...APPLICATION_DATA_MOCK } );
       const resp = await request(app).get(UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL);
       expect(resp.status).toEqual(200);
@@ -82,7 +81,6 @@ describe('Update - Trusts - Tell us about the trust', () => {
     });
 
     test('when manage trusts feature flag is on, and relevant query param is passed in url important banner is displayed', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
       mockGetApplicationData.mockReturnValue( { ...APPLICATION_DATA_MOCK } );
       const resp = await request(app).get(UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL + "?relevant-period=true");
       expect(resp.status).toEqual(200);
@@ -92,7 +90,6 @@ describe('Update - Trusts - Tell us about the trust', () => {
     });
 
     test('when manage trusts feature flag is on, and relevant period trust is inserted into page', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
       mockGetApplicationData.mockReturnValue( { ...APPLICATION_DATA_MOCK, trusts: [TRUST_RELEVANT_PERIOD] } );
       const resp = await request(app).get(UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL + "/0");
       expect(resp.status).toEqual(200);
@@ -102,7 +99,6 @@ describe('Update - Trusts - Tell us about the trust', () => {
     });
 
     test('when manage trusts feature flag is on, and there are no trusts page is returned', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
       mockGetApplicationData.mockReturnValue( { ...APPLICATION_DATA_UPDATE_NO_TRUSTS_MOCK } );
       const resp = await request(app).get(UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL);
       expect(resp.status).toEqual(200);
@@ -114,7 +110,6 @@ describe('Update - Trusts - Tell us about the trust', () => {
     });
 
     test('when cease trusts feature flag is on and no associated BOs, ceased date should not be shown as page is not in review mode', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
       mockGetApplicationData.mockReturnValue( { ...APPLICATION_DATA_UPDATE_NO_BO_TRUSTEES_MOCK } );
 
@@ -126,14 +121,6 @@ describe('Update - Trusts - Tell us about the trust', () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).not.toContain(TRUST_NOT_ASSOCIATED_WITH_BENEFICIAL_OWNER_TEXT);
       expect(resp.text).not.toContain(TRUST_CEASED_DATE_TEXT);
-    });
-
-    test('when manage trusts feature flag is off, 404 is returned', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
-      const resp = await request(app).get(UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL);
-
-      expect(resp.status).toEqual(404);
-      expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
     });
   });
 

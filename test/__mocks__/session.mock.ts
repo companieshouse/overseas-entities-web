@@ -386,6 +386,11 @@ export const UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType
   trust_ids: ["8"]
 };
 
+export const RELEVANT_PERIOD_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.BeneficialOwnerOther = {
+  ...UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
+  relevant_period: true
+};
+
 export const UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_REQ_MOCK = {
   ...UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
   ...PRINCIPAL_ADDRESS_MOCK,
@@ -873,6 +878,11 @@ export const BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_CH_REF: beneficialOwnerGovTyp
 
 export const UPDATE_BENEFICIAL_OWNER_GOV_OBJECT_MOCK: beneficialOwnerGovType.BeneficialOwnerGov = {
   ...BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
+};
+
+export const RELEVANT_PERIOD_BENEFICIAL_OWNER_GOV_OBJECT_MOCK: beneficialOwnerGovType.BeneficialOwnerGov = {
+  ...BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
+  relevant_period: true
 };
 
 export const REVIEW_BENEFICIAL_OWNER_GOV_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA = {
@@ -1678,7 +1688,7 @@ export const REVIEW_TRUST: Trust = {
       dob_month: "8",
       dob_year: "1982",
       nationality: "Bahraini",
-      type: "Settlor",
+      type: RoleWithinTrustType.SETTLOR,
       ura_address_premises: "1",
       ura_address_line_1: "INDIVIDUAL  ROAD",
       ura_address_locality: "INDIVIDUAL CITY",

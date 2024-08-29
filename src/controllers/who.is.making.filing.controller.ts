@@ -22,12 +22,12 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   getWhoIsFiling(req, res, next, WHO_IS_MAKING_FILING_PAGE, backLinkUrl);
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
+export const post = async (req: Request, res: Response, next: NextFunction) => {
   let nextPageUrl = DUE_DILIGENCE_URL;
   let oeNextPageUrl = OVERSEAS_ENTITY_DUE_DILIGENCE_URL;
   if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
     nextPageUrl = getUrlWithParamsToPath(DUE_DILIGENCE_WITH_PARAMS_URL, req);
     oeNextPageUrl = getUrlWithParamsToPath(OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_PARAMS_URL, req);
   }
-  postWhoIsFiling(req, res, next, nextPageUrl, oeNextPageUrl);
+  await postWhoIsFiling(req, res, next, nextPageUrl, oeNextPageUrl, true);
 };

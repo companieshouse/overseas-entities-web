@@ -1,0 +1,50 @@
+{% set isOwnedLand %}
+{% if update.owned_land_relevant_period  %}
+Yes
+{% else %}
+No
+{% endif %}
+{% endset %}
+
+{% set isProtectedInformation %}
+{% if appData.is_secure_register == 1 %}
+Yes
+{% else %}
+No
+{% endif %}
+{% endset %}
+
+{{ govukSummaryList({
+   rows: [
+      {
+       key: {
+        text: "Do any beneficial owners or managing officers have personal information protected at Companies House?"
+        },
+        value: {
+        text: isProtectedInformation
+        },
+        actions: {
+        items: [ CREATE_CHANGE_LINK(
+        OE_CONFIGS.SECURE_UPDATE_FILTER_URL,
+        isProtectedInformation,
+        "has-protected-information-change-link"
+       ) ]
+      }
+      },
+     {
+    key: {
+    text: "Was the overseas entity a registered owner of UK property or land during the pre-registration period?"
+    },
+    value: {
+    text: isOwnedLand
+    },
+    actions: {
+    items: [ CREATE_CHANGE_LINK(
+    OE_CONFIGS.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL,
+     isOwnedLand,
+    "is-owned-land-change-link"
+    ) ]
+    }
+    }
+  ]
+}) }}

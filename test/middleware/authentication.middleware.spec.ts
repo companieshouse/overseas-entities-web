@@ -179,7 +179,6 @@ describe('Authentication middleware', () => {
     const signinRedirectPath = "/signin?return_to=" + encodeURIComponent(`${UPDATE_CONTINUE_WITH_SAVED_FILING_URL}?journey=remove`);
 
     mockIsActiveFeature.mockReturnValueOnce(false); // SHOW_SERVICE_OFFLINE_PAGE
-    mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_ROE_UPDATE
 
     const resp = await request(app).get(`${UPDATE_CONTINUE_WITH_SAVED_FILING_URL}?${JOURNEY_QUERY_PARAM}=${JourneyType.remove}`);
 

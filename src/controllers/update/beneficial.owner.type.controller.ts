@@ -104,25 +104,21 @@ export const postSubmit = async (req: Request, res: Response, next: NextFunction
 
     const appData: ApplicationData = getApplicationData(req.session);
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS)) {
+    if (!appData.update?.trust_data_fetched) {
+      const session = req.session as Session;
+      await retrieveTrustData(req, appData);
+      setExtraData(req.session, appData);
+      await saveAndContinue(req, session);
+    }
 
-      if (!appData.update?.trust_data_fetched) {
-        const session = req.session as Session;
+    // Move any trusts that have been reviewed back into review so user can review data again if
+    // they have gone back to an earlier screen and changed something that might affect the trust.
+    // If no trusts have been reviewed yet then no trusts should get moved by this
+    moveReviewableTrustsIntoReview(appData);
+    resetReviewStatusOnAllTrustsToBeReviewed(appData);
 
-        await retrieveTrustData(req, appData);
-        setExtraData(req.session, appData);
-        await saveAndContinue(req, session);
-      }
-
-      // Move any trusts that have been reviewed back into review so user can review data again if
-      // they have gone back to an earlier screen and changed something that might affect the trust.
-      // If no trusts have been reviewed yet then no trusts should get moved by this
-      moveReviewableTrustsIntoReview(appData);
-      resetReviewStatusOnAllTrustsToBeReviewed(appData);
-
-      if (hasTrustsToReview(appData)) {
-        return res.redirect(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
-      }
+    if (hasTrustsToReview(appData)) {
+      return res.redirect(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
     }
 
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS) && checkEntityRequiresTrusts(appData)) {
@@ -130,6 +126,7 @@ export const postSubmit = async (req: Request, res: Response, next: NextFunction
     }
 
     return res.redirect(config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL);
+
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

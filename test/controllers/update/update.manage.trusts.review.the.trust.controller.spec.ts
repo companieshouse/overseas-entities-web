@@ -20,7 +20,7 @@ import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.a
 import { getApplicationData } from '../../../src/utils/application.data';
 import { isActiveFeature } from '../../../src/utils/feature.flag';
 import { APPLICATION_DATA_MOCK, BENEFICIAL_OWNER_INDIVIDUAL_NO_TRUSTEE_OBJECT_MOCK, BENEFICIAL_OWNER_OTHER_NO_TRUSTEE_OBJECT_MOCK, TRUST } from '../../__mocks__/session.mock';
-import { PAGE_TITLE_ERROR, PAGE_NOT_FOUND_TEXT, ERROR_LIST, UPDATE_REVIEW_THE_TRUST, ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE, TRUST_NOT_ASSOCIATED_WITH_BENEFICIAL_OWNER_TEXT, TRUST_CEASED_DATE_TEXT, TRUST_SELECT_TRUSTEES_TEXT, SAVE_AND_CONTINUE_BUTTON_TEXT } from '../../__mocks__/text.mock';
+import { PAGE_TITLE_ERROR, ERROR_LIST, UPDATE_REVIEW_THE_TRUST, ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE, TRUST_NOT_ASSOCIATED_WITH_BENEFICIAL_OWNER_TEXT, TRUST_CEASED_DATE_TEXT, TRUST_SELECT_TRUSTEES_TEXT, SAVE_AND_CONTINUE_BUTTON_TEXT } from '../../__mocks__/text.mock';
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import { ErrorMessages } from "../../../src/validation/error.messages";
 import { getReviewTrustById, hasTrustsToReview, updateTrustInReviewList } from '../../../src/utils/update/review_trusts';
@@ -97,7 +97,6 @@ describe('Update - Manage Trusts - Review the trust', () => {
 
   describe('GET tests', () => {
     test('when manage trusts feature flag is on, page is returned', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
 
       const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);
 
@@ -112,7 +111,6 @@ describe('Update - Manage Trusts - Review the trust', () => {
     });
 
     test('when feature flags are on and no associated beneficial owners, page shows ceased date', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
 
       // use app data with no trust associated BOs - i.e. no BOs have Trust nature of controls
       mockGetApplicationData.mockReturnValue(appDataWithNoTrustNocBOs);
@@ -130,7 +128,6 @@ describe('Update - Manage Trusts - Review the trust', () => {
     });
 
     test('when manage trusts feature flag is on, redirect if no trusts to review', async () => {
-      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
       mockHasTrustsToReview.mockReturnValueOnce(false);
 
       const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);
@@ -139,17 +136,7 @@ describe('Update - Manage Trusts - Review the trust', () => {
       expect(resp.text).toContain(SECURE_UPDATE_FILTER_URL);
     });
 
-    test('when manage trusts feature flag is off, 404 is returned', async () => {
-      mockIsActiveFeature.mockReturnValue(false); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
-
-      const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);
-
-      expect(resp.status).toEqual(404);
-      expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
-    });
-
     test("catch error when rendering the page", async () => {
-      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
       mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
 
       const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);
@@ -285,7 +272,6 @@ describe('Update - Manage Trusts - Review the trust', () => {
     });
 
     test('when valid ceased date is posted, and no associated BOs, it should be added to the trust data', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
 
       // use app data with no trust associated BOs - i.e. no BOs have Trust nature of controls
       mockGetApplicationData.mockReturnValue(appDataWithNoTrustNocBOs);
@@ -314,7 +300,6 @@ describe('Update - Manage Trusts - Review the trust', () => {
     });
 
     test(`renders the update-manage-trusts-review-the-trust page with error messages`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
       mockIsActiveFeature.mockReturnValueOnce(false);
       mockIsActiveFeature.mockReturnValueOnce(true);
 
@@ -332,7 +317,6 @@ describe('Update - Manage Trusts - Review the trust', () => {
     });
 
     test(`renders the update-manage-trusts-review-the-trust page with missing ceased date error message when no eligible BOs`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
 
       // use app data with no trust associated BOs - i.e. no BOs have Trust nature of controls
       mockGetApplicationData.mockReturnValue(appDataWithNoTrustNocBOs);
@@ -351,7 +335,6 @@ describe('Update - Manage Trusts - Review the trust', () => {
     });
 
     test(`renders the update-manage-trusts-review-the-trust page with missing ceased date error message when eligible BOs and no longer involved but date not entered`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
 
       // use app data with trust associated BOs
       mockGetApplicationData.mockReturnValue(appDataWithReviewTrust);
@@ -371,7 +354,6 @@ describe('Update - Manage Trusts - Review the trust', () => {
 
     // Test the trust ceased date validation combinations when no BOs have Trust nature of controls
     test.each(ceasedDateScenarioFixtures)(`renders the update-manage-trusts-review-the-trust page when no BOs have Trust nature of controls with %s`, async (_, formData, errorMessage) => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
 
       // use app data with no trust associated BOs - i.e. no BOs have Trust nature of controls
       mockGetApplicationData.mockReturnValue(appDataWithNoTrustNocBOs);
@@ -389,7 +371,6 @@ describe('Update - Manage Trusts - Review the trust', () => {
 
     // Test the trust ceased date validation combinations when trust no longer involved with the OE
     test.each(ceasedDateScenarioFixtures)(`renders the update-manage-trusts-review-the-trust page when trust no longer involved with the OE with %s`, async (_, formData, errorMessage) => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
 
       // use app data with trust associated BOs
       mockGetApplicationData.mockReturnValue(appDataWithReviewTrust);
@@ -405,7 +386,6 @@ describe('Update - Manage Trusts - Review the trust', () => {
     });
 
     test(`renders the update-manage-trusts-review-the-trust page with NO ceased date error message when using today's date`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
 
       // use app data with no trust associated BOs - i.e. no BOs have Trust nature of controls
       mockGetApplicationData.mockReturnValue(appDataWithNoTrustNocBOs);
@@ -426,7 +406,6 @@ describe('Update - Manage Trusts - Review the trust', () => {
     });
 
     test(`renders the update-manage-trusts-review-the-trust page with NO ceased date error message when ceased date is same as created date`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
 
       // use app data with no trust associated BOs - i.e. no BOs have Trust nature of controls
       mockGetApplicationData.mockReturnValue(appDataWithNoTrustNocBOs);
@@ -446,15 +425,6 @@ describe('Update - Manage Trusts - Review the trust', () => {
       expect(resp.text).toContain(UPDATE_REVIEW_THE_TRUST);
       expect(resp.text).toContain(ERROR_LIST);
       expect(resp.text).not.toContain(ErrorMessages.TRUST_CEASED_DATE_BEFORE_CREATED_DATE);
-    });
-
-    test('when feature flag is off, 404 is returned', async () => {
-      mockIsActiveFeature.mockReturnValue(false);
-
-      const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);
-
-      expect(resp.status).toEqual(404);
-      expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
     });
 
     test("catch error when posting", async () => {

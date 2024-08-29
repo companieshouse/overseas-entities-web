@@ -10,9 +10,10 @@ import { retrieveBoAndMoData } from "../../utils/update/beneficial_owners_managi
 import { getCompanyProfile } from "../../service/company.profile.service";
 import { reloadOE } from "./overseas.entity.query.controller";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
-import { isActiveFeature } from "../../utils/feature.flag";
 import { retrieveTrustData } from "../../utils/update/trust.model.fetch";
 import { isRemoveJourney } from "../../utils/url";
+import { checkRelevantPeriod } from "../../utils/relevant.period";
+import { isActiveFeature } from "../../utils/feature.flag";
 
 export const get = (req: Request, resp: Response, next: NextFunction) => {
   try {
@@ -51,7 +52,9 @@ export const post = async (req: Request, resp: Response, next: NextFunction) => 
       appData.update.no_change = noChangeStatement === "1";
     }
 
-    if (noChangeStatement === "1") {
+    const relevantNoPeriodChange = isActiveFeature(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD) ? !checkRelevantPeriod(appData) : true;
+
+    if (noChangeStatement === "1" && relevantNoPeriodChange) {
       await resetDataForNoChange(req, appData);
       redirectUrl = config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL;
     } else {
@@ -91,14 +94,12 @@ export const resetDataForNoChange = async (req: Request, appData: ApplicationDat
     appData.update.registrable_beneficial_owner = undefined;
     appData.update.bo_mo_data_fetched = false;
     await retrieveBoAndMoData(req, appData);
+
+    appData.update.trust_data_fetched = false;
+    appData.update.review_trusts = undefined;
+    await retrieveTrustData(req, appData);
   }
-  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS)) {
-    if (appData.update) {
-      appData.update.trust_data_fetched = false;
-      appData.update.review_trusts = undefined;
-      await retrieveTrustData(req, appData);
-    }
-  }
+
   return appData;
 };
 

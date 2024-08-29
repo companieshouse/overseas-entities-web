@@ -30,7 +30,6 @@ import { getApplicationData, setExtraData } from '../../../src/utils/application
 import { isActiveFeature } from '../../../src/utils/feature.flag';
 
 import { TRUST } from '../../__mocks__/session.mock';
-import { PAGE_NOT_FOUND_TEXT } from '../../__mocks__/text.mock';
 import { Trust, yesNoResponse } from '@companieshouse/api-sdk-node/dist/services/overseas-entities';
 import { TrustCorporate } from '../../../src/model/trust.model';
 import { RoleWithinTrustType } from '../../../src/model/role.within.trust.type.model';
@@ -234,15 +233,6 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       expect(response.text).toContain('Status');
       expect(response.text).toContain('Removed');
     });
-
-    test('when feature flag is off, 404 is returned', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(false);
-
-      const response = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
-
-      expect(response.status).toEqual(404);
-      expect(response.text).toContain(PAGE_NOT_FOUND_TEXT);
-    });
   });
 
   describe('POST tests', () => {
@@ -272,15 +262,6 @@ describe('Update - Manage Trusts - Review legal entities', () => {
 
       expect(mockSetExtraData).toHaveBeenCalled();
       expect(mockSaveAndContinue).toHaveBeenCalled();
-    });
-
-    test('when feature flag is off, 404 is returned', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(false);
-
-      const response = await request(app).post(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
-
-      expect(response.status).toEqual(404);
-      expect(response.text).toContain(PAGE_NOT_FOUND_TEXT);
     });
   });
 });

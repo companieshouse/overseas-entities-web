@@ -17,6 +17,8 @@ import { Session } from '@companieshouse/node-session-handler';
 import { setTrustDetailsAsReviewed, getReviewTrustById, updateTrustInReviewList } from './update/review_trusts';
 import { isActiveFeature } from "../utils/feature.flag";
 import { getUrlWithParamsToPath } from "../utils/url";
+import { ErrorMessages } from "../validation/error.messages";
+import { ValidationError } from 'express-validator';
 
 export const TRUST_DETAILS_TEXTS = {
   title: 'Tell us about the trust',
@@ -159,15 +161,16 @@ export const postTrustDetails = async (req: Request, res: Response, next: NextFu
 
     // check for errors
     const errorList = validationResult(req);
+    const errors = checkTrustStillInvolved(appData, req);
     const formData: PageModel.TrustDetailsForm = req.body as PageModel.TrustDetailsForm;
 
-    if (!errorList.isEmpty()) {
+    if (!errorList.isEmpty() || errors.length) {
       const pageProps = await getPageProperties(
         req,
         formData,
         isUpdate,
         isReview,
-        formatValidationError(errorList.array()),
+        formatValidationError([...errorList.array(), ...errors]),
       );
 
       return res.render(pageProps.templateName, pageProps);
@@ -212,6 +215,7 @@ export const postTrustDetails = async (req: Request, res: Response, next: NextFu
 
     return safeRedirect(res, getNextPage(isUpdate, details.trust_id, req, isReview));
   } catch (error) {
+    console.log("ERROR");
     logger.errorRequest(req, error);
 
     return next(error);
@@ -284,3 +288,21 @@ const getNextPage = (isUpdate: boolean, trustId: string, req: Request, isReview?
     return nextPageUrl;
   }
 };
+
+const checkTrustStillInvolved = (appData: ApplicationData, req): ValidationError[] => {
+  const errors: ValidationError[] = [];
+
+  const isUpdateOrRemove: boolean = !!appData.entity_number;
+
+  if (!hasNoBoAssignableToTrust(appData) && isUpdateOrRemove && !req.body["stillInvolved"]) {
+    errors.push({
+      value: '',
+      msg: ErrorMessages.TRUST_STILL_INVOLVED,
+      param: 'stillInvolved',
+      location: 'body',
+    });
+  }
+
+  return errors;
+};
+

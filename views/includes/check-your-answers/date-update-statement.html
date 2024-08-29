@@ -1,0 +1,27 @@
+{% import "includes/date-macros.html" as dateMacros %}
+
+{% set dateUpdateStatement = "Date of the update statement" %}
+{% set filing_date = dateMacros.formatDate(update.filing_date["day"], update.filing_date["month"], update.filing_date["year"]) %}
+{% set filingDatePage = OE_CONFIGS.UPDATE_FILING_DATE_PAGE %}
+
+<h2 class="govuk-heading-l">Date of the update statement</h2>
+
+{{ govukSummaryList({
+    rows: [
+        {
+            key: {
+            text: dateUpdateStatement
+        },
+            value: {
+            text: filing_date
+        },
+            actions: {
+                items: [ CREATE_CHANGE_LINK(
+                    filingDatePage,
+                    filing_date,
+                    "filing-date-change-link"
+                ) ]
+            } if not hidePresenterChangeLink
+        }
+    ]
+}) }}

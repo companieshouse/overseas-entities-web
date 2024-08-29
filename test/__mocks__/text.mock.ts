@@ -68,6 +68,8 @@ export const CREATE_OE__MSG_ERROR = "Something went wrong creating Overseas Enti
 export const FOUND_REDIRECT_TO = "Found. Redirecting to";
 export const REDIRECT_TO_SIGN_IN_PAGE = "User not authenticated, redirecting to sign in page, status_code=302";
 export const SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS_TEXT = "The correspondence address is the same as the entity's principal or registered office address";
+export const CHECK_YOUR_ANSWERS_PAGE_DATE_OF_UPDATE_STATEMENT_TITLE = "Date of the update statement";
+export const CHECK_YOUR_ANSWERS_CHANGES_TO_THE_UPDATE_PERIOD_TITLE = "Changes to the update period";
 export const CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_TITLE = "Has the overseas entity identified any registrable beneficial owners?";
 export const CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_SUB_TEXT = "Some beneficial owners have been identified and I can provide all required information";
 export const CHECK_YOUR_ANSWERS_PAGE_RP_NO_BENEFICIAL_OWNER_STATEMENTS_TITLE = "Beneficial owner statement";
@@ -82,6 +84,7 @@ export const CHECK_YOUR_ANSWERS_PAGE_RP_TRUST_STATEMENTS_TITLE = "Trusts stateme
 export const CHECK_YOUR_ANSWERS_PAGE_RP_TRUST_STATEMENTS_SUB_TEXT = "The entity has reasonable cause to believe that at least one person was a registrable beneficial owner due to being a trustee of a trust during the pre-registration period, that the entity has not already provided information about.";
 export const CHECK_YOUR_ANSWERS_PAGE_RP_BENEFICIARY_STATEMENTS_TITLE = "Beneficiaries statement";
 export const CHECK_YOUR_ANSWERS_PAGE_RP_BENEFICIARY_STATEMENTS_SUB_TEXT = "The entity has reasonable cause to believe that at least one person became or ceased to be a beneficiary of a trust involved in the overseas entity during the pre-registration period, that it has not already provided information about.";
+export const CHECK_YOUR_ANSWERS_PAGE_RP_BENEFICIAL_OWNER_TITLE = "Beneficial owners in the Pre-registration period";
 export const CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_OLE_SUB_TITLE = "Other legal entity beneficial owner";
 export const CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_GOV_SUB_TITLE = "Government or public authority beneficial owner";
 export const CHECK_YOUR_ANSWERS_PAGE_MANAGING_OFFICER_TITLE = "Managing officer details";
@@ -293,6 +296,7 @@ export const RELEVANT_CHECK_YOUR_ANSWER_HEADING = "Check your answers before sub
 export const RELEVANT_SECURE_REGISTER_CHANGE_LINK = "/update-an-overseas-entity/secure-update-filter";
 export const RELEVANT_SECURE_FILTER_PAGE_HEADING = "Do any beneficial owners or managing officers have personal information protected at Companies House?";
 export const RELEVANT_PERIOD_OWNED_LAND_CHANGE_LINK = "/update-an-overseas-entity/registered-owner-during-pre-registration-period";
+export const IMPORTANT_BANNER_TEXT = "You need to provide some information about the overseas entity from the pre-registration period.";
 
 // Remove journey
 export const REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE = "Has the overseas entity disposed of all relevant property or land in the UK?";
@@ -329,7 +333,8 @@ export const BACK_BUTTON_CLASS = "govuk-back-link";
 // Trust field keys
 export const TRUST_NAME = "Trust name";
 export const TRUST_CREATION_DATE = "Date the trust was created";
-export const TRUSTS_ADDED = "Trusts you have added";
+export const TRUSTS_ADDED_RELEVANT_PERIOD = "Trusts in pre-registration period";
+export const TRUSTS_ADDED = "Trusts in the Update period";
 export const TRUSTS_REVIEWED = "Trusts you have reviewed";
 export const TRUST_INVOLVED = "Is the trust still involved in the overseas entity?";
 export const TRUST_CEASED_DATE = "Date the trust stopped being associated to the overseas entity";

@@ -153,6 +153,7 @@ router.get(config.SECURE_REGISTER_FILTER_WITH_PARAMS_URL, authentication, naviga
 router.post(config.SECURE_REGISTER_FILTER_WITH_PARAMS_URL, authentication, navigation.hasSoldLand, ...validator.secureRegisterFilter, checkValidations, secureRegisterFilter.post);
 
 router.get(config.USE_PAPER_URL, authentication, navigation.hasSoldLand, usePaper.get);
+router.get(config.USE_PAPER_WITH_PARAMS_URL, authentication, navigation.hasSoldLand, usePaper.get);
 
 router.get(config.INTERRUPT_CARD_URL, authentication, navigation.isSecureRegister, interruptCard.get);
 router.get(config.INTERRUPT_CARD_WITH_PARAMS_URL, authentication, navigation.isSecureRegister, interruptCard.get);
@@ -549,6 +550,9 @@ router.get(config.OVERSEAS_ENTITY_QUERY_URL, authentication, overseasEntityQuery
 router.post(config.OVERSEAS_ENTITY_QUERY_URL, authentication, ...validator.overseasEntityQuery, checkValidations, overseasEntityQuery.post);
 
 router.route(config.UPDATE_SIGN_OUT_URL)
+  .get(updateSignOut.get)
+  .post(...validator.signOut, checkValidations, updateSignOut.post);
+router.route(config.UPDATE_SUB_PATH_SIGN_OUT_URL)
   .get(updateSignOut.get)
   .post(...validator.signOut, checkValidations, updateSignOut.post);
 

@@ -168,6 +168,9 @@ export type TrustCorporate = {
   ceased_date_month?: string;
   ceased_date_year?: string;
   still_involved?: string;
+  start_date_day?: string;
+  start_date_month?: string;
+  start_date_year?: string;
   relevant_period?: boolean;
 };
 

@@ -252,6 +252,31 @@ describe("DUE_DILIGENCE controller", () => {
       expect(data["email"]).toEqual(EMAIL_ADDRESS);
     });
 
+    test("renders the next page and no errors are reported if identity date has leading and trailing spaces", async () => {
+      mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK } );
+
+      const twoMonthOldDate = getTwoMonthOldDate();
+
+      const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK };
+      dueDiligenceData["identity_date-day"] = " " + twoMonthOldDate.day.toString() + " ";
+      dueDiligenceData["identity_date-month"] = " " + twoMonthOldDate.month.toString() + " ";
+      dueDiligenceData["identity_date-year"] = " " + twoMonthOldDate.year.toString() + " ";
+
+      const resp = await request(app)
+        .post(DUE_DILIGENCE_URL)
+        .send(dueDiligenceData);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${ENTITY_URL}`);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+
+      // Additionally check that date fields are trimmed before they're saved in the session
+      const data: ApplicationDataType = mockPrepareData.mock.calls[0][0];
+      expect(data["identity_date-day"]).toEqual(twoMonthOldDate.day.toString());
+      expect(data["identity_date-month"]).toEqual(twoMonthOldDate.month.toString());
+      expect(data["identity_date-year"]).toEqual(twoMonthOldDate.year.toString());
+    });
+
     test(`renders the ${DUE_DILIGENCE_PAGE} with error messages when sending no data`, async () => {
       const resp = await request(app)
         .post(DUE_DILIGENCE_URL)
@@ -762,6 +787,33 @@ describe("DUE_DILIGENCE controller", () => {
       // Additionally check that email address is trimmed before it's saved in the session
       const data: ApplicationDataType = mockPrepareData.mock.calls[0][0];
       expect(data["email"]).toEqual(EMAIL_ADDRESS);
+    });
+
+    test("renders the next page and no errors are reported if identity date has leading and trailing spaces", async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+
+      mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK } );
+
+      const twoMonthOldDate = getTwoMonthOldDate();
+
+      const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK };
+      dueDiligenceData["identity_date-day"] = " " + twoMonthOldDate.day.toString() + " ";
+      dueDiligenceData["identity_date-month"] = " " + twoMonthOldDate.month.toString() + " ";
+      dueDiligenceData["identity_date-year"] = " " + twoMonthOldDate.year.toString() + " ";
+
+      const resp = await request(app)
+        .post(DUE_DILIGENCE_WITH_PARAMS_URL)
+        .send(dueDiligenceData);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain(NEXT_PAGE_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+
+      // Additionally check that date fields are trimmed before they're saved in the session
+      const data: ApplicationDataType = mockPrepareData.mock.calls[0][0];
+      expect(data["identity_date-day"]).toEqual(twoMonthOldDate.day.toString());
+      expect(data["identity_date-month"]).toEqual(twoMonthOldDate.month.toString());
+      expect(data["identity_date-year"]).toEqual(twoMonthOldDate.year.toString());
     });
 
     test(`renders the ${DUE_DILIGENCE_PAGE} with error messages when sending no data`, async () => {

@@ -81,7 +81,7 @@ type IndividualTrusteesFormCommon = {
   ceasedDateDay?: string,
   ceasedDateMonth?: string,
   ceasedDateYear?: string,
-  relevant_period: boolean;
+  relevant_period?: boolean;
 };
 
 interface TrustHistoricalBeneficialOwnerFormLegal extends TrustHistoricalBeneficialOwnerFormCommon {
@@ -135,6 +135,9 @@ type TrustLegalEntityForm = {
   ceasedDateMonth?: string;
   ceasedDateYear?: string;
   stillInvolved?: string;
+  startDateDay: string;
+  startDateMonth: string;
+  startDateYear: string;
   relevant_period?: boolean;
 };
 

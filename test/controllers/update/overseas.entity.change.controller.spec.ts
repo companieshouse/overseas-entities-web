@@ -34,6 +34,8 @@ import {
   RESET_DATA_FOR_NO_CHANGE_RESPONSE,
   OVERSEAS_NAME_MOCK,
   RESET_DATA_FOR_CHANGE_RESPONSE,
+  UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE,
+  UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE,
 } from '../../__mocks__/session.mock';
 import { UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE, UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL, UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE, UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL, WHO_IS_MAKING_UPDATE_URL } from '../../../src/config';
 import {
@@ -161,7 +163,7 @@ describe("Overseas entity do you want to change your OE controller", () => {
         ...APPLICATION_DATA_MOCK_WITHOUT_UPDATE,
       });
       mockGetCompanyProfile.mockReturnValueOnce(companyProfileQueryMock);
-      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockIsActiveFeature.mockReturnValue(false);
       mockSaveAndContinue.mockReturnValueOnce(undefined);
 
       const resp = await request(app).post(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL)
@@ -170,14 +172,13 @@ describe("Overseas entity do you want to change your OE controller", () => {
       expect(mockRetrieveTrustData).not.toHaveBeenCalled();
     });
 
-    test("retrieve trust data is called if feature enabled and empty update model in app data", async () => {
+    test("retrieve trust data is called if feature enabled and relevant period changes are specified in the app data", async () => {
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK_WITHOUT_UPDATE,
-        update: {
-        }
+        update: UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE
       });
       mockGetCompanyProfile.mockReturnValueOnce(companyProfileQueryMock);
-      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockIsActiveFeature.mockReturnValue(true);
       mockSaveAndContinue.mockReturnValueOnce(undefined);
 
       const resp = await request(app).post(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL)
@@ -203,8 +204,8 @@ describe("Overseas entity do you want to change your OE controller", () => {
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
-    test(`redirect to ${UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE} on No, I do not need to make changes selection`, async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    test(`redirect to ${UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE} on No, I do not need to make changes selection and relevant period no change is selected`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK, update: UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE });
       mockGetCompanyProfile.mockReturnValueOnce(companyProfileQueryMock);
       mockGetCompanyPscService.mockReturnValue(MOCK_GET_COMPANY_PSC_ALL_BO_TYPES);
       mockGetCompanyOfficers.mockReturnValue(MOCK_GET_COMPANY_OFFICERS);
@@ -225,6 +226,27 @@ describe("Overseas entity do you want to change your OE controller", () => {
       expect(mockGetCompanyPscService).toHaveBeenCalledTimes(1);
       expect(mockGetCompanyOfficers).toHaveBeenCalledTimes(1);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test(`redirect to ${WHO_IS_MAKING_UPDATE_URL} on No, I do not need to make changes selection but relevant period change selected`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK, update: UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE });
+      mockGetCompanyProfile.mockReturnValueOnce(companyProfileQueryMock);
+      mockGetCompanyPscService.mockReturnValue(MOCK_GET_COMPANY_PSC_ALL_BO_TYPES);
+      mockGetCompanyOfficers.mockReturnValue(MOCK_GET_COMPANY_OFFICERS);
+      mockGetBeneficialOwnersPrivateData.mockReturnValue([{}]);
+      const resp = await request(app).post(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL)
+        .send({ [NoChangeKey]: "1" });
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(WHO_IS_MAKING_UPDATE_URL);
+      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+      expect(mockSetExtraData).toBeCalledWith(undefined, expect.objectContaining(
+        {
+          update:
+            expect.objectContaining({
+              no_change: true
+            })
+        }));
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 

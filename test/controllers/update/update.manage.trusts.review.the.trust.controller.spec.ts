@@ -92,11 +92,11 @@ describe('Update - Manage Trusts - Review the trust', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetApplicationData.mockReturnValue(appDataWithReviewTrust);
+    mockIsActiveFeature.mockReset();
   });
 
   describe('GET tests', () => {
     test('when manage trusts feature flag is on, page is returned', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
 
       const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);
 
@@ -110,26 +110,7 @@ describe('Update - Manage Trusts - Review the trust', () => {
       expect(resp.text).not.toContain(TRUST_NOT_ASSOCIATED_WITH_BENEFICIAL_OWNER_TEXT);
     });
 
-    test('when manage trusts feature flag is on, cease trusts flag is off, ceased date not displayed when no associated BOs', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
-
-      // use app data with no trust associated BOs - i.e. no BOs have Trust nature of controls
-      mockGetApplicationData.mockReturnValue(appDataWithNoTrustNocBOs);
-
-      const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);
-
-      // page should not contain new ceased date info as ceased date flag is FALSE
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain("Review the trust");
-      expect(resp.text).toContain(UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
-      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
-      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-      expect(resp.text).not.toContain(TRUST_NOT_ASSOCIATED_WITH_BENEFICIAL_OWNER_TEXT);
-      expect(resp.text).not.toContain(TRUST_CEASED_DATE_TEXT);
-    });
-
     test('when feature flags are on and no associated beneficial owners, page shows ceased date', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
 
       // use app data with no trust associated BOs - i.e. no BOs have Trust nature of controls
       mockGetApplicationData.mockReturnValue(appDataWithNoTrustNocBOs);
@@ -291,7 +272,6 @@ describe('Update - Manage Trusts - Review the trust', () => {
     });
 
     test('when valid ceased date is posted, and no associated BOs, it should be added to the trust data', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS in trust.details.validation
 
       // use app data with no trust associated BOs - i.e. no BOs have Trust nature of controls
       mockGetApplicationData.mockReturnValue(appDataWithNoTrustNocBOs);
@@ -337,7 +317,6 @@ describe('Update - Manage Trusts - Review the trust', () => {
     });
 
     test(`renders the update-manage-trusts-review-the-trust page with missing ceased date error message when no eligible BOs`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS in trust.details.validation
 
       // use app data with no trust associated BOs - i.e. no BOs have Trust nature of controls
       mockGetApplicationData.mockReturnValue(appDataWithNoTrustNocBOs);
@@ -356,7 +335,6 @@ describe('Update - Manage Trusts - Review the trust', () => {
     });
 
     test(`renders the update-manage-trusts-review-the-trust page with missing ceased date error message when eligible BOs and no longer involved but date not entered`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS in trust.details.validation
 
       // use app data with trust associated BOs
       mockGetApplicationData.mockReturnValue(appDataWithReviewTrust);
@@ -376,7 +354,6 @@ describe('Update - Manage Trusts - Review the trust', () => {
 
     // Test the trust ceased date validation combinations when no BOs have Trust nature of controls
     test.each(ceasedDateScenarioFixtures)(`renders the update-manage-trusts-review-the-trust page when no BOs have Trust nature of controls with %s`, async (_, formData, errorMessage) => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS in trust.details.validation
 
       // use app data with no trust associated BOs - i.e. no BOs have Trust nature of controls
       mockGetApplicationData.mockReturnValue(appDataWithNoTrustNocBOs);
@@ -394,7 +371,6 @@ describe('Update - Manage Trusts - Review the trust', () => {
 
     // Test the trust ceased date validation combinations when trust no longer involved with the OE
     test.each(ceasedDateScenarioFixtures)(`renders the update-manage-trusts-review-the-trust page when trust no longer involved with the OE with %s`, async (_, formData, errorMessage) => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS in trust.details.validation
 
       // use app data with trust associated BOs
       mockGetApplicationData.mockReturnValue(appDataWithReviewTrust);
@@ -410,7 +386,6 @@ describe('Update - Manage Trusts - Review the trust', () => {
     });
 
     test(`renders the update-manage-trusts-review-the-trust page with NO ceased date error message when using today's date`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS in trust.details.validation
 
       // use app data with no trust associated BOs - i.e. no BOs have Trust nature of controls
       mockGetApplicationData.mockReturnValue(appDataWithNoTrustNocBOs);
@@ -431,7 +406,6 @@ describe('Update - Manage Trusts - Review the trust', () => {
     });
 
     test(`renders the update-manage-trusts-review-the-trust page with NO ceased date error message when ceased date is same as created date`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS in trust.details.validation
 
       // use app data with no trust associated BOs - i.e. no BOs have Trust nature of controls
       mockGetApplicationData.mockReturnValue(appDataWithNoTrustNocBOs);
@@ -451,26 +425,6 @@ describe('Update - Manage Trusts - Review the trust', () => {
       expect(resp.text).toContain(UPDATE_REVIEW_THE_TRUST);
       expect(resp.text).toContain(ERROR_LIST);
       expect(resp.text).not.toContain(ErrorMessages.TRUST_CEASED_DATE_BEFORE_CREATED_DATE);
-    });
-
-    test(`renders the update-manage-trusts-review-the-trust page without ceased date validation when cease trusts feature flag is off`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS in trust.details.validation
-
-      // use app data with no trust associated BOs - i.e. no BOs have Trust nature of controls
-      mockGetApplicationData.mockReturnValue(appDataWithNoTrustNocBOs);
-
-      const resp = await request(app)
-        .post(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL)
-        .send({
-          beneficialOwnersIds: [],
-          ceasedDateMonth: "11"
-        });
-
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(UPDATE_REVIEW_THE_TRUST);
-      expect(resp.text).toContain(ERROR_LIST);
-      expect(resp.text).toContain(ErrorMessages.TRUST_INVOLVED_BOS);
-      expect(resp.text).not.toContain(ErrorMessages.DAY_AND_YEAR_OF_CEASED_TRUST);
     });
 
     test("catch error when posting", async () => {

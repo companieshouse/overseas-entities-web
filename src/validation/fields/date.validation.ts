@@ -454,27 +454,11 @@ export const filingPeriodTrustStartDateValidations = is_date_within_filing_perio
 export const filingPeriodTrustCeaseDateValidations = is_date_within_filing_period_trusts(historicalBOEndDateContext, ErrorMessages.CEASED_DATE_BEFORE_FILING_DATE);
 
 export const trustIndividualCeasedDateValidations = [
-  ...conditionalDateValidations(trusteeCeasedDateValidationsContext),
+  ...conditionalDateValidations(trusteeCeasedDateValidationsContext)
 ];
 
 export const trusteeLegalEntityCeasedDateValidations = [
-  ...conditionalDateValidations(trusteeCeasedDateValidationsContext),
-
-  body("ceasedDate")
-    .if(body("stillInvolved").equals("0"))
-    .if(body("ceasedDateDay").notEmpty({ ignore_whitespace: true }))
-    .if(body("ceasedDateMonth").notEmpty({ ignore_whitespace: true }))
-    .if(body("ceasedDateYear").notEmpty({ ignore_whitespace: true }))
-    .custom((value, { req }) => {
-      checkCeasedDateOnOrAfterTrustCreationDate(req, ErrorMessages.DATE_BEFORE_TRUST_CREATION_DATE_CEASED_TRUSTEE);
-      if (req.body["roleWithinTrust"] === RoleWithinTrustType.INTERESTED_PERSON
-      && req.body["interestedPersonStartDateDay"]
-      && req.body["interestedPersonStartDateMonth"]
-      && req.body["interestedPersonStartDateYear"]) {
-        checkLegalEntityCeasedDateOnOrAfterInterestedPersonStartDate(req, ErrorMessages.DATE_BEFORE_INTERESTED_PERSON_START_DATE_CEASED_TRUSTEE);
-      }
-      return true;
-    })
+  ...conditionalDateValidations(trusteeCeasedDateValidationsContext)
 ];
 
 export const checkIndividualCeasedDateOnOrAfterInterestedPersonStartDate = (req, errorMessage: ErrorMessages) => {
@@ -484,16 +468,16 @@ export const checkIndividualCeasedDateOnOrAfterInterestedPersonStartDate = (req,
     errorMessage);
 };
 
-const checkLegalEntityCeasedDateOnOrAfterInterestedPersonStartDate = (req, errorMessage: ErrorMessages) => {
+export const checkLegalEntityCeasedDateOnOrAfterInterestedPersonStartDate = (req, errorMessage: ErrorMessages) => {
   checkFirstDateOnOrAfterSecondDate(
     req.body["ceasedDateDay"], req.body["ceasedDateMonth"], req.body["ceasedDateYear"],
     req.body["interestedPersonStartDateDay"], req.body["interestedPersonStartDateMonth"], req.body["interestedPersonStartDateYear"],
     errorMessage);
 };
 
-export const checkCeasedDateOnOrAfterTrustCreationDate = (req, errorMessage: ErrorMessages) => {
+export const checkCeasedDateOnOrAfterTrustCreationDate = async (req, errorMessage: ErrorMessages) => {
   const trustId = req.params ? req.params[ROUTE_PARAM_TRUST_ID] : undefined;
-  const appData: ApplicationData = getApplicationData(req.session);
+  const appData: ApplicationData = await getApplicationData(req.session);
   const trust: Trust | undefined = getTrust(appData, trustId);
   if (trust) {
     checkFirstDateOnOrAfterSecondDate(

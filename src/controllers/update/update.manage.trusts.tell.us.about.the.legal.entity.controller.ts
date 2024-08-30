@@ -20,7 +20,7 @@ import { Trust, TrustCorporate } from '../../model/trust.model';
 import { RoleWithinTrustType } from '../../model/role.within.trust.type.model';
 import { TrustLegalEntityForm } from '../../model/trust.page.model';
 import { ApplicationData } from '../../model';
-import { checkTrustLegalEntityBeneficialOwnerStillInvolved } from '../../validation/async';
+import { checkTrusteeLegalEntityCeasedDate, checkTrustLegalEntityBeneficialOwnerStillInvolved } from '../../validation/async';
 
 const getPageProperties = (trust, formData, errors?: FormattedValidationErrors) => {
   return {
@@ -81,7 +81,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const isRelevantPeriod = req.query['relevant-period'];
     const formData = req.body as TrustLegalEntityForm;
     const errorList = validationResult(req);
-    const errors = checkErrors(appData, req);
+    const errors = await checkErrors(appData, req);
 
     if (!errorList.isEmpty() || errors.length) {
       const errorListArray = !errorList.isEmpty() ? errorList.array() : [];
@@ -131,8 +131,9 @@ const getBackLink = (legalEntitiesReviewed: boolean) => {
   }
 };
 
-const checkErrors = (appData: ApplicationData, req: Request): ValidationError[] => {
+const checkErrors = async (appData: ApplicationData, req: Request): Promise<ValidationError[]> => {
   const stillInvolvedErrors = checkTrustLegalEntityBeneficialOwnerStillInvolved(appData, req);
+  const ceasedDateErrors = await checkTrusteeLegalEntityCeasedDate(appData, req);
 
-  return [...stillInvolvedErrors];
+  return [...stillInvolvedErrors, ...ceasedDateErrors];
 };

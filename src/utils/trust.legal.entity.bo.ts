@@ -15,7 +15,7 @@ import { FormattedValidationErrors, formatValidationError } from '../middleware/
 import { ValidationError, validationResult } from 'express-validator';
 import { isActiveFeature } from './feature.flag';
 import { getUrlWithParamsToPath } from './url';
-import { checkTrustLegalEntityBeneficialOwnerStillInvolved } from '../validation/async';
+import { checkTrusteeLegalEntityCeasedDate, checkTrustLegalEntityBeneficialOwnerStillInvolved } from '../validation/async';
 
 export const LEGAL_ENTITY_BO_TEXTS = {
   title: 'Tell us about the legal entity',
@@ -116,7 +116,7 @@ export const postTrustLegalEntityBo = async (req: Request, res: Response, next: 
 
     // validate request
     const errorList = validationResult(req);
-    const errors = checkErrors(appData, req);
+    const errors = await checkErrors(appData, req);
     const formData: TrustLegalEntityForm = req.body as TrustLegalEntityForm;
 
     if (!errorList.isEmpty() || errors.length) {
@@ -188,8 +188,9 @@ export const setEntityNameInRelevantPeriodPageBanner = (pageProps: TrustLegalEnt
   return pageProps;
 };
 
-const checkErrors = (appData: ApplicationData, req: Request): ValidationError[] => {
+const checkErrors = async (appData: ApplicationData, req: Request): Promise<ValidationError[]> => {
   const stillInvolvedErrors = checkTrustLegalEntityBeneficialOwnerStillInvolved(appData, req);
+  const ceasedDateErrors = await checkTrusteeLegalEntityCeasedDate(appData, req);
 
-  return [...stillInvolvedErrors];
+  return [...stillInvolvedErrors, ...ceasedDateErrors];
 };

@@ -23,10 +23,14 @@ import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.a
 import { getApplicationData } from '../../../src/utils/application.data';
 import { isActiveFeature } from '../../../src/utils/feature.flag';
 
-import { APPLICATION_DATA_MOCK, TRUST } from '../../__mocks__/session.mock';
+import { APPLICATION_DATA_MOCK, TRUST, UPDATE_OBJECT_MOCK } from '../../__mocks__/session.mock';
 import { PAGE_TITLE_ERROR, PAGE_NOT_FOUND_TEXT, UPDATE_TRUSTS_ASSOCIATED_ADDED_HEADING, UPDATE_MANAGE_TRUSTS_REVIEWED_HEADING, SAVE_AND_CONTINUE_BUTTON_TEXT } from '../../__mocks__/text.mock';
 import { Trust, TrustKey } from '../../../src/model/trust.model';
 import { wordCount } from '../../utils/test.utils';
+import { ErrorMessages } from "../../../src/validation/error.messages";
+import { beneficialOwnerIndividualType, beneficialOwnerOtherType, updateType } from "../../../src/model";
+import { ADD_TRUST_TEXTS } from "../../../src/utils/add.trust";
+import { ChangeBoRelevantPeriodType } from "../../../src/model/relevant.period.statment.model";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockGetApplicationData = getApplicationData as jest.Mock;
@@ -50,9 +54,26 @@ describe('Update - Trusts - Trusts associated with the overseas entity', () => {
   });
 
   describe('GET tests', () => {
-    test('when feature flag is on, page is returned', async () => {
-      mockIsActiveFeature.mockReturnValue(true);
-      mockGetApplicationData.mockReturnValue( APPLICATION_DATA_MOCK );
+    test.each([
+      [
+        "are BOs eligible for trusts",
+        "with",
+        { ...APPLICATION_DATA_MOCK },
+        true
+      ],
+      [
+        "are no BOs eligible for trusts",
+        "without",
+        {
+          ...APPLICATION_DATA_MOCK,
+          [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [ ],
+          [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: [ ]
+        },
+        false
+      ],
+    ])("when FEATURE_FLAG_ENABLE_UPDATE_TRUSTS feature flag is on and there %s, page is returned %s the add another trust option", async (_description1, _description2, appData, isAddTrustsOptionToBeShown) => {
+      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
+      mockGetApplicationData.mockReturnValue( appData );
 
       const resp = await request(app).get(UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL);
 
@@ -61,6 +82,11 @@ describe('Update - Trusts - Trusts associated with the overseas entity', () => {
       expect(resp.text).toContain(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      if (isAddTrustsOptionToBeShown) {
+        expect(resp.text).toContain(ADD_TRUST_TEXTS.subtitle);
+      } else {
+        expect(resp.text).not.toContain(ADD_TRUST_TEXTS.subtitle);
+      }
     });
 
     test('when reviewed and added trusts exist, page is returned with 2 separate summary tables', async () => {
@@ -136,8 +162,8 @@ describe('Update - Trusts - Trusts associated with the overseas entity', () => {
   });
 
   describe('POST tests', () => {
-    test('when feature flag is on, and no trusts are to be added, redirect to check your answers page', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
+    test('when FEATURE_FLAG_ENABLE_UPDATE_TRUSTS feature flag is on, and no trusts are to be added, redirect to beneficial owner statements page', async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
       mockGetApplicationData.mockReturnValue( APPLICATION_DATA_MOCK );
 
       const resp = await request(app).post(UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL).send({ addTrust: '0' });
@@ -146,24 +172,61 @@ describe('Update - Trusts - Trusts associated with the overseas entity', () => {
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL);
     });
 
-    test('when trusts feature flag is on and statement validation flag is on, and no trusts are to be added, redirect to beneficial owner statements page', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(true);
-      mockGetApplicationData.mockReturnValue( APPLICATION_DATA_MOCK );
-
-      const resp = await request(app).post(UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL).send({ addTrust: '0' });
-
-      expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL);
-    });
-
-    test('when feature flag is on, and trusts are to be added, redirect to add trust page', async () => {
-      mockIsActiveFeature.mockReturnValue(true);
+    test('when FEATURE_FLAG_ENABLE_UPDATE_TRUSTS feature flag is on, and trusts are to be added, redirect to add trust page', async () => {
+      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
       mockGetApplicationData.mockReturnValue( APPLICATION_DATA_MOCK );
 
       const resp = await request(app).post(UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL).send({ addTrust: 'addTrustYes' });
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toContain(UPDATE_TRUSTS_TELL_US_ABOUT_IT_PAGE);
+    });
+
+    test("when FEATURE_FLAG_ENABLE_UPDATE_TRUSTS feature flag is on and BOs are eligible for trusts and no add trust option selected on page, add trust button validation should return error message", async () => {
+      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
+      mockGetApplicationData.mockReturnValue( { ...APPLICATION_DATA_MOCK } );
+
+      const resp = await request(app).post(UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL).send({ addTrust: '' });
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ErrorMessages.ADD_TRUST);
+    });
+
+    test("when FEATURE_FLAG_ENABLE_UPDATE_TRUSTS feature flag is on " +
+      "and FEATURE_FLAG_ENABLE_RELEVANT_PERIOD is on " +
+      "and no BOs are eligible for trusts and is a relevant period and no add trust option selected on page, add trust button validation should run", async () => {
+      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
+      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_RELEVANT_PERIOD
+
+      mockGetApplicationData.mockReturnValue( {
+        ...APPLICATION_DATA_MOCK,
+        [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [ ],
+        [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: [ ],
+        [updateType.UpdateKey]: {
+          ...UPDATE_OBJECT_MOCK,
+          ['change_bo_relevant_period']: ChangeBoRelevantPeriodType.YES
+        }
+      } );
+
+      const resp = await request(app).post(UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL).send({ addTrust: '' });
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ErrorMessages.ADD_TRUST);
+    });
+
+    test("when FEATURE_FLAG_ENABLE_UPDATE_TRUSTS feature flag is on and no BOs are eligible for trusts and no add trust option selected on page, add trust button validation should not run", async () => {
+      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
+      mockGetApplicationData.mockReturnValue( {
+        ...APPLICATION_DATA_MOCK,
+        [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [ ],
+        [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: [ ]
+      } );
+
+      const resp = await request(app).post(UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL).send({ addTrust: '' });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toContain(UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL);
+      expect(resp.text).not.toContain(ErrorMessages.ADD_TRUST);
     });
 
     test('when feature flag is off, 404 is returned', async () => {

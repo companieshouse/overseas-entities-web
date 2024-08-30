@@ -3,7 +3,7 @@ import * as config from '../config';
 import { logger } from './logger';
 import { getApplicationData } from './application.data';
 import { generateTrustId } from './trust/details.mapper';
-import { getTrustArray } from './trusts';
+import { getTrustArray, hasNoBoAssignableToTrust } from './trusts';
 import { Trust } from '../model/trust.model';
 import * as PageModel from '../model/trust.page.model';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
@@ -29,6 +29,7 @@ type TrustInvolvedPageProperties = {
   pageData: {
     trustData: Trust[],
     isRelevantPeriod: boolean,
+    isAddTrustQuestionToBeShown: boolean
   },
   formData?: PageModel.AddTrust,
   errors?: FormattedValidationErrors,
@@ -44,6 +45,7 @@ const getPageProperties = (
 
   const appData = getApplicationData(req.session);
 
+  // note: isUpdate covers both Update and Remove journeys, so when on Remove journey isUpdate will be true.
   return {
     templateName: getPageTemplate(isUpdate),
     backLinkUrl: getBackLinkUrl(isUpdate, req),
@@ -51,6 +53,7 @@ const getPageProperties = (
     pageData: {
       trustData: getTrustArray(appData),
       isRelevantPeriod: isUpdate ? checkRelevantPeriod(appData) : false,
+      isAddTrustQuestionToBeShown: !isUpdate || !hasNoBoAssignableToTrust(appData)
     },
     pageParams: {
       title: ADD_TRUST_TEXTS.title,

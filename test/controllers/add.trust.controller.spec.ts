@@ -87,6 +87,7 @@ describe("Add Trust Controller Tests", () => {
         expect.objectContaining({
           pageData: expect.objectContaining({
             trustData: [ mockTrust1Data ],
+            isAddTrustQuestionToBeShown: true
           }),
         }),
       );
@@ -134,7 +135,8 @@ describe("Add Trust Controller Tests", () => {
           FEATURE_FLAG_ENABLE_REDIS_REMOVAL: true,
           activeSubmissionBasePath: MOCKED_URL,
           pageData: expect.objectContaining({
-            trustData: [ mockTrust1Data ]
+            trustData: [ mockTrust1Data ],
+            isAddTrustQuestionToBeShown: true
           }),
         }),
       );

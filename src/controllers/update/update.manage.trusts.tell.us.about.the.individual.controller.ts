@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { validationResult } from 'express-validator';
+import { ValidationError, validationResult } from 'express-validator';
 
 import { Session } from '@companieshouse/node-session-handler';
 
@@ -20,6 +20,8 @@ import { TrusteeType } from '../../model/trustee.type.model';
 import { IndividualTrustee, Trust, TrustIndividual } from '../../model/trust.model';
 import { RoleWithinTrustType } from '../../model/role.within.trust.type.model';
 import { IndividualTrusteesFormCommon } from '../../model/trust.page.model';
+import { ApplicationData } from 'model';
+import { ErrorMessages } from '../../validation/error.messages';
 
 const getPageProperties = (trust, formData, trustee: TrustIndividual, errors?: FormattedValidationErrors) => {
   return {
@@ -46,7 +48,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const appData = getApplicationData(req.session);
+    const appData: ApplicationData = getApplicationData(req.session);
     const trusteeId = req.params[ROUTE_PARAM_TRUSTEE_ID];
 
     const trust = getTrustInReview(appData) as Trust;
@@ -75,19 +77,20 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     const relevant_period = req.query['relevant-period'];
     const errorList = validationResult(req);
+    const errors = checkTrustIndividualBeneficialOwnerStillInvolved(appData, req);
     const formData: IndividualTrusteesFormCommon = req.body;
 
-    if (!errorList.isEmpty()) {
+    if (!errorList.isEmpty() || errors.length) {
       const trustee = getTrustee(trust, trusteeId, TrusteeType.INDIVIDUAL) as IndividualTrustee;
       if (relevant_period) {
         return res.render(
           UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE,
-          getPagePropertiesRelevantPeriod(relevant_period, trust, formData, trustee, appData.entity_name, formatValidationError(errorList.array())),
+          getPagePropertiesRelevantPeriod(relevant_period, trust, formData, trustee, appData.entity_name, formatValidationError([...errorList.array(), ...errors])),
         );
       } else {
         return res.render(
           UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE,
-          getPageProperties(trust, formData, trustee, formatValidationError(errorList.array())),
+          getPageProperties(trust, formData, trustee, formatValidationError([...errorList.array(), ...errors])),
         );
       }
     }
@@ -125,4 +128,19 @@ const getPagePropertiesRelevantPeriod = (relevant_period, trust, formData, trust
   pageProps.formData.relevant_period = relevant_period;
   pageProps.pageData.entity_name = entityName;
   return pageProps;
+};
+
+const checkTrustIndividualBeneficialOwnerStillInvolved = (appData: ApplicationData, req): ValidationError[] => {
+  const errors: ValidationError[] = [];
+
+  if (appData?.entity_number && !req.body["stillInvolved"]) {
+    errors.push({
+      value: '',
+      msg: ErrorMessages.TRUSTEE_STILL_INVOLVED,
+      param: 'stillInvolved',
+      location: 'body',
+    });
+  }
+
+  return errors;
 };

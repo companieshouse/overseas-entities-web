@@ -10,11 +10,12 @@ import { ApplicationData } from '../model';
 import { mapIndividualTrusteeToSession, mapIndividualTrusteeByIdFromSessionToPage } from './trust/individual.trustee.mapper';
 import { safeRedirect } from './http.ext';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
-import { validationResult } from 'express-validator';
+import { ValidationError, validationResult } from 'express-validator';
 import { Session } from '@companieshouse/node-session-handler';
 import { saveAndContinue } from './save.and.continue';
 import { isActiveFeature } from './feature.flag';
 import { getUrlWithParamsToPath } from './url';
+import { ErrorMessages } from '../validation/error.messages';
 
 export const INDIVIDUAL_BO_TEXTS = {
   title: 'Tell us about the individual',
@@ -110,15 +111,16 @@ export const postTrustIndividualBo = async (req: Request, res: Response, next: N
 
     // check for errors
     const errorList = validationResult(req);
+    const errors = checkTrustIndividualBeneficialOwnerStillInvolved(appData, req);
     const formData: PageModel.IndividualTrusteesFormCommon = req.body as PageModel.IndividualTrusteesFormCommon;
     // if no errors present rerender the page
-    if (!errorList.isEmpty()) {
+    if (!errorList.isEmpty() || errors.length) {
       const pageProps = await getPageProperties(
         req,
         trustId,
         isUpdate,
         formData,
-        formatValidationError(errorList.array()),
+        formatValidationError([...errorList.array(), ...errors]),
       );
 
       const isRelevantPeriod = req.query['relevant-period'];
@@ -177,4 +179,19 @@ const getUrl = (isUpdate: boolean) => {
   } else {
     return config.REGISTER_AN_OVERSEAS_ENTITY_URL;
   }
+};
+
+const checkTrustIndividualBeneficialOwnerStillInvolved = (appData: ApplicationData, req): ValidationError[] => {
+  const errors: ValidationError[] = [];
+
+  if (appData?.entity_number && !req.body["stillInvolved"]) {
+    errors.push({
+      value: '',
+      msg: ErrorMessages.TRUSTEE_STILL_INVOLVED,
+      param: 'stillInvolved',
+      location: 'body',
+    });
+  }
+
+  return errors;
 };

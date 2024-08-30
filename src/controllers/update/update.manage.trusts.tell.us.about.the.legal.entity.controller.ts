@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { validationResult } from "express-validator";
+import { ValidationError, validationResult } from "express-validator";
 import { Session } from '@companieshouse/node-session-handler';
 
 import {
@@ -20,6 +20,7 @@ import { Trust, TrustCorporate } from '../../model/trust.model';
 import { RoleWithinTrustType } from '../../model/role.within.trust.type.model';
 import { TrustLegalEntityForm } from '../../model/trust.page.model';
 import { ApplicationData } from '../../model';
+import { ErrorMessages } from '../../validation/error.messages';
 
 const getPageProperties = (trust, formData, errors?: FormattedValidationErrors) => {
   return {
@@ -80,16 +81,18 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const isRelevantPeriod = req.query['relevant-period'];
     const formData = req.body as TrustLegalEntityForm;
     const errorList = validationResult(req);
-    if (!errorList.isEmpty()) {
+    const errors = checkTrustLegalEntityBeneficialOwnerStillInvolved(appData, req);
+
+    if (!errorList.isEmpty() || errors.length) {
       if (isRelevantPeriod) {
         return res.render(
           UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE,
-          getPagePropertiesRelevantPeriod(isRelevantPeriod, trust, formData, appData.entity_name, formatValidationError(errorList.array())),
+          getPagePropertiesRelevantPeriod(isRelevantPeriod, trust, formData, appData.entity_name, formatValidationError([...errorList.array(), ...errors])),
         );
       } else {
         return res.render(
           UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE,
-          getPageProperties(trust, formData, formatValidationError(errorList.array())),
+          getPageProperties(trust, formData, formatValidationError([...errorList.array(), ...errors])),
         );
       }
     }
@@ -124,4 +127,19 @@ const getBackLink = (legalEntitiesReviewed: boolean) => {
   } else {
     return UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL;
   }
+};
+
+const checkTrustLegalEntityBeneficialOwnerStillInvolved = (appData: ApplicationData, req): ValidationError[] => {
+  const errors: ValidationError[] = [];
+
+  if (appData?.entity_number && !req.body["stillInvolved"]) {
+    errors.push({
+      value: '',
+      msg: ErrorMessages.TRUSTEE_STILL_INVOLVED,
+      param: 'stillInvolved',
+      location: 'body',
+    });
+  }
+
+  return errors;
 };

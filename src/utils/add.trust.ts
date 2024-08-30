@@ -34,7 +34,6 @@ type TrustInvolvedPageProperties = {
   formData?: PageModel.AddTrust,
   errors?: FormattedValidationErrors,
   url: string,
-  isFeatureFlagCeaseTrustsEnabled: boolean
 };
 
 const getPageProperties = (
@@ -61,7 +60,6 @@ const getPageProperties = (
       subtitle: ADD_TRUST_TEXTS.subtitle,
     },
     isUpdate,
-    isFeatureFlagCeaseTrustsEnabled: isActiveFeature(config.FEATURE_FLAG_ENABLE_CEASE_TRUSTS),
     formData,
     errors,
     url: getUrl(isUpdate),

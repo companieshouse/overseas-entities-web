@@ -124,45 +124,55 @@
         {% include "includes/check-your-answers/relevant-period-check-your-answers.html" %}
       {% endif %}
 
+      {% if pageParams.isRPStatementExists %}
+      <br>
+        {% include "includes/check-your-answers/relevant-period-statements.html" %}
+      {% endif %}
+
+      {% include "includes/check-your-answers/date-update-statement.html" %}
       {% include "includes/check-your-answers/presenter.html" %}
+      {% include "includes/check-your-answers/make-changes-oe-update-period.html" %}
       {% include "includes/check-your-answers/verification-checks.html" %}
       <br>
       {% include "includes/entity.html" %}
 
-      {% if not updateStatementValidationEnabled %}
-        <br>
-        {% include "includes/check-your-answers/beneficial-owner-statements.html" %}
-      {% endif %}
-
-      {% if pageParams.isRPStatementExists %}
-      <br>
-      {% include "includes/check-your-answers/relevant-period-statements.html" %}
-      {% endif %}
-
       {% set bois = beneficial_owners_individual or [] %}
       {% set existingBOIs = bois | selectattr('ch_reference') %}
       {% set newBOIs = bois | rejectattr('ch_reference') %}
+      {% set rpBOIs = newBOIs | selectattr('relevant_period') %}
+      {% set newBOIs = newBOIs | rejectattr('relevant_period') %}
 
       {% set bocs = beneficial_owners_corporate or [] %}
       {% set existingBOCs = bocs | selectattr('ch_reference') %}
       {% set newBOCs = bocs | rejectattr('ch_reference') %}
+      {% set rpBOCs = newBOCs | selectattr('relevant_period') %}
+      {% set newBOCs = newBOCs | rejectattr('relevant_period') %}
 
       {% set bogs = beneficial_owners_government_or_public_authority or [] %}
       {% set existingBOGs = bogs | selectattr('ch_reference') %}
       {% set newBOGs = bogs | rejectattr('ch_reference') %}
+      {% set rpBOGs = newBOGs | selectattr('relevant_period') %}
+      {% set newBOGs = newBOGs | rejectattr('relevant_period') %}
 
       {% if existingBOIs | length or existingBOCs | length or existingBOGs | length %}
         {% set hideChangeLinksForNonEditableFields = true %}
         <br>
         <h2 class="govuk-heading-l">Beneficial owners you have reviewed</h2>
-        {% for boi in existingBOIs %}
-          {% include "includes/check-your-answers/beneficial-owner-individual.html" %}
+
+        {% for boi in beneficial_owners_individual %}
+          {% if boi.ch_reference %}
+            {% include "includes/check-your-answers/beneficial-owner-individual.html" %}
+          {% endif %}
         {% endfor %}
-        {% for boc in existingBOCs %}
-          {% include "includes/check-your-answers/beneficial-owner-other.html" %}
+        {% for boc in beneficial_owners_corporate %}
+          {% if boc.ch_reference %}
+            {% include "includes/check-your-answers/beneficial-owner-other.html" %}
+          {% endif %}
         {% endfor %}
-        {% for bog in existingBOGs %}
-          {% include "includes/check-your-answers/beneficial-owner-gov.html" %}
+        {% for bog in beneficial_owners_government_or_public_authority %}
+          {% if bog.ch_reference %}
+            {% include "includes/check-your-answers/beneficial-owner-gov.html" %}
+          {% endif %}
         {% endfor %}
       {% endif %}
 
@@ -177,6 +187,21 @@
           {% include "includes/check-your-answers/beneficial-owner-other.html" %}
         {% endfor %}
         {% for bog in newBOGs %}
+          {% include "includes/check-your-answers/beneficial-owner-gov.html" %}
+        {% endfor %}
+      {% endif %}
+
+      {% if rpBOIs | length or rpBOCs | length or rpBOGs | length %}
+        {% set hideChangeLinksForNonEditableFields = false %}
+        <br>
+        <h2 class="govuk-heading-l">Beneficial owners in the Pre-registration period</h2>
+        {% for boi in rpBOIs %}
+          {% include "includes/check-your-answers/beneficial-owner-individual.html" %}
+        {% endfor %}
+        {% for boc in rpBOCs %}
+          {% include "includes/check-your-answers/beneficial-owner-other.html" %}
+        {% endfor %}
+        {% for bog in rpBOGs %}
           {% include "includes/check-your-answers/beneficial-owner-gov.html" %}
         {% endfor %}
       {% endif %}
@@ -216,6 +241,8 @@
       {% set trusts = trusts or [] %}
       {% set existingTrusts = trusts | selectattr('ch_reference') %}
       {% set newTrusts = trusts | rejectattr('ch_reference') %}
+      {% set rpTrusts = newTrusts | selectattr('relevant_period') %}
+      {% set newTrusts = newTrusts | rejectattr('relevant_period') %}
 
       {% if (existingTrusts and existingTrusts.length > 0) %}
         <br><h2 class="govuk-heading-l">Trusts you have reviewed</h2>
@@ -225,10 +252,19 @@
           {% include "includes/check-your-answers/trusts.html" %}
         {% endfor %}
       {% endif %}
-      
+
       {% if (newTrusts and newTrusts.length > 0) %}
-        <br><h2 class="govuk-heading-l">Trusts you have added</h2>
+        <br><h2 class="govuk-heading-l">Trusts in the Update period</h2>
         {% for trust in newTrusts %}
+          {% set trust_heading = trust.trust_name %}
+          {% set manageTrusts = false %}
+          {% include "includes/check-your-answers/trusts.html" %}
+        {% endfor %}
+      {% endif %}
+
+      {% if (rpTrusts and rpTrusts.length > 0) %}
+        <br><h2 class="govuk-heading-l">Trusts in pre-registration period</h2>
+        {% for trust in rpTrusts %}
           {% set trust_heading = trust.trust_name %}
           {% set manageTrusts = false %}
           {% include "includes/check-your-answers/trusts.html" %}
@@ -261,7 +297,7 @@
       }) }}
 
       <p class="govuk-body">All information submitted must be correct on <strong>{{ removeStatementDate }}.</strong></p>
-      
+
       {% endif %}
 
       <br>

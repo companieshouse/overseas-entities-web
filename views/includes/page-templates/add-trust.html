@@ -24,7 +24,7 @@
                   text: trust.trust_name
                 },
                 value: {
-                  text: trustStatus(trust) if isFeatureFlagCeaseTrustsEnabled
+                  text: trustStatus(trust)
                 },
                 actions: {
                   items: [CREATE_CHANGE_LINK(
@@ -81,7 +81,7 @@
               text: trust.trust_name
             },
             value: {
-              text: trustStatus(trust) if isFeatureFlagCeaseTrustsEnabled
+              text: trustStatus(trust)
             },
             actions: {
               items: [ CREATE_CHANGE_LINK(

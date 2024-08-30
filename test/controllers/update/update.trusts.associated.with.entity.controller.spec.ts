@@ -50,6 +50,7 @@ mockIsActiveFeature.mockReturnValue(true);
 describe('Update - Trusts - Trusts associated with the overseas entity', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockIsActiveFeature.mockReset();
   });
 
   describe('GET tests', () => {
@@ -114,17 +115,8 @@ describe('Update - Trusts - Trusts associated with the overseas entity', () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 
-    test.each([
-      [
-        "when trust ceased date feature flag off, reviewed trust status will not", false, 0, 0
-      ],
-      [
-        "when trust ceased date feature flag on, reviewed trust status will", true, 1, 2
-      ],
-    ])('%s be shown in summary table', async (_, ceasedDateFeatureFlagValue, expectedRemovedCount, expectedActiveCount) => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
-      mockIsActiveFeature.mockReturnValueOnce(ceasedDateFeatureFlagValue); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
-
+    test('Reviewed trust status will be shown in summary table', async () => {
+      mockIsActiveFeature.mockReturnValue(true);
       // trust with ch_references indicates a reviewable trust (ie it would be an existing trust that has come from chips)
       mockGetApplicationData.mockReturnValue({
         ...APPLICATION_DATA_MOCK,
@@ -155,8 +147,8 @@ describe('Update - Trusts - Trusts associated with the overseas entity', () => {
       expect(resp.text).toContain(UPDATE_TRUSTS_ASSOCIATED_ADDED_HEADING);
       expect(resp.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEWED_HEADING);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-      expect(wordCount("Removed", resp.text)).toEqual(expectedRemovedCount);
-      expect(wordCount("Active", resp.text)).toEqual(expectedActiveCount);
+      expect(wordCount("Removed", resp.text)).toEqual(1);
+      expect(wordCount("Active", resp.text)).toEqual(2);
     });
 
     test('when feature flag is off, 404 is returned', async () => {

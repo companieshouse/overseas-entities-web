@@ -25,7 +25,7 @@ import { companyAuthentication } from "../../../src/middleware/company.authentic
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { createOverseasEntity, updateOverseasEntity } from "../../../src/service/overseas.entities.service";
 import { postTransaction } from "../../../src/service/transaction.service";
-import { getApplicationData, mapDataObjectToFields } from "../../../src/utils/application.data";
+import { getApplicationData, mapDataObjectToFields, mapFieldsToDataObject } from "../../../src/utils/application.data";
 import { OverseasEntityKey, Transactionkey } from '../../../src/model/data.types.model';
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { hasOverseasEntity } from "../../../src/middleware/navigation/update/has.overseas.entity.middleware";
@@ -81,6 +81,8 @@ const mockGetConfirmationStatementNextMadeUpToDateAsIsoString = getConfirmationS
 mockGetConfirmationStatementNextMadeUpToDateAsIsoString.mockReturnValue(NEXT_MADE_UP_TO_DATE);
 
 const mockMapDataObjectToFields = mapDataObjectToFields as jest.Mock;
+
+const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -250,6 +252,31 @@ describe("Update Filing Date controller", () => {
         .send({ ...FILING_DATE_REQ_BODY_MOCK });
 
       expect(resp.status).toEqual(302);
+    });
+
+    test(`redirects to ${config.OVERSEAS_ENTITY_PRESENTER_URL} page after a successful post from ${config.UPDATE_FILING_DATE_PAGE} and filing date contains leading and trailing spaces`, async () => {
+      mockMapFieldsToDataObject.mockReturnValueOnce({ "filing_date-day": "2", "filing_date-month": "3", "filing_date-year": "2027" });
+
+      const mockData = { ...APPLICATION_DATA_MOCK };
+      mockGetApplicationData.mockReturnValueOnce(mockData);
+
+      const submissionMock = { ...FILING_DATE_REQ_BODY_MOCK };
+      submissionMock["filing_date-day"] = " 1 ";
+      submissionMock["filing_date-month"] = " 1 ";
+      submissionMock["filing_date-year"] = " 2022 ";
+
+      const resp = await request(app)
+        .post(config.UPDATE_FILING_DATE_URL)
+        .send(submissionMock);
+
+      expect(resp.status).toEqual(302);
+
+      // Additionally check that date fields are trimmed before they're saved in the session
+      const data = mockMapFieldsToDataObject.mock.calls[0][0];
+
+      expect(data["filing_date-day"]).toEqual("1");
+      expect(data["filing_date-month"]).toEqual("1");
+      expect(data["filing_date-year"]).toEqual("2022");
     });
 
     test(`redirect to the ${config.OVERSEAS_ENTITY_PRESENTER_URL} page with transaction and overseas entity already created`, async () => {

@@ -10,7 +10,7 @@
     {% set isTrustToBeCeased = pageData.beneficialOwners | length == 0 %}
 
     {% if isReview %}
-      {% if isTrustToBeCeased and isFeatureFlagCeaseTrustsEnabled %}
+      {% if isTrustToBeCeased %}
         <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
           <div class="govuk-notification-banner__header">
             <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
@@ -73,7 +73,7 @@
         <label class="govuk-label govuk-!-margin-bottom-7">{{ formatted_creation_date }}</label>
         <br>
 
-        {% if isTrustToBeCeased and isFeatureFlagCeaseTrustsEnabled %}
+        {% if isTrustToBeCeased %}
           {% set fieldParam = ceasedParam %}
           {% include "includes/inputs/date-input.html" %}
         {% endif %}

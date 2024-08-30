@@ -119,6 +119,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     jest.resetModules();
     mockGetApplicationData.mockReset();
     mockHasTrustsToReview.mockReturnValue(false);
+    mockIsActiveFeature.mockReset();
   });
 
   describe("GET tests", () => {
@@ -301,9 +302,8 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.header.location).toContain(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
     });
 
-    test('moves reviewable trusts into review and redirects to manage trusts interrupt if update trust flag off and cease trusts flag on', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
+    test('moves reviewable trusts into review and redirects to manage trusts interrupt if manage trusts feature flag is on', async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
       mockRetrieveTrustData.mockReturnValueOnce(Promise.resolve());
       mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
       mockSetExtraData.mockReturnValueOnce(null);
@@ -360,7 +360,6 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
 
     test('redirects to add trusts if update trusts flag is on, and trusts are required', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
       const mockLandingUrl = 'update/mock-get-trust-landing-url';
       mockGetApplicationData.mockReturnValueOnce(appData);
@@ -386,29 +385,6 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).not.toContain(mockLandingUrl);
-    });
-
-    test('does not move reviewable trusts into review and redirects to manage trusts interrupt if update trust flag off and cease trusts flag off', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
-      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
-      mockRetrieveTrustData.mockReturnValueOnce(Promise.resolve());
-      mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
-      mockSetExtraData.mockReturnValueOnce(null);
-      mockGetApplicationData.mockReturnValueOnce({ update: { trust_data_fetched: false } });
-
-      mockHasTrustsToReview.mockReturnValueOnce(true);
-
-      const resp = await request(app).post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
-
-      expect(mockRetrieveTrustData).toHaveBeenCalled();
-      expect(mockSetExtraData).toHaveBeenCalled();
-      expect(mockSaveAndContinue).toHaveBeenCalled();
-      expect(mockHasTrustsToReview).toHaveBeenCalled();
-      expect(mockMoveReviewableTrustsIntoReview).not.toHaveBeenCalled();
-      expect(mockResetReviewStatusOnAllTrustsToBeReviewed).not.toHaveBeenCalled();
-
-      expect(resp.status).toEqual(302);
-      expect(resp.header.location).toContain(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
     });
 
     test(`redirects to the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL + "?relevant-period=true"} page when the relevant_period=true and Other leegal entity button selected`, async () => {

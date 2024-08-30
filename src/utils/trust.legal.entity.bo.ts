@@ -15,7 +15,7 @@ import { FormattedValidationErrors, formatValidationError } from '../middleware/
 import { ValidationError, validationResult } from 'express-validator';
 import { isActiveFeature } from './feature.flag';
 import { getUrlWithParamsToPath } from './url';
-import { ErrorMessages } from '../validation/error.messages';
+import { checkTrustLegalEntityBeneficialOwnerStillInvolved } from '../validation/async';
 
 export const LEGAL_ENTITY_BO_TEXTS = {
   title: 'Tell us about the legal entity',
@@ -116,18 +116,18 @@ export const postTrustLegalEntityBo = async (req: Request, res: Response, next: 
 
     // validate request
     const errorList = validationResult(req);
-    const errors = checkTrustLegalEntityBeneficialOwnerStillInvolved(appData, req);
+    const errors = checkErrors(appData, req);
     const formData: TrustLegalEntityForm = req.body as TrustLegalEntityForm;
 
-    console.log(errors);
-
     if (!errorList.isEmpty() || errors.length) {
+      const errorListArray = !errorList.isEmpty() ? errorList.array() : [];
+
       const pageProps = await getPageProperties(
         req,
         trustId,
         isUpdate,
         formData,
-        formatValidationError([...errorList.array(), ...errors]),
+        formatValidationError([...errorListArray, ...errors]),
       );
       setEntityNameInRelevantPeriodPageBanner(pageProps, appData ? appData.entity_name : pageProps.pageData.trustData.trustName);
       return res.render(pageProps.templateName, pageProps);
@@ -188,17 +188,8 @@ export const setEntityNameInRelevantPeriodPageBanner = (pageProps: TrustLegalEnt
   return pageProps;
 };
 
-const checkTrustLegalEntityBeneficialOwnerStillInvolved = (appData: ApplicationData, req): ValidationError[] => {
-  const errors: ValidationError[] = [];
+const checkErrors = (appData: ApplicationData, req: Request): ValidationError[] => {
+  const stillInvolvedErrors = checkTrustLegalEntityBeneficialOwnerStillInvolved(appData, req);
 
-  if (appData?.entity_number && !req.body["stillInvolved"]) {
-    errors.push({
-      value: '',
-      msg: ErrorMessages.TRUSTEE_STILL_INVOLVED,
-      param: 'stillInvolved',
-      location: 'body',
-    });
-  }
-
-  return errors;
+  return [...stillInvolvedErrors];
 };

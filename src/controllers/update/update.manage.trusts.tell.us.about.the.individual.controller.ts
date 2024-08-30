@@ -21,7 +21,7 @@ import { IndividualTrustee, Trust, TrustIndividual } from '../../model/trust.mod
 import { RoleWithinTrustType } from '../../model/role.within.trust.type.model';
 import { IndividualTrusteesFormCommon } from '../../model/trust.page.model';
 import { ApplicationData } from 'model';
-import { ErrorMessages } from '../../validation/error.messages';
+import { checkTrustIndividualBeneficialOwnerStillInvolved, checkTrustIndividualCeasedDate } from '../../validation/async';
 
 const getPageProperties = (trust, formData, trustee: TrustIndividual, errors?: FormattedValidationErrors) => {
   return {
@@ -77,20 +77,23 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     const relevant_period = req.query['relevant-period'];
     const errorList = validationResult(req);
-    const errors = checkTrustIndividualBeneficialOwnerStillInvolved(appData, req);
+    const errors = await checkErrors(appData, req);
+
     const formData: IndividualTrusteesFormCommon = req.body;
 
     if (!errorList.isEmpty() || errors.length) {
       const trustee = getTrustee(trust, trusteeId, TrusteeType.INDIVIDUAL) as IndividualTrustee;
+      const errorListArray = !errorList.isEmpty() ? errorList.array() : [];
+
       if (relevant_period) {
         return res.render(
           UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE,
-          getPagePropertiesRelevantPeriod(relevant_period, trust, formData, trustee, appData.entity_name, formatValidationError([...errorList.array(), ...errors])),
+          getPagePropertiesRelevantPeriod(relevant_period, trust, formData, trustee, appData.entity_name, formatValidationError([...errorListArray, ...errors])),
         );
       } else {
         return res.render(
           UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE,
-          getPageProperties(trust, formData, trustee, formatValidationError([...errorList.array(), ...errors])),
+          getPageProperties(trust, formData, trustee, formatValidationError([...errorListArray, ...errors])),
         );
       }
     }
@@ -130,17 +133,9 @@ const getPagePropertiesRelevantPeriod = (relevant_period, trust, formData, trust
   return pageProps;
 };
 
-const checkTrustIndividualBeneficialOwnerStillInvolved = (appData: ApplicationData, req): ValidationError[] => {
-  const errors: ValidationError[] = [];
+const checkErrors = async (appData: ApplicationData, req: Request): Promise<ValidationError[]> => {
+  const stillInvolvedErrors = checkTrustIndividualBeneficialOwnerStillInvolved(appData, req);
+  const ceasedDateErrors = await checkTrustIndividualCeasedDate(appData, req);
 
-  if (appData?.entity_number && !req.body["stillInvolved"]) {
-    errors.push({
-      value: '',
-      msg: ErrorMessages.TRUSTEE_STILL_INVOLVED,
-      param: 'stillInvolved',
-      location: 'body',
-    });
-  }
-
-  return errors;
+  return [...stillInvolvedErrors, ...ceasedDateErrors];
 };

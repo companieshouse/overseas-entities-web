@@ -15,7 +15,7 @@ import { Session } from '@companieshouse/node-session-handler';
 import { saveAndContinue } from './save.and.continue';
 import { isActiveFeature } from './feature.flag';
 import { getUrlWithParamsToPath } from './url';
-import { ErrorMessages } from '../validation/error.messages';
+import { checkTrustIndividualBeneficialOwnerStillInvolved, checkTrustIndividualCeasedDate } from '../validation/async';
 
 export const INDIVIDUAL_BO_TEXTS = {
   title: 'Tell us about the individual',
@@ -111,21 +111,24 @@ export const postTrustIndividualBo = async (req: Request, res: Response, next: N
 
     // check for errors
     const errorList = validationResult(req);
-    const errors = checkTrustIndividualBeneficialOwnerStillInvolved(appData, req);
+    const errors = await checkErrors(appData, req);
+
     const formData: PageModel.IndividualTrusteesFormCommon = req.body as PageModel.IndividualTrusteesFormCommon;
     // if no errors present rerender the page
-    if (!errorList.isEmpty() || errors.length) {
+    if (!errorList.isEmpty() || errors.length > 0) {
+      const errorListArray = !errorList.isEmpty() ? errorList.array() : [];
+
       const pageProps = await getPageProperties(
         req,
         trustId,
         isUpdate,
         formData,
-        formatValidationError([...errorList.array(), ...errors]),
+        formatValidationError([...errorListArray, ...errors]),
       );
 
       const isRelevantPeriod = req.query['relevant-period'];
       if (isRelevantPeriod) {
-        const pagePropertiesRelevantPeriod = await getPagePropertiesRelevantPeriod(isRelevantPeriod, req, trustId, isUpdate, formData, appData.entity_name, formatValidationError(errorList.array()));
+        const pagePropertiesRelevantPeriod = await getPagePropertiesRelevantPeriod(isRelevantPeriod, req, trustId, isUpdate, formData, appData.entity_name, formatValidationError([...errorListArray, ...errors]));
         return res.render(pageProps.templateName, pagePropertiesRelevantPeriod);
       } else {
         return res.render(pageProps.templateName, pageProps);
@@ -181,17 +184,9 @@ const getUrl = (isUpdate: boolean) => {
   }
 };
 
-const checkTrustIndividualBeneficialOwnerStillInvolved = (appData: ApplicationData, req): ValidationError[] => {
-  const errors: ValidationError[] = [];
+const checkErrors = async (appData: ApplicationData, req: Request): Promise<ValidationError[]> => {
+  const stillInvolvedErrors = checkTrustIndividualBeneficialOwnerStillInvolved(appData, req);
+  const ceasedDateErrors = await checkTrustIndividualCeasedDate(appData, req);
 
-  if (appData?.entity_number && !req.body["stillInvolved"]) {
-    errors.push({
-      value: '',
-      msg: ErrorMessages.TRUSTEE_STILL_INVOLVED,
-      param: 'stillInvolved',
-      location: 'body',
-    });
-  }
-
-  return errors;
+  return [...stillInvolvedErrors, ...ceasedDateErrors];
 };

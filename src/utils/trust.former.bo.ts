@@ -15,7 +15,7 @@ import { ValidationError, validationResult } from 'express-validator';
 import { safeRedirect } from '../utils/http.ext';
 import { isActiveFeature } from './feature.flag';
 import { getUrlWithParamsToPath } from './url';
-import { ErrorMessages } from '../validation/error.messages';
+import { checkTrustLegalEntityBeneficialOwnerStillInvolved } from '../validation/async';
 
 export const HISTORICAL_BO_TEXTS = {
   title: 'Tell us about the former beneficial owner',
@@ -99,17 +99,19 @@ export const postTrustFormerBo = async (req: Request, res: Response, next: NextF
 
     // check for errors
     const errorList = validationResult(req);
-    const errors = checkTrustLegalEntityBeneficialOwnerStillInvolved(appData, req);
+    const errors = checkErrors(appData, req);
     const formData: PageModel.TrustHistoricalBeneficialOwnerForm = req.body as PageModel.TrustHistoricalBeneficialOwnerForm;
 
     // if no errors present rerender the page
     if (!errorList.isEmpty() || errors.length) {
+      const errorListArray = !errorList.isEmpty() ? errorList.array() : [];
+
       const pageProps = await getPageProperties(
         req,
         trustId,
         isUpdate,
         formData,
-        formatValidationError([...errorList.array(), ...errors]),
+        formatValidationError([...errorListArray, ...errors]),
       );
 
       return res.render(pageProps.templateName, pageProps);
@@ -164,17 +166,8 @@ const getTrustEntryUrl = (req: Request) => {
   return url;
 };
 
-const checkTrustLegalEntityBeneficialOwnerStillInvolved = (appData: ApplicationData, req): ValidationError[] => {
-  const errors: ValidationError[] = [];
+const checkErrors = (appData: ApplicationData, req: Request): ValidationError[] => {
+  const stillInvolvedErrors = checkTrustLegalEntityBeneficialOwnerStillInvolved(appData, req);
 
-  if (appData?.entity_number && !req.body["stillInvolved"]) {
-    errors.push({
-      value: '',
-      msg: ErrorMessages.TRUSTEE_STILL_INVOLVED,
-      param: 'stillInvolved',
-      location: 'body',
-    });
-  }
-
-  return errors;
+  return [...stillInvolvedErrors];
 };

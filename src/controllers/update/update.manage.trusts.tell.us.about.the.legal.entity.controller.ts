@@ -20,7 +20,7 @@ import { Trust, TrustCorporate } from '../../model/trust.model';
 import { RoleWithinTrustType } from '../../model/role.within.trust.type.model';
 import { TrustLegalEntityForm } from '../../model/trust.page.model';
 import { ApplicationData } from '../../model';
-import { ErrorMessages } from '../../validation/error.messages';
+import { checkTrustLegalEntityBeneficialOwnerStillInvolved } from '../../validation/async';
 
 const getPageProperties = (trust, formData, errors?: FormattedValidationErrors) => {
   return {
@@ -81,18 +81,20 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const isRelevantPeriod = req.query['relevant-period'];
     const formData = req.body as TrustLegalEntityForm;
     const errorList = validationResult(req);
-    const errors = checkTrustLegalEntityBeneficialOwnerStillInvolved(appData, req);
+    const errors = checkErrors(appData, req);
 
     if (!errorList.isEmpty() || errors.length) {
+      const errorListArray = !errorList.isEmpty() ? errorList.array() : [];
+
       if (isRelevantPeriod) {
         return res.render(
           UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE,
-          getPagePropertiesRelevantPeriod(isRelevantPeriod, trust, formData, appData.entity_name, formatValidationError([...errorList.array(), ...errors])),
+          getPagePropertiesRelevantPeriod(isRelevantPeriod, trust, formData, appData.entity_name, formatValidationError([...errorListArray, ...errors])),
         );
       } else {
         return res.render(
           UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE,
-          getPageProperties(trust, formData, formatValidationError([...errorList.array(), ...errors])),
+          getPageProperties(trust, formData, formatValidationError([...errorListArray, ...errors])),
         );
       }
     }
@@ -129,17 +131,8 @@ const getBackLink = (legalEntitiesReviewed: boolean) => {
   }
 };
 
-const checkTrustLegalEntityBeneficialOwnerStillInvolved = (appData: ApplicationData, req): ValidationError[] => {
-  const errors: ValidationError[] = [];
+const checkErrors = (appData: ApplicationData, req: Request): ValidationError[] => {
+  const stillInvolvedErrors = checkTrustLegalEntityBeneficialOwnerStillInvolved(appData, req);
 
-  if (appData?.entity_number && !req.body["stillInvolved"]) {
-    errors.push({
-      value: '',
-      msg: ErrorMessages.TRUSTEE_STILL_INVOLVED,
-      param: 'stillInvolved',
-      location: 'body',
-    });
-  }
-
-  return errors;
+  return [...stillInvolvedErrors];
 };

@@ -25,13 +25,17 @@ import { getBeneficialOwnerList } from "../utils/trusts";
 import { isActiveFeature } from "../utils/feature.flag";
 import * as config from "../config";
 import { getUrlWithParamsToPath, isRemoveJourney } from "../utils/url";
+import { beneficialOwnersTypeSubmission } from "../validation/async/validation-middleware";
 
 export const checkValidations = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const errorList = validationResult(req);
+    const customErrors = await checkErrors(req);
 
-    if (!errorList.isEmpty()) {
-      const errors = formatValidationError(errorList.array());
+    if (!errorList.isEmpty() || customErrors.length > 0) {
+      const errorListArray = !errorList.isEmpty() ? errorList.array() : [];
+
+      const errors = formatValidationError([...errorListArray, ...customErrors]);
 
       // Bypass the direct use of variables with dashes that
       // govukDateInput adds for day, month and year field
@@ -153,3 +157,8 @@ export function formatValidationError(errorList: ValidationError[]): FormattedVa
   });
   return errors;
 }
+
+const checkErrors = async (req: Request): Promise<ValidationError[]> => {
+  const beneficialOwnersTypeErrors = await beneficialOwnersTypeSubmission(req);
+  return [...beneficialOwnersTypeErrors];
+};

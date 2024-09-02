@@ -566,9 +566,9 @@ export const checkBeneficialOwnerType = (beneficialOwnersStatement: string, valu
   return true;
 };
 
-export const checkBeneficialOwnersSubmission = (req) => {
-  const appData: ApplicationData = getApplicationData(req.session);
-  if (appData.beneficial_owners_statement === BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS) {
+export const checkBeneficialOwnersSubmission = async (req) => {
+  const appData: ApplicationData = await getApplicationData(req.session);
+  if (appData?.beneficial_owners_statement === BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS) {
     if (!hasBeneficialOwners(appData)) {
       throw new Error(ErrorMessages.MUST_ADD_BENEFICIAL_OWNER);
     }

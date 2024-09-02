@@ -227,7 +227,7 @@ export const mapCorporateTrusteeData = (trustee: CorporateTrusteeData, trust: Tr
     return;
   }
   if (trusteeRoleType === RoleWithinTrustType.BENEFICIARY) {
-    mapBeneficiaryCorporateTrusteeData(trustee, trust);
+    mapCorporateBeneficiaryTrusteeData(trustee, trust);
     return;
   }
 
@@ -290,12 +290,12 @@ const mapHistoricalCorporateTrusteeData = (trustee: CorporateTrusteeData, trust:
   trust.HISTORICAL_BO?.push(historicalCorporateTrustee);
 };
 
-const mapBeneficiaryCorporateTrusteeData = (trustee: CorporateTrusteeData, trust: Trust) => {
+const mapCorporateBeneficiaryTrusteeData = (trustee: CorporateTrusteeData, trust: Trust) => {
   const appointmentDate = mapInputDate(trustee.appointmentDate);
 
-  const beneficiaryCorporateTrustee: TrustCorporate = {
+  const CorporatebeneficiaryTrustee: TrustCorporate = {
     id: ((trust.CORPORATES ?? []).length + 1).toString(),
-    type: "",
+    type: trustee.trusteeTypeId,
     name: trustee.trusteeName,
     ch_references: trustee.hashedTrusteeId,
     ro_address_premises: "",
@@ -312,7 +312,7 @@ const mapBeneficiaryCorporateTrusteeData = (trustee: CorporateTrusteeData, trust
     is_service_address_same_as_principal_address: yesNoResponse.No,
     is_on_register_in_country_formed_in: yesNoResponse.Yes,
   };
-  trust.CORPORATES?.push(beneficiaryCorporateTrustee);
+  trust.CORPORATES?.push(CorporatebeneficiaryTrustee);
 };
 
 export const retrieveTrustLinks = async (req: Request, appData: ApplicationData) => {

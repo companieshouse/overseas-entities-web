@@ -114,6 +114,19 @@ export interface InterestedIndividualPersonTrustee extends TrustIndividual {
   date_became_interested_person_year: string;
 }
 
+export type corporateTrustee = (NonCorporateStartDateTrustee | CorporateStartDateTrustee) &
+{ is_service_address_same_as_usual_residential_address: yesNoResponse };
+
+interface NonCorporateStartDateTrustee extends TrustCorporate{
+  type: RoleWithinTrustType.INTERESTED_PERSON | RoleWithinTrustType.GRANTOR | RoleWithinTrustType.SETTLOR;
+}
+
+export interface CorporateStartDateTrustee extends TrustCorporate {
+  type: RoleWithinTrustType.BENEFICIARY;
+  start_date_day: string;
+  start_date_month: string;
+  start_date_year: string;
+}
 interface TrustHistoricalBeneficialOwnerLegal extends TrustHistoricalBeneficialOwnerCommon {
   corporate_name: string;
 }

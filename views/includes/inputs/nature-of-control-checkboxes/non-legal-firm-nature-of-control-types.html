@@ -1,10 +1,16 @@
+{% set nonLegalLegendText = "The beneficial owner is a member of a firm that is not a legal person under its governing law, and:" %}
+
+{% if FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC %}
+  {% set nonLegalLegendText = "The beneficial owner has the right to exercise, or actually exercises, significant control or influence over the activities of a firm that is not a legal person under its governing law, and:" %}
+{% endif %}
+
 {{ govukCheckboxes({
   errorMessage: errorMessage,
   idPrefix: "non_legal_firm_members_nature_of_control_types",
   name: "non_legal_firm_members_nature_of_control_types",
   fieldset: {
     legend: {
-      text: "The beneficial owner is a member of a firm that is not a legal person under its governing law, and:",
+      text: nonLegalLegendText,
       isPageHeading: false,
       classes: "govuk-fieldset__legend--s"
     }

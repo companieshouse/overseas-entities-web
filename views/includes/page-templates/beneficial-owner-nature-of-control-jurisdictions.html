@@ -1,0 +1,7 @@
+{% if FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC %}
+  {% set errorMessage = {} if errors.owner_of_land_person_nature_of_control_jurisdictions %}
+  {% include "includes/inputs/nature-of-control-checkboxes/owner-of-land-person-nature-of-control-jurisdictions.html" %}
+
+  {% set errorMessage = {} if errors.owner_of_land_other_entity_nature_of_control_jurisdictions %}
+  {% include "includes/inputs/nature-of-control-checkboxes/owner-of-land-other-entity-nature-of-control-jurisdictions.html" %}
+{% endif %}

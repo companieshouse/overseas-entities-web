@@ -20,6 +20,9 @@ import {
   InputDateKeys,
   IsOnSanctionsListKey,
   NonLegalFirmNoc,
+  OwnerOfLandOtherEntityJurisdictionsNoc,
+  OwnerOfLandPersonJurisdictionsNoc,
+  TrustControlNoc,
   TrusteesNoc
 } from "../model/data.types.model";
 import {
@@ -40,6 +43,7 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import * as config from "../config";
 import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
+import { isActiveFeature } from "./feature.flag";
 
 export const getBeneficialOwnerIndividual = (req: Request, res: Response, templateName: string, backLinkUrl: string) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
@@ -51,6 +55,7 @@ export const getBeneficialOwnerIndividual = (req: Request, res: Response, templa
     templateName: templateName,
     ...appData,
     relevant_period: req.query["relevant-period"] === "true",
+    FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC: isActiveFeature(config.FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)
   });
 };
 
@@ -84,6 +89,7 @@ export const getBeneficialOwnerIndividualById = (req: Request, res: Response, ne
     const isRegistration: boolean = req.path.startsWith(config.LANDING_URL);
     if (isRegistration) {
       addActiveSubmissionBasePathToTemplateData(templateOptions, req);
+      templateOptions["FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC"] = isActiveFeature(config.FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC);
     }
 
     if (EntityNumberKey in appData && appData[EntityNumberKey]) {
@@ -167,6 +173,8 @@ export const removeBeneficialOwnerIndividual = async (req: Request, res: Respons
 };
 
 export const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDataType => {
+  console.log("^^^^^^^^^^^^^^^ " + JSON.stringify(reqBody, null, 2));
+
   const data: ApplicationDataType = prepareData(reqBody, BeneficialOwnerIndividualKeys);
 
   data[UsualResidentialAddressKey] = mapFieldsToDataObject(reqBody, UsualResidentialAddressKeys, AddressKeys);
@@ -184,9 +192,16 @@ export const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDat
   data[TrusteesNoc] = (data[TrusteesNoc]) ? [].concat(data[TrusteesNoc]) : [];
   data[NonLegalFirmNoc] = (data[NonLegalFirmNoc]) ? [].concat(data[NonLegalFirmNoc]) : [];
 
+  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)) {
+    data[TrustControlNoc] = data[TrustControlNoc] ? [].concat(data[TrustControlNoc]) : [];
+    data[OwnerOfLandPersonJurisdictionsNoc] = data[OwnerOfLandPersonJurisdictionsNoc] ? [].concat(data[OwnerOfLandPersonJurisdictionsNoc]) : [];
+    data[OwnerOfLandOtherEntityJurisdictionsNoc] = data[OwnerOfLandOtherEntityJurisdictionsNoc] ? [].concat(data[OwnerOfLandOtherEntityJurisdictionsNoc]) : [];
+  }
+
   data[IsOnSanctionsListKey] = (data[IsOnSanctionsListKey]) ? +data[IsOnSanctionsListKey] : '';
 
   data[ID] = id;
+  console.log("************** " + JSON.stringify(data, null, 2));
 
   return data;
 };

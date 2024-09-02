@@ -47,6 +47,10 @@
       {% set natureOfControlText = "What is their nature of control?" %}
       {% include "includes/page-templates/beneficial-owner-nature-of-control-types.html" %}
 
+      {% if not entity_number %}
+        {% include "includes/page-templates/beneficial-owner-nature-of-control-jurisdictions.html" %}
+      {% endif %}
+
       {% include "includes/inputs/fields/is-on-sanctions-list-input.html" %}
 
       {% set paragraphOne = '<p>We will not show the beneficial owner’s home address unless it is the same as their correspondence address. We’ll only show the month and year of their date of birth.</p>' %}

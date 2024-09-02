@@ -325,6 +325,29 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
+    test(`redirects to ${BENEFICIAL_OWNER_TYPE_PAGE} page when date of birth contains spaces`, async () => {
+      mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK );
+
+      const submissionMock = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK };
+      submissionMock["date_of_birth-day"] = " 1 ";
+      submissionMock["date_of_birth-month"] = " 1 ";
+      submissionMock["date_of_birth-year"] = " 2000 ";
+
+      const resp = await request(app)
+        .post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+        .send(submissionMock);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+
+      // Additionally check that date fields are trimmed before they're saved in the session
+      const data: ApplicationDataType = mockPrepareData.mock.calls[0][0];
+      expect(data["date_of_birth-day"]).toEqual("1");
+      expect(data["date_of_birth-month"]).toEqual("1");
+      expect(data["date_of_birth-year"]).toEqual("2000");
+    });
+
     test(`POST only radio buttons choices and do not redirect to ${BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
       mockPrepareData.mockImplementationOnce( () => { return BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_RADIO_BUTTONS; } );
       const resp = await request(app)
@@ -984,6 +1007,34 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
       expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
       expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
+    });
+
+    test(`redirects to ${BENEFICIAL_OWNER_TYPE_PAGE} page when date of birth contains spaces`, async () => {
+      mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK );
+
+      const submissionMock = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK };
+      submissionMock["date_of_birth-day"] = " 1 ";
+      submissionMock["date_of_birth-month"] = " 1 ";
+      submissionMock["date_of_birth-year"] = " 2000 ";
+
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+
+      const resp = await request(app)
+        .post(BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL)
+        .send(submissionMock);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain(NEXT_PAGE_URL);
+      expect(resp.header.location).toEqual(NEXT_PAGE_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
+
+      // Additionally check that date fields are trimmed before they're saved in the session
+      const data: ApplicationDataType = mockPrepareData.mock.calls[0][0];
+      expect(data["date_of_birth-day"]).toEqual("1");
+      expect(data["date_of_birth-month"]).toEqual("1");
+      expect(data["date_of_birth-year"]).toEqual("2000");
     });
 
     test(`POST only radio buttons choices and do not redirect to ${BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {

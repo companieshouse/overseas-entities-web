@@ -27,6 +27,8 @@ import { APPLICATION_DATA_MOCK, TRUST } from '../../__mocks__/session.mock';
 import { PAGE_TITLE_ERROR, UPDATE_TRUSTS_ASSOCIATED_ADDED_HEADING, UPDATE_MANAGE_TRUSTS_REVIEWED_HEADING, SAVE_AND_CONTINUE_BUTTON_TEXT } from '../../__mocks__/text.mock';
 import { Trust, TrustKey } from '../../../src/model/trust.model';
 import { wordCount } from '../../utils/test.utils';
+import { beneficialOwnerIndividualType, beneficialOwnerOtherType } from "../../../src/model";
+import { ADD_TRUST_TEXTS } from "../../../src/utils/add.trust";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockGetApplicationData = getApplicationData as jest.Mock;
@@ -46,12 +48,30 @@ mockIsActiveFeature.mockReturnValue(true);
 describe('Update - Trusts - Trusts associated with the overseas entity', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockIsActiveFeature.mockReset();
   });
 
   describe('GET tests', () => {
-    test('when feature flag is on, page is returned', async () => {
-      mockIsActiveFeature.mockReturnValue(true);
-      mockGetApplicationData.mockReturnValue( APPLICATION_DATA_MOCK );
+    test.each([
+      [
+        "are BOs eligible for trusts",
+        "with",
+        { ...APPLICATION_DATA_MOCK },
+        true
+      ],
+      [
+        "are no BOs eligible for trusts",
+        "without",
+        {
+          ...APPLICATION_DATA_MOCK,
+          [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [ ],
+          [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: [ ]
+        },
+        false
+      ],
+    ])("when FEATURE_FLAG_ENABLE_UPDATE_TRUSTS feature flag is on and there %s, page is returned %s the add another trust option", async (_description1, _description2, appData, isAddTrustsOptionToBeShown) => {
+      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
+      mockGetApplicationData.mockReturnValue( appData );
 
       const resp = await request(app).get(UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL);
 
@@ -60,6 +80,11 @@ describe('Update - Trusts - Trusts associated with the overseas entity', () => {
       expect(resp.text).toContain(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      if (isAddTrustsOptionToBeShown) {
+        expect(resp.text).toContain(ADD_TRUST_TEXTS.subtitle);
+      } else {
+        expect(resp.text).not.toContain(ADD_TRUST_TEXTS.subtitle);
+      }
     });
 
     test('when reviewed and added trusts exist, page is returned with 2 separate summary tables', async () => {
@@ -88,16 +113,8 @@ describe('Update - Trusts - Trusts associated with the overseas entity', () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 
-    test.each([
-      [
-        "when trust ceased date feature flag off, reviewed trust status will not", false, 0, 0
-      ],
-      [
-        "when trust ceased date feature flag on, reviewed trust status will", true, 1, 2
-      ],
-    ])('%s be shown in summary table', async (_, ceasedDateFeatureFlagValue, expectedRemovedCount, expectedActiveCount) => {
-      mockIsActiveFeature.mockReturnValueOnce(ceasedDateFeatureFlagValue); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
-
+    test('Reviewed trust status will be shown in summary table', async () => {
+      mockIsActiveFeature.mockReturnValue(true);
       // trust with ch_references indicates a reviewable trust (ie it would be an existing trust that has come from chips)
       mockGetApplicationData.mockReturnValue({
         ...APPLICATION_DATA_MOCK,
@@ -128,13 +145,14 @@ describe('Update - Trusts - Trusts associated with the overseas entity', () => {
       expect(resp.text).toContain(UPDATE_TRUSTS_ASSOCIATED_ADDED_HEADING);
       expect(resp.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEWED_HEADING);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-      expect(wordCount("Removed", resp.text)).toEqual(expectedRemovedCount);
-      expect(wordCount("Active", resp.text)).toEqual(expectedActiveCount);
+      expect(wordCount("Removed", resp.text)).toEqual(1);
+      expect(wordCount("Active", resp.text)).toEqual(2);
     });
   });
 
   describe('POST tests', () => {
     test('when no trusts are to be added, redirect to check your answers page', async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
       mockGetApplicationData.mockReturnValue( APPLICATION_DATA_MOCK );
 
       const resp = await request(app).post(UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL).send({ addTrust: '0' });
@@ -163,4 +181,3 @@ describe('Update - Trusts - Trusts associated with the overseas entity', () => {
     });
   });
 });
-

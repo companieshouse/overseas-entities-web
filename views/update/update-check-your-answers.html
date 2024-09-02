@@ -159,14 +159,20 @@
         <br>
         <h2 class="govuk-heading-l">Beneficial owners you have reviewed</h2>
 
-        {% for boi in existingBOIs %}
-          {% include "includes/check-your-answers/beneficial-owner-individual.html" %}
+        {% for boi in beneficial_owners_individual %}
+          {% if boi.ch_reference %}
+            {% include "includes/check-your-answers/beneficial-owner-individual.html" %}
+          {% endif %}
         {% endfor %}
-        {% for boc in existingBOCs %}
-          {% include "includes/check-your-answers/beneficial-owner-other.html" %}
+        {% for boc in beneficial_owners_corporate %}
+          {% if boc.ch_reference %}
+            {% include "includes/check-your-answers/beneficial-owner-other.html" %}
+          {% endif %}
         {% endfor %}
-        {% for bog in existingBOGs %}
-          {% include "includes/check-your-answers/beneficial-owner-gov.html" %}
+        {% for bog in beneficial_owners_government_or_public_authority %}
+          {% if bog.ch_reference %}
+            {% include "includes/check-your-answers/beneficial-owner-gov.html" %}
+          {% endif %}
         {% endfor %}
       {% endif %}
 

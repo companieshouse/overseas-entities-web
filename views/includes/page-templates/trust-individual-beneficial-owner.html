@@ -167,6 +167,19 @@
       {% if isUpdateOrRemoveJourney %}
         {% set ceasedDateLabel = "Date they ceased to be involved in the trust" %}
         {% set ceasedDateHint = "For example, 27 1 2023" %}
+        {% if formData.relevant_period %}
+          {% set fieldParam = {
+            name: 'startDate',
+              value: {
+                'Day': formData.startDateDay,
+                'Month': formData.startDateMonth,
+                'Year': formData.startDateYear
+              },
+              label: "When did they become a beneficiary?",
+              error: errors.startDate if errors
+            } %}
+          {% include "includes/inputs/date-input.html" %}
+        {% endif %}
         {% set stillInvolvedLegendText = "Are they still involved in the trust?" %}
         {% include "includes/inputs/date/trust-ceased-date-input.html" %}
       {% endif %}

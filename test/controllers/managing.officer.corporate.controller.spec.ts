@@ -34,7 +34,8 @@ import {
   REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS,
   REQ_BODY_MANAGING_OFFICER_CORPORATE_OBJECT_EMPTY,
   RR_CARRIAGE_RETURN,
-  APPLICATION_DATA_MOCK
+  APPLICATION_DATA_MOCK,
+  EMAIL_ADDRESS
 } from "../__mocks__/session.mock";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import {
@@ -77,7 +78,6 @@ import {
 } from "../__mocks__/validation.mock";
 import { logger } from "../../src/utils/logger";
 import { hasBeneficialOwnersStatement } from "../../src/middleware/navigation/has.beneficial.owners.statement.middleware";
-import { EMAIL_ADDRESS } from "../__mocks__/session.mock";
 import { isActiveFeature } from "../../src/utils/feature.flag";
 import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
 import { getUrlWithParamsToPath } from "../../src/utils/url";

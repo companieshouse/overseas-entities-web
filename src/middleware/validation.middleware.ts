@@ -25,7 +25,7 @@ import { getBeneficialOwnerList } from "../utils/trusts";
 import { isActiveFeature } from "../utils/feature.flag";
 import * as config from "../config";
 import { getUrlWithParamsToPath, isRemoveJourney } from "../utils/url";
-import { beneficialOwnersTypeSubmission } from "../validation/async/validation-middleware";
+import { beneficialOwnersTypeSubmission, filingPeriodStartDateValidations } from "../validation/async/validation-middleware";
 
 export const checkValidations = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
@@ -160,5 +160,7 @@ export function formatValidationError(errorList: ValidationError[]): FormattedVa
 
 const checkErrors = async (req: Request): Promise<ValidationError[]> => {
   const beneficialOwnersTypeErrors = await beneficialOwnersTypeSubmission(req);
-  return [...beneficialOwnersTypeErrors];
+  const filingPeriodStartDateErrors = await filingPeriodStartDateValidations(req);
+
+  return [...beneficialOwnersTypeErrors, ...filingPeriodStartDateErrors];
 };

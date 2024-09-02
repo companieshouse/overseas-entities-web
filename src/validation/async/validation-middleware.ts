@@ -2,7 +2,8 @@ import { Request } from 'express';
 import { ValidationError } from 'express-validator';
 
 import * as config from '../../config';
-import { checkBeneficialOwnersSubmission } from "../../validation/custom.validation";
+import { checkBeneficialOwnersSubmission, checkDatePreviousToFilingDate } from "../../validation/custom.validation";
+import { ErrorMessages } from '../../validation/error.messages';
 
 export const beneficialOwnersTypeSubmission = async (req: Request): Promise<ValidationError[]> => {
   const allowedUrls = [
@@ -32,6 +33,53 @@ export const beneficialOwnersTypeSubmission = async (req: Request): Promise<Vali
     return errors;
   }
 };
+
+const checkAgainstFilingDate = async (req: Request, date_field_id: string, error_message: string) =>
+  await checkDatePreviousToFilingDate(
+    req,
+    req.body[date_field_id + "-day"], req.body[date_field_id + "-month"], req.body[date_field_id + "-year"],
+    error_message
+  );
+
+const is_date_within_filing_period = async (req: Request, date_field_id: string, error_message: string) => {
+  const allowedUrls = [
+    [config.UPDATE_BENEFICIAL_OWNER_GOV_URL],
+    [config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL],
+    [config.UPDATE_BENEFICIAL_OWNER_OTHER_URL],
+    [config.UPDATE_MANAGING_OFFICER_CORPORATE_URL],
+    [config.UPDATE_MANAGING_OFFICER_URL]
+  ];
+
+  const allowed: boolean = isAllowed(allowedUrls, req);
+
+  const errors: ValidationError[] = [];
+
+  if (!allowed) {
+    return errors;
+  }
+
+  try {
+    if (date_field_id){
+      await checkAgainstFilingDate(req, date_field_id, error_message);
+
+      return errors;
+    }
+
+    return errors;
+  } catch (error) {
+    errors.push({
+      value: '',
+      msg: error.message,
+      param: date_field_id,
+      location: 'body',
+    });
+
+    return errors;
+  }
+
+};
+
+export const filingPeriodStartDateValidations = async (req: Request) => await is_date_within_filing_period(req, "start_date", ErrorMessages.START_DATE_BEFORE_FILING_DATE);
 
 const isAllowed = (allowedUrls: string[][], req): boolean => {
   // Some tests don't use the controller but the function called by this one and don't have a url in the mockReq

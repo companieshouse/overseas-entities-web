@@ -99,11 +99,6 @@ const checkAgainstFilingDate = (date_field_id, error_message) =>
     error_message
   );
 
-const is_date_within_filing_period = (date_field_id: string, error_message: string) => [
-  body(date_field_id)
-    .custom(checkAgainstFilingDate(date_field_id, error_message)),
-];
-
 const is_end_date_within_filing_period = (date_field_id: string, radio_button_id: string, error_message: string) => [
   body(date_field_id)
     .if(body(radio_button_id).equals('0'))
@@ -115,8 +110,6 @@ export const ceased_date_validations = is_still_active_validations("ceased_date"
 export const resigned_on_validations = is_still_active_validations("resigned_on", "is_still_mo", ErrorMessages.RESIGNED_ON_BEFORE_START_DATE);
 
 export const trustFormerBODateValidations = is_trust_still_active_validation(ErrorMessages.TRUST_CEASED_DATE_BEFORE_START_DATE);
-
-export const filingPeriodStartDateValidations = is_date_within_filing_period("start_date", ErrorMessages.START_DATE_BEFORE_FILING_DATE);
 
 export const filingPeriodCeasedDateValidations = is_end_date_within_filing_period("ceased_date", "is_still_bo", ErrorMessages.CEASED_DATE_BEFORE_FILING_DATE);
 

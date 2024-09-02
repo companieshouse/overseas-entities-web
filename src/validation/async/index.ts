@@ -228,7 +228,7 @@ const is_date_within_filing_period_trusts = async (req: Request, trustDateContex
     errors.push({
       value: '',
       msg: error.message,
-      param: 'ceasedDate',
+      param: trustDateContext.dateInput.name,
       location: 'body',
     });
 

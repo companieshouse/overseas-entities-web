@@ -13,7 +13,6 @@ import {
   date_of_birth_validations,
   resigned_on_validations,
   start_date_validations,
-  filingPeriodStartDateValidations,
   filingPeriodResignedDateValidations
 } from "./fields/date.validation";
 
@@ -73,7 +72,6 @@ export const updateManagingOfficerIndividual = [
   ...start_date_validations,
   body("is_still_mo").not().isEmpty().withMessage(ErrorMessages.SELECT_IF_STILL_MANAGING_OFFICER),
   ...resigned_on_validations,
-  ...filingPeriodStartDateValidations,
   ...filingPeriodResignedDateValidations
 ];
 

@@ -8,7 +8,6 @@ import { contact_email_validations } from "./fields/email.validation";
 import {
   resigned_on_validations,
   start_date_validations,
-  filingPeriodStartDateValidations,
   filingPeriodResignedDateValidations
 } from "./fields/date.validation";
 
@@ -69,7 +68,6 @@ export const updateManagingOfficerCorporate = [
   ...isStillMoValidation,
   ...resigned_on_validations,
   ...contact_name_and_email_validations,
-  ...filingPeriodStartDateValidations,
   ...filingPeriodResignedDateValidations
 ];
 

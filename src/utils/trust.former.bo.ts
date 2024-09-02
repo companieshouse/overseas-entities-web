@@ -15,7 +15,7 @@ import { ValidationError, validationResult } from 'express-validator';
 import { safeRedirect } from '../utils/http.ext';
 import { isActiveFeature } from './feature.flag';
 import { getUrlWithParamsToPath } from './url';
-import { checkTrustLegalEntityBeneficialOwnerStillInvolved } from '../validation/async';
+import { checkTrustLegalEntityBeneficialOwnerStillInvolved, filingPeriodTrustCeaseDateValidations, filingPeriodTrustStartDateValidations } from '../validation/async';
 
 export const HISTORICAL_BO_TEXTS = {
   title: 'Tell us about the former beneficial owner',
@@ -99,7 +99,7 @@ export const postTrustFormerBo = async (req: Request, res: Response, next: NextF
 
     // check for errors
     const errorList = validationResult(req);
-    const errors = checkErrors(appData, req);
+    const errors = await checkErrors(appData, req);
     const formData: PageModel.TrustHistoricalBeneficialOwnerForm = req.body as PageModel.TrustHistoricalBeneficialOwnerForm;
 
     // if no errors present rerender the page
@@ -166,8 +166,10 @@ const getTrustEntryUrl = (req: Request) => {
   return url;
 };
 
-const checkErrors = (appData: ApplicationData, req: Request): ValidationError[] => {
+const checkErrors = async (appData: ApplicationData, req: Request): Promise<ValidationError[]> => {
   const stillInvolvedErrors = checkTrustLegalEntityBeneficialOwnerStillInvolved(appData, req);
+  const filingPeriodTrustStartDateErrors = await filingPeriodTrustStartDateValidations(req);
+  const filingPeriodTrustCeaseDateErrors = await filingPeriodTrustCeaseDateValidations(req);
 
-  return [...stillInvolvedErrors];
+  return [...stillInvolvedErrors, ...filingPeriodTrustStartDateErrors, ...filingPeriodTrustCeaseDateErrors];
 };

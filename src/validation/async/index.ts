@@ -5,8 +5,10 @@ import * as config from '../../config';
 import { ApplicationData } from "model";
 import { RoleWithinTrustType } from '../../model/role.within.trust.type.model';
 import { ErrorMessages } from '../../validation/error.messages';
-import { checkCeasedDateOnOrAfterDateOfBirth, checkCeasedDateOnOrAfterTrustCreationDate, checkIndividualCeasedDateOnOrAfterInterestedPersonStartDate, checkLegalEntityCeasedDateOnOrAfterInterestedPersonStartDate } from '../../validation/fields/date.validation';
+import { checkCeasedDateOnOrAfterDateOfBirth, checkCeasedDateOnOrAfterTrustCreationDate, checkIndividualCeasedDateOnOrAfterInterestedPersonStartDate, checkLegalEntityCeasedDateOnOrAfterInterestedPersonStartDate, historicalBOEndDateContext, historicalBOStartDateContext } from '../../validation/fields/date.validation';
 import { hasNoBoAssignableToTrust } from '../../utils/trusts';
+import { dateContext } from '../../validation/fields/helper/date.validation.helper';
+import { checkDatePreviousToFilingDate } from '../../validation/custom.validation';
 
 export const checkTrustStillInvolved = (appData: ApplicationData, req): ValidationError[] => {
   const allowedUrls = [
@@ -193,6 +195,51 @@ export const checkTrusteeLegalEntityCeasedDate = async (appData: ApplicationData
     return errors;
   }
 };
+
+const is_date_within_filing_period_trusts = async (req: Request, trustDateContext: dateContext, error_message: string) => {
+  const allowedUrls = [
+    [config.TRUST_ENTRY_URL, config.TRUST_HISTORICAL_BENEFICIAL_OWNER_URL],
+    [config.TRUST_ENTRY_WITH_PARAMS_URL, config.TRUST_HISTORICAL_BENEFICIAL_OWNER_URL],
+    [config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL],
+    [config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL, config.TRUST_HISTORICAL_BENEFICIAL_OWNER_URL]
+  ];
+
+  const allowed: boolean = isAllowed(allowedUrls, req);
+
+  const errors: ValidationError[] = [];
+
+  if (!allowed) {
+    return errors;
+  }
+
+  try {
+    if (trustDateContext.dateInput.name) {
+      await checkDatePreviousToFilingDate(
+        req,
+        req.body[trustDateContext.dayInput.name], req.body[trustDateContext.monthInput.name], req.body[trustDateContext.yearInput.name],
+        error_message
+      );
+
+      return errors;
+    }
+
+    return errors;
+  } catch (error) {
+    errors.push({
+      value: '',
+      msg: error.message,
+      param: 'ceasedDate',
+      location: 'body',
+    });
+
+    return errors;
+  }
+
+};
+
+export const filingPeriodTrustStartDateValidations = async (req: Request) => await is_date_within_filing_period_trusts(req, historicalBOStartDateContext, ErrorMessages.START_DATE_BEFORE_FILING_DATE);
+
+export const filingPeriodTrustCeaseDateValidations = async (req: Request) => await is_date_within_filing_period_trusts(req, historicalBOEndDateContext, ErrorMessages.CEASED_DATE_BEFORE_FILING_DATE);
 
 const isAllowed = (allowedUrls: string[][], req): boolean => {
   // Some tests don't use the controller but the function called by this one and don't have a url in the mockReq

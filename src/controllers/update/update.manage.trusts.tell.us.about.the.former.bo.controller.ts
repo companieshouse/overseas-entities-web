@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import { ValidationError, validationResult } from 'express-validator';
 
 import { logger } from '../../utils/logger';
 import {
@@ -13,11 +14,11 @@ import { Session } from '@companieshouse/node-session-handler';
 import { Trust, TrustHistoricalBeneficialOwner } from '../../model/trust.model';
 import { TrusteeType } from '../../model/trustee.type.model';
 import { TrustHistoricalBeneficialOwnerForm } from '../../model/trust.page.model';
-import { validationResult } from 'express-validator';
 import { FormattedValidationErrors, formatValidationError } from '../../middleware/validation.middleware';
 import { saveAndContinue } from '../../utils/save.and.continue';
 import { mapBeneficialOwnerToSession, mapFormerTrusteeFromSessionToPage } from '../../utils/trust/historical.beneficial.owner.mapper';
 import { getTrustInReview, getTrustee, getTrusteeIndex } from '../../utils/update/review_trusts';
+import { filingPeriodTrustCeaseDateValidations, filingPeriodTrustStartDateValidations } from '../../validation/async';
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -50,8 +51,12 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     // check for form validation errors
     const errorList = validationResult(req);
-    if (!errorList.isEmpty()) {
-      const pageProperties = getPageProperties(trust, formData, formatValidationError(errorList.array()));
+    const errors = await checkErrors(req);
+
+    if (!errorList.isEmpty() || errors.length) {
+      const errorListArray = !errorList.isEmpty() ? errorList.array() : [];
+
+      const pageProperties = getPageProperties(trust, formData, formatValidationError([...errorListArray, ...errors]));
       return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_PAGE, pageProperties);
     }
 
@@ -101,3 +106,11 @@ const getBackLink = (formerBosReviewed) => {
     return UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL;
   }
 };
+
+const checkErrors = async (req: Request): Promise<ValidationError[]> => {
+  const filingPeriodTrustStartDateErrors = await filingPeriodTrustStartDateValidations(req);
+  const filingPeriodTrustCeaseDateErrors = await filingPeriodTrustCeaseDateValidations(req);
+
+  return [...filingPeriodTrustStartDateErrors, ...filingPeriodTrustCeaseDateErrors];
+};
+

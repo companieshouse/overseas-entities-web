@@ -42,7 +42,7 @@ import {
   ANY_MESSAGE_ERROR,
   PAGE_TITLE_ERROR,
   SERVICE_UNAVAILABLE,
-  SHOW_INFORMATION_ON_PUBLIC_REGISTER,
+  SHOW_CMO_INFORMATION_ON_PUBLIC_REGISTER,
   SAVE_AND_CONTINUE_BUTTON_TEXT,
 } from "../../__mocks__/text.mock";
 import {
@@ -130,7 +130,7 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
-      expect(resp.text).toContain(SHOW_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(resp.text).toContain(SHOW_CMO_INFORMATION_ON_PUBLIC_REGISTER);
     });
 
     test("catch error when rendering the page", async () => {

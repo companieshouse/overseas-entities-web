@@ -55,7 +55,7 @@ import {
   PUBLIC_REGISTER_HINT_TEXT,
   SAVE_AND_CONTINUE_BUTTON_TEXT,
   SERVICE_UNAVAILABLE,
-  SHOW_INFORMATION_ON_PUBLIC_REGISTER,
+  SHOW_CMO_INFORMATION_ON_PUBLIC_REGISTER,
   BACK_BUTTON_CLASS
 } from "../__mocks__/text.mock";
 import {
@@ -132,7 +132,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
-      expect(resp.text).toContain(SHOW_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(resp.text).toContain(SHOW_CMO_INFORMATION_ON_PUBLIC_REGISTER);
     });
 
     test(`renders the ${MANAGING_OFFICER_CORPORATE_PAGE} page with correct backlink url when REDIS_removal feature flag is ON`, async () => {
@@ -146,7 +146,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
-      expect(resp.text).toContain(SHOW_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(resp.text).toContain(SHOW_CMO_INFORMATION_ON_PUBLIC_REGISTER);
       expect(resp.text).toContain(NEXT_PAGE_URL);
       expect(resp.text).toContain(BACK_BUTTON_CLASS);
       expect(mockIsActiveFeature).toHaveBeenCalledTimes(1);
@@ -164,7 +164,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
-      expect(resp.text).toContain(SHOW_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(resp.text).toContain(SHOW_CMO_INFORMATION_ON_PUBLIC_REGISTER);
       expect(mockIsActiveFeature).toHaveBeenCalledTimes(1);
     });
 
@@ -178,7 +178,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
-      expect(resp.text).toContain(SHOW_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(resp.text).toContain(SHOW_CMO_INFORMATION_ON_PUBLIC_REGISTER);
     });
   });
 
@@ -228,7 +228,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
-      expect(resp.text).toContain(SHOW_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(resp.text).toContain(SHOW_CMO_INFORMATION_ON_PUBLIC_REGISTER);
     });
 
     test(`renders the ${MANAGING_OFFICER_CORPORATE_PAGE} page without public register jurisdiction field`, async () => {

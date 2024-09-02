@@ -75,8 +75,12 @@
         name: "contact_email",
         value: contact_email
       }) }}
-
-      {% include "includes/inset-text-cmo.html" %}
+      
+      {{ govukInsetText({
+        html: '<h2 class="govuk-heading-m">What information we’ll show on the public register</h2>
+              <p>We will not show the name or email address of the person who can be contacted about this managing officer.</p>
+              <p>We will show all the other information you provide on this screen on the public Register of Overseas Entities.</p>'
+      }) }}
 
       {% include "includes/save-and-continue-button.html" %}
  

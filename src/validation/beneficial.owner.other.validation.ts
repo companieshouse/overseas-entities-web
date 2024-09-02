@@ -7,8 +7,7 @@ import { public_register_validations } from "./fields/public-register.validation
 import { nature_of_control_validations } from "./fields/nature-of-control.validation";
 import {
   start_date_validations,
-  ceased_date_validations,
-  filingPeriodCeasedDateValidations
+  ceased_date_validations
 } from "./fields/date.validation";
 
 export const beneficialOwnerOther = [
@@ -52,9 +51,7 @@ export const updateBeneficialOwnerOther = [
 
   body("is_still_bo").not().isEmpty().withMessage(ErrorMessages.SELECT_IF_STILL_BENEFICIAL_OWNER),
 
-  ...ceased_date_validations,
-
-  ...filingPeriodCeasedDateValidations
+  ...ceased_date_validations
 ];
 
 export const updateReviewBeneficialOwnerOther = [
@@ -63,7 +60,5 @@ export const updateReviewBeneficialOwnerOther = [
 
   body("is_still_bo").not().isEmpty().withMessage(ErrorMessages.SELECT_IF_STILL_BENEFICIAL_OWNER),
 
-  ...ceased_date_validations,
-
-  ...filingPeriodCeasedDateValidations
+  ...ceased_date_validations
 ];

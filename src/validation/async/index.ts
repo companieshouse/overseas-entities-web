@@ -213,7 +213,7 @@ const is_date_within_filing_period_trusts = async (req: Request, trustDateContex
   }
 
   try {
-    if (trustDateContext.dateInput.name) {
+    if (req.body[trustDateContext.dayInput.name]) {
       await checkDatePreviousToFilingDate(
         req,
         req.body[trustDateContext.dayInput.name], req.body[trustDateContext.monthInput.name], req.body[trustDateContext.yearInput.name],

@@ -20,7 +20,6 @@ import {
   checkCeasedDateOnOrAfterStartDate,
   checkStartDateBeforeDOB,
   checkFirstDateOnOrAfterSecondDate,
-  checkDatePreviousToFilingDate,
   checkTrustCeasedDate,
   checkDateIsBeforeOrOnOtherDate,
   checkFilingDate,
@@ -92,28 +91,11 @@ const is_trust_still_active_validation = (error_message: string) => [
     )),
 ];
 
-const checkAgainstFilingDate = (date_field_id, error_message) =>
-  (value, { req }) => checkDatePreviousToFilingDate(
-    req,
-    req.body[date_field_id + "-day"], req.body[date_field_id + "-month"], req.body[date_field_id + "-year"],
-    error_message
-  );
-
-const is_end_date_within_filing_period = (date_field_id: string, radio_button_id: string, error_message: string) => [
-  body(date_field_id)
-    .if(body(radio_button_id).equals('0'))
-    .custom(checkAgainstFilingDate(date_field_id, error_message))
-];
-
 export const ceased_date_validations = is_still_active_validations("ceased_date", "is_still_bo", ErrorMessages.CEASED_DATE_BEFORE_START_DATE);
 
 export const resigned_on_validations = is_still_active_validations("resigned_on", "is_still_mo", ErrorMessages.RESIGNED_ON_BEFORE_START_DATE);
 
 export const trustFormerBODateValidations = is_trust_still_active_validation(ErrorMessages.TRUST_CEASED_DATE_BEFORE_START_DATE);
-
-export const filingPeriodCeasedDateValidations = is_end_date_within_filing_period("ceased_date", "is_still_bo", ErrorMessages.CEASED_DATE_BEFORE_FILING_DATE);
-
-export const filingPeriodResignedDateValidations = is_end_date_within_filing_period("resigned_on", "is_still_mo", ErrorMessages.RESIGNED_ON_BEFORE_FILING_DATE);
 
 // to prevent more than 1 error reported on the date fields we check if the year is valid before doing some checks.
 // This means that the year check is checked before some others

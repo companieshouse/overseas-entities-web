@@ -579,8 +579,8 @@ export const checkBeneficialOwnersSubmission = async (req) => {
   return true;
 };
 
-export const checkDatePreviousToFilingDate = (req, dateDay: string, dateMonth: string, dateYear: string, errorMessage: string) => {
-  const appData: ApplicationData = getApplicationData(req.session);
+export const checkDatePreviousToFilingDate = async (req, dateDay: string, dateMonth: string, dateYear: string, errorMessage: string) => {
+  const appData: ApplicationData = await getApplicationData(req.session);
 
   const filingDateDay = appData?.update?.[FilingDateKey]?.day;
   const filingDateMonth = appData?.update?.[FilingDateKey]?.month;

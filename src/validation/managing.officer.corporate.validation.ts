@@ -7,8 +7,7 @@ import { VALID_CHARACTERS, VALID_CHARACTERS_FOR_TEXT_BOX } from "./regex/regex.v
 import { contact_email_validations } from "./fields/email.validation";
 import {
   resigned_on_validations,
-  start_date_validations,
-  filingPeriodResignedDateValidations
+  start_date_validations
 } from "./fields/date.validation";
 
 const contact_name_and_email_validations = [
@@ -67,14 +66,12 @@ export const updateManagingOfficerCorporate = [
   ...start_date_validations,
   ...isStillMoValidation,
   ...resigned_on_validations,
-  ...contact_name_and_email_validations,
-  ...filingPeriodResignedDateValidations
+  ...contact_name_and_email_validations
 ];
 
 export const reviewManagingOfficerCorporate = [
   ...managingOfficerCorporateValidations,
   ...isStillMoValidation,
   ...resigned_on_validations,
-  ...contact_name_and_email_validations,
-  ...filingPeriodResignedDateValidations
+  ...contact_name_and_email_validations
 ];

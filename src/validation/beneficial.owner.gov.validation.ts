@@ -6,8 +6,7 @@ import { VALID_CHARACTERS } from "./regex/regex.validation";
 import { checkAtLeastOneFieldHasValue } from "./custom.validation";
 import {
   start_date_validations,
-  ceased_date_validations,
-  filingPeriodCeasedDateValidations
+  ceased_date_validations
 } from "./fields/date.validation";
 
 export const beneficial_owner_gov_name_validation = [
@@ -72,9 +71,7 @@ export const updateBeneficialOwnerGov = [
 
   body("is_still_bo").not().isEmpty().withMessage(ErrorMessages.SELECT_IF_STILL_BENEFICIAL_OWNER),
 
-  ...ceased_date_validations,
-
-  ...filingPeriodCeasedDateValidations
+  ...ceased_date_validations
 ];
 
 export const updateReviewBeneficialOwnerGovValidator = [
@@ -97,7 +94,5 @@ export const updateReviewBeneficialOwnerGovValidator = [
 
   body("is_still_bo").not().isEmpty().withMessage(ErrorMessages.SELECT_IF_STILL_BENEFICIAL_OWNER),
 
-  ...ceased_date_validations,
-
-  ...filingPeriodCeasedDateValidations
+  ...ceased_date_validations
 ];

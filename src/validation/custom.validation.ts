@@ -9,7 +9,6 @@ import { CONCATENATED_VALUES_SEPARATOR, ROUTE_PARAM_TRUST_ID } from "../config";
 import { getApplicationData } from "../utils/application.data";
 import { FilingDateKey } from '../model/date.model';
 import { DefaultErrorsSecondNationality } from "./models/second.nationality.error.model";
-import { isRemoveJourney } from "../utils/url";
 import { getTrustByIdFromApp } from "../utils/trusts" ;
 import { getTrustInReview, hasTrustsToReview } from "../utils/update/review_trusts";
 import { logger } from "../utils/logger";
@@ -670,19 +669,6 @@ export const validateEmail = (email: string, maxLength: number) => {
   checkCorrectIsFormat(emailString);
   return true;
 };
-
-export const checkNoChangeStatementSubmission = (value: any, req) => {
-  if (value === undefined) {
-    if (isRemoveJourney(req)) {
-      throw new Error(ErrorMessages.SELECT_REMOVE_DO_YOU_WANT_TO_MAKE_OE_CHANGE);
-    }
-
-    throw new Error(ErrorMessages.SELECT_DO_YOU_WANT_TO_MAKE_OE_CHANGE);
-  }
-
-  return true;
-};
-
 const checkEmailIsPresent = (email: string) => {
   if (email === undefined || email === "") {
     throw new Error(ErrorMessages.EMAIL);

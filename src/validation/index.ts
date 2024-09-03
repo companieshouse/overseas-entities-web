@@ -31,7 +31,6 @@ import { updateBeneficialOwnerAndReviewValidator } from "./update.beneficial.own
 import { updateContinueSavedFiling } from "./update/update.continue.saved.filing.validation";
 import { updateFilingDate } from "./update/update.filing.date.validation";
 import { anyTrustsInvolved } from "./update/update.any.trusts.involved.validation";
-import { doYouWantToMakeOeChange } from "./update/do.you.want.to.make.oe.change.validation";
 import { statementResolution } from "./update/review.update.statement.validation";
 import { removeSoldAllLandFilter } from "./update/remove.sold.all.land.filter.validation";
 import { removeIsEntityRegisteredOwner } from "./update/remove.is.entity.registered.owner.validation";
@@ -41,7 +40,6 @@ import { relevantPeriodCombinedStatements } from "./relevant.period.combined.sta
 export const validator = {
   soldLandFilter,
   secureRegisterFilter,
-  doYouWantToMakeOeChange,
   entity,
   presenter,
   overseasEntityQuery,

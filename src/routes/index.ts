@@ -524,7 +524,7 @@ router.route(config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL)
     navigation.hasOverseasEntity
   )
   .get(doYouWantToMakeOeChange.get)
-  .post(...validator.doYouWantToMakeOeChange, checkValidations, doYouWantToMakeOeChange.post);
+  .post(checkValidations, doYouWantToMakeOeChange.post);
 
 router.route(config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL)
   .all(

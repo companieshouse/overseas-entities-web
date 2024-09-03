@@ -169,5 +169,38 @@ export const checkNoChangeReviewStatement = async (req) => {
 
     return errors;
   }
+};
 
+export const checkNoChangeStatementSubmission = async (req) => {
+  const allowedUrls = [
+    [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL]
+  ];
+
+  const allowed: boolean = isAllowedUrls(allowedUrls, req);
+
+  const errors: ValidationError[] = [];
+
+  if (!allowed) {
+    return errors;
+  }
+
+  try {
+    if (req.body["no_change"] === undefined) {
+      if (await isRemoveJourney(req)) {
+        throw new Error(ErrorMessages.SELECT_REMOVE_DO_YOU_WANT_TO_MAKE_OE_CHANGE);
+      }
+      throw new Error(ErrorMessages.SELECT_DO_YOU_WANT_TO_MAKE_OE_CHANGE);
+    }
+
+    return errors;
+  } catch (error) {
+    errors.push({
+      value: '',
+      msg: error.message,
+      param: "no_change",
+      location: 'body',
+    });
+
+    return errors;
+  }
 };

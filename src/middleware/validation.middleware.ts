@@ -25,7 +25,7 @@ import { getBeneficialOwnerList } from "../utils/trusts";
 import { isActiveFeature } from "../utils/feature.flag";
 import * as config from "../config";
 import { getUrlWithParamsToPath, isRemoveJourney } from "../utils/url";
-import { beneficialOwnersTypeSubmission, checkNoChangeReviewStatement, filingPeriodCeasedDateValidations, filingPeriodResignedDateValidations, filingPeriodStartDateValidations } from "../validation/async/validation-middleware";
+import { beneficialOwnersTypeSubmission, checkNoChangeReviewStatement, checkNoChangeStatementSubmission, filingPeriodCeasedDateValidations, filingPeriodResignedDateValidations, filingPeriodStartDateValidations } from "../validation/async/validation-middleware";
 
 export const checkValidations = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
@@ -164,6 +164,14 @@ const getValidationErrors = async (req: Request): Promise<ValidationError[]> => 
   const filingPeriodCeasedDateErrors = await filingPeriodCeasedDateValidations(req);
   const filingPeriodResignedDateErrors = await filingPeriodResignedDateValidations(req);
   const checkNoChangeReviewStatementErrors = await checkNoChangeReviewStatement(req);
+  const checkNoChangeStatementSubmissionErrors = await checkNoChangeStatementSubmission(req);
 
-  return [...beneficialOwnersTypeErrors, ...filingPeriodStartDateErrors, ...filingPeriodCeasedDateErrors, ...filingPeriodResignedDateErrors, ...checkNoChangeReviewStatementErrors];
+  return [
+    ...beneficialOwnersTypeErrors,
+    ...filingPeriodStartDateErrors,
+    ...filingPeriodCeasedDateErrors,
+    ...filingPeriodResignedDateErrors,
+    ...checkNoChangeReviewStatementErrors,
+    ...checkNoChangeStatementSubmissionErrors
+  ];
 };

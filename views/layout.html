@@ -46,11 +46,13 @@
 
 {% block beforeContent %}
   {% include "includes/phase_banner.html" %}
-  {% block backLink %}
-  {% endblock %}
-  {% block signOutBanner %}
-    {% include "includes/sign-out-user-banner.html" %}
-  {% endblock %}
+  <div style="margin-bottom: 25px; border-bottom: 1px solid #b1b4b6;">
+    {% block backLink %}
+    {% endblock %}
+    {% block signOutBanner %}
+      {% include "includes/sign-out-user-banner.html" %}
+    {% endblock %}
+  </div>
 {% endblock %}
 
 {% block header %}

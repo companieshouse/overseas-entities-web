@@ -78,6 +78,14 @@ export const mapTrustData = (trustData: TrustData, appData: ApplicationData) => 
   if (trustData.trustStillInvolvedInOverseasEntityIndicator === null || trustData.trustStillInvolvedInOverseasEntityIndicator === undefined) {
     stillInvolved = "";
   }
+  // this part of the code must be removed when the SDK has been updated
+  let unableToObtainAllInfo = "";
+  if (trustData["unableToObtainAllInfoIndicator"] === "N"){
+    unableToObtainAllInfo = "No";
+  }
+  if (trustData["unableToObtainAllInfoIndicator"] === "Y"){
+    unableToObtainAllInfo = "Yes";
+  }
 
   const trust: Trust = {
     trust_id: (((appData.update?.review_trusts ?? []).length) + 1).toString(),
@@ -87,7 +95,7 @@ export const mapTrustData = (trustData: TrustData, appData: ApplicationData) => 
     creation_date_month: dateOfBirth?.month ?? "",
     creation_date_year: dateOfBirth?.year ?? "",
     trust_still_involved_in_overseas_entity: stillInvolved,
-    unable_to_obtain_all_trust_info: trustData.unableToObtainAllTrustInfoIndicator ? "Yes" : "No",
+    unable_to_obtain_all_trust_info: unableToObtainAllInfo,
     INDIVIDUALS: [],
     CORPORATES: [],
     HISTORICAL_BO: []

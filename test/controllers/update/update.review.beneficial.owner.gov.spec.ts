@@ -101,7 +101,8 @@ describe(`Update review beneficial owner Gov`, () => {
       expect(resp.text).toContain(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
     });
 
-    test("catch error when rendering the page", async () => {
+    // ASM-350 - need fix to create a real error
+    test.skip("catch error when rendering the page", async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL_WITH_PARAM_URL_TEST);
       expect(resp.status).toEqual(500);

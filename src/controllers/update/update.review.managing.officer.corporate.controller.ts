@@ -18,10 +18,10 @@ import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAd
 import { ManagingOfficerCorporateKey } from "../../model/managing.officer.corporate.model";
 import { checkRelevantPeriod } from "../../utils/relevant.period";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
     const index = req.query.index;
 
     let dataToReview = {}, principalAddress = {}, serviceAddress = {};
@@ -55,7 +55,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const moIndex = req.query.index;
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
 
     if (moIndex !== undefined && appData.managing_officers_corporate && appData.managing_officers_corporate[Number(moIndex)].id === req.body["id"]){
 

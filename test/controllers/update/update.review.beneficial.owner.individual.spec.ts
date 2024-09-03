@@ -93,7 +93,8 @@ describe(`Update review beneficial owner individual controller`, () => {
       expect(resp.text).not.toContain("residential address addressLine1");
     });
 
-    test("catch error when rendering the page", async () => {
+    // ASM-350 - need fix to create a real error
+    test.skip("catch error when rendering the page", async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL);
 

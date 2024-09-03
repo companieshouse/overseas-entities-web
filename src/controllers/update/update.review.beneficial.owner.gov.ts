@@ -14,9 +14,9 @@ import { CeasedDateKey } from "../../model/date.model";
 import { addCeasedDateToTemplateOptions } from "../../utils/update/ceased_date_util";
 import { checkRelevantPeriod } from "../../utils/relevant.period";
 
-export const get = (req: Request, res: Response) => {
+export const get = async (req: Request, res: Response) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
-  const appData = getApplicationData(req.session);
+  const appData = await getApplicationData(req.session);
   const index = req.query.index;
 
   let dataToReview = {}, principalAddress = {}, serviceAddress = {};
@@ -45,7 +45,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const boiIndex = req.query.index;
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
 
     if (boiIndex !== undefined && appData.beneficial_owners_government_or_public_authority && appData.beneficial_owners_government_or_public_authority[Number(boiIndex)].id === req.body["id"]){
       const boId = appData.beneficial_owners_government_or_public_authority[Number(boiIndex)].id;

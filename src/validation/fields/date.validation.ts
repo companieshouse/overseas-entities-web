@@ -43,6 +43,12 @@ export const NEXT_MADE_UP_TO_ISO_DATE = 'nextMadeUpToIsoDate';
 // to prevent more than 1 error reported on the date fields we check if the year is valid before doing some checks.
 // This means that the year check is checked before some others
 export const start_date_validations = [
+  // Trim all the date fields before validating. This will also ensure that no whitespace is present in the date fields when
+  // saved to the model and then later sent to the API
+  body("start_date-day").trim(),
+  body("start_date-month").trim(),
+  body("start_date-year").trim(),
+
   body("start_date-day")
     .custom((value, { req }) => checkDateFieldDay(req.body["start_date-day"], req.body["start_date-month"], req.body["start_date-year"])),
   body("start_date-month")
@@ -63,6 +69,12 @@ export const start_date_validations = [
 ];
 
 const is_still_active_validations = (date_field_id: string, radio_button_id: string, error_message: string) => [
+  // Trim all the date fields before validating. This will also ensure that no whitespace is present in the date fields when
+  // saved to the model and then later sent to the API
+  body(date_field_id + "-day").trim(),
+  body(date_field_id + "-month").trim(),
+  body(date_field_id + "-year").trim(),
+
   body(date_field_id + "-day")
     .if(body(radio_button_id).equals('0'))
     .custom((value, { req }) => checkDateFieldDay(req.body[date_field_id + "-day"], req.body[date_field_id + "-month"], req.body[date_field_id + "-year"])),
@@ -100,6 +112,12 @@ export const trustFormerBODateValidations = is_trust_still_active_validation(Err
 // to prevent more than 1 error reported on the date fields we check if the year is valid before doing some checks.
 // This means that the year check is checked before some others
 export const date_of_birth_validations = [
+  // Trim all the date fields before validating. This will also ensure that no whitespace is present in the date fields when
+  // saved to the model and then later sent to the API
+  body("date_of_birth-day").trim(),
+  body("date_of_birth-month").trim(),
+  body("date_of_birth-year").trim(),
+
   body("date_of_birth-day")
     .custom((value, { req }) => checkDateFieldDayOfBirth(req.body["date_of_birth-day"], req.body["date_of_birth-month"], req.body["date_of_birth-year"])),
   body("date_of_birth-month")
@@ -113,6 +131,12 @@ export const date_of_birth_validations = [
 // to prevent more than 1 error reported on the date fields we check if the year is valid before doing some checks.
 // This means that the year check is checked before some others
 export const identity_check_date_validations = [
+  // Trim all the date fields before validating. This will also ensure that no whitespace is present in the date fields when
+  // saved to the model and then later sent to the API
+  body("identity_date-day").trim(),
+  body("identity_date-month").trim(),
+  body("identity_date-year").trim(),
+
   body("identity_date-day")
     .custom((value, { req }) => checkDateFieldDay(req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"])),
   body("identity_date-month")
@@ -140,6 +164,13 @@ export const addNextMadeUpToDateToRequest = async (req: Request, res: Response, 
 
 export const filing_date_validations = [
   addNextMadeUpToDateToRequest,
+
+  // Trim all the date fields before validating. This will also ensure that no whitespace is present in the date fields when
+  // saved to the model and then later sent to the API
+  body("filing_date-day").trim(),
+  body("filing_date-month").trim(),
+  body("filing_date-year").trim(),
+
   body("filing_date-day")
     .custom((value, { req }) => checkDateFieldDay(req.body["filing_date-day"], req.body["filing_date-month"], req.body["filing_date-year"])),
   body("filing_date-month")

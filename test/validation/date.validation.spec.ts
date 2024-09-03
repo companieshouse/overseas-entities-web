@@ -1,10 +1,12 @@
 const mockIf = jest.fn();
+const mockTrim = jest.fn();
 const mockCustom = jest.fn();
 const mockEquals = jest.fn();
 const mockNotEmpty = jest.fn();
 
 jest.mock('express-validator', () => ({
   body: jest.fn().mockImplementation(() => ({
+    trim: mockTrim.mockReturnThis(),
     custom: mockCustom.mockReturnThis(),
     equals: mockEquals.mockReturnThis(),
     if: mockIf.mockReturnThis(),
@@ -50,6 +52,7 @@ const mockErrorLogger = logger.errorRequest as jest.Mock;
 describe('Test to validate date validator', () => {
 
   beforeEach(() => {
+    mockTrim.mockRestore();
     mockIf.mockRestore();
     mockCustom.mockRestore();
     mockEquals.mockRestore();
@@ -90,6 +93,7 @@ describe('Test to validate date validator', () => {
 
     const sut = dateValidations(mockDateValidationsContext);
     expect(sut.length).toEqual(4);
+    expect(mockTrim).toHaveBeenCalled();
     expect(mockIf).toHaveBeenCalled();
     expect(mockCustom).toHaveBeenCalled();
     expect(mockEquals).not.toHaveBeenCalled();
@@ -133,6 +137,7 @@ describe('Test to validate date validator', () => {
 
     const sut = conditionalDateValidations(mockDateValidationsContext);
     expect(sut.length).toEqual(4);
+    expect(mockTrim).toBeCalledTimes(3);
     expect(mockIf).toBeCalledTimes(10);
     expect(mockCustom).toBeCalledTimes(4);
     expect(mockEquals).toBeCalledTimes(4);
@@ -177,6 +182,7 @@ describe('Test to validate date validator', () => {
 
     const sut = conditionalDateValidations(mockDateValidationsContext);
     expect(sut.length).toEqual(4);
+    expect(mockTrim).toBeCalledTimes(3);
     expect(mockIf).toBeCalledTimes(10);
     expect(mockCustom).toBeCalledTimes(4);
     expect(mockEquals).toBeCalledTimes(4);
@@ -368,7 +374,7 @@ describe("test date method", () => {
   });
 });
 
-describe("test day,month and year error checkers", () => {
+describe("test day, month and year error checkers", () => {
   const errors = {
     noDayError: ErrorMessages.DAY,
     noMonthError: ErrorMessages.MONTH,

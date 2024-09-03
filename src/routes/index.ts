@@ -552,6 +552,9 @@ router.post(config.OVERSEAS_ENTITY_QUERY_URL, authentication, ...validator.overs
 router.route(config.UPDATE_SIGN_OUT_URL)
   .get(updateSignOut.get)
   .post(...validator.signOut, checkValidations, updateSignOut.post);
+router.route(config.UPDATE_SUB_PATH_SIGN_OUT_URL)
+  .get(updateSignOut.get)
+  .post(...validator.signOut, checkValidations, updateSignOut.post);
 
 router.route(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL)
   .all(

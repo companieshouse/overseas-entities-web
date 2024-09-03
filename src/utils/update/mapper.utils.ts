@@ -4,6 +4,7 @@ import { Address as PSCAddress, DateOfBirth as PSCDateOfBirth, NameElements } fr
 import { Address as OfficerAddress, DateOfBirth as OfficerDateOfBirth } from "@companieshouse/api-sdk-node/dist/services/company-officers/types";
 import { padWithZero } from "../../controllers/update/update.review.beneficial.owner.individual";
 import { PrivateAddress } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
+import { logger } from "../../utils/logger";
 
 type DateOfBirthTypes = {
   (dateOfBirth: PSCDateOfBirth | undefined): InputDate;
@@ -75,7 +76,9 @@ type BOMOAddressMapTypes = {
 };
 
 export const mapBOMOAddress: BOMOAddressMapTypes = (address: any) => {
+  logger.info(`mapBOMOAddress()`);
   if (!address) {
+    logger.info(`no address to map`);
     return undefined;
   }
 

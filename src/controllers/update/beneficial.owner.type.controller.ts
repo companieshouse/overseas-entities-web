@@ -114,10 +114,8 @@ export const postSubmit = async (req: Request, res: Response, next: NextFunction
     // Move any trusts that have been reviewed back into review so user can review data again if
     // they have gone back to an earlier screen and changed something that might affect the trust.
     // If no trusts have been reviewed yet then no trusts should get moved by this
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_CEASE_TRUSTS)) {
-      moveReviewableTrustsIntoReview(appData);
-      resetReviewStatusOnAllTrustsToBeReviewed(appData);
-    }
+    moveReviewableTrustsIntoReview(appData);
+    resetReviewStatusOnAllTrustsToBeReviewed(appData);
 
     if (hasTrustsToReview(appData)) {
       return res.redirect(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);

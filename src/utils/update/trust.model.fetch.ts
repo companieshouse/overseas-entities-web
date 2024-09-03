@@ -78,6 +78,14 @@ export const mapTrustData = (trustData: TrustData, appData: ApplicationData) => 
   if (trustData.trustStillInvolvedInOverseasEntityIndicator === null || trustData.trustStillInvolvedInOverseasEntityIndicator === undefined) {
     stillInvolved = "";
   }
+  // this part of the code must be removed when the SDK has been updated
+  let unableToObtainAllInfo = "";
+  if (trustData["unableToObtainAllInfoIndicator"] === "N"){
+    unableToObtainAllInfo = "No";
+  }
+  if (trustData["unableToObtainAllInfoIndicator"] === "Y"){
+    unableToObtainAllInfo = "Yes";
+  }
 
   const trust: Trust = {
     trust_id: (((appData.update?.review_trusts ?? []).length) + 1).toString(),
@@ -87,7 +95,7 @@ export const mapTrustData = (trustData: TrustData, appData: ApplicationData) => 
     creation_date_month: dateOfBirth?.month ?? "",
     creation_date_year: dateOfBirth?.year ?? "",
     trust_still_involved_in_overseas_entity: stillInvolved,
-    unable_to_obtain_all_trust_info: trustData.unableToObtainAllTrustInfoIndicator ? "Yes" : "No",
+    unable_to_obtain_all_trust_info: unableToObtainAllInfo,
     INDIVIDUALS: [],
     CORPORATES: [],
     HISTORICAL_BO: []
@@ -218,6 +226,10 @@ export const mapCorporateTrusteeData = (trustee: CorporateTrusteeData, trust: Tr
     mapHistoricalCorporateTrusteeData(trustee, trust);
     return;
   }
+  if (trusteeRoleType === RoleWithinTrustType.BENEFICIARY) {
+    mapBeneficiaryCorporateTrusteeData(trustee, trust);
+    return;
+  }
 
   // This needs to be done after checking (and mapping) an historical corporate trustee, as they will have ceased dates. It's
   // enough to simply check for the presence of a ceased date, since future dates cannot be entered in this field
@@ -276,6 +288,31 @@ const mapHistoricalCorporateTrusteeData = (trustee: CorporateTrusteeData, trust:
     corporate_indicator: yesNoResponse.Yes
   };
   trust.HISTORICAL_BO?.push(historicalCorporateTrustee);
+};
+
+const mapBeneficiaryCorporateTrusteeData = (trustee: CorporateTrusteeData, trust: Trust) => {
+  const appointmentDate = mapInputDate(trustee.appointmentDate);
+
+  const beneficiaryCorporateTrustee: TrustCorporate = {
+    id: ((trust.CORPORATES ?? []).length + 1).toString(),
+    type: "",
+    name: trustee.trusteeName,
+    ch_references: trustee.hashedTrusteeId,
+    ro_address_premises: "",
+    ro_address_line_1: "",
+    ro_address_locality: "",
+    ro_address_region: "",
+    ro_address_country: "",
+    ro_address_postal_code: "",
+    start_date_day: appointmentDate?.day ?? "",
+    start_date_month: appointmentDate?.month ?? "",
+    start_date_year: appointmentDate?.year ?? "",
+    identification_legal_authority: trustee.lawGoverned ?? "",
+    identification_legal_form: trustee.legalForm ?? "",
+    is_service_address_same_as_principal_address: yesNoResponse.No,
+    is_on_register_in_country_formed_in: yesNoResponse.Yes,
+  };
+  trust.CORPORATES?.push(beneficiaryCorporateTrustee);
 };
 
 export const retrieveTrustLinks = async (req: Request, appData: ApplicationData) => {

@@ -30,6 +30,21 @@ import {
   REMOVE_CONFIRM_STATEMENT_URL,
   UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL,
   UPDATE_DUE_DILIGENCE_CHANGE_AGENT_CODE,
+  UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_DATE,
+  UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_NAME,
+  UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS,
+  UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_EMAIL,
+  UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME,
+  UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_AML_NUMBER,
+  UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_PARTNER_NAME,
+  UPDATE_DUE_DILIGENCE_CHANGE_WHO,
+  UPDATE_DUE_DILIGENCE_CHANGE_IDENTITY_DATE,
+  UPDATE_DUE_DILIGENCE_CHANGE_NAME,
+  UPDATE_DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS,
+  UPDATE_DUE_DILIGENCE_CHANGE_EMAIL,
+  UPDATE_DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME,
+  UPDATE_DUE_DILIGENCE_CHANGE_AML_NUMBER,
+  UPDATE_DUE_DILIGENCE_CHANGE_PARTNER_NAME
 } from "../../../src/config";
 import app from "../../../src/app";
 import {
@@ -139,28 +154,11 @@ import {
   RELEVANT_PERIOD_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
   RELEVANT_PERIOD_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
   RELEVANT_PERIOD_BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
-  UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE
+  UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+  UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK
 } from "../../__mocks__/session.mock";
 import { DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/due.diligence.mock";
 import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/overseas.entity.due.diligence.mock";
-import {
-  UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_DATE,
-  UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_NAME,
-  UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS,
-  UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_EMAIL,
-  UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME,
-  UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_AML_NUMBER,
-  UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_PARTNER_NAME,
-  UPDATE_DUE_DILIGENCE_CHANGE_WHO,
-  UPDATE_DUE_DILIGENCE_CHANGE_IDENTITY_DATE,
-  UPDATE_DUE_DILIGENCE_CHANGE_NAME,
-  UPDATE_DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS,
-  UPDATE_DUE_DILIGENCE_CHANGE_EMAIL,
-  UPDATE_DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME,
-  UPDATE_DUE_DILIGENCE_CHANGE_AML_NUMBER,
-  UPDATE_DUE_DILIGENCE_CHANGE_PARTNER_NAME,
-} from "../../../src/config";
-
 import { InputDate, OverseasEntityKey, Transactionkey } from '../../../src/model/data.types.model';
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
@@ -169,7 +167,12 @@ import { updateOverseasEntity } from "../../../src/service/overseas.entities.ser
 import { startPaymentsSession } from "../../../src/service/payment.service";
 import { getApplicationData } from "../../../src/utils/application.data";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
-import { dueDiligenceType, managingOfficerType, overseasEntityDueDiligenceType } from "../../../src/model";
+import {
+  beneficialOwnerIndividualType,
+  dueDiligenceType,
+  managingOfficerType,
+  overseasEntityDueDiligenceType
+} from "../../../src/model";
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../../src/model/who.is.making.filing.model";
 import { hasBOsOrMOsUpdate } from "../../../src/middleware/navigation/update/has.beneficial.owners.or.managing.officers.update.middleware";
 import { BeneficialOwnerIndividualKey } from "../../../src/model/beneficial.owner.individual.model";
@@ -379,6 +382,21 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_INDIVIDUAL);
       expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_GOVERNMENT);
       expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_OTHER);
+    });
+
+    test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with correct change links when BO indexes are out of order`, async () => {
+      const appData = {
+        ...APPLICATION_DATA_UPDATE_BO_MOCK,
+        [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [ UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK, UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK ]
+      };
+
+      mockGetApplicationData.mockReturnValue(appData);
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_INDIVIDUAL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_GOVERNMENT);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_OTHER);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_REVIEWED_BO_INDIVIDUAL + "1");
+      expect(resp.text).not.toContain(UPDATE_CHANGE_LINK_REVIEWED_BO_INDIVIDUAL + "0");
     });
 
     test.each([

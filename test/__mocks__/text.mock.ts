@@ -153,7 +153,6 @@ export const NOT_SHOW_BENEFICIAL_OWNER_INFORMATION_ON_PUBLIC_REGISTER = "We will
 export const NOT_SHOW_MANAGING_OFFICER_INFORMATION_ON_PUBLIC_REGISTER = "We will not show the managing officer’s home address unless it is the same as their correspondence address. We’ll only show the month and year of their date of birth.";
 export const SHOW_INFORMATION_ON_PUBLIC_REGISTER = "We will show all the information you provide on this screen on the public Register of Overseas Entities.";
 export const NOT_SHOW_NAME_OR_EMAIL_ON_PUBLIC_REGISTER = "We will not show the name or email address of the person who can be contacted about this managing officer.";
-export const SHOW_CMO_INFORMATION_ON_PUBLIC_REGISTER = "We will show all the other information you provide on this screen on the public Register of Overseas Entities.";
 export const SHOW_OTHER_INFORMATION_ON_PUBLIC_REGISTER = "We will show all the other information you provide on this screen on the public Register of Overseas Entities.";
 export const NOT_SHOW_INFORMATION_ON_PUBLIC_REGISTER = "We will not show any of the information you provide on this screen on the public Register of Overseas Entities.";
 export const USE_INFORMATION_NEED_MORE = "We’ll use this if we need more information about the application.";

@@ -173,8 +173,6 @@ export const removeBeneficialOwnerIndividual = async (req: Request, res: Respons
 };
 
 export const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDataType => {
-  console.log("^^^^^^^^^^^^^^^ " + JSON.stringify(reqBody, null, 2));
-
   const data: ApplicationDataType = prepareData(reqBody, BeneficialOwnerIndividualKeys);
 
   data[UsualResidentialAddressKey] = mapFieldsToDataObject(reqBody, UsualResidentialAddressKeys, AddressKeys);
@@ -201,7 +199,6 @@ export const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDat
   data[IsOnSanctionsListKey] = (data[IsOnSanctionsListKey]) ? +data[IsOnSanctionsListKey] : '';
 
   data[ID] = id;
-  console.log("************** " + JSON.stringify(data, null, 2));
 
   return data;
 };

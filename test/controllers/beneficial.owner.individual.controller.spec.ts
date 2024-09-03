@@ -54,6 +54,12 @@ import {
   SANCTIONS_HINT_TEXT_THEY,
   TRUSTS_NOC_HEADING,
   BACK_BUTTON_CLASS,
+  TRUST_CONTROL_NOC_HEADING,
+  OWNER_OF_LAND_PERSON_NOC_HEADING,
+  OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING,
+  FIRM_NOC_HEADING_NEW,
+  BO_NOC_HEADING,
+  FIRM_NOC_HEADING,
 } from '../__mocks__/text.mock';
 
 import {
@@ -150,7 +156,36 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(YES_SANCTIONS_TEXT_THEY);
       expect(resp.text).toContain(NO_SANCTIONS_TEXT_THEY);
       expect(resp.text).toContain(SANCTIONS_HINT_TEXT_THEY);
+      expect(resp.text).toContain(BO_NOC_HEADING);
       expect(resp.text).toContain(TRUSTS_NOC_HEADING);
+      expect(resp.text).toContain(FIRM_NOC_HEADING);
+      expect(resp.text).not.toContain(FIRM_NOC_HEADING_NEW);
+      expect(resp.text).not.toContain(TRUST_CONTROL_NOC_HEADING);
+      expect(resp.text).not.toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
+      expect(resp.text).not.toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
+    });
+
+    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page natures of control correctly when FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is active`, async () => {
+      const appData = APPLICATION_DATA_MOCK;
+      delete appData[EntityNumberKey];
+
+      mockGetApplicationData.mockReturnValueOnce({ ...appData });
+
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
+      const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(config.LANDING_PAGE_URL);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
+      expect(resp.text).toContain(BO_NOC_HEADING);
+      expect(resp.text).toContain(TRUSTS_NOC_HEADING);
+      expect(resp.text).not.toContain(FIRM_NOC_HEADING);
+      expect(resp.text).toContain(FIRM_NOC_HEADING_NEW);
+      expect(resp.text).toContain(TRUST_CONTROL_NOC_HEADING);
+      expect(resp.text).toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
+      expect(resp.text).toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
     });
 
     test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with correct back link url when Redis removal feature flag is off`, async () => {
@@ -191,7 +226,36 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(YES_SANCTIONS_TEXT_THEY);
       expect(resp.text).toContain(NO_SANCTIONS_TEXT_THEY);
       expect(resp.text).toContain(SANCTIONS_HINT_TEXT_THEY);
+      expect(resp.text).toContain(BO_NOC_HEADING);
       expect(resp.text).toContain(TRUSTS_NOC_HEADING);
+      expect(resp.text).toContain(FIRM_NOC_HEADING);
+      expect(resp.text).not.toContain(FIRM_NOC_HEADING_NEW);
+      expect(resp.text).not.toContain(TRUST_CONTROL_NOC_HEADING);
+      expect(resp.text).not.toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
+      expect(resp.text).not.toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
+    });
+
+    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page natures of control correctly when FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is active`, async () => {
+      const appData = APPLICATION_DATA_MOCK;
+      delete appData[EntityNumberKey];
+
+      mockGetApplicationData.mockReturnValueOnce({ ...appData });
+
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
+      const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(config.LANDING_PAGE_URL);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
+      expect(resp.text).toContain(BO_NOC_HEADING);
+      expect(resp.text).toContain(TRUSTS_NOC_HEADING);
+      expect(resp.text).not.toContain(FIRM_NOC_HEADING);
+      expect(resp.text).toContain(FIRM_NOC_HEADING_NEW);
+      expect(resp.text).toContain(TRUST_CONTROL_NOC_HEADING);
+      expect(resp.text).toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
+      expect(resp.text).toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
     });
 
     test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with correct back link url when feature flag is on`, async () => {
@@ -199,7 +263,8 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       delete appData[EntityNumberKey];
       mockGetApplicationData.mockReturnValueOnce({ ...appData });
       mockGetUrlWithParamsToPath.mockReturnValueOnce(`${BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL}`);
-      mockIsActiveFeature.mockReturnValue(true);
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
 
       const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL);
 
@@ -207,7 +272,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
       expect(resp.text).toContain(BACK_BUTTON_CLASS);
       expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
-      expect(mockIsActiveFeature).toHaveBeenCalledTimes(1);
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(2);
     });
 
   });
@@ -236,7 +301,9 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       const applicationDataMock = { ...APPLICATION_DATA_MOCK };
       delete applicationDataMock[EntityNumberKey];
       mockGetApplicationData.mockReturnValueOnce(applicationDataMock);
-      mockIsActiveFeature.mockReturnValue(true);
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
 
       const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL + BO_IND_ID_URL);
 
@@ -250,7 +317,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(SECOND_NATIONALITY_HINT);
       expect(resp.text).toContain(BACK_BUTTON_CLASS);
       expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(2);
-      expect(mockIsActiveFeature).toHaveBeenCalledTimes(2);
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(3);
     });
 
     test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page when the REDIS_removal flag is OFF`, async () => {
@@ -258,7 +325,8 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       const applicationDataMock = { ...APPLICATION_DATA_MOCK };
       delete applicationDataMock[EntityNumberKey];
       mockGetApplicationData.mockReturnValueOnce(applicationDataMock);
-      mockIsActiveFeature.mockReturnValue(false);
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+      mockIsActiveFeature.mockReturnValueOnce(false); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
       const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL + BO_IND_ID_URL);
 
@@ -272,7 +340,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(SECOND_NATIONALITY_HINT);
       expect(resp.text).toContain(BACK_BUTTON_CLASS);
       expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(0);
-      expect(mockIsActiveFeature).toHaveBeenCalledTimes(2);
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(3);
     });
 
     test("catch error when rendering the page", async () => {

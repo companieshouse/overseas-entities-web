@@ -24,10 +24,10 @@ import {
 import { AddressKeys, EntityNumberKey } from "../../model/data.types.model";
 import { checkRelevantPeriod } from "../../utils/relevant.period";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
     const index = req.query.index;
 
     let dataToReview = {}, principalAddress = {}, serviceAddress = {};
@@ -63,7 +63,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const booIndex = req.query.index;
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
 
     if (booIndex !== undefined && appData.beneficial_owners_corporate && appData.beneficial_owners_corporate[Number(booIndex)].id === req.body["id"]) {
       const boData: BeneficialOwnerOther = appData.beneficial_owners_corporate[Number(booIndex)];

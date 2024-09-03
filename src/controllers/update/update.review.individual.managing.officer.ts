@@ -15,10 +15,10 @@ import { addResignedDateToTemplateOptions } from "../../utils/update/ceased_date
 import { UsualResidentialAddressKey, UsualResidentialAddressKeys } from "../../model/address.model";
 import { checkRelevantPeriod } from "../../utils/relevant.period";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
     const index = req.query.index;
 
     let dataToReview = {}, residentialAddress = {};

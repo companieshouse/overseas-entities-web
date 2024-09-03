@@ -768,7 +768,7 @@ describe("Test fetching and mapping of Trust data", () => {
     };
     mapCorporateTrusteeData(historicalCorporateTrusteeData, trust);
 
-    const mapBeneficiaryCorporateTrusteeData: CorporateTrusteeData = {
+    const mapCorporateBeneficiaryTrusteeData: CorporateTrusteeData = {
       hashedTrusteeId: "3",
       trusteeName: "",
       corporateIndicator: "",
@@ -776,7 +776,7 @@ describe("Test fetching and mapping of Trust data", () => {
       appointmentDate: "2020-05-11",
     };
 
-    mapCorporateTrusteeData(mapBeneficiaryCorporateTrusteeData, trust);
+    mapCorporateTrusteeData(mapCorporateBeneficiaryTrusteeData, trust);
     expect(trust.INDIVIDUALS).toEqual(undefined);
     expect(trust.CORPORATES).toEqual(undefined);
     expect(trust.HISTORICAL_BO).toEqual(undefined);

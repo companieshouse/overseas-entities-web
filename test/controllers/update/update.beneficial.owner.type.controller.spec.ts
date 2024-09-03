@@ -302,8 +302,8 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.header.location).toContain(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
     });
 
-    test('moves reviewable trusts into review and redirects to manage trusts interrupt if manage trusts feature flag is on', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
+    test('moves reviewable trusts into review and redirects to manage trusts interrupt if update trust flag off and cease trusts flag on', async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
       mockRetrieveTrustData.mockReturnValueOnce(Promise.resolve());
       mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
       mockSetExtraData.mockReturnValueOnce(null);
@@ -360,7 +360,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
 
     test('redirects to add trusts if update trusts flag is on, and trusts are required', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
       const mockLandingUrl = 'update/mock-get-trust-landing-url';
       mockGetApplicationData.mockReturnValueOnce(appData);
       mockIsActiveFeature
@@ -377,7 +377,6 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     test('does not redirect to add trusts if update trusts flag is on, and trusts are not required', async () => {
       const mockLandingUrl = 'update/mock-get-trust-landing-url';
       mockGetApplicationData.mockReturnValueOnce(appData);
-      mockIsActiveFeature.mockReturnValueOnce(true);
       mockCheckEntityRequiresTrusts.mockReturnValueOnce(false);
       mockGetTrustLandingUrl.mockReturnValueOnce(mockLandingUrl);
 

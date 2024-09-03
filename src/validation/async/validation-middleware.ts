@@ -5,6 +5,7 @@ import * as config from '../../config';
 import { checkBeneficialOwnersSubmission, checkDatePreviousToFilingDate } from "../../validation/custom.validation";
 import { ErrorMessages } from '../../validation/error.messages';
 import isAllowedUrls from './isAllowedUrls';
+import { isRemoveJourney } from '../../utils/url';
 
 export const beneficialOwnersTypeSubmission = async (req: Request): Promise<ValidationError[]> => {
   const allowedUrls = [
@@ -134,4 +135,39 @@ export const filingPeriodResignedDateValidations = async (req: Request) => {
   ];
 
   return await is_end_date_within_filing_period(req, allowedUrls, "resigned_on", "is_still_mo", ErrorMessages.RESIGNED_ON_BEFORE_FILING_DATE);
+};
+
+export const checkNoChangeReviewStatement = async (req) => {
+  const allowedUrls = [
+    [config.UPDATE_REVIEW_STATEMENT_URL]
+  ];
+
+  const allowed: boolean = isAllowedUrls(allowedUrls, req);
+
+  const errors: ValidationError[] = [];
+
+  if (!allowed) {
+    return errors;
+  }
+
+  try {
+    if (req.body["no_change_review_statement"] === undefined) {
+      if (await isRemoveJourney(req)) {
+        throw new Error(ErrorMessages.SELECT_DO_YOU_WANT_TO_MAKE_CHANGES_REMOVE_STATEMENT);
+      }
+      throw new Error(ErrorMessages.SELECT_DO_YOU_WANT_TO_MAKE_CHANGES_UPDATE_STATEMENT);
+    }
+
+    return errors;
+  } catch (error) {
+    errors.push({
+      value: '',
+      msg: error.message,
+      param: "no_change_review_statement",
+      location: 'body',
+    });
+
+    return errors;
+  }
+
 };

@@ -1094,7 +1094,7 @@ router.route(config.UPDATE_REVIEW_STATEMENT_URL)
     navigation.hasOverseasEntity
   )
   .get(validateStatements, summaryPagesGuard, updateReviewStatement.get)
-  .post(...validator.reviewUpdateStatementChange, checkValidations, updateReviewStatement.post);
+  .post(checkValidations, updateReviewStatement.post);
 
 router.route(config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL)
   .all(authentication)

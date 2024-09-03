@@ -20,7 +20,8 @@ import { Trust, TrustCorporate } from '../../model/trust.model';
 import { RoleWithinTrustType } from '../../model/role.within.trust.type.model';
 import { TrustLegalEntityForm } from '../../model/trust.page.model';
 import { ApplicationData } from '../../model';
-import { checkTrusteeLegalEntityCeasedDate, checkTrustLegalEntityBeneficialOwnerStillInvolved } from '../../validation/async';
+import { checkTrusteeLegalEntityCeasedDate } from '../../validation/async';
+import { checkTrustLegalEntityBeneficialOwnerStillInvolved } from '../../validation/stillInvolved.validation';
 
 const getPageProperties = (trust, formData, errors?: FormattedValidationErrors) => {
   return {

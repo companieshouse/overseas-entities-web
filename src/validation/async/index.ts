@@ -6,96 +6,9 @@ import { ApplicationData } from "model";
 import { RoleWithinTrustType } from '../../model/role.within.trust.type.model';
 import { ErrorMessages } from '../../validation/error.messages';
 import { checkCeasedDateOnOrAfterDateOfBirth, checkCeasedDateOnOrAfterTrustCreationDate, checkIndividualCeasedDateOnOrAfterInterestedPersonStartDate, checkLegalEntityCeasedDateOnOrAfterInterestedPersonStartDate, historicalBOEndDateContext, historicalBOStartDateContext } from '../../validation/fields/date.validation';
-import { hasNoBoAssignableToTrust } from '../../utils/trusts';
 import { dateContext } from '../../validation/fields/helper/date.validation.helper';
 import { checkDatePreviousToFilingDate } from '../../validation/custom.validation';
-
-export const checkTrustStillInvolved = (appData: ApplicationData, req): ValidationError[] => {
-  const allowedUrls = [
-    [config.TRUST_DETAILS_URL],
-    [config.TRUST_ENTRY_WITH_PARAMS_URL],
-    [config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL],
-
-    [config.UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL]
-  ];
-
-  const allowed: boolean = isAllowed(allowedUrls, req);
-
-  const errors: ValidationError[] = [];
-
-  if (!allowed) {
-    return errors;
-  }
-
-  const isUpdateOrRemove: boolean = !!appData.entity_number;
-
-  if (!hasNoBoAssignableToTrust(appData) && isUpdateOrRemove && !req.body["stillInvolved"]) {
-    errors.push({
-      value: '',
-      msg: ErrorMessages.TRUST_STILL_INVOLVED,
-      param: 'stillInvolved',
-      location: 'body',
-    });
-  }
-
-  return errors;
-};
-
-export const checkTrustLegalEntityBeneficialOwnerStillInvolved = (appData: ApplicationData, req): ValidationError[] => {
-  const allowedUrls = [
-    [config.TRUST_ENTRY_URL, config.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL],
-    [config.TRUST_ENTRY_WITH_PARAMS_URL, config.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL],
-    [config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL],
-    [config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL, config.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL + config.TRUSTEE_ID + '?']
-  ];
-
-  const allowed: boolean = isAllowed(allowedUrls, req);
-
-  const errors: ValidationError[] = [];
-
-  if (!allowed) {
-    return errors;
-  }
-
-  if (appData?.entity_number && !req.body["stillInvolved"]) {
-    errors.push({
-      value: '',
-      msg: ErrorMessages.TRUSTEE_STILL_INVOLVED,
-      param: 'stillInvolved',
-      location: 'body',
-    });
-  }
-
-  return errors;
-};
-
-export const checkTrustIndividualBeneficialOwnerStillInvolved = (appData: ApplicationData, req: Request): ValidationError[] => {
-  const allowedUrls = [
-    [config.TRUST_ENTRY_URL, config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL],
-    [config.TRUST_ENTRY_WITH_PARAMS_URL, config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL],
-    [config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL],
-    [config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL, config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL]
-  ];
-
-  const allowed: boolean = isAllowed(allowedUrls, req);
-
-  const errors: ValidationError[] = [];
-
-  if (!allowed) {
-    return errors;
-  }
-
-  if (appData?.entity_number && !req.body["stillInvolved"]) {
-    errors.push({
-      value: '',
-      msg: ErrorMessages.TRUSTEE_STILL_INVOLVED,
-      param: 'stillInvolved',
-      location: 'body',
-    });
-  }
-
-  return errors;
-};
+import isAllowedUrls from './isAllowedUrls';
 
 export const checkTrustIndividualCeasedDate = async (appData: ApplicationData, req: Request): Promise<ValidationError[]> => {
   const allowedUrls = [
@@ -105,7 +18,7 @@ export const checkTrustIndividualCeasedDate = async (appData: ApplicationData, r
     [config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL, config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL]
   ];
 
-  const allowed: boolean = isAllowed(allowedUrls, req);
+  const allowed: boolean = isAllowedUrls(allowedUrls, req);
 
   const errors: ValidationError[] = [];
 
@@ -156,7 +69,7 @@ export const checkTrusteeLegalEntityCeasedDate = async (appData: ApplicationData
     [config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL, config.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL]
   ];
 
-  const allowed: boolean = isAllowed(allowedUrls, req);
+  const allowed: boolean = isAllowedUrls(allowedUrls, req);
 
   const errors: ValidationError[] = [];
 
@@ -204,7 +117,7 @@ const is_date_within_filing_period_trusts = async (req: Request, trustDateContex
     [config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL, config.TRUST_HISTORICAL_BENEFICIAL_OWNER_URL]
   ];
 
-  const allowed: boolean = isAllowed(allowedUrls, req);
+  const allowed: boolean = isAllowedUrls(allowedUrls, req);
 
   const errors: ValidationError[] = [];
 
@@ -240,21 +153,4 @@ const is_date_within_filing_period_trusts = async (req: Request, trustDateContex
 export const filingPeriodTrustStartDateValidations = async (req: Request) => await is_date_within_filing_period_trusts(req, historicalBOStartDateContext, ErrorMessages.START_DATE_BEFORE_FILING_DATE);
 
 export const filingPeriodTrustCeaseDateValidations = async (req: Request) => await is_date_within_filing_period_trusts(req, historicalBOEndDateContext, ErrorMessages.CEASED_DATE_BEFORE_FILING_DATE);
-
-const isAllowed = (allowedUrls: string[][], req): boolean => {
-  // Some tests don't use the controller but the function called by this one and don't have a url in the mockReq
-  if (!req.url && process.env.JEST_WORKER_ID && process.env.NODE_ENV === 'development') {
-    return true;
-  }
-  // end tests condition
-
-  let allowed = false;
-  for (const allowedUrl of allowedUrls) {
-    if (allowedUrl.every(el => req.url.includes(el))) {
-      allowed = true;
-      break;
-    }
-  }
-  return allowed;
-};
 

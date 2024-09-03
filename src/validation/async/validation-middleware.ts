@@ -4,13 +4,14 @@ import { ValidationError } from 'express-validator';
 import * as config from '../../config';
 import { checkBeneficialOwnersSubmission, checkDatePreviousToFilingDate } from "../../validation/custom.validation";
 import { ErrorMessages } from '../../validation/error.messages';
+import isAllowedUrls from './isAllowedUrls';
 
 export const beneficialOwnersTypeSubmission = async (req: Request): Promise<ValidationError[]> => {
   const allowedUrls = [
     [config.REGISTER_AN_OVERSEAS_ENTITY_URL, config.BENEFICIAL_OWNER_TYPE_PAGE, config.SUBMIT_URL]
   ];
 
-  const allowed: boolean = isAllowed(allowedUrls, req);
+  const allowed: boolean = isAllowedUrls(allowedUrls, req);
 
   const errors: ValidationError[] = [];
 
@@ -50,7 +51,7 @@ const is_date_within_filing_period = async (req: Request, date_field_id: string,
     [config.UPDATE_MANAGING_OFFICER_URL]
   ];
 
-  const allowed: boolean = isAllowed(allowedUrls, req);
+  const allowed: boolean = isAllowedUrls(allowedUrls, req);
 
   const errors: ValidationError[] = [];
 
@@ -83,7 +84,7 @@ export const filingPeriodStartDateValidations = async (req: Request) => await is
 
 const is_end_date_within_filing_period = async (req: Request, allowedUrls: Array<string[]>, date_field_id: string, radio_button_id: string, error_message: string) => {
 
-  const allowed: boolean = isAllowed(allowedUrls, req);
+  const allowed: boolean = isAllowedUrls(allowedUrls, req);
 
   const errors: ValidationError[] = [];
 
@@ -133,21 +134,4 @@ export const filingPeriodResignedDateValidations = async (req: Request) => {
   ];
 
   return await is_end_date_within_filing_period(req, allowedUrls, "resigned_on", "is_still_mo", ErrorMessages.RESIGNED_ON_BEFORE_FILING_DATE);
-};
-
-const isAllowed = (allowedUrls: string[][], req): boolean => {
-  // Some tests don't use the controller but the function called by this one and don't have a url in the mockReq
-  if (!req.url && process.env.JEST_WORKER_ID && process.env.NODE_ENV === 'development') {
-    return true;
-  }
-  // end tests condition
-
-  let allowed = false;
-  for (const allowedUrl of allowedUrls) {
-    if (allowedUrl.every(el => req.url.includes(el))) {
-      allowed = true;
-      break;
-    }
-  }
-  return allowed;
 };

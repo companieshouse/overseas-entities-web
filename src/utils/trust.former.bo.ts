@@ -15,7 +15,8 @@ import { ValidationError, validationResult } from 'express-validator';
 import { safeRedirect } from '../utils/http.ext';
 import { isActiveFeature } from './feature.flag';
 import { getUrlWithParamsToPath } from './url';
-import { checkTrustLegalEntityBeneficialOwnerStillInvolved, filingPeriodTrustCeaseDateValidations, filingPeriodTrustStartDateValidations } from '../validation/async';
+import { filingPeriodTrustCeaseDateValidations, filingPeriodTrustStartDateValidations } from '../validation/async';
+import { checkTrustLegalEntityBeneficialOwnerStillInvolved } from '../validation/stillInvolved.validation';
 
 export const HISTORICAL_BO_TEXTS = {
   title: 'Tell us about the former beneficial owner',

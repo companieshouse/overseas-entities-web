@@ -18,7 +18,7 @@ import { setTrustDetailsAsReviewed, getReviewTrustById, updateTrustInReviewList 
 import { isActiveFeature } from "../utils/feature.flag";
 import { getUrlWithParamsToPath } from "../utils/url";
 import { ValidationError } from 'express-validator';
-import { checkTrustStillInvolved } from '../validation/async';
+import { checkTrustStillInvolved } from '../validation/stillInvolved.validation';
 
 export const TRUST_DETAILS_TEXTS = {
   title: 'Tell us about the trust',

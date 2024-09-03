@@ -15,7 +15,8 @@ import { FormattedValidationErrors, formatValidationError } from '../middleware/
 import { ValidationError, validationResult } from 'express-validator';
 import { isActiveFeature } from './feature.flag';
 import { getUrlWithParamsToPath } from './url';
-import { checkTrusteeLegalEntityCeasedDate, checkTrustLegalEntityBeneficialOwnerStillInvolved } from '../validation/async';
+import { checkTrusteeLegalEntityCeasedDate } from '../validation/async';
+import { checkTrustLegalEntityBeneficialOwnerStillInvolved } from '../validation/stillInvolved.validation';
 
 export const LEGAL_ENTITY_BO_TEXTS = {
   title: 'Tell us about the legal entity',

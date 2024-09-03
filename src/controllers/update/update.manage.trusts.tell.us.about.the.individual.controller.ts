@@ -21,7 +21,8 @@ import { IndividualTrustee, Trust, TrustIndividual } from '../../model/trust.mod
 import { RoleWithinTrustType } from '../../model/role.within.trust.type.model';
 import { IndividualTrusteesFormCommon } from '../../model/trust.page.model';
 import { ApplicationData } from 'model';
-import { checkTrustIndividualBeneficialOwnerStillInvolved, checkTrustIndividualCeasedDate } from '../../validation/async';
+import { checkTrustIndividualCeasedDate } from '../../validation/async';
+import { checkTrustIndividualBeneficialOwnerStillInvolved } from '../../validation/stillInvolved.validation';
 
 const getPageProperties = (trust, formData, trustee: TrustIndividual, errors?: FormattedValidationErrors) => {
   return {

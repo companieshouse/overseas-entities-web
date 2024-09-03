@@ -15,7 +15,8 @@ import { Session } from '@companieshouse/node-session-handler';
 import { saveAndContinue } from './save.and.continue';
 import { isActiveFeature } from './feature.flag';
 import { getUrlWithParamsToPath } from './url';
-import { checkTrustIndividualBeneficialOwnerStillInvolved, checkTrustIndividualCeasedDate } from '../validation/async';
+import { checkTrustIndividualCeasedDate } from '../validation/async';
+import { checkTrustIndividualBeneficialOwnerStillInvolved } from '../validation/stillInvolved.validation';
 
 export const INDIVIDUAL_BO_TEXTS = {
   title: 'Tell us about the individual',

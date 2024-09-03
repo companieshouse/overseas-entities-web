@@ -154,6 +154,7 @@ export const NOT_SHOW_MANAGING_OFFICER_INFORMATION_ON_PUBLIC_REGISTER = "We will
 export const SHOW_INFORMATION_ON_PUBLIC_REGISTER = "We will show all the information you provide on this screen on the public Register of Overseas Entities.";
 export const SHOW_OTHER_INFORMATION_ON_PUBLIC_REGISTER = "We will show all the other information you provide on this screen on the public Register of Overseas Entities.";
 export const NOT_SHOW_INFORMATION_ON_PUBLIC_REGISTER = "We will not show any of the information you provide on this screen on the public Register of Overseas Entities.";
+export const NOT_SHOW_NAME_OR_EMAIL_ON_PUBLIC_REGISTER = "We will not show the name or email address of the person who can be contacted about this managing officer.";
 export const USE_INFORMATION_NEED_MORE = "We’ll use this if we need more information about the application.";
 export const UPDATE_USE_INFORMATION_NEED_MORE = "We’ll use this if we need more information about the update.";
 export const UK_REGULATED_AGENT = "Someone who works for the UK-regulated agent that carried out verification checks";

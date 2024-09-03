@@ -113,7 +113,6 @@ import { authentication } from "../middleware/authentication.middleware";
 import { navigation } from "../middleware/navigation";
 import { checkTrustValidations, checkValidations } from "../middleware/validation.middleware";
 import { isFeatureEnabled } from '../middleware/is.feature.enabled.middleware';
-import { isFeatureDisabled } from '../middleware/is.feature.disabled.middleware';
 import { validator } from "../validation";
 import { companyAuthentication } from "../middleware/company.authentication.middleware";
 import { validateStatements, statementValidationErrorsGuard, summaryPagesGuard } from "../middleware/statement.validation.middleware";
@@ -803,7 +802,6 @@ router.route(config.UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL)
 
 router.route(config.UPDATE_TRUSTS_SUBMISSION_INTERRUPT_URL)
   .all(
-    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS),
     authentication,
     companyAuthentication,
     navigation.hasUpdatePresenter,
@@ -813,7 +811,6 @@ router.route(config.UPDATE_TRUSTS_SUBMISSION_INTERRUPT_URL)
 
 router.route(config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL + config.TRUST_ID + '?')
   .all(
-    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS),
     authentication,
     companyAuthentication,
     navigation.hasUpdatePresenter
@@ -823,7 +820,6 @@ router.route(config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL + config.TRUST_ID + '?')
 
 router.route(config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + config.TRUST_ID + config.TRUST_INVOLVED_URL)
   .all(
-    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS),
     authentication,
     companyAuthentication,
     navigation.hasUpdatePresenter,
@@ -845,7 +841,6 @@ router.route(config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL + co
 router
   .route(config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + config.TRUST_ID + config.TRUST_HISTORICAL_BENEFICIAL_OWNER_URL + config.TRUSTEE_ID + '?')
   .all(
-    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS),
     authentication,
     companyAuthentication,
     navigation.hasUpdatePresenter,
@@ -857,7 +852,6 @@ router
 router
   .route(config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + config.TRUST_ID + config.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL + config.TRUSTEE_ID + '?')
   .all(
-    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS),
     authentication,
     companyAuthentication,
     navigation.hasUpdatePresenter,
@@ -868,7 +862,6 @@ router
 
 router.route(config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL)
   .all(
-    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS),
     authentication,
     companyAuthentication,
     navigation.hasUpdatePresenter,
@@ -879,7 +872,6 @@ router.route(config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL)
 
 router.route(config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + config.TRUST_ID + config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL + config.TRUSTEE_ID + '?')
   .all(
-    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS),
     authentication,
     companyAuthentication,
     navigation.hasUpdatePresenter,
@@ -1121,14 +1113,12 @@ router.route(config.REMOVE_CONFIRM_STATEMENT_URL)
 
 router.route(config.UPDATE_TRUSTS_SUBMIT_BY_PAPER_URL)
   .all(
-    isFeatureDisabled(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS),
     authentication
   )
   .get(updateTrustsSubmitByPaper.get);
 
 router.route(config.UPDATE_ANY_TRUSTS_INVOLVED_URL)
   .all(
-    isFeatureDisabled(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS),
     authentication
   )
   .get(updateAnyTrustsInvolved.get)

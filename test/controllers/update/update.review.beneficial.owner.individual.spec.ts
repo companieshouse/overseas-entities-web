@@ -79,7 +79,7 @@ describe(`Update review beneficial owner individual controller`, () => {
       expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_HEADING);
       expect(resp.text).toContain(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
       expect(resp.text).toContain("residential address addressLine1");
-      expect(resp.text).not.toContain(TRUSTS_NOC_HEADING);
+      expect(resp.text).toContain(TRUSTS_NOC_HEADING);
     });
 
     test("return empty object when no address in data to review", async () => {

@@ -16,7 +16,6 @@ import { checkAndReviewBeneficialOwner } from "../../utils/update/review.benefic
 import { checkAndReviewManagingOfficers } from "../../utils/update/review.managing.officer";
 import { ManagingOfficerCorporateKey } from "../../model/managing.officer.corporate.model";
 import { ManagingOfficerKey } from "../../model/managing.officer.model";
-import { isActiveFeature } from "../../utils/feature.flag";
 import { hasTrustsToReview, moveReviewableTrustsIntoReview, resetReviewStatusOnAllTrustsToBeReviewed } from "../../utils/update/review_trusts";
 import { checkEntityRequiresTrusts, getTrustLandingUrl } from "../../utils/trusts";
 import { retrieveTrustData } from "../../utils/update/trust.model.fetch";
@@ -121,7 +120,7 @@ export const postSubmit = async (req: Request, res: Response, next: NextFunction
       return res.redirect(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
     }
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS) && checkEntityRequiresTrusts(appData)) {
+    if (checkEntityRequiresTrusts(appData)) {
       return res.redirect(getTrustLandingUrl(appData));
     }
 

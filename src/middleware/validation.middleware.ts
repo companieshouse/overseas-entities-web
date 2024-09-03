@@ -30,7 +30,7 @@ import { beneficialOwnersTypeSubmission, filingPeriodCeasedDateValidations, fili
 export const checkValidations = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const errorList = validationResult(req);
-    const customErrors = await checkErrors(req);
+    const customErrors = await getValidationErrors(req);
 
     if (!errorList.isEmpty() || customErrors.length > 0) {
       const errorListArray = !errorList.isEmpty() ? errorList.array() : [];
@@ -158,7 +158,7 @@ export function formatValidationError(errorList: ValidationError[]): FormattedVa
   return errors;
 }
 
-const checkErrors = async (req: Request): Promise<ValidationError[]> => {
+const getValidationErrors = async (req: Request): Promise<ValidationError[]> => {
   const beneficialOwnersTypeErrors = await beneficialOwnersTypeSubmission(req);
   const filingPeriodStartDateErrors = await filingPeriodStartDateValidations(req);
   const filingPeriodCeasedDateErrors = await filingPeriodCeasedDateValidations(req);

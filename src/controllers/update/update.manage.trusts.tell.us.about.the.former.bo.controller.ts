@@ -51,7 +51,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     // check for form validation errors
     const errorList = validationResult(req);
-    const errors = await checkErrors(req);
+    const errors = await getValidationErrors(req);
 
     if (!errorList.isEmpty() || errors.length) {
       const errorListArray = !errorList.isEmpty() ? errorList.array() : [];
@@ -107,7 +107,7 @@ const getBackLink = (formerBosReviewed) => {
   }
 };
 
-const checkErrors = async (req: Request): Promise<ValidationError[]> => {
+const getValidationErrors = async (req: Request): Promise<ValidationError[]> => {
   const filingPeriodTrustStartDateErrors = await filingPeriodTrustStartDateValidations(req);
   const filingPeriodTrustCeaseDateErrors = await filingPeriodTrustCeaseDateValidations(req);
 

@@ -81,7 +81,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const isRelevantPeriod = req.query['relevant-period'];
     const formData = req.body as TrustLegalEntityForm;
     const errorList = validationResult(req);
-    const errors = await checkErrors(appData, req);
+    const errors = await getValidationErrors(appData, req);
 
     if (!errorList.isEmpty() || errors.length) {
       const errorListArray = !errorList.isEmpty() ? errorList.array() : [];
@@ -131,7 +131,7 @@ const getBackLink = (legalEntitiesReviewed: boolean) => {
   }
 };
 
-const checkErrors = async (appData: ApplicationData, req: Request): Promise<ValidationError[]> => {
+const getValidationErrors = async (appData: ApplicationData, req: Request): Promise<ValidationError[]> => {
   const stillInvolvedErrors = checkTrustLegalEntityBeneficialOwnerStillInvolved(appData, req);
   const ceasedDateErrors = await checkTrusteeLegalEntityCeasedDate(appData, req);
 

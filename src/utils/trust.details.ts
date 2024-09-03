@@ -161,7 +161,7 @@ export const postTrustDetails = async (req: Request, res: Response, next: NextFu
 
     // check for errors
     const errorList = validationResult(req);
-    const errors = checkErrors(appData, req);
+    const errors = getValidationErrors(appData, req);
     const formData: PageModel.TrustDetailsForm = req.body as PageModel.TrustDetailsForm;
 
     if (!errorList.isEmpty() || errors.length) {
@@ -290,7 +290,7 @@ const getNextPage = (isUpdate: boolean, trustId: string, req: Request, isReview?
   }
 };
 
-const checkErrors = (appData: ApplicationData, req: Request): ValidationError[] => {
+const getValidationErrors = (appData: ApplicationData, req: Request): ValidationError[] => {
   const stillInvolvedErrors = checkTrustStillInvolved(appData, req);
 
   return [...stillInvolvedErrors];

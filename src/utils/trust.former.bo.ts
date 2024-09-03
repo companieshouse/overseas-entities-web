@@ -99,7 +99,7 @@ export const postTrustFormerBo = async (req: Request, res: Response, next: NextF
 
     // check for errors
     const errorList = validationResult(req);
-    const errors = await checkErrors(appData, req);
+    const errors = await getValidationErrors(appData, req);
     const formData: PageModel.TrustHistoricalBeneficialOwnerForm = req.body as PageModel.TrustHistoricalBeneficialOwnerForm;
 
     // if no errors present rerender the page
@@ -166,7 +166,7 @@ const getTrustEntryUrl = (req: Request) => {
   return url;
 };
 
-const checkErrors = async (appData: ApplicationData, req: Request): Promise<ValidationError[]> => {
+const getValidationErrors = async (appData: ApplicationData, req: Request): Promise<ValidationError[]> => {
   const stillInvolvedErrors = checkTrustLegalEntityBeneficialOwnerStillInvolved(appData, req);
   const filingPeriodTrustStartDateErrors = await filingPeriodTrustStartDateValidations(req);
   const filingPeriodTrustCeaseDateErrors = await filingPeriodTrustCeaseDateValidations(req);

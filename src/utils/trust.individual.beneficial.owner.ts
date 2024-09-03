@@ -111,7 +111,7 @@ export const postTrustIndividualBo = async (req: Request, res: Response, next: N
 
     // check for errors
     const errorList = validationResult(req);
-    const errors = await checkErrors(appData, req);
+    const errors = await getValidationErrors(appData, req);
 
     const formData: PageModel.IndividualTrusteesFormCommon = req.body as PageModel.IndividualTrusteesFormCommon;
     // if no errors present rerender the page
@@ -184,7 +184,7 @@ const getUrl = (isUpdate: boolean) => {
   }
 };
 
-const checkErrors = async (appData: ApplicationData, req: Request): Promise<ValidationError[]> => {
+const getValidationErrors = async (appData: ApplicationData, req: Request): Promise<ValidationError[]> => {
   const stillInvolvedErrors = checkTrustIndividualBeneficialOwnerStillInvolved(appData, req);
   const ceasedDateErrors = await checkTrustIndividualCeasedDate(appData, req);
 

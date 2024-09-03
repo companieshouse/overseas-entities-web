@@ -77,7 +77,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     const relevant_period = req.query['relevant-period'];
     const errorList = validationResult(req);
-    const errors = await checkErrors(appData, req);
+    const errors = await getValidationErrors(appData, req);
 
     const formData: IndividualTrusteesFormCommon = req.body;
 
@@ -133,7 +133,7 @@ const getPagePropertiesRelevantPeriod = (relevant_period, trust, formData, trust
   return pageProps;
 };
 
-const checkErrors = async (appData: ApplicationData, req: Request): Promise<ValidationError[]> => {
+const getValidationErrors = async (appData: ApplicationData, req: Request): Promise<ValidationError[]> => {
   const stillInvolvedErrors = checkTrustIndividualBeneficialOwnerStillInvolved(appData, req);
   const ceasedDateErrors = await checkTrustIndividualCeasedDate(appData, req);
 

@@ -116,7 +116,7 @@ export const postTrustLegalEntityBo = async (req: Request, res: Response, next: 
 
     // validate request
     const errorList = validationResult(req);
-    const errors = await checkErrors(appData, req);
+    const errors = await getValidationErrors(appData, req);
     const formData: TrustLegalEntityForm = req.body as TrustLegalEntityForm;
 
     if (!errorList.isEmpty() || errors.length) {
@@ -188,7 +188,7 @@ export const setEntityNameInRelevantPeriodPageBanner = (pageProps: TrustLegalEnt
   return pageProps;
 };
 
-const checkErrors = async (appData: ApplicationData, req: Request): Promise<ValidationError[]> => {
+const getValidationErrors = async (appData: ApplicationData, req: Request): Promise<ValidationError[]> => {
   const stillInvolvedErrors = checkTrustLegalEntityBeneficialOwnerStillInvolved(appData, req);
   const ceasedDateErrors = await checkTrusteeLegalEntityCeasedDate(appData, req);
 

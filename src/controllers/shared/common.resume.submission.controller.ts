@@ -85,7 +85,7 @@ export const getResumePage = async (req: Request, res: Response, next: NextFunct
  * @param overseaEntityId
  */
 const setWebApplicationData = (session: Session, appData: ApplicationData, transactionId: string, overseaEntityId: string) => {
-
+  // TODO map the 3 new NOCs once added to API and SDK - (trust control and 2 x jurisdiction nocs)
   appData[BeneficialOwnerIndividualKey] = (appData[BeneficialOwnerIndividualKey] as BeneficialOwnerIndividual[])
     .map( boi => { return { ...boi, [ID]: uuidv4() }; } );
   appData[BeneficialOwnerOtherKey] = (appData[BeneficialOwnerOtherKey] as BeneficialOwnerOther[] )

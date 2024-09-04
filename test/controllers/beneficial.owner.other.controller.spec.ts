@@ -733,7 +733,9 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
   describe("POST with url params tests", () => {
 
     test(`Sets session data and renders the ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+
       const beneficialOwnerOtherMock = { ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK, [IsOnSanctionsListKey]: "0" };
       mockPrepareData.mockReturnValueOnce(beneficialOwnerOtherMock);
       const resp = await request(app).post(BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL)

@@ -82,14 +82,14 @@ export const getBeneficialOwnerIndividualById = (req: Request, res: Response, ne
       ...serviceAddress,
       [DateOfBirthKey]: dobDate,
       [StartDateKey]: startDate,
-      entity_name: appData.entity_name
+      entity_name: appData.entity_name,
+      FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC: isActiveFeature(config.FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)
     };
 
     // Redis removal work - Add extra template options if Redis Remove flag is true and on Registration journey
     const isRegistration: boolean = req.path.startsWith(config.LANDING_URL);
     if (isRegistration) {
       addActiveSubmissionBasePathToTemplateData(templateOptions, req);
-      templateOptions["FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC"] = isActiveFeature(config.FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC);
     }
 
     if (EntityNumberKey in appData && appData[EntityNumberKey]) {

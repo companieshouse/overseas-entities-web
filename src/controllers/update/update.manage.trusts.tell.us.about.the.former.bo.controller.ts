@@ -107,6 +107,7 @@ const getBackLink = (formerBosReviewed) => {
   }
 };
 
+// Get validation errors that depend on an asynchronous request
 const getValidationErrors = async (req: Request): Promise<ValidationError[]> => {
   const filingPeriodTrustStartDateErrors = await filingPeriodTrustStartDateValidations(req);
   const filingPeriodTrustCeaseDateErrors = await filingPeriodTrustCeaseDateValidations(req);

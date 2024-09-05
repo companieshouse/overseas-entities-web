@@ -185,6 +185,7 @@ const getUrl = (isUpdate: boolean) => {
   }
 };
 
+// Get validation errors that depend on an asynchronous request
 const getValidationErrors = async (appData: ApplicationData, req: Request): Promise<ValidationError[]> => {
   const stillInvolvedErrors = checkTrustIndividualBeneficialOwnerStillInvolved(appData, req);
   const ceasedDateErrors = await checkTrustIndividualCeasedDate(appData, req);

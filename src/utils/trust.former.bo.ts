@@ -167,6 +167,7 @@ const getTrustEntryUrl = (req: Request) => {
   return url;
 };
 
+// Get validation errors that depend on an asynchronous request
 const getValidationErrors = async (appData: ApplicationData, req: Request): Promise<ValidationError[]> => {
   const stillInvolvedErrors = checkTrustLegalEntityBeneficialOwnerStillInvolved(appData, req);
   const filingPeriodTrustStartDateErrors = await filingPeriodTrustStartDateValidations(req);

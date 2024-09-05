@@ -290,6 +290,7 @@ const getNextPage = (isUpdate: boolean, trustId: string, req: Request, isReview?
   }
 };
 
+// Get validation errors that depend on an asynchronous request
 const getValidationErrors = (appData: ApplicationData, req: Request): ValidationError[] => {
   const stillInvolvedErrors = checkTrustStillInvolved(appData, req);
 

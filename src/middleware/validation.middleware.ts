@@ -166,6 +166,7 @@ export function formatValidationError(errorList: ValidationError[]): FormattedVa
   return errors;
 }
 
+// Get validation errors that depend on an asynchronous request
 const getValidationErrors = async (req: Request): Promise<ValidationError[]> => {
   const beneficialOwnersTypeErrors = await beneficialOwnersTypeSubmission(req);
   const filingPeriodStartDateErrors = await filingPeriodStartDateValidations(req);

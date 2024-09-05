@@ -17,8 +17,9 @@ export const getPresenterPage = async (req: Request, res: Response, next: NextFu
 
     const appData: ApplicationData = await getApplicationData(req.session);
     const presenter = appData[PresenterKey];
+    const isRemove: boolean = await isRemoveJourney(req);
 
-    if (isRemoveJourney(req)){
+    if (isRemove){
       return res.render(templateName, {
         journey: config.JourneyType.remove,
         backLinkUrl: `${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`,
@@ -43,8 +44,9 @@ export const postPresenterPage = async (req: Request, res: Response, next: NextF
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const session = req.session as Session;
+    const isRemove: boolean = await isRemoveJourney(req);
 
-    if (isRemoveJourney(req)) {
+    if (isRemove) {
       const appData: ApplicationData = await getApplicationData(session);
 
       if (!appData[Transactionkey]) {

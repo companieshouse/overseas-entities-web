@@ -231,11 +231,10 @@ describe('tests for checkDatePreviousToFilingDate ', () => {
       .toBeTruthy();
   });
 
-  // asm-350 - Jest worker encountered 4 child process exceptions, exceeding retry limit
-  test.skip("should return error if startDate is after filingDate", () => {
+  test("should return error if startDate is after filingDate", async () => {
     (getApplicationData as jest.Mock).mockReturnValue(mockAppData);
 
-    expect(() => custom.checkDatePreviousToFilingDate(mockReq, "3", "8", "2023", ErrorMessages.START_DATE_BEFORE_FILING_DATE))
+    await expect(custom.checkDatePreviousToFilingDate(mockReq, "3", "8", "2023", ErrorMessages.START_DATE_BEFORE_FILING_DATE)).rejects
       .toThrowError(ErrorMessages.START_DATE_BEFORE_FILING_DATE);
   });
 

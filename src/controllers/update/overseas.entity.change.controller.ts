@@ -19,7 +19,9 @@ export const get = async (req: Request, resp: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const appData: ApplicationData = await getApplicationData(req.session);
-    if (isRemoveJourney(req)) {
+    const isRemove: boolean = await isRemoveJourney(req);
+
+    if (isRemove) {
       return resp.render(config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE, {
         journey: config.JourneyType.remove,
         backLinkUrl: config.OVERSEAS_ENTITY_PRESENTER_URL,

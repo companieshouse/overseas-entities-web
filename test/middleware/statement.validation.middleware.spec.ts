@@ -40,9 +40,9 @@ describe('statement validation middleware', () => {
   });
 
   describe("statementValidationErrorsGuard", () => {
-    test(`Redirects to ${REMOVE_CONFIRM_STATEMENT_URL} when on the remove journey`, () => {
+    test(`Redirects to ${REMOVE_CONFIRM_STATEMENT_URL} when on the remove journey`, async () => {
       mockIsRemoveJourney.mockReturnValueOnce(true);
-      statementValidationErrorsGuard(req, res, next);
+      await statementValidationErrorsGuard(req, res, next);
       expect(next).not.toHaveBeenCalled();
       expect(res.redirect).toHaveBeenCalledWith(REMOVE_CONFIRM_STATEMENT_URL);
     });

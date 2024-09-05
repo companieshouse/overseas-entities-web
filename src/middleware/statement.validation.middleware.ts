@@ -22,7 +22,9 @@ export const statementValidationErrorsGuard = async (req: Request, res: Response
     return next();
   }
 
-  if (isRemoveJourney(req)) {
+  const isRemove: boolean = await isRemoveJourney(req);
+
+  if (isRemove) {
     return res.redirect(REMOVE_CONFIRM_STATEMENT_URL);
   }
 

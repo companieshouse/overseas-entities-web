@@ -66,7 +66,9 @@ export const checkValidations = async (req: Request, res: Response, next: NextFu
       // The journey property may already be part of the page form data/body so get it from there and override it if we are on a remove journey
       // Then when we pass it back into the template, make sure it is below/after the req.body fields so it overrides the req.body value
       let journey = req.body["journey"];
-      if (isRemoveJourney(req)) {
+      const isRemove: boolean = await isRemoveJourney(req);
+
+      if (isRemove) {
         journey = config.JourneyType.remove;
       }
 
@@ -76,7 +78,7 @@ export const checkValidations = async (req: Request, res: Response, next: NextFu
         // This is for the REDIS removal work, all BO / MO pages need the activeSubmissionBasePath passed into the template
         // and we also need to pass the feature flag as true so the template constructs the correct urls.
         return res.render(NAVIGATION[routePath].currentPage, {
-          backLinkUrl: NAVIGATION[routePath].previousPage(appData, req),
+          backLinkUrl: await NAVIGATION[routePath].previousPage(appData, req),
           templateName: NAVIGATION[routePath].currentPage,
           id,
           entityName,
@@ -96,7 +98,7 @@ export const checkValidations = async (req: Request, res: Response, next: NextFu
       }
 
       return res.render(NAVIGATION[routePath].currentPage, {
-        backLinkUrl: NAVIGATION[routePath].previousPage(appData, req),
+        backLinkUrl: await NAVIGATION[routePath].previousPage(appData, req),
         templateName: NAVIGATION[routePath].currentPage,
         id,
         entityName,
@@ -129,7 +131,7 @@ export const checkTrustValidations = async (req: Request, res: Response, next: N
       const appData: ApplicationData = await getApplicationData(req.session);
 
       return res.render(NAVIGATION[routePath].currentPage, {
-        backLinkUrl: NAVIGATION[routePath].previousPage(appData),
+        backLinkUrl: await NAVIGATION[routePath].previousPage(appData),
         templateName: NAVIGATION[routePath].currentPage,
         ...req.body,
         beneficialOwners: getBeneficialOwnerList(appData),

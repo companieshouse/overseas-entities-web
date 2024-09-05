@@ -152,7 +152,9 @@ export const checkNoChangeReviewStatement = async (req) => {
 
   try {
     if (req.body["no_change_review_statement"] === undefined) {
-      if (await isRemoveJourney(req)) {
+      const isRemove: boolean = await isRemoveJourney(req);
+
+      if (isRemove) {
         throw new Error(ErrorMessages.SELECT_DO_YOU_WANT_TO_MAKE_CHANGES_REMOVE_STATEMENT);
       }
       throw new Error(ErrorMessages.SELECT_DO_YOU_WANT_TO_MAKE_CHANGES_UPDATE_STATEMENT);
@@ -186,7 +188,9 @@ export const checkNoChangeStatementSubmission = async (req) => {
 
   try {
     if (req.body["no_change"] === undefined) {
-      if (await isRemoveJourney(req)) {
+      const isRemove: boolean = await isRemoveJourney(req);
+
+      if (await isRemove) {
         throw new Error(ErrorMessages.SELECT_REMOVE_DO_YOU_WANT_TO_MAKE_OE_CHANGE);
       }
       throw new Error(ErrorMessages.SELECT_DO_YOU_WANT_TO_MAKE_OE_CHANGE);

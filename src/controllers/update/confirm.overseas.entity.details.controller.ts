@@ -15,8 +15,9 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     const appData: ApplicationData = await getApplicationData(req.session as Session);
     const update = appData.update as Update;
+    const isRemove: boolean = await isRemoveJourney(req);
 
-    if (isRemoveJourney(req)) {
+    if (isRemove) {
       return res.render(config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE, {
         journey: config.JourneyType.remove,
         backLinkUrl: `${config.OVERSEAS_ENTITY_QUERY_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`,
@@ -46,12 +47,13 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const appData: ApplicationData = await getApplicationData(req.session as Session);
+    const isRemove: boolean = await isRemoveJourney(req);
 
     if (!isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS) && checkEntityReviewRequiresTrusts(appData)) {
       return res.redirect(config.UPDATE_TRUSTS_SUBMIT_BY_PAPER_URL);
     }
 
-    if (isRemoveJourney(req)) {
+    if (isRemove) {
       return res.redirect(`${config.OVERSEAS_ENTITY_PRESENTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
     }
 

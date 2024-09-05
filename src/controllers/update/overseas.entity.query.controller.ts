@@ -17,8 +17,9 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const appData: ApplicationData = await getApplicationData(req.session);
+    const isRemove: boolean = await isRemoveJourney(req);
 
-    if (isRemoveJourney(req)) {
+    if (isRemove) {
       return res.render(config.OVERSEAS_ENTITY_QUERY_PAGE, {
         journey: config.JourneyType.remove,
         backLinkUrl: `${config.UPDATE_INTERRUPT_CARD_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`,
@@ -46,9 +47,10 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     const entityNumber = req.body[EntityNumberKey];
     const companyProfile = await getCompanyProfile(req, entityNumber);
+    const isRemove: boolean = await isRemoveJourney(req);
 
     if (!companyProfile) {
-      return renderGetPageWithError(req, res, entityNumber);
+      return await renderGetPageWithError(req, res, entityNumber);
     }
 
     const appData: ApplicationData = await getApplicationData(req.session);
@@ -56,7 +58,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       await addOeToApplicationData(req, appData, entityNumber, companyProfile);
     }
 
-    if (isRemoveJourney(req)) {
+    if (isRemove) {
       return res.redirect(`${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
     }
 
@@ -76,10 +78,11 @@ function createEntityNumberError(entityNumber: string): any {
   return errors;
 }
 
-const renderGetPageWithError = (req: Request, res: Response, entityNumber: any) => {
+const renderGetPageWithError = async (req: Request, res: Response, entityNumber: any) => {
   const errors = createEntityNumberError(entityNumber);
+  const isRemove: boolean = await isRemoveJourney(req);
 
-  if (isRemoveJourney(req)) {
+  if (isRemove) {
     return res.render(config.OVERSEAS_ENTITY_QUERY_PAGE, {
       journey: config.JourneyType.remove,
       backLinkUrl: `${config.UPDATE_INTERRUPT_CARD_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`,

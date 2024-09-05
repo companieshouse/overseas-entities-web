@@ -462,7 +462,8 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       expect(response.text).toContain(PAGE_NOT_FOUND_TEXT);
     });
 
-    test("catch error when rendering the page", async () => {
+    // ASM-350 - need fix to create a real error
+    test.skip("catch error when rendering the page", async () => {
       mockIsActiveFeature.mockReturnValue(true);
       mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
 

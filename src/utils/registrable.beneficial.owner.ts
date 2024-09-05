@@ -48,7 +48,9 @@ export const postRegistrableBeneficialOwner = async (req: Request, res: Response
     setExtraData(req.session, appData);
     await saveAndContinue(req, session);
 
-    if (isRemoveJourney(req)) {
+    const isRemove: boolean = await isRemoveJourney(req);
+
+    if (isRemove) {
       return res.redirect(config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL);
     }
 

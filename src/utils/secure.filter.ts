@@ -13,8 +13,9 @@ export const getFilterPage = async (req: Request, res: Response, next: NextFunct
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const appData: ApplicationData = await getApplicationData(req.session);
+    const isRemove: boolean = await isRemoveJourney(req);
 
-    if (isRemoveJourney(req)) {
+    if (isRemove) {
       return res.render(templateName, {
         templateName,
         journey: config.JourneyType.remove,
@@ -71,7 +72,9 @@ export const postFilterPage = async (
       }
     }
 
-    if (isRemoveJourney(req)) {
+    const isRemove: boolean = await isRemoveJourney(req);
+
+    if (isRemove) {
       nextPageUrl = `${nextPageUrl}${config.JOURNEY_REMOVE_QUERY_PARAM}`;
     }
     setExtraData(req.session, appData);

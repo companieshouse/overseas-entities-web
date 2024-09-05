@@ -10,9 +10,10 @@ import {
 import { logger } from "../../../utils/logger";
 import { isRemoveJourney } from "../../../utils/url";
 
-export const removeJourneyMiddleware = (req: Request, res: Response, next: NextFunction) => {
+export const removeJourneyMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+  const isRemove: boolean = await isRemoveJourney(req);
 
-  if (isRemoveJourney(req)) {
+  if (isRemove) {
     logger.infoRequest(req, "Marking this request/response as a Remove Journey");
     res.locals.journey = JourneyType.remove;
   }

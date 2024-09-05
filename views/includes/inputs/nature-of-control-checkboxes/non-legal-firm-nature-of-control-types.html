@@ -1,6 +1,6 @@
 {% set nonLegalLegendText = "The beneficial owner is a member of a firm that is not a legal person under its governing law, and:" %}
 
-{% if FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC and not entity_number %}
+{% if FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC and not entity_number and isBeneficialOwnerIndividual %}
   {% set nonLegalLegendText = "The beneficial owner has the right to exercise, or actually exercises, significant control or influence over the activities of a firm that is not a legal person under its governing law, and:" %}
 {% endif %}
 

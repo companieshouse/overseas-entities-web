@@ -20,7 +20,6 @@ import { signOut } from "./sign.out.validation";
 import { overseasName } from "./overseas.name.validation";
 import { startingNew } from "./starting.new.validation";
 import { trustInvolved } from './trust.involved.validation';
-import { beneficialOwnersTypeSubmission } from "./beneficial.owner.type.validation.submission";
 import { trustDetails, reviewTrustDetails } from "./trust.details.validation";
 import { trustIndividualBeneficialOwner } from "./trust.individual.beneficial.owner.validation";
 import { trustHistoricalBeneficialOwner } from "./trust.historical.beneficial.owner.validation";
@@ -32,8 +31,7 @@ import { updateBeneficialOwnerAndReviewValidator } from "./update.beneficial.own
 import { updateContinueSavedFiling } from "./update/update.continue.saved.filing.validation";
 import { updateFilingDate } from "./update/update.filing.date.validation";
 import { anyTrustsInvolved } from "./update/update.any.trusts.involved.validation";
-import { doYouWantToMakeOeChange } from "./update/do.you.want.to.make.oe.change.validation";
-import { reviewUpdateStatementChange, statementResolution } from "./update/review.update.statement.validation";
+import { statementResolution } from "./update/review.update.statement.validation";
 import { removeSoldAllLandFilter } from "./update/remove.sold.all.land.filter.validation";
 import { removeIsEntityRegisteredOwner } from "./update/remove.is.entity.registered.owner.validation";
 import { removeConfirmStatement } from "./update/remove.confirm.statement.validation";
@@ -42,13 +40,11 @@ import { relevantPeriodCombinedStatements } from "./relevant.period.combined.sta
 export const validator = {
   soldLandFilter,
   secureRegisterFilter,
-  doYouWantToMakeOeChange,
   entity,
   presenter,
   overseasEntityQuery,
   beneficialOwnersStatement,
   beneficialOwnersType,
-  beneficialOwnersTypeSubmission,
   managingOfficerIndividual,
   updateManagingOfficerIndividual,
   managingOfficerCorporate,
@@ -87,7 +83,6 @@ export const validator = {
   updateFilingDate,
   reviewManagingOfficerCorporate,
   anyTrustsInvolved,
-  reviewUpdateStatementChange,
   statementResolution,
   removeSoldAllLandFilter,
   removeIsEntityRegisteredOwner,

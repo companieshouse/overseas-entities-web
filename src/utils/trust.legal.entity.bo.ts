@@ -12,9 +12,11 @@ import { CommonTrustData, TrustLegalEntityForm } from '../model/trust.page.model
 import { Session } from '@companieshouse/node-session-handler';
 import { saveAndContinue } from './save.and.continue';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
-import { validationResult } from 'express-validator';
+import { ValidationError, validationResult } from 'express-validator';
 import { isActiveFeature } from './feature.flag';
 import { getUrlWithParamsToPath } from './url';
+import { checkTrusteeLegalEntityCeasedDate } from '../validation/async';
+import { checkTrustLegalEntityBeneficialOwnerStillInvolved } from '../validation/stillInvolved.validation';
 
 export const LEGAL_ENTITY_BO_TEXTS = {
   title: 'Tell us about the legal entity',
@@ -115,15 +117,18 @@ export const postTrustLegalEntityBo = async (req: Request, res: Response, next: 
 
     // validate request
     const errorList = validationResult(req);
+    const errors = await getValidationErrors(appData, req);
     const formData: TrustLegalEntityForm = req.body as TrustLegalEntityForm;
 
-    if (errorList && !errorList.isEmpty()) {
+    if (!errorList.isEmpty() || errors.length) {
+      const errorListArray = !errorList.isEmpty() ? errorList.array() : [];
+
       const pageProps = await getPageProperties(
         req,
         trustId,
         isUpdate,
         formData,
-        formatValidationError(errorList.array()),
+        formatValidationError([...errorListArray, ...errors]),
       );
       setEntityNameInRelevantPeriodPageBanner(pageProps, appData ? appData.entity_name : pageProps.pageData.trustData.trustName);
       return res.render(pageProps.templateName, pageProps);
@@ -182,4 +187,12 @@ export const setEntityNameInRelevantPeriodPageBanner = (pageProps: TrustLegalEnt
     pageProps.pageData.entity_name = entityName;
   }
   return pageProps;
+};
+
+// Get validation errors that depend on an asynchronous request
+const getValidationErrors = async (appData: ApplicationData, req: Request): Promise<ValidationError[]> => {
+  const stillInvolvedErrors = checkTrustLegalEntityBeneficialOwnerStillInvolved(appData, req);
+  const ceasedDateErrors = await checkTrusteeLegalEntityCeasedDate(appData, req);
+
+  return [...stillInvolvedErrors, ...ceasedDateErrors];
 };

@@ -10,11 +10,13 @@ import { ApplicationData } from '../model';
 import { mapIndividualTrusteeToSession, mapIndividualTrusteeByIdFromSessionToPage } from './trust/individual.trustee.mapper';
 import { safeRedirect } from './http.ext';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
-import { validationResult } from 'express-validator';
+import { ValidationError, validationResult } from 'express-validator';
 import { Session } from '@companieshouse/node-session-handler';
 import { saveAndContinue } from './save.and.continue';
 import { isActiveFeature } from './feature.flag';
 import { getUrlWithParamsToPath } from './url';
+import { checkTrustIndividualCeasedDate } from '../validation/async';
+import { checkTrustIndividualBeneficialOwnerStillInvolved } from '../validation/stillInvolved.validation';
 
 export const INDIVIDUAL_BO_TEXTS = {
   title: 'Tell us about the individual',
@@ -110,20 +112,24 @@ export const postTrustIndividualBo = async (req: Request, res: Response, next: N
 
     // check for errors
     const errorList = validationResult(req);
+    const errors = await getValidationErrors(appData, req);
+
     const formData: PageModel.IndividualTrusteesFormCommon = req.body as PageModel.IndividualTrusteesFormCommon;
     // if no errors present rerender the page
-    if (!errorList.isEmpty()) {
+    if (!errorList.isEmpty() || errors.length > 0) {
+      const errorListArray = !errorList.isEmpty() ? errorList.array() : [];
+
       const pageProps = await getPageProperties(
         req,
         trustId,
         isUpdate,
         formData,
-        formatValidationError(errorList.array()),
+        formatValidationError([...errorListArray, ...errors]),
       );
 
       const isRelevantPeriod = req.query['relevant-period'];
       if (isRelevantPeriod) {
-        const pagePropertiesRelevantPeriod = await getPagePropertiesRelevantPeriod(isRelevantPeriod, req, trustId, isUpdate, formData, appData.entity_name, formatValidationError(errorList.array()));
+        const pagePropertiesRelevantPeriod = await getPagePropertiesRelevantPeriod(isRelevantPeriod, req, trustId, isUpdate, formData, appData.entity_name, formatValidationError([...errorListArray, ...errors]));
         return res.render(pageProps.templateName, pagePropertiesRelevantPeriod);
       } else {
         return res.render(pageProps.templateName, pageProps);
@@ -177,4 +183,12 @@ const getUrl = (isUpdate: boolean) => {
   } else {
     return config.REGISTER_AN_OVERSEAS_ENTITY_URL;
   }
+};
+
+// Get validation errors that depend on an asynchronous request
+const getValidationErrors = async (appData: ApplicationData, req: Request): Promise<ValidationError[]> => {
+  const stillInvolvedErrors = checkTrustIndividualBeneficialOwnerStillInvolved(appData, req);
+  const ceasedDateErrors = await checkTrustIndividualCeasedDate(appData, req);
+
+  return [...stillInvolvedErrors, ...ceasedDateErrors];
 };

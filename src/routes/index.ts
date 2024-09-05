@@ -203,8 +203,8 @@ router.get(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, authentication, navigat
 router.post(config.BENEFICIAL_OWNER_TYPE_URL, authentication, navigation.hasBeneficialOwnersStatement, ...validator.beneficialOwnersType, checkValidations, beneficialOwnerType.post);
 router.post(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, authentication, navigation.hasBeneficialOwnersStatement, ...validator.beneficialOwnersType, checkValidations, beneficialOwnerType.post);
 
-router.post(config.BENEFICIAL_OWNER_TYPE_SUBMIT_URL, authentication, navigation.hasBeneficialOwnersStatement, ...validator.beneficialOwnersTypeSubmission, checkValidations, beneficialOwnerType.postSubmit);
-router.post(config.BENEFICIAL_OWNER_TYPE_SUBMIT_WITH_PARAMS_URL, authentication, navigation.hasBeneficialOwnersStatement, ...validator.beneficialOwnersTypeSubmission, checkValidations, beneficialOwnerType.postSubmit);
+router.post(config.BENEFICIAL_OWNER_TYPE_SUBMIT_URL, authentication, navigation.hasBeneficialOwnersStatement, checkValidations, beneficialOwnerType.postSubmit);
+router.post(config.BENEFICIAL_OWNER_TYPE_SUBMIT_WITH_PARAMS_URL, authentication, navigation.hasBeneficialOwnersStatement, checkValidations, beneficialOwnerType.postSubmit);
 
 router.route(config.BENEFICIAL_OWNER_INDIVIDUAL_URL)
   .all(
@@ -524,7 +524,7 @@ router.route(config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL)
     navigation.hasOverseasEntity
   )
   .get(doYouWantToMakeOeChange.get)
-  .post(...validator.doYouWantToMakeOeChange, checkValidations, doYouWantToMakeOeChange.post);
+  .post(checkValidations, doYouWantToMakeOeChange.post);
 
 router.route(config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL)
   .all(
@@ -1097,7 +1097,7 @@ router.route(config.UPDATE_REVIEW_STATEMENT_URL)
     navigation.hasOverseasEntity
   )
   .get(validateStatements, summaryPagesGuard, updateReviewStatement.get)
-  .post(...validator.reviewUpdateStatementChange, checkValidations, updateReviewStatement.post);
+  .post(checkValidations, updateReviewStatement.post);
 
 router.route(config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL)
   .all(authentication)

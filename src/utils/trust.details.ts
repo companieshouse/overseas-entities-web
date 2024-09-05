@@ -17,6 +17,8 @@ import { Session } from '@companieshouse/node-session-handler';
 import { setTrustDetailsAsReviewed, getReviewTrustById, updateTrustInReviewList } from './update/review_trusts';
 import { isActiveFeature } from "../utils/feature.flag";
 import { getUrlWithParamsToPath } from "../utils/url";
+import { ValidationError } from 'express-validator';
+import { checkTrustStillInvolved } from '../validation/stillInvolved.validation';
 
 export const TRUST_DETAILS_TEXTS = {
   title: 'Tell us about the trust',
@@ -159,15 +161,18 @@ export const postTrustDetails = async (req: Request, res: Response, next: NextFu
 
     // check for errors
     const errorList = validationResult(req);
+    const errors = getValidationErrors(appData, req);
     const formData: PageModel.TrustDetailsForm = req.body as PageModel.TrustDetailsForm;
 
-    if (!errorList.isEmpty()) {
+    if (!errorList.isEmpty() || errors.length) {
+      const errorListArray = !errorList.isEmpty() ? errorList.array() : [];
+
       const pageProps = await getPageProperties(
         req,
         formData,
         isUpdate,
         isReview,
-        formatValidationError(errorList.array()),
+        formatValidationError([...errorListArray, ...errors]),
       );
 
       return res.render(pageProps.templateName, pageProps);
@@ -284,3 +289,11 @@ const getNextPage = (isUpdate: boolean, trustId: string, req: Request, isReview?
     return nextPageUrl;
   }
 };
+
+// Get validation errors that depend on an asynchronous request
+const getValidationErrors = (appData: ApplicationData, req: Request): ValidationError[] => {
+  const stillInvolvedErrors = checkTrustStillInvolved(appData, req);
+
+  return [...stillInvolvedErrors];
+};
+

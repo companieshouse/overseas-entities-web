@@ -40,7 +40,7 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import * as config from "../config";
 import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
-import {checkRelevantPeriod} from "./relevant.period";
+import { checkRelevantPeriod } from "./relevant.period";
 import {
   RELEVANT_PERIOD_QUERY_PARAM
 } from "../config";
@@ -74,6 +74,10 @@ export const getBeneficialOwnerIndividualById = (req: Request, res: Response, ne
     const serviceAddress = (data) ? mapDataObjectToFields(data[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
     const dobDate = (data) ? mapDataObjectToFields(data[DateOfBirthKey], DateOfBirthKeys, InputDateKeys) : {};
     const startDate = (data) ? mapDataObjectToFields(data[StartDateKey], StartDateKeys, InputDateKeys) : {};
+
+    if (checkRelevantPeriod(appData)) {
+      backLinkUrl = backLinkUrl + RELEVANT_PERIOD_QUERY_PARAM;
+    }
 
     const templateOptions = {
       backLinkUrl: backLinkUrl,

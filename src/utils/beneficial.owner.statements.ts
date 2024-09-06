@@ -51,7 +51,7 @@ const getChangeBackLinkUrl = (registrationFlag: boolean, appData: ApplicationDat
       backLinkUrl = getUrlWithParamsToPath(config.ENTITY_WITH_PARAMS_URL, req);
     }
   } else {
-    const containsTrusts = isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS) && containsTrustData(getTrustArray(appData));
+    const containsTrusts = containsTrustData(getTrustArray(appData));
     const noTrustsUrl = config.UPDATE_BENEFICIAL_OWNER_TYPE_URL;
     backLinkUrl = containsTrusts ? config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL : noTrustsUrl;
   }

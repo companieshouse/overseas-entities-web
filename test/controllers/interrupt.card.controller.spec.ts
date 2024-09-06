@@ -63,8 +63,8 @@ describe("INTERRUPT CARD controller", () => {
     });
 
     test(`renders the ${INTERRUPT_CARD_PAGE} page with trust feature flag false and REDIS_removal flag is set to OFF`, async () => {
-      (isActiveFeature as jest.Mock).mockReturnValueOnce(false);
-      (isActiveFeature as jest.Mock).mockReturnValueOnce(false);
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockIsActiveFeature.mockReturnValueOnce(false);
 
       const resp = await request(app).get(INTERRUPT_CARD_URL);
 
@@ -77,8 +77,8 @@ describe("INTERRUPT CARD controller", () => {
     });
 
     test(`renders the ${INTERRUPT_CARD_PAGE} page with trust feature flag false and REDIS_removal flag is set to ON`, async () => {
-      (isActiveFeature as jest.Mock).mockReturnValueOnce(true);
-      (isActiveFeature as jest.Mock).mockReturnValueOnce(false);
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockIsActiveFeature.mockReturnValueOnce(false);
 
       const resp = await request(app).get(INTERRUPT_CARD_WITH_PARAMS_URL);
 
@@ -86,7 +86,7 @@ describe("INTERRUPT CARD controller", () => {
       expect(resp.text).toContain(INTERRUPT_CARD_PAGE_TITLE);
       expect(resp.text).toContain(LANDING_PAGE_URL);
       expect(resp.text).toContain("Trusts");
-      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(2);
       expect(mockIsActiveFeature).toHaveBeenCalledTimes(2);
     });
 
@@ -102,7 +102,7 @@ describe("INTERRUPT CARD controller", () => {
       expect(resp.text).toContain(INTERRUPT_CARD_PAGE_TITLE);
       expect(resp.text).toContain(LANDING_PAGE_URL);
       expect(resp.text).toContain(NEXT_PAGE_URL);
-      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(2);
       expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(OVERSEAS_NAME_WITH_PARAMS_URL);
     });
 

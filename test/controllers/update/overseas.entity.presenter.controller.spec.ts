@@ -38,7 +38,6 @@ import {
   SAVE_AND_CONTINUE_BUTTON_TEXT
 } from '../../__mocks__/text.mock';
 import { PresenterKey } from '../../../src/model/presenter.model';
-import { EntityNumberKey } from '../../../src/model/data.types.model';
 import {
   EMAIL_ADDRESS,
   APPLICATION_DATA_MOCK,
@@ -53,7 +52,7 @@ import {
   PRESENTER_WITH_MAX_LENGTH_FIELDS_MOCK,
   PRESENTER_WITH_SPECIAL_CHARACTERS_FIELDS_MOCK
 } from '../../__mocks__/validation.mock';
-import { IsRemoveKey, OverseasEntityKey, Transactionkey } from '../../../src/model/data.types.model';
+import { IsRemoveKey, OverseasEntityKey, Transactionkey, EntityNumberKey } from '../../../src/model/data.types.model';
 import { createOverseasEntity } from "../../../src/service/overseas.entities.service";
 import { postTransaction } from "../../../src/service/transaction.service";
 

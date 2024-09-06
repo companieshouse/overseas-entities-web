@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from "express";
 
 import { logger } from "../../utils/logger";
 import * as config from "../../config";
-import { isActiveFeature } from "../../utils/feature.flag";
 import { isRemoveJourney } from "../../utils/url";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
@@ -13,13 +12,13 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     if (isRemove) {
       return res.render(config.UPDATE_INTERRUPT_CARD_PAGE, {
         journey: config.JourneyType.remove,
-        backLinkUrl: (isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS) ? config.SECURE_UPDATE_FILTER_URL : config.UPDATE_ANY_TRUSTS_INVOLVED_URL) + config.JOURNEY_REMOVE_QUERY_PARAM,
+        backLinkUrl: config.SECURE_UPDATE_FILTER_URL,
         templateName: config.UPDATE_INTERRUPT_CARD_PAGE,
       });
     }
 
     return res.render(config.UPDATE_INTERRUPT_CARD_PAGE, {
-      backLinkUrl: isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS) ? config.SECURE_UPDATE_FILTER_URL : config.UPDATE_ANY_TRUSTS_INVOLVED_URL,
+      backLinkUrl: config.SECURE_UPDATE_FILTER_URL,
       templateName: config.UPDATE_INTERRUPT_CARD_PAGE,
     });
   } catch (error) {

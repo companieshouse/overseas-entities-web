@@ -3,16 +3,17 @@ import * as config from '../config';
 import { logger } from './logger';
 import { getApplicationData } from './application.data';
 import { generateTrustId } from './trust/details.mapper';
-import { getTrustArray } from './trusts';
+import { getTrustArray, hasNoBoAssignableToTrust } from './trusts';
 import { Trust } from '../model/trust.model';
 import * as PageModel from '../model/trust.page.model';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
-import { validationResult } from 'express-validator';
+import { ValidationError, validationResult } from 'express-validator';
 import { isActiveFeature } from './feature.flag';
 import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
 import { getUrlWithParamsToPath } from './url';
 import { checkRelevantPeriod } from './relevant.period';
 import { ApplicationData } from 'model';
+import { isAddTrustToBeValidated } from '../validation/add.trust.validation';
 
 export const ADD_TRUST_TEXTS = {
   title: 'Trusts associated with the overseas entity',
@@ -30,11 +31,11 @@ type TrustInvolvedPageProperties = {
   pageData: {
     trustData: Trust[],
     isRelevantPeriod: boolean,
+    isAddTrustQuestionToBeShown: boolean
   },
   formData?: PageModel.AddTrust,
   errors?: FormattedValidationErrors,
   url: string,
-  isFeatureFlagCeaseTrustsEnabled: boolean
 };
 
 const getPageProperties = async (
@@ -46,6 +47,7 @@ const getPageProperties = async (
 
   const appData: ApplicationData = await getApplicationData(req.session);
 
+  // note: isUpdate covers both Update and Remove journeys, so when on Remove journey isUpdate will be true.
   return {
     templateName: getPageTemplate(isUpdate),
     backLinkUrl: getBackLinkUrl(isUpdate, req),
@@ -53,13 +55,13 @@ const getPageProperties = async (
     pageData: {
       trustData: getTrustArray(appData),
       isRelevantPeriod: isUpdate ? checkRelevantPeriod(appData) : false,
+      isAddTrustQuestionToBeShown: !isUpdate || !hasNoBoAssignableToTrust(appData)
     },
     pageParams: {
       title: ADD_TRUST_TEXTS.title,
       subtitle: ADD_TRUST_TEXTS.subtitle,
     },
     isUpdate,
-    isFeatureFlagCeaseTrustsEnabled: isActiveFeature(config.FEATURE_FLAG_ENABLE_CEASE_TRUSTS),
     formData,
     errors,
     url: getUrl(isUpdate),
@@ -100,16 +102,19 @@ export const postTrusts = async (
     const addNewTrust = req.body["addTrust"];
 
     // check for errors
-    const errorList = validationResult(req);
     const formData: PageModel.AddTrust = req.body as PageModel.AddTrust;
     const appData: ApplicationData = await getApplicationData(req.session);
+    const errorList = validationResult(req);
+    const errors = getValidationErrors(appData, req);
 
-    if (!errorList.isEmpty()) {
+    if (!errorList.isEmpty() || errors.length) {
+      const errorListArray = !errorList.isEmpty() ? errorList.array() : [];
+
       const pageProps = await getPageProperties(
         req,
         isUpdate,
         formData,
-        formatValidationError(errorList.array()),
+        formatValidationError([...errorListArray, ...errors]),
       );
       if (!isUpdate) {
         addActiveSubmissionBasePathToTemplateData(pageProps, req);
@@ -177,4 +182,11 @@ const getUrl = (isUpdate: boolean) => {
   } else {
     return config.REGISTER_AN_OVERSEAS_ENTITY_URL;
   }
+};
+
+// Get validation errors that depend on an asynchronous request
+const getValidationErrors = (appData: ApplicationData, req: Request): ValidationError[] => {
+  const filingPeriodTrustStartDateErrors = isAddTrustToBeValidated(appData, req);
+
+  return [...filingPeriodTrustStartDateErrors];
 };

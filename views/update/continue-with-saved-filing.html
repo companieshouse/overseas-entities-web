@@ -18,8 +18,11 @@
 
       {% include "includes/list/errors.html" %}
 
+      <h1 class="govuk-heading-xl govuk-!-margin-bottom-3">{{ title }}</h1>
+
       <form method="post">
         {% include "includes/csrf_token.html" %}
+
         {{ govukRadios({
           errorMessage: errors.continue_saved_filing if errors,
           classes: "govuk-radios",
@@ -27,8 +30,7 @@
           name: "continue_saved_filing",
           fieldset: {
             legend: {
-              text: title,
-              isPageHeading: true,
+              isPageHeading: false,
               classes: "govuk-fieldset__legend--xl"
             }
           },

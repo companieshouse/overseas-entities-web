@@ -5,8 +5,6 @@ import { trustCreatedDateValidations, trustCeasedDateValidations } from "./field
 import { VALID_CHARACTERS } from "./regex/regex.validation";
 import { ApplicationData } from "../model";
 import { getApplicationData } from "../utils/application.data";
-import { isActiveFeature } from "../utils/feature.flag";
-import * as config from "../config";
 import { logger } from "../utils/logger";
 import { hasNoBoAssignableToTrust } from "../utils/trusts";
 
@@ -14,10 +12,6 @@ const setIsTrustToBeCeasedFlagOnBody = () => {
   return async (req: Request, _res: Response, next: NextFunction) => {
     try {
       if (req.body["stillInvolved"] === "1") {
-        return next();
-      }
-
-      if (!isActiveFeature(config.FEATURE_FLAG_ENABLE_CEASE_TRUSTS)) {
         return next();
       }
 

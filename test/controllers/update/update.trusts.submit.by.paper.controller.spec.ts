@@ -57,12 +57,5 @@ describe("Update trusts submit by paper controller", () => {
       expect(resp.text).toContain(UPDATE_TRUSTS_SUBMIT_BY_PAPER_PAGE_HEADING);
       expect(resp.text).toContain(UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
     });
-
-    test(`renders page not found if FEATURE_FLAG_ENABLE_UPDATE_TRUSTS = true`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
-
-      const resp = await request(app).get(UPDATE_TRUSTS_SUBMIT_BY_PAPER_URL);
-      expect(resp.status).toEqual(404);
-    });
   });
 });

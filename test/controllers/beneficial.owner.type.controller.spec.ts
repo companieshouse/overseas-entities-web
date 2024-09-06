@@ -364,6 +364,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
 
     test(`renders the current page with error message when ${BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS} has been selected `, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
       const resp = await request(app)
@@ -377,6 +378,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
 
     test(`renders the current page with error message when ${BeneficialOwnersStatementType.NONE_IDENTIFIED} has been selected `, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
       const resp = await request(app)
@@ -390,6 +392,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
 
     test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} has been selected `, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
       const resp = await request(app)
@@ -403,6 +406,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
 
     test(`POST empty object and check for error in page title`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
       const resp = await request(app).post(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
@@ -547,6 +551,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
 
     test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} has only individual beneficial owner`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
@@ -568,6 +573,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
 
     test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} has only ole corporate beneficial owner`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
@@ -589,6 +595,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
 
     test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} has only gov beneficial owner`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
@@ -610,6 +617,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
 
     test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} has only individual managing officer`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
@@ -631,6 +639,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
 
     test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} has only corporate managing officer`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
@@ -652,6 +661,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
 
     test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} has no beneficial owner`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
@@ -672,6 +682,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
 
     test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} has no managing officer`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,

@@ -62,6 +62,12 @@ import {
   UK_SANCTIONS_DETAILS,
   YES_SANCTIONS_TEXT_IT,
   TRUSTS_NOC_HEADING,
+  FIRM_NOC_HEADING_NEW,
+  TRUST_CONTROL_NOC_HEADING,
+  OWNER_OF_LAND_PERSON_NOC_HEADING,
+  OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING,
+  FIRM_NOC_HEADING,
+  BO_NOC_HEADING,
 } from "../__mocks__/text.mock";
 import {
   AddressKeys,
@@ -728,12 +734,54 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).toContain(ErrorMessages.COUNTRY);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
+
+    describe("Nature of control tests", () => {
+      test(`Renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page with validation errors with correct nature of controls with FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC_30082024 ON`, async () => {
+        mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+        mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+        mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+
+        const resp = await request(app).post(BENEFICIAL_OWNER_OTHER_URL);
+
+        expect(resp.status).toEqual(200);
+        expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
+
+        expect(resp.text).toContain(BO_NOC_HEADING);
+        expect(resp.text).toContain(TRUSTS_NOC_HEADING);
+        expect(resp.text).toContain(FIRM_NOC_HEADING);
+        expect(resp.text).not.toContain(FIRM_NOC_HEADING_NEW);
+        expect(resp.text).not.toContain(TRUST_CONTROL_NOC_HEADING);
+        expect(resp.text).not.toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
+        expect(resp.text).not.toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
+      });
+
+      test(`Renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page with validation errors with correct nature of controls with FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC_30082024 OFF`, async () => {
+        mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+        mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+        mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+
+        const resp = await request(app).post(BENEFICIAL_OWNER_OTHER_URL);
+
+        expect(resp.status).toEqual(200);
+        expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
+
+        expect(resp.text).toContain(BO_NOC_HEADING);
+        expect(resp.text).toContain(TRUSTS_NOC_HEADING);
+        expect(resp.text).toContain(FIRM_NOC_HEADING);
+        expect(resp.text).not.toContain(FIRM_NOC_HEADING_NEW);
+        expect(resp.text).not.toContain(TRUST_CONTROL_NOC_HEADING);
+        expect(resp.text).not.toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
+        expect(resp.text).not.toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
+      });
+    });
   });
 
   describe("POST with url params tests", () => {
 
     test(`Sets session data and renders the ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+
       const beneficialOwnerOtherMock = { ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK, [IsOnSanctionsListKey]: "0" };
       mockPrepareData.mockReturnValueOnce(beneficialOwnerOtherMock);
       const resp = await request(app).post(BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL)
@@ -1196,6 +1244,46 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).toContain(ErrorMessages.CITY_OR_TOWN);
       expect(resp.text).toContain(ErrorMessages.COUNTRY);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
+    });
+
+    describe("Nature of control tests with url params", () => {
+      test(`Renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page with validation errors with correct nature of controls with FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC_30082024 ON`, async () => {
+        mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+        mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+        mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+
+        const resp = await request(app).post(BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL);
+
+        expect(resp.status).toEqual(200);
+        expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
+
+        expect(resp.text).toContain(BO_NOC_HEADING);
+        expect(resp.text).toContain(TRUSTS_NOC_HEADING);
+        expect(resp.text).toContain(FIRM_NOC_HEADING);
+        expect(resp.text).not.toContain(FIRM_NOC_HEADING_NEW);
+        expect(resp.text).not.toContain(TRUST_CONTROL_NOC_HEADING);
+        expect(resp.text).not.toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
+        expect(resp.text).not.toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
+      });
+
+      test(`Renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page with validation errors with correct nature of controls with FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC_30082024 OFF`, async () => {
+        mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+        mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+        mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+
+        const resp = await request(app).post(BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL);
+
+        expect(resp.status).toEqual(200);
+        expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
+
+        expect(resp.text).toContain(BO_NOC_HEADING);
+        expect(resp.text).toContain(TRUSTS_NOC_HEADING);
+        expect(resp.text).toContain(FIRM_NOC_HEADING);
+        expect(resp.text).not.toContain(FIRM_NOC_HEADING_NEW);
+        expect(resp.text).not.toContain(TRUST_CONTROL_NOC_HEADING);
+        expect(resp.text).not.toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
+        expect(resp.text).not.toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
+      });
     });
   });
 

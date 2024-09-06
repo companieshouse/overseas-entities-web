@@ -34,7 +34,6 @@ import {
 } from '../../__mocks__/session.mock';
 import {
   PAGE_TITLE_ERROR,
-  PAGE_NOT_FOUND_TEXT,
   UPDATE_TELL_US_ABOUT_TRUST_HEADING,
   UPDATE_TELL_US_ABOUT_TRUST_QUESTION,
   ERROR_LIST,
@@ -109,8 +108,8 @@ describe('Update - Trusts - Tell us about the trust', () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 
-    test('when cease trusts feature flag is on and no associated BOs, ceased date should not be shown as page is not in review mode', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
+    test('when no associated BOs, ceased date should not be shown as page is not in review mode', async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
       mockGetApplicationData.mockReturnValue( { ...APPLICATION_DATA_UPDATE_NO_BO_TRUSTEES_MOCK } );
 
       const resp = await request(app).get(UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL);
@@ -183,14 +182,6 @@ describe('Update - Trusts - Tell us about the trust', () => {
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + "/3" + TRUST_INVOLVED_URL + RELEVANT_PERIOD_QUERY_PARAM);
-    });
-
-    test('when feature flag is off, 404 is returned', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(false);
-      const resp = await request(app).post(UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL);
-
-      expect(resp.status).toEqual(404);
-      expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
     });
   });
 });

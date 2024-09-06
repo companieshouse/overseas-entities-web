@@ -34,7 +34,8 @@ import {
   REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS,
   REQ_BODY_MANAGING_OFFICER_CORPORATE_OBJECT_EMPTY,
   RR_CARRIAGE_RETURN,
-  APPLICATION_DATA_MOCK
+  APPLICATION_DATA_MOCK,
+  EMAIL_ADDRESS
 } from "../__mocks__/session.mock";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import {
@@ -56,7 +57,7 @@ import {
   SAVE_AND_CONTINUE_BUTTON_TEXT,
   SERVICE_UNAVAILABLE,
   NOT_SHOW_NAME_OR_EMAIL_ON_PUBLIC_REGISTER,
-  SHOW_OTHER_INFORMATION_ON_PUBLIC_REGISTER,
+  SHOW_OTHER_INFORMATION_IN_SECTION_ON_PUBLIC_REGISTER,
   BACK_BUTTON_CLASS
 } from "../__mocks__/text.mock";
 import {
@@ -78,7 +79,6 @@ import {
 } from "../__mocks__/validation.mock";
 import { logger } from "../../src/utils/logger";
 import { hasBeneficialOwnersStatement } from "../../src/middleware/navigation/has.beneficial.owners.statement.middleware";
-import { EMAIL_ADDRESS } from "../__mocks__/session.mock";
 import { isActiveFeature } from "../../src/utils/feature.flag";
 import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
 import { getUrlWithParamsToPath } from "../../src/utils/url";
@@ -134,7 +134,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
       expect(resp.text).toContain(NOT_SHOW_NAME_OR_EMAIL_ON_PUBLIC_REGISTER);
-      expect(resp.text).toContain(SHOW_OTHER_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(resp.text).toContain(SHOW_OTHER_INFORMATION_IN_SECTION_ON_PUBLIC_REGISTER);
     });
 
     test(`renders the ${MANAGING_OFFICER_CORPORATE_PAGE} page with correct backlink url when REDIS_removal feature flag is ON`, async () => {
@@ -149,7 +149,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
       expect(resp.text).toContain(NOT_SHOW_NAME_OR_EMAIL_ON_PUBLIC_REGISTER);
-      expect(resp.text).toContain(SHOW_OTHER_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(resp.text).toContain(SHOW_OTHER_INFORMATION_IN_SECTION_ON_PUBLIC_REGISTER);
       expect(resp.text).toContain(NEXT_PAGE_URL);
       expect(resp.text).toContain(BACK_BUTTON_CLASS);
       expect(mockIsActiveFeature).toHaveBeenCalledTimes(1);
@@ -168,7 +168,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
       expect(resp.text).toContain(NOT_SHOW_NAME_OR_EMAIL_ON_PUBLIC_REGISTER);
-      expect(resp.text).toContain(SHOW_OTHER_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(resp.text).toContain(SHOW_OTHER_INFORMATION_IN_SECTION_ON_PUBLIC_REGISTER);
       expect(mockIsActiveFeature).toHaveBeenCalledTimes(1);
     });
 
@@ -183,7 +183,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
       expect(resp.text).toContain(NOT_SHOW_NAME_OR_EMAIL_ON_PUBLIC_REGISTER);
-      expect(resp.text).toContain(SHOW_OTHER_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(resp.text).toContain(SHOW_OTHER_INFORMATION_IN_SECTION_ON_PUBLIC_REGISTER);
     });
   });
 
@@ -234,7 +234,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
       expect(resp.text).toContain(NOT_SHOW_NAME_OR_EMAIL_ON_PUBLIC_REGISTER);
-      expect(resp.text).toContain(SHOW_OTHER_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(resp.text).toContain(SHOW_OTHER_INFORMATION_IN_SECTION_ON_PUBLIC_REGISTER);
     });
 
     test(`renders the ${MANAGING_OFFICER_CORPORATE_PAGE} page without public register jurisdiction field`, async () => {

@@ -16,6 +16,7 @@
 
       {% include "includes/list/errors.html" %}
 
+      <h1 class="govuk-!-margin-bottom-3 govuk-heading-xl">{{ title }}</h1>
       <form method="post">
         {% include "includes/csrf_token.html" %}
         {{ govukRadios({
@@ -25,8 +26,7 @@
           name: "continue_saved_application",
           fieldset: {
             legend: {
-              text: title,
-              isPageHeading: true,
+              isPageHeading: false,
               classes: "govuk-fieldset__legend--xl"
             }  
           },

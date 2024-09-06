@@ -30,7 +30,6 @@ import { LEGAL_ENTITY_BO_TEXTS } from "../../../src/utils/trust.legal.entity.bo"
 import {
   ANY_MESSAGE_ERROR,
   IMPORTANT_BANNER_TEXT,
-  PAGE_NOT_FOUND_TEXT,
   PAGE_TITLE_ERROR,
   TRUSTEE_STILL_INVOLVED_TEXT
 } from "../../__mocks__/text.mock";
@@ -280,24 +279,6 @@ describe('Trust Legal Entity Beneficial Owner Controller', () => {
 
       expect(authentication).toBeCalledTimes(1);
       expect(hasTrustWithIdUpdate).toBeCalledTimes(1);
-    });
-
-    test('when feature flag for update trusts is off GET returns 404', async () => {
-      mockIsActiveFeature.mockReturnValue(false);
-
-      const resp = await request(app).get(pageUrl);
-
-      expect(resp.status).toEqual(404);
-      expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
-    });
-
-    test('when feature flag for update trusts is off POST returns 404', async () => {
-      mockIsActiveFeature.mockReturnValue(false);
-
-      const resp = await request(app).post(pageUrl).send({});
-
-      expect(resp.status).toEqual(404);
-      expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
     });
   });
 });

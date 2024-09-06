@@ -38,10 +38,10 @@ import {
 import {
   APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW,
   BENEFICIAL_OWNER_INDIVIDUAL_NO_TRUSTEE_OBJECT_MOCK,
-  BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
   BENEFICIAL_OWNER_OTHER_NO_TRUSTEE_OBJECT_MOCK,
-  BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
-  UPDATE_OBJECT_MOCK
+  UPDATE_OBJECT_MOCK,
+  BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+  BENEFICIAL_OWNER_OTHER_OBJECT_MOCK
 } from "../../__mocks__/session.mock";
 import { UpdateKey } from "../../../src/model/update.type.model";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
@@ -153,7 +153,7 @@ describe("Confirm company data", () => {
 
     test(`redirect to update-filing-date if no BOs when FEATURE_FLAG_ENABLE_RELEVANT_PERIOD is active`, async () => {
       mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW);
-      mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(true);
+      mockIsActiveFeature.mockReturnValueOnce(true);
 
       const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL).send({});
 
@@ -165,44 +165,6 @@ describe("Confirm company data", () => {
       ["BO Individual", "review_beneficial_owners_individual", BENEFICIAL_OWNER_INDIVIDUAL_NO_TRUSTEE_OBJECT_MOCK ],
       ["BO Corporate", "review_beneficial_owners_corporate", BENEFICIAL_OWNER_OTHER_NO_TRUSTEE_OBJECT_MOCK ]
     ])(`redirect to update-filing-date if %s but does not have nature of controls related to trusts`, async (_, key, mockObject) => {
-      let appData = {};
-      appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
-      appData[UpdateKey] = {
-        ...UPDATE_OBJECT_MOCK,
-        [key]: [ mockObject ]
-      };
-
-      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW);
-      const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL).send({});
-
-      expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.UPDATE_FILING_DATE_URL);
-    });
-
-    test.each([
-      ["BO Individual", "review_beneficial_owners_individual", BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK ],
-      ["BO Corporate", "review_beneficial_owners_corporate", BENEFICIAL_OWNER_OTHER_OBJECT_MOCK ]
-    ])(`redirect to update-trusts-submit-by-paper if %s that has nature of controls related to trusts`, async (_, key, mockObject) => {
-      let appData = {};
-      appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
-      appData[UpdateKey] = {
-        ...UPDATE_OBJECT_MOCK,
-        [key]: [ mockObject ]
-      };
-
-      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW);
-      const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL).send({});
-
-      expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.UPDATE_TRUSTS_SUBMIT_BY_PAPER_URL);
-    });
-
-    test.each([
-      ["BO Individual", "review_beneficial_owners_individual", BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK ],
-      ["BO Corporate", "review_beneficial_owners_corporate", BENEFICIAL_OWNER_OTHER_OBJECT_MOCK ]
-    ])(`redirect to update-filing-date if %s has trusts NOC but FEATURE_FLAG_ENABLE_UPDATE_TRUSTS = true`, async (_, key, mockObject) => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
-
       let appData = {};
       appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
       appData[UpdateKey] = {
@@ -254,25 +216,43 @@ describe("Confirm company data", () => {
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(`${config.OVERSEAS_ENTITY_PRESENTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
     });
+  });
 
-    test.each([
-      ["BO Individual", "review_beneficial_owners_individual", BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK ],
-      ["BO Corporate", "review_beneficial_owners_corporate", BENEFICIAL_OWNER_OTHER_OBJECT_MOCK ]
-    ])(`redirect to presenter page if %s has trusts NOC but FEATURE_FLAG_ENABLE_UPDATE_TRUSTS = true`, async (_, key, mockObject) => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
+  test.each([
+    ["BO Individual", "review_beneficial_owners_individual", BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK ],
+    ["BO Corporate", "review_beneficial_owners_corporate", BENEFICIAL_OWNER_OTHER_OBJECT_MOCK ]
+  ])(`redirect to update-filing-date if %s has trusts NOC`, async (_, key, mockObject) => {
 
-      let appData = {};
-      appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
-      appData[UpdateKey] = {
-        ...UPDATE_OBJECT_MOCK,
-        [key]: [ mockObject ]
-      };
+    let appData = {};
+    appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
+    appData[UpdateKey] = {
+      ...UPDATE_OBJECT_MOCK,
+      [key]: [ mockObject ]
+    };
 
-      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW);
-      const resp = await request(app).post(`${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`).send({});
+    mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW);
+    const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL).send({});
 
-      expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(`${config.OVERSEAS_ENTITY_PRESENTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
-    });
+    expect(resp.status).toEqual(302);
+    expect(resp.header.location).toEqual(config.UPDATE_FILING_DATE_URL);
+  });
+
+  test.each([
+    ["BO Individual", "review_beneficial_owners_individual", BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK ],
+    ["BO Corporate", "review_beneficial_owners_corporate", BENEFICIAL_OWNER_OTHER_OBJECT_MOCK ]
+  ])(`redirect to presenter page if %s has trusts NOC`, async (_, key, mockObject) => {
+
+    let appData = {};
+    appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
+    appData[UpdateKey] = {
+      ...UPDATE_OBJECT_MOCK,
+      [key]: [ mockObject ]
+    };
+
+    mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW);
+    const resp = await request(app).post(`${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`).send({});
+
+    expect(resp.status).toEqual(302);
+    expect(resp.header.location).toEqual(`${config.OVERSEAS_ENTITY_PRESENTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
   });
 });

@@ -6,7 +6,6 @@ import { getApplicationData } from "../../utils/application.data";
 import { Update } from "../../model/update.type.model";
 import { Session } from "@companieshouse/node-session-handler";
 import { isActiveFeature } from "../../utils/feature.flag";
-import { checkEntityReviewRequiresTrusts } from "../../utils/trusts";
 import { isRemoveJourney } from "../../utils/url";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
@@ -44,12 +43,6 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-
-    const appData: ApplicationData = getApplicationData(req.session as Session);
-
-    if (!isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS) && checkEntityReviewRequiresTrusts(appData)) {
-      return res.redirect(config.UPDATE_TRUSTS_SUBMIT_BY_PAPER_URL);
-    }
 
     if (isRemoveJourney(req)) {
       return res.redirect(`${config.OVERSEAS_ENTITY_PRESENTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);

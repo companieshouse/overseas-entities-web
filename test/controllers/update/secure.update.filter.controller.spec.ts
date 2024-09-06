@@ -22,7 +22,6 @@ import {
   REMOVE_SERVICE_NAME,
   SECURE_UPDATE_FILTER_PAGE,
   SECURE_UPDATE_FILTER_URL,
-  UPDATE_ANY_TRUSTS_INVOLVED_URL,
   UPDATE_INTERRUPT_CARD_URL,
   UPDATE_LANDING_PAGE_URL,
   UPDATE_SERVICE_NAME,
@@ -122,11 +121,7 @@ describe("SECURE UPDATE FILTER controller", () => {
   });
 
   describe("POST tests", () => {
-    test.each([
-      ["update-any-trusts-involved if FEATURE_FLAG_ENABLE_UPDATE_TRUSTS = false and REDIS_removal flag is OFF", UPDATE_ANY_TRUSTS_INVOLVED_URL, false],
-      ["update-interrupt-card if FEATURE_FLAG_ENABLE_UPDATE_TRUSTS = true", UPDATE_INTERRUPT_CARD_URL, true]
-    ])(`redirect to %s`, async (_, url, flagValue) => {
-      mockIsActiveFeature.mockReturnValueOnce(flagValue);
+    test ("if REDIS_removal flag is OFF redirect toupdate-interrupt-card", async () => {
       mockIsActiveFeature.mockReturnValueOnce(false);
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockIsActiveFeature.mockReturnValueOnce(false);
@@ -137,7 +132,7 @@ describe("SECURE UPDATE FILTER controller", () => {
         .send({ is_secure_register: "0" });
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(url);
+      expect(resp.header.location).toEqual(UPDATE_INTERRUPT_CARD_URL);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 
@@ -169,7 +164,6 @@ describe("SECURE UPDATE FILTER controller", () => {
 
   describe("POST tests for remove journey", () => {
     test(`redirect to ${UPDATE_INTERRUPT_CARD_URL}${JOURNEY_REMOVE_QUERY_PARAM} when no is selected and REDIS_removal flag is OFF`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
       mockIsActiveFeature.mockReturnValueOnce(false);
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockIsActiveFeature.mockReturnValueOnce(false);
@@ -185,7 +179,6 @@ describe("SECURE UPDATE FILTER controller", () => {
     });
 
     test(`redirect to ${UPDATE_USE_PAPER_URL}${JOURNEY_REMOVE_QUERY_PARAM} when yes is selected and REDIS_removal flag is OFF`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
       mockIsActiveFeature.mockReturnValueOnce(false);
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockIsActiveFeature.mockReturnValueOnce(false);
@@ -201,7 +194,6 @@ describe("SECURE UPDATE FILTER controller", () => {
     });
 
     test("renders the current page with error message", async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
       mockIsActiveFeature.mockReturnValueOnce(false);
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockIsActiveFeature.mockReturnValueOnce(false);

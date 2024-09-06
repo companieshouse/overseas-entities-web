@@ -14,7 +14,7 @@ export const get = async (req: Request, res: Response) => {
   const appData: ApplicationData = await getApplicationData(req.session);
   const referenceNumber = appData[Transactionkey];
 
-  await deleteApplicationData(req.session);
+  deleteApplicationData(req.session);
 
   return res.render(CONFIRMATION_PAGE, {
     isAgentRegistering: appData.who_is_registering === WhoIsRegisteringType.AGENT,

@@ -65,7 +65,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
       const trustIds: string[] = boData?.trust_ids?.length ? [...boData.trust_ids] : [];
 
-      removeFromApplicationData(req, BeneficialOwnerIndividualKey, boId);
+      await removeFromApplicationData(req, BeneficialOwnerIndividualKey, boId);
 
       setReviewedDateOfBirth(req, dob);
 
@@ -80,7 +80,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         (data as BeneficialOwnerIndividual).trust_ids = [...trustIds];
       }
 
-      setApplicationData(req.session, data, BeneficialOwnerIndividualKey);
+      await setApplicationData(req.session, data, BeneficialOwnerIndividualKey);
 
       await saveAndContinue(req, session);
     }

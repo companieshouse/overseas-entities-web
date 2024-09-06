@@ -34,7 +34,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     remove[HasSoldAllLandKey] = hasSoldAllLand ;
 
-    setApplicationData(req.session, remove, RemoveKey);
+    await setApplicationData(req.session, remove, RemoveKey);
 
     if (hasSoldAllLand === config.BUTTON_OPTION_YES) {
       return res.redirect(`${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE}${config.JOURNEY_REMOVE_QUERY_PARAM}`);

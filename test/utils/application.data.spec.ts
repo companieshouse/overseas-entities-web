@@ -75,43 +75,43 @@ describe("Application data utils", () => {
     req = { headers: {} } as Request;
   });
 
-  test("getApplicationData should return Extra data store in the session", () => {
+  test("getApplicationData should return Extra data store in the session", async () => {
     const session = getSessionRequestWithExtraData();
-    const data = getApplicationData(session);
+    const data = await getApplicationData(session);
     expect(data).toEqual(APPLICATION_DATA_MOCK);
   });
 
-  test("getApplicationData should return empty object if session undefined", () => {
-    expect(getApplicationData(undefined)).toEqual({});
+  test("getApplicationData should return empty object if session undefined", async () => {
+    expect(await getApplicationData(undefined)).toEqual({});
   });
 
-  test("setApplicationData should store application data into the session", () => {
+  test("setApplicationData should store application data into the session", async () => {
     const session = getSessionRequestWithExtraData();
-    setApplicationData(session, ENTITY_OBJECT_MOCK, entityType.EntityKey);
+    await setApplicationData(session, ENTITY_OBJECT_MOCK, entityType.EntityKey);
 
-    const data = getApplicationData(session);
+    const data = await getApplicationData(session);
     expect(data).toEqual( { ...APPLICATION_DATA_MOCK, [entityType.EntityKey]: { ...ENTITY_OBJECT_MOCK } });
   });
 
-  test("setApplicationData should store application data into the session for an empty array type object (BOs)", () => {
+  test("setApplicationData should store application data into the session for an empty array type object (BOs)", async () => {
     const session = getSessionRequestWithPermission();
-    setApplicationData(
+    await setApplicationData(
       session,
       BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
       beneficialOwnerIndividualType.BeneficialOwnerIndividualKey
     );
 
-    expect(getApplicationData(session)).toEqual({
+    expect(await getApplicationData(session)).toEqual({
       [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [
         BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
       ],
     });
   });
 
-  test("setApplicationData should return undefined if session is not defined", () => {
+  test("setApplicationData should return undefined if session is not defined", async () => {
     // Session at this level can not be undefined, avoid checking req.session type, so
     // we return void if everything is ok, otherwise undefined, where void is not an alias for undefined.
-    expect(setApplicationData(undefined, ENTITY_OBJECT_MOCK, entityType.EntityKey)).toEqual(undefined);
+    expect(await setApplicationData(undefined, ENTITY_OBJECT_MOCK, entityType.EntityKey)).toEqual(undefined);
   });
 
   test("prepareData should store application data into the session", () => {
@@ -304,16 +304,16 @@ describe("Application data utils", () => {
     expect(response).toEqual({});
   });
 
-  test("removeFromApplicationData should remove specified object from data", () => {
+  test("removeFromApplicationData should remove specified object from data", async () => {
     const session = getSessionRequestWithExtraData();
     req.session = session;
-    let data = getApplicationData(session);
+    let data = await getApplicationData(session);
     const boGov = data[BeneficialOwnerGovKey]?.find(boGov => boGov.id === BO_GOV_ID);
     expect(boGov).not.toBeUndefined();
 
-    removeFromApplicationData(req, BeneficialOwnerGovKey, BO_GOV_ID);
+    await removeFromApplicationData(req, BeneficialOwnerGovKey, BO_GOV_ID);
 
-    data = getApplicationData(session);
+    data = await getApplicationData(session);
     expect(data[BeneficialOwnerGovKey]?.find(boGov => boGov.id === BO_GOV_ID)).toBeUndefined();
 
     // restore the boGov object so other tests don't fail as data does not get reset
@@ -326,13 +326,13 @@ describe("Application data utils", () => {
   test("removeFromApplicationData should throw error when id not found", () => {
     const session = getSessionRequestWithExtraData();
     req.session = session;
-    expect(() => removeFromApplicationData(req, BeneficialOwnerGovKey, "no id")).toThrow(`${BeneficialOwnerGovKey}`);
+    expect(removeFromApplicationData(req, BeneficialOwnerGovKey, "no id")).rejects.toThrow(`${BeneficialOwnerGovKey}`);
   });
 
-  test("getFromApplicationData should return specified object from data", () => {
+  test("getFromApplicationData should return specified object from data", async () => {
     const session = getSessionRequestWithExtraData();
     req.session = session;
-    const boGov: BeneficialOwnerGov = getFromApplicationData(req, BeneficialOwnerGovKey, BO_GOV_ID);
+    const boGov: BeneficialOwnerGov = await getFromApplicationData(req, BeneficialOwnerGovKey, BO_GOV_ID);
 
     expect(boGov).not.toBeUndefined();
     expect(boGov.id).toEqual(BO_GOV_ID);
@@ -341,26 +341,26 @@ describe("Application data utils", () => {
   test("getFromApplicationData should throw error when id not found", () => {
     const session = getSessionRequestWithExtraData();
     req.session = session;
-    expect(() => getFromApplicationData(req, BeneficialOwnerGovKey, "no id")).toThrow(`${BeneficialOwnerGovKey}`);
+    expect(getFromApplicationData(req, BeneficialOwnerGovKey, "no id")).rejects.toThrow(`${BeneficialOwnerGovKey}`);
   });
 
   test("getFromApplicationData should throw error when id undefined", () => {
     const session = getSessionRequestWithExtraData();
     req.session = session;
-    expect(() => getFromApplicationData(req, BeneficialOwnerGovKey, undefined as unknown as string)).toThrow(`${BeneficialOwnerGovKey}`);
+    expect(getFromApplicationData(req, BeneficialOwnerGovKey, undefined as unknown as string)).rejects.toThrow(`${BeneficialOwnerGovKey}`);
   });
 
-  test("getFromApplicationData should return undefined if error boolean false and id not found", () => {
+  test("getFromApplicationData should return undefined if error boolean false and id not found", async () => {
     const session = getSessionRequestWithExtraData();
     req.session = session;
-    const bo: BeneficialOwnerGov = getFromApplicationData(req, BeneficialOwnerGovKey, "no id", false);
+    const bo: BeneficialOwnerGov = await getFromApplicationData(req, BeneficialOwnerGovKey, "no id", false);
     expect(bo).toBeUndefined;
   });
 
-  test("getFromApplicationData should return undefined if error boolean false and id undefined", () => {
+  test("getFromApplicationData should return undefined if error boolean false and id undefined", async () => {
     const session = getSessionRequestWithPermission();
     req.session = session;
-    const bo: BeneficialOwnerGov = getFromApplicationData(req, BeneficialOwnerGovKey, undefined as unknown as string, false);
+    const bo: BeneficialOwnerGov = await getFromApplicationData(req, BeneficialOwnerGovKey, undefined as unknown as string, false);
     expect(bo).toBeUndefined;
   });
 

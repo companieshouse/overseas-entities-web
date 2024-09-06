@@ -71,7 +71,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
       const trustIds: string[] = boData?.trust_ids?.length ? [...boData.trust_ids] : [];
 
-      removeFromApplicationData(req, BeneficialOwnerOtherKey, boId);
+      await removeFromApplicationData(req, BeneficialOwnerOtherKey, boId);
 
       const session = req.session as Session;
 
@@ -81,7 +81,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         (data as BeneficialOwnerOther).trust_ids = [...trustIds];
       }
 
-      setApplicationData(req.session, data, BeneficialOwnerOtherKey);
+      await setApplicationData(req.session, data, BeneficialOwnerOtherKey);
 
       await saveAndContinue(req, session);
     }

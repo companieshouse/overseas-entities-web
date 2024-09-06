@@ -591,8 +591,8 @@ export const checkDatePreviousToFilingDate = async (req, dateDay: string, dateMo
     errorMessage);
 };
 
-export const isUnableToObtainAllTrustInfo = (req) => {
-  const appData: ApplicationData = getApplicationData(req.session);
+export const isUnableToObtainAllTrustInfo = async (req) => {
+  const appData: ApplicationData = await getApplicationData(req.session);
   let trust;
   // Check first if the trust is in review.
   if (hasTrustsToReview(appData)) {

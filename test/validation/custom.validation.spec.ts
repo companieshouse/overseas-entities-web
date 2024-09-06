@@ -88,7 +88,7 @@ describe('tests for isUnableToObtainAllTrustInfo', () => {
   test.each([
     ["Yes", true],
     ["No", false]
-  ])("when trust in review and unable_to_obtain_all_trust_info is set to %s, should return %s", (notAllInfoFlag, expectedResult) => {
+  ])("when trust in review and unable_to_obtain_all_trust_info is set to %s, should return %s", async (notAllInfoFlag, expectedResult) => {
     const appData = {
       update: {
         review_trusts: [{
@@ -100,13 +100,13 @@ describe('tests for isUnableToObtainAllTrustInfo', () => {
       }
     };
     (getApplicationData as jest.Mock).mockReturnValue(appData);
-    expect(custom.isUnableToObtainAllTrustInfo(mockReq)).toBe(expectedResult);
+    expect(await custom.isUnableToObtainAllTrustInfo(mockReq)).toBe(expectedResult);
   });
 
   test.each([
     ["Yes", true],
     ["No", false]
-  ])("when new trust and unable_to_obtain_all_trust_info is set to %s, should return %s", (notAllInfoFlag, expectedResult) => {
+  ])("when new trust and unable_to_obtain_all_trust_info is set to %s, should return %s", async (notAllInfoFlag, expectedResult) => {
     const trustId = "1";
     mockReq.params = { [ROUTE_PARAM_TRUST_ID]: trustId };
     const appData = {
@@ -116,7 +116,7 @@ describe('tests for isUnableToObtainAllTrustInfo', () => {
       } as Trust]
     };
     (getApplicationData as jest.Mock).mockReturnValue(appData);
-    expect(custom.isUnableToObtainAllTrustInfo(mockReq)).toBe(expectedResult);
+    expect(await custom.isUnableToObtainAllTrustInfo(mockReq)).toBe(expectedResult);
   });
 
 });

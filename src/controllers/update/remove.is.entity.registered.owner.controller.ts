@@ -32,7 +32,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const remove = getRemove(appData);
     remove[IsListedAsPropertyOwnerKey] = isListedAsPropertyOwner;
 
-    setApplicationData(req.session, remove, RemoveKey);
+    await setApplicationData(req.session, remove, RemoveKey);
 
     if (isListedAsPropertyOwner === config.BUTTON_OPTION_NO) {
       return res.redirect(`${config.SECURE_UPDATE_FILTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);

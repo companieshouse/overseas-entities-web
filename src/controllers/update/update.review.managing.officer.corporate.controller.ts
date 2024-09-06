@@ -62,14 +62,14 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       const moId = appData.managing_officers_corporate[Number(moIndex)].id;
 
       // Remove old Managing Officer
-      removeFromApplicationData(req, ManagingOfficerCorporateKey, moId);
+      await removeFromApplicationData(req, ManagingOfficerCorporateKey, moId);
 
       // Set officer data
       const data: ApplicationDataType = setOfficerData(req.body, moId);
 
       // Save new Managing Officer
       const session = req.session as Session;
-      setApplicationData(session, data, ManagingOfficerCorporateKey);
+      await setApplicationData(session, data, ManagingOfficerCorporateKey);
 
       await saveAndContinue(req, session);
     }

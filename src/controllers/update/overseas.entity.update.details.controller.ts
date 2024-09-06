@@ -69,10 +69,11 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     await setOriginalIncorporationCountry(session, data);
 
-    setApplicationData(session, data, EntityKey);
+    await setApplicationData(session, data, EntityKey);
 
+    const appData: ApplicationData = await getApplicationData(req.session);
     setExtraData(req.session, {
-      ...(await getApplicationData(req.session)),
+      ...appData,
       [EntityNameKey]: entityName
     });
 

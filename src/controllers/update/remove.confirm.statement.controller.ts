@@ -30,7 +30,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     const remove = getRemove(appData);
     remove[IsNotProprietorOfLandKey] = true ;
-    setApplicationData(req.session, remove, RemoveKey);
+    await setApplicationData(req.session, remove, RemoveKey);
 
     await saveAndContinue(req, req.session as Session);
 

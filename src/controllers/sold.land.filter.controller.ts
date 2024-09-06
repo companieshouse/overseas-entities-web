@@ -17,7 +17,7 @@ export const get = async (req: Request, res: Response, next: NextFunction): Prom
     logger.debugRequest(req, `GET ${config.SOLD_LAND_FILTER_PAGE}`);
 
     if (req.query[config.LANDING_PAGE_QUERY_PARAM] === '0') {
-      await deleteApplicationData(req.session);
+      deleteApplicationData(req.session);
     }
 
     const appData: ApplicationData = await getApplicationData(req.session);

@@ -49,13 +49,13 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     if (boiIndex !== undefined && appData.beneficial_owners_government_or_public_authority && appData.beneficial_owners_government_or_public_authority[Number(boiIndex)].id === req.body["id"]){
       const boId = appData.beneficial_owners_government_or_public_authority[Number(boiIndex)].id;
-      removeFromApplicationData(req, BeneficialOwnerGovKey, boId);
+      await removeFromApplicationData(req, BeneficialOwnerGovKey, boId);
 
       const session = req.session as Session;
 
       const data: ApplicationDataType = setBeneficialOwnerData(req.body, uuidv4());
 
-      setApplicationData(req.session, data, BeneficialOwnerGovKey);
+      await setApplicationData(req.session, data, BeneficialOwnerGovKey);
 
       await saveAndContinue(req, session);
     }

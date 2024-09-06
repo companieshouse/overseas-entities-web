@@ -63,7 +63,10 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
           stillInvolved: '0',
           ceasedDateDay: '24',
           ceasedDateMonth: '11',
-          ceasedDateYear: '2023'
+          ceasedDateYear: '2023',
+          startDateDay: '',
+          startDateMonth: '',
+          startDateYear: ''
         };
 
         expect(mapIndividualTrusteeToSession(<Page.IndividualTrusteesFormCommon>mockFormData)).toEqual({
@@ -99,7 +102,10 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
           still_involved: 'No',
           ceased_date_day: '24',
           ceased_date_month: '11',
-          ceased_date_year: '2023'
+          ceased_date_year: '2023',
+          start_date_day: '',
+          start_date_month: '',
+          start_date_year: ''
         });
       });
 
@@ -112,7 +118,10 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
           stillInvolved: '0',
           ceasedDateDay: '24',
           ceasedDateMonth: '11',
-          ceasedDateYear: '2023'
+          ceasedDateYear: '2023',
+          startDateDay: '10',
+          startDateMonth: '11',
+          startDateYear: '2020'
         };
 
         expect(mapIndividualTrusteeToSession(<Page.IndividualTrusteesFormCommon>mockFormData)).toEqual({
@@ -148,7 +157,10 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
           still_involved: 'No',
           ceased_date_day: '24',
           ceased_date_month: '11',
-          ceased_date_year: '2023'
+          ceased_date_year: '2023',
+          start_date_day: '10',
+          start_date_month: '11',
+          start_date_year: '2020'
         });
       });
 
@@ -219,7 +231,10 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
           stillInvolved: '0',
           ceasedDateDay: '24',
           ceasedDateMonth: '11',
-          ceasedDateYear: '2023'
+          ceasedDateYear: '2023',
+          startDateDay: '12',
+          startDateMonth: '12',
+          startDateYear: '2020'
         };
 
         expect(mapIndividualTrusteeToSession(<Page.IndividualTrusteesFormCommon>mockFormData)).toEqual({
@@ -258,7 +273,10 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
           still_involved: 'No',
           ceased_date_day: '24',
           ceased_date_month: '11',
-          ceased_date_year: '2023'
+          ceased_date_year: '2023',
+          start_date_day: '12',
+          start_date_month: '12',
+          start_date_year: '2020'
         });
       });
 
@@ -274,7 +292,10 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
           stillInvolved: '1',
           ceasedDateDay: '24',
           ceasedDateMonth: '11',
-          ceasedDateYear: '2023'
+          ceasedDateYear: '2023',
+          startDateDay: '14',
+          startDateMonth: '12',
+          startDateYear: '2020'
         };
 
         expect(mapIndividualTrusteeToSession(<Page.IndividualTrusteesFormCommon>mockFormData)).toEqual({
@@ -313,7 +334,10 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
           still_involved: 'Yes',
           ceased_date_day: '',
           ceased_date_month: '',
-          ceased_date_year: ''
+          ceased_date_year: '',
+          start_date_day: '14',
+          start_date_month: '12',
+          start_date_year: '2020'
         });
       });
 
@@ -324,7 +348,10 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
           dateBecameIPDay: '2',
           dateBecameIPMonth: '11',
           dateBecameIPYear: '2022',
-          is_service_address_same_as_usual_residential_address: yesNoResponse.No
+          is_service_address_same_as_usual_residential_address: yesNoResponse.No,
+          startDateDay: '14',
+          startDateMonth: '12',
+          startDateYear: '2020'
         };
         const mappedObj = mapIndividualTrusteeToSession(<Page.IndividualTrusteesFormCommon>mockFormData);
 
@@ -343,7 +370,10 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
           stillInvolved: undefined,
           ceasedDateDay: '24',
           ceasedDateMonth: '11',
-          ceasedDateYear: '2023'
+          ceasedDateYear: '2023',
+          startDateDay: '14',
+          startDateMonth: '12',
+          startDateYear: '2020'
         };
 
         expect(mapIndividualTrusteeToSession(<Page.IndividualTrusteesFormCommon>mockFormData)).toEqual({
@@ -382,7 +412,10 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
           still_involved: null,
           ceased_date_day: '',
           ceased_date_month: '',
-          ceased_date_year: ''
+          ceased_date_year: '',
+          start_date_day: '14',
+          start_date_month: '12',
+          start_date_year: '2020'
         });
       });
     });

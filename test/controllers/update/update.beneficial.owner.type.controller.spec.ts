@@ -386,8 +386,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.header.location).not.toContain(mockLandingUrl);
     });
     
-    test('does not move reviewable trusts into review and redirects to manage trusts interrupt if update trust flag off and cease trusts flag off', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
+    test('does move reviewable trusts into review if cease trusts flag off', async () => {
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
       mockRetrieveTrustData.mockReturnValueOnce(Promise.resolve());
       mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
@@ -402,8 +401,8 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(mockSetExtraData).toHaveBeenCalled();
       expect(mockSaveAndContinue).toHaveBeenCalled();
       expect(mockHasTrustsToReview).toHaveBeenCalled();
-      expect(mockMoveReviewableTrustsIntoReview).not.toHaveBeenCalled();
-      expect(mockResetReviewStatusOnAllTrustsToBeReviewed).not.toHaveBeenCalled();
+      expect(mockMoveReviewableTrustsIntoReview).toHaveBeenCalled();
+      expect(mockResetReviewStatusOnAllTrustsToBeReviewed).toHaveBeenCalled();
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toContain(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);

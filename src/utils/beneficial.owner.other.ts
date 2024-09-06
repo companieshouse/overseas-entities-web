@@ -15,7 +15,12 @@ import {
   InputDateKeys,
   IsOnRegisterInCountryFormedInKey,
   IsOnSanctionsListKey,
-  NonLegalFirmNoc, PublicRegisterNameKey, RegistrationNumberKey,
+  NonLegalFirmNoc,
+  PublicRegisterNameKey,
+  RegistrationNumberKey,
+  OwnerOfLandOtherEntityJurisdictionsNoc,
+  OwnerOfLandPersonJurisdictionsNoc,
+  TrustControlNoc,
   TrusteesNoc
 } from "../model/data.types.model";
 import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAddressKeys } from "../model/address.model";
@@ -28,6 +33,7 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 import * as config from "../config";
 import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
+import { isActiveFeature } from "./feature.flag";
 
 export const getBeneficialOwnerOther = (req: Request, res: Response, templateName: string, backLinkUrl: string) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
@@ -37,7 +43,9 @@ export const getBeneficialOwnerOther = (req: Request, res: Response, templateNam
   return res.render(templateName, {
     backLinkUrl: backLinkUrl,
     templateName: templateName,
-    ...appData, relevant_period: req.query["relevant-period"] === "true",
+    ...appData,
+    relevant_period: req.query["relevant-period"] === "true",
+    FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC: isActiveFeature(config.FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)
   });
 };
 
@@ -62,7 +70,8 @@ export const getBeneficialOwnerOtherById = (req: Request, res: Response, next: N
       ...principalAddress,
       ...serviceAddress,
       [StartDateKey]: startDate,
-      entity_name: appData.entity_name
+      entity_name: appData.entity_name,
+      FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC: isActiveFeature(config.FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)
     };
 
     // Redis removal work - Add extra template options if Redis Remove flag is true and on Registration journey
@@ -166,6 +175,12 @@ export const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDat
   data[BeneficialOwnerNoc] = (data[BeneficialOwnerNoc]) ? [].concat(data[BeneficialOwnerNoc]) : [];
   data[TrusteesNoc] = (data[TrusteesNoc]) ? [].concat(data[TrusteesNoc]) : [];
   data[NonLegalFirmNoc] = (data[NonLegalFirmNoc]) ? [].concat(data[NonLegalFirmNoc]) : [];
+
+  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)) {
+    data[TrustControlNoc] = data[TrustControlNoc] ? [].concat(data[TrustControlNoc]) : [];
+    data[OwnerOfLandPersonJurisdictionsNoc] = data[OwnerOfLandPersonJurisdictionsNoc] ? [].concat(data[OwnerOfLandPersonJurisdictionsNoc]) : [];
+    data[OwnerOfLandOtherEntityJurisdictionsNoc] = data[OwnerOfLandOtherEntityJurisdictionsNoc] ? [].concat(data[OwnerOfLandOtherEntityJurisdictionsNoc]) : [];
+  }
 
   data[IsOnSanctionsListKey] = (data[IsOnSanctionsListKey]) ? +data[IsOnSanctionsListKey] : '';
   data[IsOnRegisterInCountryFormedInKey] = (data[IsOnRegisterInCountryFormedInKey]) ? +data[IsOnRegisterInCountryFormedInKey] : '';

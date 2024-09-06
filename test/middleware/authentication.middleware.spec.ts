@@ -41,6 +41,15 @@ const next = jest.fn();
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 
+function setReadOnlyProperty(req: Request, propertyName: string, propertyValue: string) {
+  Object.defineProperties(req, {
+    [propertyName]: {
+      value: propertyValue,
+      writable: true
+    }
+  });
+}
+
 describe('Authentication middleware', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -66,7 +75,7 @@ describe('Authentication middleware', () => {
   test(`should redirect to signin page with ${SOLD_LAND_FILTER_URL} page as return page`, () => {
     const signinRedirectPath = `/signin?return_to=${SOLD_LAND_FILTER_URL}`;
     req.session = undefined;
-    req.path = `${LANDING_URL}`;
+    setReadOnlyProperty(req, 'path', `${LANDING_URL}`);
 
     authentication(req, res, next);
 
@@ -84,7 +93,7 @@ describe('Authentication middleware', () => {
   test(`should redirect to signin page with ${SECURE_UPDATE_FILTER_URL} page as return page`, () => {
     const signinRedirectPath = `/signin?return_to=${SECURE_UPDATE_FILTER_URL}`;
     req.session = undefined;
-    req.path = `${UPDATE_LANDING_URL}`;
+    setReadOnlyProperty(req, 'path', `${UPDATE_LANDING_URL}`);
 
     authentication(req, res, next);
 
@@ -102,7 +111,7 @@ describe('Authentication middleware', () => {
   test(`should redirect to signin page with ${STARTING_NEW_URL} page as return page`, () => {
     const signinRedirectPath = `/signin?return_to=${STARTING_NEW_URL}`;
     req.session = undefined;
-    req.path = `${STARTING_NEW_URL}`;
+    setReadOnlyProperty(req, 'path', `${STARTING_NEW_URL}`);
 
     authentication(req, res, next);
 
@@ -120,7 +129,7 @@ describe('Authentication middleware', () => {
   test(`should redirect to signin page with ${RESUME_SUBMISSION_URL} page as return page`, () => {
     const signinRedirectPath = `/signin?return_to=${RESUME_SUBMISSION_URL}`;
     req.session = undefined;
-    req.path = `${RESUME_SUBMISSION_URL}`;
+    setReadOnlyProperty(req, 'path', `${RESUME_SUBMISSION_URL}`);
 
     authentication(req, res, next);
 
@@ -190,7 +199,7 @@ describe('Authentication middleware', () => {
 
   test(`should throw error when request path is invalid`, () => {
     req.session = undefined;
-    req.path = `/INVALID/${RESUME}`;
+    setReadOnlyProperty(req, 'path', `/INVALID/${RESUME}`);
 
     authentication(req, res, next);
 

@@ -19,6 +19,7 @@ import {
   ID,
   InputDateKeys,
   IsOnSanctionsListKey,
+  NonLegalFirmControlNoc,
   NonLegalFirmNoc,
   OwnerOfLandOtherEntityJurisdictionsNoc,
   OwnerOfLandPersonJurisdictionsNoc,
@@ -192,6 +193,7 @@ export const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDat
 
   if (isActiveFeature(config.FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)) {
     data[TrustControlNoc] = data[TrustControlNoc] ? [].concat(data[TrustControlNoc]) : [];
+    data[NonLegalFirmControlNoc] = data[NonLegalFirmControlNoc] ? [].concat(data[NonLegalFirmControlNoc]) : [];
     data[OwnerOfLandPersonJurisdictionsNoc] = data[OwnerOfLandPersonJurisdictionsNoc] ? [].concat(data[OwnerOfLandPersonJurisdictionsNoc]) : [];
     data[OwnerOfLandOtherEntityJurisdictionsNoc] = data[OwnerOfLandOtherEntityJurisdictionsNoc] ? [].concat(data[OwnerOfLandOtherEntityJurisdictionsNoc]) : [];
   }

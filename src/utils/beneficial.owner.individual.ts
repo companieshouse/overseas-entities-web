@@ -189,6 +189,8 @@ export const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDat
   // nunjucks returns just a string and with concat we will return an array.
   data[BeneficialOwnerNoc] = (data[BeneficialOwnerNoc]) ? [].concat(data[BeneficialOwnerNoc]) : [];
   data[TrusteesNoc] = (data[TrusteesNoc]) ? [].concat(data[TrusteesNoc]) : [];
+
+  // Should be able to move this into an else on the feature flag if statement below when we apply new nocs to update journey
   data[NonLegalFirmNoc] = (data[NonLegalFirmNoc]) ? [].concat(data[NonLegalFirmNoc]) : [];
 
   if (isActiveFeature(config.FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)) {

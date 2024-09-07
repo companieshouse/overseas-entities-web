@@ -84,7 +84,7 @@ import {
 } from '../__mocks__/validation.mock';
 
 import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from '../../src/model/beneficial.owner.individual.model';
-import { AddressKeys, EntityNumberKey, NatureOfControlJurisdiction, NatureOfControlType } from '../../src/model/data.types.model';
+import { AddressKeys, EntityNumberKey, NatureOfControlJurisdiction, NatureOfControlType, NonLegalFirmControlNoc, OwnerOfLandOtherEntityJurisdictionsNoc, OwnerOfLandPersonJurisdictionsNoc, TrustControlNoc } from '../../src/model/data.types.model';
 import { saveAndContinue } from "../../src/utils/save.and.continue";
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { ServiceAddressKey, ServiceAddressKeys } from "../../src/model/address.model";
@@ -485,6 +485,35 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.status).toEqual(302);
 
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
+    });
+
+    test(`correctly maps natures of controle when feature flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is ON`, async () => {
+      mockPrepareData.mockImplementationOnce( () => {
+        return {
+          ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK,
+          non_legal_firm_control_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+          trust_control_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+          owner_of_land_person_nature_of_control_jurisdictions: [NatureOfControlJurisdiction.ENGLAND_AND_WALES],
+          owner_of_land_other_entity_nature_of_control_jurisdictions: [NatureOfControlJurisdiction.NORTHERN_IRELAND]
+        };
+      });
+
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
+      await request(app)
+        .post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+        .send({
+          ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK,
+        });
+
+      const appData: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+
+      expect(appData[TrustControlNoc]).toEqual([NatureOfControlType.OVER_25_PERCENT_OF_SHARES]);
+      expect(appData[NonLegalFirmControlNoc]).toEqual([NatureOfControlType.OVER_25_PERCENT_OF_SHARES]);
+      expect(appData[OwnerOfLandPersonJurisdictionsNoc]).toEqual([NatureOfControlJurisdiction.ENGLAND_AND_WALES]);
+      expect(appData[OwnerOfLandOtherEntityJurisdictionsNoc]).toEqual([NatureOfControlJurisdiction.NORTHERN_IRELAND]);
     });
 
     test("catch error when posting data", async () => {
@@ -1279,6 +1308,35 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(NEXT_PAGE_URL);
       expect(resp.header.location).toEqual(NEXT_PAGE_URL);
+    });
+
+    test(`correctly maps natures of controle when feature flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is ON`, async () => {
+      mockPrepareData.mockImplementationOnce( () => {
+        return {
+          ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK,
+          non_legal_firm_control_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+          trust_control_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+          owner_of_land_person_nature_of_control_jurisdictions: [NatureOfControlJurisdiction.ENGLAND_AND_WALES],
+          owner_of_land_other_entity_nature_of_control_jurisdictions: [NatureOfControlJurisdiction.NORTHERN_IRELAND]
+        };
+      });
+
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
+      await request(app)
+        .post(BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL)
+        .send({
+          ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK,
+        });
+
+      const appData: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+
+      expect(appData[TrustControlNoc]).toEqual([NatureOfControlType.OVER_25_PERCENT_OF_SHARES]);
+      expect(appData[NonLegalFirmControlNoc]).toEqual([NatureOfControlType.OVER_25_PERCENT_OF_SHARES]);
+      expect(appData[OwnerOfLandPersonJurisdictionsNoc]).toEqual([NatureOfControlJurisdiction.ENGLAND_AND_WALES]);
+      expect(appData[OwnerOfLandOtherEntityJurisdictionsNoc]).toEqual([NatureOfControlJurisdiction.NORTHERN_IRELAND]);
     });
 
     test("catch error when posting data", async () => {

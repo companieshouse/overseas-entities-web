@@ -44,9 +44,6 @@ import { v4 as uuidv4 } from "uuid";
 import * as config from "../config";
 import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
 import { checkRelevantPeriod } from "./relevant.period";
-import {
-  RELEVANT_PERIOD_QUERY_PARAM
-} from "../config";
 import { isActiveFeature } from "./feature.flag";
 
 export const getBeneficialOwnerIndividual = (req: Request, res: Response, templateName: string, backLinkUrl: string) => {
@@ -54,7 +51,7 @@ export const getBeneficialOwnerIndividual = (req: Request, res: Response, templa
 
   const appData: ApplicationData = getApplicationData(req.session);
   if (checkRelevantPeriod(appData)) {
-    backLinkUrl = backLinkUrl + RELEVANT_PERIOD_QUERY_PARAM;
+    backLinkUrl = backLinkUrl + config.RELEVANT_PERIOD_QUERY_PARAM;
   }
 
   return res.render(templateName, {
@@ -80,13 +77,13 @@ export const getBeneficialOwnerIndividualById = (req: Request, res: Response, ne
     const dobDate = (data) ? mapDataObjectToFields(data[DateOfBirthKey], DateOfBirthKeys, InputDateKeys) : {};
     const startDate = (data) ? mapDataObjectToFields(data[StartDateKey], StartDateKeys, InputDateKeys) : {};
 
-    // if (checkRelevantPeriod(appData)) {
-    // backLinkUrl = backLinkUrl + RELEVANT_PERIOD_QUERY_PARAM;
-    // }
+    if (checkRelevantPeriod(appData)) {
+      backLinkUrl = backLinkUrl + config.RELEVANT_PERIOD_QUERY_PARAM;
+    }
 
     const templateOptions = {
       backLinkUrl: backLinkUrl,
-      templateName: `${templateName}/${id}`,
+      templateName: `${templateName}/${id}${config.RELEVANT_PERIOD_QUERY_PARAM}`,
       id,
       ...data,
       ...usualResidentialAddress,

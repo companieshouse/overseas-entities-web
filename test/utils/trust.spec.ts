@@ -86,6 +86,20 @@ describe('Trust Utils method tests', () => {
     }
   } as BeneficialOwnerIndividual;
 
+  const mockBoCeasedIndividualWithTrusteeNocRelevantPeriod = {
+    id: '9003',
+    trustees_nature_of_control_types: ['dummyType' as NatureOfControlType],
+    trust_ids: [
+      trustId,
+    ],
+    ceased_date: {
+      day: "1",
+      month: "2",
+      year: "2020"
+    },
+    relevant_period: true
+  } as BeneficialOwnerIndividual;
+
   const mockBoOle1 = {
     id: '8001',
   } as BeneficialOwnerOther;
@@ -109,6 +123,20 @@ describe('Trust Utils method tests', () => {
       month: "2",
       year: "2020"
     }
+  } as BeneficialOwnerOther;
+
+  const mockBoCeasedOleWithTrusteeNocRelevantPeriod = {
+    id: '8003',
+    trustees_nature_of_control_types: ['dummyType' as NatureOfControlType],
+    trust_ids: [
+      trustId,
+    ],
+    ceased_date: {
+      day: "1",
+      month: "2",
+      year: "2020"
+    },
+    relevant_period: true
   } as BeneficialOwnerOther;
 
   let mockAppData = {};
@@ -143,6 +171,15 @@ describe('Trust Utils method tests', () => {
     expect(getBoIndividualAssignableToTrust(mockAppDataWithACeasedIndividualBO)).toEqual([mockBoIndividual1]);
   });
 
+  test('test get Bo Individuals assignable to Trust with relevant period', () => {
+    const mockAppDataWithACeasedIndividualBO = {
+      ...mockAppData
+    };
+    mockAppDataWithACeasedIndividualBO[BeneficialOwnerIndividualKey].push(mockBoCeasedIndividualWithTrusteeNocRelevantPeriod);
+
+    expect(getBoIndividualAssignableToTrust(mockAppDataWithACeasedIndividualBO)).toEqual([mockBoIndividual1, mockBoCeasedIndividualWithTrusteeNocRelevantPeriod]);
+  });
+
   test('test get Bo other legal assigned to trust', () => {
     expect(getTrustBoIndividuals(mockAppData, trustId)).toEqual([mockBoIndividual1]);
   });
@@ -154,6 +191,15 @@ describe('Trust Utils method tests', () => {
     mockAppDataWithACeasedOtherBO[BeneficialOwnerOtherKey].push(mockBoCeasedOleWithTrusteeNoc);
 
     expect(getBoOtherAssignableToTrust(mockAppDataWithACeasedOtherBO)).toEqual([mockBoOle2]);
+  });
+
+  test('test get Bo other legal assignable to Trust with relevant period', () => {
+    const mockAppDataWithACeasedOtherBO = {
+      ...mockAppData
+    };
+    mockAppDataWithACeasedOtherBO[BeneficialOwnerOtherKey].push(mockBoCeasedOleWithTrusteeNocRelevantPeriod);
+
+    expect(getBoOtherAssignableToTrust(mockAppDataWithACeasedOtherBO)).toEqual([mockBoOle2, mockBoCeasedOleWithTrusteeNocRelevantPeriod]);
   });
 
   test('test get Bo other legal assigned to trust', () => {
@@ -858,6 +904,22 @@ describe('Trust Utils method tests', () => {
       identification_registration_number: "",
       is_on_register_in_country_formed_in: false,
     };
+    const corporateTrustee5 = {
+      name: "Orange",
+      type: "BENEFICIARY",
+      registered_office_address: api_registered_office_address,
+      is_service_address_same_as_principal_address: true,
+      service_address: api_empty_address,
+      start_date_day: "10",
+      start_date_month: "11",
+      start_date_year: "2014",
+      identification_legal_authority: "la 1",
+      identification_legal_form: "lf 1",
+      identification_place_registered: "pr 1",
+      identification_country_registration: "cr 1",
+      identification_registration_number: "rn 1",
+      is_on_register_in_country_formed_in: true,
+    };
     const historicBoTrusteeIndividual = {
       forename: "Ben",
       other_forenames: "",
@@ -889,7 +951,7 @@ describe('Trust Utils method tests', () => {
         'HISTORICAL_BO': [],
       }, {
         'trust_id': second_test_trust_id,
-        'CORPORATES': [ corporateTrustee1, corporateTrustee2, corporateTrustee3, corporateTrustee4 ],
+        'CORPORATES': [ corporateTrustee1, corporateTrustee2, corporateTrustee3, corporateTrustee4, corporateTrustee5],
         'INDIVIDUALS': [],
         'HISTORICAL_BO': [ historicBoTrusteeIndividual, historicBoTrusteeCorporate ],
       }

@@ -117,6 +117,9 @@ describe('Trust Individual Beneficial Owner Controller Integration Tests', () =>
         dateBecameIPDay: "11",
         dateBecameIPMonth: "11",
         dateBecameIPYear: "1987",
+        startDateDay: "",
+        startDateMonth: "",
+        startDateYear: ""
       };
 
       const resp =
@@ -244,6 +247,9 @@ describe('Trust Individual Beneficial Owner Controller Integration Tests', () =>
         dateBecameIPDay: "11",
         dateBecameIPMonth: "11",
         dateBecameIPYear: "1987",
+        startDateDay: "",
+        startDateMonth: "",
+        startDateYear: ""
       };
 
       const resp =

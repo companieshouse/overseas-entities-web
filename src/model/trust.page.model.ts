@@ -71,6 +71,9 @@ type IndividualTrusteesFormCommon = {
   service_address_country?: string,
   service_address_postcode?: string,
   is_service_address_same_as_usual_residential_address: yesNoResponse,
+  startDateDay: string,
+  startDateMonth: string,
+  startDateYear: string,
   dateBecameIPDay?: string,
   dateBecameIPMonth?: string,
   dateBecameIPYear?: string,
@@ -78,7 +81,7 @@ type IndividualTrusteesFormCommon = {
   ceasedDateDay?: string,
   ceasedDateMonth?: string,
   ceasedDateYear?: string,
-  relevant_period: boolean;
+  relevant_period?: boolean;
 };
 
 interface TrustHistoricalBeneficialOwnerFormLegal extends TrustHistoricalBeneficialOwnerFormCommon {
@@ -132,6 +135,9 @@ type TrustLegalEntityForm = {
   ceasedDateMonth?: string;
   ceasedDateYear?: string;
   stillInvolved?: string;
+  startDateDay: string;
+  startDateMonth: string;
+  startDateYear: string;
   relevant_period?: boolean;
 };
 

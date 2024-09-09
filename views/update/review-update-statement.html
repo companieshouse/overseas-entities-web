@@ -76,7 +76,6 @@ update.filing_date["year"]) %}
   {% endif %}
 {% endset %}
 
-{% set addTrustsEnabled = pageParams.addTrustsEnabled %}
 {% set hasExistingTrusts = update and update.review_trusts and update.review_trusts.length > 0 %}
 {% set hasBosWithTrusteeNOC = pageParams.hasAnyBosWithTrusteeNocs %}
 
@@ -111,8 +110,8 @@ update.filing_date["year"]) %}
         {% endif %}
       {% endif %}
 
-      {% if feature_flag_relevant_period === "true" and not pageParams.isRPStatementExists %}
-      {% include "includes/check-your-answers/relevant-period-check-your-answers.html" %}
+      {% if feature_flag_relevant_period === "true" %}
+        {% include "includes/check-your-answers/relevant-period-check-your-answers.html" %}
       {% else %}
         {{ govukSummaryList({
           rows: [
@@ -314,15 +313,13 @@ update.filing_date["year"]) %}
     {% endfor %}
   {% endif %}
 
-  {% if addTrustsEnabled %}
-    {% if hasExistingTrusts %}
-      <br>
-      <h2 class="govuk-heading-l">Trusts</h2>
-      {% for trust in update.review_trusts %}
-        {% set trust_heading = trust.trust_name %}
-        {% include "includes/check-your-answers/trusts.html" %}
-      {% endfor %}   
-    {% endif %}
+  {% if hasExistingTrusts %}
+    <br>
+    <h2 class="govuk-heading-l">Trusts</h2>
+    {% for trust in update.review_trusts %}
+      {% set trust_heading = trust.trust_name %}
+      {% include "includes/check-your-answers/trusts.html" %}
+    {% endfor %}   
   {% endif %}
   
     {% if isRemoveJourney %}

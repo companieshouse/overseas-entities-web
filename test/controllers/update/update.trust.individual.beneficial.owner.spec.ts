@@ -11,6 +11,7 @@ jest.mock('../../../src/utils/feature.flag');
 jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
+jest.mock('../../../src/utils/relevant.period');
 
 import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import { constants } from 'http2';
@@ -22,7 +23,7 @@ import { Session } from '@companieshouse/node-session-handler';
 import request from "supertest";
 import app from "../../../src/app";
 import { get, post } from "../../../src/controllers/update/update.trusts.individual.beneficial.owner.controller";
-import { ANY_MESSAGE_ERROR, PAGE_NOT_FOUND_TEXT, PAGE_TITLE_ERROR, TRUSTEE_STILL_INVOLVED_TEXT, UPDATE_TELL_US_ABOUT_THE_INDIVIDUAL_HEADING } from '../../__mocks__/text.mock';
+import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR, TRUSTEE_STILL_INVOLVED_TEXT, UPDATE_TELL_US_ABOUT_THE_INDIVIDUAL_HEADING } from '../../__mocks__/text.mock';
 import { authentication } from '../../../src/middleware/authentication.middleware';
 import { hasTrustWithIdUpdate } from '../../../src/middleware/navigation/has.trust.middleware';
 import {
@@ -42,6 +43,7 @@ import { isActiveFeature } from '../../../src/utils/feature.flag';
 import { companyAuthentication } from '../../../src/middleware/company.authentication.middleware';
 import { hasUpdatePresenter } from '../../../src/middleware/navigation/update/has.presenter.middleware';
 import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
+import { checkRelevantPeriod } from "../../../src/utils/relevant.period";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
@@ -62,6 +64,7 @@ mockHasTrustWithIdUpdate.mockImplementation((_, __, next: NextFunction) => next(
 
 const mockServiceAvailabilityMiddleware = (serviceAvailabilityMiddleware as jest.Mock);
 mockServiceAvailabilityMiddleware.mockImplementation((_, __, next: NextFunction) => next());
+const mockCheckRelevantPeriod = checkRelevantPeriod as jest.Mock;
 
 describe('Update Trust Individual Beneficial Owner Controller', () => {
   const trustId = TRUST_WITH_ID.trust_id;
@@ -112,7 +115,8 @@ describe('Update Trust Individual Beneficial Owner Controller', () => {
       session: {} as Session,
       route: '',
       method: '',
-      body: { 'body': 'dummy' }
+      body: { 'body': 'dummy' },
+      query: {}
     } as Request;
   });
 
@@ -123,6 +127,7 @@ describe('Update Trust Individual Beneficial Owner Controller', () => {
       const expectMapResult = { dummyKey: 'EXPECT-MAP-RESULT' };
       (mapIndividualTrusteeByIdFromSessionToPage as jest.Mock).mockReturnValueOnce(expectMapResult);
       (mapCommonTrustDataToPage as jest.Mock).mockReturnValue(mockTrust1Data);
+      mockCheckRelevantPeriod.mockReturnValueOnce(true);
 
       get(mockReq, mockRes, mockNext);
 
@@ -238,24 +243,6 @@ describe('Update Trust Individual Beneficial Owner Controller', () => {
       expect(authentication).toBeCalledTimes(1);
       expect(hasTrustWithIdUpdate).toBeCalledTimes(1);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
-    });
-
-    test('when feature flag for update trusts is off GET returns 404', async () => {
-      mockIsActiveFeature.mockReturnValue(false);
-
-      const resp = await request(app).get(pageUrl);
-
-      expect(resp.status).toEqual(404);
-      expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
-    });
-
-    test('when feature flag for update trusts is off POST returns 404', async () => {
-      mockIsActiveFeature.mockReturnValue(false);
-
-      const resp = await request(app).post(pageUrl).send({});
-
-      expect(resp.status).toEqual(404);
-      expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
     });
   });
 });

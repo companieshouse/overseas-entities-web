@@ -60,13 +60,6 @@ describe("Update any trusts involved controller tests", () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 
-    test(`renders page not found if FEATURE_FLAG_ENABLE_UPDATE_TRUSTS = true`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
-
-      const resp = await request(app).get(UPDATE_ANY_TRUSTS_INVOLVED_URL);
-      expect(resp.status).toEqual(404);
-    });
-
     test("catch error when rendering the page", async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(UPDATE_ANY_TRUSTS_INVOLVED_URL);
@@ -101,13 +94,6 @@ describe("Update any trusts involved controller tests", () => {
       expect(resp.text).toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(UPDATE_ANY_TRUSTS_INVOLVED_HEADING);
       expect(resp.text).toContain(ErrorMessages.SELECT_IF_ANY_TRUSTS_INVOLVED);
-    });
-
-    test("POST with FEATURE_FLAG_ENABLE_UPDATE_TRUSTS = true returns 404", async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
-
-      const resp = await request(app).post(UPDATE_ANY_TRUSTS_INVOLVED_URL);
-      expect(resp.status).toEqual(404);
     });
 
     test("catch error when posting the page", async () => {

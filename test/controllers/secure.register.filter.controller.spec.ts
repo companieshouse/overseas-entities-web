@@ -32,8 +32,14 @@ import {
   RADIO_BUTTON_YES_SELECTED,
   SECURE_REGISTER_FILTER_PAGE_HEADING,
   SERVICE_UNAVAILABLE,
+  BACK_BUTTON_CLASS
 } from "../__mocks__/text.mock";
-import { SECURE_REGISTER_FILTER_URL, SOLD_LAND_FILTER_URL } from "../../src/config";
+
+import {
+  SECURE_REGISTER_FILTER_URL,
+  SECURE_REGISTER_FILTER_WITH_PARAMS_URL,
+  SOLD_LAND_FILTER_URL
+} from "../../src/config";
 
 import { getApplicationData, setExtraData } from "../../src/utils/application.data";
 import { authentication } from "../../src/middleware/authentication.middleware";
@@ -43,6 +49,7 @@ import { serviceAvailabilityMiddleware } from "../../src/middleware/service.avai
 import { isActiveFeature } from "../../src/utils/feature.flag";
 import { isRemoveJourney, getUrlWithTransactionIdAndSubmissionId } from "./../../src/utils/url";
 import { updateOverseasEntity } from "../../src/service/overseas.entities.service";
+import { getUrlWithParamsToPath } from "../../src/utils/url";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockAuthenticationMiddleware = authentication as jest.Mock;
@@ -64,6 +71,7 @@ mockRemoveJourneyMiddleware.mockClear();
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockIsRemoveJourney = isRemoveJourney as jest.Mock;
 const mockGetUrlWithTransactionIdAndSubmissionId = getUrlWithTransactionIdAndSubmissionId as jest.Mock;
+const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
 
 describe( "SECURE REGISTER FILTER controller", () => {
 
@@ -71,11 +79,13 @@ describe( "SECURE REGISTER FILTER controller", () => {
     jest.clearAllMocks();
     mockIsActiveFeature.mockReset();
     mockIsRemoveJourney.mockReset();
+    mockGetUrlWithParamsToPath.mockReset();
   });
 
   describe("GET tests", () => {
-    test(`renders the the ${config.SECURE_REGISTER_FILTER_PAGE} page`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ });
+
+    test(`renders the ${config.SECURE_REGISTER_FILTER_PAGE} page`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({});
       const resp = await request(app).get(SECURE_REGISTER_FILTER_URL);
 
       expect(resp.status).toEqual(200);
@@ -87,6 +97,51 @@ describe( "SECURE REGISTER FILTER controller", () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
       expect(resp.text).toContain(NOT_SHOW_INFORMATION_ON_PUBLIC_REGISTER);
+    });
+
+    test(`renders the ${config.SECURE_REGISTER_FILTER_PAGE} page and REDIS_removal flag is set to OFF`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockGetUrlWithParamsToPath.mockReturnValueOnce('/some-url');
+      mockGetApplicationData.mockReturnValueOnce({});
+      mockIsRemoveJourney.mockReturnValue(false);
+      const resp = await request(app).get(SECURE_REGISTER_FILTER_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(SECURE_REGISTER_FILTER_PAGE_HEADING);
+      expect(resp.text).toContain(SOLD_LAND_FILTER_URL);
+      expect(resp.text).toContain(config.LANDING_PAGE_URL);
+      expect(resp.text).not.toContain(RADIO_BUTTON_YES_SELECTED);
+      expect(resp.text).not.toContain(RADIO_BUTTON_NO_SELECTED);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
+      expect(resp.text).toContain(NOT_SHOW_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath).not.toHaveBeenCalled();
+      expect(mockGetApplicationData).toHaveBeenCalledTimes(1);
+      expect(mockIsRemoveJourney).toHaveBeenCalledTimes(1);
+    });
+
+    test(`renders the ${config.SECURE_REGISTER_FILTER_PAGE} page and REDIS_removal flag is set to ON`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockGetUrlWithParamsToPath.mockReturnValueOnce('/some-url');
+      mockGetApplicationData.mockReturnValueOnce({});
+      mockIsRemoveJourney.mockReturnValue(false);
+      const resp = await request(app).get(SECURE_REGISTER_FILTER_WITH_PARAMS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(SECURE_REGISTER_FILTER_PAGE_HEADING);
+      expect(resp.text).toContain(SOLD_LAND_FILTER_URL);
+      expect(resp.text).toContain(config.LANDING_PAGE_URL);
+      expect(resp.text).not.toContain(RADIO_BUTTON_YES_SELECTED);
+      expect(resp.text).not.toContain(RADIO_BUTTON_NO_SELECTED);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
+      expect(resp.text).toContain(NOT_SHOW_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(resp.text).toContain(BACK_BUTTON_CLASS);
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
+      expect(mockGetApplicationData).toHaveBeenCalledTimes(1);
+      expect(mockIsRemoveJourney).toHaveBeenCalledTimes(1);
     });
 
     test(`renders the ${config.SECURE_REGISTER_FILTER_PAGE} page with radios selected to no`, async () => {

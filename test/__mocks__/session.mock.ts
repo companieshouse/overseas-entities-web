@@ -50,7 +50,8 @@ import {
   PaymentKey,
   Transactionkey,
   yesNoResponse,
-  IsRemoveKey
+  IsRemoveKey,
+  NatureOfControlJurisdiction
 } from "../../src/model/data.types.model";
 import { TrustKey, Trust, TrustIndividual } from "../../src/model/trust.model";
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../src/model/who.is.making.filing.model";
@@ -386,6 +387,11 @@ export const UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType
   trust_ids: ["8"]
 };
 
+export const RELEVANT_PERIOD_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.BeneficialOwnerOther = {
+  ...UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
+  relevant_period: true
+};
+
 export const UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_REQ_MOCK = {
   ...UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
   ...PRINCIPAL_ADDRESS_MOCK,
@@ -560,7 +566,10 @@ export const UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndi
   ceased_date: EMPTY_DATE,
   beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
   trustees_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS],
+  trust_control_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
   non_legal_firm_members_nature_of_control_types: [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS],
+  owner_of_land_person_nature_of_control_jurisdictions: [NatureOfControlJurisdiction.ENGLAND_AND_WALES],
+  owner_of_land_other_entity_nature_of_control_jurisdictions: [NatureOfControlJurisdiction.SCOTLAND],
   is_on_sanctions_list: 1,
   trust_ids: [],
   relevant_period: undefined,
@@ -873,6 +882,11 @@ export const BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_CH_REF: beneficialOwnerGovTyp
 
 export const UPDATE_BENEFICIAL_OWNER_GOV_OBJECT_MOCK: beneficialOwnerGovType.BeneficialOwnerGov = {
   ...BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
+};
+
+export const RELEVANT_PERIOD_BENEFICIAL_OWNER_GOV_OBJECT_MOCK: beneficialOwnerGovType.BeneficialOwnerGov = {
+  ...BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
+  relevant_period: true
 };
 
 export const REVIEW_BENEFICIAL_OWNER_GOV_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA = {

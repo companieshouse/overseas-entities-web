@@ -66,6 +66,9 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
         journey = config.JourneyType.remove;
       }
 
+      const noChangeFlag = appData?.update?.no_change;
+      const FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC = isActiveFeature(config.FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC);
+
       if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
         // This is for the REDIS removal work, all BO / MO pages need the activeSubmissionBasePath passed into the template
         // and we also need to pass the feature flag as true so the template constructs the correct urls.
@@ -82,7 +85,11 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
           relevant_period: relevantPeriod,
           errors,
           FEATURE_FLAG_ENABLE_REDIS_REMOVAL: true,
-          activeSubmissionBasePath: getUrlWithParamsToPath(config.ACTIVE_SUBMISSION_BASE_PATH, req)
+          activeSubmissionBasePath: getUrlWithParamsToPath(config.ACTIVE_SUBMISSION_BASE_PATH, req),
+          pageParams: {
+            noChangeFlag
+          },
+          FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
         });
       }
 
@@ -97,7 +104,11 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
         ...dates,
         journey,
         relevant_period: relevantPeriod,
-        errors
+        errors,
+        pageParams: {
+          noChangeFlag
+        },
+        FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
       });
     }
 

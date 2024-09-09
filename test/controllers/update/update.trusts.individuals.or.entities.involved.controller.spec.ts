@@ -26,7 +26,7 @@ import { getApplicationData } from '../../../src/utils/application.data';
 import { isActiveFeature } from '../../../src/utils/feature.flag';
 
 import { APPLICATION_DATA_MOCK, TRUST_WITH_ID } from '../../__mocks__/session.mock';
-import { PAGE_TITLE_ERROR, PAGE_NOT_FOUND_TEXT, TRUST_INVOLVED_TITLE, ERROR_LIST } from '../../__mocks__/text.mock';
+import { PAGE_TITLE_ERROR, TRUST_INVOLVED_TITLE, ERROR_LIST } from '../../__mocks__/text.mock';
 import { mapCommonTrustDataToPage } from '../../../src/utils/trust/common.trust.data.mapper';
 import { RoleWithinTrustType } from "../../../src/model/role.within.trust.type.model";
 import { yesNoResponse } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
@@ -73,7 +73,6 @@ describe('Update - Trusts - Individuals or entities involved', () => {
         trustName: 'dummy',
       };
       mockMapCommonTrustDataToPage.mockReturnValue(mockTrustData);
-      mockIsActiveFeature.mockReturnValue(true);
 
       const resp = await request(app).get(pageUrl);
 
@@ -82,34 +81,15 @@ describe('Update - Trusts - Individuals or entities involved', () => {
       expect(resp.text).toContain(mockTrustData.trustName);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
-
-    test('when feature flag is off, 404 is returned', async () => {
-      mockIsActiveFeature.mockReturnValue(false);
-
-      const resp = await request(app).get(pageUrl);
-
-      expect(resp.status).toEqual(404);
-      expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
-    });
   });
 
   describe('POST tests', () => {
-    test('when feature flag is on, redirect to trusts associated with the entity page', async () => {
-      mockIsActiveFeature.mockReturnValue(true);
+    test('redirects to trusts associated with the entity page', async () => {
 
       const resp = await request(app).post(pageUrl).send({ noMoreToAdd: 'noMoreToAdd' });
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL);
-    });
-
-    test('when feature flag is off, 404 is returned', async () => {
-      mockIsActiveFeature.mockReturnValue(false);
-
-      const resp = await request(app).post(pageUrl);
-
-      expect(resp.status).toEqual(404);
-      expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
     });
 
     test('should return a validation error if ceased date is before trust creation date', async () => {

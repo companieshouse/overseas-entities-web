@@ -81,6 +81,9 @@ export interface TrustIndividual {
   sa_address_care_of?: string;
   sa_address_po_box?: string;
   is_service_address_same_as_usual_residential_address?: yesNoResponse;
+  start_date_day?: string;
+  start_date_month?: string;
+  start_date_year?: string;
   still_involved?: string;
   ceased_date_day?: string;
   ceased_date_month?: string;
@@ -165,6 +168,9 @@ export type TrustCorporate = {
   ceased_date_month?: string;
   ceased_date_year?: string;
   still_involved?: string;
+  start_date_day?: string;
+  start_date_month?: string;
+  start_date_year?: string;
   relevant_period?: boolean;
 };
 

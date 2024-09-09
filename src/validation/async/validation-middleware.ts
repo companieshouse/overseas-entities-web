@@ -1,3 +1,4 @@
+/* eslint-disable require-await */
 import { Request } from 'express';
 import { ValidationError } from 'express-validator';
 
@@ -37,7 +38,7 @@ export const beneficialOwnersTypeSubmission = async (req: Request): Promise<Vali
 };
 
 const checkAgainstFilingDate = async (req: Request, date_field_id: string, error_message: string) =>
-  await checkDatePreviousToFilingDate(
+  checkDatePreviousToFilingDate(
     req,
     req.body[date_field_id + "-day"], req.body[date_field_id + "-month"], req.body[date_field_id + "-year"],
     error_message
@@ -81,7 +82,7 @@ const is_date_within_filing_period = async (req: Request, date_field_id: string,
 
 };
 
-export const filingPeriodStartDateValidations = async (req: Request) => await is_date_within_filing_period(req, "start_date", ErrorMessages.START_DATE_BEFORE_FILING_DATE);
+export const filingPeriodStartDateValidations = async (req: Request) => is_date_within_filing_period(req, "start_date", ErrorMessages.START_DATE_BEFORE_FILING_DATE);
 
 const is_end_date_within_filing_period = async (req: Request, allowedUrls: Array<string[]>, date_field_id: string, radio_button_id: string, error_message: string) => {
 
@@ -123,7 +124,7 @@ export const filingPeriodCeasedDateValidations = async (req: Request) => {
     [config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL]
   ];
 
-  return await is_end_date_within_filing_period(req, allowedUrls, "ceased_date", "is_still_bo", ErrorMessages.CEASED_DATE_BEFORE_FILING_DATE);
+  return is_end_date_within_filing_period(req, allowedUrls, "ceased_date", "is_still_bo", ErrorMessages.CEASED_DATE_BEFORE_FILING_DATE);
 };
 
 export const filingPeriodResignedDateValidations = async (req: Request) => {
@@ -134,7 +135,7 @@ export const filingPeriodResignedDateValidations = async (req: Request) => {
     [config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_URL]
   ];
 
-  return await is_end_date_within_filing_period(req, allowedUrls, "resigned_on", "is_still_mo", ErrorMessages.RESIGNED_ON_BEFORE_FILING_DATE);
+  return is_end_date_within_filing_period(req, allowedUrls, "resigned_on", "is_still_mo", ErrorMessages.RESIGNED_ON_BEFORE_FILING_DATE);
 };
 
 export const checkNoChangeReviewStatement = async (req) => {

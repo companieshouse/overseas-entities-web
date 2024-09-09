@@ -1,3 +1,4 @@
+/* eslint-disable require-await */
 import * as config from "../config";
 import { Navigation } from "../model/navigation.model";
 import { ApplicationData } from "../model/application.model";
@@ -71,7 +72,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.SECURE_UPDATE_FILTER_URL]: {
     currentPage: config.SECURE_UPDATE_FILTER_PAGE,
-    previousPage: async (appData: ApplicationData, req: Request) => await getSecureUpdateFilterBackLink(req),
+    previousPage: async (appData: ApplicationData, req: Request) => getSecureUpdateFilterBackLink(req),
     nextPage: [config.UPDATE_ANY_TRUSTS_INVOLVED_URL]
   },
   [config.UPDATE_INTERRUPT_CARD_URL]: {
@@ -81,7 +82,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.OVERSEAS_ENTITY_QUERY_URL]: {
     currentPage: config.OVERSEAS_ENTITY_QUERY_PAGE,
-    previousPage: async (appData: ApplicationData, req: Request) => await getUpdateOrRemoveBackLink(req, config.UPDATE_INTERRUPT_CARD_URL),
+    previousPage: async (appData: ApplicationData, req: Request) => getUpdateOrRemoveBackLink(req, config.UPDATE_INTERRUPT_CARD_URL),
     nextPage: [config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE]
   },
   [config.UPDATE_FILING_DATE_URL]: {
@@ -91,7 +92,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.OVERSEAS_ENTITY_PRESENTER_URL]: {
     currentPage: config.UPDATE_PRESENTER_PAGE,
-    previousPage: async (appData: ApplicationData, req: Request) => await getOverseasEntityPresenterBackLink(req),
+    previousPage: async (appData: ApplicationData, req: Request) => getOverseasEntityPresenterBackLink(req),
     nextPage: [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE]
   },
   [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL]: {
@@ -101,12 +102,12 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_REVIEW_STATEMENT_URL]: {
     currentPage: config.UPDATE_REVIEW_STATEMENT_PAGE,
-    previousPage: async (appData: ApplicationData, req: Request) => await getUpdateReviewStatementBackLink(req),
+    previousPage: async (appData: ApplicationData, req: Request) => getUpdateReviewStatementBackLink(req),
     nextPage: [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL, config.OVERSEAS_ENTITY_PAYMENT_WITH_TRANSACTION_URL]
   },
   [config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL]: {
     currentPage: config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
-    previousPage: async (appData: ApplicationData, req: Request) => await getUpdateOrRemoveBackLink(req, config.OVERSEAS_ENTITY_QUERY_URL),
+    previousPage: async (appData: ApplicationData, req: Request) => getUpdateOrRemoveBackLink(req, config.OVERSEAS_ENTITY_QUERY_URL),
     nextPage: [config.UPDATE_FILING_DATE_PAGE, config.PRESENTER_URL, config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE + config.RELEVANT_PERIOD_QUERY_PARAM]
   },
   [config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL]: {

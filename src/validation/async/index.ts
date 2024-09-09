@@ -1,3 +1,4 @@
+/* eslint-disable require-await */
 import { Request } from 'express';
 import { ValidationError } from "express-validator";
 
@@ -150,7 +151,7 @@ const is_date_within_filing_period_trusts = async (req: Request, trustDateContex
 
 };
 
-export const filingPeriodTrustStartDateValidations = async (req: Request) => await is_date_within_filing_period_trusts(req, historicalBOStartDateContext, ErrorMessages.START_DATE_BEFORE_FILING_DATE);
+export const filingPeriodTrustStartDateValidations = async (req: Request) => is_date_within_filing_period_trusts(req, historicalBOStartDateContext, ErrorMessages.START_DATE_BEFORE_FILING_DATE);
 
-export const filingPeriodTrustCeaseDateValidations = async (req: Request) => await is_date_within_filing_period_trusts(req, historicalBOEndDateContext, ErrorMessages.CEASED_DATE_BEFORE_FILING_DATE);
+export const filingPeriodTrustCeaseDateValidations = async (req: Request) => is_date_within_filing_period_trusts(req, historicalBOEndDateContext, ErrorMessages.CEASED_DATE_BEFORE_FILING_DATE);
 

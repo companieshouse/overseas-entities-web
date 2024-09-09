@@ -1,3 +1,4 @@
+/* eslint-disable require-await */
 import { NextFunction, Request, Response } from "express";
 import { UPDATE_BENEFICIAL_OWNER_GOV_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL, RELEVANT_PERIOD_QUERY_PARAM } from "../../config";
 import {
@@ -11,11 +12,11 @@ import { ApplicationData } from "../../model";
 import { getApplicationData } from "../../utils/application.data";
 
 export const get = async (req: Request, res: Response) => {
-  return await getBeneficialOwnerGov(req, res, UPDATE_BENEFICIAL_OWNER_GOV_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+  return getBeneficialOwnerGov(req, res, UPDATE_BENEFICIAL_OWNER_GOV_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
 };
 
 export const getById = async (req: Request, res: Response, next: NextFunction) => {
-  return await getBeneficialOwnerGovById(req, res, next, UPDATE_BENEFICIAL_OWNER_GOV_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+  return getBeneficialOwnerGovById(req, res, next, UPDATE_BENEFICIAL_OWNER_GOV_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
 };
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {

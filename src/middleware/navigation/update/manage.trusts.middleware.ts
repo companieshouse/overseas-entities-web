@@ -1,3 +1,4 @@
+/* eslint-disable require-await */
 import { NextFunction, Request, Response } from "express";
 
 import { logger } from "../../../utils/logger";
@@ -64,19 +65,19 @@ const tellUsAboutTrusteesGuard = async (req: Request, res: Response, next: NextF
 };
 
 export const manageTrustsReviewFormerBOsGuard = async (req: Request, res: Response, next: NextFunction): Promise<void> =>
-  await reviewTrusteesGuard(req, res, next, TrusteeType.HISTORICAL);
+  reviewTrusteesGuard(req, res, next, TrusteeType.HISTORICAL);
 
 export const manageTrustsReviewIndividualsGuard = async (req: Request, res: Response, next: NextFunction): Promise<void> =>
-  await reviewTrusteesGuard(req, res, next, TrusteeType.INDIVIDUAL);
+  reviewTrusteesGuard(req, res, next, TrusteeType.INDIVIDUAL);
 
 export const manageTrustsReviewLegalEntitiesGuard = async (req: Request, res: Response, next: NextFunction): Promise<void> =>
-  await reviewTrusteesGuard(req, res, next, TrusteeType.LEGAL_ENTITY);
+  reviewTrusteesGuard(req, res, next, TrusteeType.LEGAL_ENTITY);
 
 export const manageTrustsTellUsAboutFormerBOsGuard = async (req: Request, res: Response, next: NextFunction): Promise<void> =>
-  await tellUsAboutTrusteesGuard(req, res, next, TrusteeType.HISTORICAL);
+  tellUsAboutTrusteesGuard(req, res, next, TrusteeType.HISTORICAL);
 
 export const manageTrustsTellUsAboutIndividualsGuard = async (req: Request, res: Response, next: NextFunction): Promise<void> =>
-  await tellUsAboutTrusteesGuard(req, res, next, TrusteeType.INDIVIDUAL);
+  tellUsAboutTrusteesGuard(req, res, next, TrusteeType.INDIVIDUAL);
 
 export const manageTrustsTellUsAboutLegalEntitiesGuard = async (req: Request, res: Response, next: NextFunction): Promise<void> =>
-  await tellUsAboutTrusteesGuard(req, res, next, TrusteeType.LEGAL_ENTITY);
+  tellUsAboutTrusteesGuard(req, res, next, TrusteeType.LEGAL_ENTITY);

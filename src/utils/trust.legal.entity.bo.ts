@@ -1,3 +1,4 @@
+/* eslint-disable require-await */
 import { NextFunction, Request, Response } from 'express';
 import * as config from '../config';
 import { logger } from './logger';
@@ -73,7 +74,7 @@ export const getRelevantPeriodPageProperties = async (
   formData?: TrustLegalEntityForm,
   errors?: FormattedValidationErrors,
 ): Promise<TrustLegalEntityBeneficialOwnerPageProperties> => {
-  return await getPageProperties(req, trustId, isUpdate, formData, errors);
+  return getPageProperties(req, trustId, isUpdate, formData, errors);
 };
 
 export const getTrustLegalEntityBo = async (req: Request, res: Response, next: NextFunction, isUpdate: boolean): Promise<void> => {

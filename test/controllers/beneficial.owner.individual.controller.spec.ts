@@ -487,7 +487,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
     });
 
-    test(`correctly maps natures of controle when feature flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is ON`, async () => {
+    test(`correctly maps natures of control when feature flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is ON`, async () => {
       mockPrepareData.mockImplementationOnce( () => {
         return {
           ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK,
@@ -1310,7 +1310,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.header.location).toEqual(NEXT_PAGE_URL);
     });
 
-    test(`correctly maps natures of controle when feature flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is ON`, async () => {
+    test(`correctly maps natures of control when feature flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is ON`, async () => {
       mockPrepareData.mockImplementationOnce( () => {
         return {
           ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK,

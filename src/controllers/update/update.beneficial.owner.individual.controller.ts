@@ -19,9 +19,9 @@ export const get = (req: Request, res: Response) => {
 export const getById = (req: Request, res: Response, next: NextFunction) => {
   const appData: ApplicationData = getApplicationData(req.session);
   if (checkRelevantPeriod(appData)) {
-    getBeneficialOwnerIndividualById(req, res, next, UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
-  } else {
     getBeneficialOwnerIndividualById(req, res, next, UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
+  } else {
+    getBeneficialOwnerIndividualById(req, res, next, UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
   }
 };
 

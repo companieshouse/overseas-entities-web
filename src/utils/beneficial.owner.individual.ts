@@ -75,9 +75,9 @@ export const getBeneficialOwnerIndividualById = (req: Request, res: Response, ne
     const dobDate = (data) ? mapDataObjectToFields(data[DateOfBirthKey], DateOfBirthKeys, InputDateKeys) : {};
     const startDate = (data) ? mapDataObjectToFields(data[StartDateKey], StartDateKeys, InputDateKeys) : {};
 
-    if (checkRelevantPeriod(appData)) {
-      backLinkUrl = backLinkUrl + RELEVANT_PERIOD_QUERY_PARAM;
-    }
+    // if (checkRelevantPeriod(appData)) {
+    // backLinkUrl = backLinkUrl + RELEVANT_PERIOD_QUERY_PARAM;
+    // }
 
     const templateOptions = {
       backLinkUrl: backLinkUrl,

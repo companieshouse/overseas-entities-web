@@ -22,7 +22,7 @@ export const get = (req: Request, res: Response) => {
 export const getById = (req: Request, res: Response, next: NextFunction) => {
   const appData: ApplicationData = getApplicationData(req.session);
   if (checkRelevantPeriod(appData)) {
-    getBeneficialOwnerOtherById(req, res, next, UPDATE_BENEFICIAL_OWNER_OTHER_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+    getBeneficialOwnerOtherById(req, res, next, UPDATE_BENEFICIAL_OWNER_OTHER_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
   } else {
     getBeneficialOwnerOtherById(req, res, next, UPDATE_BENEFICIAL_OWNER_OTHER_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
   }

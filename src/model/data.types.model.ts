@@ -66,6 +66,7 @@ export const HasFormerNames = "has_former_names";
 export const BeneficialOwnerNoc = "beneficial_owner_nature_of_control_types";
 export const TrusteesNoc = "trustees_nature_of_control_types";
 export const NonLegalFirmNoc = "non_legal_firm_members_nature_of_control_types";
+export const NonLegalFirmControlNoc = "non_legal_firm_control_nature_of_control_types";
 export const TrustControlNoc = "trust_control_nature_of_control_types";
 export const OwnerOfLandPersonJurisdictionsNoc = "owner_of_land_person_nature_of_control_jurisdictions";
 export const OwnerOfLandOtherEntityJurisdictionsNoc = "owner_of_land_other_entity_nature_of_control_jurisdictions";

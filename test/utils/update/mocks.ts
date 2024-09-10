@@ -655,7 +655,7 @@ export const MAPPED_FETCH_RELEVANT_PERIOD_BENEFICIARY_CORPORATE_DATA_MOCK =
     "start_date_day": "11",
     "start_date_month": "5",
     "start_date_year": "2020",
-    "type": "",
+    "type": "5002",
   };
 
 export const TRUST_LINKS_DATA_MOCK = [

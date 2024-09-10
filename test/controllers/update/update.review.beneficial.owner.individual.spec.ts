@@ -15,7 +15,6 @@ import { expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
 import * as config from "../../../src/config";
 import app from "../../../src/app";
-import { logger } from "../../../src/utils/logger";
 import {
   ANY_MESSAGE_ERROR,
   SERVICE_UNAVAILABLE,
@@ -60,8 +59,6 @@ const mockPrepareData = prepareData as jest.Mock;
 
 const mockMapDataObjectToFields = mapDataObjectToFields as jest.Mock;
 
-const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
-
 describe(`Update review beneficial owner individual controller`, () => {
 
   beforeEach(() => {
@@ -93,9 +90,9 @@ describe(`Update review beneficial owner individual controller`, () => {
       expect(resp.text).not.toContain("residential address addressLine1");
     });
 
-    // ASM-350 - need fix to create a real error
-    test.skip("catch error when rendering the page", async () => {
-      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+    test("catch error when rendering the page", async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL);
 
       expect(resp.status).toEqual(500);

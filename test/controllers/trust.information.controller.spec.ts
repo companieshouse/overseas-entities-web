@@ -71,9 +71,10 @@ describe("TRUST INFORMATION controller", () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 
-    // ASM-350 - need fix to create a real error
-    test.skip("catch error when rendering the page", async () => {
+    test("catch error when rendering the page", async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockGetApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
+
       const resp = await request(app).get(config.TRUST_INFO_URL);
 
       expect(resp.status).toEqual(500);
@@ -161,8 +162,8 @@ describe("TRUST INFORMATION controller", () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-    // ASM-350 - need fix to create a real error
-    test.skip("catch error when rendering the page", async () => {
+    test("catch error when rendering the page", async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockGetApplicationData.mockImplementationOnce(() => { throw ERROR; });
       const resp = await request(app)
         .post(config.TRUST_INFO_URL)

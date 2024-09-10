@@ -136,8 +136,8 @@ describe('Update - Manage Trusts - Review the trust', () => {
       expect(resp.text).toContain(SECURE_UPDATE_FILTER_URL);
     });
 
-    // ASM-350 - need fix to create a real error
-    test.skip("catch error when rendering the page", async () => {
+    test("catch error when rendering the page", async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
 
       const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);
@@ -428,9 +428,9 @@ describe('Update - Manage Trusts - Review the trust', () => {
       expect(resp.text).not.toContain(ErrorMessages.TRUST_CEASED_DATE_BEFORE_CREATED_DATE);
     });
 
-    // ASM-350 - need fix to create a real error
-    test.skip("catch error when posting", async () => {
+    test("catch error when posting", async () => {
       mockIsActiveFeature.mockReturnValue(true);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
 
       const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);

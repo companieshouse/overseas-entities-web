@@ -80,8 +80,8 @@ describe("BENEFICIAL OWNER BO MO REVIEW controller", () => {
       expect(resp.text).toContain("SA000392");
     });
 
-    // ASM-350 - need fix to create a real error
-    test.skip("catch error when rendering the Overseas Entity Review page on GET method", async () => {
+    test("catch error when rendering the Overseas Entity Review page on GET method", async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
 

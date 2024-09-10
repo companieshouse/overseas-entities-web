@@ -14,30 +14,34 @@ import { CeasedDateKey } from "../../model/date.model";
 import { addCeasedDateToTemplateOptions } from "../../utils/update/ceased_date_util";
 import { checkRelevantPeriod } from "../../utils/relevant.period";
 
-export const get = async (req: Request, res: Response) => {
-  logger.debugRequest(req, `${req.method} ${req.route.path}`);
-  const appData = await getApplicationData(req.session);
-  const index = req.query.index;
+export const get = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    logger.debugRequest(req, `${req.method} ${req.route.path}`);
+    const appData = await getApplicationData(req.session);
+    const index = req.query.index;
 
-  let dataToReview = {}, principalAddress = {}, serviceAddress = {};
-  if (appData?.beneficial_owners_government_or_public_authority){
-    dataToReview = appData?.beneficial_owners_government_or_public_authority[Number(index)];
-    principalAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};
-    serviceAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
-  }
+    let dataToReview = {}, principalAddress = {}, serviceAddress = {};
+    if (appData?.beneficial_owners_government_or_public_authority){
+      dataToReview = appData?.beneficial_owners_government_or_public_authority[Number(index)];
+      principalAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};
+      serviceAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
+    }
 
-  const templateOptions = {
-    backLinkUrl: UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
-    templateName: UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE,
-    ...dataToReview,
-    ...principalAddress,
-    ...serviceAddress
-  };
+    const templateOptions = {
+      backLinkUrl: UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
+      templateName: UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE,
+      ...dataToReview,
+      ...principalAddress,
+      ...serviceAddress
+    };
 
-  if (CeasedDateKey in dataToReview) {
-    return res.render(templateOptions.templateName, addCeasedDateToTemplateOptions(templateOptions, appData, dataToReview));
-  } else {
-    return res.render(templateOptions.templateName, templateOptions);
+    if (CeasedDateKey in dataToReview) {
+      return res.render(templateOptions.templateName, addCeasedDateToTemplateOptions(templateOptions, appData, dataToReview));
+    } else {
+      return res.render(templateOptions.templateName, templateOptions);
+    }
+  } catch (error) {
+    next(error);
   }
 };
 

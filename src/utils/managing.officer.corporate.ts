@@ -33,16 +33,21 @@ import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
 
 const isNewlyAddedMO = (officerData: ManagingOfficerCorporate) => !officerData.ch_reference;
 
-export const getManagingOfficerCorporate = async (req: Request, res: Response, backLinkUrl: string, templateName: string): Promise<void> => {
-  logger.debugRequest(req, `${req.method} ${req.route.path}`);
+export const getManagingOfficerCorporate = async (req: Request, res: Response, next: NextFunction, backLinkUrl: string, templateName: string): Promise<void> => {
+  try {
+    logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-  const appData: ApplicationData = await getApplicationData(req.session as Session);
+    const appData: ApplicationData = await getApplicationData(req.session as Session);
 
-  return res.render(templateName, {
-    backLinkUrl: backLinkUrl,
-    templateName: templateName,
-    entity_number: appData[EntityNumberKey]
-  });
+    return res.render(templateName, {
+      backLinkUrl: backLinkUrl,
+      templateName: templateName,
+      entity_number: appData[EntityNumberKey]
+    });
+  } catch (error) {
+    logger.errorRequest(req, error);
+    next(error);
+  }
 };
 
 export const getManagingOfficerCorporateById = async (req: Request, res: Response, next: NextFunction, backLinkUrl: string, templateName: string): Promise<void> => {

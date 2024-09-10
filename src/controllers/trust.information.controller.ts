@@ -25,6 +25,7 @@ export const get = async (req: Request, res: Response, next: NextFunction): Prom
       ...appData
     });
   } catch (error) {
+    console.log("ERROR: ", error);
     logger.errorRequest(req, error);
     next(error);
   }

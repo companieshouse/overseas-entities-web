@@ -11,8 +11,8 @@ import { checkRelevantPeriod } from "../../utils/relevant.period";
 import { ApplicationData } from "../../model";
 import { getApplicationData } from "../../utils/application.data";
 
-export const get = async (req: Request, res: Response) => {
-  return getBeneficialOwnerGov(req, res, UPDATE_BENEFICIAL_OWNER_GOV_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+export const get = async (req: Request, res: Response, next: NextFunction,) => {
+  return getBeneficialOwnerGov(req, res, next, UPDATE_BENEFICIAL_OWNER_GOV_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
 };
 
 export const getById = async (req: Request, res: Response, next: NextFunction) => {

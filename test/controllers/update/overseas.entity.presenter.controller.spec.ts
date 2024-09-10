@@ -101,8 +101,8 @@ describe("OVERSEAS ENTITY PRESENTER controller", () => {
       expect(resp.text).toContain(NOT_SHOW_INFORMATION_ON_PUBLIC_REGISTER);
     });
 
-    // ASM-350 - need fix to create a real error
-    test.skip("catch error when renders the overseas entity presenter page", async () => {
+    test("catch error when renders the overseas entity presenter page", async () => {
+      mockGetApplicationData.mockReturnValueOnce({ [PresenterKey]: PRESENTER_OBJECT_MOCK, [EntityNumberKey]: "OE123456" });
       mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(OVERSEAS_ENTITY_PRESENTER_URL);
 

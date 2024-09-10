@@ -93,9 +93,10 @@ describe("owned land filter page tests", () => {
       expect(resp.text).toContain(RADIO_BUTTON_NO_SELECTED);
     });
 
-    // ASM-350 - need fix to create a real error
-    test.skip("catch error when rendering the page", async () => {
+    test("catch error when rendering the page", async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+
       const resp = await request(app).get(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
 
       expect(resp.status).toEqual(500);
@@ -180,9 +181,9 @@ describe("owned land filter page tests", () => {
       expect(resp.header.location).toEqual(config.UPDATE_FILING_DATE_URL);
     });
 
-    // ASM-350 - need fix to create a real error
-    test.skip("catch error when validating the page", async () => {
-      mockGetApplicationData.mockImplementation( () => { throw new Error(ANY_MESSAGE_ERROR); });
+    test("catch error when validating the page", async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).post(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
 
       expect(resp.status).toEqual(500);

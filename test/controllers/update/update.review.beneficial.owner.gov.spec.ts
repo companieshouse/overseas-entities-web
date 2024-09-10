@@ -34,7 +34,6 @@ import {
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { NextFunction } from "express";
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
-import { logger } from "../../../src/utils/logger";
 import { ErrorMessages } from "../../../src/validation/error.messages";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
 
@@ -58,8 +57,6 @@ const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
 
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
-
-const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 
 describe(`Update review beneficial owner Gov`, () => {
 
@@ -101,9 +98,8 @@ describe(`Update review beneficial owner Gov`, () => {
       expect(resp.text).toContain(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
     });
 
-    // ASM-350 - need fix to create a real error
-    test.skip("catch error when rendering the page", async () => {
-      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+    test("catch error when rendering the page", async () => {
+      mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL_WITH_PARAM_URL_TEST);
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);

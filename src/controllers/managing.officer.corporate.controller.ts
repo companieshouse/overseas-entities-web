@@ -10,11 +10,11 @@ import {
 import { isActiveFeature } from "../utils/feature.flag";
 import { getUrlWithParamsToPath } from "../utils/url";
 
-export const get = async (req: Request, res: Response) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   const backLinkUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
     ? getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req)
     : config.BENEFICIAL_OWNER_TYPE_URL;
-  await getManagingOfficerCorporate(req, res, backLinkUrl, config.MANAGING_OFFICER_CORPORATE_PAGE);
+  await getManagingOfficerCorporate(req, res, next, backLinkUrl, config.MANAGING_OFFICER_CORPORATE_PAGE);
 };
 
 export const getById = async (req: Request, res: Response, next: NextFunction) => {

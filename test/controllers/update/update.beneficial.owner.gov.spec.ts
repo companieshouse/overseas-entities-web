@@ -125,9 +125,9 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).not.toContain(TRUSTS_NOC_HEADING);
     });
 
-    // ASM-350 - need fix to create a real error
-    test.skip("catch error when rendering the page", async () => {
-      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+    test("catch error when rendering the page", async () => {
+      mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+
       const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_GOV_URL);
 
       expect(resp.status).toEqual(500);

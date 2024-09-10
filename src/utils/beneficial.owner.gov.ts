@@ -27,17 +27,22 @@ import { v4 as uuidv4 } from "uuid";
 import * as config from "../config";
 import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
 
-export const getBeneficialOwnerGov = async (req: Request, res: Response, templateName: string, backLinkUrl: string): Promise<void> => {
-  logger.debugRequest(req, `${req.method} ${req.route.path}`);
+export const getBeneficialOwnerGov = async (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string): Promise<void> => {
+  try {
+    logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-  const appData: ApplicationData = await getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
 
-  res.render(templateName, {
-    backLinkUrl,
-    templateName: templateName,
-    ...appData,
-    relevant_period: req.query["relevant-period"] === "true",
-  });
+    res.render(templateName, {
+      backLinkUrl,
+      templateName: templateName,
+      ...appData,
+      relevant_period: req.query["relevant-period"] === "true",
+    });
+  } catch (error) {
+    logger.errorRequest(req, error);
+    next(error);
+  }
 };
 
 export const getBeneficialOwnerGovById = async (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string): Promise<void> => {

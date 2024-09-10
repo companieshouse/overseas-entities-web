@@ -208,8 +208,9 @@ describe("Add Trust Controller Tests", () => {
   });
 
   describe('POST unit tests with url params', () => {
-    // ASM-350 - see failing reason
-    test.skip('select yes to add trust with url params', async () => {
+    test('select yes to add trust with url params', async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false); // SERVICE OFFLINE FEATURE FLAG
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_TRUSTS_WEB
       mockIsActiveFeature.mockReturnValueOnce(true);// FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       (getApplicationData as jest.Mock).mockReturnValue(mockAppData);
 

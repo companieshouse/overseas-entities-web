@@ -15,6 +15,7 @@ import {
   InputDateKeys,
   IsOnRegisterInCountryFormedInKey,
   IsOnSanctionsListKey,
+  NonLegalFirmControlNoc,
   NonLegalFirmNoc,
   PublicRegisterNameKey,
   RegistrationNumberKey,
@@ -170,17 +171,7 @@ export const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDat
   data[StartDateKey] = mapFieldsToDataObject(reqBody, StartDateKeys, InputDateKeys);
   data[CeasedDateKey] = reqBody["is_still_bo"] === '0' ? mapFieldsToDataObject(reqBody, CeasedDateKeys, InputDateKeys) : {};
 
-  // It needs concatenations because if in the check boxes we select only one option
-  // nunjucks returns just a string and with concat we will return an array.
-  data[BeneficialOwnerNoc] = (data[BeneficialOwnerNoc]) ? [].concat(data[BeneficialOwnerNoc]) : [];
-  data[TrusteesNoc] = (data[TrusteesNoc]) ? [].concat(data[TrusteesNoc]) : [];
-  data[NonLegalFirmNoc] = (data[NonLegalFirmNoc]) ? [].concat(data[NonLegalFirmNoc]) : [];
-
-  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)) {
-    data[TrustControlNoc] = data[TrustControlNoc] ? [].concat(data[TrustControlNoc]) : [];
-    data[OwnerOfLandPersonJurisdictionsNoc] = data[OwnerOfLandPersonJurisdictionsNoc] ? [].concat(data[OwnerOfLandPersonJurisdictionsNoc]) : [];
-    data[OwnerOfLandOtherEntityJurisdictionsNoc] = data[OwnerOfLandOtherEntityJurisdictionsNoc] ? [].concat(data[OwnerOfLandOtherEntityJurisdictionsNoc]) : [];
-  }
+  setBoNocData(data);
 
   data[IsOnSanctionsListKey] = (data[IsOnSanctionsListKey]) ? +data[IsOnSanctionsListKey] : '';
   data[IsOnRegisterInCountryFormedInKey] = (data[IsOnRegisterInCountryFormedInKey]) ? +data[IsOnRegisterInCountryFormedInKey] : '';
@@ -192,4 +183,21 @@ export const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDat
   data[ID] = id;
 
   return data;
+};
+
+const setBoNocData = (data: ApplicationDataType) => {
+  // It needs concatenations because if in the check boxes we select only one option
+  // nunjucks returns just a string and with concat we will return an array.
+  data[BeneficialOwnerNoc] = (data[BeneficialOwnerNoc]) ? [].concat(data[BeneficialOwnerNoc]) : [];
+  data[TrusteesNoc] = (data[TrusteesNoc]) ? [].concat(data[TrusteesNoc]) : [];
+
+  // Should be able to move this into an else on the feature flag if statement below when we apply new nocs to update journey
+  data[NonLegalFirmNoc] = (data[NonLegalFirmNoc]) ? [].concat(data[NonLegalFirmNoc]) : [];
+
+  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)) {
+    data[TrustControlNoc] = data[TrustControlNoc] ? [].concat(data[TrustControlNoc]) : [];
+    data[NonLegalFirmControlNoc] = data[NonLegalFirmControlNoc] ? [].concat(data[NonLegalFirmControlNoc]) : [];
+    data[OwnerOfLandPersonJurisdictionsNoc] = data[OwnerOfLandPersonJurisdictionsNoc] ? [].concat(data[OwnerOfLandPersonJurisdictionsNoc]) : [];
+    data[OwnerOfLandOtherEntityJurisdictionsNoc] = data[OwnerOfLandOtherEntityJurisdictionsNoc] ? [].concat(data[OwnerOfLandOtherEntityJurisdictionsNoc]) : [];
+  }
 };

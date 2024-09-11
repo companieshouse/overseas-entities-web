@@ -122,11 +122,10 @@
 
       {% if feature_flag_relevant_period === "true" %}
         {% include "includes/check-your-answers/relevant-period-check-your-answers.html" %}
-      {% endif %}
-
-      {% if pageParams.isRPStatementExists %}
-      <br>
-        {% include "includes/check-your-answers/relevant-period-statements.html" %}
+        {% if pageParams.isRPStatementExists %}
+          <br>
+          {% include "includes/check-your-answers/relevant-period-statements.html" %}
+        {% endif %}
       {% endif %}
 
       {% include "includes/check-your-answers/date-update-statement.html" %}

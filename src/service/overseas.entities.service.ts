@@ -38,9 +38,7 @@ export const createOverseasEntity = async (
 };
 
 export const updateOverseasEntity = async (req: Request, session: Session, data?: ApplicationData) => {
-
   const appData: ApplicationData = data ?? await getApplicationData(session);
-
   const transactionId = appData[Transactionkey] as string;
   const overseasEntityId = appData[OverseasEntityKey] as string;
 

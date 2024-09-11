@@ -13,7 +13,11 @@ export const nature_of_control_validations = [
     ];
 
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)) {
-      NOCS_TO_CHECK.push(req.body.trust_control_nature_of_control_types, req.body.owner_of_land_person_nature_of_control_jurisdictions, req.body.owner_of_land_other_entity_nature_of_control_jurisdictions);
+      NOCS_TO_CHECK.push(
+        req.body.trust_control_nature_of_control_types,
+        req.body.non_legal_firm_control_nature_of_control_types,
+        req.body.owner_of_land_person_nature_of_control_jurisdictions,
+        req.body.owner_of_land_other_entity_nature_of_control_jurisdictions);
     }
     return checkAtLeastOneFieldHasValue(ErrorMessages.SELECT_NATURE_OF_CONTROL, ...NOCS_TO_CHECK);
   })

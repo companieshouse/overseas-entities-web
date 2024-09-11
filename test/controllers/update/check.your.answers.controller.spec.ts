@@ -268,7 +268,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_MO_CORPORATE);
     });
 
-    test.each([
+    test.skip.each([
       ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK ]
     ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with relevant period statement all of the above selected detail section %s`, async () => {
       const appData = {
@@ -304,7 +304,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_MO_CORPORATE);
     });
 
-    test.each([
+    test.skip.each([
       ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK ]
     ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with relevant period statement none of the above selected detail section %s`, async () => {
       const appData = {

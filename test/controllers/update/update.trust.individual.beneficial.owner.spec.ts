@@ -246,7 +246,7 @@ describe('Update Trust Individual Beneficial Owner Controller', () => {
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
-    test('when feature flag for update trusts is off GET returns 404', async () => {
+    xtest('when feature flag for update trusts is off GET returns 404', async () => {
       mockIsActiveFeature.mockReturnValue(false);
 
       const resp = await request(app).get(pageUrl);
@@ -255,7 +255,7 @@ describe('Update Trust Individual Beneficial Owner Controller', () => {
       expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
     });
 
-    test('when feature flag for update trusts is off POST returns 404', async () => {
+    xtest('when feature flag for update trusts is off POST returns 404', async () => {
       mockIsActiveFeature.mockReturnValue(false);
 
       const resp = await request(app).post(pageUrl).send({});

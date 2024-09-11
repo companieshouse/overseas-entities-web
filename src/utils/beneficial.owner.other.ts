@@ -11,7 +11,7 @@ import {
   prepareData,
   removeFromApplicationData,
   setApplicationData,
-  setBoNocData
+  setBoNocDataAsArrays
 } from "./application.data";
 import { addCeasedDateToTemplateOptions } from "../utils/update/ceased_date_util";
 import { BeneficialOwnerOther, BeneficialOwnerOtherKey, BeneficialOwnerOtherKeys } from "../model/beneficial.owner.other.model";
@@ -173,7 +173,7 @@ export const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDat
   data[StartDateKey] = mapFieldsToDataObject(reqBody, StartDateKeys, InputDateKeys);
   data[CeasedDateKey] = reqBody["is_still_bo"] === '0' ? mapFieldsToDataObject(reqBody, CeasedDateKeys, InputDateKeys) : {};
 
-  setBoNocData(data);
+  setBoNocDataAsArrays(data);
 
   data[IsOnSanctionsListKey] = (data[IsOnSanctionsListKey]) ? +data[IsOnSanctionsListKey] : '';
   data[IsOnRegisterInCountryFormedInKey] = (data[IsOnRegisterInCountryFormedInKey]) ? +data[IsOnRegisterInCountryFormedInKey] : '';

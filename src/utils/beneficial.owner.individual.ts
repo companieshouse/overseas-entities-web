@@ -9,7 +9,7 @@ import {
   prepareData,
   removeFromApplicationData,
   setApplicationData,
-  setBoNocData
+  setBoNocDataAsArrays
 } from "../utils/application.data";
 import { addCeasedDateToTemplateOptions } from "../utils/update/ceased_date_util";
 import { saveAndContinue } from "../utils/save.and.continue";
@@ -187,7 +187,7 @@ export const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDat
   data[StartDateKey] = mapFieldsToDataObject(reqBody, StartDateKeys, InputDateKeys);
   data[CeasedDateKey] = reqBody["is_still_bo"] === '0' ? mapFieldsToDataObject(reqBody, CeasedDateKeys, InputDateKeys) : {};
 
-  setBoNocData(data);
+  setBoNocDataAsArrays(data);
 
   data[IsOnSanctionsListKey] = (data[IsOnSanctionsListKey]) ? +data[IsOnSanctionsListKey] : '';
 

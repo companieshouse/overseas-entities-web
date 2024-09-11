@@ -142,7 +142,7 @@ export const findBoOrMo = (appData: ApplicationData, boMoType: string, id: strin
 export const checkGivenBoOrMoDetailsExist = (appData: ApplicationData, boMoType: string, id: string): boolean =>
   findBoOrMo(appData, boMoType, id) ? true : false;
 
-export const setBoNocData = (data: ApplicationDataType) => {
+export const setBoNocDataAsArrays = (data: ApplicationDataType) => {
   // It needs concatenations because if in the check boxes we select only one option
   // nunjucks returns just a string and with concat we will return an array.
   data[BeneficialOwnerNoc] = (data[BeneficialOwnerNoc]) ? [].concat(data[BeneficialOwnerNoc]) : [];

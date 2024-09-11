@@ -79,7 +79,7 @@ export const getBeneficialOwnerIndividualById = (req: Request, res: Response, ne
 
     const templateOptions = {
       backLinkUrl: backLinkUrl,
-      templateName: `${templateName}/${id}${config.RELEVANT_PERIOD_QUERY_PARAM}`,
+      templateName: `${templateName}/${id}`,
       id,
       ...data,
       ...usualResidentialAddress,

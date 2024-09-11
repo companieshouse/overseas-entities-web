@@ -162,7 +162,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).toContain("a11");
       expect(resp.text).toContain("name=\"is_on_sanctions_list\" type=\"radio\" value=\"1\" checked");
       expect(resp.text).toContain("name=\"is_still_bo\" type=\"radio\" value=\"1\" checked");
-      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContaxin(SAVE_AND_CONTINUE_BUTTON_TEXT);
     });
 
     xtest(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with relevant period content, when inserting a relevent period object`, async () => {

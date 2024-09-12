@@ -163,11 +163,11 @@ describe('Trust Legal Entity Beneficial Owner Controller', () => {
   });
 
   describe('GET unit tests', () => {
-    test('catch error when renders the page', () => {
+    test('catch error when renders the page', async () => {
       const error = new Error(ANY_MESSAGE_ERROR);
       mockGetApplicationData.mockImplementationOnce(() => { throw error; });
 
-      get(mockReq, mockRes, mockNext);
+      await get(mockReq, mockRes, mockNext);
 
       expect(mockNext).toBeCalledTimes(1);
       expect(mockNext).toBeCalledWith(error);
@@ -183,7 +183,7 @@ describe('Trust Legal Entity Beneficial Owner Controller', () => {
   });
 
   describe('POST unit tests', () => {
-    test('Save', () => {
+    test('Save', async () => {
       const mockBoData = {} as TrustCorporate;
       (mapLegalEntityToSession as jest.Mock).mockReturnValue(mockBoData);
 
@@ -202,7 +202,7 @@ describe('Trust Legal Entity Beneficial Owner Controller', () => {
         isEmpty: jest.fn().mockReturnValue(true),
       }));
 
-      post(mockReq, mockRes, mockNext);
+      await post(mockReq, mockRes, mockNext);
 
       expect(mapLegalEntityToSession).toBeCalledTimes(1);
       expect(mapLegalEntityToSession).toBeCalledWith(mockReq.body);
@@ -222,11 +222,11 @@ describe('Trust Legal Entity Beneficial Owner Controller', () => {
       );
     });
 
-    test('catch error when renders the page', () => {
+    test('catch error when renders the page', async () => {
       const error = new Error(ANY_MESSAGE_ERROR);
       (mapLegalEntityToSession as jest.Mock).mockImplementationOnce(() => { throw error; });
 
-      post(mockReq, mockRes, mockNext);
+      await post(mockReq, mockRes, mockNext);
 
       expect(mockNext).toBeCalledTimes(1);
       expect(mockNext).toBeCalledWith(error);

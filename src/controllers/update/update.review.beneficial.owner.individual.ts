@@ -19,35 +19,39 @@ import { CeasedDateKey, HaveDayOfBirthKey } from "../../model/date.model";
 import { ServiceAddressKey, ServiceAddressKeys, UsualResidentialAddressKey, UsualResidentialAddressKeys } from "../../model/address.model";
 import { checkRelevantPeriod } from "../../utils/relevant.period";
 
-export const get = (req: Request, res: Response) => {
-  logger.debugRequest(req, `${req.method} ${req.route.path}`);
-  const appData = getApplicationData(req.session);
-  const index = req.query.index;
+export const get = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    logger.debugRequest(req, `${req.method} ${req.route.path}`);
+    const appData = await getApplicationData(req.session);
+    const index = req.query.index;
 
-  let dataToReview = {}, serviceAddress = {}, usual_residential_address = {};
-  if (appData?.beneficial_owners_individual){
-    dataToReview = appData?.beneficial_owners_individual[Number(index)];
-    serviceAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
-    usual_residential_address = (dataToReview) ? mapDataObjectToFields(dataToReview[UsualResidentialAddressKey], UsualResidentialAddressKeys, AddressKeys) : {};
-  }
+    let dataToReview = {}, serviceAddress = {}, usual_residential_address = {};
+    if (appData?.beneficial_owners_individual){
+      dataToReview = appData?.beneficial_owners_individual[Number(index)];
+      serviceAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
+      usual_residential_address = (dataToReview) ? mapDataObjectToFields(dataToReview[UsualResidentialAddressKey], UsualResidentialAddressKeys, AddressKeys) : {};
+    }
 
-  const templateOptions = {
-    backLinkUrl: UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
-    templateName: UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
-    ...dataToReview,
-    isBeneficialOwnersReview: true,
-    populateResidentialAddress: false,
-    ...serviceAddress,
-    ...usual_residential_address,
-    entity_number: appData[EntityNumberKey]
-  };
+    const templateOptions = {
+      backLinkUrl: UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
+      templateName: UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
+      ...dataToReview,
+      isBeneficialOwnersReview: true,
+      populateResidentialAddress: false,
+      ...serviceAddress,
+      ...usual_residential_address,
+      entity_number: appData[EntityNumberKey]
+    };
 
-  // Ceased date is undefined and residential address is private for initial review of BO - don't set ceased date data or residential address in this scenario
-  if (CeasedDateKey in dataToReview) {
-    templateOptions.populateResidentialAddress = true;
-    return res.render(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, addCeasedDateToTemplateOptions(templateOptions, appData, dataToReview));
-  } else {
-    return res.render(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, templateOptions);
+    // Ceased date is undefined and residential address is private for initial review of BO - don't set ceased date data or residential address in this scenario
+    if (CeasedDateKey in dataToReview) {
+      templateOptions.populateResidentialAddress = true;
+      return res.render(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, addCeasedDateToTemplateOptions(templateOptions, appData, dataToReview));
+    } else {
+      return res.render(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, templateOptions);
+    }
+  } catch (error) {
+    next(error);
   }
 };
 
@@ -55,7 +59,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const boiIndex = req.query.index;
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
 
     if (boiIndex !== undefined && appData.beneficial_owners_individual && appData.beneficial_owners_individual[Number(boiIndex)].id === req.body["id"]) {
       const boData: BeneficialOwnerIndividual = appData.beneficial_owners_individual[Number(boiIndex)];
@@ -65,7 +69,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
       const trustIds: string[] = boData?.trust_ids?.length ? [...boData.trust_ids] : [];
 
-      removeFromApplicationData(req, BeneficialOwnerIndividualKey, boId);
+      await removeFromApplicationData(req, BeneficialOwnerIndividualKey, boId);
 
       setReviewedDateOfBirth(req, dob);
 
@@ -80,7 +84,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         (data as BeneficialOwnerIndividual).trust_ids = [...trustIds];
       }
 
-      setApplicationData(req.session, data, BeneficialOwnerIndividualKey);
+      await setApplicationData(req.session, data, BeneficialOwnerIndividualKey);
 
       await saveAndContinue(req, session);
     }

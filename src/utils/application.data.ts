@@ -18,16 +18,16 @@ import { PARAM_BENEFICIAL_OWNER_GOV, PARAM_BENEFICIAL_OWNER_INDIVIDUAL, PARAM_BE
 import { BeneficialOwnerCorporate } from '@companieshouse/api-sdk-node/dist/services/overseas-entities';
 import { Remove } from 'model/remove.type.model';
 
-export const getApplicationData = (session: Session | undefined): ApplicationData => {
-  return session?.getExtraData(APPLICATION_DATA_KEY) || {} as ApplicationData;
+export const getApplicationData = async (session: Session | undefined): Promise<ApplicationData> => {
+  return await session?.getExtraData(APPLICATION_DATA_KEY) || {} as ApplicationData;
 };
 
 export const deleteApplicationData = (session: Session | undefined): boolean | undefined => {
   return session?.deleteExtraData(APPLICATION_DATA_KEY);
 };
 
-export const setApplicationData = (session: Session | undefined, data: any, key: string): undefined | void => {
-  let appData: ApplicationData = getApplicationData(session);
+export const setApplicationData = async (session: Session | undefined, data: any, key: string): Promise<undefined | void> => {
+  let appData: ApplicationData = await getApplicationData(session);
 
   if (ApplicationDataArrayType.includes(key)){
     if ( !appData[key] ) { appData[key] = []; }
@@ -125,9 +125,9 @@ export const findBoOrMo = (appData: ApplicationData, boMoType: string, id: strin
 export const checkGivenBoOrMoDetailsExist = (appData: ApplicationData, boMoType: string, id: string): boolean =>
   findBoOrMo(appData, boMoType, id) ? true : false;
 
-export const removeFromApplicationData = (req: Request, key: string, id: string) => {
+export const removeFromApplicationData = async (req: Request, key: string, id: string): Promise<void> => {
   const session = req.session;
-  const appData: ApplicationData = getApplicationData(session);
+  const appData: ApplicationData = await getApplicationData(session);
 
   const index = getIndexInApplicationData(req, appData, key, id, true);
   if (index === -1) {
@@ -138,8 +138,8 @@ export const removeFromApplicationData = (req: Request, key: string, id: string)
 };
 
 // gets data from ApplicationData. errorIfNotFound boolean indicates whether an error should be thrown if no data found.
-export const getFromApplicationData = (req: Request, key: string, id: string, errorIfNotFound: boolean = true): any => {
-  const appData: ApplicationData = getApplicationData(req.session);
+export const getFromApplicationData = async (req: Request, key: string, id: string, errorIfNotFound: boolean = true): Promise<any> => {
+  const appData: ApplicationData = await getApplicationData(req.session);
 
   const index = getIndexInApplicationData(req, appData, key, id, errorIfNotFound);
   if (index === -1) {

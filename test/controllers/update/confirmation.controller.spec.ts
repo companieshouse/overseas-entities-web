@@ -152,13 +152,13 @@ describe("UPDATE CONFIRMATION controller", () => {
     expect(resp.text).toContain(SERVICE_UNAVAILABLE);
   });
 
-  test("should test that deleteApplicationData does the work", () => {
+  test("should test that deleteApplicationData does the work", async () => {
     mockGetApplicationData.mockReturnValueOnce( { ...APPLICATION_DATA_MOCK } );
     req.session = getSessionRequestWithExtraData();
 
-    get(req, res);
+    await get(req, res);
 
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
 
     expect(appData).toBeFalsy;
     expect(res.render).toHaveBeenCalledTimes(1);

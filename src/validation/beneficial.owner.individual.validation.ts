@@ -11,9 +11,7 @@ import { second_nationality_validations } from "./fields/second-nationality.vali
 import {
   date_of_birth_validations,
   start_date_validations,
-  ceased_date_validations,
-  filingPeriodStartDateValidations,
-  filingPeriodCeasedDateValidations
+  ceased_date_validations
 } from "./fields/date.validation";
 
 export const beneficialOwnerIndividual = [
@@ -54,9 +52,5 @@ export const updateBeneficialOwnerIndividual = [
 
   body("is_still_bo").not().isEmpty().withMessage(ErrorMessages.SELECT_IF_STILL_BENEFICIAL_OWNER),
 
-  ...ceased_date_validations,
-
-  ...filingPeriodStartDateValidations,
-
-  ...filingPeriodCeasedDateValidations
+  ...ceased_date_validations
 ];

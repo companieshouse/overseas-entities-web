@@ -10,30 +10,30 @@ import {
 import { isActiveFeature } from "../utils/feature.flag";
 import { getUrlWithParamsToPath } from "../utils/url";
 
-export const get = (req: Request, res: Response) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   const backLinkUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
     ? getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req)
     : config.BENEFICIAL_OWNER_TYPE_URL;
-  getManagingOfficerCorporate(req, res, backLinkUrl, config.MANAGING_OFFICER_CORPORATE_PAGE);
+  await getManagingOfficerCorporate(req, res, next, backLinkUrl, config.MANAGING_OFFICER_CORPORATE_PAGE);
 };
 
-export const getById = (req: Request, res: Response, next: NextFunction) => {
+export const getById = async (req: Request, res: Response, next: NextFunction) => {
   const backLinkUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
     ? getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req)
     : config.BENEFICIAL_OWNER_TYPE_URL;
-  getManagingOfficerCorporateById(req, res, next, backLinkUrl, config.MANAGING_OFFICER_CORPORATE_PAGE);
+  await getManagingOfficerCorporateById(req, res, next, backLinkUrl, config.MANAGING_OFFICER_CORPORATE_PAGE);
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
-  postManagingOfficerCorporate(req, res, next, getBeneficialOwnerTypeUrl(req));
+export const post = async (req: Request, res: Response, next: NextFunction) => {
+  await postManagingOfficerCorporate(req, res, next, getBeneficialOwnerTypeUrl(req));
 };
 
-export const update = (req: Request, res: Response, next: NextFunction) => {
-  updateManagingOfficerCorporate(req, res, next, getBeneficialOwnerTypeUrl(req));
+export const update = async (req: Request, res: Response, next: NextFunction) => {
+  await updateManagingOfficerCorporate(req, res, next, getBeneficialOwnerTypeUrl(req));
 };
 
-export const remove = (req: Request, res: Response, next: NextFunction) => {
-  removeManagingOfficerCorporate(req, res, next, getBeneficialOwnerTypeUrl(req));
+export const remove = async (req: Request, res: Response, next: NextFunction) => {
+  await removeManagingOfficerCorporate(req, res, next, getBeneficialOwnerTypeUrl(req));
 };
 
 const getBeneficialOwnerTypeUrl = (req: Request): string => {

@@ -10,13 +10,20 @@ import { ApplicationData } from '../../src/model';
 import { HasSameResidentialAddressKey, IsOnSanctionsListKey } from '../../src/model/data.types.model';
 
 describe("BO Individual model", () => {
-  const session = getSessionRequestWithExtraData(APPLICATION_DATA_UPDATE_BO_MOCK);
-  const appData = getApplicationData(session) as ApplicationData;
+  let session;
+  let appData;
   let boiData = {};
-  if (appData.beneficial_owners_individual) {
-    boiData = appData.beneficial_owners_individual[0] as BeneficialOwnerIndividual;
-  }
-  const boiDataKeys = Object.keys(boiData);
+  let boiDataKeys: string[];
+
+  beforeAll(async () => {
+    session = getSessionRequestWithExtraData(APPLICATION_DATA_UPDATE_BO_MOCK);
+    appData = await getApplicationData(session) as ApplicationData;
+
+    if (appData.beneficial_owners_individual) {
+      boiData = appData.beneficial_owners_individual[0] as BeneficialOwnerIndividual;
+    }
+    boiDataKeys = Object.keys(boiData);
+  });
 
   test("BOI keys to be equal to BeneficialOwnerIndividualKeys object", () => {
     expect(boiDataKeys).toEqual(BeneficialOwnerIndividualKeys);

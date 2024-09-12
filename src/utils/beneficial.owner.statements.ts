@@ -12,14 +12,15 @@ import { getUrlWithParamsToPath } from "../utils/url";
 import { isActiveFeature } from "./feature.flag";
 import { containsTrustData, getTrustArray } from "./trusts";
 
-export const getBeneficialOwnerStatements = (req: Request, res: Response, next: NextFunction, registrationFlag: boolean, noChangeBackLink?: string) => {
+export const getBeneficialOwnerStatements = async (req: Request, res: Response, next: NextFunction, registrationFlag: boolean, noChangeBackLink?: string): Promise<void> => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     let backLinkUrl: string;
     let noChangeFlag: boolean = false;
     let templateName: string;
-    const appData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
+
     if (noChangeBackLink) {
       backLinkUrl = noChangeBackLink;
       templateName = config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE;
@@ -64,7 +65,7 @@ export const postBeneficialOwnerStatements = async (req: Request, res: Response,
 
     const session = req.session as Session;
     const boStatement = req.body[BeneficialOwnerStatementKey];
-    const appData: ApplicationData = getApplicationData(session);
+    const appData: ApplicationData = await getApplicationData(session);
 
     if (
       registrationFlag &&

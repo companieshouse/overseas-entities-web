@@ -27,10 +27,10 @@ describe("is in change journey middleware", () => {
     mockGetApplicationData.mockReset();
   });
 
-  test('when in no change journey, should redirect to SECURE_UPDATE_FILTER_URL page and log error message', () => {
+  test('when in no change journey, should redirect to SECURE_UPDATE_FILTER_URL page and log error message', async () => {
     mockGetApplicationData.mockReturnValueOnce({ update: { no_change: true } } as ApplicationData);
 
-    isInChangeJourney(req, res, next);
+    await isInChangeJourney(req, res, next);
 
     expect(next).not.toHaveBeenCalledTimes(1);
     expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
@@ -39,21 +39,21 @@ describe("is in change journey middleware", () => {
     expect(res.redirect).toHaveBeenCalledWith(SECURE_UPDATE_FILTER_URL);
   });
 
-  test('when in change journey, should not redirect and pass to the next middleware', () => {
+  test('when in change journey, should not redirect and pass to the next middleware', async () => {
     mockGetApplicationData.mockReturnValueOnce({ update: { no_change: false } } as ApplicationData);
 
-    isInChangeJourney(req, res, next);
+    await isInChangeJourney(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
     expect(mockLoggerInfoRequest).not.toHaveBeenCalled();
     expect(res.redirect).not.toHaveBeenCalled();
   });
 
-  test('when an error is thrown, next is called with the error as an argument', () => {
+  test('when an error is thrown, next is called with the error as an argument', async () => {
     const error = new Error('Error message');
     mockGetApplicationData.mockImplementationOnce(() => { throw error; });
 
-    isInChangeJourney(req, res, next);
+    await isInChangeJourney(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
     expect(next).toHaveBeenCalledWith(error);

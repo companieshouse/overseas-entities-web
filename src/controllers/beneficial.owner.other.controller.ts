@@ -3,7 +3,8 @@ import {
   BENEFICIAL_OWNER_OTHER_PAGE,
   BENEFICIAL_OWNER_TYPE_URL,
   FEATURE_FLAG_ENABLE_REDIS_REMOVAL,
-  BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL
+  BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
+  RELEVANT_PERIOD_QUERY_PARAM
 } from "../config";
 import { isActiveFeature } from "../utils/feature.flag";
 import {
@@ -14,6 +15,9 @@ import {
   updateBeneficialOwnerOther
 } from "../utils/beneficial.owner.other";
 import { getUrlWithParamsToPath } from "../utils/url";
+import { checkRelevantPeriod } from "../utils/relevant.period";
+import { ApplicationData } from "../model";
+import { getApplicationData } from "../utils/application.data";
 
 export const get = (req: Request, res: Response) => {
   getBeneficialOwnerOther(req, res, BENEFICIAL_OWNER_OTHER_PAGE, getBeneficialOwnerTypeUrl(req));
@@ -37,6 +41,10 @@ export const remove = (req: Request, res: Response, next: NextFunction) => {
 
 const getBeneficialOwnerTypeUrl = (req: Request): string => {
   let nextPage = BENEFICIAL_OWNER_TYPE_URL;
+  const appData: ApplicationData = getApplicationData(req.session);
+  if (checkRelevantPeriod(appData)) {
+    nextPage = BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM;
+  }
   if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
     nextPage = getUrlWithParamsToPath(BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req);
   }

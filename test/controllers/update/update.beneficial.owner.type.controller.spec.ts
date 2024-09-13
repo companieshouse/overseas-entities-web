@@ -385,7 +385,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.status).toEqual(302);
       expect(resp.header.location).not.toContain(mockLandingUrl);
     });
-    
+
     test('does move reviewable trusts into review if cease trusts flag off', async () => {
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
       mockRetrieveTrustData.mockReturnValueOnce(Promise.resolve());

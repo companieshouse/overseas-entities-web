@@ -246,24 +246,6 @@ describe('Update Trust Individual Beneficial Owner Controller', () => {
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
-    xtest('when feature flag for update trusts is off GET returns 404', async () => {
-      mockIsActiveFeature.mockReturnValue(false);
-
-      const resp = await request(app).get(pageUrl);
-
-      expect(resp.status).toEqual(404);
-      expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
-    });
-
-    xtest('when feature flag for update trusts is off POST returns 404', async () => {
-      mockIsActiveFeature.mockReturnValue(false);
-
-      const resp = await request(app).post(pageUrl).send({});
-
-      expect(resp.status).toEqual(404);
-      expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
-    });
-
     test('successfully call postTrustIndividualBo method to render page for the relevant period', async () => {
       // Arrange
       (validationResult as any as jest.Mock).mockImplementationOnce(() => ({

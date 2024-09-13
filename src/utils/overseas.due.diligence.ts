@@ -16,19 +16,19 @@ import { IdentityDateKey, IdentityDateKeys } from "../model/date.model";
 import { OverseasEntityDueDiligenceKey, OverseasEntityDueDiligenceKeys } from "../model/overseas.entity.due.diligence.model";
 import { saveAndContinue } from "./save.and.continue";
 
-export const getDueDiligence = (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string) => {
+export const getDueDiligence = async (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string): Promise<void> => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
     const data = appData[OverseasEntityDueDiligenceKey];
 
     const identityAddress = (data?.[IdentityAddressKey]) ? mapDataObjectToFields(data[IdentityAddressKey], IdentityAddressKeys, AddressKeys) : {};
     const identityDate = (data?.[IdentityDateKey]) ? mapDataObjectToFields(data[IdentityDateKey], IdentityDateKeys, InputDateKeys) : {};
 
     return res.render(templateName, {
-      backLinkUrl: backLinkUrl,
-      templateName: templateName,
+      backLinkUrl,
+      templateName,
       ...data,
       ...identityAddress,
       [IdentityDateKey]: identityDate
@@ -47,10 +47,10 @@ export const postDueDiligence = async (req: Request, res: Response, next: NextFu
     data[IdentityAddressKey] = mapFieldsToDataObject(req.body, IdentityAddressKeys, AddressKeys);
     data[IdentityDateKey] = mapFieldsToDataObject(req.body, IdentityDateKeys, InputDateKeys);
 
-    setApplicationData(session, data, OverseasEntityDueDiligenceKey);
+    await setApplicationData(session, data, OverseasEntityDueDiligenceKey);
 
     // Empty DueDiligence object
-    setApplicationData(session, {}, DueDiligenceKey);
+    await setApplicationData(session, {}, DueDiligenceKey);
 
     await saveAndContinue(req, session);
 

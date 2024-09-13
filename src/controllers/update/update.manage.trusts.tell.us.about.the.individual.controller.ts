@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { validationResult } from 'express-validator';
+import { ValidationError, validationResult } from 'express-validator';
 
 import { Session } from '@companieshouse/node-session-handler';
 
@@ -20,6 +20,9 @@ import { TrusteeType } from '../../model/trustee.type.model';
 import { IndividualTrustee, Trust, TrustIndividual } from '../../model/trust.model';
 import { RoleWithinTrustType } from '../../model/role.within.trust.type.model';
 import { IndividualTrusteesFormCommon } from '../../model/trust.page.model';
+import { ApplicationData } from 'model';
+import { checkTrustIndividualCeasedDate } from '../../validation/async';
+import { checkTrustIndividualBeneficialOwnerStillInvolved } from '../../validation/stillInvolved.validation';
 
 type TrustIndividualBeneficialOwnerPageProperties = { templateName: string,
   backLinkUrl: string
@@ -59,11 +62,11 @@ const getPageProperties = (trust, formData, trustee: TrustIndividual, errors?: F
   };
 };
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const appData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
     const trusteeId = req.params[ROUTE_PARAM_TRUSTEE_ID];
 
     const trust = getTrustInReview(appData) as Trust;
@@ -85,25 +88,29 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
     const trusteeId = req.params[ROUTE_PARAM_TRUSTEE_ID];
     const trust = getTrustInReview(appData) as Trust;
 
     const relevant_period = req.query['relevant-period'];
     const errorList = validationResult(req);
+    const errors = await getValidationErrors(appData, req);
+
     const formData: IndividualTrusteesFormCommon = req.body;
 
-    if (!errorList.isEmpty()) {
+    if (!errorList.isEmpty() || errors.length) {
       let pageProps: TrustIndividualBeneficialOwnerPageProperties;
       const trustee = getTrustee(trust, trusteeId, TrusteeType.INDIVIDUAL) as IndividualTrustee;
+      const errorListArray = !errorList.isEmpty() ? errorList.array() : [];
+
       if (relevant_period) {
-        pageProps = getPagePropertiesRelevantPeriod(relevant_period, trust, formData, trustee, appData.entity_name, formatValidationError(errorList.array()));
+        pageProps = getPagePropertiesRelevantPeriod(relevant_period, trust, formData, trustee, appData.entity_name, formatValidationError([...errorListArray, ...errors]));
         return res.render(
           UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE,
           pageProps,
         );
       } else {
-        pageProps = getPageProperties(trust, formData, trustee, formatValidationError(errorList.array()));
+        pageProps = getPageProperties(trust, formData, trustee, formatValidationError([...errorListArray, ...errors]));
         setEntityNameInRelevantPeriodPageBanner(pageProps, appData.entity_name);
         return res.render(
           UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE,
@@ -153,4 +160,12 @@ export const setEntityNameInRelevantPeriodPageBanner = (pageProps, entityName: s
     pageProps.pageData.entity_name = entityName;
   }
   return pageProps;
+};
+
+// Get validation errors that depend on an asynchronous request
+const getValidationErrors = async (appData: ApplicationData, req: Request): Promise<ValidationError[]> => {
+  const stillInvolvedErrors = checkTrustIndividualBeneficialOwnerStillInvolved(appData, req);
+  const ceasedDateErrors = await checkTrustIndividualCeasedDate(appData, req);
+
+  return [...stillInvolvedErrors, ...ceasedDateErrors];
 };

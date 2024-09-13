@@ -15,18 +15,20 @@ import { RegistrableBeneficialOwnerKey } from "../model/update.type.model";
 import { yesNoResponse } from "../model/data.types.model";
 import { isRemoveJourney } from "../utils/url";
 
-export const statementValidationErrorsGuard = (req: Request, res: Response, next: NextFunction) => {
+export const statementValidationErrorsGuard = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const hasStatementErrors = req['statementErrorList']?.length;
 
   if (hasStatementErrors) {
     return next();
   }
 
-  if (isRemoveJourney(req)) {
+  const isRemove: boolean = await isRemoveJourney(req);
+
+  if (isRemove) {
     return res.redirect(REMOVE_CONFIRM_STATEMENT_URL);
   }
 
-  const appData: ApplicationData = getApplicationData(req.session as Session);
+  const appData: ApplicationData = await getApplicationData(req.session as Session);
   const redirectUrl = appData.update?.no_change ? UPDATE_REVIEW_STATEMENT_URL : UPDATE_CHECK_YOUR_ANSWERS_URL;
 
   return res.redirect(redirectUrl);
@@ -42,9 +44,9 @@ export const summaryPagesGuard = (req: Request, res: Response, next: NextFunctio
   return res.redirect(SECURE_UPDATE_FILTER_URL);
 };
 
-export const validateStatements = (req: Request, _: Response, next: NextFunction) => {
+export const validateStatements = async (req: Request, _: Response, next: NextFunction): Promise<void> => {
 
-  const appData: ApplicationData = getApplicationData(req.session as Session);
+  const appData: ApplicationData = await getApplicationData(req.session as Session);
   const errorList: string[] = [];
 
   const identifiedBOStatement = appData[BeneficialOwnerStatementKey];

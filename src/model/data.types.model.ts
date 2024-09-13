@@ -25,6 +25,12 @@ export enum NatureOfControlType {
   SIGNIFICANT_INFLUENCE_OR_CONTROL = "SIGNIFICANT_INFLUENCE_OR_CONTROL"
 }
 
+export enum NatureOfControlJurisdiction {
+  ENGLAND_AND_WALES = "ENGLAND_AND_WALES",
+  SCOTLAND = "SCOTLAND",
+  NORTHERN_IRELAND = "NORTHERN_IRELAND"
+}
+
 /*
   Address and InputDate key fields - Position is important for the mapping of sub-fields Address Objects!
 */
@@ -60,6 +66,10 @@ export const HasFormerNames = "has_former_names";
 export const BeneficialOwnerNoc = "beneficial_owner_nature_of_control_types";
 export const TrusteesNoc = "trustees_nature_of_control_types";
 export const NonLegalFirmNoc = "non_legal_firm_members_nature_of_control_types";
+export const NonLegalFirmControlNoc = "non_legal_firm_control_nature_of_control_types";
+export const TrustControlNoc = "trust_control_nature_of_control_types";
+export const OwnerOfLandPersonJurisdictionsNoc = "owner_of_land_person_nature_of_control_jurisdictions";
+export const OwnerOfLandOtherEntityJurisdictionsNoc = "owner_of_land_other_entity_nature_of_control_jurisdictions";
 
 // Payment, OE and Transaction keys
 export const PaymentKey = "payment";

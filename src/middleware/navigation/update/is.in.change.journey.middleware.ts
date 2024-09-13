@@ -4,10 +4,11 @@ import { logger } from '../../../utils/logger';
 import { SECURE_UPDATE_FILTER_URL } from '../../../config';
 import { getApplicationData } from "../../../utils/application.data";
 import { NavigationErrorMessage } from '../check.condition';
+import { ApplicationData } from 'model';
 
-export const isInChangeJourney = (req: Request, res: Response, next: NextFunction): void => {
+export const isInChangeJourney = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const appData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
     const inChangeJourney = !appData.update?.no_change;
 
     if (inChangeJourney) {

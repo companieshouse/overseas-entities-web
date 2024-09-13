@@ -122,14 +122,15 @@
 
       {% if feature_flag_relevant_period === "true" %}
         {% include "includes/check-your-answers/relevant-period-check-your-answers.html" %}
+        {% if pageParams.isRPStatementExists %}
+          <br>
+          {% include "includes/check-your-answers/relevant-period-statements.html" %}
+        {% endif %}
       {% endif %}
 
-      {% if pageParams.isRPStatementExists %}
-      <br>
-        {% include "includes/check-your-answers/relevant-period-statements.html" %}
+      {% if not isRemoveJourney %}
+        {% include "includes/check-your-answers/date-update-statement.html" %}
       {% endif %}
-
-      {% include "includes/check-your-answers/date-update-statement.html" %}
       {% include "includes/check-your-answers/presenter.html" %}
       {% include "includes/check-your-answers/make-changes-oe-update-period.html" %}
       {% include "includes/check-your-answers/verification-checks.html" %}

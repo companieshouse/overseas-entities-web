@@ -407,28 +407,7 @@ export const FETCH_CORPORATE_TRUSTEE_DATA_MOCK: CorporateTrusteeData[] = [
       postalCode: "97453874",
       region: "New York"
     }
-  },
-  {
-    hashedTrusteeId: "87654321",
-    trusteeName: "Test Corporate Trustee 5",
-    corporateIndicator: "Y",
-    appointmentDate: "2020-05-11",
-    trusteeTypeId: "5002",
-    onRegisterInCountryFormed: "0",
-    lawGoverned: "Sheriff",
-    legalForm: "The Wild West",
-    country: "UNITED STATES",
-    registeredOfficeAddress: {
-      addressLine1: "Broadway",
-      careOf: "",
-      country: "UNITED STATES",
-      locality: "Manhattan",
-      poBox: "",
-      premises: "10",
-      postalCode: "97453874",
-      region: "New York",
-    }
-  },
+  }
 ];
 
 export const MAPPED_FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK =
@@ -635,27 +614,6 @@ export const MAPPED_FETCH_HISTORICAL_CORPORATE_DATA_MOCK =
     "notified_date_day": "2",
     "notified_date_month": "2",
     "notified_date_year": "2020"
-  };
-
-export const MAPPED_FETCH_RELEVANT_PERIOD_BENEFICIARY_CORPORATE_DATA_MOCK =
-  {
-    "ch_references": "87654321",
-    "id": "4",
-    "name": "Test Corporate Trustee 5",
-    "is_on_register_in_country_formed_in": 1,
-    "is_service_address_same_as_principal_address": 0,
-    "identification_legal_authority": "Sheriff",
-    "identification_legal_form": "The Wild West",
-    "ro_address_country": "",
-    "ro_address_line_1": "",
-    "ro_address_locality": "",
-    "ro_address_postal_code": "",
-    "ro_address_premises": "",
-    "ro_address_region": "",
-    "start_date_day": "11",
-    "start_date_month": "5",
-    "start_date_year": "2020",
-    "type": "",
   };
 
 export const TRUST_LINKS_DATA_MOCK = [

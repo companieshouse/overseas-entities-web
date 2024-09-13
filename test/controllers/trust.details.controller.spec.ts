@@ -145,7 +145,7 @@ describe('Trust Details controller', () => {
       expect(mockNext).toBeCalledWith(error);
     });
 
-    test('render trust data based on parameter id', () => {
+    test('render trust data based on parameter id', async () => {
       mockGetApplicationData.mockReturnValue(mockAppData);
 
       const expectMapResult = { dummyKey: 'EXPECT-MAP-RESULT' };
@@ -158,7 +158,7 @@ describe('Trust Details controller', () => {
       (mapBoIndividualToPage as jest.Mock).mockReturnValueOnce(expectBoIndividualItems);
       (mapBoOtherToPage as jest.Mock).mockReturnValueOnce(expectBoOtherItems);
 
-      get(mockReq, mockRes, mockNext);
+      await get(mockReq, mockRes, mockNext);
 
       expect(mapDetailToPage).toBeCalledTimes(1);
       expect(mapDetailToPage).toBeCalledWith(mockAppData, mockTrust2Data.trust_id, false);

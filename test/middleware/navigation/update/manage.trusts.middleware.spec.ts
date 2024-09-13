@@ -58,50 +58,50 @@ describe("manage trusts middleware", () => {
   });
 
   describe('reviewTheTrustGuard', () => {
-    test('when an error is thrown, next is called with the error as an argument', () => {
+    test('when an error is thrown, next is called with the error as an argument', async () => {
       const error = new Error('Error message');
       mockGetApplicationData.mockImplementationOnce(() => { throw error; });
 
-      reviewTheTrustGuard(req, res, next);
+      await reviewTheTrustGuard(req, res, next);
 
       expectNextToBeCalledWithError(error);
     });
 
-    test('when there are trusts to review, moves to next middleware', () => {
+    test('when there are trusts to review, moves to next middleware', async () => {
       mockGetApplicationData.mockReturnValueOnce(mockAppData);
       mockHasTrustsToReview.mockReturnValueOnce(true);
 
-      reviewTheTrustGuard(req, res, next);
+      await reviewTheTrustGuard(req, res, next);
 
       expectToGoToNextMiddleware();
     });
 
-    test('when there are no trusts to review, redirects to SECURE_UPDATE_FILTER', () => {
+    test('when there are no trusts to review, redirects to SECURE_UPDATE_FILTER', async () => {
       mockGetApplicationData.mockReturnValueOnce(mockAppData);
       mockHasTrustsToReview.mockReturnValueOnce(false);
 
-      reviewTheTrustGuard(req, res, next);
+      await reviewTheTrustGuard(req, res, next);
 
       expectToBeRedirectedToSecureUpdateFilter();
     });
   });
 
   describe('manageTrustsReviewFormerBOsGuard', () => {
-    test('when an error is thrown, next is called with the error as an argument', () => {
+    test('when an error is thrown, next is called with the error as an argument', async () => {
       const error = new Error('Error message');
       mockGetApplicationData.mockImplementationOnce(() => { throw error; });
 
-      manageTrustsReviewFormerBOsGuard(req, res, next);
+      await manageTrustsReviewFormerBOsGuard(req, res, next);
 
       expectNextToBeCalledWithError(error);
     });
 
-    test('when a trust has former trustees to review, moves to next middleware', () => {
+    test('when a trust has former trustees to review, moves to next middleware', async () => {
       mockGetApplicationData.mockReturnValueOnce(mockAppData);
       mockGetTrustInReview.mockReturnValueOnce(mockTrustInReview);
       mockHasTrusteesToReview.mockReturnValueOnce(true);
 
-      manageTrustsReviewFormerBOsGuard(req, res, next);
+      await manageTrustsReviewFormerBOsGuard(req, res, next);
 
       expect(mockGetTrustInReview).toHaveBeenCalledWith(mockAppData);
       expect(mockGetTrustInReview).toHaveBeenCalledTimes(1);
@@ -111,12 +111,12 @@ describe("manage trusts middleware", () => {
       expectToGoToNextMiddleware();
     });
 
-    test('when a trust has no former trustees to review, redirects to SECURE_UPDATE_FILTER', () => {
+    test('when a trust has no former trustees to review, redirects to SECURE_UPDATE_FILTER', async () => {
       mockGetApplicationData.mockReturnValueOnce(mockAppData);
       mockGetTrustInReview.mockReturnValueOnce(mockTrustInReview);
       mockHasTrusteesToReview.mockReturnValueOnce(false);
 
-      manageTrustsReviewFormerBOsGuard(req, res, next);
+      await manageTrustsReviewFormerBOsGuard(req, res, next);
 
       expect(mockGetTrustInReview).toHaveBeenCalledWith(mockAppData);
       expect(mockGetTrustInReview).toHaveBeenCalledTimes(1);
@@ -128,21 +128,21 @@ describe("manage trusts middleware", () => {
   });
 
   describe('manageTrustsReviewIndividualsGuard', () => {
-    test('when an error is thrown, next is called with the error as an argument', () => {
+    test('when an error is thrown, next is called with the error as an argument', async () => {
       const error = new Error('Error message');
       mockGetApplicationData.mockImplementationOnce(() => { throw error; });
 
-      manageTrustsReviewIndividualsGuard(req, res, next);
+      await manageTrustsReviewIndividualsGuard(req, res, next);
 
       expectNextToBeCalledWithError(error);
     });
 
-    test('when a trust has individual trustees to review, moves to next middleware', () => {
+    test('when a trust has individual trustees to review, moves to next middleware', async () => {
       mockGetApplicationData.mockReturnValueOnce(mockAppData);
       mockGetTrustInReview.mockReturnValueOnce(mockTrustInReview);
       mockHasTrusteesToReview.mockReturnValueOnce(true);
 
-      manageTrustsReviewIndividualsGuard(req, res, next);
+      await manageTrustsReviewIndividualsGuard(req, res, next);
 
       expect(mockGetTrustInReview).toHaveBeenCalledWith(mockAppData);
       expect(mockGetTrustInReview).toHaveBeenCalledTimes(1);
@@ -152,12 +152,12 @@ describe("manage trusts middleware", () => {
       expectToGoToNextMiddleware();
     });
 
-    test('when a trust has no individual trustees to review, redirects to SECURE_UPDATE_FILTER', () => {
+    test('when a trust has no individual trustees to review, redirects to SECURE_UPDATE_FILTER', async () => {
       mockGetApplicationData.mockReturnValueOnce(mockAppData);
       mockGetTrustInReview.mockReturnValueOnce(mockTrustInReview);
       mockHasTrusteesToReview.mockReturnValueOnce(false);
 
-      manageTrustsReviewIndividualsGuard(req, res, next);
+      await manageTrustsReviewIndividualsGuard(req, res, next);
 
       expect(mockGetTrustInReview).toHaveBeenCalledWith(mockAppData);
       expect(mockGetTrustInReview).toHaveBeenCalledTimes(1);
@@ -169,21 +169,21 @@ describe("manage trusts middleware", () => {
   });
 
   describe('manageTrustsReviewLegalEntitiesGuard', () => {
-    test('when an error is thrown, next is called with the error as an argument', () => {
+    test('when an error is thrown, next is called with the error as an argument', async () => {
       const error = new Error('Error message');
       mockGetApplicationData.mockImplementationOnce(() => { throw error; });
 
-      manageTrustsReviewLegalEntitiesGuard(req, res, next);
+      await manageTrustsReviewLegalEntitiesGuard(req, res, next);
 
       expectNextToBeCalledWithError(error);
     });
 
-    test('when a trust has legal entity trustees to review, moves to next middleware', () => {
+    test('when a trust has legal entity trustees to review, moves to next middleware', async () => {
       mockGetApplicationData.mockReturnValueOnce(mockAppData);
       mockGetTrustInReview.mockReturnValueOnce(mockTrustInReview);
       mockHasTrusteesToReview.mockReturnValueOnce(true);
 
-      manageTrustsReviewLegalEntitiesGuard(req, res, next);
+      await manageTrustsReviewLegalEntitiesGuard(req, res, next);
 
       expect(mockGetTrustInReview).toHaveBeenCalledWith(mockAppData);
       expect(mockGetTrustInReview).toHaveBeenCalledTimes(1);
@@ -193,12 +193,12 @@ describe("manage trusts middleware", () => {
       expectToGoToNextMiddleware();
     });
 
-    test('when a trust has no legal entity trustees to review, redirects to SECURE_UPDATE_FILTER', () => {
+    test('when a trust has no legal entity trustees to review, redirects to SECURE_UPDATE_FILTER', async () => {
       mockGetApplicationData.mockReturnValueOnce(mockAppData);
       mockGetTrustInReview.mockReturnValueOnce(mockTrustInReview);
       mockHasTrusteesToReview.mockReturnValueOnce(false);
 
-      manageTrustsReviewLegalEntitiesGuard(req, res, next);
+      await manageTrustsReviewLegalEntitiesGuard(req, res, next);
 
       expect(mockGetTrustInReview).toHaveBeenCalledWith(mockAppData);
       expect(mockGetTrustInReview).toHaveBeenCalledTimes(1);
@@ -210,20 +210,20 @@ describe("manage trusts middleware", () => {
   });
 
   describe('manageTrustsTellUsAboutFormerBOsGuard', () => {
-    test('when an error is thrown, next is called with the error as an argument', () => {
+    test('when an error is thrown, next is called with the error as an argument', async () => {
       const error = new Error('Error message');
       mockGetApplicationData.mockImplementationOnce(() => { throw error; });
 
-      manageTrustsTellUsAboutFormerBOsGuard(req, res, next);
+      await manageTrustsTellUsAboutFormerBOsGuard(req, res, next);
 
       expectNextToBeCalledWithError(error);
     });
 
-    test('when there is a trust in review and no trustee id in url, moves to next middleware', () => {
+    test('when there is a trust in review and no trustee id in url, moves to next middleware', async () => {
       mockGetApplicationData.mockReturnValueOnce(mockAppData);
       mockGetTrustInReview.mockReturnValueOnce(mockTrustInReview);
 
-      manageTrustsTellUsAboutFormerBOsGuard(req, res, next);
+      await manageTrustsTellUsAboutFormerBOsGuard(req, res, next);
 
       expect(mockGetTrustInReview).toHaveBeenCalledWith(mockAppData);
       expect(mockGetTrustInReview).toHaveBeenCalledTimes(1);
@@ -232,13 +232,13 @@ describe("manage trusts middleware", () => {
       expectToGoToNextMiddleware();
     });
 
-    test('when there is a trust in review and a trustee id in url that is not in the model, redirects to SECURE_UPDATE_FILTER', () => {
+    test('when there is a trust in review and a trustee id in url that is not in the model, redirects to SECURE_UPDATE_FILTER', async () => {
       mockGetApplicationData.mockReturnValueOnce(mockAppData);
       mockGetTrustInReview.mockReturnValueOnce(mockTrustInReview);
       req.params = reqParamsWithTrusteeId;
       mockGetTrusteeIndex.mockReturnValueOnce(-1);
 
-      manageTrustsTellUsAboutFormerBOsGuard(req, res, next);
+      await manageTrustsTellUsAboutFormerBOsGuard(req, res, next);
 
       expect(mockGetTrustInReview).toHaveBeenCalledWith(mockAppData);
       expect(mockGetTrustInReview).toHaveBeenCalledTimes(1);
@@ -248,13 +248,13 @@ describe("manage trusts middleware", () => {
       expectToBeRedirectedToSecureUpdateFilter();
     });
 
-    test('when there is a trust in review and a trustee id in url that is in the model, moves to next middleware', () => {
+    test('when there is a trust in review and a trustee id in url that is in the model, moves to next middleware', async () => {
       mockGetApplicationData.mockReturnValueOnce(mockAppData);
       mockGetTrustInReview.mockReturnValueOnce(mockTrustInReview);
       req.params = reqParamsWithTrusteeId;
       mockGetTrusteeIndex.mockReturnValueOnce(0);
 
-      manageTrustsTellUsAboutFormerBOsGuard(req, res, next);
+      await manageTrustsTellUsAboutFormerBOsGuard(req, res, next);
 
       expect(mockGetTrustInReview).toHaveBeenCalledWith(mockAppData);
       expect(mockGetTrustInReview).toHaveBeenCalledTimes(1);
@@ -264,11 +264,11 @@ describe("manage trusts middleware", () => {
       expectToGoToNextMiddleware();
     });
 
-    test('when there is no trust in review, redirects to SECURE_UPDATE_FILTER middleware', () => {
+    test('when there is no trust in review, redirects to SECURE_UPDATE_FILTER middleware', async () => {
       mockGetApplicationData.mockReturnValueOnce(mockAppData);
       mockGetTrustInReview.mockReturnValueOnce(undefined);
 
-      manageTrustsTellUsAboutFormerBOsGuard(req, res, next);
+      await manageTrustsTellUsAboutFormerBOsGuard(req, res, next);
 
       expect(mockGetTrustInReview).toHaveBeenCalledWith(mockAppData);
       expect(mockGetTrustInReview).toHaveBeenCalledTimes(1);
@@ -279,20 +279,20 @@ describe("manage trusts middleware", () => {
   });
 
   describe('manageTrustsTellUsAboutIndividualsGuard', () => {
-    test('when an error is thrown, next is called with the error as an argument', () => {
+    test('when an error is thrown, next is called with the error as an argument', async () => {
       const error = new Error('Error message');
       mockGetApplicationData.mockImplementationOnce(() => { throw error; });
 
-      manageTrustsTellUsAboutIndividualsGuard(req, res, next);
+      await manageTrustsTellUsAboutIndividualsGuard(req, res, next);
 
       expectNextToBeCalledWithError(error);
     });
 
-    test('when there is a trust in review and no trustee id in url, moves to next middleware', () => {
+    test('when there is a trust in review and no trustee id in url, moves to next middleware', async () => {
       mockGetApplicationData.mockReturnValueOnce(mockAppData);
       mockGetTrustInReview.mockReturnValueOnce(mockTrustInReview);
 
-      manageTrustsTellUsAboutIndividualsGuard(req, res, next);
+      await manageTrustsTellUsAboutIndividualsGuard(req, res, next);
 
       expect(mockGetTrustInReview).toHaveBeenCalledWith(mockAppData);
       expect(mockGetTrustInReview).toHaveBeenCalledTimes(1);
@@ -301,13 +301,13 @@ describe("manage trusts middleware", () => {
       expectToGoToNextMiddleware();
     });
 
-    test('when there is a trust in review and a trustee id in url that is not in the model, redirects to SECURE_UPDATE_FILTER', () => {
+    test('when there is a trust in review and a trustee id in url that is not in the model, redirects to SECURE_UPDATE_FILTER', async () => {
       mockGetApplicationData.mockReturnValueOnce(mockAppData);
       mockGetTrustInReview.mockReturnValueOnce(mockTrustInReview);
       req.params = reqParamsWithTrusteeId;
       mockGetTrusteeIndex.mockReturnValueOnce(-1);
 
-      manageTrustsTellUsAboutIndividualsGuard(req, res, next);
+      await manageTrustsTellUsAboutIndividualsGuard(req, res, next);
 
       expect(mockGetTrustInReview).toHaveBeenCalledWith(mockAppData);
       expect(mockGetTrustInReview).toHaveBeenCalledTimes(1);
@@ -317,13 +317,13 @@ describe("manage trusts middleware", () => {
       expectToBeRedirectedToSecureUpdateFilter();
     });
 
-    test('when there is a trust in review and a trustee id in url that is in the model, moves to next middleware', () => {
+    test('when there is a trust in review and a trustee id in url that is in the model, moves to next middleware', async () => {
       mockGetApplicationData.mockReturnValueOnce(mockAppData);
       mockGetTrustInReview.mockReturnValueOnce(mockTrustInReview);
       req.params = reqParamsWithTrusteeId;
       mockGetTrusteeIndex.mockReturnValueOnce(0);
 
-      manageTrustsTellUsAboutIndividualsGuard(req, res, next);
+      await manageTrustsTellUsAboutIndividualsGuard(req, res, next);
 
       expect(mockGetTrustInReview).toHaveBeenCalledWith(mockAppData);
       expect(mockGetTrustInReview).toHaveBeenCalledTimes(1);
@@ -333,11 +333,11 @@ describe("manage trusts middleware", () => {
       expectToGoToNextMiddleware();
     });
 
-    test('when there is no trust in review, redirects to SECURE_UPDATE_FILTER middleware', () => {
+    test('when there is no trust in review, redirects to SECURE_UPDATE_FILTER middleware', async () => {
       mockGetApplicationData.mockReturnValueOnce(mockAppData);
       mockGetTrustInReview.mockReturnValueOnce(undefined);
 
-      manageTrustsTellUsAboutIndividualsGuard(req, res, next);
+      await manageTrustsTellUsAboutIndividualsGuard(req, res, next);
 
       expect(mockGetTrustInReview).toHaveBeenCalledWith(mockAppData);
       expect(mockGetTrustInReview).toHaveBeenCalledTimes(1);
@@ -348,20 +348,20 @@ describe("manage trusts middleware", () => {
   });
 
   describe('manageTrustsTellUsAboutLegalEntitiesGuard', () => {
-    test('when an error is thrown, next is called with the error as an argument', () => {
+    test('when an error is thrown, next is called with the error as an argument', async () => {
       const error = new Error('Error message');
       mockGetApplicationData.mockImplementationOnce(() => { throw error; });
 
-      manageTrustsTellUsAboutLegalEntitiesGuard(req, res, next);
+      await manageTrustsTellUsAboutLegalEntitiesGuard(req, res, next);
 
       expectNextToBeCalledWithError(error);
     });
 
-    test('when there is a trust in review and no trustee id in url, moves to next middleware', () => {
+    test('when there is a trust in review and no trustee id in url, moves to next middleware', async () => {
       mockGetApplicationData.mockReturnValueOnce(mockAppData);
       mockGetTrustInReview.mockReturnValueOnce(mockTrustInReview);
 
-      manageTrustsTellUsAboutLegalEntitiesGuard(req, res, next);
+      await manageTrustsTellUsAboutLegalEntitiesGuard(req, res, next);
 
       expect(mockGetTrustInReview).toHaveBeenCalledWith(mockAppData);
       expect(mockGetTrustInReview).toHaveBeenCalledTimes(1);
@@ -370,13 +370,13 @@ describe("manage trusts middleware", () => {
       expectToGoToNextMiddleware();
     });
 
-    test('when there is a trust in review and a trustee id in url that is not in the model, redirects to SECURE_UPDATE_FILTER', () => {
+    test('when there is a trust in review and a trustee id in url that is not in the model, redirects to SECURE_UPDATE_FILTER', async () => {
       mockGetApplicationData.mockReturnValueOnce(mockAppData);
       mockGetTrustInReview.mockReturnValueOnce(mockTrustInReview);
       req.params = reqParamsWithTrusteeId;
       mockGetTrusteeIndex.mockReturnValueOnce(-1);
 
-      manageTrustsTellUsAboutLegalEntitiesGuard(req, res, next);
+      await manageTrustsTellUsAboutLegalEntitiesGuard(req, res, next);
 
       expect(mockGetTrustInReview).toHaveBeenCalledWith(mockAppData);
       expect(mockGetTrustInReview).toHaveBeenCalledTimes(1);
@@ -386,13 +386,13 @@ describe("manage trusts middleware", () => {
       expectToBeRedirectedToSecureUpdateFilter();
     });
 
-    test('when there is a trust in review and a trustee id in url that is in the model, moves to next middleware', () => {
+    test('when there is a trust in review and a trustee id in url that is in the model, moves to next middleware', async () => {
       mockGetApplicationData.mockReturnValueOnce(mockAppData);
       mockGetTrustInReview.mockReturnValueOnce(mockTrustInReview);
       req.params = reqParamsWithTrusteeId;
       mockGetTrusteeIndex.mockReturnValueOnce(0);
 
-      manageTrustsTellUsAboutLegalEntitiesGuard(req, res, next);
+      await manageTrustsTellUsAboutLegalEntitiesGuard(req, res, next);
 
       expect(mockGetTrustInReview).toHaveBeenCalledWith(mockAppData);
       expect(mockGetTrustInReview).toHaveBeenCalledTimes(1);
@@ -402,11 +402,11 @@ describe("manage trusts middleware", () => {
       expectToGoToNextMiddleware();
     });
 
-    test('when there is no trust in review, redirects to SECURE_UPDATE_FILTER middleware', () => {
+    test('when there is no trust in review, redirects to SECURE_UPDATE_FILTER middleware', async () => {
       mockGetApplicationData.mockReturnValueOnce(mockAppData);
       mockGetTrustInReview.mockReturnValueOnce(undefined);
 
-      manageTrustsTellUsAboutLegalEntitiesGuard(req, res, next);
+      await manageTrustsTellUsAboutLegalEntitiesGuard(req, res, next);
 
       expect(mockGetTrustInReview).toHaveBeenCalledWith(mockAppData);
       expect(mockGetTrustInReview).toHaveBeenCalledTimes(1);

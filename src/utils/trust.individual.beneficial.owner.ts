@@ -10,11 +10,13 @@ import { ApplicationData } from '../model';
 import { mapIndividualTrusteeToSession, mapIndividualTrusteeByIdFromSessionToPage } from './trust/individual.trustee.mapper';
 import { safeRedirect } from './http.ext';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
-import { validationResult } from 'express-validator';
+import { ValidationError, validationResult } from 'express-validator';
 import { Session } from '@companieshouse/node-session-handler';
 import { saveAndContinue } from './save.and.continue';
 import { isActiveFeature } from './feature.flag';
 import { getUrlWithParamsToPath } from './url';
+import { checkTrustIndividualCeasedDate } from '../validation/async';
+import { checkTrustIndividualBeneficialOwnerStillInvolved } from '../validation/stillInvolved.validation';
 
 export const INDIVIDUAL_BO_TEXTS = {
   title: 'Tell us about the individual',
@@ -38,13 +40,14 @@ type TrustIndividualBeneificalOwnerPageProperties = {
   isUpdate: boolean
 };
 
-const getPageProperties = (
+const getPageProperties = async (
   req: Request,
   trustId: string,
   isUpdate: boolean,
   formData: PageModel.IndividualTrusteesFormCommon,
   errors?: FormattedValidationErrors,
-): TrustIndividualBeneificalOwnerPageProperties => {
+): Promise<TrustIndividualBeneificalOwnerPageProperties> => {
+  const appData = await getApplicationData(req.session);
 
   return {
     backLinkUrl: getTrustInvolvedUrl(isUpdate, trustId, req),
@@ -53,7 +56,7 @@ const getPageProperties = (
       title: INDIVIDUAL_BO_TEXTS.title,
     },
     pageData: {
-      trustData: CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId, false),
+      trustData: CommonTrustDataMapper.mapCommonTrustDataToPage(appData, trustId, false),
       roleWithinTrustType: RoleWithinTrustType
     },
     formData,
@@ -63,19 +66,20 @@ const getPageProperties = (
   };
 };
 
-const getPagePropertiesRelevantPeriod = (isRelevantPeriod, req, trustId, isUpdate, formData, entityName, errors?: FormattedValidationErrors) => {
-  const pageProps = getPageProperties(req, trustId, isUpdate, formData, errors);
+const getPagePropertiesRelevantPeriod = async (isRelevantPeriod, req, trustId, isUpdate, formData, entityName, errors?: FormattedValidationErrors): Promise<TrustIndividualBeneificalOwnerPageProperties> => {
+  const pageProps = await getPageProperties(req, trustId, isUpdate, formData, errors);
   pageProps.formData.relevant_period = isRelevantPeriod;
   setEntityNameInRelevantPeriodPageBanner(pageProps, entityName);
   return pageProps;
 };
 
-export const getTrustIndividualBo = (req: Request, res: Response, next: NextFunction, isUpdate: boolean): void => {
+export const getTrustIndividualBo = async (req: Request, res: Response, next: NextFunction, isUpdate: boolean): Promise<void> => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
     const trusteeId = req.params[config.ROUTE_PARAM_TRUSTEE_ID];
-    const appData: ApplicationData = getApplicationData(req.session);
+
+    const appData: ApplicationData = await getApplicationData(req.session);
     const isRelevantPeriod = req.query ? req.query["relevant-period"] === "true" : false;
 
     const formData: PageModel.IndividualTrusteesFormCommon = mapIndividualTrusteeByIdFromSessionToPage(
@@ -83,9 +87,10 @@ export const getTrustIndividualBo = (req: Request, res: Response, next: NextFunc
       trustId,
       trusteeId
     );
-    const pageProps = getPageProperties(req, trustId, isUpdate, formData);
+    const pageProps = await getPageProperties(req, trustId, isUpdate, formData);
     if (isRelevantPeriod) {
-      return res.render(pageProps.templateName, getPagePropertiesRelevantPeriod(isRelevantPeriod, req, trustId, isUpdate, formData, appData.entity_name));
+      const pagePropertiesRelevantPeriod = await getPagePropertiesRelevantPeriod(isRelevantPeriod, req, trustId, isUpdate, formData, appData.entity_name);
+      return res.render(pageProps.templateName, pagePropertiesRelevantPeriod);
     } else {
       setEntityNameInRelevantPeriodPageBanner(pageProps, appData ? appData.entity_name : pageProps.pageData.entity_name);
       return res.render(pageProps.templateName, pageProps);
@@ -96,7 +101,7 @@ export const getTrustIndividualBo = (req: Request, res: Response, next: NextFunc
   }
 };
 
-export const postTrustIndividualBo = async (req: Request, res: Response, next: NextFunction, isUpdate: boolean) => {
+export const postTrustIndividualBo = async (req: Request, res: Response, next: NextFunction, isUpdate: boolean): Promise<void> => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
@@ -105,24 +110,29 @@ export const postTrustIndividualBo = async (req: Request, res: Response, next: N
     const individualTrusteeData = mapIndividualTrusteeToSession(req.body);
 
     // get trust data from session
-    let appData: ApplicationData = getApplicationData(req.session);
+    let appData: ApplicationData = await getApplicationData(req.session);
 
     // check for errors
     const errorList = validationResult(req);
+    const errors = await getValidationErrors(appData, req);
+
     const formData: PageModel.IndividualTrusteesFormCommon = req.body as PageModel.IndividualTrusteesFormCommon;
     // if no errors present rerender the page
-    if (!errorList.isEmpty()) {
-      const pageProps = getPageProperties(
+    if (!errorList.isEmpty() || errors.length > 0) {
+      const errorListArray = !errorList.isEmpty() ? errorList.array() : [];
+
+      const pageProps = await getPageProperties(
         req,
         trustId,
         isUpdate,
         formData,
-        formatValidationError(errorList.array()),
+        formatValidationError([...errorListArray, ...errors]),
       );
 
       const isRelevantPeriod = req.query ? req.query["relevant-period"] === "true" : false;
       if (isRelevantPeriod) {
-        return res.render(pageProps.templateName, getPagePropertiesRelevantPeriod(isRelevantPeriod, req, trustId, isUpdate, formData, appData.entity_name, formatValidationError(errorList.array())));
+        const pagePropertiesRelevantPeriod = await getPagePropertiesRelevantPeriod(isRelevantPeriod, req, trustId, isUpdate, formData, appData.entity_name, formatValidationError([...errorListArray, ...errors]));
+        return res.render(pageProps.templateName, pagePropertiesRelevantPeriod);
       } else {
         setEntityNameInRelevantPeriodPageBanner(pageProps, appData ? appData.entity_name : pageProps.pageData.entity_name);
         return res.render(pageProps.templateName, pageProps);
@@ -184,4 +194,11 @@ export const setEntityNameInRelevantPeriodPageBanner = (pageProps, entityName: s
     pageProps.pageData.entity_name = entityName;
   }
   return pageProps;
+
+// Get validation errors that depend on an asynchronous request
+const getValidationErrors = async (appData: ApplicationData, req: Request): Promise<ValidationError[]> => {
+  const stillInvolvedErrors = checkTrustIndividualBeneficialOwnerStillInvolved(appData, req);
+  const ceasedDateErrors = await checkTrustIndividualCeasedDate(appData, req);
+
+  return [...stillInvolvedErrors, ...ceasedDateErrors];
 };

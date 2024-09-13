@@ -27,10 +27,10 @@ export const transactionIdAndSubmissionIdExistInRequest = (req: Request): boolea
 const getTransactionIdFromRequestParams = (req: Request): string => req.params[config.ROUTE_PARAM_TRANSACTION_ID];
 const getSubmissionIdFromRequestParams = (req: Request): string => req.params[config.ROUTE_PARAM_SUBMISSION_ID];
 
-export const isRemoveJourney = (req: Request): boolean => {
+export const isRemoveJourney = async (req: Request): Promise<boolean> => {
   const session = req.session as Session;
 
-  const appData: ApplicationData = getApplicationData(session);
+  const appData: ApplicationData = await getApplicationData(session);
 
   if (appData) {
     if (appData[IsRemoveKey] !== undefined && appData[IsRemoveKey] !== null) {

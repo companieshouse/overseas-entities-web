@@ -14,7 +14,15 @@
   {% include "includes/inputs/nature-of-control-checkboxes/trustees-nature-of-control-types.html" %}
 {% endif %}
 
-{% set errorMessage = {} if errors.beneficial_owner_nature_of_control_types %}
-{% include "includes/inputs/nature-of-control-checkboxes/non-legal-firm-nature-of-control-types.html" %}
+{% if FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC and not entity_number and (isBeneficialOwnerIndividual or isBeneficialOwnerOther) %}
+  {% set errorMessage = {} if errors.beneficial_owner_nature_of_control_types %}
+  {% include "includes/inputs/nature-of-control-checkboxes/trust-control-nature-of-control-types.html" %}
+
+  {% set errorMessage = {} if errors.beneficial_owner_nature_of_control_types %}
+  {% include "includes/inputs/nature-of-control-checkboxes/non-legal-firm-control-nature-of-control-types.html" %}
+{% else %}
+  {% set errorMessage = {} if errors.beneficial_owner_nature_of_control_types %}
+  {% include "includes/inputs/nature-of-control-checkboxes/non-legal-firm-nature-of-control-types.html" %}
+{% endif %}
 
 {% endcall %}

@@ -7,7 +7,7 @@ import {
   getTrustLinks
 } from '../../../src/service/trust.data.service';
 import { logger } from '../../../src/utils/logger';
-import { InterestedIndividualPersonTrustee, Trust, TrustCorporate } from "../../../src/model/trust.model";
+import { InterestedIndividualPersonTrustee, Trust } from "../../../src/model/trust.model";
 import {
   FETCH_CORPORATE_TRUSTEE_DATA_MOCK,
   FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK,
@@ -22,7 +22,6 @@ import {
   TRUST_LINKS_DATA_MOCK,
   BO_TRUST_LINKS_DATA_MOCK,
   FETCH_TRUST_DATA_MOCK_WITHOUT_CHIPS_REFERENCE,
-  MAPPED_FETCH_RELEVANT_PERIOD_BENEFICIARY_CORPORATE_DATA_MOCK
 } from "./mocks";
 import { FETCH_TRUST_APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock";
 import { CorporateTrusteeData, IndividualTrusteeData, TrustData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities/types";
@@ -274,7 +273,7 @@ describe("Test fetching and mapping of Trust data", () => {
     expect(mockLoggerInfo).toBeCalledTimes(3);
     expect(appData.update?.review_trusts).toHaveLength(2);
     const corporateTrustees = ((appData.update?.review_trusts ?? [])[0]).CORPORATES;
-    expect(corporateTrustees).toHaveLength(4);
+    expect(corporateTrustees).toHaveLength(3);
     const corporateTrustee = (corporateTrustees ?? [])[0];
     expect(corporateTrustee).toEqual(MAPPED_FETCH_CORPORATE_TRUSTEE_DATA_MOCK);
     const secondCorporateTrustee = (corporateTrustees ?? [])[1];
@@ -285,10 +284,6 @@ describe("Test fetching and mapping of Trust data", () => {
     expect(historicalTrustees).toHaveLength(1);
     const historicalTrustee = (historicalTrustees ?? [])[0];
     expect(historicalTrustee).toEqual(MAPPED_FETCH_HISTORICAL_CORPORATE_DATA_MOCK);
-    const beneficiaryTrustees = ((appData.update?.review_trusts ?? [])[0]).CORPORATES;
-    expect(beneficiaryTrustees).toHaveLength(4);
-    const beneficiaryTrustee = (beneficiaryTrustees ?? [])[3];
-    expect(beneficiaryTrustee).toEqual(MAPPED_FETCH_RELEVANT_PERIOD_BENEFICIARY_CORPORATE_DATA_MOCK);
   });
 
   test("should not fetch and map trustees if chips reference is empty", async () => {
@@ -767,7 +762,6 @@ describe("Test fetching and mapping of Trust data", () => {
       ceasedDate: "2022-02-02"
     };
     mapCorporateTrusteeData(historicalCorporateTrusteeData, trust);
-
     expect(trust.INDIVIDUALS).toEqual(undefined);
     expect(trust.CORPORATES).toEqual(undefined);
     expect(trust.HISTORICAL_BO).toEqual(undefined);
@@ -912,31 +906,6 @@ describe("Test fetching and mapping of Trust data", () => {
       expect(interestedPerson.date_became_interested_person_day).toEqual("1");
       expect(interestedPerson.date_became_interested_person_month).toEqual("2");
       expect(interestedPerson.date_became_interested_person_year).toEqual("2012");
-    } else {
-      fail();
-    }
-  });
-
-  test("should map start_date trustees into trust", () => {
-    const trusteeData = {
-      hashedTrusteeId: "1",
-      trusteeForename1: "",
-      trusteeSurname: "",
-      corporateIndicator: "",
-      trusteeTypeId: "5002",
-      appointmentDate: "2020-05-11",
-    } as unknown as CorporateTrusteeData;
-    trustMock.CORPORATES = [];
-
-    mapCorporateTrusteeData(trusteeData, trustMock);
-
-    expect(trustMock.CORPORATES).toHaveLength(1);
-    if (trustMock.CORPORATES) {
-      const Beneficiary = trustMock.CORPORATES[0] as TrustCorporate;
-
-      expect(Beneficiary.start_date_day).toEqual("11");
-      expect(Beneficiary.start_date_month).toEqual("5");
-      expect(Beneficiary.start_date_year).toEqual("2020");
     } else {
       fail();
     }

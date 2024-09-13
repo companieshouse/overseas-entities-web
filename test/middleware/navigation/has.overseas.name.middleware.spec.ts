@@ -25,9 +25,9 @@ describe("has.overseas.name navigation middleware tests", () => {
     jest.clearAllMocks();
   });
 
-  test(`should redirect to ${SOLD_LAND_FILTER_URL} page and log message error ${NavigationErrorMessage}`, () => {
+  test(`should redirect to ${SOLD_LAND_FILTER_URL} page and log message error ${NavigationErrorMessage}`, async () => {
     mockCheckOverseasNameDetailsEntered.mockImplementationOnce( () => { return false; });
-    hasOverseasName(req, res, next);
+    await hasOverseasName(req, res, next);
 
     expect(next).not.toHaveBeenCalledTimes(1);
 
@@ -38,9 +38,9 @@ describe("has.overseas.name navigation middleware tests", () => {
     expect(res.redirect).toHaveBeenCalledWith(SOLD_LAND_FILTER_URL);
   });
 
-  test(`should not redirect and pass to the next middleware`, () => {
+  test(`should not redirect and pass to the next middleware`, async () => {
     mockCheckOverseasNameDetailsEntered.mockImplementationOnce( () => { return true; });
-    hasOverseasName(req, res, next);
+    await hasOverseasName(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
 
@@ -48,9 +48,9 @@ describe("has.overseas.name navigation middleware tests", () => {
     expect(res.redirect).not.toHaveBeenCalled();
   });
 
-  test("should catch the error and call next(err)", () => {
+  test("should catch the error and call next(err)", async () => {
     mockCheckOverseasNameDetailsEntered.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-    hasOverseasName(req, res, next);
+    await hasOverseasName(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
 

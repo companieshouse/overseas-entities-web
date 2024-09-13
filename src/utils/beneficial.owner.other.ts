@@ -3,20 +3,28 @@ import { logger } from "./logger";
 import { Session } from "@companieshouse/node-session-handler";
 import { saveAndContinue } from "./save.and.continue";
 import { ApplicationData, ApplicationDataType } from "../model";
-import { getApplicationData, getFromApplicationData, mapDataObjectToFields, mapFieldsToDataObject, prepareData, removeFromApplicationData, setApplicationData } from "./application.data";
+import {
+  getApplicationData,
+  getFromApplicationData,
+  mapDataObjectToFields,
+  mapFieldsToDataObject,
+  prepareData,
+  removeFromApplicationData,
+  setApplicationData,
+  setBoNocDataAsArrays
+} from "./application.data";
 import { addCeasedDateToTemplateOptions } from "../utils/update/ceased_date_util";
 import { BeneficialOwnerOther, BeneficialOwnerOtherKey, BeneficialOwnerOtherKeys } from "../model/beneficial.owner.other.model";
 import {
   AddressKeys,
-  BeneficialOwnerNoc,
   EntityNumberKey,
   HasSamePrincipalAddressKey,
   ID,
   InputDateKeys,
   IsOnRegisterInCountryFormedInKey,
   IsOnSanctionsListKey,
-  NonLegalFirmNoc, PublicRegisterNameKey, RegistrationNumberKey,
-  TrusteesNoc
+  PublicRegisterNameKey,
+  RegistrationNumberKey,
 } from "../model/data.types.model";
 import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAddressKeys } from "../model/address.model";
 import {
@@ -28,27 +36,30 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 import * as config from "../config";
 import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
+import { isActiveFeature } from "./feature.flag";
 
-export const getBeneficialOwnerOther = (req: Request, res: Response, templateName: string, backLinkUrl: string) => {
+export const getBeneficialOwnerOther = async (req: Request, res: Response, templateName: string, backLinkUrl: string): Promise<void> => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-  const appData: ApplicationData = getApplicationData(req.session);
+  const appData: ApplicationData = await getApplicationData(req.session);
 
   return res.render(templateName, {
     backLinkUrl: backLinkUrl,
     templateName: templateName,
-    ...appData, relevant_period: req.query["relevant-period"] === "true",
+    ...appData,
+    relevant_period: req.query["relevant-period"] === "true",
+    FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC: isActiveFeature(config.FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)
   });
 };
 
-export const getBeneficialOwnerOtherById = (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string) => {
+export const getBeneficialOwnerOtherById = async (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string): Promise<void> => {
   try {
     logger.debugRequest(req, `GET BY ID ${req.route.path}`);
 
-    const appData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
 
     const id = req.params[ID];
-    const data = getFromApplicationData(req, BeneficialOwnerOtherKey, id, true);
+    const data = await getFromApplicationData(req, BeneficialOwnerOtherKey, id, true);
 
     const principalAddress = (data) ? mapDataObjectToFields(data[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};
     const serviceAddress = (data) ? mapDataObjectToFields(data[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
@@ -62,7 +73,8 @@ export const getBeneficialOwnerOtherById = (req: Request, res: Response, next: N
       ...principalAddress,
       ...serviceAddress,
       [StartDateKey]: startDate,
-      entity_name: appData.entity_name
+      entity_name: appData.entity_name,
+      FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC: isActiveFeature(config.FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)
     };
 
     // Redis removal work - Add extra template options if Redis Remove flag is true and on Registration journey
@@ -87,10 +99,10 @@ export const postBeneficialOwnerOther = async (req: Request, res: Response, next
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const data: ApplicationDataType = setBeneficialOwnerData(req.body, uuidv4());
+    const data: ApplicationDataType = await setBeneficialOwnerData(req.body, uuidv4());
 
     const session = req.session as Session;
-    setApplicationData(session, data, BeneficialOwnerOtherKey);
+    await setApplicationData(session, data, BeneficialOwnerOtherKey);
 
     await saveAndContinue(req, session);
 
@@ -106,12 +118,12 @@ export const updateBeneficialOwnerOther = async (req: Request, res: Response, ne
     logger.debugRequest(req, `UPDATE ${req.route.path}`);
 
     const id = req.params[ID];
-    const boData: BeneficialOwnerOther = getFromApplicationData(req, BeneficialOwnerOtherKey, id, true);
+    const boData: BeneficialOwnerOther = await getFromApplicationData(req, BeneficialOwnerOtherKey, id, true);
 
     const trustIds: string[] = boData?.trust_ids?.length ? [...boData.trust_ids] : [];
 
     // Remove old Beneficial Owner
-    removeFromApplicationData(req, BeneficialOwnerOtherKey, id);
+    await removeFromApplicationData(req, BeneficialOwnerOtherKey, id);
 
     // Set Beneficial Owner data
     const data: ApplicationDataType = setBeneficialOwnerData(req.body, id);
@@ -122,7 +134,7 @@ export const updateBeneficialOwnerOther = async (req: Request, res: Response, ne
 
     // Save new Beneficial Owner
     const session = req.session as Session;
-    setApplicationData(session, data, BeneficialOwnerOtherKey);
+    await setApplicationData(session, data, BeneficialOwnerOtherKey);
 
     await saveAndContinue(req, session);
 
@@ -137,7 +149,7 @@ export const removeBeneficialOwnerOther = async (req: Request, res: Response, ne
   try {
     logger.debugRequest(req, `REMOVE ${req.route.path}`);
 
-    removeFromApplicationData(req, BeneficialOwnerOtherKey, req.params[ID]);
+    await removeFromApplicationData(req, BeneficialOwnerOtherKey, req.params[ID]);
     const session = req.session as Session;
 
     await saveAndContinue(req, session);
@@ -161,11 +173,7 @@ export const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDat
   data[StartDateKey] = mapFieldsToDataObject(reqBody, StartDateKeys, InputDateKeys);
   data[CeasedDateKey] = reqBody["is_still_bo"] === '0' ? mapFieldsToDataObject(reqBody, CeasedDateKeys, InputDateKeys) : {};
 
-  // It needs concatenations because if in the check boxes we select only one option
-  // nunjucks returns just a string and with concat we will return an array.
-  data[BeneficialOwnerNoc] = (data[BeneficialOwnerNoc]) ? [].concat(data[BeneficialOwnerNoc]) : [];
-  data[TrusteesNoc] = (data[TrusteesNoc]) ? [].concat(data[TrusteesNoc]) : [];
-  data[NonLegalFirmNoc] = (data[NonLegalFirmNoc]) ? [].concat(data[NonLegalFirmNoc]) : [];
+  setBoNocDataAsArrays(data);
 
   data[IsOnSanctionsListKey] = (data[IsOnSanctionsListKey]) ? +data[IsOnSanctionsListKey] : '';
   data[IsOnRegisterInCountryFormedInKey] = (data[IsOnRegisterInCountryFormedInKey]) ? +data[IsOnRegisterInCountryFormedInKey] : '';

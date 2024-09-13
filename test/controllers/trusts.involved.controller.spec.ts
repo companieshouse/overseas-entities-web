@@ -97,7 +97,7 @@ describe('Trust Involved controller', () => {
   });
 
   describe('GET unit tests', () => {
-    test(('success'), () => {
+    test(('success'), async () => {
       mockGetApplicationData.mockReturnValue(mockAppData);
 
       const mockTrustData = {
@@ -122,7 +122,7 @@ describe('Trust Involved controller', () => {
 
       (getFormerTrusteesFromTrust as any as jest.Mock).mockReturnValue(formerTrusteeData);
 
-      get(mockReq, mockRes, mockNext);
+      await get(mockReq, mockRes, mockNext);
 
       expect(mockRes.redirect).not.toBeCalled();
 

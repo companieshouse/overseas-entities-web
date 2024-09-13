@@ -99,9 +99,10 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const isRelevantPeriod = req.query['relevant-period'];
     const formData = req.body as TrustLegalEntityForm;
     const errorList = validationResult(req);
+    const errors = await getValidationErrors(appData, req);
+    
     if (!errorList.isEmpty() || errors.length) {
       let pageProps: TrustLegalEntityBeneficialOwnerPageProperties;
-      const errors = await getValidationErrors(appData, req);
       const errorListArray = !errorList.isEmpty() ? errorList.array() : [];
 
       if (isRelevantPeriod) {

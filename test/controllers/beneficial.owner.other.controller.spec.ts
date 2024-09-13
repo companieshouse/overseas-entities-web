@@ -207,7 +207,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
 
   describe("GET BY ID tests", () => {
 
-    xtest("Renders the page through GET", async () => {
+    test("Renders the page through GET", async () => {
       mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS);
       const applicationDataMock = { ...APPLICATION_DATA_MOCK };
       delete applicationDataMock[EntityNumberKey];
@@ -237,7 +237,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
 
   describe("GET BY ID with url params tests", () => {
 
-    xtest("Renders the page through GET", async () => {
+    test("Renders the page through GET", async () => {
       mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL x 2
       mockGetFromApplicationData.mockReturnValueOnce({ ...BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS });
       const applicationDataMock = { ...APPLICATION_DATA_MOCK };

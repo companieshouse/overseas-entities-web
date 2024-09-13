@@ -203,7 +203,7 @@ describe('Trust Individual Beneficial Owner Controller', () => {
       (hasTrustWithIdRegister as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
     });
 
-    xtest(`successfully access GET method`, async () => {
+    test(`successfully access GET method`, async () => {
       const mockTrust = {
         trustName: 'dummyName',
       };
@@ -247,7 +247,7 @@ describe('Trust Individual Beneficial Owner Controller', () => {
       (hasTrustWithIdRegister as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
     });
 
-    xtest(`successfully access GET method`, async () => {
+    test(`successfully access GET method`, async () => {
       const mockTrust = {
         trustName: 'dummyName',
       };

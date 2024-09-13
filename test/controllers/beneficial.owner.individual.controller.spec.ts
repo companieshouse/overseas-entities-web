@@ -25,7 +25,6 @@ import {
   BENEFICIAL_OWNER_TYPE_URL,
   BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
   REMOVE,
-  RELEVANT_PERIOD_QUERY_PARAM,
 } from "../../src/config";
 
 import {
@@ -1989,7 +1988,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
         .send(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
+      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
@@ -2025,7 +2024,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect((data as BeneficialOwnerIndividual).trust_ids).toEqual(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK.trust_ids);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
+      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
     });
 
     test(`Service address from the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} is present when same address is set to no`, async () => {
@@ -2072,7 +2071,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
+      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
@@ -2093,7 +2092,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(BO_IND_ID);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
+      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
     });
   });
 
@@ -2125,7 +2124,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(BO_IND_ID);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
+      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
   });

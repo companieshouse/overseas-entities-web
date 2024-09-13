@@ -161,7 +161,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
 
   describe("GET BY ID tests", () => {
 
-    xtest("renders the beneficial owner gov page", async () => {
+    test("renders the beneficial owner gov page", async () => {
       mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
       const applicationDataMock = { ...APPLICATION_DATA_MOCK };
       delete applicationDataMock[EntityNumberKey];
@@ -192,7 +192,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
 
   describe("GET BY ID with url params tests", () => {
 
-    xtest("renders the beneficial owner gov page", async () => {
+    test("renders the beneficial owner gov page", async () => {
       mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
       const applicationDataMock = { ...APPLICATION_DATA_MOCK };
       delete applicationDataMock[EntityNumberKey];
@@ -231,7 +231,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
         .send(BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_TYPE_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
+      expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
@@ -1082,7 +1082,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
         .send(BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_TYPE_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
+      expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
@@ -1113,7 +1113,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(BeneficialOwnerGovKey);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_TYPE_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
+      expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
@@ -1231,7 +1231,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       const resp = await request(app).get(config.BENEFICIAL_OWNER_GOV_URL + config.REMOVE + BO_GOV_ID_URL);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_TYPE_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
+      expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
@@ -1251,7 +1251,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(BO_GOV_ID);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_TYPE_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
+      expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
   });

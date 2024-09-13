@@ -226,10 +226,6 @@ export const mapCorporateTrusteeData = (trustee: CorporateTrusteeData, trust: Tr
     mapHistoricalCorporateTrusteeData(trustee, trust);
     return;
   }
-  if (trusteeRoleType === RoleWithinTrustType.BENEFICIARY) {
-    mapCorporateBeneficiaryTrusteeData(trustee, trust);
-    return;
-  }
 
   // This needs to be done after checking (and mapping) an historical corporate trustee, as they will have ceased dates. It's
   // enough to simply check for the presence of a ceased date, since future dates cannot be entered in this field
@@ -288,31 +284,6 @@ const mapHistoricalCorporateTrusteeData = (trustee: CorporateTrusteeData, trust:
     corporate_indicator: yesNoResponse.Yes
   };
   trust.HISTORICAL_BO?.push(historicalCorporateTrustee);
-};
-
-const mapCorporateBeneficiaryTrusteeData = (trustee: CorporateTrusteeData, trust: Trust) => {
-  const appointmentDate = mapInputDate(trustee.appointmentDate);
-
-  const CorporatebeneficiaryTrustee: TrustCorporate = {
-    id: ((trust.CORPORATES ?? []).length + 1).toString(),
-    type: trustee.trusteeTypeId,
-    name: trustee.trusteeName,
-    ch_references: trustee.hashedTrusteeId,
-    ro_address_premises: "",
-    ro_address_line_1: "",
-    ro_address_locality: "",
-    ro_address_region: "",
-    ro_address_country: "",
-    ro_address_postal_code: "",
-    start_date_day: appointmentDate?.day ?? "",
-    start_date_month: appointmentDate?.month ?? "",
-    start_date_year: appointmentDate?.year ?? "",
-    identification_legal_authority: trustee.lawGoverned ?? "",
-    identification_legal_form: trustee.legalForm ?? "",
-    is_service_address_same_as_principal_address: yesNoResponse.No,
-    is_on_register_in_country_formed_in: yesNoResponse.Yes,
-  };
-  trust.CORPORATES?.push(CorporatebeneficiaryTrustee);
 };
 
 export const retrieveTrustLinks = async (req: Request, appData: ApplicationData) => {

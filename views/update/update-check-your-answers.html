@@ -128,7 +128,9 @@
         {% endif %}
       {% endif %}
 
-      {% include "includes/check-your-answers/date-update-statement.html" %}
+      {% if not isRemoveJourney %}
+        {% include "includes/check-your-answers/date-update-statement.html" %}
+      {% endif %}
       {% include "includes/check-your-answers/presenter.html" %}
       {% include "includes/check-your-answers/make-changes-oe-update-period.html" %}
       {% include "includes/check-your-answers/verification-checks.html" %}

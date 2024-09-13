@@ -1,3 +1,5 @@
+jest.mock('../../src/utils/feature.flag');
+
 import { Request } from "express";
 import { beforeEach, describe, expect, test } from '@jest/globals';
 
@@ -19,7 +21,8 @@ import {
   hasAddedOrCeasedBO,
   checkActiveMOExists,
   allManagingOfficers,
-  getRemove
+  getRemove,
+  setBoNocDataAsArrays
 } from "../../src/utils/application.data";
 import {
   APPLICATION_DATA_UPDATE_BO_MOCK,
@@ -66,8 +69,12 @@ import { BeneficialOwnerOtherKey } from "../../src/model/beneficial.owner.other.
 import { ManagingOfficerCorporateKey } from "../../src/model/managing.officer.corporate.model";
 import { ManagingOfficerKey } from "../../src/model/managing.officer.model";
 import { NoChangeKey, UpdateKey } from "../../src/model/update.type.model";
+import { NatureOfControlType } from "../../src/model/data.types.model";
+import { isActiveFeature } from "../../src/utils/feature.flag";
 
 let req: Request;
+
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
 
 describe("Application data utils", () => {
 
@@ -260,6 +267,144 @@ describe("Application data utils", () => {
       BO_OTHER_ID
     );
     expect(boOrMo).toEqual(undefined);
+  });
+
+  test('ensure single BO Nature of Control values are converted to arrays', () => {
+    const beneficialOwnerIndividual = {
+      ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+      beneficial_owner_nature_of_control_types: NatureOfControlType.SIGNIFICANT_INFLUENCE_OR_CONTROL,
+      trustees_nature_of_control_types: NatureOfControlType.SIGNIFICANT_INFLUENCE_OR_CONTROL,
+      non_legal_firm_members_nature_of_control_types: NatureOfControlType.SIGNIFICANT_INFLUENCE_OR_CONTROL
+    };
+
+    setBoNocDataAsArrays(
+      beneficialOwnerIndividual
+    );
+
+    expect(beneficialOwnerIndividual.beneficial_owner_nature_of_control_types).toEqual([ NatureOfControlType.SIGNIFICANT_INFLUENCE_OR_CONTROL ]);
+    expect(beneficialOwnerIndividual.trustees_nature_of_control_types).toEqual([ NatureOfControlType.SIGNIFICANT_INFLUENCE_OR_CONTROL ]);
+    expect(beneficialOwnerIndividual.non_legal_firm_members_nature_of_control_types).toEqual([ NatureOfControlType.SIGNIFICANT_INFLUENCE_OR_CONTROL ]);
+  });
+
+  test('ensure arrays of BO Nature of Control values remain as arrays', () => {
+    const testNocArray = [ NatureOfControlType.SIGNIFICANT_INFLUENCE_OR_CONTROL,
+      NatureOfControlType.OVER_25_PERCENT_OF_SHARES ];
+
+    const beneficialOwnerIndividual = {
+      ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+      beneficial_owner_nature_of_control_types: testNocArray,
+      trustees_nature_of_control_types: testNocArray,
+      non_legal_firm_members_nature_of_control_types: testNocArray
+    };
+
+    setBoNocDataAsArrays(
+      beneficialOwnerIndividual
+    );
+
+    expect(beneficialOwnerIndividual.beneficial_owner_nature_of_control_types).toEqual(testNocArray);
+    expect(beneficialOwnerIndividual.trustees_nature_of_control_types).toEqual(testNocArray);
+    expect(beneficialOwnerIndividual.non_legal_firm_members_nature_of_control_types).toEqual(testNocArray);
+  });
+
+  test('ensure empty BO Nature of Control values are converted to empty arrays', () => {
+    const beneficialOwnerIndividual = {
+      ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+      beneficial_owner_nature_of_control_types: "",
+      trustees_nature_of_control_types: "",
+      non_legal_firm_members_nature_of_control_types: ""
+    };
+
+    setBoNocDataAsArrays(
+      beneficialOwnerIndividual
+    );
+
+    expect(beneficialOwnerIndividual.beneficial_owner_nature_of_control_types).toEqual([]);
+    expect(beneficialOwnerIndividual.trustees_nature_of_control_types).toEqual([]);
+    expect(beneficialOwnerIndividual.non_legal_firm_members_nature_of_control_types).toEqual([]);
+  });
+
+  test('ensure single BO Nature of Control values are converted to arrays when FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is ON', () => {
+    mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
+    const beneficialOwnerIndividual = {
+      ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+      beneficial_owner_nature_of_control_types: NatureOfControlType.SIGNIFICANT_INFLUENCE_OR_CONTROL,
+      trustees_nature_of_control_types: NatureOfControlType.SIGNIFICANT_INFLUENCE_OR_CONTROL,
+      non_legal_firm_members_nature_of_control_types: NatureOfControlType.SIGNIFICANT_INFLUENCE_OR_CONTROL,
+      trust_control_nature_of_control_types: NatureOfControlType.SIGNIFICANT_INFLUENCE_OR_CONTROL,
+      non_legal_firm_control_nature_of_control_types: NatureOfControlType.SIGNIFICANT_INFLUENCE_OR_CONTROL,
+      owner_of_land_person_nature_of_control_jurisdictions: NatureOfControlType.SIGNIFICANT_INFLUENCE_OR_CONTROL,
+      owner_of_land_other_entity_nature_of_control_jurisdictions: NatureOfControlType.SIGNIFICANT_INFLUENCE_OR_CONTROL
+    };
+
+    setBoNocDataAsArrays(
+      beneficialOwnerIndividual
+    );
+
+    expect(beneficialOwnerIndividual.beneficial_owner_nature_of_control_types).toEqual([ NatureOfControlType.SIGNIFICANT_INFLUENCE_OR_CONTROL ]);
+    expect(beneficialOwnerIndividual.trustees_nature_of_control_types).toEqual([ NatureOfControlType.SIGNIFICANT_INFLUENCE_OR_CONTROL ]);
+    expect(beneficialOwnerIndividual.non_legal_firm_members_nature_of_control_types).toEqual([ NatureOfControlType.SIGNIFICANT_INFLUENCE_OR_CONTROL ]);
+    expect(beneficialOwnerIndividual.trust_control_nature_of_control_types).toEqual([ NatureOfControlType.SIGNIFICANT_INFLUENCE_OR_CONTROL ]);
+    expect(beneficialOwnerIndividual.non_legal_firm_control_nature_of_control_types).toEqual([ NatureOfControlType.SIGNIFICANT_INFLUENCE_OR_CONTROL ]);
+    expect(beneficialOwnerIndividual.owner_of_land_person_nature_of_control_jurisdictions).toEqual([ NatureOfControlType.SIGNIFICANT_INFLUENCE_OR_CONTROL ]);
+    expect(beneficialOwnerIndividual.owner_of_land_other_entity_nature_of_control_jurisdictions).toEqual([ NatureOfControlType.SIGNIFICANT_INFLUENCE_OR_CONTROL ]);
+  });
+
+  test('ensure arrays of BO Nature of Control values remain as arrays when FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is ON', () => {
+    mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
+    const testNocArray = [ NatureOfControlType.SIGNIFICANT_INFLUENCE_OR_CONTROL,
+      NatureOfControlType.OVER_25_PERCENT_OF_SHARES ];
+
+    const beneficialOwnerIndividual = {
+      ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+      beneficial_owner_nature_of_control_types: testNocArray,
+      trustees_nature_of_control_types: testNocArray,
+      non_legal_firm_members_nature_of_control_types: testNocArray,
+      trust_control_nature_of_control_types: testNocArray,
+      non_legal_firm_control_nature_of_control_types: testNocArray,
+      owner_of_land_person_nature_of_control_jurisdictions: testNocArray,
+      owner_of_land_other_entity_nature_of_control_jurisdictions: testNocArray
+    };
+
+    setBoNocDataAsArrays(
+      beneficialOwnerIndividual
+    );
+
+    expect(beneficialOwnerIndividual.beneficial_owner_nature_of_control_types).toEqual(testNocArray);
+    expect(beneficialOwnerIndividual.trustees_nature_of_control_types).toEqual(testNocArray);
+    expect(beneficialOwnerIndividual.non_legal_firm_members_nature_of_control_types).toEqual(testNocArray);
+    expect(beneficialOwnerIndividual.trust_control_nature_of_control_types).toEqual(testNocArray);
+    expect(beneficialOwnerIndividual.non_legal_firm_control_nature_of_control_types).toEqual(testNocArray);
+    expect(beneficialOwnerIndividual.owner_of_land_person_nature_of_control_jurisdictions).toEqual(testNocArray);
+    expect(beneficialOwnerIndividual.owner_of_land_other_entity_nature_of_control_jurisdictions).toEqual(testNocArray);
+  });
+
+  test('ensure empty BO Nature of Control values are converted to empty arrays when FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is ON', () => {
+    mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
+    const beneficialOwnerIndividual = {
+      ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+      beneficial_owner_nature_of_control_types: "",
+      trustees_nature_of_control_types: "",
+      non_legal_firm_members_nature_of_control_types: "",
+      trust_control_nature_of_control_types: "",
+      non_legal_firm_control_nature_of_control_types: "",
+      owner_of_land_person_nature_of_control_jurisdictions: "",
+      owner_of_land_other_entity_nature_of_control_jurisdictions: ""
+    };
+
+    setBoNocDataAsArrays(
+      beneficialOwnerIndividual
+    );
+
+    expect(beneficialOwnerIndividual.beneficial_owner_nature_of_control_types).toEqual([]);
+    expect(beneficialOwnerIndividual.trustees_nature_of_control_types).toEqual([]);
+    expect(beneficialOwnerIndividual.non_legal_firm_members_nature_of_control_types).toEqual([]);
+    expect(beneficialOwnerIndividual.trust_control_nature_of_control_types).toEqual([]);
+    expect(beneficialOwnerIndividual.non_legal_firm_control_nature_of_control_types).toEqual([]);
+    expect(beneficialOwnerIndividual.owner_of_land_person_nature_of_control_jurisdictions).toEqual([]);
+    expect(beneficialOwnerIndividual.owner_of_land_other_entity_nature_of_control_jurisdictions).toEqual([]);
   });
 
   test('checkGivenBoOrMoDetailsExist returns true if beneficial owner is found', () => {

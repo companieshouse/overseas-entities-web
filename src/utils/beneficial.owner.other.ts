@@ -3,20 +3,28 @@ import { logger } from "./logger";
 import { Session } from "@companieshouse/node-session-handler";
 import { saveAndContinue } from "./save.and.continue";
 import { ApplicationData, ApplicationDataType } from "../model";
-import { getApplicationData, getFromApplicationData, mapDataObjectToFields, mapFieldsToDataObject, prepareData, removeFromApplicationData, setApplicationData } from "./application.data";
+import {
+  getApplicationData,
+  getFromApplicationData,
+  mapDataObjectToFields,
+  mapFieldsToDataObject,
+  prepareData,
+  removeFromApplicationData,
+  setApplicationData,
+  setBoNocDataAsArrays
+} from "./application.data";
 import { addCeasedDateToTemplateOptions } from "../utils/update/ceased_date_util";
 import { BeneficialOwnerOther, BeneficialOwnerOtherKey, BeneficialOwnerOtherKeys } from "../model/beneficial.owner.other.model";
 import {
   AddressKeys,
-  BeneficialOwnerNoc,
   EntityNumberKey,
   HasSamePrincipalAddressKey,
   ID,
   InputDateKeys,
   IsOnRegisterInCountryFormedInKey,
   IsOnSanctionsListKey,
-  NonLegalFirmNoc, PublicRegisterNameKey, RegistrationNumberKey,
-  TrusteesNoc
+  PublicRegisterNameKey,
+  RegistrationNumberKey,
 } from "../model/data.types.model";
 import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAddressKeys } from "../model/address.model";
 import {
@@ -28,6 +36,7 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 import * as config from "../config";
 import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
+import { isActiveFeature } from "./feature.flag";
 
 export const getBeneficialOwnerOther = async (req: Request, res: Response, templateName: string, backLinkUrl: string): Promise<void> => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
@@ -37,7 +46,9 @@ export const getBeneficialOwnerOther = async (req: Request, res: Response, templ
   return res.render(templateName, {
     backLinkUrl: backLinkUrl,
     templateName: templateName,
-    ...appData, relevant_period: req.query["relevant-period"] === "true",
+    ...appData,
+    relevant_period: req.query["relevant-period"] === "true",
+    FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC: isActiveFeature(config.FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)
   });
 };
 
@@ -62,7 +73,8 @@ export const getBeneficialOwnerOtherById = async (req: Request, res: Response, n
       ...principalAddress,
       ...serviceAddress,
       [StartDateKey]: startDate,
-      entity_name: appData.entity_name
+      entity_name: appData.entity_name,
+      FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC: isActiveFeature(config.FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)
     };
 
     // Redis removal work - Add extra template options if Redis Remove flag is true and on Registration journey
@@ -161,11 +173,7 @@ export const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDat
   data[StartDateKey] = mapFieldsToDataObject(reqBody, StartDateKeys, InputDateKeys);
   data[CeasedDateKey] = reqBody["is_still_bo"] === '0' ? mapFieldsToDataObject(reqBody, CeasedDateKeys, InputDateKeys) : {};
 
-  // It needs concatenations because if in the check boxes we select only one option
-  // nunjucks returns just a string and with concat we will return an array.
-  data[BeneficialOwnerNoc] = (data[BeneficialOwnerNoc]) ? [].concat(data[BeneficialOwnerNoc]) : [];
-  data[TrusteesNoc] = (data[TrusteesNoc]) ? [].concat(data[TrusteesNoc]) : [];
-  data[NonLegalFirmNoc] = (data[NonLegalFirmNoc]) ? [].concat(data[NonLegalFirmNoc]) : [];
+  setBoNocDataAsArrays(data);
 
   data[IsOnSanctionsListKey] = (data[IsOnSanctionsListKey]) ? +data[IsOnSanctionsListKey] : '';
   data[IsOnRegisterInCountryFormedInKey] = (data[IsOnRegisterInCountryFormedInKey]) ? +data[IsOnRegisterInCountryFormedInKey] : '';

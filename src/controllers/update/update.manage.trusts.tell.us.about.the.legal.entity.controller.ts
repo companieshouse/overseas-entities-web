@@ -100,7 +100,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const formData = req.body as TrustLegalEntityForm;
     const errorList = validationResult(req);
     const errors = await getValidationErrors(appData, req);
-    
+
     if (!errorList.isEmpty() || errors.length) {
       let pageProps: TrustLegalEntityBeneficialOwnerPageProperties;
       const errorListArray = !errorList.isEmpty() ? errorList.array() : [];

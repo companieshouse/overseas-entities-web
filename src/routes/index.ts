@@ -144,6 +144,7 @@ router.get(config.SOLD_LAND_FILTER_WITH_PARAMS_URL, authentication, soldLandFilt
 router.post(config.SOLD_LAND_FILTER_WITH_PARAMS_URL, authentication, ...validator.soldLandFilter, checkValidations, soldLandFilter.post);
 
 router.get(config.CANNOT_USE_URL, authentication, cannotUse.get);
+router.get(config.CANNOT_USE_WITH_PARAMS_URL, authentication, cannotUse.get);
 
 router.get(config.SECURE_REGISTER_FILTER_URL, authentication, navigation.hasSoldLand, secureRegisterFilter.get);
 router.post(config.SECURE_REGISTER_FILTER_URL, authentication, navigation.hasSoldLand, ...validator.secureRegisterFilter, checkValidations, secureRegisterFilter.post);

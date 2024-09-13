@@ -4,10 +4,13 @@ import { logger } from '../../../utils/logger';
 import { getApplicationData } from "../../../utils/application.data";
 import { checkUpdatePresenterEntered, NavigationErrorMessage } from '.././check.condition';
 import { SECURE_UPDATE_FILTER_URL } from '../../../config';
+import { ApplicationData } from 'model';
 
-export const hasUpdatePresenter = (req: Request, res: Response, next: NextFunction): void => {
+export const hasUpdatePresenter = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    if (!checkUpdatePresenterEntered(getApplicationData(req.session))) {
+    const appData: ApplicationData = await getApplicationData(req.session);
+
+    if (!checkUpdatePresenterEntered(appData)) {
       logger.infoRequest(req, NavigationErrorMessage);
       return res.redirect(SECURE_UPDATE_FILTER_URL);
     }

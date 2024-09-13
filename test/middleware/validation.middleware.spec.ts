@@ -22,9 +22,9 @@ describe("Validation Middleware tests", () => {
     jest.clearAllMocks();
   });
 
-  test("should catch the error and call next(err)", () => {
+  test("should catch the error and call next(err)", async () => {
     mockValidationResult.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-    checkValidations(req, res, next);
+    await checkValidations(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
     expect(mockLoggerErrorRequest).toHaveBeenCalledTimes(1);

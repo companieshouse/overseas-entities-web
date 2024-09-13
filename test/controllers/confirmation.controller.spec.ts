@@ -93,13 +93,13 @@ describe("Confirmation controller tests", () => {
     expect(resp.text).toContain(REGISTRATION_FEE_TEXT);
   });
 
-  test("should test that deleteApplicationData does the work", () => {
+  test("should test that deleteApplicationData does the work", async () => {
     mockGetApplicationData.mockReturnValueOnce( { ...APPLICATION_DATA_MOCK } );
     req.session = getSessionRequestWithExtraData();
     req.headers = {};
-    get(req, res);
+    await get(req, res);
 
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
 
     expect(appData).toBeFalsy; // Check extra data deleted
     expect(res.render).toHaveBeenCalledTimes(1);

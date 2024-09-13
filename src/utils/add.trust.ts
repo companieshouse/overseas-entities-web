@@ -7,11 +7,13 @@ import { getTrustArray, hasNoBoAssignableToTrust } from './trusts';
 import { Trust } from '../model/trust.model';
 import * as PageModel from '../model/trust.page.model';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
-import { validationResult } from 'express-validator';
+import { ValidationError, validationResult } from 'express-validator';
 import { isActiveFeature } from './feature.flag';
 import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
 import { getUrlWithParamsToPath } from './url';
 import { checkRelevantPeriod } from './relevant.period';
+import { ApplicationData } from 'model';
+import { isAddTrustToBeValidated } from '../validation/add.trust.validation';
 
 export const ADD_TRUST_TEXTS = {
   title: 'Trusts associated with the overseas entity',
@@ -36,14 +38,14 @@ type TrustInvolvedPageProperties = {
   url: string,
 };
 
-const getPageProperties = (
+const getPageProperties = async (
   req: Request,
   isUpdate: boolean,
   formData?: PageModel.AddTrust,
   errors?: FormattedValidationErrors,
-): TrustInvolvedPageProperties => {
+): Promise<TrustInvolvedPageProperties> => {
 
-  const appData = getApplicationData(req.session);
+  const appData: ApplicationData = await getApplicationData(req.session);
 
   // note: isUpdate covers both Update and Remove journeys, so when on Remove journey isUpdate will be true.
   return {
@@ -66,17 +68,17 @@ const getPageProperties = (
   };
 };
 
-export const getTrusts = (
+export const getTrusts = async (
   req: Request,
   res: Response,
   next: NextFunction,
   isUpdate: boolean
-): void => {
+): Promise<void> => {
 
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const pageProps = getPageProperties(req, isUpdate);
+    const pageProps = await getPageProperties(req, isUpdate);
 
     if (!isUpdate) {
       addActiveSubmissionBasePathToTemplateData(pageProps, req);
@@ -89,27 +91,30 @@ export const getTrusts = (
   }
 };
 
-export const postTrusts = (
+export const postTrusts = async (
   req: Request,
   res: Response,
   next: NextFunction,
   isUpdate: boolean
-) => {
+): Promise<void> => {
   try {
     logger.debugRequest(req, `POST ${getPageTemplate(isUpdate)}`);
     const addNewTrust = req.body["addTrust"];
 
     // check for errors
-    const errorList = validationResult(req);
     const formData: PageModel.AddTrust = req.body as PageModel.AddTrust;
-    const appData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
+    const errorList = validationResult(req);
+    const errors = getValidationErrors(appData, req);
 
-    if (!errorList.isEmpty()) {
-      const pageProps = getPageProperties(
+    if (!errorList.isEmpty() || errors.length) {
+      const errorListArray = !errorList.isEmpty() ? errorList.array() : [];
+
+      const pageProps = await getPageProperties(
         req,
         isUpdate,
         formData,
-        formatValidationError(errorList.array()),
+        formatValidationError([...errorListArray, ...errors]),
       );
       if (!isUpdate) {
         addActiveSubmissionBasePathToTemplateData(pageProps, req);
@@ -177,4 +182,11 @@ const getUrl = (isUpdate: boolean) => {
   } else {
     return config.REGISTER_AN_OVERSEAS_ENTITY_URL;
   }
+};
+
+// Get validation errors that depend on an asynchronous request
+const getValidationErrors = (appData: ApplicationData, req: Request): ValidationError[] => {
+  const filingPeriodTrustStartDateErrors = isAddTrustToBeValidated(appData, req);
+
+  return [...filingPeriodTrustStartDateErrors];
 };

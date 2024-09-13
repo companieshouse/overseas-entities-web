@@ -36,9 +36,10 @@ import { checkRPStatementsExist } from "./relevant.period";
 
 export const getDataForReview = async (req: Request, res: Response, next: NextFunction, isNoChangeJourney: boolean) => {
   const session = req.session as Session;
-  const appData = getApplicationData(session);
+  const appData: ApplicationData = await getApplicationData(session);
+  const isRemove: boolean = await isRemoveJourney(req);
   const hasAnyBosWithTrusteeNocs = isNoChangeJourney ? checkEntityReviewRequiresTrusts(appData) : checkEntityRequiresTrusts(appData);
-  const backLinkUrl = getBackLinkUrl(isNoChangeJourney, hasAnyBosWithTrusteeNocs, isRemoveJourney(req));
+  const backLinkUrl = getBackLinkUrl(isNoChangeJourney, hasAnyBosWithTrusteeNocs, isRemove);
   const templateName = getTemplateName(isNoChangeJourney);
   const isRPStatementExists = checkRPStatementsExist(appData);
 
@@ -55,7 +56,7 @@ export const getDataForReview = async (req: Request, res: Response, next: NextFu
 
     }
 
-    if (isRemoveJourney(req)) {
+    if (isRemove) {
       return res.render(templateName, {
         journey: JourneyType.remove,
         backLinkUrl,
@@ -103,7 +104,7 @@ export const postDataForReview = async (req: Request, res: Response, next: NextF
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const session = req.session as Session;
-    const appData: ApplicationData = getApplicationData(session);
+    const appData: ApplicationData = await getApplicationData(session);
     const noChangeReviewStatement = req.body["no_change_review_statement"];
 
     if (noChangeReviewStatement === "0") {

@@ -38,10 +38,10 @@ import * as config from "../config";
 import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
 import { isActiveFeature } from "./feature.flag";
 
-export const getBeneficialOwnerOther = (req: Request, res: Response, templateName: string, backLinkUrl: string) => {
+export const getBeneficialOwnerOther = async (req: Request, res: Response, templateName: string, backLinkUrl: string): Promise<void> => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-  const appData: ApplicationData = getApplicationData(req.session);
+  const appData: ApplicationData = await getApplicationData(req.session);
 
   return res.render(templateName, {
     backLinkUrl: backLinkUrl,
@@ -52,14 +52,14 @@ export const getBeneficialOwnerOther = (req: Request, res: Response, templateNam
   });
 };
 
-export const getBeneficialOwnerOtherById = (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string) => {
+export const getBeneficialOwnerOtherById = async (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string): Promise<void> => {
   try {
     logger.debugRequest(req, `GET BY ID ${req.route.path}`);
 
-    const appData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
 
     const id = req.params[ID];
-    const data = getFromApplicationData(req, BeneficialOwnerOtherKey, id, true);
+    const data = await getFromApplicationData(req, BeneficialOwnerOtherKey, id, true);
 
     const principalAddress = (data) ? mapDataObjectToFields(data[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};
     const serviceAddress = (data) ? mapDataObjectToFields(data[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
@@ -99,10 +99,10 @@ export const postBeneficialOwnerOther = async (req: Request, res: Response, next
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const data: ApplicationDataType = setBeneficialOwnerData(req.body, uuidv4());
+    const data: ApplicationDataType = await setBeneficialOwnerData(req.body, uuidv4());
 
     const session = req.session as Session;
-    setApplicationData(session, data, BeneficialOwnerOtherKey);
+    await setApplicationData(session, data, BeneficialOwnerOtherKey);
 
     await saveAndContinue(req, session);
 
@@ -118,12 +118,12 @@ export const updateBeneficialOwnerOther = async (req: Request, res: Response, ne
     logger.debugRequest(req, `UPDATE ${req.route.path}`);
 
     const id = req.params[ID];
-    const boData: BeneficialOwnerOther = getFromApplicationData(req, BeneficialOwnerOtherKey, id, true);
+    const boData: BeneficialOwnerOther = await getFromApplicationData(req, BeneficialOwnerOtherKey, id, true);
 
     const trustIds: string[] = boData?.trust_ids?.length ? [...boData.trust_ids] : [];
 
     // Remove old Beneficial Owner
-    removeFromApplicationData(req, BeneficialOwnerOtherKey, id);
+    await removeFromApplicationData(req, BeneficialOwnerOtherKey, id);
 
     // Set Beneficial Owner data
     const data: ApplicationDataType = setBeneficialOwnerData(req.body, id);
@@ -134,7 +134,7 @@ export const updateBeneficialOwnerOther = async (req: Request, res: Response, ne
 
     // Save new Beneficial Owner
     const session = req.session as Session;
-    setApplicationData(session, data, BeneficialOwnerOtherKey);
+    await setApplicationData(session, data, BeneficialOwnerOtherKey);
 
     await saveAndContinue(req, session);
 
@@ -149,7 +149,7 @@ export const removeBeneficialOwnerOther = async (req: Request, res: Response, ne
   try {
     logger.debugRequest(req, `REMOVE ${req.route.path}`);
 
-    removeFromApplicationData(req, BeneficialOwnerOtherKey, req.params[ID]);
+    await removeFromApplicationData(req, BeneficialOwnerOtherKey, req.params[ID]);
     const session = req.session as Session;
 
     await saveAndContinue(req, session);

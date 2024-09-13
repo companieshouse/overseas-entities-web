@@ -25,9 +25,9 @@ describe("has.due.diligence.detials navigation middleware tests", () => {
     jest.clearAllMocks();
   });
 
-  test(`should redirect to ${OVERSEAS_ENTITY_QUERY_URL} page and log message error ${NavigationErrorMessage}`, () => {
+  test(`should redirect to ${OVERSEAS_ENTITY_QUERY_URL} page and log message error ${NavigationErrorMessage}`, async () => {
     mockCheckUpdateDueDiligenceDetailsEntered.mockImplementationOnce( () => { return false; });
-    hasDueDiligenceDetails(req, res, next);
+    await hasDueDiligenceDetails(req, res, next);
 
     expect(next).not.toHaveBeenCalledTimes(1);
     expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
@@ -36,18 +36,18 @@ describe("has.due.diligence.detials navigation middleware tests", () => {
     expect(res.redirect).toHaveBeenCalledWith(OVERSEAS_ENTITY_QUERY_URL);
   });
 
-  test(`should not redirect and pass to the next middleware`, () => {
+  test(`should not redirect and pass to the next middleware`, async () => {
     mockCheckUpdateDueDiligenceDetailsEntered.mockImplementationOnce( () => { return true; });
-    hasDueDiligenceDetails(req, res, next);
+    await hasDueDiligenceDetails(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
     expect(mockLoggerInfoRequest).not.toHaveBeenCalled();
     expect(res.redirect).not.toHaveBeenCalled();
   });
 
-  test("should catch the error and call next(err)", () => {
+  test("should catch the error and call next(err)", async () => {
     mockCheckUpdateDueDiligenceDetailsEntered.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-    hasDueDiligenceDetails(req, res, next);
+    await hasDueDiligenceDetails(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
     expect(mockLoggerInfoRequest).not.toHaveBeenCalled();

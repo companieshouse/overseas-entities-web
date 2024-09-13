@@ -25,6 +25,7 @@ import {
 import { OverseasEntityKey, PaymentKey, Transactionkey } from "../model/data.types.model";
 import { getUrlWithParamsToPath, getUrlWithTransactionIdAndSubmissionId } from "../utils/url";
 import { isActiveFeature } from "../utils/feature.flag";
+import { ApplicationData } from "model";
 
 // If the transaction response is fee-bearing, a `X-Payment-Required` header will be received,
 // directing the application to the Payment Platform to begin a payment session, otherwise
@@ -38,8 +39,10 @@ export const startPaymentsSession = async (
   baseURL?: string
 ): Promise<string> => {
 
+  const appData: ApplicationData = await getApplicationData(req.session);
+
   setExtraData(session, {
-    ...getApplicationData(session),
+    ...appData,
     [Transactionkey]: transactionId,
     [OverseasEntityKey]: overseasEntityId
   });
@@ -63,7 +66,7 @@ export const startPaymentsSession = async (
   const createPaymentRequest: CreatePaymentRequest = setPaymentRequest(transactionId, overseasEntityId, baseURL);
 
   // Save info into the session extra data field, including the state used as `nonce` against CSRF.
-  setApplicationData(session, createPaymentRequest, PaymentKey);
+  await setApplicationData(session, createPaymentRequest, PaymentKey);
 
   // Create Payment Api Client by using the `paymentUrl` as baseURL
   const apiClient: ApiClient = createOAuthApiClient(session, paymentUrl);

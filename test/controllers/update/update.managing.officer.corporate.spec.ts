@@ -136,7 +136,7 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
     });
 
     test("catch error when rendering the page", async () => {
-      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(UPDATE_MANAGING_OFFICER_CORPORATE_URL);
 
       expect(resp.status).toEqual(500);

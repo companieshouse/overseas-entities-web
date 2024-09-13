@@ -34,7 +34,6 @@ import {
   SERVICE_UNAVAILABLE,
   BACK_BUTTON_CLASS
 } from "../__mocks__/text.mock";
-
 import {
   SECURE_REGISTER_FILTER_URL,
   SECURE_REGISTER_FILTER_WITH_PARAMS_URL,

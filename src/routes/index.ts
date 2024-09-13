@@ -202,8 +202,8 @@ router.get(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, authentication, navigat
 router.post(config.BENEFICIAL_OWNER_TYPE_URL, authentication, navigation.hasBeneficialOwnersStatement, ...validator.beneficialOwnersType, checkValidations, beneficialOwnerType.post);
 router.post(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, authentication, navigation.hasBeneficialOwnersStatement, ...validator.beneficialOwnersType, checkValidations, beneficialOwnerType.post);
 
-router.post(config.BENEFICIAL_OWNER_TYPE_SUBMIT_URL, authentication, navigation.hasBeneficialOwnersStatement, ...validator.beneficialOwnersTypeSubmission, checkValidations, beneficialOwnerType.postSubmit);
-router.post(config.BENEFICIAL_OWNER_TYPE_SUBMIT_WITH_PARAMS_URL, authentication, navigation.hasBeneficialOwnersStatement, ...validator.beneficialOwnersTypeSubmission, checkValidations, beneficialOwnerType.postSubmit);
+router.post(config.BENEFICIAL_OWNER_TYPE_SUBMIT_URL, authentication, navigation.hasBeneficialOwnersStatement, checkValidations, beneficialOwnerType.postSubmit);
+router.post(config.BENEFICIAL_OWNER_TYPE_SUBMIT_WITH_PARAMS_URL, authentication, navigation.hasBeneficialOwnersStatement, checkValidations, beneficialOwnerType.postSubmit);
 
 router.route(config.BENEFICIAL_OWNER_INDIVIDUAL_URL)
   .all(
@@ -368,7 +368,7 @@ router
     navigation.hasTrustDataRegister,
   )
   .get(addTrust.get)
-  .post(...validator.addTrust, addTrust.post);
+  .post(addTrust.post);
 
 router
   .route(config.TRUST_ENTRY_WITH_PARAMS_URL + config.ADD_TRUST_URL)
@@ -378,7 +378,7 @@ router
     navigation.hasTrustDataRegister,
   )
   .get(addTrust.get)
-  .post(...validator.addTrust, addTrust.post);
+  .post(addTrust.post);
 
 router
   .route(config.TRUST_DETAILS_URL + config.TRUST_ID + '?')
@@ -523,7 +523,7 @@ router.route(config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL)
     navigation.hasOverseasEntity
   )
   .get(doYouWantToMakeOeChange.get)
-  .post(...validator.doYouWantToMakeOeChange, checkValidations, doYouWantToMakeOeChange.post);
+  .post(checkValidations, doYouWantToMakeOeChange.post);
 
 router.route(config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL)
   .all(
@@ -868,7 +868,7 @@ router.route(config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL)
     navigation.hasTrustDataUpdate,
   )
   .get(updateTrustsAssociatedWithEntity.get)
-  .post(...validator.addTrust, updateTrustsAssociatedWithEntity.post);
+  .post(updateTrustsAssociatedWithEntity.post);
 
 router.route(config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + config.TRUST_ID + config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL + config.TRUSTEE_ID + '?')
   .all(
@@ -1089,7 +1089,7 @@ router.route(config.UPDATE_REVIEW_STATEMENT_URL)
     navigation.hasOverseasEntity
   )
   .get(validateStatements, summaryPagesGuard, updateReviewStatement.get)
-  .post(...validator.reviewUpdateStatementChange, checkValidations, updateReviewStatement.post);
+  .post(checkValidations, updateReviewStatement.post);
 
 router.route(config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL)
   .all(authentication)

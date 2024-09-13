@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { validationResult } from "express-validator";
+import { ValidationError, validationResult } from "express-validator";
 import { Session } from '@companieshouse/node-session-handler';
 
 import {
@@ -20,6 +20,8 @@ import { Trust, TrustCorporate } from '../../model/trust.model';
 import { RoleWithinTrustType } from '../../model/role.within.trust.type.model';
 import { TrustLegalEntityForm } from '../../model/trust.page.model';
 import { ApplicationData } from '../../model';
+import { checkTrusteeLegalEntityCeasedDate } from '../../validation/async';
+import { checkTrustLegalEntityBeneficialOwnerStillInvolved } from '../../validation/stillInvolved.validation';
 
 const getPageProperties = (trust, formData, errors?: FormattedValidationErrors) => {
   return {
@@ -48,10 +50,10 @@ const getPagePropertiesRelevantPeriod = (isRelevantPeriod, trust, formData, enti
   return pageProps;
 };
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
     const trusteeId = req.params[ROUTE_PARAM_TRUSTEE_ID];
     const isRelevantPeriod = req.query['relevant-period'];
 
@@ -73,23 +75,27 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
     const trusteeId = req.params[ROUTE_PARAM_TRUSTEE_ID];
     const trust = getTrustInReview(appData) as Trust;
 
     const isRelevantPeriod = req.query['relevant-period'];
     const formData = req.body as TrustLegalEntityForm;
     const errorList = validationResult(req);
-    if (!errorList.isEmpty()) {
+    const errors = await getValidationErrors(appData, req);
+
+    if (!errorList.isEmpty() || errors.length) {
+      const errorListArray = !errorList.isEmpty() ? errorList.array() : [];
+
       if (isRelevantPeriod) {
         return res.render(
           UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE,
-          getPagePropertiesRelevantPeriod(isRelevantPeriod, trust, formData, appData.entity_name, formatValidationError(errorList.array())),
+          getPagePropertiesRelevantPeriod(isRelevantPeriod, trust, formData, appData.entity_name, formatValidationError([...errorListArray, ...errors])),
         );
       } else {
         return res.render(
           UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE,
-          getPageProperties(trust, formData, formatValidationError(errorList.array())),
+          getPageProperties(trust, formData, formatValidationError([...errorListArray, ...errors])),
         );
       }
     }
@@ -124,4 +130,12 @@ const getBackLink = (legalEntitiesReviewed: boolean) => {
   } else {
     return UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL;
   }
+};
+
+// Get validation errors that depend on an asynchronous request
+const getValidationErrors = async (appData: ApplicationData, req: Request): Promise<ValidationError[]> => {
+  const stillInvolvedErrors = checkTrustLegalEntityBeneficialOwnerStillInvolved(appData, req);
+  const ceasedDateErrors = await checkTrusteeLegalEntityCeasedDate(appData, req);
+
+  return [...stillInvolvedErrors, ...ceasedDateErrors];
 };

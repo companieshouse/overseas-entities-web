@@ -116,10 +116,17 @@ describe('Update - Manage Trusts - Review individuals', () => {
     test('when no trustee to display, still renders the page', async () => {
       const appData = { entity_number: 'OE988669', entity_name: 'Tell us about the individual OE 1' };
       const trustInReview = { trust_id: 'trust-in-review-1', trust_name: 'Veggie Trust', review_status: { in_review: true } };
+      const trustee = {
+        id: 'trustee-individual-1',
+        ch_references: 'trustee-ch-references',
+        forename: 'Jack',
+        other_forenames: '',
+        surname: 'Frost',
+      };
 
       mockGetApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
-      mockGetTrustee.mockReturnValue(undefined);
+      mockGetTrustee.mockReturnValue(trustee);
 
       const resp = await request(app).get(`${UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL}/trustee-individual-1`);
 

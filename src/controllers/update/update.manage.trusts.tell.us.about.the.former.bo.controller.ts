@@ -31,7 +31,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     const formData = trusteeId ? mapFormerTrusteeFromSessionToPage(trustee) : {} as TrustHistoricalBeneficialOwnerForm;
 
-    const pageProperties = getPageProperties(trust, formData);
+    const pageProperties = getPageProperties(trust, formData, trusteeId);
 
     return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_PAGE, pageProperties);
   } catch (error) {
@@ -56,7 +56,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     if (!errorList.isEmpty() || errors.length) {
       const errorListArray = !errorList.isEmpty() ? errorList.array() : [];
 
-      const pageProperties = getPageProperties(trust, formData, formatValidationError([...errorListArray, ...errors]));
+      const pageProperties = getPageProperties(trust, formData, trusteeId, formatValidationError([...errorListArray, ...errors]));
       return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_PAGE, pageProperties);
     }
 
@@ -82,9 +82,9 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const getPageProperties = (trust: Trust, formData?: TrustHistoricalBeneficialOwnerForm, errors?: FormattedValidationErrors) => ({
+const getPageProperties = (trust: Trust, formData: TrustHistoricalBeneficialOwnerForm, trusteeId: string, errors?: FormattedValidationErrors) => ({
   backLinkUrl: getBackLink(trust.review_status?.reviewed_former_bos),
-  templateName: UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_PAGE,
+  templateName: trusteeId ? `${UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_PAGE}/${trusteeId}` : UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_PAGE,
   pageParams: {
     title: "Tell us about the former beneficial owner",
   },

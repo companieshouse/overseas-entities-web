@@ -26,7 +26,7 @@ import { checkTrustIndividualBeneficialOwnerStillInvolved } from '../../validati
 
 const getPageProperties = (trust, formData, trustee: TrustIndividual, errors?: FormattedValidationErrors) => {
   return {
-    templateName: UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE,
+    templateName: `${UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE}/${trustee.id}`,
     backLinkUrl: getBackLink(trust.review_status.reviewed_individuals),
     pageParams: {
       title: 'Tell us about the individual',

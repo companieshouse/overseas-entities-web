@@ -30,6 +30,7 @@ export const TRUST_DETAILS_TEXTS = {
 type TrustDetailPageProperties = {
   backLinkUrl: string;
   templateName: string;
+  template: string;
   isUpdate: boolean;
   isReview?: boolean,
   pageParams: {
@@ -48,7 +49,8 @@ const getPageProperties = async (
   req: Request,
   formData: PageModel.TrustDetailsForm,
   isUpdate: boolean,
-  isReview?: boolean,
+  isReview: boolean,
+  trustId: string,
   errors?: FormattedValidationErrors,
 ): Promise<TrustDetailPageProperties> => {
   const appData: ApplicationData = await getApplicationData(req.session);
@@ -62,7 +64,8 @@ const getPageProperties = async (
 
   return {
     backLinkUrl: getBackLinkUrl(isUpdate, appData, req, isReview),
-    templateName: getPageTemplate(isUpdate, isReview),
+    templateName: getPageTemplate(isUpdate, isReview, trustId).templateName,
+    template: getPageTemplate(isUpdate, isReview, trustId).template,
     pageParams: {
       title: isReview ? TRUST_DETAILS_TEXTS.review_title : TRUST_DETAILS_TEXTS.title,
       subtitle: isReview ? TRUST_DETAILS_TEXTS.review_subtitle : TRUST_DETAILS_TEXTS.subtitle,
@@ -79,8 +82,8 @@ const getPageProperties = async (
   };
 };
 
-const getPagePropertiesRelevantPeriod = async (req, formData, isUpdate, isReview, errors?: FormattedValidationErrors): Promise<TrustDetailPageProperties> => {
-  const pageProps = await getPageProperties(req, formData, isUpdate, isReview, errors);
+const getPagePropertiesRelevantPeriod = async (req, formData, isUpdate, isReview, trustId, errors?: FormattedValidationErrors): Promise<TrustDetailPageProperties> => {
+  const pageProps = await getPageProperties(req, formData, isUpdate, isReview, trustId, errors);
   pageProps.formData.relevant_period = true;
   return pageProps;
 };
@@ -107,19 +110,19 @@ export const getTrustDetails = async (req: Request, res: Response, next: NextFun
 
     let pageProps;
     if (req.query["relevant-period"] === "true") {
-      pageProps = await getPagePropertiesRelevantPeriod(req, formData, isUpdate, isReview);
+      pageProps = await getPagePropertiesRelevantPeriod(req, formData, isUpdate, isReview, trustId);
     } else {
-      pageProps = await getPageProperties(req, formData, isUpdate, isReview);
+      pageProps = await getPageProperties(req, formData, isUpdate, isReview, trustId);
     }
 
-    return res.render(pageProps.templateName, pageProps);
+    return res.render(pageProps.template, pageProps);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);
   }
 };
 
-export const postTrustDetails = async (req: Request, res: Response, next: NextFunction, isUpdate: boolean, isReview?: boolean) => {
+export const postTrustDetails = async (req: Request, res: Response, next: NextFunction, isUpdate: boolean, isReview: boolean) => {
   /**
    * Set/remove trust id to/from beneficial owner in Application data
    *
@@ -170,6 +173,7 @@ export const postTrustDetails = async (req: Request, res: Response, next: NextFu
         formData,
         isUpdate,
         isReview,
+        formData.trustId,
         formatValidationError([...errorListArray, ...errors]),
       );
 
@@ -250,14 +254,14 @@ const getBackLinkUrl = (isUpdate: boolean, appData: ApplicationData, req: Reques
   return backLinkUrl;
 };
 
-const getPageTemplate = (isUpdate: boolean, isReview?: boolean) => {
+const getPageTemplate = (isUpdate: boolean, isReview: boolean, trustId: string) => {
   if (isReview){
-    return config.UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_PAGE;
+    return { templateName: config.UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_PAGE, template: config.UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_PAGE };
   }
   if (isUpdate){
-    return config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_PAGE;
+    return { templateName: trustId ? `${config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_PAGE}/${trustId}` : config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_PAGE, template: config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_PAGE };
   } else {
-    return config.TRUST_DETAILS_PAGE;
+    return { templateName: config.TRUST_DETAILS_PAGE, template: config.TRUST_DETAILS_PAGE };
   }
 };
 

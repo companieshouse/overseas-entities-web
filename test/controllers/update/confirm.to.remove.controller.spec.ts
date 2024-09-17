@@ -26,7 +26,8 @@ import {
   UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
   PARAM_MANAGING_OFFICER_INDIVIDUAL,
-  PARAM_MANAGING_OFFICER_CORPORATE
+  PARAM_MANAGING_OFFICER_CORPORATE,
+  RELEVANT_PERIOD_QUERY_PARAM,
 } from "../../../src/config";
 import { ARE_YOU_SURE_YOU_WANT_TO_REMOVE, SERVICE_UNAVAILABLE } from "../../__mocks__/text.mock";
 import {
@@ -121,7 +122,7 @@ describe("CONFIRM TO REMOVE controller", () => {
         .post(UPDATE_CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_INDIVIDUAL + BO_IND_ID_URL)
         .send({ do_you_want_to_remove: '0' });
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
       expect(mockRemoveFromApplicationData).not.toHaveBeenCalled();
     });
 

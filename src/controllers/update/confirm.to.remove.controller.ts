@@ -58,9 +58,17 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
               return removeBeneficialOwnerIndividual(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
             }
           case PARAM_BENEFICIAL_OWNER_GOV:
-            return removeBeneficialOwnerGov(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+            if (checkRelevantPeriod(appData)) {
+              return removeBeneficialOwnerGov(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
+            } else {
+              return removeBeneficialOwnerGov(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+            }
           case PARAM_BENEFICIAL_OWNER_OTHER:
-            return removeBeneficialOwnerOther(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+            if (checkRelevantPeriod(appData)) {
+              return removeBeneficialOwnerOther(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
+            } else {
+              return removeBeneficialOwnerOther(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+            }
           case PARAM_MANAGING_OFFICER_INDIVIDUAL:
             return removeManagingOfficer(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
           case PARAM_MANAGING_OFFICER_CORPORATE:
@@ -68,8 +76,9 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
           default:
             break;
       }
+    } else {
+      return res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
     }
-
     return res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
   } catch (error) {
     logger.errorRequest(req, error);

@@ -12,9 +12,7 @@ import { VALID_CHARACTERS, VALID_CHARACTERS_FOR_TEXT_BOX } from "./regex/regex.v
 import {
   date_of_birth_validations,
   resigned_on_validations,
-  start_date_validations,
-  filingPeriodStartDateValidations,
-  filingPeriodResignedDateValidations
+  start_date_validations
 } from "./fields/date.validation";
 
 export const managing_officer_name_validation = [
@@ -72,9 +70,7 @@ export const updateManagingOfficerIndividual = [
   ...managingOfficerIndividual,
   ...start_date_validations,
   body("is_still_mo").not().isEmpty().withMessage(ErrorMessages.SELECT_IF_STILL_MANAGING_OFFICER),
-  ...resigned_on_validations,
-  ...filingPeriodStartDateValidations,
-  ...filingPeriodResignedDateValidations
+  ...resigned_on_validations
 ];
 
 export const reviewManagingOfficers = [
@@ -84,6 +80,5 @@ export const reviewManagingOfficers = [
   ...managing_officer_occupation_validation,
   ...managing_officer_role_validation,
   body("is_still_mo").not().isEmpty().withMessage(ErrorMessages.SELECT_IF_STILL_MANAGING_OFFICER),
-  ...resigned_on_validations,
-  ...filingPeriodResignedDateValidations
+  ...resigned_on_validations
 ];

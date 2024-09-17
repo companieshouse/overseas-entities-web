@@ -111,6 +111,7 @@ describe("CONFIRM TO REMOVE controller", () => {
     });
 
     test("catch error when rendering the page", async () => {
+      mockGetApplicationData.mockReturnValueOnce(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
       mockGetApplicationData.mockImplementationOnce( () => { throw ERROR; });
       const resp = await request(app).get(UPDATE_CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_OTHER + BO_OTHER_ID_URL);
 

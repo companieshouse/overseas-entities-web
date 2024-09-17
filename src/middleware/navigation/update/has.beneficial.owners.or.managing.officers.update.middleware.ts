@@ -6,9 +6,10 @@ import { getApplicationData } from "../../../utils/application.data";
 import { checkBOsOrMOsDetailsEnteredUpdate, NavigationErrorMessage } from '../check.condition';
 import { ApplicationData } from 'model';
 
-export const hasBOsOrMOsUpdate = (req: Request, res: Response, next: NextFunction): void => {
+export const hasBOsOrMOsUpdate = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
+
     if (!(appData.update?.no_change || checkBOsOrMOsDetailsEnteredUpdate(appData))) {
       logger.infoRequest(req, NavigationErrorMessage);
       return res.redirect(SECURE_UPDATE_FILTER_URL);

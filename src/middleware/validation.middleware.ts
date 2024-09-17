@@ -25,13 +25,17 @@ import { getBeneficialOwnerList } from "../utils/trusts";
 import { isActiveFeature } from "../utils/feature.flag";
 import * as config from "../config";
 import { getUrlWithParamsToPath, isRemoveJourney } from "../utils/url";
+import { beneficialOwnersTypeSubmission, checkNoChangeReviewStatement, checkNoChangeStatementSubmission, filingPeriodCeasedDateValidations, filingPeriodResignedDateValidations, filingPeriodStartDateValidations } from "../validation/async/validation-middleware";
 
-export function checkValidations(req: Request, res: Response, next: NextFunction) {
+export const checkValidations = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const errorList = validationResult(req);
+    const customErrors = await getValidationErrors(req);
 
-    if (!errorList.isEmpty()) {
-      const errors = formatValidationError(errorList.array());
+    if (!errorList.isEmpty() || customErrors.length > 0) {
+      const errorListArray = !errorList.isEmpty() ? errorList.array() : [];
+
+      const errors = formatValidationError([...errorListArray, ...customErrors]);
 
       // Bypass the direct use of variables with dashes that
       // govukDateInput adds for day, month and year field
@@ -50,7 +54,7 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
       // when changing BO or MO data after failing validation. If not present, undefined will be passed in, which is fine as those pages
       // that don't use id will just ignore it.
       const id = req.params[ID];
-      const appData: ApplicationData = getApplicationData(req.session);
+      const appData: ApplicationData = await getApplicationData(req.session);
       let entityName = req.body[EntityNameKey];
 
       if (req.body[EntityNameKey] === undefined) {
@@ -62,7 +66,9 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
       // The journey property may already be part of the page form data/body so get it from there and override it if we are on a remove journey
       // Then when we pass it back into the template, make sure it is below/after the req.body fields so it overrides the req.body value
       let journey = req.body["journey"];
-      if (isRemoveJourney(req)) {
+      const isRemove: boolean = await isRemoveJourney(req);
+
+      if (isRemove) {
         journey = config.JourneyType.remove;
       }
 
@@ -73,7 +79,7 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
         // This is for the REDIS removal work, all BO / MO pages need the activeSubmissionBasePath passed into the template
         // and we also need to pass the feature flag as true so the template constructs the correct urls.
         return res.render(NAVIGATION[routePath].currentPage, {
-          backLinkUrl: NAVIGATION[routePath].previousPage(appData, req),
+          backLinkUrl: await NAVIGATION[routePath].previousPage(appData, req),
           templateName: NAVIGATION[routePath].currentPage,
           id,
           entityName,
@@ -94,7 +100,7 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
       }
 
       return res.render(NAVIGATION[routePath].currentPage, {
-        backLinkUrl: NAVIGATION[routePath].previousPage(appData, req),
+        backLinkUrl: await NAVIGATION[routePath].previousPage(appData, req),
         templateName: NAVIGATION[routePath].currentPage,
         id,
         entityName,
@@ -117,18 +123,18 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
     logger.errorRequest(req, err);
     next(err);
   }
-}
+};
 
-export function checkTrustValidations(req: Request, res: Response, next: NextFunction) {
+export const checkTrustValidations = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const errorList = validationResult(req);
     if (!errorList.isEmpty()) {
       const errors = formatValidationError(errorList.array());
       const routePath = req.route.path;
-      const appData: ApplicationData = getApplicationData(req.session);
+      const appData: ApplicationData = await getApplicationData(req.session);
 
       return res.render(NAVIGATION[routePath].currentPage, {
-        backLinkUrl: NAVIGATION[routePath].previousPage(appData),
+        backLinkUrl: await NAVIGATION[routePath].previousPage(appData),
         templateName: NAVIGATION[routePath].currentPage,
         ...req.body,
         beneficialOwners: getBeneficialOwnerList(appData),
@@ -143,7 +149,7 @@ export function checkTrustValidations(req: Request, res: Response, next: NextFun
     logger.errorRequest(req, err);
     next(err);
   }
-}
+};
 
 export type FormattedValidationErrors = {
   [key: string]: {
@@ -164,3 +170,22 @@ export function formatValidationError(errorList: ValidationError[]): FormattedVa
   });
   return errors;
 }
+
+// Get validation errors that depend on an asynchronous request
+const getValidationErrors = async (req: Request): Promise<ValidationError[]> => {
+  const beneficialOwnersTypeErrors = await beneficialOwnersTypeSubmission(req);
+  const filingPeriodStartDateErrors = await filingPeriodStartDateValidations(req);
+  const filingPeriodCeasedDateErrors = await filingPeriodCeasedDateValidations(req);
+  const filingPeriodResignedDateErrors = await filingPeriodResignedDateValidations(req);
+  const checkNoChangeReviewStatementErrors = await checkNoChangeReviewStatement(req);
+  const checkNoChangeStatementSubmissionErrors = await checkNoChangeStatementSubmission(req);
+
+  return [
+    ...beneficialOwnersTypeErrors,
+    ...filingPeriodStartDateErrors,
+    ...filingPeriodCeasedDateErrors,
+    ...filingPeriodResignedDateErrors,
+    ...checkNoChangeReviewStatementErrors,
+    ...checkNoChangeStatementSubmissionErrors
+  ];
+};

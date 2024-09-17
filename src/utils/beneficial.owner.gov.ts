@@ -27,27 +27,32 @@ import { v4 as uuidv4 } from "uuid";
 import * as config from "../config";
 import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
 
-export const getBeneficialOwnerGov = (req: Request, res: Response, templateName: string, backLinkUrl: string) => {
-  logger.debugRequest(req, `${req.method} ${req.route.path}`);
+export const getBeneficialOwnerGov = async (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string): Promise<void> => {
+  try {
+    logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-  const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
 
-  res.render(templateName, {
-    backLinkUrl,
-    templateName: templateName,
-    ...appData,
-    relevant_period: req.query["relevant-period"] === "true",
-  });
+    res.render(templateName, {
+      backLinkUrl,
+      templateName: templateName,
+      ...appData,
+      relevant_period: req.query["relevant-period"] === "true",
+    });
+  } catch (error) {
+    logger.errorRequest(req, error);
+    next(error);
+  }
 };
 
-export const getBeneficialOwnerGovById = (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string) => {
+export const getBeneficialOwnerGovById = async (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string): Promise<void> => {
   try {
     logger.debugRequest(req, `GET BY ID ${req.route.path}`);
 
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
 
     const id = req.params[ID];
-    const data = getFromApplicationData(req, BeneficialOwnerGovKey, id, true);
+    const data = await getFromApplicationData(req, BeneficialOwnerGovKey, id, true);
 
     const principalAddress = (data) ? mapDataObjectToFields(data[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};
     const serviceAddress = (data) ? mapDataObjectToFields(data[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
@@ -88,7 +93,7 @@ export const postBeneficialOwnerGov = async (req: Request, res: Response, next: 
     const data: ApplicationDataType = setBeneficialOwnerData(req.body, uuidv4());
 
     const session = req.session as Session;
-    setApplicationData(session, data, BeneficialOwnerGovKey);
+    await setApplicationData(session, data, BeneficialOwnerGovKey);
 
     await saveAndContinue(req, session);
 
@@ -105,14 +110,14 @@ export const updateBeneficialOwnerGov = async (req: Request, res: Response, next
     const id = req.params[ID];
 
     // Remove old Beneficial Owner
-    removeFromApplicationData(req, BeneficialOwnerGovKey, id);
+    await removeFromApplicationData(req, BeneficialOwnerGovKey, id);
 
     // Set Beneficial Owner data
     const data: ApplicationDataType = setBeneficialOwnerData(req.body, id);
 
     // Save new Beneficial Owner
     const session = req.session as Session;
-    setApplicationData(session, data, BeneficialOwnerGovKey);
+    await setApplicationData(session, data, BeneficialOwnerGovKey);
 
     await saveAndContinue(req, session);
 
@@ -127,7 +132,7 @@ export const removeBeneficialOwnerGov = async (req: Request, res: Response, next
   try {
     logger.debugRequest(req, `REMOVE ${req.route.path}`);
 
-    removeFromApplicationData(req, BeneficialOwnerGovKey, req.params[ID]);
+    await removeFromApplicationData(req, BeneficialOwnerGovKey, req.params[ID]);
     const session = req.session as Session;
 
     await saveAndContinue(req, session);

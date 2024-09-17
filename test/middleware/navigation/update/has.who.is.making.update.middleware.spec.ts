@@ -25,9 +25,9 @@ describe("has.who.is.making.update navigation middleware tests", () => {
     jest.clearAllMocks();
   });
 
-  test(`should redirect to ${SECURE_UPDATE_FILTER_PAGE} page and log message error ${NavigationErrorMessage}`, () => {
+  test(`should redirect to ${SECURE_UPDATE_FILTER_PAGE} page and log message error ${NavigationErrorMessage}`, async () => {
     mockCheckWhoIsFilingEntered.mockImplementationOnce( () => { return false; });
-    hasWhoIsMakingUpdate(req, res, next);
+    await hasWhoIsMakingUpdate(req, res, next);
 
     expect(next).not.toHaveBeenCalledTimes(1);
 
@@ -38,9 +38,9 @@ describe("has.who.is.making.update navigation middleware tests", () => {
     expect(res.redirect).toHaveBeenCalledWith(SECURE_UPDATE_FILTER_URL);
   });
 
-  test(`should not redirect and pass to the next middleware`, () => {
+  test(`should not redirect and pass to the next middleware`, async () => {
     mockCheckWhoIsFilingEntered.mockImplementationOnce( () => { return true; });
-    hasWhoIsMakingUpdate(req, res, next);
+    await hasWhoIsMakingUpdate(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
 
@@ -48,9 +48,9 @@ describe("has.who.is.making.update navigation middleware tests", () => {
     expect(res.redirect).not.toHaveBeenCalled();
   });
 
-  test("should catch the error and call next(err)", () => {
+  test("should catch the error and call next(err)", async () => {
     mockCheckWhoIsFilingEntered.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-    hasWhoIsMakingUpdate(req, res, next);
+    await hasWhoIsMakingUpdate(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
 

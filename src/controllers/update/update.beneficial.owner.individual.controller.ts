@@ -12,8 +12,8 @@ import { getApplicationData } from "../../utils/application.data";
 
 import { UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL, RELEVANT_PERIOD_QUERY_PARAM } from "../../config";
 
-export const get = (req: Request, res: Response) => {
-  getBeneficialOwnerIndividual(req, res, UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+export const get = async (req: Request, res: Response) => {
+  await getBeneficialOwnerIndividual(req, res, UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
 };
 
 export const getById = (req: Request, res: Response, next: NextFunction) => {
@@ -25,12 +25,12 @@ export const getById = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
-  const appData: ApplicationData = getApplicationData(req.session);
+export const post = async (req: Request, res: Response, next: NextFunction) => {
+  const appData: ApplicationData = await getApplicationData(req.session);
   if (checkRelevantPeriod(appData)) {
-    postBeneficialOwnerIndividual(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
+    await postBeneficialOwnerIndividual(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
   } else {
-    postBeneficialOwnerIndividual(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+    await postBeneficialOwnerIndividual(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
   }
 
 };

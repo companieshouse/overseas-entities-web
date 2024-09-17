@@ -7,13 +7,20 @@ import { getApplicationData } from "../../src/utils/application.data";
 import { getSessionRequestWithExtraData } from "../__mocks__/session.mock";
 
 describe("ENTITY model", () => {
-  const session = getSessionRequestWithExtraData();
-  const appData = getApplicationData(session) as ApplicationData;
-  const entityDataKeys = Object.keys(appData.entity as Entity);
+  let session;
+  let appData;
+  let entityDataKeys;
+
+  beforeAll(async () => {
+    session = getSessionRequestWithExtraData();
+    appData = await getApplicationData(session) as ApplicationData;
+    entityDataKeys = Object.keys(appData.entity as Entity);
+  });
 
   test("ENTITY keys to be equal to EntityKeys object", () => {
     expect(entityDataKeys).toEqual(EntityKeys);
   });
+
   test("HasSameAddressKey is a ENTITY key", () => {
     expect(entityDataKeys.includes(HasSamePrincipalAddressKey)).toBeTruthy();
   });

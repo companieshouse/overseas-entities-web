@@ -13,11 +13,11 @@ import {
 import { isActiveFeature } from '../utils/feature.flag';
 import { getUrlWithParamsToPath } from "../utils/url";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
     const requiresTrusts: boolean = checkEntityRequiresTrusts(appData);
 
     logger.infoRequest(req, `${config.BENEFICIAL_OWNER_TYPE_PAGE} requiresTrusts=${requiresTrusts}`);
@@ -53,8 +53,8 @@ export const post = (req: Request, res: Response) => {
   return res.redirect(getNextPage(req));
 };
 
-export const postSubmit = (req: Request, res: Response) => {
-  const appData: ApplicationData = getApplicationData(req.session);
+export const postSubmit = async (req: Request, res: Response) => {
+  const appData: ApplicationData = await getApplicationData(req.session);
   const requiresTrusts: boolean = checkEntityRequiresTrusts(appData);
   let nextPageUrl = config.CHECK_YOUR_ANSWERS_URL;
   if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {

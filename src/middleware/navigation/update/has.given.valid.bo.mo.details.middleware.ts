@@ -5,10 +5,13 @@ import { PARAM_BO_MO_TYPE, UPDATE_BENEFICIAL_OWNER_TYPE_URL } from '../../../con
 import { getApplicationData } from "../../../utils/application.data";
 import { checkBoOrMoTypeAndId, NavigationErrorMessage } from '../check.condition';
 import { ID } from '../../../model/data.types.model';
+import { ApplicationData } from 'model';
 
-export const hasGivenValidBoMoDetails = (req: Request, res: Response, next: NextFunction): void => {
+export const hasGivenValidBoMoDetails = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    if (!checkBoOrMoTypeAndId(getApplicationData(req.session), req.params[PARAM_BO_MO_TYPE], req.params[ID])) {
+    const appData: ApplicationData = await getApplicationData(req.session);
+
+    if (!checkBoOrMoTypeAndId(appData, req.params[PARAM_BO_MO_TYPE], req.params[ID])) {
       logger.infoRequest(req, NavigationErrorMessage);
       return res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
     }

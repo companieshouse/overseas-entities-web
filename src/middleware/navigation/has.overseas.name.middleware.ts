@@ -4,10 +4,13 @@ import { logger } from '../../utils/logger';
 import { SOLD_LAND_FILTER_URL } from '../../config';
 import { getApplicationData } from "../../utils/application.data";
 import { checkOverseasNameDetailsEntered, NavigationErrorMessage } from './check.condition';
+import { ApplicationData } from 'model';
 
-export const hasOverseasName = (req: Request, res: Response, next: NextFunction): void => {
+export const hasOverseasName = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    if ( !checkOverseasNameDetailsEntered(getApplicationData(req.session)) ) {
+    const appData: ApplicationData = await getApplicationData(req.session);
+
+    if ( !checkOverseasNameDetailsEntered(appData) ) {
       logger.infoRequest(req, NavigationErrorMessage);
       return res.redirect(SOLD_LAND_FILTER_URL);
     }

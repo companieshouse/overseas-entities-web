@@ -28,12 +28,12 @@ export const getById = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
-  const appData: ApplicationData = getApplicationData(req.session);
+export const post = async (req: Request, res: Response, next: NextFunction) => {
+  const appData: ApplicationData = await getApplicationData(req.session);
   if (checkRelevantPeriod(appData)) {
-    postBeneficialOwnerOther(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
+    await postBeneficialOwnerOther(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
   } else {
-    postBeneficialOwnerOther(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+    await postBeneficialOwnerOther(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
   }
 };
 

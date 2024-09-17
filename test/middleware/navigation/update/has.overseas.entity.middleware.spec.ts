@@ -34,9 +34,9 @@ describe("has.overseas.entity navigation entity number validation tests", () => 
     jest.clearAllMocks();
   });
 
-  test(`should redirect to ${SECURE_UPDATE_FILTER_PAGE} page and log message error ${NavigationErrorMessage}`, () => {
+  test(`should redirect to ${SECURE_UPDATE_FILTER_PAGE} page and log message error ${NavigationErrorMessage}`, async () => {
     mockCheckOverseasEntityDetailsEntered.mockImplementationOnce( () => { return false; });
-    hasOverseasEntityNumber(req, res, next);
+    await hasOverseasEntityNumber(req, res, next);
 
     expect(next).not.toHaveBeenCalledTimes(1);
 
@@ -47,9 +47,9 @@ describe("has.overseas.entity navigation entity number validation tests", () => 
     expect(res.redirect).toHaveBeenCalledWith(SECURE_UPDATE_FILTER_URL);
   });
 
-  test(`should not redirect and pass to the next middleware`, () => {
+  test(`should not redirect and pass to the next middleware`, async () => {
     mockCheckOverseasEntityDetailsEntered.mockImplementationOnce( () => { return true; });
-    hasOverseasEntityNumber(req, res, next);
+    await hasOverseasEntityNumber(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
 
@@ -57,9 +57,9 @@ describe("has.overseas.entity navigation entity number validation tests", () => 
     expect(res.redirect).not.toHaveBeenCalled();
   });
 
-  test("should catch the error and call next(err)", () => {
+  test("should catch the error and call next(err)", async () => {
     mockCheckOverseasEntityDetailsEntered.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-    hasOverseasEntityNumber(req, res, next);
+    await hasOverseasEntityNumber(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
 
@@ -75,9 +75,9 @@ describe("has.overseas.entity navigation entity middleware tests", () => {
     jest.clearAllMocks();
   });
 
-  test(`should redirect to ${OVERSEAS_ENTITY_QUERY_URL} page and log message error ${NavigationErrorMessage}`, () => {
+  test(`should redirect to ${OVERSEAS_ENTITY_QUERY_URL} page and log message error ${NavigationErrorMessage}`, async () => {
     mockCheckOverseasEntity.mockImplementationOnce( () => { return false; });
-    hasOverseasEntity(req, res, next);
+    await hasOverseasEntity(req, res, next);
 
     expect(next).not.toHaveBeenCalledTimes(1);
 
@@ -88,10 +88,10 @@ describe("has.overseas.entity navigation entity middleware tests", () => {
     expect(res.redirect).toHaveBeenCalledWith(OVERSEAS_ENTITY_QUERY_URL);
   });
 
-  test(`should redirect when no creation date to ${OVERSEAS_ENTITY_QUERY_URL} page and log message error ${NavigationErrorMessage}`, () => {
+  test(`should redirect when no creation date to ${OVERSEAS_ENTITY_QUERY_URL} page and log message error ${NavigationErrorMessage}`, async () => {
     mockCheckOverseasEntity.mockImplementationOnce( () => { return true; });
     mockCheckHasDateOfCreation.mockImplementationOnce( () => { return false; });
-    hasOverseasEntity(req, res, next);
+    await hasOverseasEntity(req, res, next);
 
     expect(next).not.toHaveBeenCalledTimes(1);
 
@@ -102,10 +102,10 @@ describe("has.overseas.entity navigation entity middleware tests", () => {
     expect(res.redirect).toHaveBeenCalledWith(OVERSEAS_ENTITY_QUERY_URL);
   });
 
-  test(`should not redirect and pass to the next middleware`, () => {
+  test(`should not redirect and pass to the next middleware`, async () => {
     mockCheckOverseasEntity.mockImplementationOnce( () => { return true; });
     mockCheckHasDateOfCreation.mockImplementationOnce( () => { return true; });
-    hasOverseasEntity(req, res, next);
+    await hasOverseasEntity(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
 
@@ -113,9 +113,9 @@ describe("has.overseas.entity navigation entity middleware tests", () => {
     expect(res.redirect).not.toHaveBeenCalled();
   });
 
-  test("should catch the error and call next(err)", () => {
+  test("should catch the error and call next(err)", async () => {
     mockCheckOverseasEntity.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-    hasOverseasEntity(req, res, next);
+    await hasOverseasEntity(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
 

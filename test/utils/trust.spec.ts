@@ -904,22 +904,6 @@ describe('Trust Utils method tests', () => {
       identification_registration_number: "",
       is_on_register_in_country_formed_in: false,
     };
-    const corporateTrustee5 = {
-      name: "Orange",
-      type: "BENEFICIARY",
-      registered_office_address: api_registered_office_address,
-      is_service_address_same_as_principal_address: true,
-      service_address: api_empty_address,
-      start_date_day: "10",
-      start_date_month: "11",
-      start_date_year: "2014",
-      identification_legal_authority: "la 1",
-      identification_legal_form: "lf 1",
-      identification_place_registered: "pr 1",
-      identification_country_registration: "cr 1",
-      identification_registration_number: "rn 1",
-      is_on_register_in_country_formed_in: true,
-    };
     const historicBoTrusteeIndividual = {
       forename: "Ben",
       other_forenames: "",
@@ -951,7 +935,7 @@ describe('Trust Utils method tests', () => {
         'HISTORICAL_BO': [],
       }, {
         'trust_id': second_test_trust_id,
-        'CORPORATES': [ corporateTrustee1, corporateTrustee2, corporateTrustee3, corporateTrustee4, corporateTrustee5],
+        'CORPORATES': [ corporateTrustee1, corporateTrustee2, corporateTrustee3, corporateTrustee4],
         'INDIVIDUALS': [],
         'HISTORICAL_BO': [ historicBoTrusteeIndividual, historicBoTrusteeCorporate ],
       }

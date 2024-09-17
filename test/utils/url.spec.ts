@@ -83,14 +83,14 @@ describe("Url utils tests", () => {
 
   describe("isRemoveJourney tests", () => {
 
-    test("returns true if app data not present in session and query param journey=remove (singular journey param)", () => {
+    test("returns true if app data not present in session and query param journey=remove (singular journey param)", async () => {
       mockGetApplicationData.mockReturnValueOnce(undefined);
 
       req["query"] = {
         "journey": "remove"
       };
 
-      const result = urlUtils.isRemoveJourney(req);
+      const result = await urlUtils.isRemoveJourney(req);
 
       expect(result).toBeTruthy();
     });
@@ -98,31 +98,32 @@ describe("Url utils tests", () => {
     test.each([
       ['journey=remove&journey=remove', 'remove,remove'],
       ['journey=remove&journey=update', 'remove,update']
-    ])("throws error if app data not present in session and journey query param %s (more than one journey param)", (params, reqQueryValue) => {
+    ])("throws error if app data not present in session and journey query param %s (more than one journey param)", async (params, reqQueryValue) => {
       mockGetApplicationData.mockReturnValueOnce(undefined);
+      mockCreateAndLogErrorRequest.mockReturnValue(new Error(`More than one journey query parameter found in url http://testurl?${params}`));
 
       req["query"] = {
         "journey": reqQueryValue
       };
       req.originalUrl = `http://testurl?${params}`;
 
-      expect(() => urlUtils.isRemoveJourney(req)).toThrowError();
+      await expect(urlUtils.isRemoveJourney(req)).rejects.toThrow();
       expect(mockCreateAndLogErrorRequest.mock.calls[0][1]).toEqual(`More than one journey query parameter found in url ${req.originalUrl}`);
     });
 
-    test("returns true if is_remove is undefined in session data and query param journey=remove", () => {
+    test("returns true if is_remove is undefined in session data and query param journey=remove", async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
 
       req["query"] = {
         "journey": "remove"
       };
 
-      const result = urlUtils.isRemoveJourney(req);
+      const result = await urlUtils.isRemoveJourney(req);
 
       expect(result).toBeTruthy();
     });
 
-    test("returns true if is_remove is null in session data and query param journey=remove", () => {
+    test("returns true if is_remove is null in session data and query param journey=remove", async () => {
       mockGetApplicationData.mockReturnValueOnce(
         { ...APPLICATION_DATA_MOCK,
           is_remove: null
@@ -133,12 +134,12 @@ describe("Url utils tests", () => {
         "journey": "remove"
       };
 
-      const result = urlUtils.isRemoveJourney(req);
+      const result = await urlUtils.isRemoveJourney(req);
 
       expect(result).toBeTruthy();
     });
 
-    test("returns true if is_remove is true in session data and query param journey=register", () => {
+    test("returns true if is_remove is true in session data and query param journey=register", async () => {
       mockGetApplicationData.mockReturnValueOnce(
         { ...APPLICATION_DATA_MOCK,
           is_remove: true
@@ -149,24 +150,24 @@ describe("Url utils tests", () => {
         "journey": "register"
       };
 
-      const result = urlUtils.isRemoveJourney(req);
+      const result = await urlUtils.isRemoveJourney(req);
 
       expect(result).toBeTruthy();
     });
 
-    test("returns true if is_remove is true in session data and query param journey not defined", () => {
+    test("returns true if is_remove is true in session data and query param journey not defined", async () => {
       mockGetApplicationData.mockReturnValueOnce(
         { ...APPLICATION_DATA_MOCK,
           is_remove: true
         }
       );
 
-      const result = urlUtils.isRemoveJourney(req);
+      const result = await urlUtils.isRemoveJourney(req);
 
       expect(result).toBeTruthy();
     });
 
-    test("returns false if is_remove is false in session data and query param journey=remove", () => {
+    test("returns false if is_remove is false in session data and query param journey=remove", async () => {
       mockGetApplicationData.mockReturnValueOnce(
         { ...APPLICATION_DATA_MOCK,
           is_remove: false
@@ -177,7 +178,7 @@ describe("Url utils tests", () => {
         "journey": "remove"
       };
 
-      const result = urlUtils.isRemoveJourney(req);
+      const result = await urlUtils.isRemoveJourney(req);
 
       expect(result).toBeFalsy();
     });
@@ -185,36 +186,36 @@ describe("Url utils tests", () => {
     test.each([
       ["update"],
       ["removes"]
-    ])("returns false if query param journey is a string other than remove - %s", (journeyQueryParamValue) => {
+    ])("returns false if query param journey is a string other than remove - %s", async (journeyQueryParamValue) => {
       req["query"] = {
         "journey": journeyQueryParamValue
       };
-      const result = urlUtils.isRemoveJourney(req);
+      const result = await urlUtils.isRemoveJourney(req);
 
       expect(result).toBeFalsy();
     });
 
-    test("returns false if query param journey is undefined", () => {
+    test("returns false if query param journey is undefined", async () => {
       req["query"] = {
         "journey": undefined
       };
-      const result = urlUtils.isRemoveJourney(req);
+      const result = await urlUtils.isRemoveJourney(req);
 
       expect(result).toBeFalsy();
     });
 
-    test("returns false if query param journey is not present", () => {
+    test("returns false if query param journey is not present", async () => {
       req["query"] = {
         "question": "answer"
       };
-      const result = urlUtils.isRemoveJourney(req);
+      const result = await urlUtils.isRemoveJourney(req);
 
       expect(result).toBeFalsy();
     });
 
-    test("returns false if request has empty query params object", () => {
+    test("returns false if request has empty query params object", async () => {
       req["query"] = {};
-      const result = urlUtils.isRemoveJourney(req);
+      const result = await urlUtils.isRemoveJourney(req);
 
       expect(result).toBeFalsy();
     });

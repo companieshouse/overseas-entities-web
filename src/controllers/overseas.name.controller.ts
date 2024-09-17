@@ -11,10 +11,10 @@ import { createOverseasEntity, updateOverseasEntity } from "../service/overseas.
 import { EntityNameKey, OverseasEntityKey, Transactionkey } from "../model/data.types.model";
 import { getUrlWithParamsToPath, getUrlWithTransactionIdAndSubmissionId, transactionIdAndSubmissionIdExistInRequest } from "../utils/url";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `GET ${config.OVERSEAS_NAME_PAGE}`);
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
 
     let backLinkUrl = config.INTERRUPT_CARD_URL;
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && transactionIdAndSubmissionIdExistInRequest(req)){
@@ -39,7 +39,9 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const session = req.session as Session;
     const entityName = req.body[EntityNameKey];
 
-    const appData: ApplicationData = { ...(getApplicationData(session)), [EntityNameKey]: entityName };
+    const data: ApplicationData = await getApplicationData(session);
+
+    const appData: ApplicationData = { ...data, [EntityNameKey]: entityName };
     let nextPageUrl = config.PRESENTER_URL;
 
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {

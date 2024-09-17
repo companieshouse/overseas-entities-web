@@ -25,9 +25,9 @@ describe("has.entity.update navigation middleware tests", () => {
     jest.clearAllMocks();
   });
 
-  test(`should redirect to ${UPDATE_LANDING_URL} page and log message error ${NavigationErrorMessage}`, () => {
+  test(`should redirect to ${UPDATE_LANDING_URL} page and log message error ${NavigationErrorMessage}`, async () => {
     mockCheckEntityUpdateDetailsEntered.mockImplementationOnce( () => { return false; });
-    hasEntityUpdateDetails(req, res, next);
+    await hasEntityUpdateDetails(req, res, next);
 
     expect(next).not.toHaveBeenCalledTimes(1);
     expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
@@ -36,18 +36,18 @@ describe("has.entity.update navigation middleware tests", () => {
     expect(res.redirect).toHaveBeenCalledWith(UPDATE_LANDING_URL);
   });
 
-  test(`should not redirect and pass to the next middleware`, () => {
+  test(`should not redirect and pass to the next middleware`, async () => {
     mockCheckEntityUpdateDetailsEntered.mockImplementationOnce( () => { return true; });
-    hasEntityUpdateDetails(req, res, next);
+    await hasEntityUpdateDetails(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
     expect(mockLoggerInfoRequest).not.toHaveBeenCalled();
     expect(res.redirect).not.toHaveBeenCalled();
   });
 
-  test("should catch the error and call next(err)", () => {
+  test("should catch the error and call next(err)", async () => {
     mockCheckEntityUpdateDetailsEntered.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-    hasEntityUpdateDetails(req, res, next);
+    await hasEntityUpdateDetails(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
     expect(mockLoggerInfoRequest).not.toHaveBeenCalled();

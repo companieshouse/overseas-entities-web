@@ -32,11 +32,11 @@ type BeneficialOwnerTypePageProperties = {
   hasNewlyAddedBosMos: boolean;
 };
 
-const getPageProperties = (
+const getPageProperties = async (
   req: Request,
   errors?: FormattedValidationErrors,
-): BeneficialOwnerTypePageProperties => {
-  const appData: ApplicationData = getApplicationData(req.session);
+): Promise<BeneficialOwnerTypePageProperties> => {
+  const appData: ApplicationData = await getApplicationData(req.session);
 
   const allBosMos = [
     ...(appData[BeneficialOwnerIndividualKey] ?? []),
@@ -59,10 +59,10 @@ const getPageProperties = (
   };
 };
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
 
     const checkIsRedirect = checkAndReviewBeneficialOwner(appData);
     if (checkIsRedirect && checkIsRedirect !== "") {
@@ -74,7 +74,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       return res.redirect(checkMoRedirect);
     }
 
-    const pageProps = getPageProperties(req);
+    const pageProps = await getPageProperties(req);
 
     return res.render(pageProps.templateName, pageProps);
   } catch (error) {
@@ -83,14 +83,14 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = (req: Request, res: Response) => {
+export const post = async (req: Request, res: Response) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
   //  check on errors
   const errorList = validationResult(req);
 
   if (!errorList.isEmpty()) {
-    const pageProps = getPageProperties(req, formatValidationError(errorList.array()));
+    const pageProps = await getPageProperties(req, formatValidationError(errorList.array()));
 
     return res.render(pageProps.templateName, pageProps);
   }
@@ -101,7 +101,7 @@ export const postSubmit = async (req: Request, res: Response, next: NextFunction
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
 
     if (!appData.update?.trust_data_fetched) {
       const session = req.session as Session;

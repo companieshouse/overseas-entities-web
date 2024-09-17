@@ -11,11 +11,21 @@ import { ApplicationData } from "../../model";
 import { getApplicationData } from "../../utils/application.data";
 
 export const get = async (req: Request, res: Response) => {
-  await getBeneficialOwnerOther(req, res, UPDATE_BENEFICIAL_OWNER_OTHER_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+  const appData: ApplicationData = await getApplicationData(req.session);
+  if (checkRelevantPeriod(appData)) {
+    await getBeneficialOwnerOther(req, res, UPDATE_BENEFICIAL_OWNER_OTHER_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
+  } else {
+    await getBeneficialOwnerOther(req, res, UPDATE_BENEFICIAL_OWNER_OTHER_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+  }
 };
 
 export const getById = async (req: Request, res: Response, next: NextFunction) => {
-  await getBeneficialOwnerOtherById(req, res, next, UPDATE_BENEFICIAL_OWNER_OTHER_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+  const appData: ApplicationData = await getApplicationData(req.session);
+  if (checkRelevantPeriod(appData)) {
+    await getBeneficialOwnerOtherById(req, res, next, UPDATE_BENEFICIAL_OWNER_OTHER_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
+  } else {
+    await getBeneficialOwnerOtherById(req, res, next, UPDATE_BENEFICIAL_OWNER_OTHER_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+  }
 };
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
@@ -28,6 +38,10 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const update = async (req: Request, res: Response, next: NextFunction) => {
-  await updateBeneficialOwnerOther(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+  const appData: ApplicationData = await getApplicationData(req.session);
+  if (checkRelevantPeriod(appData)) {
+    await updateBeneficialOwnerOther(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
+  } else {
+    await updateBeneficialOwnerOther(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+  }
 };
-

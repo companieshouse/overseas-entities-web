@@ -17,7 +17,12 @@ export const get = async (req: Request, res: Response) => {
 };
 
 export const getById = async (req: Request, res: Response, next: NextFunction) => {
-  await getBeneficialOwnerIndividualById(req, res, next, UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+  const appData: ApplicationData = await getApplicationData(req.session);
+  if (checkRelevantPeriod(appData)) {
+    getBeneficialOwnerIndividualById(req, res, next, UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
+  } else {
+    getBeneficialOwnerIndividualById(req, res, next, UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+  }
 };
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
@@ -31,5 +36,10 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const update = async (req: Request, res: Response, next: NextFunction) => {
-  await updateBeneficialOwnerIndividual(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+  const appData: ApplicationData = await getApplicationData(req.session);
+  if (checkRelevantPeriod(appData)) {
+    updateBeneficialOwnerIndividual(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
+  } else {
+    updateBeneficialOwnerIndividual(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+  }
 };

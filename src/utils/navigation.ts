@@ -6,6 +6,7 @@ import { WhoIsRegisteringType } from "../model/who.is.making.filing.model";
 import { isActiveFeature } from "./feature.flag";
 import { getUrlWithParamsToPath, isRemoveJourney } from "./url";
 import { Request } from "express";
+import { checkRelevantPeriod } from "../utils/relevant.period";
 
 export const getEntityBackLink = (data: ApplicationData, req: Request): string => {
   let backLinkUrl: string = data?.who_is_registering === WhoIsRegisteringType.AGENT ? config.DUE_DILIGENCE_URL : config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL;
@@ -57,6 +58,14 @@ export const getUpdateReviewStatementBackLink = async (req: Request): Promise<st
     return config.REMOVE_CONFIRM_STATEMENT_URL;
   }
   return config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL;
+};
+
+export const getRelevantPeriodUrl = (appData: ApplicationData): string => {
+  if (checkRelevantPeriod(appData)) {
+    return config.UPDATE_BENEFICIAL_OWNER_TYPE_URL + config.RELEVANT_PERIOD_QUERY_PARAM;
+  } else {
+    return config.UPDATE_BENEFICIAL_OWNER_TYPE_URL;
+  }
 };
 
 export const NAVIGATION: Navigation = {
@@ -432,7 +441,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_BENEFICIAL_OWNER_GOV_URL]: {
     currentPage: config.UPDATE_BENEFICIAL_OWNER_GOV_PAGE,
-    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,
+    previousPage: (appData: ApplicationData) => getRelevantPeriodUrl(appData),
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
   },
   [config.UPDATE_BENEFICIAL_OWNER_GOV_URL + config.ID]: {
@@ -452,7 +461,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL]: {
     currentPage: config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
-    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,
+    previousPage: (appData: ApplicationData) => getRelevantPeriodUrl(appData),
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
   },
   [config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + config.ID]: {
@@ -482,7 +491,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_BENEFICIAL_OWNER_OTHER_URL]: {
     currentPage: config.UPDATE_BENEFICIAL_OWNER_OTHER_PAGE,
-    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,
+    previousPage: (appData: ApplicationData) => getRelevantPeriodUrl(appData),
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
   },
   [config.UPDATE_BENEFICIAL_OWNER_OTHER_URL + config.ID]: {

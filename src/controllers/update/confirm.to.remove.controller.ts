@@ -16,6 +16,7 @@ import {
   PARAM_MANAGING_OFFICER_INDIVIDUAL,
   UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
+  RELEVANT_PERIOD_QUERY_PARAM,
 } from "../../config";
 import { DoYouWantToRemoveKey, ID } from "../../model/data.types.model";
 import { removeBeneficialOwnerIndividual } from "../../utils/beneficial.owner.individual";
@@ -23,6 +24,7 @@ import { removeBeneficialOwnerGov } from "../../utils/beneficial.owner.gov";
 import { removeBeneficialOwnerOther } from "../../utils/beneficial.owner.other";
 import { removeManagingOfficer } from "../../utils/managing.officer.individual";
 import { removeManagingOfficerCorporate } from "../../utils/managing.officer.corporate";
+import { checkRelevantPeriod } from "../../utils/relevant.period";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -45,15 +47,32 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `DELETE ${req.route.path}`);
+    const session = req.session as Session;
+    const appData: ApplicationData = await getApplicationData(session);
 
     if (req.body[DoYouWantToRemoveKey] === '1') {
       switch (req.params[PARAM_BO_MO_TYPE]) {
           case PARAM_BENEFICIAL_OWNER_INDIVIDUAL:
             return await removeBeneficialOwnerIndividual(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+            if (checkRelevantPeriod(appData)) {
+              return removeBeneficialOwnerIndividual(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
+            } else {
+              return removeBeneficialOwnerIndividual(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+            }
           case PARAM_BENEFICIAL_OWNER_GOV:
             return await removeBeneficialOwnerGov(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+            if (checkRelevantPeriod(appData)) {
+              return removeBeneficialOwnerGov(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
+            } else {
+              return removeBeneficialOwnerGov(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+            }
           case PARAM_BENEFICIAL_OWNER_OTHER:
             return await removeBeneficialOwnerOther(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+            if (checkRelevantPeriod(appData)) {
+              return removeBeneficialOwnerOther(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
+            } else {
+              return removeBeneficialOwnerOther(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+            }
           case PARAM_MANAGING_OFFICER_INDIVIDUAL:
             return await removeManagingOfficer(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
           case PARAM_MANAGING_OFFICER_CORPORATE:
@@ -61,6 +80,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
           default:
             break;
       }
+    } else {
+      return res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
     }
 
     return res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL);

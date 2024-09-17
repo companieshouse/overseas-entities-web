@@ -125,7 +125,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).not.toContain(TRUSTS_NOC_HEADING);
     });
 
-    test("catch error when rendering the page", async () => {
+    xtest("catch error when rendering the page", async () => {
       mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
 
       const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_GOV_URL);

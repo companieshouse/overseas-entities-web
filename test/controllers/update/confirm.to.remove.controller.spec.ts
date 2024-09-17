@@ -6,6 +6,7 @@ jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/middleware/navigation/update/has.given.valid.bo.mo.details.middleware');
+jest.mock('../../../src/utils/relevant.period');
 
 import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import { NextFunction, Request, Response } from "express";
@@ -45,6 +46,7 @@ import {
   MO_CORP_ID_URL
 } from "../../__mocks__/session.mock";
 import { hasGivenValidBoMoDetails } from "../../../src/middleware/navigation/update/has.given.valid.bo.mo.details.middleware";
+import { checkRelevantPeriod } from "../../../src/utils/relevant.period";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockAuthenticationMiddleware = authentication as jest.Mock;
@@ -64,6 +66,7 @@ const mockFindBoOrMo = findBoOrMo as jest.Mock;
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
+const mockCheckRelevantPeriod = checkRelevantPeriod as jest.Mock;
 
 describe("CONFIRM TO REMOVE controller", () => {
 
@@ -169,6 +172,33 @@ describe("CONFIRM TO REMOVE controller", () => {
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(mockRemoveFromApplicationData).toHaveBeenCalledTimes(1);
+    });
+
+    test(`BO individual removed and redirects to ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page if user selects no`, async () => {
+      mockCheckRelevantPeriod.mockReturnValueOnce(true);
+      const resp = await request(app)
+        .post(UPDATE_CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_INDIVIDUAL + BO_IND_ID_URL)
+        .send({ do_you_want_to_remove: '0' });
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
+    });
+
+    test(`BO gov removed and redirects to ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page if user selects no`, async () => {
+      mockCheckRelevantPeriod.mockReturnValueOnce(true);
+      const resp = await request(app)
+        .post(UPDATE_CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_INDIVIDUAL + BO_IND_ID_URL)
+        .send({ do_you_want_to_remove: '0' });
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
+    });
+
+    test(`BO other removed and redirects to ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page if user selects no`, async () => {
+      mockCheckRelevantPeriod.mockReturnValueOnce(true);
+      const resp = await request(app)
+        .post(UPDATE_CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_INDIVIDUAL + BO_IND_ID_URL)
+        .send({ do_you_want_to_remove: '0' });
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
     });
 
     test(`Re-renders ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page with error if user makes no selection`, async () => {

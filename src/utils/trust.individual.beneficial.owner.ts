@@ -25,6 +25,7 @@ export const INDIVIDUAL_BO_TEXTS = {
 type TrustIndividualBeneificalOwnerPageProperties = {
   backLinkUrl: string,
   templateName: string;
+  template: string;
   pageData: {
     trustData: PageModel.CommonTrustData,
     roleWithinTrustType: typeof RoleWithinTrustType,
@@ -51,7 +52,8 @@ const getPageProperties = async (
 
   return {
     backLinkUrl: getTrustInvolvedUrl(isUpdate, trustId, req),
-    templateName: getPageTemplate(isUpdate),
+    templateName: getPageTemplate(isUpdate, req.url).templateName,
+    template: getPageTemplate(isUpdate, req.url).template,
     pageParams: {
       title: INDIVIDUAL_BO_TEXTS.title,
     },
@@ -89,9 +91,9 @@ export const getTrustIndividualBo = async (req: Request, res: Response, next: Ne
     const pageProps = await getPageProperties(req, trustId, isUpdate, formData);
     if (isRelevantPeriod) {
       const pagePropertiesRelevantPeriod = await getPagePropertiesRelevantPeriod(isRelevantPeriod, req, trustId, isUpdate, formData, appData.entity_name);
-      return res.render(pageProps.templateName, pagePropertiesRelevantPeriod);
+      return res.render(pageProps.template, pagePropertiesRelevantPeriod);
     } else {
-      return res.render(pageProps.templateName, pageProps);
+      return res.render(pageProps.template, pageProps);
     }
   } catch (error) {
     logger.errorRequest(req, error);
@@ -130,9 +132,9 @@ export const postTrustIndividualBo = async (req: Request, res: Response, next: N
       const isRelevantPeriod = req.query['relevant-period'];
       if (isRelevantPeriod) {
         const pagePropertiesRelevantPeriod = await getPagePropertiesRelevantPeriod(isRelevantPeriod, req, trustId, isUpdate, formData, appData.entity_name, formatValidationError([...errorListArray, ...errors]));
-        return res.render(pageProps.templateName, pagePropertiesRelevantPeriod);
+        return res.render(pageProps.template, pagePropertiesRelevantPeriod);
       } else {
-        return res.render(pageProps.templateName, pageProps);
+        return res.render(pageProps.template, pageProps);
       }
     }
 
@@ -157,11 +159,11 @@ export const postTrustIndividualBo = async (req: Request, res: Response, next: N
   }
 };
 
-const getPageTemplate = (isUpdate: boolean) => {
+const getPageTemplate = (isUpdate: boolean, url: string) => {
   if (isUpdate) {
-    return config.UPDATE_TRUSTS_INDIVIDUAL_BENEFICIAL_OWNER_PAGE;
+    return { template: config.UPDATE_TRUSTS_INDIVIDUAL_BENEFICIAL_OWNER_PAGE, templateName: url.replace(`${config.UPDATE_LANDING_URL}/`, "") };
   } else {
-    return config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE;
+    return { template: config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE, templateName: config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE };
   }
 };
 

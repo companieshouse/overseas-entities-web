@@ -39,6 +39,7 @@ export const TRUST_INVOLVED_TEXTS = {
 type TrustInvolvedPageProperties = {
   backLinkUrl: string,
   templateName: string;
+  template: string;
   pageParams: {
     title: string;
   },
@@ -92,7 +93,8 @@ const getPageProperties = async (
 
   return {
     backLinkUrl: getBackLinkUrl(isUpdate, trustId, isReview, req),
-    templateName: getPageTemplate(isUpdate, isReview),
+    templateName: getPageTemplate(isUpdate, isReview, req.url).templateName,
+    template: getPageTemplate(isUpdate, isReview, req.url).template,
     pageParams: {
       title: TRUST_INVOLVED_TEXTS.title,
     },
@@ -129,7 +131,7 @@ export const getTrustInvolvedPage = async (
 
     const pageProps = await getPageProperties(req, isUpdate, isReview);
 
-    return res.render(pageProps.templateName, { ...pageProps, ...appData });
+    return res.render(pageProps.template, { ...pageProps, ...appData });
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);
@@ -168,7 +170,7 @@ export const postTrustInvolvedPage = async (
         formatValidationError(errorList.array()),
       );
 
-      return res.render(pageProps.templateName, pageProps);
+      return res.render(pageProps.template, pageProps);
     }
 
     const typeOfTrustee = req.body.typeOfTrustee;
@@ -229,13 +231,13 @@ export const postTrustInvolvedPage = async (
   }
 };
 
-const getPageTemplate = (isUpdate: boolean, isReview: boolean) => {
+const getPageTemplate = (isUpdate: boolean, isReview: boolean, url: string) => {
   if (isReview) {
-    return config.UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE;
+    return { template: config.UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE, templateName: config.UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE };
   } else if (isUpdate) {
-    return config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE;
+    return { template: config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE, templateName: url.replace(`${config.UPDATE_LANDING_URL}/`, "") };
   } else {
-    return config.TRUST_INVOLVED_PAGE;
+    return { template: config.TRUST_INVOLVED_PAGE, templateName: config.TRUST_INVOLVED_PAGE, };
   }
 };
 

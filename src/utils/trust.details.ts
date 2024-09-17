@@ -64,8 +64,8 @@ const getPageProperties = async (
 
   return {
     backLinkUrl: getBackLinkUrl(isUpdate, appData, req, isReview),
-    templateName: getPageTemplate(isUpdate, isReview, trustId).templateName,
-    template: getPageTemplate(isUpdate, isReview, trustId).template,
+    templateName: getPageTemplate(isUpdate, isReview, req.url).templateName,
+    template: getPageTemplate(isUpdate, isReview, req.url).template,
     pageParams: {
       title: isReview ? TRUST_DETAILS_TEXTS.review_title : TRUST_DETAILS_TEXTS.title,
       subtitle: isReview ? TRUST_DETAILS_TEXTS.review_subtitle : TRUST_DETAILS_TEXTS.subtitle,
@@ -254,14 +254,14 @@ const getBackLinkUrl = (isUpdate: boolean, appData: ApplicationData, req: Reques
   return backLinkUrl;
 };
 
-const getPageTemplate = (isUpdate: boolean, isReview: boolean, trustId: string) => {
+const getPageTemplate = (isUpdate: boolean, isReview: boolean, url: string) => {
   if (isReview){
-    return { templateName: config.UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_PAGE, template: config.UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_PAGE };
+    return { template: config.UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_PAGE, templateName: config.UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_PAGE };
   }
   if (isUpdate){
-    return { templateName: trustId ? `${config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_PAGE}/${trustId}` : config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_PAGE, template: config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_PAGE };
+    return { template: config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_PAGE, templateName: url.replace(`${config.UPDATE_LANDING_URL}/`, "") };
   } else {
-    return { templateName: config.TRUST_DETAILS_PAGE, template: config.TRUST_DETAILS_PAGE };
+    return { template: config.TRUST_DETAILS_PAGE, templateName: config.TRUST_DETAILS_PAGE };
   }
 };
 

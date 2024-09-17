@@ -50,7 +50,6 @@ const getPageProperties = async (
   formData: PageModel.TrustDetailsForm,
   isUpdate: boolean,
   isReview: boolean,
-  trustId: string,
   errors?: FormattedValidationErrors,
 ): Promise<TrustDetailPageProperties> => {
   const appData: ApplicationData = await getApplicationData(req.session);
@@ -82,8 +81,8 @@ const getPageProperties = async (
   };
 };
 
-const getPagePropertiesRelevantPeriod = async (req, formData, isUpdate, isReview, trustId, errors?: FormattedValidationErrors): Promise<TrustDetailPageProperties> => {
-  const pageProps = await getPageProperties(req, formData, isUpdate, isReview, trustId, errors);
+const getPagePropertiesRelevantPeriod = async (req, formData, isUpdate, isReview, errors?: FormattedValidationErrors): Promise<TrustDetailPageProperties> => {
+  const pageProps = await getPageProperties(req, formData, isUpdate, isReview, errors);
   pageProps.formData.relevant_period = true;
   return pageProps;
 };
@@ -110,9 +109,9 @@ export const getTrustDetails = async (req: Request, res: Response, next: NextFun
 
     let pageProps;
     if (req.query["relevant-period"] === "true") {
-      pageProps = await getPagePropertiesRelevantPeriod(req, formData, isUpdate, isReview, trustId);
+      pageProps = await getPagePropertiesRelevantPeriod(req, formData, isUpdate, isReview);
     } else {
-      pageProps = await getPageProperties(req, formData, isUpdate, isReview, trustId);
+      pageProps = await getPageProperties(req, formData, isUpdate, isReview);
     }
 
     return res.render(pageProps.template, pageProps);
@@ -173,7 +172,6 @@ export const postTrustDetails = async (req: Request, res: Response, next: NextFu
         formData,
         isUpdate,
         isReview,
-        formData.trustId,
         formatValidationError([...errorListArray, ...errors]),
       );
 

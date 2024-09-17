@@ -12,6 +12,9 @@ import * as config from "../config";
 
 import { isActiveFeature } from "../utils/feature.flag";
 import { getUrlWithParamsToPath } from "../utils/url";
+import { checkRelevantPeriod } from "../utils/relevant.period";
+import { ApplicationData } from "../model";
+import { getApplicationData } from "../utils/application.data";
 
 export const get = (req: Request, res: Response) => {
   const backLinkUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
@@ -36,7 +39,7 @@ export const update = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const remove = (req: Request, res: Response, next: NextFunction) => {
-  removeBeneficialOwnerIndividual(req, res, next, getBeneficialOwnerTypeUrl(req));
+  removeBeneficialOwnerIndividual(req, res, next, getRemoveBeneficialOwnerTypeUrl(req));
 };
 
 const getBeneficialOwnerTypeUrl = (req: Request): string => {
@@ -45,5 +48,17 @@ const getBeneficialOwnerTypeUrl = (req: Request): string => {
     nextPageUrl = getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req);
   }
 
+  return nextPageUrl;
+};
+
+const getRemoveBeneficialOwnerTypeUrl = (req: Request): string => {
+  let nextPageUrl = config.BENEFICIAL_OWNER_TYPE_URL;
+  const appData: ApplicationData = getApplicationData(req.session);
+  if (checkRelevantPeriod(appData)) {
+    nextPageUrl = config.BENEFICIAL_OWNER_TYPE_URL + config.RELEVANT_PERIOD_QUERY_PARAM;
+  }
+  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)){
+    nextPageUrl = getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req);
+  }
   return nextPageUrl;
 };

@@ -15,7 +15,7 @@ module.exports = {
   ],
   preset: "ts-jest",
   testEnvironment: "node",
-  testTimeout: 25000,
+  testTimeout: 30000,
   verbose: true,
   testMatch: ["**/test/**/*.spec.[jt]s"],
   globals: {

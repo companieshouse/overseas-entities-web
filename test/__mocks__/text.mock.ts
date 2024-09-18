@@ -170,7 +170,7 @@ export const SANCTIONS_HINT_TEXT_IT = "This means that it is subject to sanction
 export const BO_NOC_HEADING = "The beneficial owner:";
 export const TRUSTS_NOC_HEADING = "The beneficial owner is a trustee of a trust";
 export const FIRM_NOC_HEADING = "The beneficial owner is a member of a firm that is not a legal person under its governing law, and:";
-export const FIRM_NOC_HEADING_NEW = "The beneficial owner has the right to exercise, or actually exercises, significant control or influence over the activities of a firm that is not a legal person under its governing law, and:";
+export const FIRM_CONTROL_NOC_HEADING = "The beneficial owner has the right to exercise, or actually exercises, significant control or influence over the activities of a firm that is not a legal person under its governing law, and:";
 export const TRUST_CONTROL_NOC_HEADING = "The beneficial owner has the right to exercise, or actually exercises, significant control or influence over the activities of a trust";
 export const OWNER_OF_LAND_PERSON_NOC_HEADING = "The overseas entity is the registered owner of property or land in the following UK jurisdictions, as a nominee for this person";
 export const OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING = "The overseas entity is the registered owner of property or land in the following UK jurisdictions, as a nominee for another entity of which this person is a registered beneficial owner";
@@ -362,3 +362,21 @@ export const TRUSTEE_LEGAL_ENTITY_LEGAL_AUTHORITY = "Governing Law";
 export const TRUSTEE_LEGAL_ENTITY_LEGAL_FORM = "Legal form";
 export const TRUSTEE_LEGAL_ENTITY_INVOLVED = "Is it still involved in the trust?";
 export const TRUSTEE_LEGAL_ENTITY_CEASED_DATE = "Date it ceased to be involved in the trust";
+
+// Natures of control
+export const BO_NOC_OVER_25_PERCENT_OF_SHARES = "Holds, directly or indirectly, more than 25% of the shares in the entity";
+export const BO_NOC_OVER_25_PERCENT_OF_VOTING_RIGHTS = "Holds, directly or indirectly, more than 25% of the voting rights in the entity";
+export const BO_NOC_APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS = "Holds the right, directly or indirectly, to appoint or remove a majority of the board of directors of the entity";
+export const BO_NOC_SIGNIFICANT_INFLUENCE_OR_CONTROL = "Has the right to exercise, or actually exercises, significant influence or control over the entity";
+export const BO_NOC_TRUSTEE_OF_TRUST_OVER_25_PERCENT_OF_SHARES = "The trustees of that trust (in their capacity as such) hold, directly or indirectly, more than 25% of the shares in the entity";
+export const BO_NOC_TRUSTEE_OF_TRUST_OVER_25_PERCENT_OF_VOTING_RIGHTS = "The trustees of that trust (in their capacity as such) hold, directly or indirectly, more than 25% of the voting rights in the entity";
+export const BO_NOC_TRUSTEE_OF_TRUST_APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS = "The trustees of that trust (in their capacity as such) hold the right, directly or indirectly, to appoint or remove a majority of the board of directors of the company";
+export const BO_NOC_TRUSTEE_OF_TRUST_SIGNIFICANT_INFLUENCE_OR_CONTROL = "The trustees of that trust (in their capacity as such) have the right to exercise, or actually exercise, significant influence or control over the company";
+export const BO_NOC_MEMBER_OF_FIRM_OVER_25_PERCENT_OF_SHARES = "The members of that firm (in their capacity as such) hold, directly or indirectly, more than 25% of the shares in the entity";
+export const BO_NOC_MEMBER_OF_FIRM_OVER_25_PERCENT_OF_VOTING_RIGHTS = "The members of that firm (in their capacity as such) hold, directly or indirectly, more than 25% of the voting rights in the entity";
+export const BO_NOC_MEMBER_OF_FIRM_APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS = "The members of that firm (in their capacity as such) hold the right, directly or indirectly, to appoint or remove a majority of the board of directors of the company";
+export const BO_NOC_MEMBER_OF_FIRM_SIGNIFICANT_INFLUENCE_OR_CONTROL = "The members of that firm (in their capacity as such) have the right to exercise, or actually exercise, significant influence or control over the company";
+export const BO_NOC_JURISDICTION_ENGLAND_AND_WALES = "England and Wales";
+export const BO_NOC_JURISDICTION_SCOTLAND = "Scotland";
+export const BO_NOC_JURISDICTION_NORTHERN_IRELAND = "Northern Ireland";
+

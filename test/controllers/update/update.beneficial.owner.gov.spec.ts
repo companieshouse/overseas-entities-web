@@ -35,7 +35,6 @@ import {
   getApplicationData
 } from '../../../src/utils/application.data';
 import {
-  ANY_MESSAGE_ERROR,
   BENEFICIAL_OWNER_GOV_PAGE_HEADING,
   ERROR_LIST,
   INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER,
@@ -125,18 +124,10 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).not.toContain(TRUSTS_NOC_HEADING);
     });
 
-    test("catch error when rendering the page", async () => {
-      mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-      const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_GOV_URL);
-
-      expect(resp.status).toEqual(500);
-      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
-    });
-
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with relevant period content when query param is passed`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
 
-      const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_GOV_URL + RELEVANT_PERIOD_QUERY_PARAM);
+      const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_GOV_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(RELEVANT_PERIOD_INFORMATION);

@@ -16,7 +16,6 @@ import { checkAndReviewBeneficialOwner } from "../../utils/update/review.benefic
 import { checkAndReviewManagingOfficers } from "../../utils/update/review.managing.officer";
 import { ManagingOfficerCorporateKey } from "../../model/managing.officer.corporate.model";
 import { ManagingOfficerKey } from "../../model/managing.officer.model";
-import { isActiveFeature } from "../../utils/feature.flag";
 import { hasTrustsToReview, moveReviewableTrustsIntoReview, resetReviewStatusOnAllTrustsToBeReviewed } from "../../utils/update/review_trusts";
 import { checkEntityRequiresTrusts, getTrustLandingUrl } from "../../utils/trusts";
 import { retrieveTrustData } from "../../utils/update/trust.model.fetch";
@@ -33,11 +32,11 @@ type BeneficialOwnerTypePageProperties = {
   hasNewlyAddedBosMos: boolean;
 };
 
-const getPageProperties = (
+const getPageProperties = async (
   req: Request,
   errors?: FormattedValidationErrors,
-): BeneficialOwnerTypePageProperties => {
-  const appData: ApplicationData = getApplicationData(req.session);
+): Promise<BeneficialOwnerTypePageProperties> => {
+  const appData: ApplicationData = await getApplicationData(req.session);
 
   const allBosMos = [
     ...(appData[BeneficialOwnerIndividualKey] ?? []),
@@ -60,10 +59,10 @@ const getPageProperties = (
   };
 };
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
 
     const checkIsRedirect = checkAndReviewBeneficialOwner(appData);
     if (checkIsRedirect && checkIsRedirect !== "") {
@@ -75,7 +74,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       return res.redirect(checkMoRedirect);
     }
 
-    const pageProps = getPageProperties(req);
+    const pageProps = await getPageProperties(req);
 
     return res.render(pageProps.templateName, pageProps);
   } catch (error) {
@@ -84,14 +83,14 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = (req: Request, res: Response) => {
+export const post = async (req: Request, res: Response) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
   //  check on errors
   const errorList = validationResult(req);
 
   if (!errorList.isEmpty()) {
-    const pageProps = getPageProperties(req, formatValidationError(errorList.array()));
+    const pageProps = await getPageProperties(req, formatValidationError(errorList.array()));
 
     return res.render(pageProps.templateName, pageProps);
   }
@@ -102,7 +101,7 @@ export const postSubmit = async (req: Request, res: Response, next: NextFunction
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
 
     if (!appData.update?.trust_data_fetched) {
       const session = req.session as Session;
@@ -114,16 +113,14 @@ export const postSubmit = async (req: Request, res: Response, next: NextFunction
     // Move any trusts that have been reviewed back into review so user can review data again if
     // they have gone back to an earlier screen and changed something that might affect the trust.
     // If no trusts have been reviewed yet then no trusts should get moved by this
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_CEASE_TRUSTS)) {
-      moveReviewableTrustsIntoReview(appData);
-      resetReviewStatusOnAllTrustsToBeReviewed(appData);
-    }
+    moveReviewableTrustsIntoReview(appData);
+    resetReviewStatusOnAllTrustsToBeReviewed(appData);
 
     if (hasTrustsToReview(appData)) {
       return res.redirect(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
     }
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS) && checkEntityRequiresTrusts(appData)) {
+    if (checkEntityRequiresTrusts(appData)) {
       return res.redirect(getTrustLandingUrl(appData));
     }
 

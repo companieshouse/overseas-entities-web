@@ -1,0 +1,30 @@
+{{ govukCheckboxes({
+  errorMessage: errorMessage,
+  idPrefix: "owner_of_land_person_nature_of_control_jurisdictions",
+  name: "owner_of_land_person_nature_of_control_jurisdictions",
+  fieldset: {
+    legend: {
+      text: "The overseas entity is the registered owner of property or land in the following UK jurisdictions, as a nominee for this person:",
+      isPageHeading: false,
+      classes: "govuk-fieldset__legend--s"
+    }
+  },
+
+  items: [
+    {
+      value: "ENGLAND_AND_WALES",
+      text: "England and Wales",
+      checked: owner_of_land_person_nature_of_control_jurisdictions and 'ENGLAND_AND_WALES' in owner_of_land_person_nature_of_control_jurisdictions
+    },
+    {
+      value: "SCOTLAND",
+      text: "Scotland",
+      checked: owner_of_land_person_nature_of_control_jurisdictions and 'SCOTLAND' in owner_of_land_person_nature_of_control_jurisdictions
+    },
+    {
+      value: "NORTHERN_IRELAND",
+      text: "Northern Ireland",
+      checked: owner_of_land_person_nature_of_control_jurisdictions and 'NORTHERN_IRELAND' in owner_of_land_person_nature_of_control_jurisdictions
+    }
+  ]
+}) }}

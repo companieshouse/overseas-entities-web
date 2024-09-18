@@ -20,7 +20,6 @@ import {
   checkCeasedDateOnOrAfterStartDate,
   checkStartDateBeforeDOB,
   checkFirstDateOnOrAfterSecondDate,
-  checkDatePreviousToFilingDate,
   checkTrustCeasedDate,
   checkDateIsBeforeOrOnOtherDate,
   checkFilingDate,
@@ -44,6 +43,12 @@ export const NEXT_MADE_UP_TO_ISO_DATE = 'nextMadeUpToIsoDate';
 // to prevent more than 1 error reported on the date fields we check if the year is valid before doing some checks.
 // This means that the year check is checked before some others
 export const start_date_validations = [
+  // Trim all the date fields before validating. This will also ensure that no whitespace is present in the date fields when
+  // saved to the model and then later sent to the API
+  body("start_date-day").trim(),
+  body("start_date-month").trim(),
+  body("start_date-year").trim(),
+
   body("start_date-day")
     .custom((value, { req }) => checkDateFieldDay(req.body["start_date-day"], req.body["start_date-month"], req.body["start_date-year"])),
   body("start_date-month")
@@ -64,6 +69,12 @@ export const start_date_validations = [
 ];
 
 const is_still_active_validations = (date_field_id: string, radio_button_id: string, error_message: string) => [
+  // Trim all the date fields before validating. This will also ensure that no whitespace is present in the date fields when
+  // saved to the model and then later sent to the API
+  body(date_field_id + "-day").trim(),
+  body(date_field_id + "-month").trim(),
+  body(date_field_id + "-year").trim(),
+
   body(date_field_id + "-day")
     .if(body(radio_button_id).equals('0'))
     .custom((value, { req }) => checkDateFieldDay(req.body[date_field_id + "-day"], req.body[date_field_id + "-month"], req.body[date_field_id + "-year"])),
@@ -92,48 +103,21 @@ const is_trust_still_active_validation = (error_message: string) => [
     )),
 ];
 
-const checkAgainstFilingDate = (date_field_id, error_message) =>
-  (value, { req }) => checkDatePreviousToFilingDate(
-    req,
-    req.body[date_field_id + "-day"], req.body[date_field_id + "-month"], req.body[date_field_id + "-year"],
-    error_message
-  );
-
-const is_date_within_filing_period = (date_field_id: string, error_message: string) => [
-  body(date_field_id)
-    .custom(checkAgainstFilingDate(date_field_id, error_message)),
-];
-
-const is_end_date_within_filing_period = (date_field_id: string, radio_button_id: string, error_message: string) => [
-  body(date_field_id)
-    .if(body(radio_button_id).equals('0'))
-    .custom(checkAgainstFilingDate(date_field_id, error_message))
-];
-
-const is_date_within_filing_period_trusts = (trustDateContext: dateContext, error_message: string) => [
-  body(trustDateContext.dateInput.name)
-    .custom((value, { req }) => checkDatePreviousToFilingDate(
-      req,
-      req.body[trustDateContext.dayInput.name], req.body[trustDateContext.monthInput.name], req.body[trustDateContext.yearInput.name],
-      error_message
-    )),
-];
-
 export const ceased_date_validations = is_still_active_validations("ceased_date", "is_still_bo", ErrorMessages.CEASED_DATE_BEFORE_START_DATE);
 
 export const resigned_on_validations = is_still_active_validations("resigned_on", "is_still_mo", ErrorMessages.RESIGNED_ON_BEFORE_START_DATE);
 
 export const trustFormerBODateValidations = is_trust_still_active_validation(ErrorMessages.TRUST_CEASED_DATE_BEFORE_START_DATE);
 
-export const filingPeriodStartDateValidations = is_date_within_filing_period("start_date", ErrorMessages.START_DATE_BEFORE_FILING_DATE);
-
-export const filingPeriodCeasedDateValidations = is_end_date_within_filing_period("ceased_date", "is_still_bo", ErrorMessages.CEASED_DATE_BEFORE_FILING_DATE);
-
-export const filingPeriodResignedDateValidations = is_end_date_within_filing_period("resigned_on", "is_still_mo", ErrorMessages.RESIGNED_ON_BEFORE_FILING_DATE);
-
 // to prevent more than 1 error reported on the date fields we check if the year is valid before doing some checks.
 // This means that the year check is checked before some others
 export const date_of_birth_validations = [
+  // Trim all the date fields before validating. This will also ensure that no whitespace is present in the date fields when
+  // saved to the model and then later sent to the API
+  body("date_of_birth-day").trim(),
+  body("date_of_birth-month").trim(),
+  body("date_of_birth-year").trim(),
+
   body("date_of_birth-day")
     .custom((value, { req }) => checkDateFieldDayOfBirth(req.body["date_of_birth-day"], req.body["date_of_birth-month"], req.body["date_of_birth-year"])),
   body("date_of_birth-month")
@@ -147,6 +131,12 @@ export const date_of_birth_validations = [
 // to prevent more than 1 error reported on the date fields we check if the year is valid before doing some checks.
 // This means that the year check is checked before some others
 export const identity_check_date_validations = [
+  // Trim all the date fields before validating. This will also ensure that no whitespace is present in the date fields when
+  // saved to the model and then later sent to the API
+  body("identity_date-day").trim(),
+  body("identity_date-month").trim(),
+  body("identity_date-year").trim(),
+
   body("identity_date-day")
     .custom((value, { req }) => checkDateFieldDay(req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"])),
   body("identity_date-month")
@@ -158,7 +148,7 @@ export const identity_check_date_validations = [
 ];
 
 export const addNextMadeUpToDateToRequest = async (req: Request, res: Response, next: NextFunction) => {
-  const appData: ApplicationData = getApplicationData(req.session);
+  const appData: ApplicationData = await getApplicationData(req.session);
   if (!appData.entity_number) {
     logger.errorRequest(req, "addNextMadeUpToDateToRequest - Unable to find entity number in application data.");
     return next(new Error(ErrorMessages.UNABLE_TO_RETRIEVE_ENTITY_NUMBER));
@@ -174,6 +164,13 @@ export const addNextMadeUpToDateToRequest = async (req: Request, res: Response, 
 
 export const filing_date_validations = [
   addNextMadeUpToDateToRequest,
+
+  // Trim all the date fields before validating. This will also ensure that no whitespace is present in the date fields when
+  // saved to the model and then later sent to the API
+  body("filing_date-day").trim(),
+  body("filing_date-month").trim(),
+  body("filing_date-year").trim(),
+
   body("filing_date-day")
     .custom((value, { req }) => checkDateFieldDay(req.body["filing_date-day"], req.body["filing_date-month"], req.body["filing_date-year"])),
   body("filing_date-month")
@@ -326,7 +323,7 @@ const trustCeasedDateValidationsContext: dateContextWithCondition = {
   }
 };
 
-const historicalBOStartDateContext: dateContext = {
+export const historicalBOStartDateContext: dateContext = {
   dayInput: {
     name: "startDateDay",
     errors: {
@@ -356,7 +353,7 @@ const historicalBOStartDateContext: dateContext = {
   },
 };
 
-const historicalBOEndDateContext: dateContext = {
+export const historicalBOEndDateContext: dateContext = {
   dayInput: {
     name: "endDateDay",
     errors: {
@@ -449,76 +446,31 @@ export const historicalBeneficialOwnerEndDate = conditionalHistoricalBODateValid
 
 export const dateBecameIPLegalEntityBeneficialOwner = conditionalDateValidations(dateBecameIPLegalEntityBeneficialOwnerContext);
 
-export const filingPeriodTrustStartDateValidations = is_date_within_filing_period_trusts(historicalBOStartDateContext, ErrorMessages.START_DATE_BEFORE_FILING_DATE);
-
-export const filingPeriodTrustCeaseDateValidations = is_date_within_filing_period_trusts(historicalBOEndDateContext, ErrorMessages.CEASED_DATE_BEFORE_FILING_DATE);
-
 export const trustIndividualCeasedDateValidations = [
-  ...conditionalDateValidations(trusteeCeasedDateValidationsContext),
-
-  body("ceasedDate")
-    .if((value, { req }) => {
-      // check they are on an update or remove journey
-      // entity_number should have been populated by time they reach trust screens
-      const appData: ApplicationData = getApplicationData(req.session);
-      return !!appData.entity_number; // !! = truthy check
-    })
-    .if(body("stillInvolved").equals("0"))
-    .if(body("ceasedDateDay").notEmpty({ ignore_whitespace: true }))
-    .if(body("ceasedDateMonth").notEmpty({ ignore_whitespace: true }))
-    .if(body("ceasedDateYear").notEmpty({ ignore_whitespace: true }))
-    .custom((value, { req }) => {
-      checkCeasedDateOnOrAfterDateOfBirth(req, ErrorMessages.DATE_BEFORE_BIRTH_DATE_CEASED_TRUSTEE);
-
-      checkCeasedDateOnOrAfterTrustCreationDate(req, ErrorMessages.DATE_BEFORE_TRUST_CREATION_DATE_CEASED_TRUSTEE);
-
-      if (req.body["roleWithinTrust"] === RoleWithinTrustType.INTERESTED_PERSON
-        && req.body["dateBecameIPDay"]
-        && req.body["dateBecameIPMonth"]
-        && req.body["dateBecameIPYear"]) {
-        checkIndividualCeasedDateOnOrAfterInterestedPersonStartDate(req, ErrorMessages.DATE_BEFORE_INTERESTED_PERSON_START_DATE_CEASED_TRUSTEE);
-      }
-      return true;
-    })
+  ...conditionalDateValidations(trusteeCeasedDateValidationsContext)
 ];
 
 export const trusteeLegalEntityCeasedDateValidations = [
-  ...conditionalDateValidations(trusteeCeasedDateValidationsContext),
-
-  body("ceasedDate")
-    .if(body("stillInvolved").equals("0"))
-    .if(body("ceasedDateDay").notEmpty({ ignore_whitespace: true }))
-    .if(body("ceasedDateMonth").notEmpty({ ignore_whitespace: true }))
-    .if(body("ceasedDateYear").notEmpty({ ignore_whitespace: true }))
-    .custom((value, { req }) => {
-      checkCeasedDateOnOrAfterTrustCreationDate(req, ErrorMessages.DATE_BEFORE_TRUST_CREATION_DATE_CEASED_TRUSTEE);
-      if (req.body["roleWithinTrust"] === RoleWithinTrustType.INTERESTED_PERSON
-      && req.body["interestedPersonStartDateDay"]
-      && req.body["interestedPersonStartDateMonth"]
-      && req.body["interestedPersonStartDateYear"]) {
-        checkLegalEntityCeasedDateOnOrAfterInterestedPersonStartDate(req, ErrorMessages.DATE_BEFORE_INTERESTED_PERSON_START_DATE_CEASED_TRUSTEE);
-      }
-      return true;
-    })
+  ...conditionalDateValidations(trusteeCeasedDateValidationsContext)
 ];
 
-const checkIndividualCeasedDateOnOrAfterInterestedPersonStartDate = (req, errorMessage: ErrorMessages) => {
+export const checkIndividualCeasedDateOnOrAfterInterestedPersonStartDate = (req, errorMessage: ErrorMessages) => {
   checkFirstDateOnOrAfterSecondDate(
     req.body["ceasedDateDay"], req.body["ceasedDateMonth"], req.body["ceasedDateYear"],
     req.body["dateBecameIPDay"], req.body["dateBecameIPMonth"], req.body["dateBecameIPYear"],
     errorMessage);
 };
 
-const checkLegalEntityCeasedDateOnOrAfterInterestedPersonStartDate = (req, errorMessage: ErrorMessages) => {
+export const checkLegalEntityCeasedDateOnOrAfterInterestedPersonStartDate = (req, errorMessage: ErrorMessages) => {
   checkFirstDateOnOrAfterSecondDate(
     req.body["ceasedDateDay"], req.body["ceasedDateMonth"], req.body["ceasedDateYear"],
     req.body["interestedPersonStartDateDay"], req.body["interestedPersonStartDateMonth"], req.body["interestedPersonStartDateYear"],
     errorMessage);
 };
 
-const checkCeasedDateOnOrAfterTrustCreationDate = (req, errorMessage: ErrorMessages) => {
+export const checkCeasedDateOnOrAfterTrustCreationDate = async (req, errorMessage: ErrorMessages) => {
   const trustId = req.params ? req.params[ROUTE_PARAM_TRUST_ID] : undefined;
-  const appData: ApplicationData = getApplicationData(req.session);
+  const appData: ApplicationData = await getApplicationData(req.session);
   const trust: Trust | undefined = getTrust(appData, trustId);
   if (trust) {
     checkFirstDateOnOrAfterSecondDate(
@@ -530,7 +482,7 @@ const checkCeasedDateOnOrAfterTrustCreationDate = (req, errorMessage: ErrorMessa
   }
 };
 
-const checkCeasedDateOnOrAfterDateOfBirth = (req, errorMessage: ErrorMessages) => {
+export const checkCeasedDateOnOrAfterDateOfBirth = (req, errorMessage: ErrorMessages) => {
   checkFirstDateOnOrAfterSecondDate(
     req.body["ceasedDateDay"], req.body["ceasedDateMonth"], req.body["ceasedDateYear"],
     req.body["dateOfBirthDay"], req.body["dateOfBirthMonth"], req.body["dateOfBirthYear"],

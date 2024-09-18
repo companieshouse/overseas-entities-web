@@ -20,17 +20,15 @@ import {
   ANY_MESSAGE_ERROR,
   PAGE_TITLE_ERROR,
   SERVICE_UNAVAILABLE,
+  UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_TITLE
 } from "../../__mocks__/text.mock";
 
-import { APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock";
-import { OVERSEAS_NAME_MOCK } from "../../__mocks__/session.mock";
-
+import { APPLICATION_DATA_MOCK, OVERSEAS_NAME_MOCK } from "../../__mocks__/session.mock";
 import { getApplicationData } from "../../../src/utils/application.data";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
 import { logger } from "../../../src/utils/logger";
-import { UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_TITLE } from "../../__mocks__/text.mock";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { checkRelevantPeriod } from "../../../src/utils/relevant.period";
 
@@ -83,6 +81,7 @@ describe("BENEFICIAL OWNER BO MO REVIEW controller", () => {
     });
 
     test("catch error when rendering the Overseas Entity Review page on GET method", async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
 

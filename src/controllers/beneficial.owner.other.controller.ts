@@ -15,24 +15,24 @@ import {
 } from "../utils/beneficial.owner.other";
 import { getUrlWithParamsToPath } from "../utils/url";
 
-export const get = (req: Request, res: Response) => {
-  getBeneficialOwnerOther(req, res, BENEFICIAL_OWNER_OTHER_PAGE, getBeneficialOwnerTypeUrl(req));
+export const get = async (req: Request, res: Response) => {
+  await getBeneficialOwnerOther(req, res, BENEFICIAL_OWNER_OTHER_PAGE, getBeneficialOwnerTypeUrl(req));
 };
 
-export const getById = (req: Request, res: Response, next: NextFunction) => {
-  getBeneficialOwnerOtherById(req, res, next, BENEFICIAL_OWNER_OTHER_PAGE, getBeneficialOwnerTypeUrl(req));
+export const getById = async (req: Request, res: Response, next: NextFunction) => {
+  await getBeneficialOwnerOtherById(req, res, next, BENEFICIAL_OWNER_OTHER_PAGE, getBeneficialOwnerTypeUrl(req));
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
-  postBeneficialOwnerOther(req, res, next, getBeneficialOwnerTypeUrl(req));
+export const post = async (req: Request, res: Response, next: NextFunction) => {
+  await postBeneficialOwnerOther(req, res, next, getBeneficialOwnerTypeUrl(req));
 };
 
-export const update = (req: Request, res: Response, next: NextFunction) => {
-  updateBeneficialOwnerOther(req, res, next, getBeneficialOwnerTypeUrl(req));
+export const update = async (req: Request, res: Response, next: NextFunction) => {
+  await updateBeneficialOwnerOther(req, res, next, getBeneficialOwnerTypeUrl(req));
 };
 
-export const remove = (req: Request, res: Response, next: NextFunction) => {
-  removeBeneficialOwnerOther(req, res, next, getBeneficialOwnerTypeUrl(req));
+export const remove = async (req: Request, res: Response, next: NextFunction) => {
+  await removeBeneficialOwnerOther(req, res, next, getBeneficialOwnerTypeUrl(req));
 };
 
 const getBeneficialOwnerTypeUrl = (req: Request): string => {

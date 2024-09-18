@@ -32,7 +32,7 @@ import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.a
 import { getApplicationData, setExtraData } from '../../../src/utils/application.data';
 import { isActiveFeature } from '../../../src/utils/feature.flag';
 
-import { TRUST, TRUST_RELEVANT_PERIOD } from '../../__mocks__/session.mock';
+import { TRUST, TRUST_RELEVANT_PERIOD, TRUST_WITH_ID } from '../../__mocks__/session.mock';
 import {
   ANY_MESSAGE_ERROR,
   PAGE_NOT_FOUND_TEXT,
@@ -43,7 +43,6 @@ import {
   RELEVANT_PERIOD,
   SAVE_AND_CONTINUE_BUTTON_TEXT
 } from '../../__mocks__/text.mock';
-import { TRUST_WITH_ID } from '../../__mocks__/session.mock';
 import { UpdateKey } from '../../../src/model/update.type.model';
 import { Trust, TrustCorporate } from '../../../src/model/trust.model';
 import { yesNoResponse } from '../../../src/model/data.types.model';
@@ -464,6 +463,8 @@ describe('Update - Manage Trusts - Review legal entities', () => {
 
     test("catch error when rendering the page", async () => {
       mockIsActiveFeature.mockReturnValue(true);
+      const appData = { entity_number: 'OE123456', entity_name: 'Test OE' };
+      mockGetApplicationData.mockReturnValueOnce(appData);
       mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
 
       const response = await request(app).get(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL);

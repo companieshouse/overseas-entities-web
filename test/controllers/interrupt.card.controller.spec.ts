@@ -62,8 +62,9 @@ describe("INTERRUPT CARD controller", () => {
       expect(resp.text).toContain(OVERSEAS_NAME_URL);
     });
 
-    test(`renders the ${INTERRUPT_CARD_PAGE} page with trust feature flag false`, async () => {
-      (isActiveFeature as jest.Mock).mockReturnValue(false);
+    test(`renders the ${INTERRUPT_CARD_PAGE} page with trust feature flag false and REDIS_removal flag is set to OFF`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockIsActiveFeature.mockReturnValueOnce(false);
 
       const resp = await request(app).get(INTERRUPT_CARD_URL);
 
@@ -71,7 +72,24 @@ describe("INTERRUPT CARD controller", () => {
       expect(resp.text).toContain(INTERRUPT_CARD_PAGE_TITLE);
       expect(resp.text).toContain(LANDING_PAGE_URL);
       expect(resp.text).toContain("Trusts");
+      expect(mockGetUrlWithParamsToPath).not.toHaveBeenCalled();
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(2);
     });
+
+    test(`renders the ${INTERRUPT_CARD_PAGE} page with trust feature flag false and REDIS_removal flag is set to ON`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockIsActiveFeature.mockReturnValueOnce(false);
+
+      const resp = await request(app).get(INTERRUPT_CARD_WITH_PARAMS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(INTERRUPT_CARD_PAGE_TITLE);
+      expect(resp.text).toContain(LANDING_PAGE_URL);
+      expect(resp.text).toContain("Trusts");
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(2);
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(2);
+    });
+
   });
 
   describe("GET with url params tests", () => {
@@ -84,7 +102,7 @@ describe("INTERRUPT CARD controller", () => {
       expect(resp.text).toContain(INTERRUPT_CARD_PAGE_TITLE);
       expect(resp.text).toContain(LANDING_PAGE_URL);
       expect(resp.text).toContain(NEXT_PAGE_URL);
-      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(2);
       expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(OVERSEAS_NAME_WITH_PARAMS_URL);
     });
 

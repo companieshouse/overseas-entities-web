@@ -96,13 +96,17 @@ describe("owned land filter page tests", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(RADIO_BUTTON_NO_SELECTED);
     });
+
     test("catch error when rendering the page", async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+
       const resp = await request(app).get(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
+
     test('when feature flag is off, 404 is returned', async () => {
       mockIsActiveFeature.mockReturnValueOnce(false);
       const resp = await request(app).get(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
@@ -180,8 +184,10 @@ describe("owned land filter page tests", () => {
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.UPDATE_FILING_DATE_URL);
     });
+
     test("catch error when validating the page", async () => {
-      mockGetApplicationData.mockImplementation( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).post(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
 
       expect(resp.status).toEqual(500);

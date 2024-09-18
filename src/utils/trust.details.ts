@@ -17,6 +17,8 @@ import { Session } from '@companieshouse/node-session-handler';
 import { setTrustDetailsAsReviewed, getReviewTrustById, updateTrustInReviewList } from './update/review_trusts';
 import { isActiveFeature } from "../utils/feature.flag";
 import { getUrlWithParamsToPath } from "../utils/url";
+import { ValidationError } from 'express-validator';
+import { checkTrustStillInvolved } from '../validation/stillInvolved.validation';
 
 export const TRUST_DETAILS_TEXTS = {
   title: 'Tell us about the trust',
@@ -39,18 +41,17 @@ type TrustDetailPageProperties = {
   };
   formData: PageModel.TrustDetailsForm,
   errors?: FormattedValidationErrors,
-  isFeatureFlagCeaseTrustsEnabled: boolean,
   url: string,
 };
 
-const getPageProperties = (
+const getPageProperties = async (
   req: Request,
   formData: PageModel.TrustDetailsForm,
   isUpdate: boolean,
   isReview?: boolean,
   errors?: FormattedValidationErrors,
-): TrustDetailPageProperties => {
-  const appData: ApplicationData = getApplicationData(req.session);
+): Promise<TrustDetailPageProperties> => {
+  const appData: ApplicationData = await getApplicationData(req.session);
 
   const boAvailableForTrust = [
     ...getBoIndividualAssignableToTrust(appData)
@@ -73,23 +74,22 @@ const getPageProperties = (
     formData,
     isUpdate,
     isReview,
-    isFeatureFlagCeaseTrustsEnabled: isActiveFeature(config.FEATURE_FLAG_ENABLE_CEASE_TRUSTS),
     errors,
     url: getUrl(isUpdate),
   };
 };
 
-const getPagePropertiesRelevantPeriod = (req, formData, isUpdate, isReview, errors?: FormattedValidationErrors) => {
-  const pageProps = getPageProperties(req, formData, isUpdate, isReview, errors);
+const getPagePropertiesRelevantPeriod = async (req, formData, isUpdate, isReview, errors?: FormattedValidationErrors): Promise<TrustDetailPageProperties> => {
+  const pageProps = await getPageProperties(req, formData, isUpdate, isReview, errors);
   pageProps.formData.relevant_period = true;
   return pageProps;
 };
 
-export const getTrustDetails = (req: Request, res: Response, next: NextFunction, isUpdate: boolean, isReview: boolean): void => {
+export const getTrustDetails = async (req: Request, res: Response, next: NextFunction, isUpdate: boolean, isReview: boolean): Promise<void> => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
 
     let trustId;
     if (isReview) {
@@ -107,9 +107,9 @@ export const getTrustDetails = (req: Request, res: Response, next: NextFunction,
 
     let pageProps;
     if (req.query["relevant-period"] === "true") {
-      pageProps = getPagePropertiesRelevantPeriod(req, formData, isUpdate, isReview);
+      pageProps = await getPagePropertiesRelevantPeriod(req, formData, isUpdate, isReview);
     } else {
-      pageProps = getPageProperties(req, formData, isUpdate, isReview);
+      pageProps = await getPageProperties(req, formData, isUpdate, isReview);
     }
 
     return res.render(pageProps.templateName, pageProps);
@@ -155,19 +155,22 @@ export const postTrustDetails = async (req: Request, res: Response, next: NextFu
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     //  get trust data from session
-    let appData: ApplicationData = getApplicationData(req.session);
+    let appData: ApplicationData = await getApplicationData(req.session);
 
     // check for errors
     const errorList = validationResult(req);
+    const errors = getValidationErrors(appData, req);
     const formData: PageModel.TrustDetailsForm = req.body as PageModel.TrustDetailsForm;
 
-    if (!errorList.isEmpty()) {
-      const pageProps = getPageProperties(
+    if (!errorList.isEmpty() || errors.length) {
+      const errorListArray = !errorList.isEmpty() ? errorList.array() : [];
+
+      const pageProps = await getPageProperties(
         req,
         formData,
         isUpdate,
         isReview,
-        formatValidationError(errorList.array()),
+        formatValidationError([...errorListArray, ...errors]),
       );
 
       return res.render(pageProps.templateName, pageProps);
@@ -284,3 +287,11 @@ const getNextPage = (isUpdate: boolean, trustId: string, req: Request, isReview?
     return nextPageUrl;
   }
 };
+
+// Get validation errors that depend on an asynchronous request
+const getValidationErrors = (appData: ApplicationData, req: Request): ValidationError[] => {
+  const stillInvolvedErrors = checkTrustStillInvolved(appData, req);
+
+  return [...stillInvolvedErrors];
+};
+

@@ -35,7 +35,7 @@ describe("Trusts Middleware tests", () => {
   });
 
   describe('register tests', () => {
-    test("Trust present, return next", () => {
+    test("Trust present, return next", async () => {
       req = {
         params: {
           trustId: TRUST_WITH_ID.trust_id,
@@ -47,13 +47,13 @@ describe("Trusts Middleware tests", () => {
 
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_WITH_TRUST_ID_MOCK);
 
-      hasTrustWithIdRegister(req, res, next);
+      await hasTrustWithIdRegister(req, res, next);
 
       expect(next).toBeCalled();
       expect(res.redirect).not.toBeCalled();
     });
 
-    test("Trust not present, redirect to landing page", () => {
+    test("Trust not present, redirect to landing page", async () => {
       req = {
         params: {
           trustId: "otherID",
@@ -65,33 +65,33 @@ describe("Trusts Middleware tests", () => {
 
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_WITH_TRUST_ID_MOCK);
 
-      hasTrustWithIdRegister(req, res, next);
+      await hasTrustWithIdRegister(req, res, next);
 
       expect(res.redirect).toBeCalled();
       expect(res.redirect).toBeCalledWith(SOLD_LAND_FILTER_URL);
       expect(next).not.toBeCalled();
     });
 
-    test("Submission contains trust data", () => {
+    test("Submission contains trust data", async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_WITH_TRUST_ID_MOCK);
 
-      hasTrustDataRegister(req, res, next);
+      await hasTrustDataRegister(req, res, next);
 
       expect(next).toBeCalled();
       expect(res.redirect).not.toBeCalled();
     });
 
-    test("Submission does not contain trust data", () => {
+    test("Submission does not contain trust data", async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_NO_TRUSTS_MOCK);
 
-      hasTrustDataRegister(req, res, next);
+      await hasTrustDataRegister(req, res, next);
 
       expect(res.redirect).toBeCalled();
       expect(res.redirect).toBeCalledWith(SOLD_LAND_FILTER_URL);
       expect(next).not.toBeCalled();
     });
 
-    test("catch error when renders the page", () => {
+    test("catch error when renders the page", async () => {
       req = {
         params: {
           trustId: "otherID",
@@ -104,7 +104,7 @@ describe("Trusts Middleware tests", () => {
       const error = new Error(ANY_MESSAGE_ERROR);
       mockGetApplicationData.mockImplementationOnce(() => { throw error; });
 
-      hasTrustWithIdRegister(req, res, next);
+      await hasTrustWithIdRegister(req, res, next);
 
       expect(next).toBeCalledTimes(1);
       expect(next).toBeCalledWith(error);
@@ -112,7 +112,7 @@ describe("Trusts Middleware tests", () => {
   });
 
   describe('update tests', () => {
-    test("Trust present, return next", () => {
+    test("Trust present, return next", async () => {
       req = {
         params: {
           trustId: TRUST_WITH_ID.trust_id,
@@ -124,13 +124,13 @@ describe("Trusts Middleware tests", () => {
 
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_WITH_TRUST_ID_MOCK);
 
-      hasTrustWithIdUpdate(req, res, next);
+      await hasTrustWithIdUpdate(req, res, next);
 
       expect(next).toBeCalled();
       expect(res.redirect).not.toBeCalled();
     });
 
-    test("Trust not present in hasTrusteeWithId, redirect to landing page", () => {
+    test("Trust not present in hasTrusteeWithId, redirect to landing page", async () => {
       const appData: ApplicationData = {
         trusts: [
         ]
@@ -148,13 +148,13 @@ describe("Trusts Middleware tests", () => {
 
       mockGetApplicationData.mockReturnValueOnce(appData);
 
-      hasTrusteeWithIdUpdate(req, res, next);
+      await hasTrusteeWithIdUpdate(req, res, next);
 
       expect(res.redirect).toBeCalledWith(SECURE_UPDATE_FILTER_URL);
       expect(next).not.toBeCalled();
     });
 
-    test.each([TrusteeType.HISTORICAL, TrusteeType.INDIVIDUAL, TrusteeType.LEGAL_ENTITY])("Trustee of type %s present, return next", (trusteeType) => {
+    test.each([TrusteeType.HISTORICAL, TrusteeType.INDIVIDUAL, TrusteeType.LEGAL_ENTITY])("Trustee of type %s present, return next", async (trusteeType) => {
       const appData: ApplicationData = {
         trusts: [
           {
@@ -235,13 +235,13 @@ describe("Trusts Middleware tests", () => {
 
       mockGetApplicationData.mockReturnValueOnce(appData);
 
-      hasTrusteeWithIdUpdate(req, res, next);
+      await hasTrusteeWithIdUpdate(req, res, next);
 
       expect(next).toBeCalled();
       expect(res.redirect).not.toBeCalled();
     });
 
-    test("Trust not present, redirect to landing page", () => {
+    test("Trust not present, redirect to landing page", async () => {
       req = {
         params: {
           trustId: "otherID",
@@ -253,33 +253,33 @@ describe("Trusts Middleware tests", () => {
 
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_WITH_TRUST_ID_MOCK);
 
-      hasTrustWithIdUpdate(req, res, next);
+      await hasTrustWithIdUpdate(req, res, next);
 
       expect(res.redirect).toBeCalled();
       expect(res.redirect).toBeCalledWith(SECURE_UPDATE_FILTER_URL);
       expect(next).not.toBeCalled();
     });
 
-    test("Submission contains trust data", () => {
+    test("Submission contains trust data", async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_WITH_TRUST_ID_MOCK);
 
-      hasTrustDataUpdate(req, res, next);
+      await hasTrustDataUpdate(req, res, next);
 
       expect(next).toBeCalled();
       expect(res.redirect).not.toBeCalled();
     });
 
-    test("Submission does not contain trust data", () => {
+    test("Submission does not contain trust data", async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_NO_TRUSTS_MOCK);
 
-      hasTrustDataUpdate(req, res, next);
+      await hasTrustDataUpdate(req, res, next);
 
       expect(res.redirect).toBeCalled();
       expect(res.redirect).toBeCalledWith(SECURE_UPDATE_FILTER_URL);
       expect(next).not.toBeCalled();
     });
 
-    test("catch error when renders the page", () => {
+    test("catch error when renders the page", async () => {
       req = {
         params: {
           trustId: "otherID",
@@ -292,7 +292,7 @@ describe("Trusts Middleware tests", () => {
       const error = new Error(ANY_MESSAGE_ERROR);
       mockGetApplicationData.mockImplementationOnce(() => { throw error; });
 
-      hasTrustWithIdUpdate(req, res, next);
+      await hasTrustWithIdUpdate(req, res, next);
 
       expect(next).toBeCalledTimes(1);
       expect(next).toBeCalledWith(error);

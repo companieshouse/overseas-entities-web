@@ -25,9 +25,9 @@ describe("has.update.presenter navigation middleware tests", () => {
     jest.clearAllMocks();
   });
 
-  test(`should redirect to ${SECURE_UPDATE_FILTER_PAGE} page and log message error ${NavigationErrorMessage}`, () => {
+  test(`should redirect to ${SECURE_UPDATE_FILTER_PAGE} page and log message error ${NavigationErrorMessage}`, async () => {
     mockCheckUpdatePresenterEntered.mockImplementationOnce( () => { return false; });
-    hasUpdatePresenter(req, res, next);
+    await hasUpdatePresenter(req, res, next);
 
     expect(next).not.toHaveBeenCalledTimes(1);
 
@@ -38,9 +38,9 @@ describe("has.update.presenter navigation middleware tests", () => {
     expect(res.redirect).toHaveBeenCalledWith(SECURE_UPDATE_FILTER_URL);
   });
 
-  test(`should not redirect and pass to the next middleware`, () => {
+  test(`should not redirect and pass to the next middleware`, async () => {
     mockCheckUpdatePresenterEntered.mockImplementationOnce( () => { return true; });
-    hasUpdatePresenter(req, res, next);
+    await hasUpdatePresenter(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
 
@@ -48,9 +48,9 @@ describe("has.update.presenter navigation middleware tests", () => {
     expect(res.redirect).not.toHaveBeenCalled();
   });
 
-  test("should catch the error and call next(err)", () => {
+  test("should catch the error and call next(err)", async () => {
     mockCheckUpdatePresenterEntered.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-    hasUpdatePresenter(req, res, next);
+    await hasUpdatePresenter(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
 

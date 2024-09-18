@@ -9,12 +9,13 @@ import { isActiveFeature } from "./feature.flag";
 import { updateOverseasEntity } from "../service/overseas.entities.service";
 import { Session } from "@companieshouse/node-session-handler";
 
-export const getFilterPage = (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string): void => {
+export const getFilterPage = async (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string): Promise<void> => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
+    const isRemove: boolean = await isRemoveJourney(req);
 
-    if (isRemoveJourney(req)) {
+    if (isRemove) {
       return res.render(templateName, {
         templateName,
         journey: config.JourneyType.remove,
@@ -45,7 +46,7 @@ export const postFilterPage = async (
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
     const isSecureRegister = (req.body[IsSecureRegisterKey]).toString();
     appData[IsSecureRegisterKey] = isSecureRegister;
     const session = req.session as Session;
@@ -71,7 +72,9 @@ export const postFilterPage = async (
       }
     }
 
-    if (isRemoveJourney(req)) {
+    const isRemove: boolean = await isRemoveJourney(req);
+
+    if (isRemove) {
       nextPageUrl = `${nextPageUrl}${config.JOURNEY_REMOVE_QUERY_PARAM}`;
     }
     setExtraData(req.session, appData);

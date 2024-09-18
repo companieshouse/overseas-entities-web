@@ -24,12 +24,12 @@ import { removeBeneficialOwnerOther } from "../../utils/beneficial.owner.other";
 import { removeManagingOfficer } from "../../utils/managing.officer.individual";
 import { removeManagingOfficerCorporate } from "../../utils/managing.officer.corporate";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const session = req.session as Session;
-    const appData: ApplicationData = getApplicationData(session);
+    const appData: ApplicationData = await getApplicationData(session);
 
     return res.render(UPDATE_CONFIRM_TO_REMOVE_PAGE, {
       backLinkUrl: UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
@@ -42,22 +42,22 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
+export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `DELETE ${req.route.path}`);
 
     if (req.body[DoYouWantToRemoveKey] === '1') {
       switch (req.params[PARAM_BO_MO_TYPE]) {
           case PARAM_BENEFICIAL_OWNER_INDIVIDUAL:
-            return removeBeneficialOwnerIndividual(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+            return await removeBeneficialOwnerIndividual(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
           case PARAM_BENEFICIAL_OWNER_GOV:
-            return removeBeneficialOwnerGov(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+            return await removeBeneficialOwnerGov(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
           case PARAM_BENEFICIAL_OWNER_OTHER:
-            return removeBeneficialOwnerOther(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+            return await removeBeneficialOwnerOther(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
           case PARAM_MANAGING_OFFICER_INDIVIDUAL:
-            return removeManagingOfficer(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+            return await removeManagingOfficer(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
           case PARAM_MANAGING_OFFICER_CORPORATE:
-            return removeManagingOfficerCorporate(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+            return await removeManagingOfficerCorporate(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
           default:
             break;
       }

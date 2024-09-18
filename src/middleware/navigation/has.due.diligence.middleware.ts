@@ -4,10 +4,13 @@ import { logger } from '../../utils/logger';
 import { SOLD_LAND_FILTER_URL } from '../../config';
 import { getApplicationData } from "../../utils/application.data";
 import { checkDueDiligenceDetailsEntered, NavigationErrorMessage } from './check.condition';
+import { ApplicationData } from 'model';
 
-export const hasDueDiligence = (req: Request, res: Response, next: NextFunction): void => {
+export const hasDueDiligence = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    if ( !checkDueDiligenceDetailsEntered(getApplicationData(req.session)) ) {
+    const appData: ApplicationData = await getApplicationData(req.session);
+
+    if ( !checkDueDiligenceDetailsEntered(appData) ) {
       logger.infoRequest(req, NavigationErrorMessage);
       return res.redirect(SOLD_LAND_FILTER_URL);
     }

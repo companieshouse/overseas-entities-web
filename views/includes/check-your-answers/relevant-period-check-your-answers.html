@@ -1,17 +1,17 @@
 {% set isOwnedLand %}
-{% if update.owned_land_relevant_period  %}
-Yes
-{% else %}
-No
-{% endif %}
+ {% if update.owned_land_relevant_period  %}
+  Yes
+ {% else %}
+  No
+ {% endif %}
 {% endset %}
 
 {% set isProtectedInformation %}
-{% if appData.is_secure_register == 1 %}
-Yes
-{% else %}
-No
-{% endif %}
+ {% if appData.is_secure_register == 1 %}
+  Yes
+ {% else %}
+  No
+ {% endif %}
 {% endset %}
 
 {{ govukSummaryList({

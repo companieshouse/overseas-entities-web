@@ -145,7 +145,7 @@ describe('Trust Details controller', () => {
       expect(mockNext).toBeCalledWith(error);
     });
 
-    test('render trust data based on parameter id', () => {
+    test('render trust data based on parameter id', async () => {
       mockGetApplicationData.mockReturnValue(mockAppData);
 
       const expectMapResult = { dummyKey: 'EXPECT-MAP-RESULT' };
@@ -158,7 +158,7 @@ describe('Trust Details controller', () => {
       (mapBoIndividualToPage as jest.Mock).mockReturnValueOnce(expectBoIndividualItems);
       (mapBoOtherToPage as jest.Mock).mockReturnValueOnce(expectBoOtherItems);
 
-      get(mockReq, mockRes, mockNext);
+      await get(mockReq, mockRes, mockNext);
 
       expect(mapDetailToPage).toBeCalledTimes(1);
       expect(mapDetailToPage).toBeCalledWith(mockAppData, mockTrust2Data.trust_id, false);
@@ -464,12 +464,10 @@ describe('Trust Details controller', () => {
       expect(resp.text).not.toContain(TRUST_CEASED_DATE_TEXT);
     });
 
-    test(`successfully access GET method and does not show ceased date when feature flag is true`, async () => {
+    test(`successfully access GET method and does not show ceased date`, async () => {
       // The ceased date should only be visible when the page is in review mode on the update journey so
       // check it doesn't show in this registration journey
       mockIsActiveFeature.mockReturnValueOnce(false); // SHOW_SERVICE_OFFLINE_PAGE
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_ROE_UPDATE
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
 
       const resp = await request(app).get(pageUrl);
 

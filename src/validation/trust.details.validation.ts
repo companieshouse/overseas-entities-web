@@ -5,23 +5,17 @@ import { trustCreatedDateValidations, trustCeasedDateValidations } from "./field
 import { VALID_CHARACTERS } from "./regex/regex.validation";
 import { ApplicationData } from "../model";
 import { getApplicationData } from "../utils/application.data";
-import { isActiveFeature } from "../utils/feature.flag";
-import * as config from "../config";
 import { logger } from "../utils/logger";
 import { hasNoBoAssignableToTrust } from "../utils/trusts";
 
 const setIsTrustToBeCeasedFlagOnBody = () => {
-  return (req: Request, _res: Response, next: NextFunction) => {
+  return async (req: Request, _res: Response, next: NextFunction) => {
     try {
       if (req.body["stillInvolved"] === "1") {
         return next();
       }
 
-      if (!isActiveFeature(config.FEATURE_FLAG_ENABLE_CEASE_TRUSTS)) {
-        return next();
-      }
-
-      const appData: ApplicationData = getApplicationData(req.session);
+      const appData: ApplicationData = await getApplicationData(req.session);
 
       const isTrustToBeCeased = req.body["stillInvolved"] === "0" || hasNoBoAssignableToTrust(appData) ? "true" : "false";
       // Create a new object with the updated property
@@ -35,14 +29,6 @@ const setIsTrustToBeCeasedFlagOnBody = () => {
   };
 };
 
-export const checkTrustStillInvolved = (req: Request): boolean => {
-  const appData: ApplicationData = getApplicationData(req.session);
-
-  const isUpdateOrRemove: boolean = !!appData.entity_number;
-
-  return !hasNoBoAssignableToTrust(appData) && isUpdateOrRemove;
-};
-
 export const trustDetails = [
   // Need to set this flag so it can be checked in the other validators
   setIsTrustToBeCeasedFlagOnBody(),
@@ -53,10 +39,6 @@ export const trustDetails = [
     .isLength({ max: 160 }).withMessage(ErrorMessages.MAX_NAME_LENGTH_TRUST),
 
   ...trustCreatedDateValidations,
-
-  body("stillInvolved")
-    .if((value, { req }) => checkTrustStillInvolved(req))
-    .not().isEmpty().withMessage(ErrorMessages.TRUST_STILL_INVOLVED),
 
   body("beneficialOwnersIds")
     .not().isEmpty().withMessage(ErrorMessages.TRUST_INVOLVED_BOS),
@@ -76,10 +58,6 @@ export const reviewTrustDetails = [
     .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.TRUST_NAME_2)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.NAME_INVALID_CHARACTERS_TRUST)
     .isLength({ max: 160 }).withMessage(ErrorMessages.MAX_NAME_LENGTH_TRUST),
-
-  body("stillInvolved")
-    .if((value, { req }) => checkTrustStillInvolved(req))
-    .not().isEmpty().withMessage(ErrorMessages.TRUST_STILL_INVOLVED),
 
   body("beneficialOwnersIds")
     .if(body("isTrustToBeCeased").not().equals("true"))

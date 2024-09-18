@@ -21,7 +21,7 @@ import request from "supertest";
 import app from "../../../src/app";
 import { get, post } from "../../../src/controllers/trust.historical.beneficial.owner.controller";
 import { HISTORICAL_BO_TEXTS } from '../../../src/utils/trust.former.bo';
-import { ANY_MESSAGE_ERROR, PAGE_NOT_FOUND_TEXT, PAGE_TITLE_ERROR } from '../../__mocks__/text.mock';
+import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR } from '../../__mocks__/text.mock';
 import { authentication } from '../../../src/middleware/authentication.middleware';
 import { hasTrustWithIdUpdate } from '../../../src/middleware/navigation/has.trust.middleware';
 import { UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL, TRUST_HISTORICAL_BENEFICIAL_OWNER_URL } from '../../../src/config';
@@ -121,11 +121,11 @@ describe('Trust Historical Beneficial Owner Controller', () => {
   });
 
   describe('GET unit tests', () => {
-    test('catch error when renders the page', () => {
+    test('catch error when renders the page', async () => {
       const error = new Error(ANY_MESSAGE_ERROR);
       mockGetApplicationData.mockImplementationOnce(() => { throw error; });
 
-      get(mockReq, mockRes, mockNext);
+      await get(mockReq, mockRes, mockNext);
 
       expect(mockNext).toBeCalledTimes(1);
       expect(mockNext).toBeCalledWith(error);
@@ -133,7 +133,7 @@ describe('Trust Historical Beneficial Owner Controller', () => {
   });
 
   describe('POST unit tests', () => {
-    test('Save', () => {
+    test('Save', async () => {
       const mockBoData = {} as TrustHistoricalBeneficialOwner;
       (mapBeneficialOwnerToSession as jest.Mock).mockReturnValue(mockBoData);
 
@@ -148,7 +148,7 @@ describe('Trust Historical Beneficial Owner Controller', () => {
       const mockUpdatedAppData = {} as Trust;
       (saveTrustInApp as jest.Mock).mockReturnValue(mockUpdatedAppData);
 
-      post(mockReq, mockRes, mockNext);
+      await post(mockReq, mockRes, mockNext);
 
       expect(mapBeneficialOwnerToSession).toBeCalledTimes(1);
       expect(mapBeneficialOwnerToSession).toBeCalledWith(mockReq.body);
@@ -202,11 +202,11 @@ describe('Trust Historical Beneficial Owner Controller', () => {
       expect(hasTrustWithIdUpdate).toBeCalledTimes(1);
     });
 
-    test('catch error when renders the page', () => {
+    test('catch error when renders the page', async () => {
       const error = new Error(ANY_MESSAGE_ERROR);
       (mapBeneficialOwnerToSession as jest.Mock).mockImplementationOnce(() => { throw error; });
 
-      post(mockReq, mockRes, mockNext);
+      await post(mockReq, mockRes, mockNext);
 
       expect(mockNext).toBeCalledTimes(1);
       expect(mockNext).toBeCalledWith(error);
@@ -271,24 +271,6 @@ describe('Trust Historical Beneficial Owner Controller', () => {
 
       expect(authentication).toBeCalledTimes(1);
       expect(hasTrustWithIdUpdate).toBeCalledTimes(1);
-    });
-
-    test('when feature flag for update trusts is off GET returns 404', async () => {
-      mockIsActiveFeature.mockReturnValue(false);
-
-      const resp = await request(app).get(pageUrl);
-
-      expect(resp.status).toEqual(404);
-      expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
-    });
-
-    test('when feature flag for update trusts is off POST returns 404', async () => {
-      mockIsActiveFeature.mockReturnValue(false);
-
-      const resp = await request(app).post(pageUrl).send({});
-
-      expect(resp.status).toEqual(404);
-      expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
     });
   });
 });

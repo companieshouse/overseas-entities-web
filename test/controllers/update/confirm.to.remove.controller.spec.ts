@@ -37,13 +37,13 @@ import {
   ERROR,
   UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
   UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
-  UPDATE_BENEFICIAL_OWNER_GOV_OBJECT_MOCK
+  UPDATE_BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
+  UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
+  UPDATE_MANAGING_OFFICER_OBJECT_MOCK,
+  MO_IND_ID_URL,
+  MO_CORP_ID_URL
 } from "../../__mocks__/session.mock";
 import { hasGivenValidBoMoDetails } from "../../../src/middleware/navigation/update/has.given.valid.bo.mo.details.middleware";
-import { UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK } from "../../__mocks__/session.mock";
-import { UPDATE_MANAGING_OFFICER_OBJECT_MOCK } from "../../__mocks__/session.mock";
-import { MO_IND_ID_URL } from "../../__mocks__/session.mock";
-import { MO_CORP_ID_URL } from "../../__mocks__/session.mock";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockAuthenticationMiddleware = authentication as jest.Mock;
@@ -107,6 +107,7 @@ describe("CONFIRM TO REMOVE controller", () => {
     });
 
     test("catch error when rendering the page", async () => {
+      mockGetApplicationData.mockReturnValueOnce(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
       mockGetApplicationData.mockImplementationOnce( () => { throw ERROR; });
       const resp = await request(app).get(UPDATE_CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_OTHER + BO_OTHER_ID_URL);
 

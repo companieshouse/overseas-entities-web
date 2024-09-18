@@ -27,7 +27,7 @@ import { getApplicationData } from '../../../src/utils/application.data';
 import { isActiveFeature } from '../../../src/utils/feature.flag';
 
 import { APPLICATION_DATA_MOCK } from '../../__mocks__/session.mock';
-import { PAGE_TITLE_ERROR, PAGE_NOT_FOUND_TEXT, CONTINUE_BUTTON_TEXT } from '../../__mocks__/text.mock';
+import { PAGE_TITLE_ERROR, CONTINUE_BUTTON_TEXT } from '../../__mocks__/text.mock';
 import { ApplicationData } from '../../../src/model';
 import { checkEntityRequiresTrusts } from '../../../src/utils/trusts';
 
@@ -59,10 +59,8 @@ describe('Update - Trusts - Submission Interrupt', () => {
   });
 
   describe('GET tests', () => {
-    test('when FEATURE_FLAG_ENABLE_UPDATE_TRUSTS is on and there are BOs with Trustee NOCs, page is returned', async () => {
-      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
+    test('when there are BOs with Trustee NOCs, page is returned', async () => {
       mockCheckEntityRequiresTrusts.mockReturnValue(true);
-
       const resp = await request(app).get(UPDATE_TRUSTS_SUBMISSION_INTERRUPT_URL);
 
       expect(resp.status).toEqual(200);
@@ -72,8 +70,7 @@ describe('Update - Trusts - Submission Interrupt', () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 
-    test('when FEATURE_FLAG_ENABLE_UPDATE_TRUSTS is on, and there are no BOs with Trustee NOCs, redirect to check your answers', async () => {
-      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
+    test('when there are no BOs with Trustee NOCs, redirect to check your answers', async () => {
       mockCheckEntityRequiresTrusts.mockReturnValue(false);
 
       const resp = await request(app).get(UPDATE_TRUSTS_SUBMISSION_INTERRUPT_URL);
@@ -81,34 +78,14 @@ describe('Update - Trusts - Submission Interrupt', () => {
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_CHECK_YOUR_ANSWERS_URL);
     });
-
-    test('when feature flag is off, 404 is returned', async () => {
-      mockIsActiveFeature.mockReturnValue(false); // FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
-
-      const resp = await request(app).get(UPDATE_TRUSTS_SUBMISSION_INTERRUPT_URL);
-
-      expect(resp.status).toEqual(404);
-      expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
-    });
   });
 
   describe('POST tests', () => {
-    test('when feature flag is on, redirect to tell us about the trust page', async () => {
-      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
-
+    test('redirects to tell us about the trust page', async () => {
       const resp = await request(app).post(UPDATE_TRUSTS_SUBMISSION_INTERRUPT_URL);
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL);
-    });
-
-    test('when feature flag is off, 404 is returned', async () => {
-      mockIsActiveFeature.mockReturnValue(false); // FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
-
-      const resp = await request(app).post(UPDATE_TRUSTS_SUBMISSION_INTERRUPT_URL);
-
-      expect(resp.status).toEqual(404);
-      expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
     });
   });
 });

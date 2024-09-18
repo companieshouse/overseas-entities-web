@@ -15,7 +15,7 @@ import { companyAuthentication } from "../../../src/middleware/company.authentic
 import request from "supertest";
 import { NextFunction, Request, Response } from "express";
 import app from "../../../src/app";
-import { UPDATE_CONFIRMATION_URL } from "../../../src/config";
+import { REMOVE_SERVICE_NAME, UPDATE_CONFIRMATION_URL } from "../../../src/config";
 import { logger } from "../../../src/utils/logger";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 
@@ -30,7 +30,6 @@ import {
   CONFIRMATION_COMPLETED_VERIFICATION_CHECKS_TEXT,
   CONFIRMATION_COMPLETED_IDENTITY_CHECKS_TEXT
 } from "../../__mocks__/text.mock";
-import { REMOVE_SERVICE_NAME } from "../../../src/config";
 import { deleteApplicationData, getApplicationData } from "../../../src/utils/application.data";
 import {
   APPLICATION_DATA_MOCK,
@@ -153,13 +152,13 @@ describe("UPDATE CONFIRMATION controller", () => {
     expect(resp.text).toContain(SERVICE_UNAVAILABLE);
   });
 
-  test("should test that deleteApplicationData does the work", () => {
+  test("should test that deleteApplicationData does the work", async () => {
     mockGetApplicationData.mockReturnValueOnce( { ...APPLICATION_DATA_MOCK } );
     req.session = getSessionRequestWithExtraData();
 
-    get(req, res);
+    await get(req, res);
 
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
 
     expect(appData).toBeFalsy;
     expect(res.render).toHaveBeenCalledTimes(1);

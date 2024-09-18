@@ -1,0 +1,36 @@
+{{ govukCheckboxes({
+    errorMessage: errorMessage,
+    idPrefix: "non_legal_firm_control_nature_of_control_types",
+    name: "non_legal_firm_control_nature_of_control_types",
+    fieldset: {
+      legend: {
+        text: "The beneficial owner has the right to exercise, or actually exercises, significant control or influence over the activities of a firm that is not a legal person under its governing law, and:",
+        isPageHeading: false,
+        classes: "govuk-fieldset__legend--s"
+      }
+    },
+
+    items: [
+      {
+        value: "OVER_25_PERCENT_OF_SHARES",
+        text: "the members of that firm (in their capacity as such) hold, directly or indirectly, more than 25% of the shares in the entity",
+        checked: non_legal_firm_control_nature_of_control_types and 'OVER_25_PERCENT_OF_SHARES' in non_legal_firm_control_nature_of_control_types
+      },
+      {
+        value: "OVER_25_PERCENT_OF_VOTING_RIGHTS",
+        text: "the members of that firm (in their capacity as such) hold, directly or indirectly, more than 25% of the voting rights in the entity",
+        checked: non_legal_firm_control_nature_of_control_types and 'OVER_25_PERCENT_OF_VOTING_RIGHTS' in non_legal_firm_control_nature_of_control_types
+      },
+      {
+        value: "APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS",
+        text: "the members of that firm (in their capacity as such) hold the right, directly or indirectly, to appoint or remove a majority of the board of directors of the company",
+        checked: non_legal_firm_control_nature_of_control_types and 'APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS' in non_legal_firm_control_nature_of_control_types
+      },
+      {
+        value: "SIGNIFICANT_INFLUENCE_OR_CONTROL",
+        text: "the members of that firm (in their capacity as such) have the right to exercise, or actually exercise, significant influence or control over the company",
+        checked: non_legal_firm_control_nature_of_control_types and 'SIGNIFICANT_INFLUENCE_OR_CONTROL' in non_legal_firm_control_nature_of_control_types
+      }
+    ]
+  }) }}
+  

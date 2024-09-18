@@ -85,7 +85,6 @@ export const getResumePage = async (req: Request, res: Response, next: NextFunct
  * @param overseaEntityId
  */
 const setWebApplicationData = (session: Session, appData: ApplicationData, transactionId: string, overseaEntityId: string) => {
-
   appData[BeneficialOwnerIndividualKey] = (appData[BeneficialOwnerIndividualKey] as BeneficialOwnerIndividual[])
     .map( boi => { return { ...boi, [ID]: uuidv4() }; } );
   appData[BeneficialOwnerOtherKey] = (appData[BeneficialOwnerOtherKey] as BeneficialOwnerOther[] )

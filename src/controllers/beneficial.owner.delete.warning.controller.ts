@@ -45,13 +45,13 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
+export const post = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     logger.debugRequest(req, `POST ${config.BENEFICIAL_OWNER_DELETE_WARNING_PAGE}`);
 
     if (req.body["delete_beneficial_owners"] === '1') {
       const boStatement = req.body[BeneficialOwnerStatementKey];
-      const appData: ApplicationData = getApplicationData(req.session);
+      const appData: ApplicationData = await getApplicationData(req.session);
 
       if ( boStatement === BeneficialOwnersStatementType.NONE_IDENTIFIED && checkBOsDetailsEntered(appData) ) {
         appData[BeneficialOwnerIndividualKey] = [];

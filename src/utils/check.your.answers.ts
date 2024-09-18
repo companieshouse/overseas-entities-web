@@ -26,8 +26,7 @@ import {
   UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL,
   UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL,
   JourneyType,
-  REMOVE_CONFIRM_STATEMENT_URL,
-  FEATURE_FLAG_ENABLE_UPDATE_TRUSTS
+  REMOVE_CONFIRM_STATEMENT_URL
 } from "../config";
 import { RoleWithinTrustType } from "../model/role.within.trust.type.model";
 import { fetchManagingOfficersPrivateData } from "./update/fetch.managing.officers.private.data";
@@ -37,9 +36,10 @@ import { checkRPStatementsExist } from "./relevant.period";
 
 export const getDataForReview = async (req: Request, res: Response, next: NextFunction, isNoChangeJourney: boolean) => {
   const session = req.session as Session;
-  const appData = getApplicationData(session);
+  const appData: ApplicationData = await getApplicationData(session);
+  const isRemove: boolean = await isRemoveJourney(req);
   const hasAnyBosWithTrusteeNocs = isNoChangeJourney ? checkEntityReviewRequiresTrusts(appData) : checkEntityRequiresTrusts(appData);
-  const backLinkUrl = getBackLinkUrl(isNoChangeJourney, hasAnyBosWithTrusteeNocs, isRemoveJourney(req));
+  const backLinkUrl = getBackLinkUrl(isNoChangeJourney, hasAnyBosWithTrusteeNocs, isRemove);
   const templateName = getTemplateName(isNoChangeJourney);
   const isRPStatementExists = checkRPStatementsExist(appData);
 
@@ -56,7 +56,7 @@ export const getDataForReview = async (req: Request, res: Response, next: NextFu
 
     }
 
-    if (isRemoveJourney(req)) {
+    if (isRemove) {
       return res.render(templateName, {
         journey: JourneyType.remove,
         backLinkUrl,
@@ -72,8 +72,7 @@ export const getDataForReview = async (req: Request, res: Response, next: NextFu
           noChangeFlag: isNoChangeJourney,
           isTrustFeatureEnabled: isActiveFeature(FEATURE_FLAG_ENABLE_TRUSTS_WEB),
           hasAnyBosWithTrusteeNocs,
-          today: getTodaysDate(),
-          addTrustsEnabled: isActiveFeature(FEATURE_FLAG_ENABLE_UPDATE_TRUSTS)
+          today: getTodaysDate()
         },
       });
     }
@@ -91,8 +90,7 @@ export const getDataForReview = async (req: Request, res: Response, next: NextFu
         isRPStatementExists: isRPStatementExists,
         noChangeFlag: isNoChangeJourney,
         isTrustFeatureEnabled: isActiveFeature(FEATURE_FLAG_ENABLE_TRUSTS_WEB),
-        hasAnyBosWithTrusteeNocs,
-        addTrustsEnabled: isActiveFeature(FEATURE_FLAG_ENABLE_UPDATE_TRUSTS)
+        hasAnyBosWithTrusteeNocs
       },
     });
   } catch (error) {
@@ -106,7 +104,7 @@ export const postDataForReview = async (req: Request, res: Response, next: NextF
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const session = req.session as Session;
-    const appData: ApplicationData = getApplicationData(session);
+    const appData: ApplicationData = await getApplicationData(session);
     const noChangeReviewStatement = req.body["no_change_review_statement"];
 
     if (noChangeReviewStatement === "0") {

@@ -295,9 +295,9 @@ describe("OVERSEAS ENTITY UPDATE DETAILS controller", () => {
   });
 
   describe("Navigation tests", () => {
-    test(`Back links for follow on pages should return to ${config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL}`, () => {
-      expect(NAVIGATION[config.UPDATE_CHECK_YOUR_ANSWERS_URL].previousPage()).toEqual(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
-      expect(NAVIGATION[config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL].previousPage()).toEqual(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
+    test(`Back links for follow on pages should return to ${config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL}`, async () => {
+      expect(await NAVIGATION[config.UPDATE_CHECK_YOUR_ANSWERS_URL].previousPage()).toEqual(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
+      expect(await NAVIGATION[config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL].previousPage()).toEqual(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
     });
   });
 });

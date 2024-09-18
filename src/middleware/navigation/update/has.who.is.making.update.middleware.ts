@@ -4,10 +4,13 @@ import { logger } from '../../../utils/logger';
 import { SECURE_UPDATE_FILTER_URL } from '../../../config';
 import { getApplicationData } from "../../../utils/application.data";
 import { checkWhoIsFilingEntered, NavigationErrorMessage } from '../check.condition';
+import { ApplicationData } from 'model';
 
-export const hasWhoIsMakingUpdate = (req: Request, res: Response, next: NextFunction): void => {
+export const hasWhoIsMakingUpdate = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    if (!checkWhoIsFilingEntered(getApplicationData(req.session)) ) {
+    const appData: ApplicationData = await getApplicationData(req.session);
+
+    if (!checkWhoIsFilingEntered(appData) ) {
       logger.infoRequest(req, NavigationErrorMessage);
       return res.redirect(SECURE_UPDATE_FILTER_URL);
     }

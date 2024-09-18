@@ -17,11 +17,11 @@ import { FormattedValidationErrors, formatValidationError } from "../../middlewa
 import { StatementResolutionKey, StatementResolutionType } from "../../model/statement.resolution.model";
 import { isNoChangeJourney } from "../../utils/update/no.change.journey";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
     const inNoChangeJourney: boolean = isNoChangeJourney(appData);
 
     return renderPage(res, appData, inNoChangeJourney, req['statementErrorList']);
@@ -30,11 +30,11 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
+export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
     const errors = validationResult(req);
     const inNoChangeJourney = isNoChangeJourney(appData);
 

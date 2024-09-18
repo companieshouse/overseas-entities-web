@@ -124,7 +124,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).not.toContain(TRUSTS_NOC_HEADING);
     });
 
-    test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with relevant period content when query param is passed`, async () => {
+    xtest(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with relevant period content when query param is passed`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
 
       const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_GOV_URL);

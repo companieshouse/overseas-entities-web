@@ -152,7 +152,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).not.toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
     });
 
-    test(`renders the ${config.BENEFICIAL_OWNER_GOV_PAGE} pagen atures of control correctly when FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is active`, async () => {
+    test(`renders the ${config.BENEFICIAL_OWNER_GOV_PAGE} page renders natures of control correctly when FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is active`, async () => {
       const appData = APPLICATION_DATA_MOCK;
       delete appData[EntityNumberKey];
 

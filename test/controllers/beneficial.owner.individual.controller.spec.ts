@@ -2172,7 +2172,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-    xtest(`removes the object from session`, async () => {
+    test(`removes the object from session`, async () => {
       const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL + REMOVE + BO_IND_ID_URL);
 
       expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(BeneficialOwnerIndividualKey);

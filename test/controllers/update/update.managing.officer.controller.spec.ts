@@ -640,7 +640,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
       expect(resp.text).toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
     });
 
-    xtest(`renders the current page ${UPDATE_MANAGING_OFFICER_PAGE} with only DATE_NOT_IN_PAST error when date of birth is today`, async () => {
+    test(`renders the current page ${UPDATE_MANAGING_OFFICER_PAGE} with only DATE_NOT_IN_PAST error when date of birth is today`, async () => {
       const managingOfficer = { ...REQ_BODY_MANAGING_OFFICER_FOR_DATE_VALIDATION };
       const today = DateTime.now();
       managingOfficer["date_of_birth-day"] = today.day.toString();

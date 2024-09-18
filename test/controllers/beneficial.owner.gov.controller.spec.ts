@@ -40,6 +40,12 @@ import {
   YES_SANCTIONS_TEXT_IT,
   SANCTIONS_HINT_TEXT_IT,
   TRUSTS_NOC_HEADING,
+  BO_NOC_HEADING,
+  FIRM_NOC_HEADING,
+  FIRM_NOC_HEADING_NEW,
+  TRUST_CONTROL_NOC_HEADING,
+  OWNER_OF_LAND_PERSON_NOC_HEADING,
+  OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING
 } from "../__mocks__/text.mock";
 import { logger } from "../../src/utils/logger";
 import {
@@ -53,7 +59,17 @@ import {
   REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_START_DATE_VALIDATION,
   APPLICATION_DATA_MOCK,
 } from "../__mocks__/session.mock";
-import { AddressKeys, EntityNumberKey } from '../../src/model/data.types.model';
+import {
+  AddressKeys,
+  EntityNumberKey,
+  BeneficialOwnerNoc,
+  TrustControlNoc,
+  NatureOfControlJurisdiction,
+  NatureOfControlType,
+  NonLegalFirmControlNoc,
+  OwnerOfLandOtherEntityJurisdictionsNoc,
+  OwnerOfLandPersonJurisdictionsNoc
+} from '../../src/model/data.types.model';
 import { ServiceAddressKey, ServiceAddressKeys } from "../../src/model/address.model";
 import { ApplicationDataType } from '../../src/model';
 import {
@@ -127,7 +143,34 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).toContain(YES_SANCTIONS_TEXT_IT);
       expect(resp.text).toContain(NO_SANCTIONS_TEXT_IT);
       expect(resp.text).toContain(SANCTIONS_HINT_TEXT_IT);
+      expect(resp.text).toContain(BO_NOC_HEADING);
       expect(resp.text).not.toContain(TRUSTS_NOC_HEADING);
+      expect(resp.text).toContain(FIRM_NOC_HEADING);
+      expect(resp.text).not.toContain(FIRM_NOC_HEADING_NEW);
+      expect(resp.text).not.toContain(TRUST_CONTROL_NOC_HEADING);
+      expect(resp.text).not.toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
+      expect(resp.text).not.toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
+    });
+
+    test(`renders the ${config.BENEFICIAL_OWNER_GOV_PAGE} page renders natures of control correctly when FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is active`, async () => {
+      const appData = APPLICATION_DATA_MOCK;
+      delete appData[EntityNumberKey];
+
+      mockGetApplicationData.mockReturnValueOnce({ ...appData });
+
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
+      const resp = await request(app).get(config.BENEFICIAL_OWNER_GOV_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BO_NOC_HEADING);
+      expect(resp.text).not.toContain(TRUSTS_NOC_HEADING);
+      expect(resp.text).not.toContain(FIRM_NOC_HEADING);
+      expect(resp.text).toContain(FIRM_NOC_HEADING_NEW);
+      expect(resp.text).toContain(TRUST_CONTROL_NOC_HEADING);
+      expect(resp.text).toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
+      expect(resp.text).toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
     });
   });
 
@@ -152,7 +195,34 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).toContain(YES_SANCTIONS_TEXT_IT);
       expect(resp.text).toContain(NO_SANCTIONS_TEXT_IT);
       expect(resp.text).toContain(SANCTIONS_HINT_TEXT_IT);
+      expect(resp.text).toContain(BO_NOC_HEADING);
       expect(resp.text).not.toContain(TRUSTS_NOC_HEADING);
+      expect(resp.text).toContain(FIRM_NOC_HEADING);
+      expect(resp.text).not.toContain(FIRM_NOC_HEADING_NEW);
+      expect(resp.text).not.toContain(TRUST_CONTROL_NOC_HEADING);
+      expect(resp.text).not.toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
+      expect(resp.text).not.toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
+    });
+
+    test(`renders the ${config.BENEFICIAL_OWNER_GOV_PAGE} page natures of control correctly when FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is active`, async () => {
+      const appData = APPLICATION_DATA_MOCK;
+      delete appData[EntityNumberKey];
+
+      mockGetApplicationData.mockReturnValueOnce({ ...appData });
+
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
+      const resp = await request(app).get(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BO_NOC_HEADING);
+      expect(resp.text).not.toContain(TRUSTS_NOC_HEADING);
+      expect(resp.text).not.toContain(FIRM_NOC_HEADING);
+      expect(resp.text).toContain(FIRM_NOC_HEADING_NEW);
+      expect(resp.text).toContain(TRUST_CONTROL_NOC_HEADING);
+      expect(resp.text).toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
+      expect(resp.text).toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
     });
   });
 
@@ -229,6 +299,36 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test(`correctly maps natures of control when feature flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is ON`, async () => {
+      mockPrepareData.mockImplementationOnce( () => {
+        return {
+          ...BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS,
+          trust_control_nature_of_control_types: [NatureOfControlType.SIGNIFICANT_INFLUENCE_OR_CONTROL],
+          non_legal_firm_control_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+          owner_of_land_person_nature_of_control_jurisdictions: [NatureOfControlJurisdiction.ENGLAND_AND_WALES],
+          owner_of_land_other_entity_nature_of_control_jurisdictions: [NatureOfControlJurisdiction.NORTHERN_IRELAND]
+        };
+      });
+
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
+      await request(app)
+        .post(config.BENEFICIAL_OWNER_GOV_URL)
+        .send({
+          ...BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS,
+        });
+
+      const appData: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+
+      expect(appData[BeneficialOwnerNoc]).toEqual([NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS]);
+      expect(appData[TrustControlNoc]).toEqual([NatureOfControlType.SIGNIFICANT_INFLUENCE_OR_CONTROL]);
+      expect(appData[NonLegalFirmControlNoc]).toEqual([NatureOfControlType.OVER_25_PERCENT_OF_SHARES]);
+      expect(appData[OwnerOfLandPersonJurisdictionsNoc]).toEqual([NatureOfControlJurisdiction.ENGLAND_AND_WALES]);
+      expect(appData[OwnerOfLandOtherEntityJurisdictionsNoc]).toEqual([NatureOfControlJurisdiction.NORTHERN_IRELAND]);
     });
 
     test("catch error when posting data", async () => {
@@ -639,11 +739,136 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
+
+    describe("Nature of control tests", () => {
+      test.each([
+        ["BO Noc", [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS], null],
+        ["Non legal firm Noc", null, [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS]]
+      ])(`redirect to the ${config.BENEFICIAL_OWNER_TYPE_PAGE} page when page data includes a nature of control and FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is OFF - %s`, async (_desc, boNoc, nonLegalNoc) => {
+        mockPrepareData.mockImplementationOnce( () => ( { ...BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS } ));
+
+        const body = {
+          ...BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS,
+          beneficial_owner_nature_of_control_types: boNoc,
+          non_legal_firm_members_nature_of_control_types: nonLegalNoc
+        };
+
+        const resp = await request(app)
+          .post(config.BENEFICIAL_OWNER_GOV_URL)
+          .send(body);
+
+        expect(resp.status).toEqual(302);
+        expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
+      });
+
+      test.each([
+        ["BO Noc", [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS], null, null, null, null],
+        ["Trust control control Noc", null, [NatureOfControlType.SIGNIFICANT_INFLUENCE_OR_CONTROL], null, null, null],
+        ["Non legal firm control Noc", null, null, [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS], null, null],
+        ["Owner of land person Noc", null, null, null, null, [NatureOfControlJurisdiction.ENGLAND_AND_WALES], null],
+        ["Owner of land other entity Noc", null, null, null, null, [NatureOfControlJurisdiction.ENGLAND_AND_WALES]]
+      ])(`redirect to the ${config.BENEFICIAL_OWNER_TYPE_PAGE} page when page data includes a nature of control and FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is ON - %s`, async (_desc, boNoc, trustControlNoc, nonLegalFirmControlNoc, landPersonNoc, landOtherEntityNoc) => {
+        mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+        mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+        mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
+        mockPrepareData.mockImplementationOnce( () => ( { ...BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS } ));
+
+        const body = {
+          ...BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS,
+          beneficial_owner_nature_of_control_types: boNoc,
+          non_legal_firm_members_nature_of_control_types: null,
+          trust_control_nature_of_control_types: trustControlNoc,
+          non_legal_firm_control_nature_of_control_types: nonLegalFirmControlNoc,
+          owner_of_land_person_nature_of_control_jurisdictions: landPersonNoc,
+          owner_of_land_other_entity_nature_of_control_jurisdictions: landOtherEntityNoc
+        };
+
+        const resp = await request(app)
+          .post(config.BENEFICIAL_OWNER_GOV_URL)
+          .send(body);
+
+        expect(resp.status).toEqual(302);
+        expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
+      });
+
+      test(`correctly maps natures of control when feature flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is ON`, async () => {
+        mockPrepareData.mockImplementationOnce( () => {
+          return {
+            ...BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS,
+            non_legal_firm_members_nature_of_control_types: null,
+            trust_control_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+            non_legal_firm_control_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+            owner_of_land_person_nature_of_control_jurisdictions: [NatureOfControlJurisdiction.ENGLAND_AND_WALES],
+            owner_of_land_other_entity_nature_of_control_jurisdictions: [NatureOfControlJurisdiction.NORTHERN_IRELAND]
+          };
+        });
+
+        mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+        mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+        mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
+        await request(app)
+          .post(config.BENEFICIAL_OWNER_GOV_URL)
+          .send({
+            ...BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS,
+          });
+
+        const appData: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+
+        expect(appData[TrustControlNoc]).toEqual([NatureOfControlType.OVER_25_PERCENT_OF_SHARES]);
+        expect(appData[NonLegalFirmControlNoc]).toEqual([NatureOfControlType.OVER_25_PERCENT_OF_SHARES]);
+        expect(appData[OwnerOfLandPersonJurisdictionsNoc]).toEqual([NatureOfControlJurisdiction.ENGLAND_AND_WALES]);
+        expect(appData[OwnerOfLandOtherEntityJurisdictionsNoc]).toEqual([NatureOfControlJurisdiction.NORTHERN_IRELAND]);
+      });
+
+      test(`renders the ${config.BENEFICIAL_OWNER_GOV_PAGE} page with nature of control error when no nature of control is provided and FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is ON`, async () => {
+        mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+        mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+        mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
+        const beneficialOwnerGov = {
+          ...BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
+          beneficial_owner_nature_of_control_types: null,
+          trust_control_nature_of_control_types: null,
+          non_legal_firm_members_nature_of_control_types: null,
+          non_legal_firm_control_nature_of_control_types: null,
+          owner_of_land_person_nature_of_control_jurisdictions: null,
+          owner_of_land_other_entity_nature_of_control_jurisdictions: null
+        };
+
+        const resp = await request(app).post(config.BENEFICIAL_OWNER_GOV_URL)
+          .send(beneficialOwnerGov);
+
+        expect(resp.status).toEqual(200);
+        expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
+        expect(resp.text).toContain(ErrorMessages.SELECT_NATURE_OF_CONTROL);
+      });
+
+      test(`Renders the ${config.BENEFICIAL_OWNER_GOV_PAGE} page with validation errors with correct nature of controls with FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is OFF`, async () => {
+        mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+        mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+        mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+
+        const resp = await request(app).post(config.BENEFICIAL_OWNER_GOV_URL);
+
+        expect(resp.status).toEqual(200);
+        expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
+
+        expect(resp.text).toContain(BO_NOC_HEADING);
+        expect(resp.text).toContain(FIRM_NOC_HEADING);
+        expect(resp.text).not.toContain(FIRM_NOC_HEADING_NEW);
+        expect(resp.text).not.toContain(TRUST_CONTROL_NOC_HEADING);
+        expect(resp.text).not.toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
+        expect(resp.text).not.toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
+      });
+    });
   });
 
   describe("POST with url params tests", () => {
 
     test(`redirects to the ${config.BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
       mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_GOV_OBJECT_MOCK);
@@ -1067,6 +1292,130 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
+
+    describe("Nature of control tests", () => {
+      test.each([
+        ["BO Noc", [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS], null],
+        ["Non legal firm Noc", null, [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS]]
+      ])(`redirect to the ${config.BENEFICIAL_OWNER_TYPE_PAGE} page when page data includes a nature of control and FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is OFF - %s`, async (_desc, boNoc, nonLegalNoc) => {
+        mockPrepareData.mockImplementationOnce( () => ( { ...BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS } ));
+
+        const body = {
+          ...BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS,
+          beneficial_owner_nature_of_control_types: boNoc,
+          non_legal_firm_members_nature_of_control_types: nonLegalNoc
+        };
+
+        const resp = await request(app)
+          .post(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL)
+          .send(body);
+
+        expect(resp.status).toEqual(302);
+        expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
+      });
+
+      test.each([
+        ["BO Noc", [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS], null, null, null, null],
+        ["Trust control control Noc", null, [NatureOfControlType.SIGNIFICANT_INFLUENCE_OR_CONTROL], null, null, null],
+        ["Non legal firm control Noc", null, null, [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS], null, null],
+        ["Owner of land person Noc", null, null, null, null, [NatureOfControlJurisdiction.ENGLAND_AND_WALES], null],
+        ["Owner of land other entity Noc", null, null, null, null, [NatureOfControlJurisdiction.ENGLAND_AND_WALES]]
+      ])(`redirect to the ${config.BENEFICIAL_OWNER_TYPE_PAGE} page when page data includes a nature of control and FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is ON - %s`, async (_desc, boNoc, trustControlNoc, nonLegalFirmControlNoc, landPersonNoc, landOtherEntityNoc) => {
+        mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+        mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+        mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
+        mockPrepareData.mockImplementationOnce( () => ( { ...BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS } ));
+
+        const body = {
+          ...BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS,
+          beneficial_owner_nature_of_control_types: boNoc,
+          non_legal_firm_members_nature_of_control_types: null,
+          trust_control_nature_of_control_types: trustControlNoc,
+          non_legal_firm_control_nature_of_control_types: nonLegalFirmControlNoc,
+          owner_of_land_person_nature_of_control_jurisdictions: landPersonNoc,
+          owner_of_land_other_entity_nature_of_control_jurisdictions: landOtherEntityNoc
+        };
+
+        const resp = await request(app)
+          .post(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL)
+          .send(body);
+
+        expect(resp.status).toEqual(302);
+        expect(resp.header.location).toEqual(NEXT_PAGE_URL);
+      });
+
+      test(`correctly maps natures of control when feature flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is ON`, async () => {
+        mockPrepareData.mockImplementationOnce( () => {
+          return {
+            ...BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS,
+            non_legal_firm_members_nature_of_control_types: null,
+            trust_control_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+            non_legal_firm_control_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+            owner_of_land_person_nature_of_control_jurisdictions: [NatureOfControlJurisdiction.ENGLAND_AND_WALES],
+            owner_of_land_other_entity_nature_of_control_jurisdictions: [NatureOfControlJurisdiction.NORTHERN_IRELAND]
+          };
+        });
+
+        mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+        mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+        mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
+        await request(app)
+          .post(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL)
+          .send({
+            ...BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS,
+          });
+
+        const appData: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+
+        expect(appData[TrustControlNoc]).toEqual([NatureOfControlType.OVER_25_PERCENT_OF_SHARES]);
+        expect(appData[NonLegalFirmControlNoc]).toEqual([NatureOfControlType.OVER_25_PERCENT_OF_SHARES]);
+        expect(appData[OwnerOfLandPersonJurisdictionsNoc]).toEqual([NatureOfControlJurisdiction.ENGLAND_AND_WALES]);
+        expect(appData[OwnerOfLandOtherEntityJurisdictionsNoc]).toEqual([NatureOfControlJurisdiction.NORTHERN_IRELAND]);
+      });
+
+      test(`renders the ${config.BENEFICIAL_OWNER_GOV_PAGE} page with nature of control error when no nature of control is provided and FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is ON`, async () => {
+        mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+        mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+        mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
+        const beneficialOwnerGov = {
+          ...BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
+          beneficial_owner_nature_of_control_types: null,
+          trust_control_nature_of_control_types: null,
+          non_legal_firm_members_nature_of_control_types: null,
+          non_legal_firm_control_nature_of_control_types: null,
+          owner_of_land_person_nature_of_control_jurisdictions: null,
+          owner_of_land_other_entity_nature_of_control_jurisdictions: null
+        };
+
+        const resp = await request(app).post(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL)
+          .send(beneficialOwnerGov);
+
+        expect(resp.status).toEqual(200);
+        expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
+        expect(resp.text).toContain(ErrorMessages.SELECT_NATURE_OF_CONTROL);
+      });
+
+      test(`Renders the ${config.BENEFICIAL_OWNER_GOV_PAGE} page with validation errors with correct nature of controls with FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is OFF`, async () => {
+        mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+        mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+        mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+
+        const resp = await request(app).post(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL);
+
+        expect(resp.status).toEqual(200);
+        expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
+
+        expect(resp.text).toContain(BO_NOC_HEADING);
+        expect(resp.text).toContain(FIRM_NOC_HEADING);
+        expect(resp.text).not.toContain(FIRM_NOC_HEADING_NEW);
+        expect(resp.text).not.toContain(TRUST_CONTROL_NOC_HEADING);
+        expect(resp.text).not.toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
+        expect(resp.text).not.toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
+      });
+    });
   });
 
   describe("UPDATE tests", () => {
@@ -1142,6 +1491,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
 
   describe("UPDATE with url params tests", () => {
     test(`redirects to the ${config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL} page with substituted ids`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
       mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_GOV_OBJECT_MOCK);
@@ -1172,6 +1522,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
     });
 
     test(`replaces existing object on submit`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
       const newGovData: BeneficialOwnerGov = { id: BO_GOV_ID, name: "new name" };

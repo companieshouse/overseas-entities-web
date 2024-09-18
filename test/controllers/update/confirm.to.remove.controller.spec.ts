@@ -202,6 +202,33 @@ describe("CONFIRM TO REMOVE controller", () => {
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
     });
 
+    test(`BO individual removed and redirects to ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page if user selects yes`, async () => {
+      mockCheckRelevantPeriod.mockReturnValueOnce(true);
+      const resp = await request(app)
+        .post(UPDATE_CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_INDIVIDUAL + BO_IND_ID_URL)
+        .send({ do_you_want_to_remove: '1' });
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+    });
+
+    test(`BO gov removed and redirects to ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page if user selects yes`, async () => {
+      mockCheckRelevantPeriod.mockReturnValueOnce(true);
+      const resp = await request(app)
+        .post(UPDATE_CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_INDIVIDUAL + BO_IND_ID_URL)
+        .send({ do_you_want_to_remove: '1' });
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+    });
+
+    test(`BO other removed and redirects to ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page if user selects yes`, async () => {
+      mockCheckRelevantPeriod.mockReturnValueOnce(true);
+      const resp = await request(app)
+        .post(UPDATE_CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_INDIVIDUAL + BO_IND_ID_URL)
+        .send({ do_you_want_to_remove: '1' });
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+    });
+
     test(`Re-renders ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page with error if user makes no selection`, async () => {
       const resp = await request(app)
         .post(UPDATE_CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_OTHER + BO_OTHER_ID_URL)

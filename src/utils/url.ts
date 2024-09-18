@@ -27,6 +27,22 @@ export const transactionIdAndSubmissionIdExistInRequest = (req: Request): boolea
 const getTransactionIdFromRequestParams = (req: Request): string => req.params[config.ROUTE_PARAM_TRANSACTION_ID];
 const getSubmissionIdFromRequestParams = (req: Request): string => req.params[config.ROUTE_PARAM_SUBMISSION_ID];
 
+export const isRegistrationJourney = (req: Request): boolean => {
+  const fullPath: string = `${req.baseUrl}${req.path}`;
+  if (fullPath.indexOf(config.LANDING_URL) === 0) {
+    return true;
+  }
+  return false;
+};
+
+export const isUpdateJourney = (req: Request): boolean => {
+  const fullPath: string = `${req.baseUrl}${req.path}`;
+  if (fullPath.indexOf(config.UPDATE_LANDING_URL) === 0 && !isRemoveJourney(req)) {
+    return true;
+  }
+  return false;
+};
+
 export const isRemoveJourney = async (req: Request): Promise<boolean> => {
   const session = req.session as Session;
 

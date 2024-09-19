@@ -17,7 +17,7 @@ import { isRegistrationJourney, isRemoveJourney, isUpdateJourney } from "../../.
  */
 export const removeJourneyMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   const isRemove: boolean = await isRemoveJourney(req);
-  const isUpdate: boolean = isUpdateJourney(req);
+  const isUpdate: boolean = await isUpdateJourney(req);
   const isRegistration: boolean = isRegistrationJourney(req);
 
   if (isRemove) {

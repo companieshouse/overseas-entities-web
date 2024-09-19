@@ -150,6 +150,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page`, async () => {
       mockGetFromApplicationData.mockReturnValueOnce(UPDATE_BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
+      mockCheckRelevantPeriod.mockReturnValueOnce(true);
       const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_GOV_URL + BO_GOV_ID_URL);
 
       expect(resp.status).toEqual(200);

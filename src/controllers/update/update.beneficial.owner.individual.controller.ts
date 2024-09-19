@@ -17,12 +17,7 @@ export const get = async (req: Request, res: Response) => {
 };
 
 export const getById = async (req: Request, res: Response, next: NextFunction) => {
-  const appData: ApplicationData = await getApplicationData(req.session);
-  if (checkRelevantPeriod(appData)) {
-    await getBeneficialOwnerIndividualById(req, res, next, UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
-  } else {
-    await getBeneficialOwnerIndividualById(req, res, next, UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
-  }
+  await getBeneficialOwnerIndividualById(req, res, next, UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
 };
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {

@@ -34,6 +34,7 @@ import { v4 as uuidv4 } from "uuid";
 import * as config from "../config";
 import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
 import { isActiveFeature } from "./feature.flag";
+import { checkRelevantPeriod } from "./relevant.period";
 
 export const getBeneficialOwnerGov = async (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string): Promise<void> => {
   try {
@@ -66,6 +67,10 @@ export const getBeneficialOwnerGovById = async (req: Request, res: Response, nex
     const principalAddress = (data) ? mapDataObjectToFields(data[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};
     const serviceAddress = (data) ? mapDataObjectToFields(data[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
     const startDate = (data) ? mapDataObjectToFields(data[StartDateKey], StartDateKeys, InputDateKeys) : {};
+
+    if (checkRelevantPeriod(appData)) {
+      backLinkUrl = backLinkUrl + config.RELEVANT_PERIOD_QUERY_PARAM;
+    }
 
     const templateOptions = {
       backLinkUrl,

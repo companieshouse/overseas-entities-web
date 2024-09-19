@@ -24,6 +24,23 @@ import { ApplicationData } from 'model';
 import { checkTrustIndividualCeasedDate } from '../../validation/async';
 import { checkTrustIndividualBeneficialOwnerStillInvolved } from '../../validation/stillInvolved.validation';
 
+type TrustIndividualBeneficialOwnerPageProperties = { templateName: string,
+  backLinkUrl: string
+  pageParams: {
+    title: string,
+  },
+  pageData: {
+    trustData: {
+      trustName: any
+    },
+    roleWithinTrustType: typeof RoleWithinTrustType,
+      entity_name: string | undefined,
+  },
+  formData: TrustIndividual,
+    errors: FormattedValidationErrors | undefined,
+    uneditableDOB: boolean,
+    isUpdate: boolean };
+
 const getPageProperties = (trust, formData, trustee: TrustIndividual, errors?: FormattedValidationErrors) => {
   return {
     templateName: UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE,
@@ -36,7 +53,7 @@ const getPageProperties = (trust, formData, trustee: TrustIndividual, errors?: F
         trustName: trust?.trust_name
       },
       roleWithinTrustType: RoleWithinTrustType,
-      entity_name: trust?.trust_name,
+      entity_name: undefined,
     },
     formData,
     errors,
@@ -56,13 +73,12 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const trustee = getTrustee(trust, trusteeId, TrusteeType.INDIVIDUAL) as IndividualTrustee;
 
     const formData = trustee ? mapIndividualTrusteeFromSessionToPage(trustee) : {};
-    const relevant_period = req.query['relevant-period'];
+    const relevant_period = req.query ? req.query["relevant-period"] === "true" : false;
 
-    if (relevant_period) {
-      return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE, getPagePropertiesRelevantPeriod(relevant_period, trust, formData, trustee, appData.entity_name));
-    } else {
-      return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE, getPageProperties(trust, formData, trustee));
-    }
+    const pageProps = getPageProperties(trust, formData, trustee);
+    pageProps.formData.relevant_period = relevant_period || (trustee ? trustee.relevant_period : false);
+    setEntityNameInRelevantPeriodPageBanner(pageProps, appData.entity_name);
+    return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE, pageProps);
 
   } catch (error) {
     next(error);
@@ -83,18 +99,22 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const formData: IndividualTrusteesFormCommon = req.body;
 
     if (!errorList.isEmpty() || errors.length) {
+      let pageProps: TrustIndividualBeneficialOwnerPageProperties;
       const trustee = getTrustee(trust, trusteeId, TrusteeType.INDIVIDUAL) as IndividualTrustee;
       const errorListArray = !errorList.isEmpty() ? errorList.array() : [];
 
       if (relevant_period) {
+        pageProps = getPagePropertiesRelevantPeriod(relevant_period, trust, formData, trustee, appData.entity_name, formatValidationError([...errorListArray, ...errors]));
         return res.render(
           UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE,
-          getPagePropertiesRelevantPeriod(relevant_period, trust, formData, trustee, appData.entity_name, formatValidationError([...errorListArray, ...errors])),
+          pageProps,
         );
       } else {
+        pageProps = getPageProperties(trust, formData, trustee, formatValidationError([...errorListArray, ...errors]));
+        setEntityNameInRelevantPeriodPageBanner(pageProps, appData.entity_name);
         return res.render(
           UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE,
-          getPageProperties(trust, formData, trustee, formatValidationError([...errorListArray, ...errors])),
+          pageProps,
         );
       }
     }
@@ -130,7 +150,15 @@ const getBackLink = (individualsReviewed: boolean) => {
 const getPagePropertiesRelevantPeriod = (relevant_period, trust, formData, trustee: TrustIndividual, entityName, errors?: FormattedValidationErrors) => {
   const pageProps = getPageProperties(trust, formData, trustee, errors);
   pageProps.formData.relevant_period = relevant_period;
-  pageProps.pageData.entity_name = entityName;
+  setEntityNameInRelevantPeriodPageBanner(pageProps, entityName);
+  return pageProps;
+};
+
+export const setEntityNameInRelevantPeriodPageBanner = (pageProps, entityName: string | undefined) => {
+  // name the entity for the page template
+  if (pageProps && pageProps.pageData && entityName !== undefined) {
+    pageProps.pageData.entity_name = entityName;
+  }
   return pageProps;
 };
 

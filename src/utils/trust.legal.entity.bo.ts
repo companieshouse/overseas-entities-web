@@ -95,7 +95,7 @@ export const getTrustLegalEntityBo = async (req: Request, res: Response, next: N
     const pageProps = isRelevantPeriod ? await getRelevantPeriodPageProperties(req, trustId, isUpdate, formData) : await getPageProperties(req, trustId, isUpdate, formData);
     if ((isRelevantPeriod || (trusteeId && pageProps.formData?.relevant_period)) && pageProps.formData) {
       pageProps.formData.relevant_period = true;
-      setEntityNameInRelevantPeriodPageBanner(pageProps, appData ? appData.entity_name : pageProps.pageData.trustData.trustName);
+      setEntityNameInRelevantPeriodPageBanner(pageProps, appData ? appData.entity_name : pageProps.pageData.entity_name);
     }
     return res.render(pageProps.templateName, pageProps);
   } catch (error) {
@@ -131,7 +131,7 @@ export const postTrustLegalEntityBo = async (req: Request, res: Response, next: 
         formData,
         formatValidationError([...errorListArray, ...errors]),
       );
-      setEntityNameInRelevantPeriodPageBanner(pageProps, appData ? appData.entity_name : pageProps.pageData.trustData.trustName);
+      setEntityNameInRelevantPeriodPageBanner(pageProps, appData ? appData.entity_name : pageProps.pageData.entity_name);
       return res.render(pageProps.templateName, pageProps);
     }
 

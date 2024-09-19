@@ -18,10 +18,26 @@ import { FormattedValidationErrors, formatValidationError } from '../../middlewa
 import { TrusteeType } from '../../model/trustee.type.model';
 import { Trust, TrustCorporate } from '../../model/trust.model';
 import { RoleWithinTrustType } from '../../model/role.within.trust.type.model';
-import { TrustLegalEntityForm } from '../../model/trust.page.model';
+import { CommonTrustData, TrustLegalEntityForm } from '../../model/trust.page.model';
 import { ApplicationData } from '../../model';
 import { checkTrusteeLegalEntityCeasedDate } from '../../validation/async';
 import { checkTrustLegalEntityBeneficialOwnerStillInvolved } from '../../validation/stillInvolved.validation';
+
+type TrustLegalEntityBeneficialOwnerPageProperties = {
+  backLinkUrl: string,
+  templateName: string;
+  pageParams: {
+    title: string;
+  },
+  pageData: {
+    trustData: CommonTrustData,
+    roleWithinTrustType: typeof RoleWithinTrustType,
+    entity_name?: string;
+  },
+  formData?: TrustLegalEntityForm,
+  errors?: FormattedValidationErrors,
+  isUpdate: boolean
+};
 
 const getPageProperties = (trust, formData, errors?: FormattedValidationErrors) => {
   return {
@@ -32,10 +48,11 @@ const getPageProperties = (trust, formData, errors?: FormattedValidationErrors) 
     },
     pageData: {
       trustData: {
+        trustId: trust?.trust_id,
         trustName: trust?.trust_name,
       },
       roleWithinTrustType: RoleWithinTrustType,
-      entity_name: trust?.trust_name,
+      entity_name: undefined,
     },
     formData,
     errors,
@@ -46,7 +63,7 @@ const getPageProperties = (trust, formData, errors?: FormattedValidationErrors) 
 const getPagePropertiesRelevantPeriod = (isRelevantPeriod, trust, formData, entityName, errors?: FormattedValidationErrors) => {
   const pageProps = getPageProperties(trust, formData, errors);
   pageProps.formData.relevant_period = isRelevantPeriod;
-  pageProps.pageData.entity_name = entityName;
+  setEntityNameInRelevantPeriodPageBanner(pageProps, entityName);
   return pageProps;
 };
 
@@ -55,15 +72,15 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const appData = await getApplicationData(req.session);
     const trusteeId = req.params[ROUTE_PARAM_TRUSTEE_ID];
-    const isRelevantPeriod = req.query['relevant-period'];
 
     const trust = getTrustInReview(appData) as Trust;
     const trustee = getTrustee(trust, trusteeId, TrusteeType.LEGAL_ENTITY) as TrustCorporate;
 
     const formData = trustee ? mapLegalEntityTrusteeFromSessionToPage(trustee) : {};
+    const isRelevantPeriod = req.query ? req.query["relevant-period"] === "true" : false;
 
-    if (isRelevantPeriod) {
-      return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE, getPagePropertiesRelevantPeriod(isRelevantPeriod, trust, formData, appData.entity_name));
+    if (isRelevantPeriod || (trustee && trustee.relevant_period)) {
+      return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE, getPagePropertiesRelevantPeriod(true, trust, formData, appData.entity_name));
     } else {
       return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE, getPageProperties(trust, formData));
     }
@@ -85,17 +102,19 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const errors = await getValidationErrors(appData, req);
 
     if (!errorList.isEmpty() || errors.length) {
+      let pageProps: TrustLegalEntityBeneficialOwnerPageProperties;
       const errorListArray = !errorList.isEmpty() ? errorList.array() : [];
 
       if (isRelevantPeriod) {
+        pageProps = getPagePropertiesRelevantPeriod(isRelevantPeriod, trust, formData, appData.entity_name, formatValidationError([...errorListArray, ...errors]));
         return res.render(
-          UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE,
-          getPagePropertiesRelevantPeriod(isRelevantPeriod, trust, formData, appData.entity_name, formatValidationError([...errorListArray, ...errors])),
+          UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE, pageProps,
         );
       } else {
+        pageProps = getPageProperties(trust, formData, formatValidationError([...errorListArray, ...errors]));
+        setEntityNameInRelevantPeriodPageBanner(pageProps, appData.entity_name);
         return res.render(
-          UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE,
-          getPageProperties(trust, formData, formatValidationError([...errorListArray, ...errors])),
+          UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE, pageProps,
         );
       }
     }
@@ -130,6 +149,14 @@ const getBackLink = (legalEntitiesReviewed: boolean) => {
   } else {
     return UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL;
   }
+};
+
+export const setEntityNameInRelevantPeriodPageBanner = (pageProps, entityName: string | undefined) => {
+  // name the entity for the page template
+  if (pageProps && pageProps.pageData && entityName !== undefined) {
+    pageProps.pageData.entity_name = entityName;
+  }
+  return pageProps;
 };
 
 // Get validation errors that depend on an asynchronous request

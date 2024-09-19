@@ -27,7 +27,11 @@ import {
   ERROR_LIST,
   SELECT_IF_REGISTER_DURING_PRE_REG_PERIOD
 } from "../../__mocks__/text.mock";
-import { APPLICATION_DATA_MOCK, UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE } from "../../__mocks__/session.mock";
+import {
+  APPLICATION_DATA_MOCK,
+  UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE,
+  UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE
+} from "../../__mocks__/session.mock";
 import { getApplicationData, setExtraData } from "../../../src/utils/application.data";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
@@ -35,7 +39,7 @@ import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/ha
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { yesNoResponse } from "../../../src/model/data.types.model";
-import { OwnedLandKey, UpdateKey } from "../../../src/model/update.type.model";
+import { UpdateKey } from "../../../src/model/update.type.model";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
 
 mockCsrfProtectionMiddleware.mockClear();
@@ -79,14 +83,14 @@ describe("owned land filter page tests", () => {
     });
 
     test(`renders the ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE} page with radios selected to ${yesNoResponse.Yes}`, async () => {
-      mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK, [OwnedLandKey]: yesNoResponse.Yes });
+      mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK, update: UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE });
       const resp = await request(app).get(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(RADIO_BUTTON_YES_SELECTED);
     });
     test(`renders the ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE} page with radios selected to ${yesNoResponse.No}`, async () => {
-      mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK, [OwnedLandKey]: yesNoResponse.No });
+      mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK, update: UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE });
       const resp = await request(app).get(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
 
       expect(resp.status).toEqual(200);

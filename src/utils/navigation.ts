@@ -7,6 +7,7 @@ import { isActiveFeature } from "./feature.flag";
 import { getUrlWithParamsToPath, isRemoveJourney } from "./url";
 import { Request } from "express";
 import { checkRelevantPeriod } from "../utils/relevant.period";
+import { isNoChangeJourney } from "./update/no.change.journey";
 
 export const getEntityBackLink = (data: ApplicationData, req: Request): string => {
   let backLinkUrl: string = data?.who_is_registering === WhoIsRegisteringType.AGENT ? config.DUE_DILIGENCE_URL : config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL;
@@ -556,7 +557,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL]: {
     currentPage: config.UPDATE_STATEMENT_VALIDATION_ERRORS_PAGE,
-    previousPage: (appData?: ApplicationData) => appData?.update?.no_change
+    previousPage: (appData: ApplicationData) => isNoChangeJourney(appData)
       ? config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL
       : config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL,
     nextPage: [

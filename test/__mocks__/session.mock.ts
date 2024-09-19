@@ -1479,6 +1479,7 @@ export const UPDATE_OBJECT_MOCK_REVIEW_BO_OTHER_MODEL: updateType.Update = {
 
 export const UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE: updateType.Update = {
   ...UPDATE_OBJECT_MOCK,
+  owned_land_relevant_period: true,
   change_bo_relevant_period: relevantPeriodType.ChangeBoRelevantPeriodType.YES,
   trustee_involved_relevant_period: relevantPeriodType.TrusteeInvolvedRelevantPeriodType.YES,
   change_beneficiary_relevant_period: relevantPeriodType.ChangeBeneficiaryRelevantPeriodType.YES
@@ -1486,6 +1487,7 @@ export const UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE: updateType.Update = {
 
 export const UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE: updateType.Update = {
   ...UPDATE_OBJECT_MOCK,
+  owned_land_relevant_period: false,
   change_bo_relevant_period: relevantPeriodType.ChangeBoRelevantPeriodType.NO,
   trustee_involved_relevant_period: relevantPeriodType.TrusteeInvolvedRelevantPeriodType.NO,
   change_beneficiary_relevant_period: relevantPeriodType.ChangeBeneficiaryRelevantPeriodType.NO

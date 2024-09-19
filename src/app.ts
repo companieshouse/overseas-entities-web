@@ -9,7 +9,7 @@ import {
   SessionStore,
   SessionMiddleware,
 } from '@companieshouse/node-session-handler';
-import { uuid } from 'uuidv4'
+// import { uuid } from 'uuidv4'
 
 import * as config from "./config";
 import { logger } from "./utils/logger";
@@ -57,9 +57,9 @@ nunjucksEnv.addGlobal("MATOMO_ASSET_PATH", `//${config.CDN_HOST}`);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-const nonce: string = "db556dea-d694-44b5-b69c-dd035f5c43db"; //uuid();
+const nonce: string = "db556dea-d694-44b5-b69c-dd035f5c43db"; // uuid();
 app.use(helmet({
-  contentSecurityPolicy: { 
+  contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'", config.CDN_HOST, `'nonce-${nonce}'`],
       fontSrc: ["'self'", 'https:', 'data:', `'nonce-${nonce}'`],

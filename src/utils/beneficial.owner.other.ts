@@ -69,6 +69,7 @@ export const getBeneficialOwnerOtherById = async (req: Request, res: Response, n
     if (checkRelevantPeriod(appData)) {
       backLinkUrl = backLinkUrl + config.RELEVANT_PERIOD_QUERY_PARAM;
     }
+
     const templateOptions = {
       backLinkUrl: backLinkUrl,
       templateName: `${templateName}/${id}`,

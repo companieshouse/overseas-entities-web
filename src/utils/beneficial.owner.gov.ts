@@ -71,7 +71,6 @@ export const getBeneficialOwnerGovById = async (req: Request, res: Response, nex
     if (checkRelevantPeriod(appData)) {
       backLinkUrl = backLinkUrl + config.RELEVANT_PERIOD_QUERY_PARAM;
     }
-
     const templateOptions = {
       backLinkUrl,
       templateName: `${templateName}/${id}`,

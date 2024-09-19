@@ -67,7 +67,6 @@ export const getBeneficialOwnerGovById = async (req: Request, res: Response, nex
     const principalAddress = (data) ? mapDataObjectToFields(data[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};
     const serviceAddress = (data) ? mapDataObjectToFields(data[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
     const startDate = (data) ? mapDataObjectToFields(data[StartDateKey], StartDateKeys, InputDateKeys) : {};
-
     if (checkRelevantPeriod(appData)) {
       backLinkUrl = backLinkUrl + config.RELEVANT_PERIOD_QUERY_PARAM;
     }

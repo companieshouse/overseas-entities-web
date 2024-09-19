@@ -1,7 +1,7 @@
 jest.mock('../../src/utils/application.data');
 jest.mock("../../src/utils/logger");
 
-import { request } from "express";
+import { Request, request } from "express";
 import * as config from "../../src/config";
 import * as urlUtils from "../../src/utils/url";
 import { getApplicationData } from '../../src/utils/application.data';
@@ -79,6 +79,74 @@ describe("Url utils tests", () => {
       const response = urlUtils.transactionIdAndSubmissionIdExistInRequest(req);
       expect(response).toEqual(false);
     });
+  });
+
+  describe("isRegistrationJourney tests", () => {
+
+    test("returns TRUE if we're currently in a registration flow", () => {
+
+      const request = {
+        baseUrl: config.LANDING_URL,
+        path: "/some/path"
+      } as Request;
+
+      const result = urlUtils.isRegistrationJourney(request);
+      expect(result).toBeTruthy();
+    });
+
+    test("returns FALSE if we're not currently in a registration flow", () => {
+      const request = {
+        baseUrl: `/path/does/not/start/with/${config.LANDING_URL}`,
+        path: "/some/path"
+      } as Request;
+
+      const result = urlUtils.isRegistrationJourney(request);
+      expect(result).toBeFalsy();
+    });
+
+  });
+
+  describe("isUpdateJourney tests", () => {
+
+    test("returns TRUE if we're currently in an update flow that is not a remove journey", () => {
+      const request = {
+        baseUrl: config.UPDATE_AN_OVERSEAS_ENTITY_URL,
+        path: "/some/update/path",
+        query: {},
+        session: {}
+      } as Request;
+
+      mockGetApplicationData.mockReturnValueOnce(undefined);
+
+      const result = urlUtils.isUpdateJourney(request);
+      expect(result).toBeTruthy();
+    });
+
+    test("returns FALSE if we're currently in an update flow that is also a remove journey", () => {
+      const request = {
+        baseUrl: config.UPDATE_AN_OVERSEAS_ENTITY_URL,
+        path: "/some/update/path",
+        session: {}
+      } as Request;
+      request["query"] = {
+        journey: "remove"
+      };
+
+      const result = urlUtils.isRegistrationJourney(request);
+
+      expect(result).toBeFalsy();
+    });
+
+    test("returns FALSE if we're not currently in an update flow", () => {
+      const request = {
+        baseUrl: `/path/does/not/start/with/${config.UPDATE_AN_OVERSEAS_ENTITY_URL}`,
+        path: "/some/update/path"
+      } as Request;
+
+      const result = urlUtils.isRegistrationJourney(request);
+      expect(result).toBeFalsy();
+    });
+
   });
 
   describe("isRemoveJourney tests", () => {

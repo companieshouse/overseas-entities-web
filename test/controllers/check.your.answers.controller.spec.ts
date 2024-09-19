@@ -182,7 +182,7 @@ describe("GET tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including presenter details`, async () => {
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
     expect(resp.status).toEqual(200);
@@ -206,7 +206,7 @@ describe("GET tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including print button`, async () => {
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
     expect(resp.status).toEqual(200);
@@ -216,7 +216,7 @@ describe("GET tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including change links`, async () => {
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
     expect(resp.status).toEqual(200);
@@ -408,7 +408,7 @@ describe("GET tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with someone else change links when this is selected`, async () => {
-    const applicationData = { APPLICATION_DATA_MOCK };
+    const applicationData = { ...APPLICATION_DATA_MOCK };
     applicationData[WhoIsRegisteringKey] = WhoIsRegisteringType.SOMEONE_ELSE;
     mockGetApplicationData.mockReturnValueOnce(applicationData);
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
@@ -430,7 +430,7 @@ describe("GET tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including identity checks - Agent (The UK-regulated agent) selected`, async () => {
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
     expect(resp.status).toEqual(200);
@@ -466,12 +466,12 @@ describe("GET tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page (entity service address not same as principal address)`, async () => {
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
-    const tempEntity = APPLICATION_DATA_MOCK[entityType.EntityKey];
-    APPLICATION_DATA_MOCK[entityType.EntityKey] = ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS;
+    mockGetApplicationData.mockReturnValueOnce({
+      ...APPLICATION_DATA_MOCK,
+      [entityType.EntityKey]: ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS
+    });
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
-    APPLICATION_DATA_MOCK[entityType.EntityKey] = tempEntity;
 
     expect(resp.status).toEqual(200);
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TITLE);
@@ -484,7 +484,7 @@ describe("GET tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page (entity service address same as principal address)`, async () => {
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
@@ -502,7 +502,7 @@ describe("GET tests", () => {
     mockIsActiveFeature.mockReturnValueOnce(false);
     mockIsActiveFeature.mockReturnValueOnce(false);
 
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
@@ -522,9 +522,9 @@ describe("GET tests", () => {
     mockIsActiveFeature.mockReturnValueOnce(true);
     mockIsActiveFeature.mockReturnValueOnce(true);
 
-    APPLICATION_DATA_MOCK.entity_number = undefined;
     const mockAppData = {
       ...APPLICATION_DATA_MOCK,
+      entity_number: undefined,
       [TrustKey]: [
         TRUST_WITH_ID,
       ]
@@ -547,7 +547,7 @@ describe("GET tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with no trust data`, async () => {
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_NO_TRUSTS_MOCK);
+    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_NO_TRUSTS_MOCK });
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
@@ -572,7 +572,7 @@ describe("GET tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE}`, async () => {
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
@@ -690,7 +690,7 @@ describe("GET with url params tests tests", () => {
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including presenter details`, async () => {
     mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
 
     expect(resp.status).toEqual(200);
@@ -715,7 +715,7 @@ describe("GET with url params tests tests", () => {
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including print button`, async () => {
     mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
 
     expect(resp.status).toEqual(200);
@@ -726,7 +726,7 @@ describe("GET with url params tests tests", () => {
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including change links`, async () => {
     mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
 
     expect(resp.status).toEqual(200);
@@ -918,7 +918,7 @@ describe("GET with url params tests tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with someone else change links when this is selected`, async () => {
-    const applicationData = { APPLICATION_DATA_MOCK };
+    const applicationData = { ...APPLICATION_DATA_MOCK };
     applicationData[WhoIsRegisteringKey] = WhoIsRegisteringType.SOMEONE_ELSE;
     mockGetApplicationData.mockReturnValueOnce(applicationData);
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
@@ -940,7 +940,7 @@ describe("GET with url params tests tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including identity checks - Agent (The UK-regulated agent) selected`, async () => {
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
 
     expect(resp.status).toEqual(200);
@@ -976,12 +976,12 @@ describe("GET with url params tests tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page (entity service address not same as principal address)`, async () => {
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
-    const tempEntity = APPLICATION_DATA_MOCK[entityType.EntityKey];
-    APPLICATION_DATA_MOCK[entityType.EntityKey] = ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS;
+    mockGetApplicationData.mockReturnValueOnce({
+      ...APPLICATION_DATA_MOCK,
+      [entityType.EntityKey]: ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS
+    });
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
-    APPLICATION_DATA_MOCK[entityType.EntityKey] = tempEntity;
 
     expect(resp.status).toEqual(200);
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TITLE);
@@ -994,7 +994,7 @@ describe("GET with url params tests tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page (entity service address same as principal address)`, async () => {
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
 
@@ -1006,7 +1006,7 @@ describe("GET with url params tests tests", () => {
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with trust data and feature flag off`, async () => {
     mockIsActiveFeature.mockReturnValue(false); // FEATURE_FLAG_ENABLE_TRUSTS_WEB flag
 
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
 
@@ -1024,9 +1024,9 @@ describe("GET with url params tests tests", () => {
     mockIsActiveFeature.mockReturnValueOnce(true);
     mockIsActiveFeature.mockReturnValueOnce(true);
 
-    APPLICATION_DATA_MOCK.entity_number = undefined;
     const mockAppData = {
       ...APPLICATION_DATA_MOCK,
+      entity_number: undefined,
       [TrustKey]: [
         TRUST_WITH_ID,
       ]
@@ -1047,7 +1047,7 @@ describe("GET with url params tests tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with no trust data`, async () => {
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_NO_TRUSTS_MOCK);
+    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_NO_TRUSTS_MOCK });
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
 
@@ -1071,7 +1071,7 @@ describe("GET with url params tests tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE}`, async () => {
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
 
@@ -1188,7 +1188,7 @@ describe("POST tests", () => {
   });
 
   test(`redirect the ${CONFIRMATION_PAGE} page after fetching transaction and OE id from appData`, async () => {
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
     const resp = await request(app).post(CHECK_YOUR_ANSWERS_URL);
 
     expect(resp.status).toEqual(302);
@@ -1196,7 +1196,7 @@ describe("POST tests", () => {
   });
 
   test(`redirect to ${PAYMENT_LINK_JOURNEY}, the first Payment web journey page, after fetching transaction and OE id from appData`, async () => {
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
     mockPaymentsSession.mockReturnValueOnce(PAYMENT_LINK_JOURNEY);
     const resp = await request(app).post(CHECK_YOUR_ANSWERS_URL);
 
@@ -1225,7 +1225,7 @@ describe("POST with url param tests", () => {
   });
 
   test(`redirect the ${CONFIRMATION_PAGE} page after fetching transaction and OE id from appData`, async () => {
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
     const resp = await request(app).post(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
 
     expect(resp.status).toEqual(302);
@@ -1233,7 +1233,7 @@ describe("POST with url param tests", () => {
   });
 
   test(`redirect to ${PAYMENT_LINK_JOURNEY}, the first Payment web journey page, after fetching transaction and OE id from appData`, async () => {
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
     mockPaymentsSession.mockReturnValueOnce(PAYMENT_LINK_JOURNEY);
     const resp = await request(app).post(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
 

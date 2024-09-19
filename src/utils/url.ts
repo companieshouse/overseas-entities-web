@@ -35,9 +35,9 @@ export const isRegistrationJourney = (req: Request): boolean => {
   return false;
 };
 
-export const isUpdateJourney = (req: Request): boolean => {
+export const isUpdateJourney = async (req: Request): Promise<boolean> => {
   const fullPath: string = `${req.baseUrl}${req.path}`;
-  if (fullPath.indexOf(config.UPDATE_LANDING_URL) === 0 && !isRemoveJourney(req)) {
+  if (fullPath.indexOf(config.UPDATE_LANDING_URL) === 0 && !(await isRemoveJourney(req))) {
     return true;
   }
   return false;

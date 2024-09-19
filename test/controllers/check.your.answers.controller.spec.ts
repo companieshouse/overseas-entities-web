@@ -144,7 +144,7 @@ import { TrustKey } from "../../src/model/trust.model";
 import { isActiveFeature } from "../../src/utils/feature.flag";
 import { getUrlWithParamsToPath } from "../../src/utils/url";
 import { NatureOfControlJurisdiction, NatureOfControlType } from "../../src/model/data.types.model";
-import { wordCount } from "../utils/test.utils";
+import { stringCount } from "../utils/test.utils";
 
 mockCsrfProtectionMiddleware.mockClear();
 mockRemoveJourneyMiddleware.mockClear();
@@ -728,37 +728,37 @@ describe("GET tests", () => {
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TITLE);
 
     // Count NOC Headings
-    expect(wordCount(BO_NOC_HEADING, resp.text)).toEqual(3);
-    expect(wordCount(TRUSTS_NOC_HEADING, resp.text)).toEqual(2); // BO Gov doesn't have the trustee of a trust NOC
-    expect(wordCount(FIRM_NOC_HEADING, resp.text)).toEqual(3);
-    expect(wordCount(FIRM_CONTROL_NOC_HEADING, resp.text)).toEqual(3);
-    expect(wordCount(TRUST_CONTROL_NOC_HEADING, resp.text)).toEqual(3);
-    expect(wordCount(OWNER_OF_LAND_PERSON_NOC_HEADING, resp.text)).toEqual(3);
-    expect(wordCount(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING, resp.text)).toEqual(3);
+    expect(stringCount(BO_NOC_HEADING, resp.text)).toEqual(3);
+    expect(stringCount(TRUSTS_NOC_HEADING, resp.text)).toEqual(2); // BO Gov doesn't have the trustee of a trust NOC
+    expect(stringCount(FIRM_NOC_HEADING, resp.text)).toEqual(3);
+    expect(stringCount(FIRM_CONTROL_NOC_HEADING, resp.text)).toEqual(3);
+    expect(stringCount(TRUST_CONTROL_NOC_HEADING, resp.text)).toEqual(3);
+    expect(stringCount(OWNER_OF_LAND_PERSON_NOC_HEADING, resp.text)).toEqual(3);
+    expect(stringCount(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING, resp.text)).toEqual(3);
 
     // Count the NOCs
-    expect(wordCount(BO_NOC_OVER_25_PERCENT_OF_SHARES, resp.text)).toEqual(3);
-    expect(wordCount(BO_NOC_OVER_25_PERCENT_OF_VOTING_RIGHTS, resp.text)).toEqual(3);
-    expect(wordCount(BO_NOC_APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS, resp.text)).toEqual(3);
-    expect(wordCount(BO_NOC_SIGNIFICANT_INFLUENCE_OR_CONTROL, resp.text)).toEqual(3);
+    expect(stringCount(BO_NOC_OVER_25_PERCENT_OF_SHARES, resp.text)).toEqual(3);
+    expect(stringCount(BO_NOC_OVER_25_PERCENT_OF_VOTING_RIGHTS, resp.text)).toEqual(3);
+    expect(stringCount(BO_NOC_APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS, resp.text)).toEqual(3);
+    expect(stringCount(BO_NOC_SIGNIFICANT_INFLUENCE_OR_CONTROL, resp.text)).toEqual(3);
 
     // The same NOC text is used for 'trustee of a trust' and 'control of trust' Nocs.
     // The BO Gov only has 'control of trust' and not 'trustee of a trust' so these NOCs should appear 5 times
-    expect(wordCount(escapeNOCText(BO_NOC_TRUSTEE_OF_TRUST_OVER_25_PERCENT_OF_SHARES), resp.text)).toEqual(5);
-    expect(wordCount(escapeNOCText(BO_NOC_TRUSTEE_OF_TRUST_OVER_25_PERCENT_OF_VOTING_RIGHTS), resp.text)).toEqual(5);
-    expect(wordCount(escapeNOCText(BO_NOC_TRUSTEE_OF_TRUST_APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS), resp.text)).toEqual(5);
-    expect(wordCount(escapeNOCText(BO_NOC_TRUSTEE_OF_TRUST_SIGNIFICANT_INFLUENCE_OR_CONTROL), resp.text)).toEqual(5);
+    expect(stringCount(escapeNOCText(BO_NOC_TRUSTEE_OF_TRUST_OVER_25_PERCENT_OF_SHARES), resp.text)).toEqual(5);
+    expect(stringCount(escapeNOCText(BO_NOC_TRUSTEE_OF_TRUST_OVER_25_PERCENT_OF_VOTING_RIGHTS), resp.text)).toEqual(5);
+    expect(stringCount(escapeNOCText(BO_NOC_TRUSTEE_OF_TRUST_APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS), resp.text)).toEqual(5);
+    expect(stringCount(escapeNOCText(BO_NOC_TRUSTEE_OF_TRUST_SIGNIFICANT_INFLUENCE_OR_CONTROL), resp.text)).toEqual(5);
 
     // The same NOC text is used for 'member of a firm' and 'control of firm' Nocs.
-    expect(wordCount(escapeNOCText(BO_NOC_MEMBER_OF_FIRM_OVER_25_PERCENT_OF_SHARES), resp.text)).toEqual(6);
-    expect(wordCount(escapeNOCText(BO_NOC_MEMBER_OF_FIRM_OVER_25_PERCENT_OF_VOTING_RIGHTS), resp.text)).toEqual(6);
-    expect(wordCount(escapeNOCText(BO_NOC_MEMBER_OF_FIRM_APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS), resp.text)).toEqual(6);
-    expect(wordCount(escapeNOCText(BO_NOC_MEMBER_OF_FIRM_SIGNIFICANT_INFLUENCE_OR_CONTROL), resp.text)).toEqual(6);
+    expect(stringCount(escapeNOCText(BO_NOC_MEMBER_OF_FIRM_OVER_25_PERCENT_OF_SHARES), resp.text)).toEqual(6);
+    expect(stringCount(escapeNOCText(BO_NOC_MEMBER_OF_FIRM_OVER_25_PERCENT_OF_VOTING_RIGHTS), resp.text)).toEqual(6);
+    expect(stringCount(escapeNOCText(BO_NOC_MEMBER_OF_FIRM_APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS), resp.text)).toEqual(6);
+    expect(stringCount(escapeNOCText(BO_NOC_MEMBER_OF_FIRM_SIGNIFICANT_INFLUENCE_OR_CONTROL), resp.text)).toEqual(6);
 
     // The same NOC text is used for 'person owner of land' and 'other entity owner of land' Nocs.
-    expect(wordCount(BO_NOC_JURISDICTION_ENGLAND_AND_WALES, resp.text)).toEqual(6);
-    expect(wordCount(BO_NOC_JURISDICTION_SCOTLAND, resp.text)).toEqual(6);
-    expect(wordCount(BO_NOC_JURISDICTION_NORTHERN_IRELAND, resp.text)).toEqual(6);
+    expect(stringCount(BO_NOC_JURISDICTION_ENGLAND_AND_WALES, resp.text)).toEqual(6);
+    expect(stringCount(BO_NOC_JURISDICTION_SCOTLAND, resp.text)).toEqual(6);
+    expect(stringCount(BO_NOC_JURISDICTION_NORTHERN_IRELAND, resp.text)).toEqual(6);
   });
 });
 

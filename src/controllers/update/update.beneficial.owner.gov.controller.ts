@@ -21,7 +21,12 @@ export const get = async (req: Request, res: Response, next: NextFunction,) => {
 };
 
 export const getById = async (req: Request, res: Response, next: NextFunction) => {
-  return getBeneficialOwnerGovById(req, res, next, UPDATE_BENEFICIAL_OWNER_GOV_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+  const appData: ApplicationData = await getApplicationData(req.session);
+  if (checkRelevantPeriod(appData)) {
+    return getBeneficialOwnerGovById(req, res, next, UPDATE_BENEFICIAL_OWNER_GOV_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
+  } else {
+    return getBeneficialOwnerGovById(req, res, next, UPDATE_BENEFICIAL_OWNER_GOV_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+  }
 };
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {

@@ -1,5 +1,6 @@
 import express from "express";
 import cookieParser from 'cookie-parser';
+import helmet from 'helmet';
 import Redis from 'ioredis';
 import * as nunjucks from "nunjucks";
 import { CsrfProtectionMiddleware } from "@companieshouse/web-security-node";
@@ -8,6 +9,7 @@ import {
   SessionStore,
   SessionMiddleware,
 } from '@companieshouse/node-session-handler';
+import { uuid } from 'uuidv4'
 
 import * as config from "./config";
 import { logger } from "./utils/logger";
@@ -55,6 +57,26 @@ nunjucksEnv.addGlobal("MATOMO_ASSET_PATH", `//${config.CDN_HOST}`);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+const nonce: string = "db556dea-d694-44b5-b69c-dd035f5c43db"; //uuid();
+app.use(helmet({
+  contentSecurityPolicy: { 
+    directives: {
+      defaultSrc: ["'self'", config.CDN_HOST, `'nonce-${nonce}'`],
+      fontSrc: ["'self'", 'https:', 'data:', `'nonce-${nonce}'`],
+      frameAncestors: ["'self'"],
+      imgSrc: ["'self'", 'data:', `http://${config.CDN_HOST}/`, `'nonce-${nonce}'`],
+      styleSrc: ["'self'", "'unsafe-inline'", `http://${config.CDN_HOST}/stylesheets/govuk-frontend/v4.6.0/govuk-frontend-4.6.0.min.css`, `'nonce-${nonce}'`],
+      scriptSrc: [
+        "'self'",
+        "'unsafe-inline'",
+        'code.jquery.com/jquery-3.6.0.js',
+        config.CDN_HOST,
+        `'nonce-${nonce}'`
+      ],
+      objectSrc: ["'none'"]
+    }
+  }
+}));
 
 const cookieConfig = {
   cookieName: '__SID',

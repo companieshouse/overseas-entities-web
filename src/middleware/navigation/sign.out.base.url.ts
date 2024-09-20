@@ -1,6 +1,5 @@
 /**
- * Middleware to generate the sign-out baseUrl for the respective journeys
- * Assumes "res.locals.journey" has been set from previous middleware executions
+ * Middleware to generate the sign-out baseUrl for each journey
  */
 import { NextFunction, Request, Response } from "express";
 

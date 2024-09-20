@@ -8,10 +8,8 @@ import { Request, Response } from 'express';
 import { REGISTER_AN_OVERSEAS_ENTITY_URL, UPDATE_AN_OVERSEAS_ENTITY_URL } from '../../../src/config';
 import { logger } from "../../../src/utils/logger";
 import { generateSignOutBaseUrl } from '../../../src/middleware/navigation/sign.out.base.url';
-// import { transactionIdAndSubmissionIdExistInRequest } from "../../../src/utils/url";
 
 const next = jest.fn();
-// const mockTransactionIdAndSubmissionIdExistInRequest = transactionIdAndSubmissionIdExistInRequest as jest.Mock;
 const mockLoggerInfoRequest = logger.info as jest.Mock;
 const urlPathWithIds = "/transaction/123/submission/345";
 const urlPathWithoutIds = "";
@@ -20,7 +18,6 @@ describe("sign.out.base.url navigation middleware tests", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    // mockTransactionIdAndSubmissionIdExistInRequest.mockReset();
   });
 
   test(`should generate the correct baseUrl for sign out for the registration journey when submission Id and entity Id are missing from the url `, () => {

@@ -12,7 +12,7 @@ jest.mock('../../src/middleware/service.availability.middleware');
 jest.mock('../../src/utils/url');
 
 import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
-import { describe, expect, jest, beforeEach } from '@jest/globals';
+import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction } from "express";
 import request from "supertest";
 import { constants } from 'http2';

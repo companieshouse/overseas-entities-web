@@ -4,7 +4,7 @@ import { ValidationError, validationResult } from 'express-validator';
 import { logger } from '../../utils/logger';
 import {
   ROUTE_PARAM_TRUSTEE_ID,
-  UPDATE_LANDING_URL,
+  UPDATE_AN_OVERSEAS_ENTITY_URL,
   UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL,
   UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL,
   UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL,
@@ -85,7 +85,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
 const getPageProperties = (trust: Trust, formData: TrustHistoricalBeneficialOwnerForm, url: string, errors?: FormattedValidationErrors) => ({
   backLinkUrl: getBackLink(trust.review_status?.reviewed_former_bos),
-  templateName: url ? url.replace(`${UPDATE_LANDING_URL}/`, "") : UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_PAGE,
+  templateName: url ? url.replace(UPDATE_AN_OVERSEAS_ENTITY_URL, "") : UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_PAGE,
   pageParams: {
     title: "Tell us about the former beneficial owner",
   },

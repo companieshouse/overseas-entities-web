@@ -61,10 +61,12 @@ const getPageProperties = async (
       .map(mapperBo.mapBoOtherToPage),
   ];
 
+  const { templateName, template } = getPageTemplate(isUpdate, isReview, req.url);
+
   return {
     backLinkUrl: getBackLinkUrl(isUpdate, appData, req, isReview),
-    templateName: getPageTemplate(isUpdate, isReview, req.url).templateName,
-    template: getPageTemplate(isUpdate, isReview, req.url).template,
+    templateName,
+    template,
     pageParams: {
       title: isReview ? TRUST_DETAILS_TEXTS.review_title : TRUST_DETAILS_TEXTS.title,
       subtitle: isReview ? TRUST_DETAILS_TEXTS.review_subtitle : TRUST_DETAILS_TEXTS.subtitle,
@@ -257,7 +259,7 @@ const getPageTemplate = (isUpdate: boolean, isReview: boolean, url: string) => {
     return { template: config.UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_PAGE, templateName: config.UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_PAGE };
   }
   if (isUpdate){
-    return { template: config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_PAGE, templateName: url.replace(`${config.UPDATE_LANDING_URL}/`, "") };
+    return { template: config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_PAGE, templateName: url.replace(config.UPDATE_AN_OVERSEAS_ENTITY_URL, "") };
   } else {
     return { template: config.TRUST_DETAILS_PAGE, templateName: config.TRUST_DETAILS_PAGE };
   }

@@ -4,7 +4,7 @@ import { Session } from '@companieshouse/node-session-handler';
 
 import {
   ROUTE_PARAM_TRUSTEE_ID,
-  UPDATE_LANDING_URL,
+  UPDATE_AN_OVERSEAS_ENTITY_URL,
   UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL,
   UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL,
   UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL,
@@ -26,7 +26,7 @@ import { checkTrustLegalEntityBeneficialOwnerStillInvolved } from '../../validat
 
 const getPageProperties = (trust, formData, url: string, errors?: FormattedValidationErrors) => {
   return {
-    templateName: url ? url.replace(`${UPDATE_LANDING_URL}/`, "") : UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE,
+    templateName: url ? url.replace(UPDATE_AN_OVERSEAS_ENTITY_URL, "") : UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE,
     backLinkUrl: getBackLink(trust.review_status?.reviewed_legal_entities),
     pageParams: {
       title: 'Tell us about the legal entity',

@@ -50,10 +50,12 @@ const getPageProperties = async (
 ): Promise<TrustIndividualBeneificalOwnerPageProperties> => {
   const appData = await getApplicationData(req.session);
 
+  const { templateName, template } = getPageTemplate(isUpdate, req.url);
+
   return {
     backLinkUrl: getTrustInvolvedUrl(isUpdate, trustId, req),
-    templateName: getPageTemplate(isUpdate, req.url).templateName,
-    template: getPageTemplate(isUpdate, req.url).template,
+    templateName,
+    template,
     pageParams: {
       title: INDIVIDUAL_BO_TEXTS.title,
     },
@@ -161,7 +163,7 @@ export const postTrustIndividualBo = async (req: Request, res: Response, next: N
 
 const getPageTemplate = (isUpdate: boolean, url: string) => {
   if (isUpdate) {
-    return { template: config.UPDATE_TRUSTS_INDIVIDUAL_BENEFICIAL_OWNER_PAGE, templateName: url.replace(`${config.UPDATE_LANDING_URL}/`, "") };
+    return { template: config.UPDATE_TRUSTS_INDIVIDUAL_BENEFICIAL_OWNER_PAGE, templateName: url.replace(config.UPDATE_AN_OVERSEAS_ENTITY_URL, "") };
   } else {
     return { template: config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE, templateName: config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE };
   }

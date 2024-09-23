@@ -5,7 +5,7 @@ import { Session } from '@companieshouse/node-session-handler';
 
 import {
   ROUTE_PARAM_TRUSTEE_ID,
-  UPDATE_LANDING_URL,
+  UPDATE_AN_OVERSEAS_ENTITY_URL,
   UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL,
   UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL,
   UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL,
@@ -27,7 +27,7 @@ import { checkTrustIndividualBeneficialOwnerStillInvolved } from '../../validati
 
 const getPageProperties = (trust, formData, trustee: TrustIndividual, url: string, errors?: FormattedValidationErrors) => {
   return {
-    templateName: url ? url.replace(`${UPDATE_LANDING_URL}/`, "") : UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE,
+    templateName: url ? url.replace(UPDATE_AN_OVERSEAS_ENTITY_URL, "") : UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE,
     backLinkUrl: getBackLink(trust.review_status.reviewed_individuals),
     pageParams: {
       title: 'Tell us about the individual',

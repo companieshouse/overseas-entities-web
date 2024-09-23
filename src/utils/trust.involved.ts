@@ -91,10 +91,12 @@ const getPageProperties = async (
     formerTrusteeData = getFormerTrusteesFromTrust(appData, trustId, isReview);
   }
 
+  const { templateName, template } = getPageTemplate(isUpdate, isReview, req.url);
+
   return {
     backLinkUrl: getBackLinkUrl(isUpdate, trustId, isReview, req),
-    templateName: getPageTemplate(isUpdate, isReview, req.url).templateName,
-    template: getPageTemplate(isUpdate, isReview, req.url).template,
+    templateName,
+    template,
     pageParams: {
       title: TRUST_INVOLVED_TEXTS.title,
     },
@@ -235,7 +237,7 @@ const getPageTemplate = (isUpdate: boolean, isReview: boolean, url: string) => {
   if (isReview) {
     return { template: config.UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE, templateName: config.UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE };
   } else if (isUpdate) {
-    return { template: config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE, templateName: url.replace(`${config.UPDATE_LANDING_URL}/`, "") };
+    return { template: config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE, templateName: url.replace(config.UPDATE_AN_OVERSEAS_ENTITY_URL, "") };
   } else {
     return { template: config.TRUST_INVOLVED_PAGE, templateName: config.TRUST_INVOLVED_PAGE, };
   }

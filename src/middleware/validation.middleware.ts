@@ -48,7 +48,7 @@ export const checkValidations = async (req: Request, res: Response, next: NextFu
         [ResignedOnDateKey]: prepareData(req.body, ResignedOnDateKeys),
       };
 
-      const routePath = req.route.path;
+      const routePath = req.route.path.includes(config.DYNAMIC_SUB_PATH) ? req.route.path.replace(config.DYNAMIC_SUB_PATH, "") : req.route.path;
 
       // need to pass the id req param back into the page if present in the url in order to show the remove button again
       // when changing BO or MO data after failing validation. If not present, undefined will be passed in, which is fine as those pages

@@ -34,6 +34,7 @@ import {
 import { BeneficialOwnerCorporate } from '@companieshouse/api-sdk-node/dist/services/overseas-entities';
 import { Remove } from 'model/remove.type.model';
 import { isActiveFeature } from "./feature.flag";
+import { isNoChangeJourney } from "./update/no.change.journey";
 
 export const getApplicationData = async (session: Session | undefined): Promise<ApplicationData> => {
   return await session?.getExtraData(APPLICATION_DATA_KEY) || {} as ApplicationData;
@@ -73,24 +74,24 @@ export const mapDataObjectToFields = (data: any, htmlFields: string[], dataModel
 };
 
 export const allBeneficialOwners = (appData: ApplicationData): Array<BeneficialOwnerIndividual | BeneficialOwnerCorporate | BeneficialOwnerGov> => {
-  if (!appData.update?.no_change) {
-    return (appData.beneficial_owners_individual ?? [])
+  if (!isNoChangeJourney(appData)) {
+    return (appData.beneficial_owners_individual?.filter(boi => !boi.relevant_period) ?? [])
       .concat(
-        appData.beneficial_owners_government_or_public_authority ?? [],
-        appData.beneficial_owners_corporate ?? []);
+        appData.beneficial_owners_government_or_public_authority?.filter(bog => !bog.relevant_period) ?? [],
+        appData.beneficial_owners_corporate?.filter(boo => !boo.relevant_period) ?? []);
   } else {
-    return (appData.update.review_beneficial_owners_individual ?? [])
+    return (appData.update?.review_beneficial_owners_individual?.filter(boi => !boi.relevant_period) ?? [])
       .concat(
-        appData.update.review_beneficial_owners_government_or_public_authority ?? [],
-        appData.update.review_beneficial_owners_corporate ?? []);
+        appData.update?.review_beneficial_owners_government_or_public_authority?.filter(bog => !bog.relevant_period) ?? [],
+        appData.update?.review_beneficial_owners_corporate?.filter(boo => !boo.relevant_period) ?? []);
   }
 };
 
 export const allManagingOfficers = (appData: ApplicationData): Array<ManagingOfficerIndividual | ManagingOfficerCorporate> => {
-  if (!appData.update?.no_change) {
+  if (!isNoChangeJourney(appData)) {
     return (appData.managing_officers_individual ?? []).concat(appData.managing_officers_corporate ?? []);
   } else {
-    return (appData.update.review_managing_officers_individual ?? []).concat(appData.update?.review_managing_officers_corporate ?? []);
+    return (appData.update?.review_managing_officers_individual ?? []).concat(appData.update?.review_managing_officers_corporate ?? []);
   }
 };
 

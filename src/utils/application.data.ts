@@ -75,15 +75,15 @@ export const mapDataObjectToFields = (data: any, htmlFields: string[], dataModel
 
 export const allBeneficialOwners = (appData: ApplicationData): Array<BeneficialOwnerIndividual | BeneficialOwnerCorporate | BeneficialOwnerGov> => {
   if (!isNoChangeJourney(appData)) {
-    return (appData.beneficial_owners_individual ?? [])
+    return (appData.beneficial_owners_individual?.filter(boi => !boi.relevant_period) ?? [])
       .concat(
-        appData.beneficial_owners_government_or_public_authority ?? [],
-        appData.beneficial_owners_corporate ?? []);
+        appData.beneficial_owners_government_or_public_authority?.filter(bog => !bog.relevant_period) ?? [],
+        appData.beneficial_owners_corporate?.filter(boo => !boo.relevant_period) ?? []);
   } else {
-    return (appData.update?.review_beneficial_owners_individual ?? [])
+    return (appData.update?.review_beneficial_owners_individual?.filter(boi => !boi.relevant_period) ?? [])
       .concat(
-        appData.update?.review_beneficial_owners_government_or_public_authority ?? [],
-        appData.update?.review_beneficial_owners_corporate ?? []);
+        appData.update?.review_beneficial_owners_government_or_public_authority?.filter(bog => !bog.relevant_period) ?? [],
+        appData.update?.review_beneficial_owners_corporate?.filter(boo => !boo.relevant_period) ?? []);
   }
 };
 

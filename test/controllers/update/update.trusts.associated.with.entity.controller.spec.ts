@@ -26,7 +26,7 @@ import { isActiveFeature } from '../../../src/utils/feature.flag';
 import { APPLICATION_DATA_MOCK, TRUST } from '../../__mocks__/session.mock';
 import { PAGE_TITLE_ERROR, UPDATE_TRUSTS_ASSOCIATED_ADDED_HEADING, UPDATE_MANAGE_TRUSTS_REVIEWED_HEADING, SAVE_AND_CONTINUE_BUTTON_TEXT } from '../../__mocks__/text.mock';
 import { Trust, TrustKey } from '../../../src/model/trust.model';
-import { wordCount } from '../../utils/test.utils';
+import { stringCount } from '../../utils/test.utils';
 import { beneficialOwnerIndividualType, beneficialOwnerOtherType } from "../../../src/model";
 import { ADD_TRUST_TEXTS } from "../../../src/utils/add.trust";
 
@@ -145,8 +145,8 @@ describe('Update - Trusts - Trusts associated with the overseas entity', () => {
       expect(resp.text).toContain(UPDATE_TRUSTS_ASSOCIATED_ADDED_HEADING);
       expect(resp.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEWED_HEADING);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-      expect(wordCount("Removed", resp.text)).toEqual(1);
-      expect(wordCount("Active", resp.text)).toEqual(2);
+      expect(stringCount("Removed", resp.text)).toEqual(1);
+      expect(stringCount("Active", resp.text)).toEqual(2);
     });
   });
 

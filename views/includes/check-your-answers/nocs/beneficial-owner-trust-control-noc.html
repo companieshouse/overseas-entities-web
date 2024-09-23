@@ -1,14 +1,14 @@
-{% if ( boNOCTrusteesTypesArray and boNOCTrusteesTypesArray.length > 0 ) %}
-    The beneficial owner is a trustee of a trust and:
+{% if ( boNOCTrustControlTypesArray and boNOCTrustControlTypesArray.length > 0 ) %}
+    The beneficial owner has the right to exercise, or actually exercises, significant control or influence over the activities of a trust, and:
     <ul class="govuk-list govuk-list--bullet">
-    {% for bonoct in boNOCTrusteesTypesArray %}
-        {% if bonoct == "OVER_25_PERCENT_OF_SHARES" %}
+    {% for boNoc in boNOCTrustControlTypesArray %}
+        {% if boNoc == "OVER_25_PERCENT_OF_SHARES" %}
             <li>The trustees of that trust (in their capacity as such) hold, directly or indirectly, more than 25% of the shares in the entity</li>
-        {% elif bonoct == "OVER_25_PERCENT_OF_VOTING_RIGHTS" %}
+        {% elif boNoc == "OVER_25_PERCENT_OF_VOTING_RIGHTS" %}
             <li>The trustees of that trust (in their capacity as such) hold, directly or indirectly, more than 25% of the voting rights in the entity</li>
-        {% elif bonoct == "APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS" %}
+        {% elif boNoc == "APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS" %}
             <li>The trustees of that trust (in their capacity as such) hold the right, directly or indirectly, to appoint or remove a majority of the board of directors of the company</li>
-        {% elif bonoct == "SIGNIFICANT_INFLUENCE_OR_CONTROL" %}
+        {% elif boNoc == "SIGNIFICANT_INFLUENCE_OR_CONTROL" %}
             <li>The trustees of that trust (in their capacity as such) have the right to exercise, or actually exercise, significant influence or control over the company</li>
         {% endif %}
     {% endfor %}

@@ -1,0 +1,16 @@
+{% if ( boNOCNonLegalFirmControlTypesArray and boNOCNonLegalFirmControlTypesArray.length > 0 ) %}
+    The beneficial owner has the right to exercise, or actually exercises, significant control or influence over the activities of a firm that is not a legal person under its governing law, and:
+    <ul class="govuk-list govuk-list--bullet">
+    {% for boNoc in boNOCNonLegalFirmControlTypesArray %}
+        {% if boNoc == "OVER_25_PERCENT_OF_SHARES" %}
+            <li>The members of that firm (in their capacity as such) hold, directly or indirectly, more than 25% of the shares in the entity</li>
+        {% elif boNoc == "OVER_25_PERCENT_OF_VOTING_RIGHTS" %}
+            <li>The members of that firm (in their capacity as such) hold, directly or indirectly, more than 25% of the voting rights in the entity</li>
+        {% elif boNoc == "APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS" %}
+            <li>The members of that firm (in their capacity as such) hold the right, directly or indirectly, to appoint or remove a majority of the board of directors of the company</li>
+        {% elif boNoc == "SIGNIFICANT_INFLUENCE_OR_CONTROL" %}
+            <li>The members of that firm (in their capacity as such) have the right to exercise, or actually exercise, significant influence or control over the company</li>
+        {% endif %}
+    {% endfor %}
+    </ul>
+{% endif %}

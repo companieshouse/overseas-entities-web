@@ -1,0 +1,14 @@
+{% if ( boNOCOwnerOfLandPersonJurisdictionsArray and boNOCOwnerOfLandPersonJurisdictionsArray.length > 0 ) %}
+    The overseas entity is the registered owner of property or land in the following UK jurisdictions, as a nominee for this person:
+    <ul class="govuk-list govuk-list--bullet">
+    {% for boNoc in boNOCOwnerOfLandPersonJurisdictionsArray %}
+        {% if boNoc == "ENGLAND_AND_WALES" %}
+            <li>England and Wales</li>
+        {% elif boNoc == "SCOTLAND" %}
+            <li>Scotland</li>
+        {% elif boNoc == "NORTHERN_IRELAND" %}
+            <li>Northern Ireland</li>
+        {% endif %}
+    {% endfor %}
+    </ul>
+{% endif %}

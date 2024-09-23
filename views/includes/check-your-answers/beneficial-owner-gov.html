@@ -36,6 +36,26 @@
   {% include "includes/check-your-answers/nocs/beneficial-owner-member-of-firm-noc.html" %}
 {% endset %}
 
+{% set bogBeneficialOwnerTrustControlNOCs %}
+  {% set boNOCTrustControlTypesArray = bog.trust_control_nature_of_control_types %}
+  {% include "includes/check-your-answers/nocs/beneficial-owner-trust-control-noc.html" %}
+{% endset %}
+
+{% set bogBeneficialOwnerNonLegalFirmControlNOCs %}
+  {% set boNOCNonLegalFirmControlTypesArray = bog.non_legal_firm_control_nature_of_control_types %}
+  {% include "includes/check-your-answers/nocs/beneficial-owner-member-of-firm-control-noc.html" %}
+{% endset %}
+
+{% set bogOwnerOfLandPersonNOCs %}
+  {% set boNOCOwnerOfLandPersonJurisdictionsArray = bog.owner_of_land_person_nature_of_control_jurisdictions %}
+  {% include "includes/check-your-answers/nocs/beneficial-owner-owner-of-land-person-noc.html" %}
+{% endset %}
+
+{% set bogOwnerOfLandOtherEntityNOCs %}
+  {% set boNOCOwnerOfLandOtherEntityJurisdictionsArray = bog.owner_of_land_other_entity_nature_of_control_jurisdictions %}
+  {% include "includes/check-your-answers/nocs/beneficial-owner-owner-of-land-other-entity-noc.html" %}
+{% endset %}
+
 {% set bogIsOnSanctionsListHtml %}
   {% if bog.is_on_sanctions_list == 1 %}
     Yes
@@ -191,7 +211,7 @@
           text: "Nature of control"
         },
         value: {
-          html: bogBeneficialOwnerIndividualNOCs + bogBeneficialOwnerNonLegalFirmNOCs
+          html: bogBeneficialOwnerIndividualNOCs + bogBeneficialOwnerNonLegalFirmNOCs + bogBeneficialOwnerTrustControlNOCs + bogBeneficialOwnerNonLegalFirmControlNOCs + bogOwnerOfLandPersonNOCs + bogOwnerOfLandOtherEntityNOCs
         },
         actions: {
           items: [CREATE_CHANGE_LINK(

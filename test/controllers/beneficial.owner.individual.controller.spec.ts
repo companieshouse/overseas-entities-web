@@ -57,7 +57,7 @@ import {
   TRUST_CONTROL_NOC_HEADING,
   OWNER_OF_LAND_PERSON_NOC_HEADING,
   OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING,
-  FIRM_NOC_HEADING_NEW,
+  FIRM_CONTROL_NOC_HEADING,
   BO_NOC_HEADING,
   FIRM_NOC_HEADING,
 } from '../__mocks__/text.mock';
@@ -159,7 +159,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(BO_NOC_HEADING);
       expect(resp.text).toContain(TRUSTS_NOC_HEADING);
       expect(resp.text).toContain(FIRM_NOC_HEADING);
-      expect(resp.text).not.toContain(FIRM_NOC_HEADING_NEW);
+      expect(resp.text).not.toContain(FIRM_CONTROL_NOC_HEADING);
       expect(resp.text).not.toContain(TRUST_CONTROL_NOC_HEADING);
       expect(resp.text).not.toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
       expect(resp.text).not.toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
@@ -182,7 +182,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(BO_NOC_HEADING);
       expect(resp.text).toContain(TRUSTS_NOC_HEADING);
       expect(resp.text).not.toContain(FIRM_NOC_HEADING);
-      expect(resp.text).toContain(FIRM_NOC_HEADING_NEW);
+      expect(resp.text).toContain(FIRM_CONTROL_NOC_HEADING);
       expect(resp.text).toContain(TRUST_CONTROL_NOC_HEADING);
       expect(resp.text).toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
       expect(resp.text).toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
@@ -229,7 +229,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(BO_NOC_HEADING);
       expect(resp.text).toContain(TRUSTS_NOC_HEADING);
       expect(resp.text).toContain(FIRM_NOC_HEADING);
-      expect(resp.text).not.toContain(FIRM_NOC_HEADING_NEW);
+      expect(resp.text).not.toContain(FIRM_CONTROL_NOC_HEADING);
       expect(resp.text).not.toContain(TRUST_CONTROL_NOC_HEADING);
       expect(resp.text).not.toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
       expect(resp.text).not.toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
@@ -252,7 +252,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(BO_NOC_HEADING);
       expect(resp.text).toContain(TRUSTS_NOC_HEADING);
       expect(resp.text).not.toContain(FIRM_NOC_HEADING);
-      expect(resp.text).toContain(FIRM_NOC_HEADING_NEW);
+      expect(resp.text).toContain(FIRM_CONTROL_NOC_HEADING);
       expect(resp.text).toContain(TRUST_CONTROL_NOC_HEADING);
       expect(resp.text).toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
       expect(resp.text).toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);

@@ -1,50 +1,100 @@
+{% if (journey == "remove") %}
+  {% set isRemoveJourney = true %}
+{% endif %}
+
+{% set noChange %}
+  {% if update.no_change == 1 %}
+    No, I do not need to make changes
+  {% endif %}
+{% endset %}
+
+{% set updateStatementDate = dateMacros.formatDate(update.filing_date["day"], update.filing_date["month"],
+update.filing_date["year"]) %}
+
+
 {% set isOwnedLand %}
- {% if update.owned_land_relevant_period  %}
-  Yes
- {% else %}
-  No
- {% endif %}
+  {% if update.owned_land_relevant_period  %}
+    Yes
+  {% else %}
+    No
+  {% endif %}  
 {% endset %}
 
 {% set isProtectedInformation %}
- {% if appData.is_secure_register == 1 %}
-  Yes
- {% else %}
-  No
- {% endif %}
+  {% if appData.is_secure_register == 1 %}
+    Yes
+  {% else %}
+    No
+  {% endif %}
 {% endset %}
 
-{{ govukSummaryList({
-   rows: [
-      {
-       key: {
+  {{ govukSummaryList({
+    rows: [
+    {
+      key: {
         text: "Do any beneficial owners or managing officers have personal information protected at Companies House?"
-        },
-        value: {
+    },
+      value: {
         text: isProtectedInformation
-        },
-        actions: {
+    },
+      actions: {
         items: [ CREATE_CHANGE_LINK(
         OE_CONFIGS.SECURE_UPDATE_FILTER_URL,
         isProtectedInformation,
         "has-protected-information-change-link"
-       ) ]
+        ) ]
+        }
+    },
+    {
+      key: {
+          text: "Was the overseas entity a registered owner of UK property or land during the pre-registration period?"
+        },
+        value: {
+          text: isOwnedLand
+        },
+        actions: {
+          items: [ CREATE_CHANGE_LINK(
+          OE_CONFIGS.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL,
+          isOwnedLand,          
+          "is-owned-land-change-link"
+      ) ]
       }
+    },
+    {
+      key: {
+        text: "Date of the update statement"
       },
-     {
-    key: {
-    text: "Was the overseas entity a registered owner of UK property or land during the pre-registration period?"
-    },
-    value: {
-    text: isOwnedLand
-    },
-    actions: {
-    items: [ CREATE_CHANGE_LINK(
-    OE_CONFIGS.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL,
-     isOwnedLand,
-    "is-owned-land-change-link"
-    ) ]
-    }
-    }
+      value: {
+        text: updateStatementDate
+      },
+      attributes: {
+        "data-event-id":  "nochange-changelink-filingdate-review-statement-button"
+      },
+      actions: {
+        items: [ CREATE_CHANGE_LINK(
+        OE_CONFIGS.UPDATE_FILING_DATE_CHANGELINK,
+        updateStatementDate,
+        "nochange-changelink-filingdate-review-statement-button"
+        ) ]
+      }
+    } if pageParams.noChangeFlag and not isRemoveJourney,
+    {
+      key: {
+        text: "Do you need to make any changes to this overseas entity for the update period?"
+      },
+      value: {
+        text: noChange
+      },
+      attributes: {
+        "data-event-id": "nochange-changelink-entity-review-statement-button"
+      },
+      actions: {
+        items: [ CREATE_CHANGE_LINK(
+        OE_CONFIGS.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_CHANGELINK,
+        noChange,
+        "nochange-changelink-entity-review-statement-button"
+        ) ]
+      }
+    } if pageParams.noChangeFlag and not isRemoveJourney
   ]
-}) }}
+  }) }}

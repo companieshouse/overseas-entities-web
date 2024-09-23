@@ -6,10 +6,10 @@ import { VALID_CHARACTERS } from "./regex/regex.validation";
 import { checkAtLeastOneFieldHasValue } from "./custom.validation";
 import {
   start_date_validations,
-  ceased_date_validations,
-  filingPeriodStartDateValidations,
-  filingPeriodCeasedDateValidations
+  ceased_date_validations
 } from "./fields/date.validation";
+import { isActiveFeature } from "../utils/feature.flag";
+import { FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC } from "../config";
 
 export const beneficial_owner_gov_name_validation = [
   body("name")
@@ -38,8 +38,21 @@ export const law_governed_validation = [
 ];
 
 export const nature_of_control_validation = [
-  body("beneficial_owner_nature_of_control_types")
-    .custom((value, { req }) => checkAtLeastOneFieldHasValue(ErrorMessages.SELECT_NATURE_OF_CONTROL, req.body.beneficial_owner_nature_of_control_types, req.body.non_legal_firm_members_nature_of_control_types))
+  body("beneficial_owner_nature_of_control_types").custom((value, { req }) => {
+    const NOCS_TO_CHECK = [
+      req.body.beneficial_owner_nature_of_control_types,
+      req.body.non_legal_firm_members_nature_of_control_types
+    ];
+
+    if (isActiveFeature(FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)) {
+      NOCS_TO_CHECK.push(
+        req.body.trust_control_nature_of_control_types,
+        req.body.non_legal_firm_control_nature_of_control_types,
+        req.body.owner_of_land_person_nature_of_control_jurisdictions,
+        req.body.owner_of_land_other_entity_nature_of_control_jurisdictions);
+    }
+    return checkAtLeastOneFieldHasValue(ErrorMessages.SELECT_NATURE_OF_CONTROL, ...NOCS_TO_CHECK);
+  })
 ];
 
 export const is_on_sanctions_list_validation = [
@@ -73,11 +86,7 @@ export const updateBeneficialOwnerGov = [
 
   body("is_still_bo").not().isEmpty().withMessage(ErrorMessages.SELECT_IF_STILL_BENEFICIAL_OWNER),
 
-  ...ceased_date_validations,
-
-  ...filingPeriodStartDateValidations,
-
-  ...filingPeriodCeasedDateValidations
+  ...ceased_date_validations
 ];
 
 export const updateReviewBeneficialOwnerGovValidator = [
@@ -100,7 +109,5 @@ export const updateReviewBeneficialOwnerGovValidator = [
 
   body("is_still_bo").not().isEmpty().withMessage(ErrorMessages.SELECT_IF_STILL_BENEFICIAL_OWNER),
 
-  ...ceased_date_validations,
-
-  ...filingPeriodCeasedDateValidations
+  ...ceased_date_validations
 ];

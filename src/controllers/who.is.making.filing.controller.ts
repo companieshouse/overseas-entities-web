@@ -14,12 +14,12 @@ import {
 } from "../config";
 import { getWhoIsFiling, postWhoIsFiling } from "../utils/who.is.making.filing";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   let backLinkUrl: string = PRESENTER_URL;
   if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
     backLinkUrl = getUrlWithParamsToPath(PRESENTER_WITH_PARAMS_URL, req);
   }
-  getWhoIsFiling(req, res, next, WHO_IS_MAKING_FILING_PAGE, backLinkUrl);
+  await getWhoIsFiling(req, res, next, WHO_IS_MAKING_FILING_PAGE, backLinkUrl);
 };
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {

@@ -10,10 +10,10 @@ import * as config from "../config";
 import { OverseasEntityKey, Transactionkey } from "../model/data.types.model";
 import { updateOverseasEntity } from "../service/overseas.entities.service";
 
-export const getWhoIsFiling = (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string): void => {
+export const getWhoIsFiling = async (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string): Promise<void> => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
 
     return res.render(templateName, {
       backLinkUrl,
@@ -39,7 +39,7 @@ export const postWhoIsFiling = async (
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
     const whoIsRegistering = req.body[WhoIsRegisteringKey];
     appData[WhoIsRegisteringKey] = whoIsRegistering;
     const session = req.session as Session;

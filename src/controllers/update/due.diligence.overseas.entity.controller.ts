@@ -7,10 +7,10 @@ import {
   UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL
 } from "../../config";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
-  getDueDiligence(req, res, next, UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE, WHO_IS_MAKING_UPDATE_URL);
+export const get = async (req: Request, res: Response, next: NextFunction) => {
+  await getDueDiligence(req, res, next, UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE, WHO_IS_MAKING_UPDATE_URL);
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
-  postDueDiligence(req, res, next, UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL);
+export const post = async (req: Request, res: Response, next: NextFunction) => {
+  await postDueDiligence(req, res, next, UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL);
 };

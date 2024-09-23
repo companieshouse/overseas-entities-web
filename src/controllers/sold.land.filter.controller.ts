@@ -12,7 +12,7 @@ import { createOverseasEntity, updateOverseasEntity } from "../service/overseas.
 import { Session } from "@companieshouse/node-session-handler";
 import { getUrlWithTransactionIdAndSubmissionId } from "../utils/url";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     logger.debugRequest(req, `GET ${config.SOLD_LAND_FILTER_PAGE}`);
 
@@ -20,7 +20,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       deleteApplicationData(req.session);
     }
 
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
 
     return res.render(config.SOLD_LAND_FILTER_PAGE, {
       backLinkUrl: getSoldLandFilterBackLink(),
@@ -40,13 +40,17 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     const session = req.session as Session;
     const hasSoldLand = (req.body[HasSoldLandKey]).toString();
-    const appData: ApplicationData = getApplicationData(session);
+    const appData: ApplicationData = await getApplicationData(session);
     appData[HasSoldLandKey] = hasSoldLand;
 
     let nextPageUrl: string = "";
 
     if (hasSoldLand === "1") {
-      nextPageUrl = config.CANNOT_USE_URL;
+      nextPageUrl = req.params[config.ROUTE_PARAM_TRANSACTION_ID]
+        && req.params[config.ROUTE_PARAM_SUBMISSION_ID]
+        && isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
+        ? getUrlWithTransactionIdAndSubmissionId(config.CANNOT_USE_WITH_PARAMS_URL, req.params[config.ROUTE_PARAM_TRANSACTION_ID], req.params[config.ROUTE_PARAM_SUBMISSION_ID])
+        : config.CANNOT_USE_URL;
     } else if (hasSoldLand === "0") {
       nextPageUrl = config.SECURE_REGISTER_FILTER_URL;
       if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {

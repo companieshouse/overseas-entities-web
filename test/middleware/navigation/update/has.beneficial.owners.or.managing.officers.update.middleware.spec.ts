@@ -30,10 +30,10 @@ describe("has.beneficial.owners.or.managing.officers.update navigation middlewar
     mockGetApplicationData.mockReturnValue(APPLICATION_DATA_REGISTRATION_MOCK);
   });
 
-  test(`should redirect to ${SECURE_UPDATE_FILTER_URL} page and log message error ${NavigationErrorMessage} if update no change false`, () => {
+  test(`should redirect to ${SECURE_UPDATE_FILTER_URL} page and log message error ${NavigationErrorMessage} if update no change false`, async () => {
     mockCheckBOsOrMOsDetailsEnteredUpdate.mockImplementationOnce( () => { return false; });
 
-    hasBOsOrMOsUpdate(req, res, next);
+    await hasBOsOrMOsUpdate(req, res, next);
 
     expect(next).not.toHaveBeenCalledTimes(1);
 
@@ -44,9 +44,9 @@ describe("has.beneficial.owners.or.managing.officers.update navigation middlewar
     expect(res.redirect).toHaveBeenCalledWith(SECURE_UPDATE_FILTER_URL);
   });
 
-  test(`should redirect to ${SECURE_UPDATE_FILTER_URL} page and log message error ${NavigationErrorMessage}`, () => {
+  test(`should redirect to ${SECURE_UPDATE_FILTER_URL} page and log message error ${NavigationErrorMessage}`, async () => {
     mockCheckBOsOrMOsDetailsEnteredUpdate.mockImplementationOnce( () => { return false; });
-    hasBOsOrMOsUpdate(req, res, next);
+    await hasBOsOrMOsUpdate(req, res, next);
 
     expect(next).not.toHaveBeenCalledTimes(1);
 
@@ -57,9 +57,9 @@ describe("has.beneficial.owners.or.managing.officers.update navigation middlewar
     expect(res.redirect).toHaveBeenCalledWith(SECURE_UPDATE_FILTER_URL);
   });
 
-  test(`should not redirect and pass to the next middleware`, () => {
+  test(`should not redirect and pass to the next middleware`, async () => {
     mockCheckBOsOrMOsDetailsEnteredUpdate.mockImplementationOnce( () => { return true; });
-    hasBOsOrMOsUpdate(req, res, next);
+    await hasBOsOrMOsUpdate(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
 
@@ -67,9 +67,9 @@ describe("has.beneficial.owners.or.managing.officers.update navigation middlewar
     expect(res.redirect).not.toHaveBeenCalled();
   });
 
-  test("should catch the error and call next(err)", () => {
+  test("should catch the error and call next(err)", async () => {
     mockCheckBOsOrMOsDetailsEnteredUpdate.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-    hasBOsOrMOsUpdate(req, res, next);
+    await hasBOsOrMOsUpdate(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
 
@@ -77,14 +77,14 @@ describe("has.beneficial.owners.or.managing.officers.update navigation middlewar
     expect(res.redirect).not.toHaveBeenCalled();
   });
 
-  test(`should not redirect to ${SECURE_UPDATE_FILTER_URL} page if update no change is true`, () => {
+  test(`should not redirect to ${SECURE_UPDATE_FILTER_URL} page if update no change is true`, async () => {
     mockCheckBOsOrMOsDetailsEnteredUpdate.mockImplementationOnce( () => { return false; });
     mockGetApplicationData.mockReturnValueOnce({
       update: {
         no_change: true
       }
     });
-    hasBOsOrMOsUpdate(req, res, next);
+    await hasBOsOrMOsUpdate(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
 

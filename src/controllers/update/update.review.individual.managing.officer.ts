@@ -15,10 +15,10 @@ import { addResignedDateToTemplateOptions } from "../../utils/update/ceased_date
 import { UsualResidentialAddressKey, UsualResidentialAddressKeys } from "../../model/address.model";
 import { checkRelevantPeriod } from "../../utils/relevant.period";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
     const index = req.query.index;
 
     let dataToReview = {}, residentialAddress = {};
@@ -50,7 +50,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const moIndex = req.query.index;
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
 
     if (moIndex !== undefined && appData.managing_officers_individual && appData.managing_officers_individual[Number(moIndex)].id === req.body["id"]){
 
@@ -58,7 +58,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       const dob = appData.managing_officers_individual[Number(moIndex)].date_of_birth as InputDate;
       const haveDayOfBirth = appData.managing_officers_individual[Number(moIndex)].have_day_of_birth;
 
-      removeFromApplicationData(req, ManagingOfficerKey, moId);
+      await removeFromApplicationData(req, ManagingOfficerKey, moId);
 
       setReviewedDateOfBirth(req, dob);
       const session = req.session as Session;
@@ -68,7 +68,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         data[HaveDayOfBirthKey] = haveDayOfBirth;
       }
 
-      setApplicationData(req.session, data, ManagingOfficerKey);
+      await setApplicationData(req.session, data, ManagingOfficerKey);
 
       await saveAndContinue(req, session);
     }

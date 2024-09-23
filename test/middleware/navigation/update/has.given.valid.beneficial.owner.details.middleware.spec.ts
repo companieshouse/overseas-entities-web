@@ -36,9 +36,9 @@ describe("has.given.valid.beneficial.owner.details navigation middleware tests",
     jest.clearAllMocks();
   });
 
-  test(`should redirect to ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page and log message error ${NavigationErrorMessage} if check fails`, () => {
+  test(`should redirect to ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page and log message error ${NavigationErrorMessage} if check fails`, async () => {
     mockCheckBoOrMoTypeAndId.mockImplementationOnce( () => { return false; });
-    hasGivenValidBoMoDetails(req, res, next);
+    await hasGivenValidBoMoDetails(req, res, next);
 
     expect(next).not.toBeCalled();
 
@@ -49,9 +49,9 @@ describe("has.given.valid.beneficial.owner.details navigation middleware tests",
     expect(res.redirect).toHaveBeenCalledWith(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
   });
 
-  test(`should not redirect and pass to the next middleware`, () => {
+  test(`should not redirect and pass to the next middleware`, async () => {
     mockCheckBoOrMoTypeAndId.mockImplementationOnce( () => { return true; });
-    hasGivenValidBoMoDetails(req, res, next);
+    await hasGivenValidBoMoDetails(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
 
@@ -59,9 +59,9 @@ describe("has.given.valid.beneficial.owner.details navigation middleware tests",
     expect(res.redirect).not.toHaveBeenCalled();
   });
 
-  test("should catch the error and call next(err)", () => {
+  test("should catch the error and call next(err)", async () => {
     mockCheckBoOrMoTypeAndId.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-    hasGivenValidBoMoDetails(req, res, next);
+    await hasGivenValidBoMoDetails(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
 

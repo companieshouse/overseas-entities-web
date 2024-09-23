@@ -14,7 +14,7 @@
   {% include "includes/inputs/nature-of-control-checkboxes/trustees-nature-of-control-types.html" %}
 {% endif %}
 
-{% if FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC and not entity_number and isBeneficialOwnerIndividual %}
+{% if FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC and not entity_number %}
   {% set errorMessage = {} if errors.beneficial_owner_nature_of_control_types %}
   {% include "includes/inputs/nature-of-control-checkboxes/trust-control-nature-of-control-types.html" %}
 

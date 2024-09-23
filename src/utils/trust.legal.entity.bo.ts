@@ -1,3 +1,4 @@
+/* eslint-disable require-await */
 import { NextFunction, Request, Response } from 'express';
 import * as config from '../config';
 import { logger } from './logger';
@@ -12,9 +13,11 @@ import { CommonTrustData, TrustLegalEntityForm } from '../model/trust.page.model
 import { Session } from '@companieshouse/node-session-handler';
 import { saveAndContinue } from './save.and.continue';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
-import { validationResult } from 'express-validator';
+import { ValidationError, validationResult } from 'express-validator';
 import { isActiveFeature } from './feature.flag';
 import { getUrlWithParamsToPath } from './url';
+import { checkTrusteeLegalEntityCeasedDate } from '../validation/async';
+import { checkTrustLegalEntityBeneficialOwnerStillInvolved } from '../validation/stillInvolved.validation';
 
 export const LEGAL_ENTITY_BO_TEXTS = {
   title: 'Tell us about the legal entity',
@@ -37,13 +40,15 @@ type TrustLegalEntityBeneficialOwnerPageProperties = {
   isUpdate: boolean
 };
 
-const getPageProperties = (
+const getPageProperties = async (
   req: Request,
   trustId: string,
   isUpdate: boolean,
   formData?: TrustLegalEntityForm,
   errors?: FormattedValidationErrors,
-): TrustLegalEntityBeneficialOwnerPageProperties => {
+): Promise<TrustLegalEntityBeneficialOwnerPageProperties> => {
+
+  const appData = await getApplicationData(req.session);
 
   return {
     backLinkUrl: getTrustInvolvedUrl(isUpdate, trustId, req),
@@ -52,7 +57,7 @@ const getPageProperties = (
       title: LEGAL_ENTITY_BO_TEXTS.title,
     },
     pageData: {
-      trustData: CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId, false),
+      trustData: CommonTrustDataMapper.mapCommonTrustDataToPage(appData, trustId, false),
       roleWithinTrustType: RoleWithinTrustType
     },
     formData,
@@ -62,23 +67,23 @@ const getPageProperties = (
   };
 };
 
-export const getRelevantPeriodPageProperties = (
+export const getRelevantPeriodPageProperties = async (
   req: Request,
   trustId: string,
   isUpdate: boolean,
   formData?: TrustLegalEntityForm,
   errors?: FormattedValidationErrors,
-): TrustLegalEntityBeneficialOwnerPageProperties => {
+): Promise<TrustLegalEntityBeneficialOwnerPageProperties> => {
   return getPageProperties(req, trustId, isUpdate, formData, errors);
 };
 
-export const getTrustLegalEntityBo = (req: Request, res: Response, next: NextFunction, isUpdate: boolean): void => {
+export const getTrustLegalEntityBo = async (req: Request, res: Response, next: NextFunction, isUpdate: boolean): Promise<void> => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
     const trusteeId = req.params[config.ROUTE_PARAM_TRUSTEE_ID];
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
     const isRelevantPeriod = req.query ? req.query["relevant-period"] === "true" : false;
 
     const formData: TrustLegalEntityForm = mapLegalEntityTrusteeByIdFromSessionToPage(
@@ -87,7 +92,7 @@ export const getTrustLegalEntityBo = (req: Request, res: Response, next: NextFun
       trusteeId
     );
     // conditionally toggle display of relevant period page text and role within trust type will default to Beneficiary
-    const pageProps = isRelevantPeriod ? getRelevantPeriodPageProperties(req, trustId, isUpdate, formData) : getPageProperties(req, trustId, isUpdate, formData);
+    const pageProps = isRelevantPeriod ? await getRelevantPeriodPageProperties(req, trustId, isUpdate, formData) : await getPageProperties(req, trustId, isUpdate, formData);
     if ((isRelevantPeriod || (trusteeId && pageProps.formData?.relevant_period)) && pageProps.formData) {
       pageProps.formData.relevant_period = true;
       setEntityNameInRelevantPeriodPageBanner(pageProps, appData ? appData.entity_name : pageProps.pageData.trustData.trustName);
@@ -99,7 +104,7 @@ export const getTrustLegalEntityBo = (req: Request, res: Response, next: NextFun
   }
 };
 
-export const postTrustLegalEntityBo = async (req: Request, res: Response, next: NextFunction, isUpdate: boolean) => {
+export const postTrustLegalEntityBo = async (req: Request, res: Response, next: NextFunction, isUpdate: boolean): Promise<void> => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
@@ -109,19 +114,22 @@ export const postTrustLegalEntityBo = async (req: Request, res: Response, next: 
     const legalEntityBoData = mapLegalEntityToSession(req.body);
 
     //  get trust data from session
-    let appData: ApplicationData = getApplicationData(req.session);
+    let appData: ApplicationData = await getApplicationData(req.session);
 
     // validate request
     const errorList = validationResult(req);
+    const errors = await getValidationErrors(appData, req);
     const formData: TrustLegalEntityForm = req.body as TrustLegalEntityForm;
 
-    if (errorList && !errorList.isEmpty()) {
-      const pageProps = getPageProperties(
+    if (!errorList.isEmpty() || errors.length) {
+      const errorListArray = !errorList.isEmpty() ? errorList.array() : [];
+
+      const pageProps = await getPageProperties(
         req,
         trustId,
         isUpdate,
         formData,
-        formatValidationError(errorList.array()),
+        formatValidationError([...errorListArray, ...errors]),
       );
       setEntityNameInRelevantPeriodPageBanner(pageProps, appData ? appData.entity_name : pageProps.pageData.trustData.trustName);
       return res.render(pageProps.templateName, pageProps);
@@ -180,4 +188,12 @@ export const setEntityNameInRelevantPeriodPageBanner = (pageProps: TrustLegalEnt
     pageProps.pageData.entity_name = entityName;
   }
   return pageProps;
+};
+
+// Get validation errors that depend on an asynchronous request
+const getValidationErrors = async (appData: ApplicationData, req: Request): Promise<ValidationError[]> => {
+  const stillInvolvedErrors = checkTrustLegalEntityBeneficialOwnerStillInvolved(appData, req);
+  const ceasedDateErrors = await checkTrusteeLegalEntityCeasedDate(appData, req);
+
+  return [...stillInvolvedErrors, ...ceasedDateErrors];
 };

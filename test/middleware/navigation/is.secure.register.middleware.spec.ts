@@ -25,9 +25,9 @@ describe("is.secure.register navigation middleware tests", () => {
     jest.clearAllMocks();
   });
 
-  test(`should redirect to ${SOLD_LAND_FILTER_URL} page and log message error ${NavigationErrorMessage}`, () => {
+  test(`should redirect to ${SOLD_LAND_FILTER_URL} page and log message error ${NavigationErrorMessage}`, async () => {
     mockCheckIsSecureRegisterDetailsEntered.mockImplementationOnce( () => { return false; });
-    isSecureRegister(req, res, next);
+    await isSecureRegister(req, res, next);
 
     expect(next).not.toHaveBeenCalledTimes(1);
 
@@ -38,9 +38,9 @@ describe("is.secure.register navigation middleware tests", () => {
     expect(res.redirect).toHaveBeenCalledWith(SOLD_LAND_FILTER_URL);
   });
 
-  test(`should not redirect and pass to the next middleware`, () => {
+  test(`should not redirect and pass to the next middleware`, async () => {
     mockCheckIsSecureRegisterDetailsEntered.mockImplementationOnce( () => { return true; });
-    isSecureRegister(req, res, next);
+    await isSecureRegister(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
 
@@ -48,9 +48,9 @@ describe("is.secure.register navigation middleware tests", () => {
     expect(res.redirect).not.toHaveBeenCalled();
   });
 
-  test("should catch the error and call next(err)", () => {
+  test("should catch the error and call next(err)", async () => {
     mockCheckIsSecureRegisterDetailsEntered.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-    isSecureRegister(req, res, next);
+    await isSecureRegister(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
 

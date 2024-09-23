@@ -11,27 +11,27 @@
         <form method="post">
             {% include "includes/csrf_token.html" %}
             {{ govukRadios({
-            errorMessage: errors.owned_land_relevant_period if errors,
-            idPrefix: "owned_land_relevant_period",
-            name: "owned_land_relevant_period",
-            fieldset: {
-            legend: {
-            isPageHeading: true,
-            classes: "govuk-fieldset__legend--xl"
-            }
-            },
-            items: [
-            {
-            value: 1,
-            text: "Yes",
-            checked: owned_land_relevant_period === 1
-            },
-            {
-            value: 0,
-            text: "No",
-            checked: owned_land_relevant_period === 0
-            }
-            ]
+                errorMessage: errors.owned_land_relevant_period if errors,
+                idPrefix: "owned_land_relevant_period",
+                name: "owned_land_relevant_period",
+                fieldset: {
+                    legend: {
+                        isPageHeading: true,
+                        classes: "govuk-fieldset__legend--xl"
+                    }
+                },
+                items: [
+                    {
+                        value: 1,
+                        text: "Yes",
+                        checked: update.owned_land_relevant_period == 1
+                    },
+                    {
+                        value: 0,
+                        text: "No",
+                        checked: update.owned_land_relevant_period == 0
+                    }
+                ]
             }) }}
 
 

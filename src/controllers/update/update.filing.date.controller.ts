@@ -17,11 +17,11 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
     const backLinkUrl = !checkRelevantPeriod(appData) ? config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL : config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL + config.RELEVANT_PERIOD_QUERY_PARAM;
 
     return res.render(config.UPDATE_FILING_DATE_PAGE, {
-      backLinkUrl: backLinkUrl,
+      backLinkUrl,
       templateName: config.UPDATE_FILING_DATE_PAGE,
       chsUrl: config.CHS_URL,
       ...appData,
@@ -33,13 +33,13 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = async(req: Request, res: Response, next: NextFunction) => {
+export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const session = req.session as Session;
 
-    const appData: ApplicationData = getApplicationData(session);
+    const appData: ApplicationData = await getApplicationData(session);
     if (!appData[Transactionkey]) {
       const transactionID = await postTransaction(req, session);
       appData[Transactionkey] = transactionID;

@@ -12,14 +12,15 @@ import { reloadOE } from "./overseas.entity.query.controller";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { retrieveTrustData } from "../../utils/update/trust.model.fetch";
 import { isRemoveJourney } from "../../utils/url";
-import { checkRelevantPeriod } from "../../utils/relevant.period";
-import { isActiveFeature } from "../../utils/feature.flag";
+import { isNoChangeJourney } from "../../utils/update/no.change.journey";
 
-export const get = (req: Request, resp: Response, next: NextFunction) => {
+export const get = async (req: Request, resp: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const appData: ApplicationData = getApplicationData(req.session);
-    if (isRemoveJourney(req)) {
+    const appData: ApplicationData = await getApplicationData(req.session);
+    const isRemove: boolean = await isRemoveJourney(req);
+
+    if (isRemove) {
       return resp.render(config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE, {
         journey: config.JourneyType.remove,
         backLinkUrl: config.OVERSEAS_ENTITY_PRESENTER_URL,
@@ -45,16 +46,14 @@ export const post = async (req: Request, resp: Response, next: NextFunction) => 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const session = req.session as Session;
     let redirectUrl: string;
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
     const noChangeStatement = req.body[NoChangeKey];
 
     if (appData.update) {
       appData.update.no_change = noChangeStatement === "1";
     }
 
-    const relevantNoPeriodChange = isActiveFeature(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD) ? !checkRelevantPeriod(appData) : true;
-
-    if (noChangeStatement === "1" && relevantNoPeriodChange) {
+    if (isNoChangeJourney(appData)) {
       await resetDataForNoChange(req, appData);
       redirectUrl = config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL;
     } else {

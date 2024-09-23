@@ -15,13 +15,14 @@ import { getApplicationData } from "../../utils/application.data";
 import { ApplicationData } from "../../model/application.model";
 import { FormattedValidationErrors, formatValidationError } from "../../middleware/validation.middleware";
 import { StatementResolutionKey, StatementResolutionType } from "../../model/statement.resolution.model";
+import { isNoChangeJourney } from "../../utils/update/no.change.journey";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const appData = getApplicationData(req.session);
-    const inNoChangeJourney = !!appData.update?.no_change;
+    const appData = await getApplicationData(req.session);
+    const inNoChangeJourney: boolean = isNoChangeJourney(appData);
 
     return renderPage(res, appData, inNoChangeJourney, req['statementErrorList']);
   } catch (error) {
@@ -29,13 +30,13 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
+export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
     const errors = validationResult(req);
-    const inNoChangeJourney = !!appData.update?.no_change;
+    const inNoChangeJourney = isNoChangeJourney(appData);
 
     if (!errors.isEmpty()) {
       return renderPage(res, appData, inNoChangeJourney, req['statementErrorList'], formatValidationError(errors.array()));

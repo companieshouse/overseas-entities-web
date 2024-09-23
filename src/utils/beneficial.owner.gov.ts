@@ -3,17 +3,24 @@ import { Session } from "@companieshouse/node-session-handler";
 import { logger } from "../utils/logger";
 import { saveAndContinue } from "../utils/save.and.continue";
 import { ApplicationData, ApplicationDataType } from "../model";
-import { getApplicationData, getFromApplicationData, mapDataObjectToFields, mapFieldsToDataObject, prepareData, removeFromApplicationData, setApplicationData } from "../utils/application.data";
+import {
+  getApplicationData,
+  getFromApplicationData,
+  mapDataObjectToFields,
+  mapFieldsToDataObject,
+  prepareData,
+  removeFromApplicationData,
+  setApplicationData,
+  setBoNocDataAsArrays
+} from "../utils/application.data";
 import { addCeasedDateToTemplateOptions } from "../utils/update/ceased_date_util";
 import {
   AddressKeys,
-  BeneficialOwnerNoc,
   EntityNumberKey,
   HasSamePrincipalAddressKey,
   ID,
   InputDateKeys,
-  IsOnSanctionsListKey,
-  NonLegalFirmNoc
+  IsOnSanctionsListKey
 } from "../model/data.types.model";
 import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAddressKeys } from "../model/address.model";
 import {
@@ -26,28 +33,35 @@ import { BeneficialOwnerGovKey, BeneficialOwnerGovKeys } from "../model/benefici
 import { v4 as uuidv4 } from "uuid";
 import * as config from "../config";
 import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
+import { isActiveFeature } from "./feature.flag";
 
-export const getBeneficialOwnerGov = (req: Request, res: Response, templateName: string, backLinkUrl: string) => {
-  logger.debugRequest(req, `${req.method} ${req.route.path}`);
+export const getBeneficialOwnerGov = async (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string): Promise<void> => {
+  try {
+    logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-  const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
 
-  res.render(templateName, {
-    backLinkUrl,
-    templateName: templateName,
-    ...appData,
-    relevant_period: req.query["relevant-period"] === "true",
-  });
+    res.render(templateName, {
+      backLinkUrl,
+      templateName: templateName,
+      ...appData,
+      relevant_period: req.query["relevant-period"] === "true",
+      FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC: isActiveFeature(config.FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)
+    });
+  } catch (error) {
+    logger.errorRequest(req, error);
+    next(error);
+  }
 };
 
-export const getBeneficialOwnerGovById = (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string) => {
+export const getBeneficialOwnerGovById = async (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string): Promise<void> => {
   try {
     logger.debugRequest(req, `GET BY ID ${req.route.path}`);
 
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
 
     const id = req.params[ID];
-    const data = getFromApplicationData(req, BeneficialOwnerGovKey, id, true);
+    const data = await getFromApplicationData(req, BeneficialOwnerGovKey, id, true);
 
     const principalAddress = (data) ? mapDataObjectToFields(data[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};
     const serviceAddress = (data) ? mapDataObjectToFields(data[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
@@ -61,7 +75,8 @@ export const getBeneficialOwnerGovById = (req: Request, res: Response, next: Nex
       ...principalAddress,
       ...serviceAddress,
       [StartDateKey]: startDate,
-      entity_name: appData.entity_name
+      entity_name: appData.entity_name,
+      FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC: isActiveFeature(config.FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)
     };
 
     // Redis removal work - Add extra template options if Redis Remove flag is true and on Registration journey
@@ -88,7 +103,7 @@ export const postBeneficialOwnerGov = async (req: Request, res: Response, next: 
     const data: ApplicationDataType = setBeneficialOwnerData(req.body, uuidv4());
 
     const session = req.session as Session;
-    setApplicationData(session, data, BeneficialOwnerGovKey);
+    await setApplicationData(session, data, BeneficialOwnerGovKey);
 
     await saveAndContinue(req, session);
 
@@ -105,14 +120,14 @@ export const updateBeneficialOwnerGov = async (req: Request, res: Response, next
     const id = req.params[ID];
 
     // Remove old Beneficial Owner
-    removeFromApplicationData(req, BeneficialOwnerGovKey, id);
+    await removeFromApplicationData(req, BeneficialOwnerGovKey, id);
 
     // Set Beneficial Owner data
     const data: ApplicationDataType = setBeneficialOwnerData(req.body, id);
 
     // Save new Beneficial Owner
     const session = req.session as Session;
-    setApplicationData(session, data, BeneficialOwnerGovKey);
+    await setApplicationData(session, data, BeneficialOwnerGovKey);
 
     await saveAndContinue(req, session);
 
@@ -127,7 +142,7 @@ export const removeBeneficialOwnerGov = async (req: Request, res: Response, next
   try {
     logger.debugRequest(req, `REMOVE ${req.route.path}`);
 
-    removeFromApplicationData(req, BeneficialOwnerGovKey, req.params[ID]);
+    await removeFromApplicationData(req, BeneficialOwnerGovKey, req.params[ID]);
     const session = req.session as Session;
 
     await saveAndContinue(req, session);
@@ -150,10 +165,7 @@ export const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDat
   data[StartDateKey] = mapFieldsToDataObject(reqBody, StartDateKeys, InputDateKeys);
   data[CeasedDateKey] = reqBody["is_still_bo"] === '0' ? mapFieldsToDataObject(reqBody, CeasedDateKeys, InputDateKeys) : {};
 
-  // It needs concatenations because if in the check boxes we select only one option
-  // nunjucks returns just a string and with concat we will return an array.
-  data[BeneficialOwnerNoc] = (data[BeneficialOwnerNoc]) ? [].concat(data[BeneficialOwnerNoc]) : [];
-  data[NonLegalFirmNoc] = (data[NonLegalFirmNoc]) ? [].concat(data[NonLegalFirmNoc]) : [];
+  setBoNocDataAsArrays(data);
 
   data[IsOnSanctionsListKey] = (data[IsOnSanctionsListKey]) ? +data[IsOnSanctionsListKey] : '';
 

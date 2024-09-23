@@ -14,11 +14,11 @@ import { saveAndContinue } from '../../utils/save.and.continue';
 import { getTrustInReview, setTrusteesAsReviewed } from '../../utils/update/review_trusts';
 import { TrusteeType } from '../../model/trustee.type.model';
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
     const trustInReview = getTrustInReview(appData);
     const individuals = trustInReview?.INDIVIDUALS;
 
@@ -47,7 +47,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       return res.redirect(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL);
     }
 
-    const appData = getApplicationData(req.session);
+    const appData = await getApplicationData(req.session);
 
     setTrusteesAsReviewed(appData, TrusteeType.INDIVIDUAL);
 

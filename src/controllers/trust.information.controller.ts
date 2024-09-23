@@ -11,11 +11,11 @@ import { BeneficialOwnerOtherKey } from "../model/beneficial.owner.other.model";
 import { getBeneficialOwnerList } from "../utils/trusts";
 import { saveAndContinue } from "../utils/save.and.continue";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     logger.debugRequest(req, `GET ${config.TRUST_INFO_PAGE}`);
 
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req.session);
 
     return res.render(config.TRUST_INFO_PAGE, {
       backLinkUrl: config.BENEFICIAL_OWNER_TYPE_PAGE,
@@ -25,6 +25,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       ...appData
     });
   } catch (error) {
+    console.log("ERROR: ", error);
     logger.errorRequest(req, error);
     next(error);
   }
@@ -50,15 +51,15 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       trusts: trustData
     };
 
-    const trustIds = generateTrustIds(req, trustData);
+    const trustIds = await generateTrustIds(req, trustData);
 
-    assignTrustIdsToBeneficialOwners(req, beneficialOwnerIds, trustIds);
+    await assignTrustIdsToBeneficialOwners(req, beneficialOwnerIds, trustIds);
 
     const data: ApplicationDataType = prepareData(trustsReq, TrustKeys);
     const session = req.session as Session;
 
     for (const trust of data[TrustKey]) {
-      setApplicationData(session, trust, TrustKey);
+      await setApplicationData(session, trust, TrustKey);
     }
 
     await saveAndContinue(req, session);
@@ -75,15 +76,15 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const assignTrustIdsToBeneficialOwners = (req: any, beneficialOwnerIds: string[], trustIds: string[]) => {
+const assignTrustIdsToBeneficialOwners = async (req: any, beneficialOwnerIds: string[], trustIds: string[]) => {
   for (const beneficialOwnerId of beneficialOwnerIds) {
-    assignTrustIdsToIndividualBeneficialOwners(req, beneficialOwnerId, trustIds);
-    assignTrustIdsToCorporateBeneficialOwners(req, beneficialOwnerId, trustIds);
+    await assignTrustIdsToIndividualBeneficialOwners(req, beneficialOwnerId, trustIds);
+    await assignTrustIdsToCorporateBeneficialOwners(req, beneficialOwnerId, trustIds);
   }
 };
 
-const assignTrustIdsToIndividualBeneficialOwners = (req: any, beneficialOwnerId: string, trustIds: string[]) => {
-  const individualBo = getFromApplicationData(req, BeneficialOwnerIndividualKey, beneficialOwnerId, false);
+const assignTrustIdsToIndividualBeneficialOwners = async (req: any, beneficialOwnerId: string, trustIds: string[]) => {
+  const individualBo = await getFromApplicationData(req, BeneficialOwnerIndividualKey, beneficialOwnerId, false);
   if (individualBo !== undefined) {
     for (const trustId of trustIds) {
       if (individualBo.trust_ids === undefined) {
@@ -93,8 +94,8 @@ const assignTrustIdsToIndividualBeneficialOwners = (req: any, beneficialOwnerId:
     }
   }
 };
-const assignTrustIdsToCorporateBeneficialOwners = (req: any, beneficialOwnerId: string, trustIds: string[]) => {
-  const corporateBo = getFromApplicationData(req, BeneficialOwnerOtherKey, beneficialOwnerId, false);
+const assignTrustIdsToCorporateBeneficialOwners = async (req: any, beneficialOwnerId: string, trustIds: string[]) => {
+  const corporateBo = await getFromApplicationData(req, BeneficialOwnerOtherKey, beneficialOwnerId, false);
   if (corporateBo !== undefined) {
     for (const trustId of trustIds) {
       if (corporateBo.trust_ids === undefined) {
@@ -106,9 +107,9 @@ const assignTrustIdsToCorporateBeneficialOwners = (req: any, beneficialOwnerId: 
 };
 
 // Generate a unique trust_id for each trust
-const generateTrustIds = (req: any, trustData: trustType.Trust[]): string[] => {
+const generateTrustIds = async (req: any, trustData: trustType.Trust[]): Promise<string[]> => {
   let trustCount = 0;
-  const appData: ApplicationData = getApplicationData(req.session);
+  const appData: ApplicationData = await getApplicationData(req.session);
   const trusts = appData[TrustKey];
   if (trusts !== undefined) {
     trustCount = trusts.length;

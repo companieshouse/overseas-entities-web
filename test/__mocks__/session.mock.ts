@@ -381,7 +381,11 @@ export const UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType
   is_on_register_in_country_formed_in: yesNoResponse.Yes,
   beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS],
   trustees_nature_of_control_types: [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS],
+  trust_control_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
   non_legal_firm_members_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+  non_legal_firm_control_nature_of_control_types: [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS],
+  owner_of_land_person_nature_of_control_jurisdictions: [NatureOfControlJurisdiction.ENGLAND_AND_WALES],
+  owner_of_land_other_entity_nature_of_control_jurisdictions: [NatureOfControlJurisdiction.SCOTLAND],
   is_on_sanctions_list: 0,
   ...START_DATE,
   trust_ids: ["8"]
@@ -1474,6 +1478,7 @@ export const UPDATE_OBJECT_MOCK_REVIEW_BO_OTHER_MODEL: updateType.Update = {
 
 export const UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE: updateType.Update = {
   ...UPDATE_OBJECT_MOCK,
+  owned_land_relevant_period: true,
   change_bo_relevant_period: relevantPeriodType.ChangeBoRelevantPeriodType.YES,
   trustee_involved_relevant_period: relevantPeriodType.TrusteeInvolvedRelevantPeriodType.YES,
   change_beneficiary_relevant_period: relevantPeriodType.ChangeBeneficiaryRelevantPeriodType.YES
@@ -1481,6 +1486,7 @@ export const UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE: updateType.Update = {
 
 export const UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE: updateType.Update = {
   ...UPDATE_OBJECT_MOCK,
+  owned_land_relevant_period: false,
   change_bo_relevant_period: relevantPeriodType.ChangeBoRelevantPeriodType.NO,
   trustee_involved_relevant_period: relevantPeriodType.TrusteeInvolvedRelevantPeriodType.NO,
   change_beneficiary_relevant_period: relevantPeriodType.ChangeBeneficiaryRelevantPeriodType.NO

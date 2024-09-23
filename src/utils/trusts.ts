@@ -440,10 +440,7 @@ const mapTrustees = (trust: Trust) => {
       identification_country_registration: apiData?.identification_country_registration,
       identification_registration_number: apiData?.identification_registration_number,
       is_service_address_same_as_principal_address: apiData.is_service_address_same_as_principal_address,
-      is_on_register_in_country_formed_in: apiData?.is_on_register_in_country_formed_in,
-      start_date_day: apiData?.start_date_day,
-      start_date_month: apiData?.start_date_month,
-      start_date_year: apiData?.start_date_year,
+      is_on_register_in_country_formed_in: apiData?.is_on_register_in_country_formed_in
     };
   });
 

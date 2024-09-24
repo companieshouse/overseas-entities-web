@@ -22,8 +22,7 @@ describe("sign.out.base.url navigation middleware tests", () => {
 
   test(`should generate the correct baseUrl for sign out for the registration journey when submission Id and entity Id are missing from the url `, () => {
     const request = {
-      baseUrl: REGISTER_AN_OVERSEAS_ENTITY_URL,
-      path: urlPathWithoutIds,
+      originalUrl: `${REGISTER_AN_OVERSEAS_ENTITY_URL}${urlPathWithoutIds}`,
       params: {}
     } as Request;
 
@@ -40,12 +39,8 @@ describe("sign.out.base.url navigation middleware tests", () => {
 
   test(`should generate the correct baseUrl for sign out for the registration journey when submission Id and entity Id are present in the url `, () => {
     const request = {
-      baseUrl: REGISTER_AN_OVERSEAS_ENTITY_URL,
-      path: urlPathWithIds,
-      params: {
-        transactionId: "123",
-        submissionId: "345"
-      }
+      originalUrl: `${REGISTER_AN_OVERSEAS_ENTITY_URL}${urlPathWithIds}`,
+      params: {}
     } as any;
 
     const response = {
@@ -61,8 +56,7 @@ describe("sign.out.base.url navigation middleware tests", () => {
 
   test(`should generate the correct baseUrl for sign out for the update/remove journey`, () => {
     const request = {
-      baseUrl: UPDATE_AN_OVERSEAS_ENTITY_URL,
-      path: urlPathWithoutIds,
+      originalUrl: `${UPDATE_AN_OVERSEAS_ENTITY_URL}${urlPathWithoutIds}`,
       params: {}
     } as Request;
 

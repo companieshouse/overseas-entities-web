@@ -1,3 +1,5 @@
+import { expect, jest } from "@jest/globals";
+
 jest.mock('../../src/utils/application.data');
 jest.mock("../../src/utils/logger");
 
@@ -6,10 +8,11 @@ import * as config from "../../src/config";
 import * as urlUtils from "../../src/utils/url";
 import { getApplicationData } from '../../src/utils/application.data';
 import { APPLICATION_DATA_MOCK } from "../__mocks__/session.mock";
-import { createAndLogErrorRequest } from "../../src/utils/logger";
+import { createAndLogErrorRequest, logger } from "../../src/utils/logger";
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockCreateAndLogErrorRequest = createAndLogErrorRequest as jest.Mock;
+const mockLoggerInfoRequest = logger.infoRequest as jest.Mock;
 
 describe("Url utils tests", () => {
   const req = request;
@@ -19,10 +22,10 @@ describe("Url utils tests", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     req["query"] = {};
+    mockLoggerInfoRequest.mockReset();
   });
 
   describe("getUrlWithTransactionIdAndOverseasEntityId tests", () => {
-
     test("substitutes url params successfully", () => {
       const url = urlUtils.getUrlWithTransactionIdAndSubmissionId(config.PRESENTER_WITH_PARAMS_URL, TRANSACTION_ID, SUBMISSION_ID);
       expect(url).toEqual(`/register-an-overseas-entity/transaction/${TRANSACTION_ID}/submission/${SUBMISSION_ID}/presenter`);
@@ -81,13 +84,74 @@ describe("Url utils tests", () => {
     });
   });
 
+  describe("getTransactionIdAndSubmissionIdFromOriginalUrl tests", () => {
+
+    const urlPathWithIds = "/transaction/123/submission/345";
+    const urlPathWithoutIds = "/path/without/ids";
+    const urlPathWithMissingTransactionId = "/trans/123/submission/345";
+    const urlPathWithMissingSubmissionId = "/transaction/123/sub/345";
+
+    test("returns object with both transactionId and submissionId if they are present in originalUrl", () => {
+
+      mockLoggerInfoRequest.mockReturnValueOnce(true);
+      const request = {
+        originalUrl: `${config.LANDING_URL}${urlPathWithIds}`,
+      } as Request;
+
+      const result: any = urlUtils.getTransactionIdAndSubmissionIdFromOriginalUrl(request);
+
+      expect(result.transactionId).toBe("123");
+      expect(result.submissionId).toBe("345");
+      expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
+    });
+
+    test("returns undefined if both transactionId and submissionId are missing in originalUrl", () => {
+
+      mockLoggerInfoRequest.mockReturnValueOnce(true);
+      const request = {
+        originalUrl: `${config.LANDING_URL}${urlPathWithoutIds}`,
+      } as Request;
+
+      const result: any = urlUtils.getTransactionIdAndSubmissionIdFromOriginalUrl(request);
+
+      expect(result).toBe(undefined);
+      expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
+    });
+
+    test("returns undefined if only the transactionId is missing in originalUrl", () => {
+
+      mockLoggerInfoRequest.mockReturnValueOnce(true);
+      const request = {
+        originalUrl: `${config.LANDING_URL}${urlPathWithMissingTransactionId}`,
+      } as Request;
+
+      const result: any = urlUtils.getTransactionIdAndSubmissionIdFromOriginalUrl(request);
+
+      expect(result).toBe(undefined);
+      expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
+    });
+
+    test("returns undefined if only the submissionId is missing in originalUrl", () => {
+
+      mockLoggerInfoRequest.mockReturnValueOnce(true);
+      const request = {
+        originalUrl: `${config.LANDING_URL}${urlPathWithMissingSubmissionId}`,
+      } as Request;
+
+      const result: any = urlUtils.getTransactionIdAndSubmissionIdFromOriginalUrl(request);
+
+      expect(result).toBe(undefined);
+      expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
+    });
+
+  });
+
   describe("isRegistrationJourney tests", () => {
 
     test("returns TRUE if we're currently in a registration flow", () => {
 
       const request = {
-        baseUrl: config.LANDING_URL,
-        path: "/some/path"
+        originalUrl: `${config.LANDING_URL}/some/other/params`,
       } as Request;
 
       const result = urlUtils.isRegistrationJourney(request);
@@ -96,8 +160,7 @@ describe("Url utils tests", () => {
 
     test("returns FALSE if we're not currently in a registration flow", () => {
       const request = {
-        baseUrl: `/path/does/not/start/with/${config.LANDING_URL}`,
-        path: "/some/path"
+        originalUrl: `/path/does/not/start/with/${config.LANDING_URL}`,
       } as Request;
 
       const result = urlUtils.isRegistrationJourney(request);
@@ -110,8 +173,7 @@ describe("Url utils tests", () => {
 
     test("returns TRUE if we're currently in an update flow that is not a remove journey", () => {
       const request = {
-        baseUrl: config.UPDATE_AN_OVERSEAS_ENTITY_URL,
-        path: "/some/update/path",
+        originalUrl: `${config.UPDATE_AN_OVERSEAS_ENTITY_URL}/some/update/path`,
         query: {},
         session: {}
       } as Request;
@@ -124,8 +186,7 @@ describe("Url utils tests", () => {
 
     test("returns FALSE if we're currently in an update flow that is also a remove journey", () => {
       const request = {
-        baseUrl: config.UPDATE_AN_OVERSEAS_ENTITY_URL,
-        path: "/some/update/path",
+        originalUrl: `${config.UPDATE_AN_OVERSEAS_ENTITY_URL}/some/update/path`,
         session: {}
       } as Request;
       request["query"] = {
@@ -139,8 +200,7 @@ describe("Url utils tests", () => {
 
     test("returns FALSE if we're not currently in an update flow", () => {
       const request = {
-        baseUrl: `/path/does/not/start/with/${config.UPDATE_AN_OVERSEAS_ENTITY_URL}`,
-        path: "/some/update/path"
+        originalUrl: `/path/does/not/start/with/${config.UPDATE_AN_OVERSEAS_ENTITY_URL}`,
       } as Request;
 
       const result = urlUtils.isRegistrationJourney(request);
@@ -290,6 +350,7 @@ describe("Url utils tests", () => {
   });
 
   describe("getPreviousPageUrl tests", () => {
+
     test("returns correct previous page from request headers", () => {
       req["rawHeaders"] = ["Referer", `http://host-name${config.WHO_IS_MAKING_FILING_URL}`];
 

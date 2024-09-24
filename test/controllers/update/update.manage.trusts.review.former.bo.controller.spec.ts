@@ -149,6 +149,7 @@ describe('Update - Manage Trusts - Review former beneficial owners', () => {
     });
 
     test("catch error when rendering the page", async () => {
+      mockGetApplicationData.mockReturnValueOnce({});
       mockIsActiveFeature.mockReturnValue(true);
       const appData = { [UpdateKey]: { review_trusts: [] } } as ApplicationData;
       mockGetApplicationData.mockReturnValueOnce(appData);
@@ -185,6 +186,7 @@ describe('Update - Manage Trusts - Review former beneficial owners', () => {
     });
 
     test("catch error when posting", async () => {
+      mockGetApplicationData.mockReturnValueOnce({});
       mockIsActiveFeature.mockReturnValue(true);
       const appData = { [UpdateKey]: { review_trusts: [] } } as ApplicationData;
       mockGetApplicationData.mockReturnValueOnce(appData);

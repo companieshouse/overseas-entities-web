@@ -95,6 +95,7 @@ describe("owned land filter page tests", () => {
 
     test("catch error when rendering the page", async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
 
       const resp = await request(app).get(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
@@ -182,6 +183,7 @@ describe("owned land filter page tests", () => {
     });
 
     test("catch error when validating the page", async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).post(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);

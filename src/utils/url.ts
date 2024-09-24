@@ -6,6 +6,11 @@ import { Session } from "@companieshouse/node-session-handler";
 import { IsRemoveKey } from "../model/data.types.model";
 import { createAndLogErrorRequest, logger } from "./logger";
 
+export interface TransactionIdAndSubmissionId {
+  transactionId: string;
+  submissionId: string;
+}
+
 export const getUrlWithTransactionIdAndSubmissionId = (url: string, transactionId: string, submissionId: string): string => {
   url = url
     .replace(`:${config.ROUTE_PARAM_TRANSACTION_ID}`, transactionId)
@@ -27,17 +32,39 @@ export const transactionIdAndSubmissionIdExistInRequest = (req: Request): boolea
 const getTransactionIdFromRequestParams = (req: Request): string => req.params[config.ROUTE_PARAM_TRANSACTION_ID];
 const getSubmissionIdFromRequestParams = (req: Request): string => req.params[config.ROUTE_PARAM_SUBMISSION_ID];
 
+/**
+ * This is required to extract the transactionId and submissionId prior to the request reaching its intended mount path
+ */
+export const getTransactionIdAndSubmissionIdFromOriginalUrl = (req: Request): TransactionIdAndSubmissionId | undefined => {
+  try {
+    logger.infoRequest(req, `extracting transactionId and submissionId from the req.originalUrl: ${req.originalUrl}`);
+    if (!req.originalUrl.includes('/transaction/') || !req.originalUrl.includes('/submission/')) {
+      return;
+    }
+    const elements = req.originalUrl.replace(/\/{2,}/g, "/").split("/");
+    const transactionIndex = elements.indexOf("transaction") + 1;
+    const submissionIndex = elements.indexOf("submission") + 1;
+    if (!elements[transactionIndex] || !elements[submissionIndex]) {
+      return;
+    }
+    return {
+      transactionId: elements[transactionIndex],
+      submissionId: elements[submissionIndex],
+    };
+  } catch (e) {
+    logger.infoRequest(req, `error extracting transactionId and submissionId from req.originalUrl: ${req.originalUrl} with error object: ${e}`);
+  }
+};
+
 export const isRegistrationJourney = (req: Request): boolean => {
-  const fullPath: string = `${req.baseUrl}${req.path}`;
-  if (fullPath.indexOf(config.LANDING_URL) === 0) {
+  if (req.originalUrl.startsWith(config.LANDING_URL)) {
     return true;
   }
   return false;
 };
 
 export const isUpdateJourney = async (req: Request): Promise<boolean> => {
-  const fullPath: string = `${req.baseUrl}${req.path}`;
-  if (fullPath.indexOf(config.UPDATE_LANDING_URL) === 0 && !(await isRemoveJourney(req))) {
+  if (req.originalUrl.startsWith(config.UPDATE_LANDING_URL) && !(await isRemoveJourney(req))) {
     return true;
   }
   return false;

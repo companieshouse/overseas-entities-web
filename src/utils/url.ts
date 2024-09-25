@@ -38,7 +38,7 @@ const getSubmissionIdFromRequestParams = (req: Request): string => req.params[co
 export const getTransactionIdAndSubmissionIdFromOriginalUrl = (req: Request): TransactionIdAndSubmissionId | undefined => {
   try {
     logger.infoRequest(req, `extracting transactionId and submissionId from the req.originalUrl: ${req.originalUrl}`);
-    if (!req.originalUrl.includes('/transaction/') || !req.originalUrl.includes('/submission/')) {
+    if (!req.originalUrl.includes(config.TRANSACTION_ID_URL_KEY) || !req.originalUrl.includes(config.SUBMISSION_ID_URL_KEY)) {
       return;
     }
     const elements = req.originalUrl.replace(/\/{2,}/g, "/").split("/");
@@ -52,7 +52,7 @@ export const getTransactionIdAndSubmissionIdFromOriginalUrl = (req: Request): Tr
       submissionId: elements[submissionIndex],
     };
   } catch (e) {
-    logger.infoRequest(req, `error extracting transactionId and submissionId from req.originalUrl: ${req.originalUrl} with error object: ${e}`);
+    logger.errorRequest(req, `error extracting transactionId and submissionId from req.originalUrl: ${req.originalUrl} with error object: ${e}`);
   }
 };
 

@@ -13,7 +13,7 @@ jest.mock("../../../src/service/company.profile.service");
 jest.mock('../../../src/utils/relevant.period');
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
-import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
+import mockJourneyDetectionMiddleware from "../../__mocks__/journey.detection.middleware.mock";
 import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import * as config from "../../../src/config";
 import app from "../../../src/app";
@@ -57,7 +57,7 @@ import { getConfirmationStatementNextMadeUpToDateAsIsoString } from "../../../sr
 
 const NEXT_MADE_UP_TO_DATE = "2024-03-19";
 
-mockRemoveJourneyMiddleware.mockClear();
+mockJourneyDetectionMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 

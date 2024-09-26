@@ -12,7 +12,7 @@ import {
 } from "../../utils/url";
 
 export const generateSignOutBaseUrl = (req: Request, res: Response, next: NextFunction) => {
-  logger.info("setting sign-out-base-url");
+  logger.info("Generating sign-out-base-url");
   let signOutBaseUrl: string = config.UPDATE_AN_OVERSEAS_ENTITY_URL;
   if (isRegistrationJourney(req)) {
     const transactionIdAndSubmissionId = getTransactionIdAndSubmissionIdFromOriginalUrl(req);

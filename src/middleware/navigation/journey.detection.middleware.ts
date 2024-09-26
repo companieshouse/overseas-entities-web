@@ -24,6 +24,8 @@ export const journeyDetectionMiddleware = async (req: Request, res: Response, ne
   } else if (isRegistration) {
     logger.infoRequest(req, "Marking this request/response as a Registration Journey");
     res.locals.journey = JourneyType.register;
+  } else {
+    throw new Error("Unable to detect journey type");
   }
 
   return next();

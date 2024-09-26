@@ -56,6 +56,7 @@ import { formatValidationError } from "../../src/middleware/validation.middlewar
 import { isActiveFeature } from '../../src/utils/feature.flag';
 import { serviceAvailabilityMiddleware } from '../../src/middleware/service.availability.middleware';
 import { getUrlWithParamsToPath } from '../../src/utils/url';
+import { APPLICATION_DATA_MOCK } from "../__mocks__/session.mock";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
@@ -211,6 +212,21 @@ describe("Trust Legal Entity Beneficial Owner Controller", () => {
 
       expect(mockNext).toBeCalledTimes(1);
       expect(mockNext).toBeCalledWith(error);
+    });
+
+    test('no selection to add trust with url params - render with errors', async () => {
+      (validationResult as any as jest.Mock).mockImplementationOnce(() => ({
+        isEmpty: jest.fn().mockReturnValue(true),
+      }));
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+
+      mockReq.url = "/register-an-overseas-entity/transaction/123/submission/456/trusts/trust-legal-entity-beneficial-owner";
+      mockReq.body = {};
+
+      await post(mockReq, mockRes, mockNext);
+
+      expect(mockRes.render).toBeCalledTimes(1);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
   });
 

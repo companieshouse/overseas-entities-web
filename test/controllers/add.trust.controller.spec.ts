@@ -28,6 +28,7 @@ import { ErrorMessages } from "../../src/validation/error.messages";
 import { isActiveFeature } from "../../src/utils/feature.flag";
 import { getUrlWithParamsToPath } from "../../src/utils/url";
 import { REGISTER_AN_OVERSEAS_ENTITY_URL } from "../../src/config";
+import { APPLICATION_DATA_MOCK } from "../__mocks__/session.mock";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
@@ -223,6 +224,21 @@ describe("Add Trust Controller Tests", () => {
       expect(mockRes.redirect).toBeCalledTimes(1);
       expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
       expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.TRUST_ENTRY_WITH_PARAMS_URL);
+    });
+
+    test('no selection to add trust with url params - render with errors', async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false); // SERVICE OFFLINE FEATURE FLAG
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_TRUSTS_WEB
+      mockIsActiveFeature.mockReturnValueOnce(true);// FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      (getApplicationData as jest.Mock).mockReturnValue(APPLICATION_DATA_MOCK);
+
+      mockReq.url = "/register-an-overseas-entity/transaction/123/submission/456/trusts/add-trust";
+      mockReq.body = {};
+
+      await post(mockReq, mockRes, mockNext);
+
+      expect(mockRes.render).toBeCalledTimes(1);
+      expect(generateTrustId).not.toHaveBeenCalled();
     });
 
     test(`renders the ${config.ADD_TRUST_PAGE} page with missing mandatory field messages`, async () => {

@@ -90,6 +90,7 @@ describe("Url utils tests", () => {
     const urlPathWithoutIds = "/path/without/ids";
     const urlPathWithMissingTransactionId = "/trans/123/submission/345";
     const urlPathWithMissingSubmissionId = "/transaction/123/sub/345";
+    const urlPathWithWrongPairing = "/transaction/submission/123/345";
 
     test("returns object with both transactionId and submissionId if they are present in originalUrl", () => {
 
@@ -136,6 +137,19 @@ describe("Url utils tests", () => {
       mockLoggerInfoRequest.mockReturnValueOnce(true);
       const request = {
         originalUrl: `${config.LANDING_URL}${urlPathWithMissingSubmissionId}`,
+      } as Request;
+
+      const result: any = urlUtils.getTransactionIdAndSubmissionIdFromOriginalUrl(request);
+
+      expect(result).toBe(undefined);
+      expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
+    });
+
+    test("returns undefined if both transactionId and submissionId have not been paired separately", () => {
+
+      mockLoggerInfoRequest.mockReturnValueOnce(true);
+      const request = {
+        originalUrl: `${config.LANDING_URL}${urlPathWithWrongPairing}`,
       } as Request;
 
       const result: any = urlUtils.getTransactionIdAndSubmissionIdFromOriginalUrl(request);

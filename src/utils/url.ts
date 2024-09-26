@@ -44,7 +44,7 @@ export const getTransactionIdAndSubmissionIdFromOriginalUrl = (req: Request): Tr
     const elements = req.originalUrl.replace(/\/{2,}/g, "/").split("/");
     const transactionIndex = elements.indexOf("transaction") + 1;
     const submissionIndex = elements.indexOf("submission") + 1;
-    if (!elements[transactionIndex] || !elements[submissionIndex]) {
+    if (!elements[transactionIndex] || !elements[submissionIndex] || Math.abs(transactionIndex - submissionIndex) < 2) {
       return;
     }
     return {

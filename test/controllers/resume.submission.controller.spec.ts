@@ -242,7 +242,7 @@ describe("Resume submission controller", () => {
   });
 
   test("Catch error when resuming Overseas Entity", async () => {
-    mockInfoRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+    mockGetOverseasEntity.mockReturnValueOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
     const resp = await request(app).get(RESUME_SUBMISSION_URL);
 
     expect(resp.status).toEqual(500);

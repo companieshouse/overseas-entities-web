@@ -11,7 +11,7 @@ jest.mock('../../src/middleware/service.availability.middleware');
 jest.mock("../../src/utils/url");
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
-import mockRemoveJourneyMiddleware from "../__mocks__/remove.journey.middleware.mock";
+import mockJourneyDetectionMiddleware from "../__mocks__/journey.detection.middleware.mock";
 import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
 
 import { NextFunction, Request, Response } from "express";
@@ -147,7 +147,7 @@ import { NatureOfControlJurisdiction, NatureOfControlType } from "../../src/mode
 import { stringCount } from "../utils/test.utils";
 
 mockCsrfProtectionMiddleware.mockClear();
-mockRemoveJourneyMiddleware.mockClear();
+mockJourneyDetectionMiddleware.mockClear();
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue( false );

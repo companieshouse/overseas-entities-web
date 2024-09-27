@@ -10,7 +10,7 @@ import isAllowedUrls from './async/isAllowedUrls';
 export const checkTrustStillInvolved = (appData: ApplicationData, req): ValidationError[] => {
   const allowedUrls = [
     [config.TRUST_DETAILS_URL],
-    [config.REGISTER_AN_OVERSEAS_ENTITY_WITH_PARAMS_URL, config.TRUSTS_URL],
+    [config.REGISTER_AN_OVERSEAS_ENTITY_URL, config.TRUSTS_URL],
     [config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL],
 
     [config.UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL]

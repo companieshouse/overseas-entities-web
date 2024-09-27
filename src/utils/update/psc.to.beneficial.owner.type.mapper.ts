@@ -71,6 +71,7 @@ export const mapPscToBeneficialOwnerGov = (psc: CompanyPersonWithSignificantCont
   return result;
 };
 
+// TODO will need to update the mappings for the new nocs
 const mapNatureOfControl = (psc: CompanyPersonWithSignificantControl, beneficialOwner: BeneficialOwnerIndividual| BeneficialOwnerOther | BeneficialOwnerGov, isBeneficialGov: boolean) => {
   beneficialOwner.beneficial_owner_nature_of_control_types = [];
   beneficialOwner.non_legal_firm_members_nature_of_control_types = [];

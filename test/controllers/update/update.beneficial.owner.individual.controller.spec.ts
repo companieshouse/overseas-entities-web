@@ -105,7 +105,7 @@ const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockCheckRelevantPeriod = checkRelevantPeriod as jest.Mock;
 
 const DUMMY_DATA_OBJECT = { dummy: "data" };
-
+// TODO - update tests with new nocs
 describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
   beforeEach(() => {

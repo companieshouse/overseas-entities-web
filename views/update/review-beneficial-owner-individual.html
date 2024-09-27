@@ -61,7 +61,9 @@
       {% include "includes/inputs/fields/is-still-a-beneficial-owner-input.html" %}
 
       {% set isBeneficialOwnerGov = false %}
+      {% set isBeneficialOwnerIndividual = true %}
       {% include "includes/page-templates/beneficial-owner-nature-of-control-types.html" %}
+      {% include "includes/page-templates/beneficial-owner-nature-of-control-jurisdictions.html" %}
 
       {% set sanctionsPronoun = "they" %}
       {% set isReview = isOwnersReview %}

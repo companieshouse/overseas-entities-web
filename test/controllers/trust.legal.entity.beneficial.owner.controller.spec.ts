@@ -228,6 +228,21 @@ describe("Trust Legal Entity Beneficial Owner Controller", () => {
       expect(mockRes.render).toBeCalledTimes(1);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
+
+    test('no selection to add trust with url no params - render with errors', async () => {
+      (validationResult as any as jest.Mock).mockImplementationOnce(() => ({
+        isEmpty: jest.fn().mockReturnValue(true),
+      }));
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+
+      mockReq.url = "/register-an-overseas-entity/trusts/trust-legal-entity-beneficial-owner";
+      mockReq.body = {};
+
+      await post(mockReq, mockRes, mockNext);
+
+      expect(mockRes.render).toBeCalledTimes(1);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+    });
   });
 
   describe("Endpoint Access tests with supertest", () => {

@@ -43,6 +43,7 @@ import { isActiveFeature } from '../../src/utils/feature.flag';
 import { getUrlWithParamsToPath } from '../../src/utils/url';
 import { serviceAvailabilityMiddleware } from '../../src/middleware/service.availability.middleware';
 import { getTrustInReview, hasTrustsToReview } from '../../src/utils/update/review_trusts';
+import { APPLICATION_DATA_MOCK } from "../__mocks__/session.mock";
 
 mockCsrfProtectionMiddleware.mockClear();
 const MOCKED_URL = TRUST_ENTRY_WITH_PARAMS_URL + "MOCKED_URL";
@@ -181,6 +182,64 @@ describe('Trust Historical Beneficial Owner Controller', () => {
 
       expect(mockNext).toBeCalledTimes(1);
       expect(mockNext).toBeCalledWith(error);
+    });
+
+    test('no selection to add trust with url params - render with errors', async () => {
+      jest.mock('express-validator/src/validation-result', () => ({
+        isEmpty: jest.fn().mockReturnValue(true),
+      }));
+
+      mockGetApplicationData.mockReturnValue({
+        ...APPLICATION_DATA_MOCK,
+        update: {
+          filing_date: {
+            day: "01",
+            month: "01",
+            year: "2024",
+          }
+        }
+      });
+
+      mockReq.url = "/register-an-overseas-entity/transaction/123/submission/456/trusts/trust-historical-beneficial-owner";
+      mockReq.body = {
+        startDateDay: "02",
+        startDateMonth: "01",
+        startDateYear: "2024",
+      };
+
+      await post(mockReq, mockRes, mockNext);
+
+      expect(mockRes.render).toBeCalledTimes(1);
+      expect(saveTrustInApp).not.toHaveBeenCalled();
+    });
+
+    test('no selection to add trust with url no params - render with errors', async () => {
+      jest.mock('express-validator/src/validation-result', () => ({
+        isEmpty: jest.fn().mockReturnValue(true),
+      }));
+
+      mockGetApplicationData.mockReturnValue({
+        ...APPLICATION_DATA_MOCK,
+        update: {
+          filing_date: {
+            day: "01",
+            month: "01",
+            year: "2024",
+          }
+        }
+      });
+
+      mockReq.url = "/register-an-overseas-entity/trusts/trust-historical-beneficial-owner";
+      mockReq.body = {
+        startDateDay: "02",
+        startDateMonth: "01",
+        startDateYear: "2024",
+      };
+
+      await post(mockReq, mockRes, mockNext);
+
+      expect(mockRes.render).toBeCalledTimes(1);
+      expect(saveTrustInApp).not.toHaveBeenCalled();
     });
   });
 

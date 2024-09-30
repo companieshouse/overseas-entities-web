@@ -13,8 +13,7 @@ import isAllowedUrls from './isAllowedUrls';
 
 export const checkTrustIndividualCeasedDate = async (appData: ApplicationData, req: Request): Promise<ValidationError[]> => {
   const allowedUrls = [
-    [config.TRUST_ENTRY_URL, config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL],
-    [config.TRUST_ENTRY_WITH_PARAMS_URL, config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL],
+    [config.REGISTER_AN_OVERSEAS_ENTITY_URL, config.TRUSTS_URL, config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL],
     [config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL],
     [config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL, config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL]
   ];
@@ -64,8 +63,7 @@ export const checkTrustIndividualCeasedDate = async (appData: ApplicationData, r
 
 export const checkTrusteeLegalEntityCeasedDate = async (appData: ApplicationData, req: Request): Promise<ValidationError[]> => {
   const allowedUrls = [
-    [config.TRUST_ENTRY_URL, config.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL],
-    [config.TRUST_ENTRY_WITH_PARAMS_URL, config.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL],
+    [config.REGISTER_AN_OVERSEAS_ENTITY_URL, config.TRUSTS_URL, config.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL],
     [config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL],
     [config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL, config.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL]
   ];
@@ -112,8 +110,7 @@ export const checkTrusteeLegalEntityCeasedDate = async (appData: ApplicationData
 
 const is_date_within_filing_period_trusts = async (req: Request, trustDateContext: dateContext, error_message: string) => {
   const allowedUrls = [
-    [config.TRUST_ENTRY_URL, config.TRUST_HISTORICAL_BENEFICIAL_OWNER_URL],
-    [config.TRUST_ENTRY_WITH_PARAMS_URL, config.TRUST_HISTORICAL_BENEFICIAL_OWNER_URL],
+    [config.REGISTER_AN_OVERSEAS_ENTITY_URL, config.TRUSTS_URL, config.TRUST_HISTORICAL_BENEFICIAL_OWNER_URL],
     [config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL],
     [config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL, config.TRUST_HISTORICAL_BENEFICIAL_OWNER_URL]
   ];

@@ -48,10 +48,15 @@ import {
 } from "../../../src/config";
 import {
   BENEFICIAL_OWNER_OTHER_PAGE_HEADING,
+  BO_NOC_HEADING,
   ERROR_LIST,
+  FIRM_CONTROL_NOC_HEADING,
+  FIRM_NOC_HEADING,
   INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER,
   JURISDICTION_FIELD_LABEL,
   MESSAGE_ERROR,
+  OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING,
+  OWNER_OF_LAND_PERSON_NOC_HEADING,
   PAGE_TITLE_ERROR,
   PUBLIC_REGISTER_HINT_TEXT,
   RELEVANT_PERIOD,
@@ -59,6 +64,7 @@ import {
   SAVE_AND_CONTINUE_BUTTON_TEXT,
   SERVICE_UNAVAILABLE,
   SHOW_INFORMATION_ON_PUBLIC_REGISTER,
+  TRUST_CONTROL_NOC_HEADING,
   TRUSTS_NOC_HEADING,
 } from "../../__mocks__/text.mock";
 import {
@@ -82,6 +88,7 @@ import * as config from "../../../src/config";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import { DateTime } from "luxon";
 import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
+import { isActiveFeature } from "../../../src/utils/feature.flag";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockHasUpdatePresenter = hasUpdatePresenter as jest.Mock;
@@ -104,6 +111,7 @@ const mockRemoveFromApplicationData = removeFromApplicationData as unknown as je
 const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
 
 const DUMMY_DATA_OBJECT = { dummy: "data" };
 
@@ -117,7 +125,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
   });
 
   describe("GET tests", () => {
-    test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page`, async () => {
+    test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page must not contain news nocs if the flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is off`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
 
       const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_OTHER_URL);
@@ -129,7 +137,36 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
       expect(resp.text).toContain(SHOW_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(resp.text).toContain(BO_NOC_HEADING);
       expect(resp.text).toContain(TRUSTS_NOC_HEADING);
+      expect(resp.text).toContain(FIRM_NOC_HEADING);
+      expect(resp.text).not.toContain(FIRM_CONTROL_NOC_HEADING);
+      expect(resp.text).not.toContain(TRUST_CONTROL_NOC_HEADING);
+      expect(resp.text).not.toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
+      expect(resp.text).not.toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
+    });
+
+    test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page must news nocs if the flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is on`, async () => {
+      mockIsActiveFeature.mockReturnValue(true);
+
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
+
+      const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_OTHER_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(config.UPDATE_LANDING_PAGE_URL);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
+      expect(resp.text).toContain(SHOW_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(resp.text).toContain(BO_NOC_HEADING);
+      expect(resp.text).toContain(TRUSTS_NOC_HEADING);
+      expect(resp.text).not.toContain(FIRM_NOC_HEADING);
+      expect(resp.text).toContain(FIRM_CONTROL_NOC_HEADING);
+      expect(resp.text).toContain(TRUST_CONTROL_NOC_HEADING);
+      expect(resp.text).toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
+      expect(resp.text).toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
     });
 
     test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page without public register jurisdiction field`, async () => {

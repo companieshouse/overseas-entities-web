@@ -86,7 +86,7 @@ describe(`Update review beneficial owner other`, () => {
       expect(resp.text).toContain("principal addressLine1");
     });
 
-    test(`render the ${UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_PAGE} page must not contain news nocs if the flag is off`, async () => {
+    test(`render the ${UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_PAGE} page must not contain news nocs if the flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is off`, async () => {
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_UPDATE_BO_MOCK,
         ...UPDATE_OBJECT_MOCK_REVIEW_BO_OTHER_MODEL
@@ -108,7 +108,7 @@ describe(`Update review beneficial owner other`, () => {
       expect(resp.text).toContain("principal addressLine1");
     });
 
-    test(`render the ${UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_PAGE} page must news nocs if the flag is on`, async () => {
+    test(`render the ${UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_PAGE} page must news nocs if the flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is on`, async () => {
       mockIsActiveFeature.mockReturnValue(true);
 
       mockGetApplicationData.mockReturnValueOnce({

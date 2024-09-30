@@ -1151,6 +1151,34 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
     });
+
+    test(`Nature of control validation error occurs when submitting no NOCs when FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is ON`, async () => {
+      mockGetApplicationData.mockReturnValue({
+        ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK
+      });
+      mockGetFromApplicationData.mockReturnValueOnce({ ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK });
+      mockPrepareData.mockReturnValueOnce({ ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK });
+
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
+      const body = {
+        ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK,
+        beneficial_owner_nature_of_control_types: null,
+        trustees_nature_of_control_types: null,
+        trust_control_nature_of_control_types: null,
+        non_legal_firm_members_nature_of_control_types: null, // this noc should neot be visible when feature flag is active
+        non_legal_firm_control_nature_of_control_types: null,
+        owner_of_land_person_nature_of_control_jurisdictions: null,
+        owner_of_land_other_entity_nature_of_control_jurisdictions: null
+      };
+
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)
+        .send(body);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ErrorMessages.SELECT_NATURE_OF_CONTROL);
+    });
   });
 
   const assertOnlyEmptyDayErrors = (response) => {

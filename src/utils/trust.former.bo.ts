@@ -25,6 +25,7 @@ export const HISTORICAL_BO_TEXTS = {
 type TrustHistoricalBeneficialOwnerProperties = {
   backLinkUrl: string,
   templateName: string;
+  template: string;
   pageParams: {
     title: string;
   },
@@ -47,9 +48,12 @@ const getPageProperties = async (
 
   const appData = await getApplicationData(req.session);
 
+  const { templateName, template } = getPageTemplate(isUpdate, req.url);
+
   return ({
     backLinkUrl: getTrustInvolvedUrl(isUpdate, trustId, req),
-    templateName: getPageTemplate(isUpdate),
+    templateName,
+    template,
     pageParams: {
       title: HISTORICAL_BO_TEXTS.title,
     },
@@ -78,7 +82,7 @@ export const getTrustFormerBo = async (req: Request, res: Response, next: NextFu
     );
     const pageProps = await getPageProperties(req, trustId, isUpdate, formData);
 
-    return res.render(pageProps.templateName, pageProps);
+    return res.render(pageProps.template, pageProps);
   } catch (error) {
     logger.errorRequest(req, error);
 
@@ -115,7 +119,7 @@ export const postTrustFormerBo = async (req: Request, res: Response, next: NextF
         formatValidationError([...errorListArray, ...errors]),
       );
 
-      return res.render(pageProps.templateName, pageProps);
+      return res.render(pageProps.template, pageProps);
     }
 
     // save (add/update) bo to trust
@@ -147,10 +151,10 @@ const getTrustInvolvedUrl = (isUpdate: boolean, trustId: string, req: Request) =
     : `${getTrustEntryUrl(req)}/${trustId}${config.TRUST_INVOLVED_URL}`
 );
 
-const getPageTemplate = (isUpdate: boolean) => (
+const getPageTemplate = (isUpdate: boolean, url: string) => (
   isUpdate
-    ? config.UPDATE_TRUSTS_TELL_US_ABOUT_FORMER_BO_PAGE
-    : config.TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE
+    ? { template: config.UPDATE_TRUSTS_TELL_US_ABOUT_FORMER_BO_PAGE, templateName: url.replace(config.UPDATE_AN_OVERSEAS_ENTITY_URL, "") }
+    : { template: config.TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE, templateName: config.TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE }
 );
 
 const getUrl = (isUpdate: boolean) => (

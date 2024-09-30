@@ -50,7 +50,7 @@
 {% endif %}
 
 {% if ( due_diligence and due_diligence | length ) %}
-{% set dueDiligence = due_diligence %}
+  {% set dueDiligence = due_diligence %}
   {% set agentCode = {
     key: {
       text: "Agent assurance code"

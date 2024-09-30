@@ -37,7 +37,7 @@ import { createAndLogErrorRequest, logger } from "../../../src/utils/logger";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
-import { setExtraData } from "../../../src/utils/application.data";
+import { getApplicationData, setExtraData } from "../../../src/utils/application.data";
 import { getOverseasEntity } from "../../../src/service/overseas.entities.service";
 import { getTransaction } from "../../../src/service/transaction.service";
 import { startPaymentsSession } from "../../../src/service/payment.service";
@@ -76,6 +76,8 @@ const mockCompanyAuthenticationMiddleware = companyAuthentication as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockMapTrustApiReturnModelToWebModel = mapTrustApiReturnModelToWebModel as jest.Mock;
+
+const mockGetApplicationData = getApplicationData as jest.Mock;
 
 const baseURL = `${config.CHS_URL}${config.UPDATE_AN_OVERSEAS_ENTITY_URL}`;
 
@@ -229,7 +231,9 @@ describe("Update Resume submission controller", () => {
     });
 
     test("Catch error when resuming Overseas Entity", async () => {
-      mockInfoRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetOverseasEntity.mockReturnValueOnce(() => {throw Error(ANY_MESSAGE_ERROR);});
       const resp = await request(app).get(RESUME_UPDATE_SUBMISSION_URL);
 
       expect(resp.status).toEqual(500);

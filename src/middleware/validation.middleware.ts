@@ -48,7 +48,7 @@ export const checkValidations = async (req: Request, res: Response, next: NextFu
         [ResignedOnDateKey]: prepareData(req.body, ResignedOnDateKeys),
       };
 
-      const routePath = req.route.path;
+      const routePath = req.route.path.includes(config.DYNAMIC_SUB_PATH) ? req.route.path.replace(config.DYNAMIC_SUB_PATH, "") : req.route.path;
 
       // need to pass the id req param back into the page if present in the url in order to show the remove button again
       // when changing BO or MO data after failing validation. If not present, undefined will be passed in, which is fine as those pages
@@ -61,7 +61,7 @@ export const checkValidations = async (req: Request, res: Response, next: NextFu
         entityName = appData?.[EntityNameKey];
       }
       const entityNumber = appData?.[EntityNumberKey];
-      const relevantPeriod = req.query["relevant-period"] === "true";
+      const relevantPeriod = req.query["relevant-period"] === "true" || req.body["relevant_period"] === "true";
 
       // The journey property may already be part of the page form data/body so get it from there and override it if we are on a remove journey
       // Then when we pass it back into the template, make sure it is below/after the req.body fields so it overrides the req.body value

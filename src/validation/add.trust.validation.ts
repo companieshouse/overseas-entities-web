@@ -13,8 +13,8 @@ import isAllowedUrls from "./async/isAllowedUrls";
 export const isAddTrustToBeValidated = (appData: ApplicationData, req: Request): ValidationError[] => {
 
   const allowedUrls = [
-    [config.TRUST_ENTRY_URL, config.ADD_TRUST_URL],
-    [config.TRUST_ENTRY_WITH_PARAMS_URL, config.ADD_TRUST_URL],
+    [config.REGISTER_AN_OVERSEAS_ENTITY_URL, config.TRUSTS_URL, config.ADD_TRUST_URL],
+    [config.REGISTER_AN_OVERSEAS_ENTITY_WITH_PARAMS_URL, config.TRUSTS_URL, config.ADD_TRUST_URL],
     [config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL]
   ];
 

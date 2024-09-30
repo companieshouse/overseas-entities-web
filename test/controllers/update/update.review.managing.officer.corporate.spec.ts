@@ -8,7 +8,7 @@ jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
 jest.mock('../../../src/utils/save.and.continue');
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
-import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
+import mockJourneyDetectionMiddleware from "../../__mocks__/journey.detection.middleware.mock";
 import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import request from "supertest";
@@ -25,7 +25,7 @@ import { ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE, UPDATE_REVIEW_MANAGING_OFFICER_
 import { saveAndContinue } from '../../../src/utils/save.and.continue';
 import { UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_URL } from '../../../src/config';
 
-mockRemoveJourneyMiddleware.mockClear();
+mockJourneyDetectionMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
 const mockHasUpdatePresenter = hasUpdatePresenter as jest.Mock;
 mockHasUpdatePresenter.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );

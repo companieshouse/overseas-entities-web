@@ -26,6 +26,7 @@ export const LEGAL_ENTITY_BO_TEXTS = {
 type TrustLegalEntityBeneficialOwnerPageProperties = {
   backLinkUrl: string,
   templateName: string;
+  template: string;
   pageParams: {
     title: string;
   },
@@ -50,9 +51,12 @@ const getPageProperties = async (
 
   const appData = await getApplicationData(req.session);
 
+  const { templateName, template } = getPageTemplate(isUpdate, req.url);
+
   return {
     backLinkUrl: getTrustInvolvedUrl(isUpdate, trustId, req),
-    templateName: getPageTemplate(isUpdate),
+    templateName,
+    template,
     pageParams: {
       title: LEGAL_ENTITY_BO_TEXTS.title,
     },
@@ -97,7 +101,7 @@ export const getTrustLegalEntityBo = async (req: Request, res: Response, next: N
       pageProps.formData.relevant_period = true;
       setEntityNameInRelevantPeriodPageBanner(pageProps, appData ? appData.entity_name : pageProps.pageData.trustData.trustName);
     }
-    return res.render(pageProps.templateName, pageProps);
+    return res.render(pageProps.template, pageProps);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);
@@ -132,7 +136,7 @@ export const postTrustLegalEntityBo = async (req: Request, res: Response, next: 
         formatValidationError([...errorListArray, ...errors]),
       );
       setEntityNameInRelevantPeriodPageBanner(pageProps, appData ? appData.entity_name : pageProps.pageData.trustData.trustName);
-      return res.render(pageProps.templateName, pageProps);
+      return res.render(pageProps.template, pageProps);
     }
 
     //  save (add/update) bo to trust
@@ -170,10 +174,10 @@ const getTrustInvolvedUrl = (isUpdate: boolean, trustId: string, req: Request) =
   }
 };
 
-const getPageTemplate = (isUpdate: boolean) => (
+const getPageTemplate = (isUpdate: boolean, url: string) => (
   isUpdate
-    ? config.UPDATE_TRUSTS_TELL_US_ABOUT_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE
-    : config.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE
+    ? { template: config.UPDATE_TRUSTS_TELL_US_ABOUT_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE, templateName: url.replace(config.UPDATE_AN_OVERSEAS_ENTITY_URL, "") }
+    : { template: config.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE, templateName: config.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE }
 );
 
 const getUrl = (isUpdate: boolean) => (

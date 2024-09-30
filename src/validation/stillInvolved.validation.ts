@@ -10,7 +10,7 @@ import isAllowedUrls from './async/isAllowedUrls';
 export const checkTrustStillInvolved = (appData: ApplicationData, req): ValidationError[] => {
   const allowedUrls = [
     [config.TRUST_DETAILS_URL],
-    [config.TRUST_ENTRY_WITH_PARAMS_URL],
+    [config.REGISTER_AN_OVERSEAS_ENTITY_URL, config.TRUSTS_URL],
     [config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL],
 
     [config.UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL]
@@ -40,8 +40,7 @@ export const checkTrustStillInvolved = (appData: ApplicationData, req): Validati
 
 export const checkTrustLegalEntityBeneficialOwnerStillInvolved = (appData: ApplicationData, req): ValidationError[] => {
   const allowedUrls = [
-    [config.TRUST_ENTRY_URL, config.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL],
-    [config.TRUST_ENTRY_WITH_PARAMS_URL, config.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL],
+    [config.REGISTER_AN_OVERSEAS_ENTITY_URL, config.TRUSTS_URL, config.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL],
     [config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL],
     [config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL, config.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL + config.TRUSTEE_ID + '?']
   ];
@@ -68,8 +67,7 @@ export const checkTrustLegalEntityBeneficialOwnerStillInvolved = (appData: Appli
 
 export const checkTrustIndividualBeneficialOwnerStillInvolved = (appData: ApplicationData, req: Request): ValidationError[] => {
   const allowedUrls = [
-    [config.TRUST_ENTRY_URL, config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL],
-    [config.TRUST_ENTRY_WITH_PARAMS_URL, config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL],
+    [config.REGISTER_AN_OVERSEAS_ENTITY_URL, config.TRUSTS_URL, config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL],
     [config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL],
     [config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL, config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL]
   ];

@@ -15,7 +15,7 @@ jest.mock('../../../src/utils/save.and.continue');
 jest.mock('../../../src/utils/relevant.period');
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
-import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
+import mockJourneyDetectionMiddleware from "../../__mocks__/journey.detection.middleware.mock";
 
 import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import { describe, expect, test, beforeEach, jest } from '@jest/globals';
@@ -76,7 +76,7 @@ import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import { BeneficialOwnerTypeChoice, BeneficialOwnerTypeKey } from "../../../src/model/beneficial.owner.type.model";
 import { RELEVANT_PERIOD_QUERY_PARAM } from "../../../src/config";
 
-mockRemoveJourneyMiddleware.mockClear();
+mockJourneyDetectionMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());

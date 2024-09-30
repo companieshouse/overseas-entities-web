@@ -462,6 +462,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
     });
 
     test("catch error when rendering the page", async () => {
+      mockGetApplicationData.mockReturnValueOnce({});
       mockIsActiveFeature.mockReturnValue(true);
       const appData = { entity_number: 'OE123456', entity_name: 'Test OE' };
       mockGetApplicationData.mockReturnValueOnce(appData);

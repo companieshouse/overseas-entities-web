@@ -44,7 +44,7 @@ import { startPaymentsSession } from "../../../src/service/payment.service";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from '../../../src/model/who.is.making.filing.model';
 import { DueDiligenceKey } from '../../../src/model/due.diligence.model';
-import { HasSoldLandKey, IsSecureRegisterKey, OverseasEntityKey, Transactionkey } from '../../../src/model/data.types.model';
+import { HasSoldLandKey, IsSecureRegisterKey, NatureOfControlType, OverseasEntityKey, Transactionkey } from '../../../src/model/data.types.model';
 import { OverseasEntityDueDiligenceKey } from '../../../src/model/overseas.entity.due.diligence.model';
 import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from '../../__mocks__/overseas.entity.due.diligence.mock';
 import { MOCK_GET_TRANSACTION_RESPONSE } from '../../__mocks__/transaction.mock';
@@ -234,6 +234,49 @@ describe("Update Resume submission controller", () => {
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+
+    test(`Do not remove old NOCs after resuming the OverseasEntity Update submission and FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is ON`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce( true ); // REDIS flag
+      mockIsActiveFeature.mockReturnValueOnce( true ); // trusts feature flag
+      mockIsActiveFeature.mockReturnValueOnce( true ); // new NOCs
+
+      const mockAppData = {
+        ...APPLICATION_DATA_MOCK
+      };
+      mockGetOverseasEntity.mockReturnValueOnce( mockAppData );
+      const resp = await request(app).get(RESUME_UPDATE_SUBMISSION_URL);
+
+      expect(resp.status).toEqual(302);
+      expect(mockAppData.beneficial_owners_individual?.[0].non_legal_firm_members_nature_of_control_types).toEqual(
+        [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS]);
+      expect(mockAppData.beneficial_owners_government_or_public_authority?.[0].non_legal_firm_members_nature_of_control_types).toEqual(
+        [NatureOfControlType.OVER_25_PERCENT_OF_SHARES]
+      );
+      expect(mockAppData.beneficial_owners_corporate?.[0].non_legal_firm_members_nature_of_control_types).toEqual(
+        [NatureOfControlType.OVER_25_PERCENT_OF_SHARES]);
+    });
+
+    test(`Do not remove old NOCs after resuming the OverseasEntity Update submission and FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is OFF`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce( true ); // REDIS flag
+      mockIsActiveFeature.mockReturnValueOnce( true ); // trusts feature flag
+      mockIsActiveFeature.mockReturnValueOnce( false ); // new NOCs
+
+      const mockAppData = {
+        ...APPLICATION_DATA_MOCK
+      };
+      mockGetOverseasEntity.mockReturnValueOnce( mockAppData );
+      const resp = await request(app).get(RESUME_UPDATE_SUBMISSION_URL);
+
+      expect(resp.status).toEqual(302);
+      expect(mockAppData.beneficial_owners_individual?.[0].non_legal_firm_members_nature_of_control_types).toEqual(
+        [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS]);
+      expect(mockAppData.beneficial_owners_government_or_public_authority?.[0].non_legal_firm_members_nature_of_control_types).toEqual(
+        [NatureOfControlType.OVER_25_PERCENT_OF_SHARES]
+      );
+      expect(mockAppData.beneficial_owners_corporate?.[0].non_legal_firm_members_nature_of_control_types).toEqual(
+        [NatureOfControlType.OVER_25_PERCENT_OF_SHARES]
+      );
     });
   });
 });

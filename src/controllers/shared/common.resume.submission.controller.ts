@@ -111,14 +111,14 @@ const setWebApplicationData = (session: Session, appData: ApplicationData, trans
     mapTrustApiReturnModelToWebModel(appData);
   }
 
-  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)) {
-    console.log("\n\n** Remove old NOCs! **\n\n");
+  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC) && (!appData.entity_number)) {
+    console.debug("Removing old NOCs");
     appData[BeneficialOwnerIndividualKey] = (appData[BeneficialOwnerIndividualKey] as BeneficialOwnerIndividual[])
-      .map( boi => { return { ...boi, [NonLegalFirmNoc]: undefined }; } );
+      .map( boi => { delete boi[NonLegalFirmNoc]; return boi; } );
     appData[BeneficialOwnerOtherKey] = (appData[BeneficialOwnerOtherKey] as BeneficialOwnerOther[] )
-      .map( boo => { return { ...boo, [NonLegalFirmNoc]: undefined }; } );
+      .map( boo => { delete boo[NonLegalFirmNoc]; return boo; } );
     appData[BeneficialOwnerGovKey] = (appData[BeneficialOwnerGovKey] as BeneficialOwnerGov[])
-      .map( bog => { return { ...bog, [NonLegalFirmNoc]: undefined }; } );
+      .map( bog => { delete bog[NonLegalFirmNoc]; return bog; } );
   }
 
   setExtraData(session, appData);

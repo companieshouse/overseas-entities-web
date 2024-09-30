@@ -34,9 +34,7 @@
       {% set natureOfControlText = "What is its nature of control?" %}
       {% include "includes/page-templates/beneficial-owner-nature-of-control-types.html" %}
 
-      {% if not entity_number %}
-        {% include "includes/page-templates/beneficial-owner-nature-of-control-jurisdictions.html" %}
-      {% endif %}
+      {% include "includes/page-templates/beneficial-owner-nature-of-control-jurisdictions.html" %}
 
       {% include "includes/inputs/fields/is-on-sanctions-list-input.html" %}
 

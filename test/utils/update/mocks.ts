@@ -106,12 +106,12 @@ export const pscMock: CompanyPersonWithSignificantControl = {
     'voting-rights-more-than-25-percent-as-control-over-firm-registered-overseas-entity',
     'right-to-appoint-and-remove-directors-as-control-over-firm-registered-overseas-entity',
     'significant-influence-or-control-as-control-over-firm-registered-overseas-entity',
-    'registered-owner-as-nominee-person-england-wales',
-    'registered-owner-as-nominee-person-scotland',
-    'registered-owner-as-nominee-person-northern-ireland',
-    'registered-owner-as-nominee-another-entity-england-wales',
-    'registered-owner-as-nominee-another-entity-scotland',
-    'registered-owner-as-nominee-another-entity-northern-ireland'
+    'registered-owner-as-nominee-person-england-wales-registered-overseas-entity',
+    'registered-owner-as-nominee-person-scotland-registered-overseas-entity',
+    'registered-owner-as-nominee-person-northern-ireland-registered-overseas-entity',
+    'registered-owner-as-nominee-another-entity-england-wales-registered-overseas-entity',
+    'registered-owner-as-nominee-another-entity-scotland-registered-overseas-entity',
+    'registered-owner-as-nominee-another-entity-northern-ireland-registered-overseas-entity'
   ],
   isSanctioned: true,
 };

@@ -178,13 +178,13 @@ export enum natureOfControl {
   RIGHT_TO_APPOINT_AND_REMOVE_DIRECTORS_AS_CONTROL_OVER_FIRM = 'right-to-appoint-and-remove-directors-as-control-over-firm-registered-overseas-entity',
   SIGNIFICANT_INFLUENCE_OR_CONTROL_AS_CONTROL_OVER_FIRM = 'significant-influence-or-control-as-control-over-firm-registered-overseas-entity',
 
-  REGISTERED_OWNER_AS_NOMINEE_PERSON_ENGLAND_AND_WALES = 'registered-owner-as-nominee-person-england-wales',
-  REGISTERED_OWNER_AS_NOMINEE_PERSON_SCOTLAND = 'registered-owner-as-nominee-person-scotland',
-  REGISTERED_OWNER_AS_NOMINEE_PERSON_NORTHERN_IRELAND = 'registered-owner-as-nominee-person-northern-ireland',
+  REGISTERED_OWNER_AS_NOMINEE_PERSON_ENGLAND_AND_WALES = 'registered-owner-as-nominee-person-england-wales-registered-overseas-entity',
+  REGISTERED_OWNER_AS_NOMINEE_PERSON_SCOTLAND = 'registered-owner-as-nominee-person-scotland-registered-overseas-entity',
+  REGISTERED_OWNER_AS_NOMINEE_PERSON_NORTHERN_IRELAND = 'registered-owner-as-nominee-person-northern-ireland-registered-overseas-entity',
 
-  REGISTERED_OWNER_AS_NOMINEE_OTHER_ENTITY_ENGLAND_AND_WALES = 'registered-owner-as-nominee-another-entity-england-wales',
-  REGISTERED_OWNER_AS_NOMINEE_OTHER_ENTITY_SCOTLAND = 'registered-owner-as-nominee-another-entity-scotland',
-  REGISTERED_OWNER_AS_NOMINEE_OTHER_ENTITY_NORTHERN_IRELAND = 'registered-owner-as-nominee-another-entity-northern-ireland'
+  REGISTERED_OWNER_AS_NOMINEE_OTHER_ENTITY_ENGLAND_AND_WALES = 'registered-owner-as-nominee-another-entity-england-wales-registered-overseas-entity',
+  REGISTERED_OWNER_AS_NOMINEE_OTHER_ENTITY_SCOTLAND = 'registered-owner-as-nominee-another-entity-scotland-registered-overseas-entity',
+  REGISTERED_OWNER_AS_NOMINEE_OTHER_ENTITY_NORTHERN_IRELAND = 'registered-owner-as-nominee-another-entity-northern-ireland-registered-overseas-entity'
 }
 
 const natureTypeMap = new Map<string, BoTypes>([

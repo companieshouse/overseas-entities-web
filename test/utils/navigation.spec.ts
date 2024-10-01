@@ -1,5 +1,6 @@
 jest.mock('../../src/utils/feature.flag');
 jest.mock('../../src/utils/application.data');
+jest.mock('../../src/utils/relevant.period');
 jest.mock('../../src/utils/update/no.change.journey');
 
 import { describe, expect, jest, test } from '@jest/globals';
@@ -14,20 +15,27 @@ import {
   getUpdateOrRemoveBackLink,
   getSecureUpdateFilterBackLink,
   getOverseasEntityPresenterBackLink,
-  getUpdateReviewStatementBackLink
+  getUpdateReviewStatementBackLink,
+  getRelevantPeriodUrl
 } from "../../src/utils/navigation";
 
 import { isActiveFeature } from "../../src/utils/feature.flag";
 import { getApplicationData } from "../../src/utils/application.data";
-import { isNoChangeJourney } from "../../src/utils/update/no.change.journey";
-
+import { checkRelevantPeriod } from "../../src/utils/relevant.period";
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockCheckRelevantPeriod = checkRelevantPeriod as jest.Mock;
+import { isNoChangeJourney } from "../../src/utils/update/no.change.journey";
 const mockIsNoChangeJourney = isNoChangeJourney as jest.Mock;
 
 const mockRemoveRequest = { } as Request;
 mockRemoveRequest["query"] = {
   "journey": "remove"
+};
+
+const mockRelevantRequest = { } as Request;
+mockRelevantRequest["query"] = {
+  "journey": "relevant-period"
 };
 
 const mockRequestWithParams = {
@@ -65,6 +73,15 @@ describe("NAVIGATION utils", () => {
   test(`getSecureUpdateFilterBackLink returns the correct URL with the 'journey' query parameter present when on the Remove journey`, async () => {
     const backLink = await getSecureUpdateFilterBackLink(mockRemoveRequest);
     expect(backLink).toEqual(`${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+  });
+
+  test(`getRelevantPeriodUrl returns the correct URL with the 'relevant period' query parameter present when we click on the back button`, () => {
+    mockCheckRelevantPeriod.mockReturnValueOnce(true);
+    mockGetApplicationData.mockReturnValue({
+      update: { checkRelevantPeriod: true },
+    });
+    const backLink = getRelevantPeriodUrl(mockGetApplicationData);
+    expect(backLink).toEqual(`${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL + config.RELEVANT_PERIOD_QUERY_PARAM}`);
   });
 
   test(`getSecureUpdateFilterBackLink returns the correct URL when not on the Remove journey`, async () => {

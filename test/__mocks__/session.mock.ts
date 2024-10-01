@@ -82,6 +82,7 @@ export const EMAIL_ADDRESS = "user@domain.roe";
 export const PUBLIC_REGISTER_NAME = "publicRegister";
 export const PUBLIC_REGISTER_JURISDICTION = "jurisdiction";
 export const REGISTRATION_NUMBER = "123";
+export const RELEVANT_PERIOD = "?relevant-period=true";
 
 export const ERROR: Error = new Error(ANY_MESSAGE_ERROR);
 export const TRANSACTION_ID = "038138-572616-526863";

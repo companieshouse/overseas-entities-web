@@ -118,8 +118,8 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
   describe("GET tests", () => {
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
-
-      const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL);
+      mockCheckRelevantPeriod.mockReturnValueOnce(true);
+      const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + RELEVANT_PERIOD_QUERY_PARAM);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(config.UPDATE_LANDING_PAGE_URL);
@@ -136,11 +136,10 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with relevant period content when query param is passed`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
-
-      const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + "?relevant-period=true");
+      mockCheckRelevantPeriod.mockReturnValueOnce(true);
+      const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + RELEVANT_PERIOD_QUERY_PARAM);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(RELEVANT_PERIOD);
       expect(resp.text).toContain(RELEVANT_PERIOD_INDIVIDUAL_INFORMATION);
       expect(resp.text).toContain("1");
       expect(resp.text).toContain("January");

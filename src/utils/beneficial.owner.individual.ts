@@ -47,12 +47,15 @@ import { v4 as uuidv4 } from "uuid";
 import * as config from "../config";
 import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
 import { isActiveFeature } from "./feature.flag";
+import { checkRelevantPeriod } from "./relevant.period";
 
 export const getBeneficialOwnerIndividual = async (req: Request, res: Response, templateName: string, backLinkUrl: string): Promise<void> => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
   const appData: ApplicationData = await getApplicationData(req.session);
-
+  if (checkRelevantPeriod(appData)) {
+    backLinkUrl = backLinkUrl + config.RELEVANT_PERIOD_QUERY_PARAM;
+  }
   return res.render(templateName, {
     backLinkUrl: backLinkUrl,
     templateName: templateName,
@@ -76,6 +79,9 @@ export const getBeneficialOwnerIndividualById = async (req: Request, res: Respon
     const dobDate = (data) ? mapDataObjectToFields(data[DateOfBirthKey], DateOfBirthKeys, InputDateKeys) : {};
     const startDate = (data) ? mapDataObjectToFields(data[StartDateKey], StartDateKeys, InputDateKeys) : {};
 
+    if (checkRelevantPeriod(appData)) {
+      backLinkUrl = backLinkUrl + config.RELEVANT_PERIOD_QUERY_PARAM;
+    }
     const templateOptions = {
       backLinkUrl: backLinkUrl,
       templateName: `${templateName}/${id}`,

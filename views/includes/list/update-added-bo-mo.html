@@ -5,6 +5,8 @@
 {% set beneficialOwnerOtherParam = OE_CONFIGS.PARAM_BENEFICIAL_OWNER_OTHER %}
 {% set managingOfficerIndividualParam = OE_CONFIGS.PARAM_MANAGING_OFFICER_INDIVIDUAL %}
 {% set managingOfficerCorporateParam = OE_CONFIGS.PARAM_MANAGING_OFFICER_CORPORATE %}
+{% set feature_flag_relevant_period = OE_CONFIGS.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD %}
+{% set relevant_period = OE_CONFIGS.RELEVANT_PERIOD_QUERY_PARAM %}
 
 {% if hasNewlyAddedBosMos %}
     <table class="govuk-table">
@@ -17,14 +19,26 @@
                         <td class="govuk-table__cell">Individual beneficial owner</td>
                         <td class="govuk-table__cell">{% if boi.ceased_date|length === 0 %} Active {% else %} Ceased {% endif %}</td>
                         <td class="govuk-table__cell">
+                            {% if feature_flag_relevant_period === "true" %}
+                            <a class="govuk-link" href="{{ beneficialOwnerIndividualUrl }}/{{ boi.id }}{{relevant_period}}" data-event-id="change-link">
+                                Change
+                            </a>
+                            {% else %}
                             <a class="govuk-link" href="{{ beneficialOwnerIndividualUrl }}/{{ boi.id }}" data-event-id="change-link">
                                 Change
                             </a>
+                            {% endif %}
                         </td>
                         <td class="govuk-table__cell">
+                            {% if feature_flag_relevant_period === "true" %}
+                            <a class="govuk-link" href="{{ confirmToRemoveBoMoUrl }}/{{ beneficialOwnerIndividualParam }}/{{ boi.id }}{{relevant_period}}" data-event-id="remove-link">
+                                Remove
+                            </a>
+                            {% else %}
                             <a class="govuk-link" href="{{ confirmToRemoveBoMoUrl }}/{{ beneficialOwnerIndividualParam }}/{{ boi.id }}" data-event-id="remove-link">
                                 Remove
                             </a>
+                            {% endif %}
                         </td>
                     </tr>
                 {% endif %}
@@ -36,14 +50,26 @@
                         <td class="govuk-table__cell">Other legal entity beneficial owner</td>
                         <td class="govuk-table__cell">{% if boo.ceased_date|length === 0 %} Active {% else %} Ceased {% endif %}</td>
                         <td class="govuk-table__cell">
+                            {% if feature_flag_relevant_period === "true" %}
+                            <a class="govuk-link" href="{{ beneficialOwnerOtherUrl }}/{{ boo.id }}{{relevant_period}}" data-event-id="change-link">
+                                Change
+                            </a>
+                            {% else %}
                             <a class="govuk-link" href="{{ beneficialOwnerOtherUrl }}/{{ boo.id }}" data-event-id="change-link">
                                 Change
                             </a>
+                            {% endif %}
                         </td>
                         <td class="govuk-table__cell">
+                            {% if feature_flag_relevant_period === "true" %}
+                            <a class="govuk-link" href="{{ confirmToRemoveBoMoUrl }}/{{ beneficialOwnerOtherParam }}/{{ boo.id }}{{relevant_period}}" data-event-id="remove-link">
+                                Remove
+                            </a>
+                            {% else %}
                             <a class="govuk-link" href="{{ confirmToRemoveBoMoUrl }}/{{ beneficialOwnerOtherParam }}/{{ boo.id }}" data-event-id="remove-link">
                                 Remove
                             </a>
+                            {% endif %}
                         </td>
                     </tr>
                 {% endif %}
@@ -55,14 +81,26 @@
                         <td class="govuk-table__cell">Government or public authority beneficial owner</td>
                         <td class="govuk-table__cell">{% if bog.ceased_date|length === 0 %} Active {% else %} Ceased {% endif %}</td>
                         <td class="govuk-table__cell">
+                            {% if feature_flag_relevant_period === "true" %}
+                            <a class="govuk-link" href="{{ beneficialOwnerGovUrl }}/{{ bog.id }}{{relevant_period}}" data-event-id="change-link" >
+                                Change
+                            </a>
+                            {% else %}
                             <a class="govuk-link" href="{{ beneficialOwnerGovUrl }}/{{ bog.id }}" data-event-id="change-link" >
                                 Change
                             </a>
+                            {% endif %}
                         </td>
                         <td class="govuk-table__cell">
+                            {% if feature_flag_relevant_period === "true" %}
+                            <a class="govuk-link" href="{{ confirmToRemoveBoMoUrl }}/{{ beneficialOwnerGovParam }}/{{ bog.id }}{{relevant_period}}" data-event-id="remove-link">
+                                Remove
+                            </a>
+                            {% else %}
                             <a class="govuk-link" href="{{ confirmToRemoveBoMoUrl }}/{{ beneficialOwnerGovParam }}/{{ bog.id }}" data-event-id="remove-link">
                                 Remove
                             </a>
+                            {% endif %}
                         </td>
                     </tr>
                 {% endif %}

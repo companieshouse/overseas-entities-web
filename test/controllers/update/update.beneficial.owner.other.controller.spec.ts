@@ -125,7 +125,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
   });
 
   describe("GET tests", () => {
-    test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page must not contain news nocs if the flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is off`, async () => {
+    test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page with the flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC off`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
 
       const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_OTHER_URL);
@@ -146,7 +146,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).not.toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
     });
 
-    test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page must news nocs if the flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is on`, async () => {
+    test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page with the flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC on`, async () => {
       mockIsActiveFeature.mockReturnValue(true);
 
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });

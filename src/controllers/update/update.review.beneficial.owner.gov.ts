@@ -1,4 +1,4 @@
-import { UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL, UPDATE_BENEFICIAL_OWNER_TYPE_URL, UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE, RELEVANT_PERIOD_QUERY_PARAM } from "../../config";
+import { UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL, UPDATE_BENEFICIAL_OWNER_TYPE_URL, UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE, RELEVANT_PERIOD_QUERY_PARAM, FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC } from "../../config";
 import { NextFunction, Request, Response } from "express";
 import { getApplicationData, mapDataObjectToFields, removeFromApplicationData, setApplicationData } from "../../utils/application.data";
 import { logger } from "../../utils/logger";
@@ -13,6 +13,7 @@ import { AddressKeys } from "../../model/data.types.model";
 import { CeasedDateKey } from "../../model/date.model";
 import { addCeasedDateToTemplateOptions } from "../../utils/update/ceased_date_util";
 import { checkRelevantPeriod } from "../../utils/relevant.period";
+import { isActiveFeature } from "../../utils/feature.flag";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -32,7 +33,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       templateName: UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE,
       ...dataToReview,
       ...principalAddress,
-      ...serviceAddress
+      ...serviceAddress,
+      FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC: isActiveFeature(FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)
     };
 
     if (CeasedDateKey in dataToReview) {

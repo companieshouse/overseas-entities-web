@@ -77,11 +77,10 @@ const mapNatureOfControl = (psc: CompanyPersonWithSignificantControl, beneficial
   if (!isBeneficialGov) {
     beneficialOwner['trustees_nature_of_control_types'] = [];
   }
-  // TODO uncomment these and fix test
-  // beneficialOwner.non_legal_firm_control_nature_of_control_types = [];
-  // beneficialOwner.trust_control_nature_of_control_types = [];
-  // beneficialOwner.owner_of_land_person_nature_of_control_jurisdictions = [];
-  // beneficialOwner.owner_of_land_other_entity_nature_of_control_jurisdictions = [];
+  beneficialOwner.non_legal_firm_control_nature_of_control_types = [];
+  beneficialOwner.trust_control_nature_of_control_types = [];
+  beneficialOwner.owner_of_land_person_nature_of_control_jurisdictions = [];
+  beneficialOwner.owner_of_land_other_entity_nature_of_control_jurisdictions = [];
 
   psc.naturesOfControl?.forEach(natureType => {
     const natureKind = natureTypeMap.get(natureType);

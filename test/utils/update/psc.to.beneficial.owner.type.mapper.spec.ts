@@ -59,6 +59,28 @@ describe("Run all tests", () => {
           NatureOfControlType.OVER_25_PERCENT_OF_SHARES,
           NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS
         ],
+        non_legal_firm_control_nature_of_control_types: [
+          "OVER_25_PERCENT_OF_SHARES",
+          "OVER_25_PERCENT_OF_VOTING_RIGHTS",
+          "APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS",
+          "SIGNIFICANT_INFLUENCE_OR_CONTROL",
+        ],
+        trust_control_nature_of_control_types: [
+          "OVER_25_PERCENT_OF_SHARES",
+          "OVER_25_PERCENT_OF_VOTING_RIGHTS",
+          "APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS",
+          "SIGNIFICANT_INFLUENCE_OR_CONTROL",
+        ],
+        owner_of_land_person_nature_of_control_jurisdictions: [
+          "ENGLAND_AND_WALES",
+          "SCOTLAND",
+          "NORTHERN_IRELAND"
+        ],
+        owner_of_land_other_entity_nature_of_control_jurisdictions: [
+          "ENGLAND_AND_WALES",
+          "SCOTLAND",
+          "NORTHERN_IRELAND",
+        ],
         is_service_address_same_as_usual_residential_address: yesNoResponse.No,
         service_address: {
           line_1: pscMock.address.addressLine1,
@@ -95,6 +117,10 @@ describe("Run all tests", () => {
         non_legal_firm_members_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
         trustees_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
         beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+        non_legal_firm_control_nature_of_control_types: [],
+        trust_control_nature_of_control_types: [],
+        owner_of_land_person_nature_of_control_jurisdictions: [],
+        owner_of_land_other_entity_nature_of_control_jurisdictions: [],
         is_service_address_same_as_usual_residential_address: yesNoResponse.No,
         service_address: {
           line_1: pscMock.address.addressLine1,
@@ -128,6 +154,28 @@ describe("Run all tests", () => {
         beneficial_owner_nature_of_control_types: [
           NatureOfControlType.OVER_25_PERCENT_OF_SHARES,
           NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS
+        ],
+        non_legal_firm_control_nature_of_control_types: [
+          "OVER_25_PERCENT_OF_SHARES",
+          "OVER_25_PERCENT_OF_VOTING_RIGHTS",
+          "APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS",
+          "SIGNIFICANT_INFLUENCE_OR_CONTROL",
+        ],
+        trust_control_nature_of_control_types: [
+          "OVER_25_PERCENT_OF_SHARES",
+          "OVER_25_PERCENT_OF_VOTING_RIGHTS",
+          "APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS",
+          "SIGNIFICANT_INFLUENCE_OR_CONTROL",
+        ],
+        owner_of_land_person_nature_of_control_jurisdictions: [
+          "ENGLAND_AND_WALES",
+          "SCOTLAND",
+          "NORTHERN_IRELAND"
+        ],
+        owner_of_land_other_entity_nature_of_control_jurisdictions: [
+          "ENGLAND_AND_WALES",
+          "SCOTLAND",
+          "NORTHERN_IRELAND",
         ],
         is_service_address_same_as_principal_address: undefined,
         service_address: {
@@ -167,6 +215,28 @@ describe("Run all tests", () => {
           NatureOfControlType.OVER_25_PERCENT_OF_SHARES,
           NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS
         ],
+        non_legal_firm_control_nature_of_control_types: [
+          "OVER_25_PERCENT_OF_SHARES",
+          "OVER_25_PERCENT_OF_VOTING_RIGHTS",
+          "APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS",
+          "SIGNIFICANT_INFLUENCE_OR_CONTROL",
+        ],
+        trust_control_nature_of_control_types: [
+          "OVER_25_PERCENT_OF_SHARES",
+          "OVER_25_PERCENT_OF_VOTING_RIGHTS",
+          "APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS",
+          "SIGNIFICANT_INFLUENCE_OR_CONTROL",
+        ],
+        owner_of_land_person_nature_of_control_jurisdictions: [
+          "ENGLAND_AND_WALES",
+          "SCOTLAND",
+          "NORTHERN_IRELAND"
+        ],
+        owner_of_land_other_entity_nature_of_control_jurisdictions: [
+          "ENGLAND_AND_WALES",
+          "SCOTLAND",
+          "NORTHERN_IRELAND",
+        ],
         is_service_address_same_as_principal_address: undefined,
         service_address: {
           line_1: pscMock.address.addressLine1,
@@ -189,6 +259,10 @@ describe("Run all tests", () => {
       expect(bo.trustees_nature_of_control_types).toEqual([]);
       expect(bo.beneficial_owner_nature_of_control_types).toEqual([]);
       expect(bo.non_legal_firm_members_nature_of_control_types).toEqual([]);
+      expect(bo.non_legal_firm_control_nature_of_control_types).toEqual([]);
+      expect(bo.trust_control_nature_of_control_types).toEqual([]);
+      expect(bo.owner_of_land_person_nature_of_control_jurisdictions).toEqual([]);
+      expect(bo.owner_of_land_other_entity_nature_of_control_jurisdictions).toEqual([]);
     });
 
     test('that error is empty pcsc nature of control', () => {

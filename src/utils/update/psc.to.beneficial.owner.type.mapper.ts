@@ -7,6 +7,8 @@ import { mapBOMOAddress, isSameAddress, mapDateOfBirth, mapSelfLink, mapInputDat
 import { logger } from "../../utils/logger";
 import { BeneficialOwnerPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
 
+type BeneficialOwnerType = BeneficialOwnerIndividual | BeneficialOwnerOther | BeneficialOwnerGov;
+
 export const mapPscToBeneficialOwnerTypeIndividual = (psc: CompanyPersonWithSignificantControl): BeneficialOwnerIndividual => {
   const service_address = mapBOMOAddress(psc.address);
   const nationalities = splitNationalities(psc.nationality);
@@ -71,7 +73,7 @@ export const mapPscToBeneficialOwnerGov = (psc: CompanyPersonWithSignificantCont
   return result;
 };
 
-const mapNatureOfControl = (psc: CompanyPersonWithSignificantControl, beneficialOwner: BeneficialOwnerIndividual | BeneficialOwnerOther | BeneficialOwnerGov, isBeneficialGov: boolean) => {
+const mapNatureOfControl = (psc: CompanyPersonWithSignificantControl, beneficialOwner: BeneficialOwnerType, isBeneficialGov: boolean) => {
   beneficialOwner.beneficial_owner_nature_of_control_types = [];
   beneficialOwner.non_legal_firm_members_nature_of_control_types = [];
   if (!isBeneficialGov) {
@@ -101,7 +103,7 @@ const mapNatureOfControl = (psc: CompanyPersonWithSignificantControl, beneficial
   });
 };
 
-const addNatureOfControlTypeToBeneficialOwner = (natureKind: BoTypes, beneficialOwner: BeneficialOwnerIndividual | BeneficialOwnerOther | BeneficialOwnerGov, natureOfControlType: NatureOfControlType, isBeneficialGov: boolean) => {
+const addNatureOfControlTypeToBeneficialOwner = (natureKind: BoTypes, beneficialOwner: BeneficialOwnerType, natureOfControlType: NatureOfControlType, isBeneficialGov: boolean) => {
   switch (natureKind) {
       case BoTypes.BO_NATURE_OF_CONTROL:
         beneficialOwner.beneficial_owner_nature_of_control_types?.push(natureOfControlType);
@@ -126,7 +128,7 @@ const addNatureOfControlTypeToBeneficialOwner = (natureKind: BoTypes, beneficial
   }
 };
 
-const addNatureOfControlJurisdictionToBeneficialOwner = (natureKind: BoTypes, beneficialOwner: BeneficialOwnerIndividual | BeneficialOwnerOther | BeneficialOwnerGov, natureOfControlJurisdiction: NatureOfControlJurisdiction) => {
+const addNatureOfControlJurisdictionToBeneficialOwner = (natureKind: BoTypes, beneficialOwner: BeneficialOwnerType, natureOfControlJurisdiction: NatureOfControlJurisdiction) => {
   switch (natureKind) {
       case BoTypes.REGISTERED_OWNER_AS_NOMINEE_PERSON_NATURE_OF_CONTROL:
         beneficialOwner.owner_of_land_person_nature_of_control_jurisdictions?.push(natureOfControlJurisdiction);

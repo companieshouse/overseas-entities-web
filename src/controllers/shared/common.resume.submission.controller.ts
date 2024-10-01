@@ -113,12 +113,9 @@ const setWebApplicationData = (session: Session, appData: ApplicationData, trans
 
   if (isActiveFeature(config.FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC) && (!appData.entity_number)) {
     console.debug("Removing old NOCs");
-    appData[BeneficialOwnerIndividualKey] = (appData[BeneficialOwnerIndividualKey] as BeneficialOwnerIndividual[])
-      .map( boi => { delete boi[NonLegalFirmNoc]; return boi; } );
-    appData[BeneficialOwnerOtherKey] = (appData[BeneficialOwnerOtherKey] as BeneficialOwnerOther[] )
-      .map( boo => { delete boo[NonLegalFirmNoc]; return boo; } );
-    appData[BeneficialOwnerGovKey] = (appData[BeneficialOwnerGovKey] as BeneficialOwnerGov[])
-      .map( bog => { delete bog[NonLegalFirmNoc]; return bog; } );
+    appData[BeneficialOwnerIndividualKey].forEach(boi => { delete boi[NonLegalFirmNoc]; });
+    appData[BeneficialOwnerOtherKey].forEach(boo => { delete boo[NonLegalFirmNoc]; });
+    appData[BeneficialOwnerGovKey].forEach(bog => { delete bog[NonLegalFirmNoc]; });
   }
 
   setExtraData(session, appData);

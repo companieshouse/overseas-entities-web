@@ -97,6 +97,7 @@ describe(`Update review beneficial owner other`, () => {
       const resp = await request(app).get(UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_URL + '?index=0');
 
       expect(resp.status).toEqual(200);
+
       expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_HEADING);
       expect(resp.text).toContain(BO_NOC_HEADING);
       expect(resp.text).toContain(TRUSTS_NOC_HEADING);
@@ -121,6 +122,7 @@ describe(`Update review beneficial owner other`, () => {
       const resp = await request(app).get(UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_URL + '?index=0');
 
       expect(resp.status).toEqual(200);
+
       expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_HEADING);
       expect(resp.text).toContain(BO_NOC_HEADING);
       expect(resp.text).toContain(TRUSTS_NOC_HEADING);

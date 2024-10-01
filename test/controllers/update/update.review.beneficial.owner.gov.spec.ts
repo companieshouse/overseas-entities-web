@@ -6,6 +6,7 @@ jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
 jest.mock('../../../src/utils/save.and.continue');
+jest.mock('../../../src/utils/feature.flag');
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
 import mockJourneyDetectionMiddleware from "../../__mocks__/journey.detection.middleware.mock";
@@ -30,12 +31,19 @@ import {
   SERVICE_UNAVAILABLE,
   UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_HEADING,
   TRUSTS_NOC_HEADING,
+  BO_NOC_HEADING,
+  FIRM_NOC_HEADING,
+  FIRM_CONTROL_NOC_HEADING,
+  TRUST_CONTROL_NOC_HEADING,
+  OWNER_OF_LAND_PERSON_NOC_HEADING,
+  OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING,
 } from "../../__mocks__/text.mock";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { NextFunction } from "express";
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
 import { ErrorMessages } from "../../../src/validation/error.messages";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
+import { isActiveFeature } from "../../../src/utils/feature.flag";
 
 mockJourneyDetectionMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
@@ -58,6 +66,8 @@ const mockPrepareData = prepareData as jest.Mock;
 
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
+
 describe(`Update review beneficial owner Gov`, () => {
 
   beforeEach(() => {
@@ -65,14 +75,44 @@ describe(`Update review beneficial owner Gov`, () => {
   });
 
   describe(`GET tests`, () => {
-    test(`render the ${config.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE} page`, async () => {
+    test(`render the ${config.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE} page with the flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC off`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
       mockMapDataObjectToFields.mockReturnValueOnce(DISTINCT_PRINCIPAL_ADDRESS_MOCK);
+
       const resp = await request(app).get(UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL_WITH_PARAM_URL_TEST);
+
       expect(resp.status).toEqual(200);
+
       expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_HEADING);
       expect(resp.text).toContain(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
+      expect(resp.text).toContain(BO_NOC_HEADING);
       expect(resp.text).not.toContain(TRUSTS_NOC_HEADING);
+      expect(resp.text).toContain(FIRM_NOC_HEADING);
+      expect(resp.text).not.toContain(FIRM_CONTROL_NOC_HEADING);
+      expect(resp.text).not.toContain(TRUST_CONTROL_NOC_HEADING);
+      expect(resp.text).not.toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
+      expect(resp.text).not.toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
+      expect(resp.text).toContain("principal addressLine1");
+    });
+
+    test(`render the ${config.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE} page with the flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC on`, async () => {
+      mockIsActiveFeature.mockReturnValue(true);
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+      mockMapDataObjectToFields.mockReturnValueOnce(DISTINCT_PRINCIPAL_ADDRESS_MOCK);
+
+      const resp = await request(app).get(UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL_WITH_PARAM_URL_TEST);
+
+      expect(resp.status).toEqual(200);
+
+      expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_HEADING);
+      expect(resp.text).toContain(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
+      expect(resp.text).toContain(BO_NOC_HEADING);
+      expect(resp.text).not.toContain(TRUSTS_NOC_HEADING);
+      expect(resp.text).not.toContain(FIRM_NOC_HEADING);
+      expect(resp.text).toContain(FIRM_CONTROL_NOC_HEADING);
+      expect(resp.text).toContain(TRUST_CONTROL_NOC_HEADING);
+      expect(resp.text).toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
+      expect(resp.text).toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
       expect(resp.text).toContain("principal addressLine1");
     });
 

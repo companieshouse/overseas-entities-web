@@ -120,7 +120,7 @@
         <br>
       {% endif %}
 
-      {% if feature_flag_relevant_period === "true" %}
+      {% if feature_flag_relevant_period === "true" and not isRemoveJourney %}
         {% include "includes/check-your-answers/relevant-period-check-your-answers.html" %}
         {% if pageParams.isRPStatementExists %}
           <br>

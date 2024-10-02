@@ -48,7 +48,7 @@ import { getOverseasEntity } from "../service/overseas.entities.service";
 
 export const getApplicationData = async (sessionOrRequest: Session | Request | undefined): Promise<ApplicationData> => {
 
-  const defaultAppData = {};
+  const emptyAppData = {};
   let req: Request;
   let session: Session;
 
@@ -60,7 +60,7 @@ export const getApplicationData = async (sessionOrRequest: Session | Request | u
     }
 
     if (!sessionOrRequest) {
-      return defaultAppData;
+      return emptyAppData;
     }
     req = sessionOrRequest as Request;
 
@@ -68,7 +68,7 @@ export const getApplicationData = async (sessionOrRequest: Session | Request | u
     const submissionId: string = req.params[ROUTE_PARAM_SUBMISSION_ID] ?? "";
 
     if (transactionId === "" || submissionId === "") {
-      return defaultAppData;
+      return emptyAppData;
     }
 
     const appData = await getOverseasEntity(req, transactionId, submissionId);
@@ -79,7 +79,7 @@ export const getApplicationData = async (sessionOrRequest: Session | Request | u
 
   } catch (e) {
     logger.error(`Error getting application data, with error object: ${e}`);
-    return defaultAppData;
+    return emptyAppData;
   }
 };
 

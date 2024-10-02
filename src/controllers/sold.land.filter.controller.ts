@@ -13,20 +13,27 @@ import { Session } from "@companieshouse/node-session-handler";
 import { getUrlWithTransactionIdAndSubmissionId } from "../utils/url";
 
 export const get = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+
   try {
+
     logger.debugRequest(req, `GET ${config.SOLD_LAND_FILTER_PAGE}`);
 
     if (req.query[config.LANDING_PAGE_QUERY_PARAM] === '0') {
       deleteApplicationData(req.session);
     }
 
-    const appData: ApplicationData = await getApplicationData(req.session);
+    const session = req.session as Session;
+    const appData: ApplicationData = await getApplicationData(session, req);
 
+    console.log("<<<<<<<<<<<<<<<<<<<<<<<<GET>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+    console.log(appData);
+    console.log("<<<<<<<<<<<<<<<<<<<<<<<<GET>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
     return res.render(config.SOLD_LAND_FILTER_PAGE, {
       backLinkUrl: getSoldLandFilterBackLink(),
       templateName: config.SOLD_LAND_FILTER_PAGE,
       [HasSoldLandKey]: appData?.[HasSoldLandKey]
     });
+
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);
@@ -34,25 +41,34 @@ export const get = async (req: Request, res: Response, next: NextFunction): Prom
 };
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
+
   try {
 
     logger.debugRequest(req, `POST ${config.SOLD_LAND_FILTER_PAGE}`);
 
     const session = req.session as Session;
     const hasSoldLand = (req.body[HasSoldLandKey]).toString();
-    const appData: ApplicationData = await getApplicationData(session);
+    const appData: ApplicationData = await getApplicationData(session, req);
     appData[HasSoldLandKey] = hasSoldLand;
+
+    console.log("<<<<<<<<<<<<<<<<<<<<<<<<POST>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+    console.log(appData);
+    console.log("<<<<<<<<<<<<<<<<<<<<<<<<POST>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 
     let nextPageUrl: string = "";
 
     if (hasSoldLand === "1") {
+
       nextPageUrl = req.params[config.ROUTE_PARAM_TRANSACTION_ID]
         && req.params[config.ROUTE_PARAM_SUBMISSION_ID]
         && isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
         ? getUrlWithTransactionIdAndSubmissionId(config.CANNOT_USE_WITH_PARAMS_URL, req.params[config.ROUTE_PARAM_TRANSACTION_ID], req.params[config.ROUTE_PARAM_SUBMISSION_ID])
         : config.CANNOT_USE_URL;
+
     } else if (hasSoldLand === "0") {
+
       nextPageUrl = config.SECURE_REGISTER_FILTER_URL;
+
       if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
         if (!appData[Transactionkey]) {
           const transactionID = await postTransaction(req, session, appData);
@@ -64,8 +80,10 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         nextPageUrl = getUrlWithTransactionIdAndSubmissionId(config.SECURE_REGISTER_FILTER_WITH_PARAMS_URL, appData[Transactionkey] as string, appData[OverseasEntityKey] as string);
       }
     }
+
     setExtraData(req.session, appData);
     return res.redirect(nextPageUrl);
+
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

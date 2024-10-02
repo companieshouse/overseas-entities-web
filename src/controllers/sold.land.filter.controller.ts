@@ -25,9 +25,6 @@ export const get = async (req: Request, res: Response, next: NextFunction): Prom
     const session = req.session as Session;
     const appData: ApplicationData = await getApplicationData(session, req);
 
-    console.log("<<<<<<<<<<<<<<<<<<<<<<<<GET>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-    console.log(appData);
-    console.log("<<<<<<<<<<<<<<<<<<<<<<<<GET>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
     return res.render(config.SOLD_LAND_FILTER_PAGE, {
       backLinkUrl: getSoldLandFilterBackLink(),
       templateName: config.SOLD_LAND_FILTER_PAGE,
@@ -50,10 +47,6 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const hasSoldLand = (req.body[HasSoldLandKey]).toString();
     const appData: ApplicationData = await getApplicationData(session, req);
     appData[HasSoldLandKey] = hasSoldLand;
-
-    console.log("<<<<<<<<<<<<<<<<<<<<<<<<POST>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-    console.log(appData);
-    console.log("<<<<<<<<<<<<<<<<<<<<<<<<POST>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 
     let nextPageUrl: string = "";
 

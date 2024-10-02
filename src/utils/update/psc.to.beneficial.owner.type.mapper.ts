@@ -90,56 +90,28 @@ const mapNatureOfControl = (psc: CompanyPersonWithSignificantControl, beneficial
       return;
     }
 
-    const natureOfControlType = natureOfControlTypeMap.get(natureType);
-    if (natureOfControlType) {
-      addNatureOfControlTypeToBeneficialOwner(natureKind, beneficialOwner, natureOfControlType, isBeneficialGov);
-      return;
-    }
+    // get value from natureOfControlTypeMap or if that is null then get value from natureOfControlJurisdictionMap
+    const natureOfControlTypeOrJurisdiction: NatureOfControlType | NatureOfControlJurisdiction | undefined =
+      natureOfControlTypeMap.get(natureType) ?? natureOfControlJurisdictionMap.get(natureType);
 
-    const natureOfControlJurisdiction = natureOfControlJurisdictionMap.get(natureType);
-    if (natureOfControlJurisdiction) {
-      addNatureOfControlJurisdictionToBeneficialOwner(natureKind, beneficialOwner, natureOfControlJurisdiction);
+    if (natureOfControlTypeOrJurisdiction) {
+      addNatureOfControlToBeneficialOwner(natureKind, beneficialOwner, natureOfControlTypeOrJurisdiction, isBeneficialGov);
     }
   });
 };
 
-const addNatureOfControlTypeToBeneficialOwner = (natureKind: BoTypes, beneficialOwner: BeneficialOwnerType, natureOfControlType: NatureOfControlType, isBeneficialGov: boolean) => {
-  switch (natureKind) {
-      case BoTypes.BO_NATURE_OF_CONTROL:
-        beneficialOwner.beneficial_owner_nature_of_control_types?.push(natureOfControlType);
-        break;
-      case BoTypes.NON_LEGAL_NATURE_OF_CONTROL:
-        beneficialOwner.non_legal_firm_members_nature_of_control_types?.push(natureOfControlType);
-        break;
-      case BoTypes.TRUST_NATURE_OF_CONTROL:
-        if (!isBeneficialGov) {
-          beneficialOwner['trustees_nature_of_control_types'].push(natureOfControlType);
-        }
-        break;
-      case BoTypes.CONTROL_OVER_TRUST_NATURE_OF_CONTROL:
-        beneficialOwner.trust_control_nature_of_control_types?.push(natureOfControlType);
-        break;
-      case BoTypes.CONTROL_OVER_FIRM_NATURE_OF_CONTROL:
-        beneficialOwner.non_legal_firm_control_nature_of_control_types?.push(natureOfControlType);
-        break;
-      default:
-        logger.error("Unexpected nature of control for BO: " + natureKind);
-        break;
+const addNatureOfControlToBeneficialOwner = (natureKind: BoTypes, beneficialOwner: BeneficialOwnerType, natureOfControlToAdd: NatureOfControlType | NatureOfControlJurisdiction, isBeneficialGov: boolean) => {
+  if (isBeneficialGov && natureKind === BoTypes.TRUST_NATURE_OF_CONTROL) {
+    return;
   }
-};
+  const boFieldName = natureOfControlKindToBOFieldMap.get(natureKind);
 
-const addNatureOfControlJurisdictionToBeneficialOwner = (natureKind: BoTypes, beneficialOwner: BeneficialOwnerType, natureOfControlJurisdiction: NatureOfControlJurisdiction) => {
-  switch (natureKind) {
-      case BoTypes.REGISTERED_OWNER_AS_NOMINEE_PERSON_NATURE_OF_CONTROL:
-        beneficialOwner.owner_of_land_person_nature_of_control_jurisdictions?.push(natureOfControlJurisdiction);
-        break;
-      case BoTypes.REGISTERED_OWNER_AS_NOMINEE_OTHER_ENTITY_NATURE_OF_CONTROL:
-        beneficialOwner.owner_of_land_other_entity_nature_of_control_jurisdictions?.push(natureOfControlJurisdiction);
-        break;
-      default:
-        logger.error("Unexpected nature of control for BO: " + natureKind);
-        break;
+  if (!boFieldName) {
+    logger.error("Unexpected nature of control for BO: " + natureKind);
+    return;
   }
+
+  beneficialOwner[boFieldName]?.push(natureOfControlToAdd);
 };
 
 enum BoTypes {
@@ -257,6 +229,16 @@ const natureOfControlJurisdictionMap = new Map<string, NatureOfControlJurisdicti
   [natureOfControl.REGISTERED_OWNER_AS_NOMINEE_OTHER_ENTITY_ENGLAND_AND_WALES, NatureOfControlJurisdiction.ENGLAND_AND_WALES],
   [natureOfControl.REGISTERED_OWNER_AS_NOMINEE_OTHER_ENTITY_SCOTLAND, NatureOfControlJurisdiction.SCOTLAND],
   [natureOfControl.REGISTERED_OWNER_AS_NOMINEE_OTHER_ENTITY_NORTHERN_IRELAND, NatureOfControlJurisdiction.NORTHERN_IRELAND]
+]);
+
+const natureOfControlKindToBOFieldMap = new Map<BoTypes, string>([
+  [BoTypes.BO_NATURE_OF_CONTROL, "beneficial_owner_nature_of_control_types"],
+  [BoTypes.NON_LEGAL_NATURE_OF_CONTROL, "non_legal_firm_members_nature_of_control_types"],
+  [BoTypes.TRUST_NATURE_OF_CONTROL, "trustees_nature_of_control_types"],
+  [BoTypes.CONTROL_OVER_TRUST_NATURE_OF_CONTROL, "trust_control_nature_of_control_types"],
+  [BoTypes.CONTROL_OVER_FIRM_NATURE_OF_CONTROL, "non_legal_firm_control_nature_of_control_types"],
+  [BoTypes.REGISTERED_OWNER_AS_NOMINEE_PERSON_NATURE_OF_CONTROL, "owner_of_land_person_nature_of_control_jurisdictions"],
+  [BoTypes.REGISTERED_OWNER_AS_NOMINEE_OTHER_ENTITY_NATURE_OF_CONTROL, "owner_of_land_other_entity_nature_of_control_jurisdictions"]
 ]);
 
 export const mapIndividualBOPrivateData = (boPrivateData: BeneficialOwnerPrivateData[], beneficialOwner: BeneficialOwnerIndividual) => {

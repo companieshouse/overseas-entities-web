@@ -1,4 +1,5 @@
 jest.mock('../../src/utils/feature.flag');
+jest.mock('../../src/service/overseas.entities.service');
 
 import { Request } from "express";
 import { beforeEach, describe, expect, test } from '@jest/globals';
@@ -24,6 +25,7 @@ import {
   getRemove,
   setBoNocDataAsArrays
 } from "../../src/utils/application.data";
+
 import {
   APPLICATION_DATA_UPDATE_BO_MOCK,
   BO_IND_ID,
@@ -53,43 +55,121 @@ import {
   MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
   UPDATE_MANAGING_OFFICER_OBJECT_MOCK
 } from "../__mocks__/session.mock";
+
 import {
   PARAM_BENEFICIAL_OWNER_GOV,
   PARAM_BENEFICIAL_OWNER_INDIVIDUAL,
   PARAM_BENEFICIAL_OWNER_OTHER,
   PARAM_MANAGING_OFFICER_CORPORATE,
-  PARAM_MANAGING_OFFICER_INDIVIDUAL
+  PARAM_MANAGING_OFFICER_INDIVIDUAL,
 } from "../..//src/config";
+
+import {
+  APPLICATION_DATA_KEY,
+  ApplicationData,
+  beneficialOwnerIndividualType,
+  dataType,
+  entityType
+} from "../../src/model";
+
+import {
+  BeneficialOwnerGov,
+  BeneficialOwnerGovKey,
+} from '../../src/model/beneficial.owner.gov.model';
+
+import {
+  NoChangeKey,
+  UpdateKey,
+} from "../../src/model/update.type.model";
+
 import { ADDRESS } from "../__mocks__/fields/address.mock";
-import { ApplicationData, beneficialOwnerIndividualType, dataType, entityType } from "../../src/model";
 import { ServiceAddressKeys } from '../../src/model/address.model';
-import { BeneficialOwnerGov, BeneficialOwnerGovKey } from '../../src/model/beneficial.owner.gov.model';
 import { BeneficialOwnerIndividualKey } from "../../src/model/beneficial.owner.individual.model";
 import { BeneficialOwnerOtherKey } from "../../src/model/beneficial.owner.other.model";
 import { ManagingOfficerCorporateKey } from "../../src/model/managing.officer.corporate.model";
 import { ManagingOfficerKey } from "../../src/model/managing.officer.model";
-import { NoChangeKey, UpdateKey } from "../../src/model/update.type.model";
-import { NatureOfControlType } from "../../src/model/data.types.model";
 import { isActiveFeature } from "../../src/utils/feature.flag";
+import { NatureOfControlType } from "../../src/model/data.types.model";
+import { getOverseasEntity } from "../../src/service/overseas.entities.service";
 
 let req: Request;
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
+const mockGetOverseasEntity = getOverseasEntity as jest.Mock;
 
 describe("Application data utils", () => {
 
   beforeEach(() => {
-    req = { headers: {} } as Request;
+    mockIsActiveFeature.mockReset();
+    mockGetOverseasEntity.mockReset();
+    req = {
+      headers: {}
+    } as Request;
   });
 
-  test("getApplicationData should return Extra data store in the session", async () => {
-    const session = getSessionRequestWithExtraData();
-    const data = await getApplicationData(session);
-    expect(data).toEqual(APPLICATION_DATA_MOCK);
-  });
+  describe("getApplicationData tests", () => {
 
-  test("getApplicationData should return empty object if session undefined", async () => {
-    expect(await getApplicationData(undefined)).toEqual({});
+    beforeEach(() => {
+      req = Object.assign(req, {
+        params: {
+          transactionId: APPLICATION_DATA_MOCK.transaction_id,
+          submissionId: APPLICATION_DATA_MOCK.overseas_entity_id,
+        }
+      });
+    });
+
+    test("should return Extra data stored in the session when the REDIS_removal flag is set to OFF", async () => {
+      mockIsActiveFeature.mockReturnValue(false);
+      const session = getSessionRequestWithExtraData();
+      const data = await getApplicationData(session);
+      expect(data).toEqual(APPLICATION_DATA_MOCK);
+    });
+
+    test("should return an empty object if session is undefined and the REDIS_removal flag is set to OFF", async () => {
+      mockIsActiveFeature.mockReturnValue(false);
+      expect(await getApplicationData(undefined)).toEqual({});
+    });
+
+    test("should return application data retrieved from the API if both transaction Id and submissionId are valid and the REDIS_removal flag is set to ON", async () => {
+      mockIsActiveFeature.mockReturnValue(true);
+      mockGetOverseasEntity.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      const session = getSessionRequestWithExtraData();
+      session.deleteExtraData(APPLICATION_DATA_KEY); // remove app data from mock session to ensure that we're not asserting against session values
+      const data = await getApplicationData(session, req);
+      expect(data).toEqual(APPLICATION_DATA_MOCK);
+      expect(mockGetOverseasEntity).toHaveBeenCalledTimes(1);
+    });
+
+    test("should return an empty object if the transactionId is invalid and the REDIS_removal flag is set to ON", async () => {
+      req.params.transactionId = "";
+      mockIsActiveFeature.mockReturnValue(true);
+      mockGetOverseasEntity.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      const session = getSessionRequestWithExtraData();
+      session.deleteExtraData(APPLICATION_DATA_KEY); // remove app data from mock session to ensure that we're not asserting against session values
+      const data = await getApplicationData(session, req);
+      expect(data).toEqual({});
+      expect(mockGetOverseasEntity).toHaveBeenCalledTimes(0);
+    });
+
+    test("should return an empty object if the submissionId is invalid and the REDIS_removal flag is set to ON", async () => {
+      req.params.submissionId = "";
+      mockIsActiveFeature.mockReturnValue(true);
+      mockGetOverseasEntity.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      const session = getSessionRequestWithExtraData();
+      session.deleteExtraData(APPLICATION_DATA_KEY); // remove app data from mock session to ensure that we're not asserting against session values
+      const data = await getApplicationData(session, req);
+      expect(data).toEqual({});
+      expect(mockGetOverseasEntity).toHaveBeenCalledTimes(0);
+    });
+
+    test("should return application data retrieved from the session if the request object is not supplied and the REDIS_removal flag is set to ON", async () => {
+      mockIsActiveFeature.mockReturnValue(true);
+      const session = getSessionRequestWithExtraData();
+      const data = await getApplicationData(session);
+      expect(data).toEqual(APPLICATION_DATA_MOCK);
+      expect(mockGetOverseasEntity).toHaveBeenCalledTimes(0);
+    });
+
   });
 
   test("setApplicationData should store application data into the session", async () => {
@@ -97,7 +177,7 @@ describe("Application data utils", () => {
     await setApplicationData(session, ENTITY_OBJECT_MOCK, entityType.EntityKey);
 
     const data = await getApplicationData(session);
-    expect(data).toEqual( { ...APPLICATION_DATA_MOCK, [entityType.EntityKey]: { ...ENTITY_OBJECT_MOCK } });
+    expect(data).toEqual({ ...APPLICATION_DATA_MOCK, [entityType.EntityKey]: { ...ENTITY_OBJECT_MOCK } });
   });
 
   test("setApplicationData should store application data into the session for an empty array type object (BOs)", async () => {

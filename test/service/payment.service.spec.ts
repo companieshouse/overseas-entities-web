@@ -133,6 +133,7 @@ describe('Payment Service test suite', () => {
 describe('Payment Service test suite with params url', () => {
 
   test(`startPaymentsSession() should return ${CONFIRMATION_WITH_PARAMS_URL} with substituted values if ${PAYMENT_REQUIRED_HEADER} blank`, async () => {
+    mockIsActiveFeature.mockReturnValueOnce(false);
     mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
     const response = await startPaymentsSession(req, session, TRANSACTION_ID, OVERSEAS_ENTITY_ID, TRANSACTION_CLOSED_RESPONSE );
 
@@ -150,6 +151,7 @@ describe('Payment Service test suite with params url', () => {
   });
 
   test(`startPaymentsSession() should return the first page to initiate the web journey ${PAYMENT_JOURNEY_URL} and with correct callback details, including a redirect URI with substituted values`, async () => {
+    mockIsActiveFeature.mockReturnValueOnce(false);
     mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
     mockCreatePayment.mockResolvedValueOnce( mockPaymentResult );
     const response = await startPaymentsSession(req, session, TRANSACTION_ID, OVERSEAS_ENTITY_ID, TRANSACTION_WITH_PAYMENT_HEADER);

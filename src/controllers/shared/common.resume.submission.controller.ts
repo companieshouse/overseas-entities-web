@@ -13,6 +13,7 @@ import { getOverseasEntity } from "../../service/overseas.entities.service";
 import {
   HasSoldLandKey,
   ID,
+  NonLegalFirmNoc,
   IsSecureRegisterKey,
   OverseasEntityKey,
   Transactionkey
@@ -108,6 +109,13 @@ const setWebApplicationData = (session: Session, appData: ApplicationData, trans
   }
   if (isActiveFeature(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB)) {
     mapTrustApiReturnModelToWebModel(appData);
+  }
+
+  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC) && (!appData.entity_number)) {
+    console.debug("Removing old NOCs");
+    appData[BeneficialOwnerIndividualKey].forEach(boi => { delete boi[NonLegalFirmNoc]; });
+    appData[BeneficialOwnerOtherKey].forEach(boo => { delete boo[NonLegalFirmNoc]; });
+    appData[BeneficialOwnerGovKey].forEach(bog => { delete bog[NonLegalFirmNoc]; });
   }
 
   setExtraData(session, appData);

@@ -53,6 +53,7 @@ function setReadOnlyRequestProperty(req: Request, propertyName: string, property
 describe('Authentication middleware', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockIsActiveFeature.mockReset();
     res.locals = {};
   });
 
@@ -175,6 +176,8 @@ describe('Authentication middleware', () => {
     const signinRedirectPath = `/signin?return_to=${SECURE_UPDATE_FILTER_URL}`;
 
     mockIsActiveFeature.mockReturnValueOnce(false);
+    mockIsActiveFeature.mockReturnValueOnce(false);
+    mockIsActiveFeature.mockReturnValueOnce(false);
     mockIsActiveFeature.mockReturnValueOnce(true);
     const resp = await request(app).get(SECURE_UPDATE_FILTER_URL);
 
@@ -187,6 +190,7 @@ describe('Authentication middleware', () => {
   test("should redirect to signin page for remove", async () => {
     const signinRedirectPath = "/signin?return_to=" + encodeURIComponent(`${UPDATE_CONTINUE_WITH_SAVED_FILING_URL}?journey=remove`);
 
+    mockIsActiveFeature.mockReturnValueOnce(false);
     mockIsActiveFeature.mockReturnValueOnce(false); // SHOW_SERVICE_OFFLINE_PAGE
 
     const resp = await request(app).get(`${UPDATE_CONTINUE_WITH_SAVED_FILING_URL}?${JOURNEY_QUERY_PARAM}=${JourneyType.remove}`);

@@ -46,19 +46,29 @@ import { isActiveFeature } from "./feature.flag";
 import { isNoChangeJourney } from "./update/no.change.journey";
 import { getOverseasEntity } from "../service/overseas.entities.service";
 
-export const getApplicationData = async (session: Session | undefined, req?: Request): Promise<ApplicationData> => {
+export const getApplicationData = async (sessionOrRequest: Session | Request | undefined): Promise<ApplicationData> => {
+
+  const defaultAppData = {};
+  let req: Request;
+  let session: Session;
 
   try {
 
-    if (!isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL) || !req) {
+    if (!isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL) || (sessionOrRequest instanceof Session)) {
+      session = sessionOrRequest as Session;
       return session?.getExtraData(APPLICATION_DATA_KEY) || {} as ApplicationData;
     }
+
+    if (!sessionOrRequest) {
+      return defaultAppData;
+    }
+    req = sessionOrRequest as Request;
 
     const transactionId: string = req.params[ROUTE_PARAM_TRANSACTION_ID] ?? "";
     const submissionId: string = req.params[ROUTE_PARAM_SUBMISSION_ID] ?? "";
 
     if (transactionId === "" || submissionId === "") {
-      return {};
+      return defaultAppData;
     }
 
     const appData = await getOverseasEntity(req, transactionId, submissionId);
@@ -69,7 +79,7 @@ export const getApplicationData = async (session: Session | undefined, req?: Req
 
   } catch (e) {
     logger.error(`Error getting application data, with error object: ${e}`);
-    return {};
+    return defaultAppData;
   }
 };
 

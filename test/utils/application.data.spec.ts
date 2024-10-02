@@ -135,7 +135,7 @@ describe("Application data utils", () => {
       mockGetOverseasEntity.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const session = getSessionRequestWithExtraData();
       session.deleteExtraData(APPLICATION_DATA_KEY); // remove app data from mock session to ensure that we're not asserting against session values
-      const data = await getApplicationData(session, req);
+      const data = await getApplicationData(req);
       expect(data).toEqual(APPLICATION_DATA_MOCK);
       expect(mockGetOverseasEntity).toHaveBeenCalledTimes(1);
     });
@@ -146,7 +146,7 @@ describe("Application data utils", () => {
       mockGetOverseasEntity.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const session = getSessionRequestWithExtraData();
       session.deleteExtraData(APPLICATION_DATA_KEY); // remove app data from mock session to ensure that we're not asserting against session values
-      const data = await getApplicationData(session, req);
+      const data = await getApplicationData(req);
       expect(data).toEqual({});
       expect(mockGetOverseasEntity).toHaveBeenCalledTimes(0);
     });
@@ -157,7 +157,7 @@ describe("Application data utils", () => {
       mockGetOverseasEntity.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const session = getSessionRequestWithExtraData();
       session.deleteExtraData(APPLICATION_DATA_KEY); // remove app data from mock session to ensure that we're not asserting against session values
-      const data = await getApplicationData(session, req);
+      const data = await getApplicationData(req);
       expect(data).toEqual({});
       expect(mockGetOverseasEntity).toHaveBeenCalledTimes(0);
     });
@@ -167,6 +167,14 @@ describe("Application data utils", () => {
       const session = getSessionRequestWithExtraData();
       const data = await getApplicationData(session);
       expect(data).toEqual(APPLICATION_DATA_MOCK);
+      expect(mockGetOverseasEntity).toHaveBeenCalledTimes(0);
+    });
+
+    test("should return an empty object if the request object is undefined and the REDIS_removal flag is set to ON", async () => {
+      mockIsActiveFeature.mockReturnValue(true);
+      mockGetOverseasEntity.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      const data = await getApplicationData(undefined);
+      expect(data).toEqual({});
       expect(mockGetOverseasEntity).toHaveBeenCalledTimes(0);
     });
 

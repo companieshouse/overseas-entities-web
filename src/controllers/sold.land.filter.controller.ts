@@ -22,8 +22,7 @@ export const get = async (req: Request, res: Response, next: NextFunction): Prom
       deleteApplicationData(req.session);
     }
 
-    const session = req.session as Session;
-    const appData: ApplicationData = await getApplicationData(session, req);
+    const appData: ApplicationData = await getApplicationData(req);
 
     return res.render(config.SOLD_LAND_FILTER_PAGE, {
       backLinkUrl: getSoldLandFilterBackLink(),
@@ -45,7 +44,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     const session = req.session as Session;
     const hasSoldLand = (req.body[HasSoldLandKey]).toString();
-    const appData: ApplicationData = await getApplicationData(session, req);
+    const appData: ApplicationData = await getApplicationData(req);
     appData[HasSoldLandKey] = hasSoldLand;
 
     let nextPageUrl: string = "";

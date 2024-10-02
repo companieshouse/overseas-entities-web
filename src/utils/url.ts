@@ -36,21 +36,28 @@ const getSubmissionIdFromRequestParams = (req: Request): string => req.params[co
  * This is required to extract the transactionId and submissionId prior to the request reaching its intended mount path
  */
 export const getTransactionIdAndSubmissionIdFromOriginalUrl = (req: Request): TransactionIdAndSubmissionId | undefined => {
+
   try {
+
     logger.infoRequest(req, `extracting transactionId and submissionId from the req.originalUrl: ${req.originalUrl}`);
+
     if (!req.originalUrl.includes(config.TRANSACTION_ID_URL_KEY) || !req.originalUrl.includes(config.SUBMISSION_ID_URL_KEY)) {
       return;
     }
+
     const elements = req.originalUrl.replace(/\/{2,}/g, "/").split("/");
     const transactionIndex = elements.indexOf("transaction") + 1;
     const submissionIndex = elements.indexOf("submission") + 1;
+
     if (!elements[transactionIndex] || !elements[submissionIndex] || Math.abs(transactionIndex - submissionIndex) < 2) {
       return;
     }
+
     return {
       transactionId: elements[transactionIndex],
       submissionId: elements[submissionIndex],
     };
+
   } catch (e) {
     logger.errorRequest(req, `error extracting transactionId and submissionId from req.originalUrl: ${req.originalUrl} with error object: ${e}`);
   }
@@ -72,7 +79,6 @@ export const isUpdateJourney = async (req: Request): Promise<boolean> => {
 
 export const isRemoveJourney = async (req: Request): Promise<boolean> => {
   const session = req.session as Session;
-
   const appData: ApplicationData = await getApplicationData(session);
 
   if (appData) {

@@ -67,14 +67,12 @@ export const postBeneficialOwnerStatements = async (req: Request, res: Response,
     const boStatement = req.body[BeneficialOwnerStatementKey];
     const appData: ApplicationData = await getApplicationData(session);
 
-    if (
-      registrationFlag &&
-      appData[BeneficialOwnerStatementKey] &&
-      (
-        (boStatement === BeneficialOwnersStatementType.NONE_IDENTIFIED && checkBOsDetailsEntered(appData)) ||
-        (boStatement === BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS && checkMOsDetailsEntered(appData))
-      )
-    ) {
+    if (registrationFlag
+        && appData[BeneficialOwnerStatementKey]
+        && ((boStatement === BeneficialOwnersStatementType.NONE_IDENTIFIED
+          && checkBOsDetailsEntered(appData))
+          || (boStatement === BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS
+          && checkMOsDetailsEntered(appData)))) {
       return res.redirect(`${getWarningRedirectUrl(req)}?${BeneficialOwnerStatementKey}=${boStatement}`);
     }
 

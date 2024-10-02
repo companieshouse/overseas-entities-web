@@ -119,7 +119,7 @@ describe("Application data utils", () => {
     });
 
     test("should return Extra data stored in the session when the REDIS_removal flag is set to OFF", async () => {
-      mockIsActiveFeature.mockReturnValue(false);
+      mockIsActiveFeature.mockReturnValue(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       const session = getSessionRequestWithExtraData();
       const data = await getApplicationData(session);
       expect(data).toEqual(APPLICATION_DATA_MOCK);
@@ -131,7 +131,7 @@ describe("Application data utils", () => {
     });
 
     test("should return application data retrieved from the API if both transaction Id and submissionId are valid and the REDIS_removal flag is set to ON", async () => {
-      mockIsActiveFeature.mockReturnValue(true);
+      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockGetOverseasEntity.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const session = getSessionRequestWithExtraData();
       session.deleteExtraData(APPLICATION_DATA_KEY); // remove app data from mock session to ensure that we're not asserting against session values
@@ -142,7 +142,7 @@ describe("Application data utils", () => {
 
     test("should return an empty object if the transactionId is invalid and the REDIS_removal flag is set to ON", async () => {
       req.params.transactionId = "";
-      mockIsActiveFeature.mockReturnValue(true);
+      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockGetOverseasEntity.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const session = getSessionRequestWithExtraData();
       session.deleteExtraData(APPLICATION_DATA_KEY); // remove app data from mock session to ensure that we're not asserting against session values
@@ -153,7 +153,7 @@ describe("Application data utils", () => {
 
     test("should return an empty object if the submissionId is invalid and the REDIS_removal flag is set to ON", async () => {
       req.params.submissionId = "";
-      mockIsActiveFeature.mockReturnValue(true);
+      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockGetOverseasEntity.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const session = getSessionRequestWithExtraData();
       session.deleteExtraData(APPLICATION_DATA_KEY); // remove app data from mock session to ensure that we're not asserting against session values
@@ -163,7 +163,7 @@ describe("Application data utils", () => {
     });
 
     test("should return application data retrieved from the session if the request object is not supplied and the REDIS_removal flag is set to ON", async () => {
-      mockIsActiveFeature.mockReturnValue(true);
+      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       const session = getSessionRequestWithExtraData();
       const data = await getApplicationData(session);
       expect(data).toEqual(APPLICATION_DATA_MOCK);
@@ -171,7 +171,7 @@ describe("Application data utils", () => {
     });
 
     test("should return an empty object if the request object is undefined and the REDIS_removal flag is set to ON", async () => {
-      mockIsActiveFeature.mockReturnValue(true);
+      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockGetOverseasEntity.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const data = await getApplicationData(undefined);
       expect(data).toEqual({});

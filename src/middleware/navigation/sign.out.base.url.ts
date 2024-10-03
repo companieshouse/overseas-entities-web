@@ -5,6 +5,7 @@ import { NextFunction, Request, Response } from "express";
 
 import * as config from "../../config";
 import { logger } from "../../utils/logger";
+
 import {
   isRegistrationJourney,
   getTransactionIdAndSubmissionIdFromOriginalUrl,
@@ -12,8 +13,10 @@ import {
 } from "../../utils/url";
 
 export const generateSignOutBaseUrl = (req: Request, res: Response, next: NextFunction) => {
+
   logger.info("Generating sign-out-base-url");
   let signOutBaseUrl: string = config.UPDATE_AN_OVERSEAS_ENTITY_URL;
+
   if (isRegistrationJourney(req)) {
     const transactionIdAndSubmissionId = getTransactionIdAndSubmissionIdFromOriginalUrl(req);
     if (!transactionIdAndSubmissionId) {

@@ -128,7 +128,14 @@ import {
   CHECK_YOUR_ANSWERS_PAGE_RP_BENEFICIAL_OWNER_TITLE,
   TRUSTS_ADDED_RELEVANT_PERIOD,
   CHECK_YOUR_ANSWERS_PAGE_DATE_OF_UPDATE_STATEMENT_TITLE,
-  CHECK_YOUR_ANSWERS_CHANGES_TO_THE_UPDATE_PERIOD_TITLE
+  CHECK_YOUR_ANSWERS_CHANGES_TO_THE_UPDATE_PERIOD_TITLE,
+  BO_NOC_HEADING,
+  TRUSTS_NOC_HEADING,
+  FIRM_NOC_HEADING,
+  FIRM_CONTROL_NOC_HEADING,
+  TRUST_CONTROL_NOC_HEADING,
+  OWNER_OF_LAND_PERSON_NOC_HEADING,
+  OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING
 } from "../../__mocks__/text.mock";
 import {
   ERROR,
@@ -302,6 +309,74 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_OTHER);
       expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_MO_INDIVIDUAL);
       expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_MO_CORPORATE);
+    });
+
+    test.each([
+      ["on remove journey", APPLICATION_DATA_REMOVE_BO_MOCK, REMOVE_CONFIRM_STATEMENT_URL],
+      ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK, UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL]
+    ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with the flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC off, %s`, async (_journeyType, mockAppData, backLink) => {
+      mockIsActiveFeature.mockReturnValue(false);
+      mockGetApplicationData.mockReturnValue(mockAppData);
+
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE);
+      expect(resp.text).toContain(backLink);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(CHANGE_LINK);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_WHO_CAN_WE_CONTACT);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_TITLE);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE);
+      expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_FULL_NAME);
+      expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_EMAIL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_INDIVIDUAL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_GOVERNMENT);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_OTHER);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_MO_INDIVIDUAL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_MO_CORPORATE);
+      expect(resp.text).toContain(BO_NOC_HEADING);
+      expect(resp.text).toContain(TRUSTS_NOC_HEADING);
+      expect(resp.text).toContain(FIRM_NOC_HEADING);
+      expect(resp.text).not.toContain(FIRM_CONTROL_NOC_HEADING);
+      expect(resp.text).not.toContain(TRUST_CONTROL_NOC_HEADING);
+      expect(resp.text).not.toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
+      expect(resp.text).not.toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
+    });
+
+    test.each([
+      ["on remove journey", APPLICATION_DATA_REMOVE_BO_MOCK, REMOVE_CONFIRM_STATEMENT_URL],
+      ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK, UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL]
+    ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with the flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC on, %s`, async (_journeyType, mockAppData, backLink) => {
+      mockIsActiveFeature.mockReturnValue(true);
+      mockGetApplicationData.mockReturnValue(mockAppData);
+
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE);
+      expect(resp.text).toContain(backLink);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(CHANGE_LINK);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_WHO_CAN_WE_CONTACT);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_TITLE);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE);
+      expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_FULL_NAME);
+      expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_EMAIL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_INDIVIDUAL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_GOVERNMENT);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_OTHER);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_MO_INDIVIDUAL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_MO_CORPORATE);
+      expect(resp.text).toContain(BO_NOC_HEADING);
+      expect(resp.text).toContain(TRUSTS_NOC_HEADING);
+      expect(resp.text).not.toContain(FIRM_NOC_HEADING);
+      expect(resp.text).toContain(FIRM_CONTROL_NOC_HEADING);
+      expect(resp.text).toContain(TRUST_CONTROL_NOC_HEADING);
+      expect(resp.text).toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
+      expect(resp.text).toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
     });
 
     test.skip.each([

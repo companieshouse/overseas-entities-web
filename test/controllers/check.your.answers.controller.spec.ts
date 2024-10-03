@@ -680,7 +680,7 @@ describe("GET tests", () => {
   test.each([
     [CHECK_YOUR_ANSWERS_URL],
     [CHECK_YOUR_ANSWERS_WITH_PARAMS_URL]
-  ])(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with correct Beneficial Owner natures of control using url %s`, async (url) => {
+  ])(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with correct Beneficial Owner natures of control using url and the flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC off, %s`, async (url) => {
     function escapeNOCText(input: string): string {
       return input.replace("(", "\\(").replace(")", "\\)");
     }
@@ -731,6 +731,92 @@ describe("GET tests", () => {
     expect(stringCount(BO_NOC_HEADING, resp.text)).toEqual(3);
     expect(stringCount(TRUSTS_NOC_HEADING, resp.text)).toEqual(2); // BO Gov doesn't have the trustee of a trust NOC
     expect(stringCount(FIRM_NOC_HEADING, resp.text)).toEqual(3);
+    expect(stringCount(FIRM_CONTROL_NOC_HEADING, resp.text)).toEqual(0);
+    expect(stringCount(TRUST_CONTROL_NOC_HEADING, resp.text)).toEqual(0);
+    expect(stringCount(OWNER_OF_LAND_PERSON_NOC_HEADING, resp.text)).toEqual(0);
+    expect(stringCount(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING, resp.text)).toEqual(0);
+
+    // Count the NOCs
+    expect(stringCount(BO_NOC_OVER_25_PERCENT_OF_SHARES, resp.text)).toEqual(3);
+    expect(stringCount(BO_NOC_OVER_25_PERCENT_OF_VOTING_RIGHTS, resp.text)).toEqual(3);
+    expect(stringCount(BO_NOC_APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS, resp.text)).toEqual(3);
+    expect(stringCount(BO_NOC_SIGNIFICANT_INFLUENCE_OR_CONTROL, resp.text)).toEqual(3);
+
+    // The same NOC text is used for 'trustee of a trust' and 'control of trust' Nocs.
+    // The BO Gov only has 'control of trust' and not 'trustee of a trust' so these NOCs should appear 5 times
+    expect(stringCount(escapeNOCText(BO_NOC_TRUSTEE_OF_TRUST_OVER_25_PERCENT_OF_SHARES), resp.text)).toEqual(2);
+    expect(stringCount(escapeNOCText(BO_NOC_TRUSTEE_OF_TRUST_OVER_25_PERCENT_OF_VOTING_RIGHTS), resp.text)).toEqual(2);
+    expect(stringCount(escapeNOCText(BO_NOC_TRUSTEE_OF_TRUST_APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS), resp.text)).toEqual(2);
+    expect(stringCount(escapeNOCText(BO_NOC_TRUSTEE_OF_TRUST_SIGNIFICANT_INFLUENCE_OR_CONTROL), resp.text)).toEqual(2);
+
+    // The same NOC text is used for 'member of a firm' and 'control of firm' Nocs.
+    expect(stringCount(escapeNOCText(BO_NOC_MEMBER_OF_FIRM_OVER_25_PERCENT_OF_SHARES), resp.text)).toEqual(3);
+    expect(stringCount(escapeNOCText(BO_NOC_MEMBER_OF_FIRM_OVER_25_PERCENT_OF_VOTING_RIGHTS), resp.text)).toEqual(3);
+    expect(stringCount(escapeNOCText(BO_NOC_MEMBER_OF_FIRM_APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS), resp.text)).toEqual(3);
+    expect(stringCount(escapeNOCText(BO_NOC_MEMBER_OF_FIRM_SIGNIFICANT_INFLUENCE_OR_CONTROL), resp.text)).toEqual(3);
+
+    // The same NOC text is used for 'person owner of land' and 'other entity owner of land' Nocs.
+    expect(stringCount(BO_NOC_JURISDICTION_ENGLAND_AND_WALES, resp.text)).toEqual(0);
+    expect(stringCount(BO_NOC_JURISDICTION_SCOTLAND, resp.text)).toEqual(0);
+    expect(stringCount(BO_NOC_JURISDICTION_NORTHERN_IRELAND, resp.text)).toEqual(0);
+  });
+
+  test.each([
+    [CHECK_YOUR_ANSWERS_URL],
+    [CHECK_YOUR_ANSWERS_WITH_PARAMS_URL]
+  ])(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with correct Beneficial Owner natures of control using url and the flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC on, %s`, async (url) => {
+    mockIsActiveFeature.mockReturnValue(true);
+
+    function escapeNOCText(input: string): string {
+      return input.replace("(", "\\(").replace(")", "\\)");
+    }
+
+    mockGetApplicationData.mockReturnValueOnce({
+      ...APPLICATION_DATA_MOCK,
+      [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [
+        {
+          ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+          beneficial_owner_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          trustees_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          non_legal_firm_members_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          trust_control_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          non_legal_firm_control_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          owner_of_land_person_nature_of_control_jurisdictions: [ ...Object.values(NatureOfControlJurisdiction) ],
+          owner_of_land_other_entity_nature_of_control_jurisdictions: [ ...Object.values(NatureOfControlJurisdiction) ]
+        }],
+      [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: [
+        {
+          ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
+          beneficial_owner_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          trustees_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          non_legal_firm_members_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          trust_control_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          non_legal_firm_control_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          owner_of_land_person_nature_of_control_jurisdictions: [ ...Object.values(NatureOfControlJurisdiction) ],
+          owner_of_land_other_entity_nature_of_control_jurisdictions: [ ...Object.values(NatureOfControlJurisdiction) ]
+        }],
+      [beneficialOwnerGovType.BeneficialOwnerGovKey]: [
+        {
+          ...BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
+          beneficial_owner_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          non_legal_firm_members_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          trust_control_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          non_legal_firm_control_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          owner_of_land_person_nature_of_control_jurisdictions: [ ...Object.values(NatureOfControlJurisdiction) ],
+          owner_of_land_other_entity_nature_of_control_jurisdictions: [ ...Object.values(NatureOfControlJurisdiction) ]
+        }],
+    });
+
+    const resp = await request(app).get(url);
+
+    expect(resp.status).toEqual(200);
+    expect(resp.text).toContain(LANDING_PAGE_URL);
+    expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TITLE);
+
+    // Count NOC Headings
+    expect(stringCount(BO_NOC_HEADING, resp.text)).toEqual(3);
+    expect(stringCount(TRUSTS_NOC_HEADING, resp.text)).toEqual(2); // BO Gov doesn't have the trustee of a trust NOC
+    expect(stringCount(FIRM_NOC_HEADING, resp.text)).toEqual(0);
     expect(stringCount(FIRM_CONTROL_NOC_HEADING, resp.text)).toEqual(3);
     expect(stringCount(TRUST_CONTROL_NOC_HEADING, resp.text)).toEqual(3);
     expect(stringCount(OWNER_OF_LAND_PERSON_NOC_HEADING, resp.text)).toEqual(3);
@@ -750,16 +836,17 @@ describe("GET tests", () => {
     expect(stringCount(escapeNOCText(BO_NOC_TRUSTEE_OF_TRUST_SIGNIFICANT_INFLUENCE_OR_CONTROL), resp.text)).toEqual(5);
 
     // The same NOC text is used for 'member of a firm' and 'control of firm' Nocs.
-    expect(stringCount(escapeNOCText(BO_NOC_MEMBER_OF_FIRM_OVER_25_PERCENT_OF_SHARES), resp.text)).toEqual(6);
-    expect(stringCount(escapeNOCText(BO_NOC_MEMBER_OF_FIRM_OVER_25_PERCENT_OF_VOTING_RIGHTS), resp.text)).toEqual(6);
-    expect(stringCount(escapeNOCText(BO_NOC_MEMBER_OF_FIRM_APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS), resp.text)).toEqual(6);
-    expect(stringCount(escapeNOCText(BO_NOC_MEMBER_OF_FIRM_SIGNIFICANT_INFLUENCE_OR_CONTROL), resp.text)).toEqual(6);
+    expect(stringCount(escapeNOCText(BO_NOC_MEMBER_OF_FIRM_OVER_25_PERCENT_OF_SHARES), resp.text)).toEqual(3);
+    expect(stringCount(escapeNOCText(BO_NOC_MEMBER_OF_FIRM_OVER_25_PERCENT_OF_VOTING_RIGHTS), resp.text)).toEqual(3);
+    expect(stringCount(escapeNOCText(BO_NOC_MEMBER_OF_FIRM_APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS), resp.text)).toEqual(3);
+    expect(stringCount(escapeNOCText(BO_NOC_MEMBER_OF_FIRM_SIGNIFICANT_INFLUENCE_OR_CONTROL), resp.text)).toEqual(3);
 
     // The same NOC text is used for 'person owner of land' and 'other entity owner of land' Nocs.
     expect(stringCount(BO_NOC_JURISDICTION_ENGLAND_AND_WALES, resp.text)).toEqual(6);
     expect(stringCount(BO_NOC_JURISDICTION_SCOTLAND, resp.text)).toEqual(6);
     expect(stringCount(BO_NOC_JURISDICTION_NORTHERN_IRELAND, resp.text)).toEqual(6);
   });
+
 });
 
 describe("GET with url params tests tests", () => {

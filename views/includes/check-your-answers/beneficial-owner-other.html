@@ -46,30 +46,32 @@
   {% include "includes/check-your-answers/nocs/beneficial-owner-trustee-of-trust-noc.html" %}
 {% endset %}
 
-{% set bocBeneficialOwnerNonLegalFirmNOCs %}
-  {% set boNOCNonLegalTypesArray = boc.non_legal_firm_members_nature_of_control_types %}
-  {% include "includes/check-your-answers/nocs/beneficial-owner-member-of-firm-noc.html" %}
-{% endset %}
+{% if not FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC %}
+  {% set bocBeneficialOwnerNonLegalFirmNOCs %}
+    {% set boNOCNonLegalTypesArray = boc.non_legal_firm_members_nature_of_control_types %}
+    {% include "includes/check-your-answers/nocs/beneficial-owner-member-of-firm-noc.html" %}
+  {% endset %}
+{% else %}
+  {% set bocBeneficialOwnerTrustControlNOCs %}
+    {% set boNOCTrustControlTypesArray = boc.trust_control_nature_of_control_types %}
+    {% include "includes/check-your-answers/nocs/beneficial-owner-trust-control-noc.html" %}
+  {% endset %}
 
-{% set bocBeneficialOwnerTrustControlNOCs %}
-  {% set boNOCTrustControlTypesArray = boc.trust_control_nature_of_control_types %}
-  {% include "includes/check-your-answers/nocs/beneficial-owner-trust-control-noc.html" %}
-{% endset %}
+  {% set bocBeneficialOwnerNonLegalFirmControlNOCs %}
+    {% set boNOCNonLegalFirmControlTypesArray = boc.non_legal_firm_control_nature_of_control_types %}
+    {% include "includes/check-your-answers/nocs/beneficial-owner-member-of-firm-control-noc.html" %}
+  {% endset %}
 
-{% set bocBeneficialOwnerNonLegalFirmControlNOCs %}
-  {% set boNOCNonLegalFirmControlTypesArray = boc.non_legal_firm_control_nature_of_control_types %}
-  {% include "includes/check-your-answers/nocs/beneficial-owner-member-of-firm-control-noc.html" %}
-{% endset %}
+  {% set bocOwnerOfLandPersonNOCs %}
+    {% set boNOCOwnerOfLandPersonJurisdictionsArray = boc.owner_of_land_person_nature_of_control_jurisdictions %}
+    {% include "includes/check-your-answers/nocs/beneficial-owner-owner-of-land-person-noc.html" %}
+  {% endset %}
 
-{% set bocOwnerOfLandPersonNOCs %}
-  {% set boNOCOwnerOfLandPersonJurisdictionsArray = boc.owner_of_land_person_nature_of_control_jurisdictions %}
-  {% include "includes/check-your-answers/nocs/beneficial-owner-owner-of-land-person-noc.html" %}
-{% endset %}
-
-{% set bocOwnerOfLandOtherEntityNOCs %}
-  {% set boNOCOwnerOfLandOtherEntityJurisdictionsArray = boc.owner_of_land_other_entity_nature_of_control_jurisdictions %}
-  {% include "includes/check-your-answers/nocs/beneficial-owner-owner-of-land-other-entity-noc.html" %}
-{% endset %}
+  {% set bocOwnerOfLandOtherEntityNOCs %}
+    {% set boNOCOwnerOfLandOtherEntityJurisdictionsArray = boc.owner_of_land_other_entity_nature_of_control_jurisdictions %}
+    {% include "includes/check-your-answers/nocs/beneficial-owner-owner-of-land-other-entity-noc.html" %}
+  {% endset %}
+{% endif %}
 
 {% set bocIsOnSanctionsListHtml %}
   {% if boc.is_on_sanctions_list == 1 %}

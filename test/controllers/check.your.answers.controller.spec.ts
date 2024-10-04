@@ -681,10 +681,6 @@ describe("GET tests", () => {
     [CHECK_YOUR_ANSWERS_URL],
     [CHECK_YOUR_ANSWERS_WITH_PARAMS_URL]
   ])(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with correct Beneficial Owner natures of control using url and the flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC off, %s`, async (url) => {
-    function escapeNOCText(input: string): string {
-      return input.replace("(", "\\(").replace(")", "\\)");
-    }
-
     mockGetApplicationData.mockReturnValueOnce({
       ...APPLICATION_DATA_MOCK,
       [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [
@@ -766,10 +762,6 @@ describe("GET tests", () => {
     [CHECK_YOUR_ANSWERS_WITH_PARAMS_URL]
   ])(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with correct Beneficial Owner natures of control using url and the flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC on, %s`, async (url) => {
     mockIsActiveFeature.mockReturnValue(true);
-
-    function escapeNOCText(input: string): string {
-      return input.replace("(", "\\(").replace(")", "\\)");
-    }
 
     mockGetApplicationData.mockReturnValueOnce({
       ...APPLICATION_DATA_MOCK,
@@ -1417,3 +1409,7 @@ describe("POST with url param tests", () => {
     expect(resp.text).toContain(SERVICE_UNAVAILABLE);
   });
 });
+
+const escapeNOCText = (input: string): string => {
+  return input.replace("(", "\\(").replace(")", "\\)");
+};

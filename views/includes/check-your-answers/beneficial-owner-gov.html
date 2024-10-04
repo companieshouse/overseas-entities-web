@@ -58,6 +58,13 @@
   {% endset %}
 {% endif %}
 
+{% set boNOCArray = [] %}
+{% if not FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC %}
+  {% set boNOCArray = bogBeneficialOwnerIndividualNOCs + bogBeneficialOwnerNonLegalFirmNOCs %}
+{% else %}
+  {% set boNOCArray = bogBeneficialOwnerIndividualNOCs + bogBeneficialOwnerTrustControlNOCs + bogBeneficialOwnerNonLegalFirmControlNOCs + bogOwnerOfLandPersonNOCs + bogOwnerOfLandOtherEntityNOCs %}
+{% endif %}
+
 {% set bogIsOnSanctionsListHtml %}
   {% if bog.is_on_sanctions_list == 1 %}
     Yes
@@ -213,7 +220,7 @@
           text: "Nature of control"
         },
         value: {
-          html: bogBeneficialOwnerIndividualNOCs + bogBeneficialOwnerNonLegalFirmNOCs + bogBeneficialOwnerTrustControlNOCs + bogBeneficialOwnerNonLegalFirmControlNOCs + bogOwnerOfLandPersonNOCs + bogOwnerOfLandOtherEntityNOCs
+          html: boNOCArray
         },
         actions: {
           items: [CREATE_CHANGE_LINK(

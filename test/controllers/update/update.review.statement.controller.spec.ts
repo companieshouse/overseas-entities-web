@@ -31,12 +31,14 @@ import { startPaymentsSession } from "../../../src/service/payment.service";
 import { checkActiveBOExists, checkActiveMOExists, getApplicationData, setExtraData } from "../../../src/utils/application.data";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { getBeneficialOwnersPrivateData, getPrivateOeDetails } from "../../../src/service/private.overseas.entity.details";
-import { APPLICATION_DATA_CH_REF_UPDATE_MOCK, APPLICATION_DATA_MOCK_WITH_OWNER_UPDATE_REVIEW_DATA, APPLICATION_DATA_UPDATE_BO_MOCK, APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW, ENTITY_OBJECT_MOCK, ERROR, OVERSEAS_ENTITY_ID, PAYMENT_LINK_JOURNEY, TRANSACTION_CLOSED_RESPONSE, TRANSACTION_ID, APPLICATION_DATA_UPDATE_MO_PRIVATE_DATA_MOCK, APPLICATION_DATA_REMOVE_BO_MOCK, APPLICATION_DATA_UPDATE_BO_TRUSTS_PRIVATE_DATA_MOCK } from "../../__mocks__/session.mock";
+import { APPLICATION_DATA_CH_REF_UPDATE_MOCK, APPLICATION_DATA_MOCK_WITH_OWNER_UPDATE_REVIEW_DATA, APPLICATION_DATA_UPDATE_BO_MOCK, APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW, ENTITY_OBJECT_MOCK, ERROR, OVERSEAS_ENTITY_ID, PAYMENT_LINK_JOURNEY, TRANSACTION_CLOSED_RESPONSE, TRANSACTION_ID, APPLICATION_DATA_UPDATE_MO_PRIVATE_DATA_MOCK, APPLICATION_DATA_REMOVE_BO_MOCK, APPLICATION_DATA_UPDATE_BO_TRUSTS_PRIVATE_DATA_MOCK, UPDATE_OWNERS_DATA_WITH_VALUE } from "../../__mocks__/session.mock";
 import { UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL, UPDATE_PRESENTER_CHANGE_EMAIL, UPDATE_PRESENTER_CHANGE_FULL_NAME, UPDATE_REVIEW_STATEMENT_URL, UPDATE_REVIEW_STATEMENT_PAGE, OVERSEAS_ENTITY_SECTION_HEADING, SECURE_UPDATE_FILTER_CHANGELINK, UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_CHANGELINK, UPDATE_FILING_DATE_CHANGELINK, UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_CHANGELINK, UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_CHANGELINK, REMOVE_SERVICE_NAME, REMOVE_CONFIRM_STATEMENT_URL } from "../../../src/config";
-import { ANY_MESSAGE_ERROR, BENEFICIAL_OWNER_HEADING, CONTINUE_BUTTON_TEXT, NO_CHANGE_REVIEW_STATEMENT_BENEFICIAL_OWNER_STATEMENT, NO_CHANGE_REVIEW_STATEMENT_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE, NO_CHANGE_REVIEW_STATEMENT_PAGE_TITLE, NO_CHANGE_REVIEW_STATEMENT_WHO_CAN_WE_CONTACT, PRINT_BUTTON_TEXT, REMOVE_IS_ENTITY_REGISTERED_OWNER_TITLE, REMOVE_NO_CHANGE_REVIEW_STATEMENT_DATE_TEXT, REMOVE_NO_CHANGE_REVIEW_STATEMENT_IS_INFO_CORRECT, REMOVE_NO_CHANGE_REVIEW_STATEMENT_OE_CHANGE_TEXT, REMOVE_NO_CHANGE_REVIEW_STATEMENT_PAGE_TITLE, REMOVE_NO_CHANGE_REVIEW_STATEMENT_PAGE_WINDOW_TITLE, REMOVE_OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE, REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE, SERVICE_UNAVAILABLE, UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS, TRUST_NAME } from "../../__mocks__/text.mock";
+import { ANY_MESSAGE_ERROR, BENEFICIAL_OWNER_HEADING, CONTINUE_BUTTON_TEXT, NO_CHANGE_REVIEW_STATEMENT_BENEFICIAL_OWNER_STATEMENT, NO_CHANGE_REVIEW_STATEMENT_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE, NO_CHANGE_REVIEW_STATEMENT_PAGE_TITLE, NO_CHANGE_REVIEW_STATEMENT_WHO_CAN_WE_CONTACT, PRINT_BUTTON_TEXT, REMOVE_IS_ENTITY_REGISTERED_OWNER_TITLE, REMOVE_NO_CHANGE_REVIEW_STATEMENT_DATE_TEXT, REMOVE_NO_CHANGE_REVIEW_STATEMENT_IS_INFO_CORRECT, REMOVE_NO_CHANGE_REVIEW_STATEMENT_OE_CHANGE_TEXT, REMOVE_NO_CHANGE_REVIEW_STATEMENT_PAGE_TITLE, REMOVE_NO_CHANGE_REVIEW_STATEMENT_PAGE_WINDOW_TITLE, REMOVE_OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE, REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE, SERVICE_UNAVAILABLE, UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS, TRUST_NAME, BO_NOC_HEADING, FIRM_NOC_HEADING, TRUSTS_NOC_HEADING, FIRM_CONTROL_NOC_HEADING, TRUST_CONTROL_NOC_HEADING, OWNER_OF_LAND_PERSON_NOC_HEADING, OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING } from "../../__mocks__/text.mock";
 import { OverseasEntityKey, Transactionkey } from "../../../src/model/data.types.model";
 import { ErrorMessages } from "../../../src/validation/error.messages";
 import { getTodaysDate } from "../../../src/utils/date";
+import { ApplicationData } from "../../../src/model";
+import { stringCount } from "../../utils/test.utils";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
@@ -259,6 +261,52 @@ describe("Update review overseas entity information controller tests", () => {
       expect(resp.text).toContain(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_CHANGELINK);
       expect(resp.text).toContain(UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_CHANGELINK);
       expect(resp.text).toContain(UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_CHANGELINK);
+    });
+
+    test.each([
+      ["on remove journey", APPLICATION_DATA_REMOVE_BO_MOCK],
+      ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK]
+    ])(`renders the ${UPDATE_REVIEW_STATEMENT_PAGE} page with the NOCs when flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC on, %s`, async (_journeyType, mockAppData) => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_TRUSTS_WEB
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
+      mockGetApplicationData.mockReturnValue({
+        ...mockAppData,
+        update: { ...UPDATE_OWNERS_DATA_WITH_VALUE }
+      } as ApplicationData);
+
+      const resp = await request(app).get(UPDATE_REVIEW_STATEMENT_URL);
+      expect(resp.status).toEqual(200);
+      expect(stringCount(BO_NOC_HEADING, resp.text)).toEqual(3);
+      expect(stringCount(TRUSTS_NOC_HEADING, resp.text)).toEqual(2);
+      expect(stringCount(FIRM_NOC_HEADING, resp.text)).toEqual(3);
+      expect(stringCount(FIRM_CONTROL_NOC_HEADING, resp.text)).toEqual(3);
+      expect(stringCount(TRUST_CONTROL_NOC_HEADING, resp.text)).toEqual(3);
+      expect(stringCount(OWNER_OF_LAND_PERSON_NOC_HEADING, resp.text)).toEqual(3);
+      expect(stringCount(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING, resp.text)).toEqual(3);
+    });
+
+    test.each([
+      ["on remove journey", APPLICATION_DATA_REMOVE_BO_MOCK],
+      ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK]
+    ])(`renders the ${UPDATE_REVIEW_STATEMENT_PAGE} page with the NOCs when flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC off, %s`, async (_journeyType, mockAppData) => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_TRUSTS_WEB
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
+      mockGetApplicationData.mockReturnValue({
+        ...mockAppData,
+        update: { ...UPDATE_OWNERS_DATA_WITH_VALUE }
+      } as ApplicationData);
+
+      const resp = await request(app).get(UPDATE_REVIEW_STATEMENT_URL);
+      expect(resp.status).toEqual(200);
+      expect(stringCount(BO_NOC_HEADING, resp.text)).toEqual(3);
+      expect(stringCount(TRUSTS_NOC_HEADING, resp.text)).toEqual(2);
+      expect(stringCount(FIRM_NOC_HEADING, resp.text)).toEqual(3);
+      expect(stringCount(FIRM_CONTROL_NOC_HEADING, resp.text)).toEqual(0);
+      expect(stringCount(TRUST_CONTROL_NOC_HEADING, resp.text)).toEqual(0);
+      expect(stringCount(OWNER_OF_LAND_PERSON_NOC_HEADING, resp.text)).toEqual(0);
+      expect(stringCount(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING, resp.text)).toEqual(0);
     });
 
     test('catch error when rendering the page', async () => {

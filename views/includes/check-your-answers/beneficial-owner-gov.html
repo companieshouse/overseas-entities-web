@@ -31,38 +31,44 @@
   {% include "includes/check-your-answers/nocs/beneficial-owner-noc.html" %}
 {% endset %}
 
+{% set bogBeneficialOwnerNonLegalFirmNOCs %}
+  {% set boNOCNonLegalTypesArray = bog.non_legal_firm_members_nature_of_control_types %}
+  {% include "includes/check-your-answers/nocs/beneficial-owner-member-of-firm-noc.html" %}
+{% endset %}
+
+{% set bogBeneficialOwnerTrustControlNOCs %}
+  {% set boNOCTrustControlTypesArray = bog.trust_control_nature_of_control_types %}
+  {% include "includes/check-your-answers/nocs/beneficial-owner-trust-control-noc.html" %}
+{% endset %}
+
+{% set bogBeneficialOwnerNonLegalFirmControlNOCs %}
+  {% set boNOCNonLegalFirmControlTypesArray = bog.non_legal_firm_control_nature_of_control_types %}
+  {% include "includes/check-your-answers/nocs/beneficial-owner-member-of-firm-control-noc.html" %}
+{% endset %}
+
+{% set bogOwnerOfLandPersonNOCs %}
+  {% set boNOCOwnerOfLandPersonJurisdictionsArray = bog.owner_of_land_person_nature_of_control_jurisdictions %}
+  {% include "includes/check-your-answers/nocs/beneficial-owner-owner-of-land-person-noc.html" %}
+{% endset %}
+
+{% set bogOwnerOfLandOtherEntityNOCs %}
+  {% set boNOCOwnerOfLandOtherEntityJurisdictionsArray = bog.owner_of_land_other_entity_nature_of_control_jurisdictions %}
+  {% include "includes/check-your-answers/nocs/beneficial-owner-owner-of-land-other-entity-noc.html" %}
+{% endset %}
+
+{# Initialize boNOCHtml with individual NOCs #}
+{% set boNOCHtml = bogBeneficialOwnerIndividualNOCs %}
+
 {% if not FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC %}
-  {% set bogBeneficialOwnerNonLegalFirmNOCs %}
-    {% set boNOCNonLegalTypesArray = bog.non_legal_firm_members_nature_of_control_types %}
-    {% include "includes/check-your-answers/nocs/beneficial-owner-member-of-firm-noc.html" %}
-  {% endset %}
+  {# Add non-legal firm NOCs if the feature flag is disabled #}
+  {% set boNOCHtml = boNOCHtml + bogBeneficialOwnerNonLegalFirmNOCs %}
 {% else %}
-  {% set bogBeneficialOwnerTrustControlNOCs %}
-    {% set boNOCTrustControlTypesArray = bog.trust_control_nature_of_control_types %}
-    {% include "includes/check-your-answers/nocs/beneficial-owner-trust-control-noc.html" %}
-  {% endset %}
-
-  {% set bogBeneficialOwnerNonLegalFirmControlNOCs %}
-    {% set boNOCNonLegalFirmControlTypesArray = bog.non_legal_firm_control_nature_of_control_types %}
-    {% include "includes/check-your-answers/nocs/beneficial-owner-member-of-firm-control-noc.html" %}
-  {% endset %}
-
-  {% set bogOwnerOfLandPersonNOCs %}
-    {% set boNOCOwnerOfLandPersonJurisdictionsArray = bog.owner_of_land_person_nature_of_control_jurisdictions %}
-    {% include "includes/check-your-answers/nocs/beneficial-owner-owner-of-land-person-noc.html" %}
-  {% endset %}
-
-  {% set bogOwnerOfLandOtherEntityNOCs %}
-    {% set boNOCOwnerOfLandOtherEntityJurisdictionsArray = bog.owner_of_land_other_entity_nature_of_control_jurisdictions %}
-    {% include "includes/check-your-answers/nocs/beneficial-owner-owner-of-land-other-entity-noc.html" %}
-  {% endset %}
-{% endif %}
-
-{% set boNOCArray = [] %}
-{% if not FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC %}
-  {% set boNOCArray = bogBeneficialOwnerIndividualNOCs + bogBeneficialOwnerNonLegalFirmNOCs %}
-{% else %}
-  {% set boNOCArray = bogBeneficialOwnerIndividualNOCs + bogBeneficialOwnerTrustControlNOCs + bogBeneficialOwnerNonLegalFirmControlNOCs + bogOwnerOfLandPersonNOCs + bogOwnerOfLandOtherEntityNOCs %}
+  {% if inNoChangeJourney %}
+    {# Add non-legal firm NOCs if in no change journey #}
+    {% set boNOCHtml = boNOCHtml + bogBeneficialOwnerNonLegalFirmNOCs %}
+  {% endif %}
+  {# Add control and land owner NOCs if the feature flag is enabled #}
+  {% set boNOCHtml = boNOCHtml + bogBeneficialOwnerTrustControlNOCs + bogBeneficialOwnerNonLegalFirmControlNOCs + bogOwnerOfLandPersonNOCs + bogOwnerOfLandOtherEntityNOCs %}
 {% endif %}
 
 {% set bogIsOnSanctionsListHtml %}
@@ -220,7 +226,7 @@
           text: "Nature of control"
         },
         value: {
-          html: boNOCArray
+          html: boNOCHtml
         },
         actions: {
           items: [CREATE_CHANGE_LINK(

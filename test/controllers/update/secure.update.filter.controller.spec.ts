@@ -42,12 +42,14 @@ import { authentication } from "../../../src/middleware/authentication.middlewar
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { logger } from "../../../src/utils/logger";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
-import { isRemoveJourney } from "../../../src/utils/url";
+import { isRegistrationJourney, isRemoveJourney } from "../../../src/utils/url";
 
 mockJourneyDetectionMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockIsRemoveJourney = isRemoveJourney as jest.Mock;
+const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
+mockIsRegistrationJourney.mockReturnValue(false);
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );

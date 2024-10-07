@@ -46,7 +46,7 @@ import { logger } from "../../src/utils/logger";
 import { hasSoldLand } from "../../src/middleware/navigation/has.sold.land.middleware";
 import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
 import { isActiveFeature } from "../../src/utils/feature.flag";
-import { isRemoveJourney, getUrlWithTransactionIdAndSubmissionId } from "./../../src/utils/url";
+import { isRemoveJourney, getUrlWithTransactionIdAndSubmissionId, isRegistrationJourney } from "./../../src/utils/url";
 import { updateOverseasEntity } from "../../src/service/overseas.entities.service";
 import { getUrlWithParamsToPath } from "../../src/utils/url";
 
@@ -69,6 +69,9 @@ mockJourneyDetectionMiddleware.mockClear();
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockIsRemoveJourney = isRemoveJourney as jest.Mock;
+const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
+mockIsRegistrationJourney.mockReturnValue(true);
+
 const mockGetUrlWithTransactionIdAndSubmissionId = getUrlWithTransactionIdAndSubmissionId as jest.Mock;
 const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
 

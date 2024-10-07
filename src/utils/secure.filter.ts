@@ -9,11 +9,11 @@ import { isActiveFeature } from "./feature.flag";
 import { updateOverseasEntity } from "../service/overseas.entities.service";
 import { Session } from "@companieshouse/node-session-handler";
 
-const fetchApplicationData = async (req: Request, isRegistration: boolean): Promise<ApplicationData> => {
+const fetchApplicationData = (req: Request, isRegistration: boolean): Promise<ApplicationData> => {
   if (isRegistration) {
-    return await getApplicationData(req);
+    return getApplicationData(req);
   } else {
-    return await getApplicationData(req.session);
+    return getApplicationData(req.session);
   }
 };
 

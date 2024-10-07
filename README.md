@@ -176,5 +176,3 @@ redirect_uri | Redirect users to homepage when trying to access other pages dire
 ## License
 
 This code is open source software licensed under the [MIT License]("https://opensource.org/licenses/MIT").
-
-REFRESH BRANCH

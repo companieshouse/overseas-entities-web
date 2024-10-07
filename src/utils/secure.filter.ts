@@ -9,6 +9,14 @@ import { isActiveFeature } from "./feature.flag";
 import { updateOverseasEntity } from "../service/overseas.entities.service";
 import { Session } from "@companieshouse/node-session-handler";
 
+const fetchApplicationData = async (req: Request, isRegistration: boolean): Promise<ApplicationData> => {
+  if (isRegistration) {
+    return await getApplicationData(req);
+  } else {
+    return await getApplicationData(req.session);
+  }
+};
+
 export const getFilterPage = async (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string): Promise<void> => {
 
   try {
@@ -17,13 +25,7 @@ export const getFilterPage = async (req: Request, res: Response, next: NextFunct
 
     const isRegistration = isRegistrationJourney(req);
     const isRemove = await isRemoveJourney(req);
-    let appData: ApplicationData;
-
-    if (isRegistration) {
-      appData = await getApplicationData(req);
-    } else {
-      appData = await getApplicationData(req.session);
-    }
+    const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
 
     if (isRemove) {
       return res.render(templateName, {
@@ -58,15 +60,9 @@ export const postFilterPage = async (
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    let appData: ApplicationData;
     const isRegistration: boolean = isRegistrationJourney(req);
     const isRemove: boolean = await isRemoveJourney(req);
-
-    if (isRegistration) {
-      appData = await getApplicationData(req);
-    } else {
-      appData = await getApplicationData(req.session);
-    }
+    const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
 
     const isSecureRegister = (req.body[IsSecureRegisterKey]).toString();
     appData[IsSecureRegisterKey] = isSecureRegister;

@@ -62,6 +62,7 @@ export const getApplicationData = async (sessionOrRequest: Session | Request | u
     if (!sessionOrRequest) {
       return emptyAppData;
     }
+
     req = sessionOrRequest;
 
     const transactionId: string = req.params[ROUTE_PARAM_TRANSACTION_ID] ?? "";

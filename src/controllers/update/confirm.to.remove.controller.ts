@@ -16,7 +16,6 @@ import {
   PARAM_MANAGING_OFFICER_INDIVIDUAL,
   UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
-  RELEVANT_PERIOD_QUERY_PARAM,
 } from "../../config";
 import { DoYouWantToRemoveKey, ID } from "../../model/data.types.model";
 import { removeBeneficialOwnerIndividual } from "../../utils/beneficial.owner.individual";
@@ -24,7 +23,6 @@ import { removeBeneficialOwnerGov } from "../../utils/beneficial.owner.gov";
 import { removeBeneficialOwnerOther } from "../../utils/beneficial.owner.other";
 import { removeManagingOfficer } from "../../utils/managing.officer.individual";
 import { removeManagingOfficerCorporate } from "../../utils/managing.officer.corporate";
-import { checkRelevantPeriod } from "../../utils/relevant.period";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -44,14 +42,28 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
+export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `DELETE ${req.route.path}`);
+
     if (req.body[DoYouWantToRemoveKey] === '1') {
-      return getRemoveUrl(req, res, next, req.params[PARAM_BO_MO_TYPE]);
-    } else {
-      return res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
+      switch (req.params[PARAM_BO_MO_TYPE]) {
+          case PARAM_BENEFICIAL_OWNER_INDIVIDUAL:
+            return await removeBeneficialOwnerIndividual(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+          case PARAM_BENEFICIAL_OWNER_GOV:
+            return await removeBeneficialOwnerGov(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+          case PARAM_BENEFICIAL_OWNER_OTHER:
+            return await removeBeneficialOwnerOther(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+          case PARAM_MANAGING_OFFICER_INDIVIDUAL:
+            return await removeManagingOfficer(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+          case PARAM_MANAGING_OFFICER_CORPORATE:
+            return await removeManagingOfficerCorporate(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+          default:
+            break;
+      }
     }
+
+    return res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);
@@ -64,36 +76,4 @@ const getBoMoName = (appData: ApplicationData, boMoType: string, id: string) => 
   return boMoType === PARAM_BENEFICIAL_OWNER_INDIVIDUAL || boMoType === PARAM_MANAGING_OFFICER_INDIVIDUAL
     ? boMo.first_name + " " + boMo.last_name
     : boMo.name;
-};
-
-const getRemoveUrl = async (req: Request, res: Response, next: NextFunction, boMoType: string) => {
-  const session = req.session as Session;
-  const appData: ApplicationData = await getApplicationData(session);
-  if (boMoType === PARAM_BENEFICIAL_OWNER_INDIVIDUAL){
-    if (checkRelevantPeriod(appData)) {
-      return removeBeneficialOwnerIndividual(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
-    } else {
-      return removeBeneficialOwnerIndividual(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
-    }
-  }
-  if (boMoType === PARAM_BENEFICIAL_OWNER_GOV) {
-    if (checkRelevantPeriod(appData)) {
-      return removeBeneficialOwnerGov(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
-    } else {
-      return removeBeneficialOwnerGov(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
-    }
-  }
-  if (boMoType === PARAM_BENEFICIAL_OWNER_OTHER) {
-    if (checkRelevantPeriod(appData)) {
-      return removeBeneficialOwnerOther(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
-    } else {
-      return removeBeneficialOwnerOther(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
-    }
-  }
-  if (boMoType === PARAM_MANAGING_OFFICER_INDIVIDUAL) {
-    return removeManagingOfficer(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
-  }
-  if (boMoType === PARAM_MANAGING_OFFICER_CORPORATE) {
-    return removeManagingOfficerCorporate(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
-  }
 };

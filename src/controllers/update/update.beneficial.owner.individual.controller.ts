@@ -31,10 +31,5 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const update = async (req: Request, res: Response, next: NextFunction) => {
-  const appData: ApplicationData = await getApplicationData(req.session);
-  if (checkRelevantPeriod(appData)) {
-    updateBeneficialOwnerIndividual(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
-  } else {
-    updateBeneficialOwnerIndividual(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
-  }
+  await updateBeneficialOwnerIndividual(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
 };

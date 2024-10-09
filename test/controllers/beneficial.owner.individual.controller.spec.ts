@@ -8,7 +8,6 @@ jest.mock('../../src/middleware/navigation/has.beneficial.owners.statement.middl
 jest.mock('../../src/utils/feature.flag');
 jest.mock('../../src/middleware/service.availability.middleware');
 jest.mock("../../src/utils/url");
-jest.mock('../../src/utils/relevant.period');
 
 import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
@@ -96,7 +95,6 @@ import { DateTime } from "luxon";
 import { isActiveFeature } from "../../src/utils/feature.flag";
 import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
 import { getUrlWithParamsToPath } from "../../src/utils/url";
-import { checkRelevantPeriod } from "../../src/utils/relevant.period";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockHasBeneficialOwnersStatementMiddleware = hasBeneficialOwnersStatement as jest.Mock;
@@ -124,7 +122,6 @@ const NEXT_PAGE_URL = "/NEXT_PAGE";
 
 const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
 mockGetUrlWithParamsToPath.mockReturnValue(NEXT_PAGE_URL);
-const mockCheckRelevantPeriod = checkRelevantPeriod as jest.Mock;
 
 describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
@@ -2039,7 +2036,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
   describe("UPDATE tests", () => {
     test(`redirects to the ${BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
       mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
-      mockCheckRelevantPeriod.mockReturnValue(true);
+
       mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
       const resp = await request(app)
         .post(BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)
@@ -2064,7 +2061,6 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
     test(`replaces existing object on submit`, async () => {
       mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
       mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_REPLACE);
-      mockCheckRelevantPeriod.mockReturnValue(true);
       const resp = await request(app)
         .post(BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)
         .send(BENEFICIAL_OWNER_INDIVIDUAL_REPLACE);
@@ -2125,7 +2121,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
     test(`redirects to the ${BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
       mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
       const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL + REMOVE + BO_IND_ID_URL);
-      mockIsActiveFeature.mockReturnValueOnce(true);
+
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
@@ -2145,7 +2141,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
       expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(BeneficialOwnerIndividualKey);
       expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(BO_IND_ID);
-      mockIsActiveFeature.mockReturnValueOnce(true);
+
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
     });

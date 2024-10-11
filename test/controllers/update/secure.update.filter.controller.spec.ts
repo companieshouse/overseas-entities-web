@@ -14,8 +14,8 @@ import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddlewa
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
-
 import app from "../../../src/app";
+
 import {
   JOURNEY_REMOVE_QUERY_PARAM,
   REMOVE_IS_ENTITY_REGISTERED_OWNER_URL,
@@ -27,6 +27,7 @@ import {
   UPDATE_SERVICE_NAME,
   UPDATE_USE_PAPER_URL
 } from "../../../src/config";
+
 import { ErrorMessages } from "../../../src/validation/error.messages";
 import {
   ANY_MESSAGE_ERROR,
@@ -37,7 +38,7 @@ import {
   SERVICE_UNAVAILABLE,
 } from "../../__mocks__/text.mock";
 
-import { getApplicationData, setExtraData } from "../../../src/utils/application.data";
+import { getApplicationData, setExtraData, fetchApplicationData } from "../../../src/utils/application.data";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { logger } from "../../../src/utils/logger";
@@ -60,6 +61,9 @@ const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetExtraData = setExtraData as jest.Mock;
 
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
+
 describe("SECURE UPDATE FILTER controller", () => {
 
   beforeEach(() => {
@@ -70,7 +74,8 @@ describe("SECURE UPDATE FILTER controller", () => {
 
   describe("GET tests", () => {
     test(`renders the ${SECURE_UPDATE_FILTER_PAGE} page`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ });
+      // mockGetApplicationData.mockReturnValueOnce({ });
+      mockFetchApplicationData.mockReturnValueOnce({ });
       const resp = await request(app).get(SECURE_UPDATE_FILTER_URL);
 
       expect(resp.status).toEqual(200);
@@ -84,7 +89,8 @@ describe("SECURE UPDATE FILTER controller", () => {
 
     test(`renders the ${SECURE_UPDATE_FILTER_PAGE} page for remove`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(false);
-      mockGetApplicationData.mockReturnValueOnce({});
+      // mockGetApplicationData.mockReturnValueOnce({});
+      mockFetchApplicationData.mockReturnValueOnce({});
       mockIsActiveFeature.mockReturnValueOnce(false);
       mockIsRemoveJourney.mockReturnValueOnce(true);
       const resp = await request(app).get(`${SECURE_UPDATE_FILTER_URL}${JOURNEY_REMOVE_QUERY_PARAM}`);
@@ -107,7 +113,8 @@ describe("SECURE UPDATE FILTER controller", () => {
     });
 
     test(`renders the ${SECURE_UPDATE_FILTER_PAGE} page with radios selected to yes`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ is_secure_register: 1 });
+      // mockGetApplicationData.mockReturnValueOnce({ is_secure_register: 1 });
+      mockFetchApplicationData.mockReturnValueOnce({ is_secure_register: 1 });
       const resp = await request(app).get(SECURE_UPDATE_FILTER_URL);
 
       expect(resp.status).toEqual(200);

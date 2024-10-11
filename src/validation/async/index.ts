@@ -158,6 +158,7 @@ export const filingPeriodTrustCeaseDateValidations = async (req: Request) => is_
 export const beneficialOwnersTypeEmptyNOCList = async (req: Request, appData: ApplicationData): Promise<ValidationError[]> => {
   const allowedUrls = [
     [config.REGISTER_AN_OVERSEAS_ENTITY_URL, config.BENEFICIAL_OWNER_TYPE_PAGE],
+    [config.UPDATE_AN_OVERSEAS_ENTITY_URL, config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE]
   ];
 
   const allowed: boolean = isAllowedUrls(allowedUrls, req);
@@ -203,6 +204,6 @@ const checkIfBeneficialOwnerHasNOC = (beneficialOwner): string[] => {
       !bo?.trust_control_nature_of_control_types?.length &&
       !bo?.owner_of_land_person_nature_of_control_jurisdictions?.length &&
       !bo?.owner_of_land_other_entity_nature_of_control_jurisdictions?.length
-  ).map(bo => `${bo.first_name} ${bo.last_name}`);
+  ).map(bo => bo?.first_name ?? bo?.name);
 };
 

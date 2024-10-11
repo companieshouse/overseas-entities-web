@@ -11,7 +11,6 @@ import * as config from "../config";
 import { postTransaction } from "../service/transaction.service";
 import { createOverseasEntity } from "../service/overseas.entities.service";
 import { isActiveFeature } from "./feature.flag";
-import { FEATURE_FLAG_ENABLE_REDIS_REMOVAL } from "../config";
 
 export const getPresenterPage = async (
   req: Request,
@@ -79,7 +78,7 @@ export const postPresenterPage = async (
 
     const data = prepareData(req.body, PresenterKeys);
 
-    if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {
       await setApplicationData(req, data, PresenterKey);
     } else {
       await setApplicationData(session, data, PresenterKey);

@@ -96,7 +96,6 @@ describe( "SECURE REGISTER FILTER controller", () => {
   describe("GET tests", () => {
 
     test(`renders the ${config.SECURE_REGISTER_FILTER_PAGE} page`, async () => {
-      // mockGetApplicationData.mockReturnValueOnce({});
       mockFetchApplicationData.mockReturnValueOnce({});
       const resp = await request(app).get(SECURE_REGISTER_FILTER_URL);
 
@@ -114,7 +113,6 @@ describe( "SECURE REGISTER FILTER controller", () => {
     test(`renders the ${config.SECURE_REGISTER_FILTER_PAGE} page and REDIS_removal flag is set to OFF`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(false);
       mockGetUrlWithParamsToPath.mockReturnValueOnce('/some-url');
-      // mockGetApplicationData.mockReturnValueOnce({});
       mockFetchApplicationData.mockReturnValueOnce({});
       mockIsRemoveJourney.mockReturnValue(false);
       const resp = await request(app).get(SECURE_REGISTER_FILTER_URL);
@@ -130,14 +128,12 @@ describe( "SECURE REGISTER FILTER controller", () => {
       expect(resp.text).toContain(NOT_SHOW_INFORMATION_ON_PUBLIC_REGISTER);
       expect(mockIsActiveFeature).toHaveBeenCalledTimes(1);
       expect(mockGetUrlWithParamsToPath).not.toHaveBeenCalled();
-      // expect(mockGetApplicationData).toHaveBeenCalledTimes(1);
       expect(mockIsRemoveJourney).toHaveBeenCalledTimes(1);
     });
 
     test(`renders the ${config.SECURE_REGISTER_FILTER_PAGE} page and REDIS_removal flag is set to ON`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
       mockGetUrlWithParamsToPath.mockReturnValueOnce('/some-url');
-      // mockGetApplicationData.mockReturnValueOnce({});
       mockFetchApplicationData.mockReturnValueOnce({});
       mockIsRemoveJourney.mockReturnValue(false);
       const resp = await request(app).get(SECURE_REGISTER_FILTER_WITH_PARAMS_URL);
@@ -154,7 +150,6 @@ describe( "SECURE REGISTER FILTER controller", () => {
       expect(resp.text).toContain(BACK_BUTTON_CLASS);
       expect(mockIsActiveFeature).toHaveBeenCalledTimes(1);
       expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
-      // expect(mockGetApplicationData).toHaveBeenCalledTimes(1);
       expect(mockIsRemoveJourney).toHaveBeenCalledTimes(1);
     });
 
@@ -167,7 +162,6 @@ describe( "SECURE REGISTER FILTER controller", () => {
     });
 
     test(`renders the ${config.SECURE_REGISTER_FILTER_PAGE} page with radios selected to yes`, async () => {
-      // mockGetApplicationData.mockReturnValueOnce({ is_secure_register: 1 });
       mockFetchApplicationData.mockReturnValueOnce({ is_secure_register: 1 });
       const resp = await request(app).get(SECURE_REGISTER_FILTER_URL);
 

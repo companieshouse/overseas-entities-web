@@ -74,7 +74,6 @@ describe("SECURE UPDATE FILTER controller", () => {
 
   describe("GET tests", () => {
     test(`renders the ${SECURE_UPDATE_FILTER_PAGE} page`, async () => {
-      // mockGetApplicationData.mockReturnValueOnce({ });
       mockFetchApplicationData.mockReturnValueOnce({ });
       const resp = await request(app).get(SECURE_UPDATE_FILTER_URL);
 
@@ -89,7 +88,6 @@ describe("SECURE UPDATE FILTER controller", () => {
 
     test(`renders the ${SECURE_UPDATE_FILTER_PAGE} page for remove`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(false);
-      // mockGetApplicationData.mockReturnValueOnce({});
       mockFetchApplicationData.mockReturnValueOnce({});
       mockIsActiveFeature.mockReturnValueOnce(false);
       mockIsRemoveJourney.mockReturnValueOnce(true);
@@ -113,7 +111,6 @@ describe("SECURE UPDATE FILTER controller", () => {
     });
 
     test(`renders the ${SECURE_UPDATE_FILTER_PAGE} page with radios selected to yes`, async () => {
-      // mockGetApplicationData.mockReturnValueOnce({ is_secure_register: 1 });
       mockFetchApplicationData.mockReturnValueOnce({ is_secure_register: 1 });
       const resp = await request(app).get(SECURE_UPDATE_FILTER_URL);
 

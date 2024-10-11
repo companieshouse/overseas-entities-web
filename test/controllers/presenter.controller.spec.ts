@@ -142,7 +142,6 @@ describe("PRESENTER controller", () => {
     });
 
     test("catch error when renders the presenter page", async () => {
-      // mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       mockFetchApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(PRESENTER_URL);
 
@@ -179,7 +178,6 @@ describe("PRESENTER controller", () => {
     });
 
     test("catch error when renders the presenter page", async () => {
-      // mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       mockFetchApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(PRESENTER_WITH_PARAMS_URL);
 

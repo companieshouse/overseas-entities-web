@@ -10,6 +10,9 @@ import { checkCeasedDateOnOrAfterDateOfBirth, checkCeasedDateOnOrAfterTrustCreat
 import { dateContext } from '../../validation/fields/helper/date.validation.helper';
 import { checkDatePreviousToFilingDate } from '../../validation/custom.validation';
 import isAllowedUrls from './isAllowedUrls';
+import { BeneficialOwnerIndividualKey } from '../../model/beneficial.owner.individual.model';
+import { BeneficialOwnerOtherKey } from '../../model/beneficial.owner.other.model';
+import { BeneficialOwnerGovKey } from '../../model/beneficial.owner.gov.model';
 
 export const checkTrustIndividualCeasedDate = async (appData: ApplicationData, req: Request): Promise<ValidationError[]> => {
   const allowedUrls = [
@@ -151,4 +154,55 @@ const is_date_within_filing_period_trusts = async (req: Request, trustDateContex
 export const filingPeriodTrustStartDateValidations = async (req: Request) => is_date_within_filing_period_trusts(req, historicalBOStartDateContext, ErrorMessages.START_DATE_BEFORE_FILING_DATE);
 
 export const filingPeriodTrustCeaseDateValidations = async (req: Request) => is_date_within_filing_period_trusts(req, historicalBOEndDateContext, ErrorMessages.CEASED_DATE_BEFORE_FILING_DATE);
+
+export const beneficialOwnersTypeEmptyNOCList = async (req: Request, appData: ApplicationData): Promise<ValidationError[]> => {
+  const allowedUrls = [
+    [config.REGISTER_AN_OVERSEAS_ENTITY_URL, config.BENEFICIAL_OWNER_TYPE_PAGE],
+  ];
+
+  const allowed: boolean = isAllowedUrls(allowedUrls, req);
+
+  const errors: ValidationError[] = [];
+
+  if (!allowed) {
+    return errors;
+  }
+
+  try {
+    const boiList = checkIfBeneficialOwnerHasNOC(appData?.[BeneficialOwnerIndividualKey] ?? []);
+    const booList = checkIfBeneficialOwnerHasNOC(appData?.[BeneficialOwnerOtherKey] ?? []);
+    const bogList = checkIfBeneficialOwnerHasNOC(appData?.[BeneficialOwnerGovKey] ?? []);
+
+    const boList: string[] = [...boiList, ...booList, ...bogList];
+
+    if (boList.length) {
+      throw new Error(`
+      ${boList.join(", ")}\n 
+      may have no control types assigned. Please click the 'change' link for each owner to specify their control types.
+      `);
+    }
+
+    return errors;
+  } catch (error) {
+    errors.push({
+      value: '',
+      msg: error.message,
+      param: 'beneficial_owner_list',
+      location: 'body',
+    });
+
+    return errors;
+  }
+};
+
+const checkIfBeneficialOwnerHasNOC = (beneficialOwner): string[] => {
+  return beneficialOwner?.filter(bo =>
+    !bo?.beneficial_owner_nature_of_control_types?.length &&
+      !bo?.trustees_nature_of_control_types?.length &&
+      !bo?.non_legal_firm_control_nature_of_control_types?.length &&
+      !bo?.trust_control_nature_of_control_types?.length &&
+      !bo?.owner_of_land_person_nature_of_control_jurisdictions?.length &&
+      !bo?.owner_of_land_other_entity_nature_of_control_jurisdictions?.length
+  ).map(bo => `${bo.first_name} ${bo.last_name}`);
+};
 

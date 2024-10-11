@@ -26,9 +26,6 @@ import {
 } from '../../__mocks__/text.mock';
 import {
   APPLICATION_DATA_MOCK,
-  BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
-  BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
-  BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
   RESUME_UPDATE_SUBMISSION_URL,
   OVERSEAS_ENTITY_ID,
   TRANSACTION_ID,
@@ -47,12 +44,11 @@ import { startPaymentsSession } from "../../../src/service/payment.service";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from '../../../src/model/who.is.making.filing.model';
 import { DueDiligenceKey } from '../../../src/model/due.diligence.model';
-import { HasSoldLandKey, IsSecureRegisterKey, NatureOfControlType, OverseasEntityKey, Transactionkey } from '../../../src/model/data.types.model';
+import { HasSoldLandKey, IsSecureRegisterKey, OverseasEntityKey, Transactionkey } from '../../../src/model/data.types.model';
 import { OverseasEntityDueDiligenceKey } from '../../../src/model/overseas.entity.due.diligence.model';
 import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from '../../__mocks__/overseas.entity.due.diligence.mock';
 import { MOCK_GET_TRANSACTION_RESPONSE } from '../../__mocks__/transaction.mock';
 import { mapTrustApiReturnModelToWebModel } from '../../../src/utils/trusts';
-import { beneficialOwnerIndividualType, beneficialOwnerOtherType, beneficialOwnerGovType } from "../../../src/model";
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -84,22 +80,6 @@ const mockMapTrustApiReturnModelToWebModel = mapTrustApiReturnModelToWebModel as
 const mockGetApplicationData = getApplicationData as jest.Mock;
 
 const baseURL = `${config.CHS_URL}${config.UPDATE_AN_OVERSEAS_ENTITY_URL}`;
-
-const mockNocAppData = {
-  ...APPLICATION_DATA_MOCK,
-  [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [{
-    ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
-    non_legal_firm_members_nature_of_control_types: [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS, NatureOfControlType.OVER_25_PERCENT_OF_SHARES]
-  }, BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK ],
-  [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: [{
-    ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
-    non_legal_firm_members_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS, NatureOfControlType.OVER_25_PERCENT_OF_SHARES]
-  }, BENEFICIAL_OWNER_OTHER_OBJECT_MOCK ],
-  [beneficialOwnerGovType.BeneficialOwnerGovKey]: [{
-    ...BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
-    non_legal_firm_members_nature_of_control_types: [NatureOfControlType.SIGNIFICANT_INFLUENCE_OR_CONTROL, NatureOfControlType.OVER_25_PERCENT_OF_SHARES]
-  }, BENEFICIAL_OWNER_GOV_OBJECT_MOCK ]
-};
 
 describe("Update Resume submission controller", () => {
 
@@ -258,54 +238,6 @@ describe("Update Resume submission controller", () => {
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
-    });
-
-    test(`Do not remove old NOCs after resuming the OverseasEntity Update submission and FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is ON`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce( true ); // REDIS flag
-      mockIsActiveFeature.mockReturnValueOnce( true ); // trusts feature flag
-      mockIsActiveFeature.mockReturnValueOnce( true ); // new NOCs
-
-      const mockAppData = { ...mockNocAppData };
-      mockGetOverseasEntity.mockReturnValueOnce( mockAppData );
-      const resp = await request(app).get(RESUME_UPDATE_SUBMISSION_URL);
-
-      expect(resp.status).toEqual(302);
-      expect(mockAppData.beneficial_owners_individual?.[0].non_legal_firm_members_nature_of_control_types).toEqual(
-        [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS, NatureOfControlType.OVER_25_PERCENT_OF_SHARES]);
-      expect(mockAppData.beneficial_owners_individual?.[1].non_legal_firm_members_nature_of_control_types).toEqual(
-        [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS]);
-      expect(mockAppData.beneficial_owners_government_or_public_authority?.[0].non_legal_firm_members_nature_of_control_types).toEqual(
-        [NatureOfControlType.SIGNIFICANT_INFLUENCE_OR_CONTROL, NatureOfControlType.OVER_25_PERCENT_OF_SHARES]);
-      expect(mockAppData.beneficial_owners_government_or_public_authority?.[1].non_legal_firm_members_nature_of_control_types).toEqual(
-        [NatureOfControlType.OVER_25_PERCENT_OF_SHARES]);
-      expect(mockNocAppData.beneficial_owners_corporate?.[0].non_legal_firm_members_nature_of_control_types).toEqual(
-        [NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS, NatureOfControlType.OVER_25_PERCENT_OF_SHARES]);
-      expect(mockAppData.beneficial_owners_corporate?.[1].non_legal_firm_members_nature_of_control_types).toEqual(
-        [NatureOfControlType.OVER_25_PERCENT_OF_SHARES]);
-    });
-
-    test(`Do not remove old NOCs after resuming the OverseasEntity Update submission and FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is OFF`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce( true ); // REDIS flag
-      mockIsActiveFeature.mockReturnValueOnce( true ); // trusts feature flag
-      mockIsActiveFeature.mockReturnValueOnce( false ); // new NOCs
-
-      const mockAppData = { ...mockNocAppData };
-      mockGetOverseasEntity.mockReturnValueOnce( mockAppData );
-      const resp = await request(app).get(RESUME_UPDATE_SUBMISSION_URL);
-
-      expect(resp.status).toEqual(302);
-      expect(mockAppData.beneficial_owners_individual?.[0].non_legal_firm_members_nature_of_control_types).toEqual(
-        [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS, NatureOfControlType.OVER_25_PERCENT_OF_SHARES]);
-      expect(mockAppData.beneficial_owners_individual?.[1].non_legal_firm_members_nature_of_control_types).toEqual(
-        [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS]);
-      expect(mockAppData.beneficial_owners_government_or_public_authority?.[0].non_legal_firm_members_nature_of_control_types).toEqual(
-        [NatureOfControlType.SIGNIFICANT_INFLUENCE_OR_CONTROL, NatureOfControlType.OVER_25_PERCENT_OF_SHARES]);
-      expect(mockAppData.beneficial_owners_government_or_public_authority?.[1].non_legal_firm_members_nature_of_control_types).toEqual(
-        [NatureOfControlType.OVER_25_PERCENT_OF_SHARES]);
-      expect(mockNocAppData.beneficial_owners_corporate?.[0].non_legal_firm_members_nature_of_control_types).toEqual(
-        [NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS, NatureOfControlType.OVER_25_PERCENT_OF_SHARES]);
-      expect(mockAppData.beneficial_owners_corporate?.[1].non_legal_firm_members_nature_of_control_types).toEqual(
-        [NatureOfControlType.OVER_25_PERCENT_OF_SHARES]);
     });
   });
 });

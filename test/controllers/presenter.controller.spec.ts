@@ -13,6 +13,14 @@ import { NextFunction, Request, Response } from "express";
 import request from "supertest";
 import app from "../../src/app";
 import { authentication } from "../../src/middleware/authentication.middleware";
+import { ApplicationDataType } from '../../src/model';
+import { PresenterKey } from '../../src/model/presenter.model';
+import { ErrorMessages } from '../../src/validation/error.messages';
+import { hasOverseasName } from "../../src/middleware/navigation/has.overseas.name.middleware";
+import { saveAndContinue } from "../../src/utils/save.and.continue";
+import { isActiveFeature } from "../../src/utils/feature.flag";
+import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
+
 import {
   PRESENTER_URL,
   LANDING_URL,
@@ -24,8 +32,14 @@ import {
   PRESENTER_WITH_PARAMS_URL,
   OVERSEAS_NAME_WITH_PARAMS_URL,
 } from "../../src/config";
-import { getApplicationData, prepareData, setApplicationData } from "../../src/utils/application.data";
-import { ApplicationDataType } from '../../src/model';
+
+import {
+  getApplicationData,
+  prepareData,
+  setApplicationData,
+  fetchApplicationData
+} from "../../src/utils/application.data";
+
 import {
   ANY_MESSAGE_ERROR,
   FOUND_REDIRECT_TO,
@@ -36,24 +50,26 @@ import {
   SAVE_AND_CONTINUE_BUTTON_TEXT,
   SERVICE_UNAVAILABLE, USE_INFORMATION_NEED_MORE
 } from '../__mocks__/text.mock';
-import { PresenterKey } from '../../src/model/presenter.model';
+
 import {
   EMAIL_ADDRESS,
   APPLICATION_DATA_MOCK,
   PRESENTER_OBJECT_MOCK,
   PRESENTER_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES
 } from '../__mocks__/session.mock';
-import { ErrorMessages } from '../../src/validation/error.messages';
+
 import {
   PRESENTER_WITH_INVALID_CHARACTERS_FIELDS_MOCK,
   PRESENTER_WITH_MAX_LENGTH_FIELDS_MOCK,
   PRESENTER_WITH_SPECIAL_CHARACTERS_FIELDS_MOCK
 } from '../__mocks__/validation.mock';
-import { hasOverseasName } from "../../src/middleware/navigation/has.overseas.name.middleware";
-import { saveAndContinue } from "../../src/utils/save.and.continue";
-import { isActiveFeature } from "../../src/utils/feature.flag";
-import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
-import { getUrlWithParamsToPath } from "../../src/utils/url";
+
+import {
+  isRemoveJourney,
+  isUpdateJourney,
+  isRegistrationJourney,
+  getUrlWithParamsToPath
+} from "../../src/utils/url";
 
 const MOCKED_PAGE_URL = "/MOCKED_PAGE";
 
@@ -65,6 +81,9 @@ mockHasOverseasNameMiddleware.mockImplementation((req: Request, res: Response, n
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 mockGetApplicationData.mockReturnValue( APPLICATION_DATA_MOCK );
+
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+mockFetchApplicationData.mockReturnValue( APPLICATION_DATA_MOCK );
 
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockAuthenticationMiddleware = authentication as jest.Mock;
@@ -80,18 +99,28 @@ mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Respons
 const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
 mockGetUrlWithParamsToPath.mockReturnValue(MOCKED_PAGE_URL);
 
+const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
+mockIsRegistrationJourney.mockReturnValue(true);
+
+const mockIsUpdateJourney = isUpdateJourney as jest.Mock;
+mockIsUpdateJourney.mockReturnValue(false);
+
+const mockIsRemoveJourney = isRemoveJourney as jest.Mock;
+
 describe("PRESENTER controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetApplicationData.mockReset();
     mockSetApplicationData.mockReset();
     mockIsActiveFeature.mockReset();
+    mockIsRemoveJourney.mockReset();
     process.env.FEATURE_FLAG_ENABLE_REDIS_REMOVAL_27092023 = "false";
   });
 
   describe("GET tests", () => {
     test(`renders the presenter page with ${SAVE_AND_CONTINUE_BUTTON_TEXT} button`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ [PresenterKey]: PRESENTER_OBJECT_MOCK });
+      mockGetApplicationData.mockReturnValue({ [PresenterKey]: PRESENTER_OBJECT_MOCK });
       const resp = await request(app).get(PRESENTER_URL);
 
       expect(resp.status).toEqual(200);
@@ -105,7 +134,7 @@ describe("PRESENTER controller", () => {
     });
 
     test(`renders the presenter page with back link URL correctly set`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ [PresenterKey]: PRESENTER_OBJECT_MOCK });
+      mockGetApplicationData.mockReturnValue({ [PresenterKey]: PRESENTER_OBJECT_MOCK });
       const resp = await request(app).get(PRESENTER_URL);
 
       expect(resp.status).toEqual(200);
@@ -113,7 +142,7 @@ describe("PRESENTER controller", () => {
     });
 
     test("catch error when renders the presenter page", async () => {
-      mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockFetchApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(PRESENTER_URL);
 
       expect(resp.status).toEqual(500);
@@ -149,7 +178,7 @@ describe("PRESENTER controller", () => {
     });
 
     test("catch error when renders the presenter page", async () => {
-      mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockFetchApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(PRESENTER_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(500);
@@ -158,12 +187,30 @@ describe("PRESENTER controller", () => {
   });
 
   describe("POST tests", () => {
-    test(`redirect to the ${WHO_IS_MAKING_FILING_PAGE} page after a successful post from presenter page`, async () => {
+
+    test(`redirect to the ${WHO_IS_MAKING_FILING_PAGE} page after a successful post from presenter page when the REDIS_removal flag is set to OFF`, async () => {
+      mockIsActiveFeature.mockReturnValue(false); // SHOW_SERVICE_OFFLINE_PAGE + FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockSetApplicationData.mockReturnValue(true);
+
       const resp = await request(app).post(PRESENTER_URL).send(PRESENTER_OBJECT_MOCK);
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${WHO_IS_MAKING_FILING_URL}`);
+      expect(mockSetApplicationData).toHaveBeenCalledTimes(1);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test(`redirect to the ${WHO_IS_MAKING_FILING_PAGE} page after a successful post from presenter page when the REDIS_removal flag is set to ON`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false); // SHOW_SERVICE_OFFLINE_PAGE
+      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockSetApplicationData.mockReturnValue(true);
+
+      const resp = await request(app).post(PRESENTER_URL).send(PRESENTER_OBJECT_MOCK);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${WHO_IS_MAKING_FILING_URL}`);
+      expect(mockSetApplicationData).toHaveBeenCalledTimes(1);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(0);
     });
 
     test(`redirect to the ${WHO_IS_MAKING_FILING_PAGE} page after a successful post from presenter page with special characters`, async () => {

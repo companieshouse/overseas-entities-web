@@ -1,21 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 import { ApplicationData } from "../model";
 import { IsSecureRegisterKey, OverseasEntityKey, Transactionkey } from "../model/data.types.model";
-import { getApplicationData, setExtraData } from "./application.data";
+import { fetchApplicationData, setExtraData } from "./application.data";
 import { logger } from "./logger";
 import { getUrlWithTransactionIdAndSubmissionId, isRemoveJourney, isRegistrationJourney } from "../utils/url";
 import * as config from "../config";
 import { isActiveFeature } from "./feature.flag";
 import { updateOverseasEntity } from "../service/overseas.entities.service";
 import { Session } from "@companieshouse/node-session-handler";
-
-const fetchApplicationData = (req: Request, isRegistration: boolean): Promise<ApplicationData> => {
-  if (isRegistration) {
-    return getApplicationData(req);
-  } else {
-    return getApplicationData(req.session);
-  }
-};
 
 export const getFilterPage = async (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string): Promise<void> => {
 

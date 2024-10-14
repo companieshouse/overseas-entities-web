@@ -18,6 +18,12 @@ import { authentication } from "../../../src/middleware/authentication.middlewar
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
+import { ApplicationDataType } from '../../../src/model';
+import { PresenterKey } from '../../../src/model/presenter.model';
+import { ErrorMessages } from '../../../src/validation/error.messages';
+import { createOverseasEntity } from "../../../src/service/overseas.entities.service";
+import { postTransaction } from "../../../src/service/transaction.service";
+
 import {
   OVERSEAS_ENTITY_PRESENTER_URL,
   JOURNEY_REMOVE_QUERY_PARAM,
@@ -25,8 +31,15 @@ import {
   UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL,
   UPDATE_PRESENTER_PAGE
 } from "../../../src/config";
-import { getApplicationData, prepareData, setApplicationData, setExtraData } from "../../../src/utils/application.data";
-import { ApplicationDataType } from '../../../src/model';
+
+import {
+  getApplicationData,
+  prepareData,
+  setApplicationData,
+  setExtraData,
+  fetchApplicationData
+} from "../../../src/utils/application.data";
+
 import {
   ANY_MESSAGE_ERROR,
   FOUND_REDIRECT_TO,
@@ -34,10 +47,13 @@ import {
   NOT_SHOW_INFORMATION_ON_PUBLIC_REGISTER,
   PAGE_TITLE_ERROR,
   OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE,
-  SERVICE_UNAVAILABLE, UPDATE_USE_INFORMATION_NEED_MORE, REMOVE_OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE, REMOVE_USE_INFORMATION_NEED_MORE,
-  SAVE_AND_CONTINUE_BUTTON_TEXT
+  SERVICE_UNAVAILABLE,
+  UPDATE_USE_INFORMATION_NEED_MORE,
+  REMOVE_OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE,
+  REMOVE_USE_INFORMATION_NEED_MORE,
+  SAVE_AND_CONTINUE_BUTTON_TEXT,
 } from '../../__mocks__/text.mock';
-import { PresenterKey } from '../../../src/model/presenter.model';
+
 import {
   EMAIL_ADDRESS,
   APPLICATION_DATA_MOCK,
@@ -46,19 +62,26 @@ import {
   OVERSEAS_ENTITY_ID,
   TRANSACTION_ID
 } from '../../__mocks__/session.mock';
-import { ErrorMessages } from '../../../src/validation/error.messages';
+
 import {
   PRESENTER_WITH_INVALID_CHARACTERS_FIELDS_MOCK,
   PRESENTER_WITH_MAX_LENGTH_FIELDS_MOCK,
   PRESENTER_WITH_SPECIAL_CHARACTERS_FIELDS_MOCK
 } from '../../__mocks__/validation.mock';
-import { IsRemoveKey, OverseasEntityKey, Transactionkey, EntityNumberKey } from '../../../src/model/data.types.model';
-import { createOverseasEntity } from "../../../src/service/overseas.entities.service";
-import { postTransaction } from "../../../src/service/transaction.service";
+
+import {
+  IsRemoveKey,
+  OverseasEntityKey,
+  Transactionkey,
+  EntityNumberKey
+} from '../../../src/model/data.types.model';
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockGetApplicationData = getApplicationData as jest.Mock;
 mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
+
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
 
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockSetExtraData = setExtraData as jest.Mock;

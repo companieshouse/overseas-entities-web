@@ -2,7 +2,7 @@ jest.mock('../../src/utils/feature.flag');
 jest.mock('../../src/service/overseas.entities.service');
 
 import { Request } from "express";
-import { beforeEach, describe, expect, test } from '@jest/globals';
+import { beforeEach, describe, expect, jest, test } from '@jest/globals';
 
 import {
   getApplicationData,
@@ -90,18 +90,20 @@ import { ManagingOfficerCorporateKey } from "../../src/model/managing.officer.co
 import { ManagingOfficerKey } from "../../src/model/managing.officer.model";
 import { isActiveFeature } from "../../src/utils/feature.flag";
 import { NatureOfControlType } from "../../src/model/data.types.model";
-import { getOverseasEntity } from "../../src/service/overseas.entities.service";
+import { getOverseasEntity, updateOverseasEntity } from "../../src/service/overseas.entities.service";
 
 let req: Request;
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetOverseasEntity = getOverseasEntity as jest.Mock;
+const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
 
 describe("Application data utils", () => {
 
   beforeEach(() => {
     mockIsActiveFeature.mockReset();
     mockGetOverseasEntity.mockReset();
+    mockUpdateOverseasEntity.mockReset();
     req = {
       headers: {}
     } as Request;
@@ -180,33 +182,59 @@ describe("Application data utils", () => {
 
   });
 
-  test("setApplicationData should store application data into the session", async () => {
-    const session = getSessionRequestWithExtraData();
-    await setApplicationData(session, ENTITY_OBJECT_MOCK, entityType.EntityKey);
+  describe("setApplicationData tests", () => {
 
-    const data = await getApplicationData(session);
-    expect(data).toEqual({ ...APPLICATION_DATA_MOCK, [entityType.EntityKey]: { ...ENTITY_OBJECT_MOCK } });
-  });
-
-  test("setApplicationData should store application data into the session for an empty array type object (BOs)", async () => {
-    const session = getSessionRequestWithPermission();
-    await setApplicationData(
-      session,
-      BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
-      beneficialOwnerIndividualType.BeneficialOwnerIndividualKey
-    );
-
-    expect(await getApplicationData(session)).toEqual({
-      [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [
-        BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
-      ],
+    beforeEach(() => {
+      req = Object.assign(req, {
+        session: getSessionRequestWithExtraData()
+      });
     });
-  });
 
-  test("setApplicationData should return undefined if session is not defined", async () => {
-    // Session at this level can not be undefined, avoid checking req.session type, so
-    // we return void if everything is ok, otherwise undefined, where void is not an alias for undefined.
-    expect(await setApplicationData(undefined, ENTITY_OBJECT_MOCK, entityType.EntityKey)).toEqual(undefined);
+    test("should store application data into the session when the REDIS_removal flag is set to OFF", async () => {
+      mockIsActiveFeature.mockReturnValue(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      const session = getSessionRequestWithExtraData();
+      await setApplicationData(session, ENTITY_OBJECT_MOCK, entityType.EntityKey);
+      const data = await getApplicationData(session);
+      expect(data).toEqual({ ...APPLICATION_DATA_MOCK, [entityType.EntityKey]: { ...ENTITY_OBJECT_MOCK } });
+    });
+
+    test("should store application data into the session for an empty array type object (BOs) when the REDIS_removal flag is set to OFF", async () => {
+      mockIsActiveFeature.mockReturnValue(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      const session = getSessionRequestWithPermission();
+      await setApplicationData(
+        session,
+        BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+        beneficialOwnerIndividualType.BeneficialOwnerIndividualKey
+      );
+
+      expect(await getApplicationData(session)).toEqual({
+        [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [
+          BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+        ],
+      });
+    });
+
+    test("should return undefined if session is not defined when the REDIS_removal flag is set to OFF", async () => {
+      // Session at this level can not be undefined, avoid checking req.session type, so
+      // we return void if everything is ok, otherwise undefined, where void is not an alias for undefined.
+      mockIsActiveFeature.mockReturnValue(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      expect(await setApplicationData(undefined, ENTITY_OBJECT_MOCK, entityType.EntityKey)).toEqual(undefined);
+    });
+
+    test("should send application data to the API for storage when the REDIS_removal flag is set to ON", async () => {
+      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockUpdateOverseasEntity.mockReturnValueOnce(true);
+      await setApplicationData(req, ENTITY_OBJECT_MOCK, entityType.EntityKey);
+      expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
+    });
+
+    test("should store application data into the session when the REDIS_removal flag is set to ON but a session object is passed in as a parameter", async () => {
+      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      const session = getSessionRequestWithExtraData();
+      await setApplicationData(session, ENTITY_OBJECT_MOCK, entityType.EntityKey);
+      expect(mockUpdateOverseasEntity).not.toHaveBeenCalled();
+    });
+
   });
 
   test("prepareData should store application data into the session", () => {

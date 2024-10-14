@@ -44,7 +44,18 @@ import { BeneficialOwnerCorporate } from '@companieshouse/api-sdk-node/dist/serv
 import { Remove } from 'model/remove.type.model';
 import { isActiveFeature } from "./feature.flag";
 import { isNoChangeJourney } from "./update/no.change.journey";
-import { getOverseasEntity } from "../service/overseas.entities.service";
+import { getOverseasEntity, updateOverseasEntity } from "../service/overseas.entities.service";
+
+/**
+ * @todo: remove this method after REDIS removal has been implemented for the Update/Remove journeys (ROE-2645)
+ */
+export const fetchApplicationData = (req: Request, isRegistration: boolean): Promise<ApplicationData> => {
+  if (isRegistration) {
+    return getApplicationData(req);
+  } else {
+    return getApplicationData(req.session);
+  }
+};
 
 export const getApplicationData = async (sessionOrRequest: Session | Request | undefined): Promise<ApplicationData> => {
 
@@ -55,7 +66,7 @@ export const getApplicationData = async (sessionOrRequest: Session | Request | u
   try {
 
     if (!isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL) || (sessionOrRequest instanceof Session)) {
-      session = sessionOrRequest as Session;
+      session = sessionOrRequest instanceof Session ? sessionOrRequest : sessionOrRequest?.session as Session;
       return session?.getExtraData(APPLICATION_DATA_KEY) || {} as ApplicationData;
     }
 
@@ -88,18 +99,42 @@ export const deleteApplicationData = (session: Session | undefined): boolean | u
   return session?.deleteExtraData(APPLICATION_DATA_KEY);
 };
 
-export const setApplicationData = async (session: Session | undefined, data: any, key: string): Promise<undefined | void> => {
+export const setApplicationData = async (sessionOrRequest: Request | Session | undefined, data: any, key: string): Promise<undefined | void> => {
 
-  let appData: ApplicationData = await getApplicationData(session);
+  let appData: ApplicationData;
+  let req: Request | undefined;
+  let session: Session | undefined;
 
-  if (ApplicationDataArrayType.includes(key)){
-    if ( !appData[key] ) { appData[key] = []; }
-    appData[key].push(data);
-  } else {
-    appData = { ...appData, [key]: { ...data } } as ApplicationData;
+  try {
+
+    if (!isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL) || (sessionOrRequest instanceof Session)) {
+      session = sessionOrRequest instanceof Session ? sessionOrRequest : sessionOrRequest?.session as Session;
+      appData = await getApplicationData(session);
+    } else {
+      req = sessionOrRequest;
+      appData = await getApplicationData(req);
+    }
+
+    if (!ApplicationDataArrayType.includes(key)) {
+      appData = { ...appData, [key]: { ...data } } as ApplicationData;
+    } else {
+      if (!appData[key]) {
+        appData[key] = [];
+      }
+      appData[key].push(data);
+    }
+
+    if (session) {
+      return setExtraData(session, appData);
+    }
+
+    setExtraData(req?.session as Session, appData);
+    return updateOverseasEntity(req as Request, req?.session as Session, appData);
+
+  } catch (e) {
+    logger.error(`Error setting application data, with error object: ${e}`);
   }
 
-  return setExtraData(session, appData);
 };
 
 export const setExtraData = (session: Session | undefined, appData: ApplicationData): undefined | void => {

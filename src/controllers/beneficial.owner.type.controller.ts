@@ -45,7 +45,7 @@ export const postSubmit = async (req: Request, res: Response) => {
   const errors = await getValidationErrors(appData, req);
 
   if (errors.length) {
-    return await getPageRender(req, res, formatValidationError(errors));
+    return getPageRender(req, res, formatValidationError(errors));
   }
 
   if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {

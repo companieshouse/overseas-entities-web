@@ -97,7 +97,7 @@ export const postSubmit = async (req: Request, res: Response, next: NextFunction
     const errors = await getValidationErrors(appData, req);
 
     if (errors.length) {
-      return await getPageRender(req, res, formatValidationError(errors));
+      return getPageRender(req, res, formatValidationError(errors));
     }
 
     if (!appData.update?.trust_data_fetched) {

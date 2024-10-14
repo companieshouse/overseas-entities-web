@@ -37,6 +37,7 @@ export enum ErrorMessages {
   START_DATE_MUST_BE_AFTER_DOB = "Start date must be on or after date of birth",
   UNABLE_TO_RETRIEVE_ENTITY_NUMBER = "Unable to retrieve entity number",
   UNABLE_TO_RETRIEVE_EXPECTED_DATE = "Unable to retrieve the entity's expected date",
+  MISSING_NATURE_OF_CONTROL = "Natures of control options may have changed since you the last time you saved your update statement. Select Change for each beneficial owner to check their natures of control are correct:",
 
   // Public Register
   PUBLIC_REGISTER_NAME = "Enter the name of the register",

@@ -114,7 +114,7 @@ export const postSubmit = async (req: Request, res: Response, next: NextFunction
     resetReviewStatusOnAllTrustsToBeReviewed(appData);
 
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)) {
-      console.debug("Removing old NOCs");
+      logger.debugRequest(req, "Removing old NOCs");
       appData?.[BeneficialOwnerIndividualKey]?.forEach(boi => { delete boi[NonLegalFirmNoc]; });
       appData?.[BeneficialOwnerOtherKey]?.forEach(boo => { delete boo[NonLegalFirmNoc]; });
       appData?.[BeneficialOwnerGovKey]?.forEach(bog => { delete bog[NonLegalFirmNoc]; });

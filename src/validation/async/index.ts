@@ -13,6 +13,7 @@ import isAllowedUrls from './isAllowedUrls';
 import { BeneficialOwnerIndividualKey } from '../../model/beneficial.owner.individual.model';
 import { BeneficialOwnerOtherKey } from '../../model/beneficial.owner.other.model';
 import { BeneficialOwnerGovKey } from '../../model/beneficial.owner.gov.model';
+import { isActiveFeature } from '../../utils/feature.flag';
 
 export const checkTrustIndividualCeasedDate = async (appData: ApplicationData, req: Request): Promise<ValidationError[]> => {
   const allowedUrls = [
@@ -170,17 +171,16 @@ export const beneficialOwnersTypeEmptyNOCList = async (req: Request, appData: Ap
   }
 
   try {
-    const boiList = checkIfBeneficialOwnerHasNOC(appData?.[BeneficialOwnerIndividualKey] ?? []);
-    const booList = checkIfBeneficialOwnerHasNOC(appData?.[BeneficialOwnerOtherKey] ?? []);
-    const bogList = checkIfBeneficialOwnerHasNOC(appData?.[BeneficialOwnerGovKey] ?? []);
+    const isActive = isActiveFeature(config.FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC);
+
+    const boiList = checkIfBeneficialOwnerHasNOC(appData?.[BeneficialOwnerIndividualKey] ?? [], isActive);
+    const booList = checkIfBeneficialOwnerHasNOC(appData?.[BeneficialOwnerOtherKey] ?? [], isActive);
+    const bogList = checkIfBeneficialOwnerHasNOC(appData?.[BeneficialOwnerGovKey] ?? [], isActive);
 
     const boList: string[] = [...boiList, ...booList, ...bogList];
 
     if (boList.length) {
-      throw new Error(`
-      ${boList.join(", ")}\n 
-      may have no control types assigned. Please click the 'change' link for each owner to specify their control types.
-      `);
+      throw new Error(`${ErrorMessages.MISSING_NATURE_OF_CONTROL} ${boList.join(", ")}`);
     }
 
     return errors;
@@ -196,14 +196,17 @@ export const beneficialOwnersTypeEmptyNOCList = async (req: Request, appData: Ap
   }
 };
 
-const checkIfBeneficialOwnerHasNOC = (beneficialOwner): string[] => {
+const checkIfBeneficialOwnerHasNOC = (beneficialOwner, isActive: boolean): string[] => {
   return beneficialOwner?.filter(bo =>
     !bo?.beneficial_owner_nature_of_control_types?.length &&
       !bo?.trustees_nature_of_control_types?.length &&
       !bo?.non_legal_firm_control_nature_of_control_types?.length &&
       !bo?.trust_control_nature_of_control_types?.length &&
       !bo?.owner_of_land_person_nature_of_control_jurisdictions?.length &&
-      !bo?.owner_of_land_other_entity_nature_of_control_jurisdictions?.length
+      !bo?.owner_of_land_other_entity_nature_of_control_jurisdictions?.length &&
+      ((!isActive && !bo?.non_legal_firm_members_nature_of_control_types?.length)
+      || (isActive && (bo?.non_legal_firm_members_nature_of_control_types?.length || !bo?.non_legal_firm_members_nature_of_control_types?.length))
+      )
   ).map(bo => bo?.first_name ?? bo?.name);
 };
 

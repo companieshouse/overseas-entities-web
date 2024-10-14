@@ -8,6 +8,7 @@ jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
 jest.mock('../../../src/utils/feature.flag');
 jest.mock('../../../src/service/transaction.service');
 jest.mock('../../../src/service/overseas.entities.service');
+jest.mock("../../../src/utils/url");
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
 import mockJourneyDetectionMiddleware from "../../__mocks__/journey.detection.middleware.mock";
@@ -15,6 +16,23 @@ import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddlewa
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
+
+import app from "../../../src/app";
+
+import { ErrorMessages } from '../../../src/validation/error.messages';
+import { authentication } from "../../../src/middleware/authentication.middleware";
+import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
+import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
+import { logger } from "../../../src/utils/logger";
+import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
+import { isActiveFeature } from "../../../src/utils/feature.flag";
+import { updateOverseasEntity } from "../../../src/service/overseas.entities.service";
+import { APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock";
+import { isRegistrationJourney } from "../../../src/utils/url";
+
+import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../../src/model/who.is.making.filing.model";
+import { setExtraData, fetchApplicationData } from "../../../src/utils/application.data";
+
 import {
   WHO_IS_MAKING_UPDATE_PAGE,
   WHO_IS_MAKING_UPDATE_URL,
@@ -23,7 +41,7 @@ import {
   UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE,
   UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL
 } from "../../../src/config";
-import app from "../../../src/app";
+
 import {
   ANY_MESSAGE_ERROR,
   PAGE_TITLE_ERROR,
@@ -33,17 +51,6 @@ import {
   UK_REGULATED_AGENT,
   WHO_IS_MAKING_UPDATE_PAGE_TITLE,
 } from "../../__mocks__/text.mock";
-import { ErrorMessages } from '../../../src/validation/error.messages';
-import { getApplicationData, setExtraData } from "../../../src/utils/application.data";
-import { authentication } from "../../../src/middleware/authentication.middleware";
-import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
-import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
-import { logger } from "../../../src/utils/logger";
-import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../../src/model/who.is.making.filing.model";
-import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
-import { isActiveFeature } from "../../../src/utils/feature.flag";
-import { updateOverseasEntity } from "../../../src/service/overseas.entities.service";
-import { APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock";
 
 mockJourneyDetectionMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
@@ -60,11 +67,15 @@ const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
-const mockGetApplicationData = getApplicationData as jest.Mock;
+
 const mockSetExtraData = setExtraData as jest.Mock;
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
+
+const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
+mockIsRegistrationJourney.mockReturnValue(false);
 
 describe("Who is making update controller tests", () => {
 
@@ -75,7 +86,7 @@ describe("Who is making update controller tests", () => {
 
   describe("GET tests", () => {
     test(`renders the ${WHO_IS_MAKING_UPDATE_PAGE} page`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ });
+      mockFetchApplicationData.mockReturnValueOnce({});
       const resp = await request(app).get(WHO_IS_MAKING_UPDATE_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(WHO_IS_MAKING_UPDATE_PAGE_TITLE);
@@ -86,7 +97,7 @@ describe("Who is making update controller tests", () => {
     });
 
     test(`renders the ${WHO_IS_MAKING_UPDATE_PAGE} page with radios selected to ${WhoIsRegisteringType.AGENT}`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT });
+      mockFetchApplicationData.mockReturnValueOnce({ [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT });
       const resp = await request(app).get(WHO_IS_MAKING_UPDATE_URL);
 
       expect(resp.status).toEqual(200);
@@ -94,7 +105,7 @@ describe("Who is making update controller tests", () => {
     });
 
     test(`renders the ${WHO_IS_MAKING_UPDATE_PAGE} page with radios selected to ${WhoIsRegisteringType.SOMEONE_ELSE}`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE });
+      mockFetchApplicationData.mockReturnValueOnce({ [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE });
       const resp = await request(app).get(WHO_IS_MAKING_UPDATE_URL);
 
       expect(resp.status).toEqual(200);
@@ -102,7 +113,7 @@ describe("Who is making update controller tests", () => {
     });
 
     test("catch error when rendering the page", async () => {
-      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockLoggerDebugRequest.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(WHO_IS_MAKING_UPDATE_URL);
 
       expect(resp.status).toEqual(500);
@@ -112,7 +123,7 @@ describe("Who is making update controller tests", () => {
 
   describe("POST tests", () => {
     test(`redirect to ${UPDATE_DUE_DILIGENCE_PAGE} page when ${WhoIsRegisteringType.AGENT} is selected and REDIS_flag is set to OFF`, async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockIsActiveFeature.mockReturnValueOnce(false);
       mockUpdateOverseasEntity.mockReturnValueOnce(false);
       const resp = await request(app)
@@ -127,7 +138,7 @@ describe("Who is making update controller tests", () => {
     });
 
     test(`redirect to ${UPDATE_DUE_DILIGENCE_PAGE} page when ${WhoIsRegisteringType.AGENT} is selected and REDIS_flag is set to ON`, async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockIsActiveFeature.mockReturnValueOnce(true);
       mockUpdateOverseasEntity.mockReturnValueOnce(false);
       const resp = await request(app)
@@ -142,7 +153,7 @@ describe("Who is making update controller tests", () => {
     });
 
     test(`redirects to the ${UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE} page when ${WhoIsRegisteringType.SOMEONE_ELSE} is selected and REDIS_flag is set to OFF`, async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockIsActiveFeature.mockReturnValueOnce(false);
       mockUpdateOverseasEntity.mockReturnValueOnce(false);
       const resp = await request(app)
@@ -157,7 +168,7 @@ describe("Who is making update controller tests", () => {
     });
 
     test(`redirects to the ${UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE} page when ${WhoIsRegisteringType.SOMEONE_ELSE} is selected and REDIS_flag is set to ON`, async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockIsActiveFeature.mockReturnValueOnce(true);
       mockUpdateOverseasEntity.mockReturnValueOnce(false);
       const resp = await request(app)
@@ -180,7 +191,7 @@ describe("Who is making update controller tests", () => {
     });
 
     test("catch error when posting the page", async () => {
-      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockLoggerDebugRequest.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app)
         .post(WHO_IS_MAKING_UPDATE_URL)
         .send({ [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT });

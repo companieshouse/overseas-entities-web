@@ -80,10 +80,10 @@ const mockHasOverseasNameMiddleware = hasOverseasName as jest.Mock;
 mockHasOverseasNameMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
-mockGetApplicationData.mockReturnValue( APPLICATION_DATA_MOCK );
+mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
 
 const mockFetchApplicationData = fetchApplicationData as jest.Mock;
-mockFetchApplicationData.mockReturnValue( APPLICATION_DATA_MOCK );
+mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
 
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockAuthenticationMiddleware = authentication as jest.Mock;

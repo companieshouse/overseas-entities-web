@@ -67,7 +67,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    return await getPageRender(req, res);
+    return await renderOrRedirectPage(req, res);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);
@@ -97,7 +97,7 @@ export const postSubmit = async (req: Request, res: Response, next: NextFunction
     const errors = await getValidationErrors(appData, req);
 
     if (errors.length) {
-      return getPageRender(req, res, formatValidationError(errors));
+      return renderOrRedirectPage(req, res, formatValidationError(errors));
     }
 
     if (!appData.update?.trust_data_fetched) {
@@ -164,7 +164,7 @@ const getValidationErrors = async (appData: ApplicationData, req: Request): Prom
   return [...beneficialOwnersTypeEmptyNOCListErrors];
 };
 
-const getPageRender = async (req: Request, res: Response, errors?: FormattedValidationErrors) => {
+const renderOrRedirectPage = async (req: Request, res: Response, errors?: FormattedValidationErrors) => {
   const appData: ApplicationData = await getApplicationData(req.session);
 
   const checkIsRedirect = checkAndReviewBeneficialOwner(appData);

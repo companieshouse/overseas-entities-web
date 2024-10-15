@@ -24,7 +24,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    return await getPageRender(req, res);
+    return await renderPage(req, res);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);
@@ -45,7 +45,7 @@ export const postSubmit = async (req: Request, res: Response) => {
   const errors = await getValidationErrors(appData, req);
 
   if (errors.length) {
-    return getPageRender(req, res, formatValidationError(errors));
+    return renderPage(req, res, formatValidationError(errors));
   }
 
   if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
@@ -104,7 +104,7 @@ const getValidationErrors = async (appData: ApplicationData, req: Request): Prom
   return [...beneficialOwnersTypeEmptyNOCListErrors];
 };
 
-const getPageRender = async (req: Request, res: Response, errors?: FormattedValidationErrors) => {
+const renderPage = async (req: Request, res: Response, errors?: FormattedValidationErrors) => {
   const appData: ApplicationData = await getApplicationData(req.session);
   const requiresTrusts: boolean = checkEntityRequiresTrusts(appData);
 

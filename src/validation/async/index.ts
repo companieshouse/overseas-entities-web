@@ -205,8 +205,7 @@ const checkIfBeneficialOwnerHasNOC = (beneficialOwner, isActive: boolean): strin
       !bo?.owner_of_land_person_nature_of_control_jurisdictions?.length &&
       !bo?.owner_of_land_other_entity_nature_of_control_jurisdictions?.length &&
       ((!isActive && !bo?.non_legal_firm_members_nature_of_control_types?.length)
-      || (isActive && (bo?.non_legal_firm_members_nature_of_control_types?.length || !bo?.non_legal_firm_members_nature_of_control_types?.length))
-      )
+      || (isActive && (bo?.non_legal_firm_members_nature_of_control_types?.length || !bo?.non_legal_firm_members_nature_of_control_types?.length)))
   ).map(bo => bo?.first_name ?? bo?.name);
 };
 

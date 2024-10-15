@@ -1,4 +1,7 @@
 import { NextFunction, Request, Response } from "express";
+import { getDueDiligencePage, postDueDiligencePage } from "../utils/due.diligence";
+import { isActiveFeature } from "../utils/feature.flag";
+import { getUrlWithParamsToPath } from "../utils/url";
 
 import {
   DUE_DILIGENCE_PAGE,
@@ -8,10 +11,6 @@ import {
   ENTITY_WITH_PARAMS_URL,
   WHO_IS_MAKING_FILING_WITH_PARAMS_URL
 } from "../config";
-
-import { getDueDiligencePage, postDueDiligencePage } from "../utils/due.diligence";
-import { isActiveFeature } from "../utils/feature.flag";
-import { getUrlWithParamsToPath } from "../utils/url";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   let backLinkUrl: string = WHO_IS_MAKING_FILING_URL;

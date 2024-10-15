@@ -13,6 +13,25 @@ import { NextFunction, Request, Response } from "express";
 import request from "supertest";
 
 import app from "../../src/app";
+
+import { saveAndContinue } from "../../src/utils/save.and.continue";
+import { authentication } from "../../src/middleware/authentication.middleware";
+
+import { ApplicationDataType } from '../../src/model';
+import { ErrorMessages } from '../../src/validation/error.messages';
+import { hasPresenter } from "../../src/middleware/navigation/has.presenter.middleware";
+
+import { EMAIL_ADDRESS } from "../__mocks__/session.mock";
+import { DueDiligenceKey } from '../../src/model/due.diligence.model';
+import { getTwoMonthOldDate } from "../__mocks__/fields/date.mock";
+import { DUE_DILIGENCE_WITH_INVALID_CHARACTERS_FIELDS_MOCK } from "../__mocks__/validation.mock";
+import { DateTime } from "luxon";
+import { isActiveFeature } from "../../src/utils/feature.flag";
+import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
+
+import { isRegistrationJourney, getUrlWithParamsToPath } from "../../src/utils/url";
+import { getApplicationData, setApplicationData, prepareData, fetchApplicationData } from "../../src/utils/application.data";
+
 import {
   DUE_DILIGENCE_PAGE,
   DUE_DILIGENCE_URL,
@@ -23,9 +42,7 @@ import {
   LANDING_PAGE_URL,
   WHO_IS_MAKING_FILING_URL,
 } from "../../src/config";
-import { getApplicationData, setApplicationData, prepareData } from "../../src/utils/application.data";
-import { saveAndContinue } from "../../src/utils/save.and.continue";
-import { authentication } from "../../src/middleware/authentication.middleware";
+
 import {
   ANY_MESSAGE_ERROR,
   SERVICE_UNAVAILABLE,
@@ -43,9 +60,7 @@ import {
   ALL_THE_OTHER_INFORMATION_ON_PUBLIC_REGISTER,
   BACK_BUTTON_CLASS,
 } from "../__mocks__/text.mock";
-import { ApplicationDataType } from '../../src/model';
-import { ErrorMessages } from '../../src/validation/error.messages';
-import { hasPresenter } from "../../src/middleware/navigation/has.presenter.middleware";
+
 import {
   DUE_DILIGENCE_OBJECT_MOCK,
   DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES,
@@ -54,23 +69,17 @@ import {
   DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
   DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE,
 } from "../__mocks__/due.diligence.mock";
-import { EMAIL_ADDRESS } from "../__mocks__/session.mock";
-import { DueDiligenceKey } from '../../src/model/due.diligence.model';
-import { getTwoMonthOldDate } from "../__mocks__/fields/date.mock";
-import { DUE_DILIGENCE_WITH_INVALID_CHARACTERS_FIELDS_MOCK } from "../__mocks__/validation.mock";
-import { DateTime } from "luxon";
-import { isActiveFeature } from "../../src/utils/feature.flag";
-import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
-import { getUrlWithParamsToPath } from "../../src/utils/url";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockHasPresenterMiddleware = hasPresenter as jest.Mock;
 mockHasPresenterMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
+
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
@@ -84,11 +93,15 @@ const NEXT_PAGE_URL = "/NEXT_PAGE";
 const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
 mockGetUrlWithParamsToPath.mockReturnValue(NEXT_PAGE_URL);
 
+const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
+mockIsRegistrationJourney.mockReturnValue(true);
+
 describe("DUE_DILIGENCE controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetApplicationData.mockReset();
+    mockFetchApplicationData.mockReset();
     mockSetApplicationData.mockReset();
     mockIsActiveFeature.mockReset();
     process.env.FEATURE_FLAG_ENABLE_REDIS_REMOVAL_27092023 = "false";
@@ -97,7 +110,7 @@ describe("DUE_DILIGENCE controller", () => {
   describe("GET tests", () => {
 
     test(`renders the ${DUE_DILIGENCE_PAGE}`, async () => {
-      mockGetApplicationData.mockReturnValueOnce( { [DueDiligenceKey]: null } );
+      mockFetchApplicationData.mockReturnValueOnce( { [DueDiligenceKey]: null } );
       const resp = await request(app).get(DUE_DILIGENCE_URL);
 
       expect(resp.status).toEqual(200);
@@ -117,7 +130,7 @@ describe("DUE_DILIGENCE controller", () => {
     });
 
     test(`renders the ${DUE_DILIGENCE_PAGE} page on GET method with session data populated`, async () => {
-      mockGetApplicationData.mockReturnValueOnce( { [DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK } );
+      mockFetchApplicationData.mockReturnValueOnce( { [DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK } );
       const resp = await request(app).get(DUE_DILIGENCE_URL);
 
       expect(resp.status).toEqual(200);
@@ -134,7 +147,7 @@ describe("DUE_DILIGENCE controller", () => {
     });
 
     test(`catch error when renders the ${DUE_DILIGENCE_PAGE} page on GET method`, async () => {
-      mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockFetchApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(DUE_DILIGENCE_URL);
 
       expect(resp.status).toEqual(500);
@@ -145,7 +158,7 @@ describe("DUE_DILIGENCE controller", () => {
   describe("GET with url Params tests", () => {
 
     test(`renders the ${DUE_DILIGENCE_PAGE}`, async () => {
-      mockGetApplicationData.mockReturnValueOnce( { [DueDiligenceKey]: null } );
+      mockFetchApplicationData.mockReturnValueOnce( { [DueDiligenceKey]: null } );
       const resp = await request(app).get(DUE_DILIGENCE_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(200);
@@ -165,7 +178,7 @@ describe("DUE_DILIGENCE controller", () => {
     });
 
     test(`renders the ${DUE_DILIGENCE_PAGE} page on GET method with session data populated`, async () => {
-      mockGetApplicationData.mockReturnValueOnce( { [DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK } );
+      mockFetchApplicationData.mockReturnValueOnce( { [DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK } );
       const resp = await request(app).get(DUE_DILIGENCE_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(200);
@@ -182,7 +195,7 @@ describe("DUE_DILIGENCE controller", () => {
     });
 
     test(`renders the ${DUE_DILIGENCE_PAGE} page on GET method with correct back link url when REDIS removal feature flag is off`, async () => {
-      mockGetApplicationData.mockReturnValueOnce( { [DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK } );
+      mockFetchApplicationData.mockReturnValueOnce( { [DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK } );
       mockIsActiveFeature.mockReturnValue(false);
       const resp = await request(app).get(DUE_DILIGENCE_WITH_PARAMS_URL);
       expect(resp.status).toEqual(200);
@@ -191,7 +204,7 @@ describe("DUE_DILIGENCE controller", () => {
     });
 
     test(`renders the ${DUE_DILIGENCE_PAGE} page on GET method with correct back link url when REDIS removal feature flag is on`, async () => {
-      mockGetApplicationData.mockReturnValueOnce( { [DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK } );
+      mockFetchApplicationData.mockReturnValueOnce( { [DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK } );
       mockIsActiveFeature.mockReturnValue(true);
       const resp = await request(app).get(DUE_DILIGENCE_WITH_PARAMS_URL);
       expect(resp.status).toEqual(200);
@@ -200,7 +213,7 @@ describe("DUE_DILIGENCE controller", () => {
     });
 
     test(`catch error when renders the ${DUE_DILIGENCE_PAGE} page on GET method`, async () => {
-      mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockFetchApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(DUE_DILIGENCE_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(500);

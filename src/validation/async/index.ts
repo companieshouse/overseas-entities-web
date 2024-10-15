@@ -199,13 +199,13 @@ export const beneficialOwnersTypeEmptyNOCList = async (req: Request, appData: Ap
 const checkIfBeneficialOwnerHasNOC = (beneficialOwner, isActive: boolean): string[] => {
   return beneficialOwner?.filter(bo =>
     !bo?.beneficial_owner_nature_of_control_types?.length &&
-      !bo?.trustees_nature_of_control_types?.length &&
-      !bo?.non_legal_firm_control_nature_of_control_types?.length &&
-      !bo?.trust_control_nature_of_control_types?.length &&
-      !bo?.owner_of_land_person_nature_of_control_jurisdictions?.length &&
-      !bo?.owner_of_land_other_entity_nature_of_control_jurisdictions?.length &&
-      ((!isActive && !bo?.non_legal_firm_members_nature_of_control_types?.length)
-      || (isActive && (bo?.non_legal_firm_members_nature_of_control_types?.length || !bo?.non_legal_firm_members_nature_of_control_types?.length)))
+    !bo?.trustees_nature_of_control_types?.length &&
+    !bo?.non_legal_firm_control_nature_of_control_types?.length &&
+    !bo?.trust_control_nature_of_control_types?.length &&
+    !bo?.owner_of_land_person_nature_of_control_jurisdictions?.length &&
+    !bo?.owner_of_land_other_entity_nature_of_control_jurisdictions?.length &&
+    ((!isActive && !bo?.non_legal_firm_members_nature_of_control_types?.length)
+    || (isActive && (bo?.non_legal_firm_members_nature_of_control_types?.length || !bo?.non_legal_firm_members_nature_of_control_types?.length)))
   ).map(bo => bo?.first_name ?? bo?.name);
 };
 

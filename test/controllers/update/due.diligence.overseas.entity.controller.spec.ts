@@ -6,17 +6,19 @@ jest.mock('../../../src/middleware/navigation/update/has.who.is.making.update.mi
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/save.and.continue');
 
+import { describe, expect, test, jest, beforeEach } from "@jest/globals";
+import { NextFunction, Request, Response } from "express";
+
 // import remove journey middleware mock before app to prevent real function being used instead of mock
 import mockJourneyDetectionMiddleware from "../../__mocks__/journey.detection.middleware.mock";
 import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
-import { describe, expect, test, jest, beforeEach } from "@jest/globals";
-import { NextFunction, Request, Response } from "express";
 import request from "supertest";
+
 import app from "../../../src/app";
+
 import { hasWhoIsMakingUpdate } from "../../../src/middleware/navigation/update/has.who.is.making.update.middleware";
 import { OverseasEntityDueDiligenceKey } from "../../../src/model/overseas.entity.due.diligence.model";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
-import { getApplicationData, setApplicationData, prepareData } from "../../../src/utils/application.data";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { ApplicationDataType } from '../../../src/model';
@@ -25,10 +27,14 @@ import { EMPTY_IDENTITY_DATE_REQ_BODY_MOCK, getTwoMonthOldDate } from "../../__m
 import { ErrorMessages } from '../../../src/validation/error.messages';
 import { DateTime } from "luxon";
 import { OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_INVALID_CHARACTERS_FIELDS_MOCK } from "../../__mocks__/validation.mock";
+
+import { getApplicationData, setApplicationData, prepareData } from "../../../src/utils/application.data";
+
 import {
   DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
   DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE
 } from "../../__mocks__/due.diligence.mock";
+
 import {
   OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK,
   OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES,
@@ -36,6 +42,7 @@ import {
   OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_MAX_LENGTH_FIELDS_MOCK,
   OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK
 } from "../../__mocks__/overseas.entity.due.diligence.mock";
+
 import {
   WHO_IS_MAKING_UPDATE_URL,
   UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE,
@@ -43,6 +50,7 @@ import {
   UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE,
   UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL
 } from "../../../src/config";
+
 import {
   ANY_MESSAGE_ERROR,
   SERVICE_UNAVAILABLE,

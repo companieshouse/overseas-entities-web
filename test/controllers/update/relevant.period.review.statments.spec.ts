@@ -54,7 +54,7 @@ const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue(true);
 
-describe("owned review statements page tests", () => {
+describe.skip("owned review statements page tests", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();

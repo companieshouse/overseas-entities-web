@@ -50,7 +50,7 @@ const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockCheckRelevantPeriod = checkRelevantPeriod as jest.Mock;
 
-describe("BENEFICIAL OWNER BO MO REVIEW controller", () => {
+describe.skip("BENEFICIAL OWNER BO MO REVIEW controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();

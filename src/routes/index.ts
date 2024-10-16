@@ -108,7 +108,6 @@ import {
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
-import { journeyDetectionMiddleware } from "../middleware/navigation/journey.detection.middleware";
 import { authentication } from "../middleware/authentication.middleware";
 import { navigation } from "../middleware/navigation";
 import { checkTrustValidations, checkValidations } from "../middleware/validation.middleware";
@@ -121,8 +120,6 @@ import { generateSignOutBaseUrl } from "../middleware/navigation/sign.out.base.u
 const router = Router();
 
 router.use(serviceAvailabilityMiddleware);
-
-router.use(journeyDetectionMiddleware);
 
 router.use(generateSignOutBaseUrl);
 

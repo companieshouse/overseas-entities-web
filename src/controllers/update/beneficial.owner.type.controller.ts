@@ -23,6 +23,10 @@ import { saveAndContinue } from "../../utils/save.and.continue";
 import { Session } from "@companieshouse/node-session-handler";
 import { validationResult } from "express-validator/src/validation-result";
 import { FormattedValidationErrors, formatValidationError } from "../../middleware/validation.middleware";
+import { isActiveFeature } from "../../utils/feature.flag";
+import { NonLegalFirmNoc } from "../../model/data.types.model";
+import { beneficialOwnersTypeEmptyNOCList } from "../../validation/async";
+import { ValidationError } from "express-validator";
 
 type BeneficialOwnerTypePageProperties = {
   backLinkUrl: string;
@@ -62,21 +66,8 @@ const getPageProperties = async (
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const appData: ApplicationData = await getApplicationData(req.session);
 
-    const checkIsRedirect = checkAndReviewBeneficialOwner(appData);
-    if (checkIsRedirect && checkIsRedirect !== "") {
-      return res.redirect(checkIsRedirect);
-    }
-
-    const checkMoRedirect = checkAndReviewManagingOfficers(appData);
-    if (checkMoRedirect){
-      return res.redirect(checkMoRedirect);
-    }
-
-    const pageProps = await getPageProperties(req);
-
-    return res.render(pageProps.templateName, pageProps);
+    return await renderOrRedirectPage(req, res);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);
@@ -103,6 +94,12 @@ export const postSubmit = async (req: Request, res: Response, next: NextFunction
 
     const appData: ApplicationData = await getApplicationData(req.session);
 
+    const errors = await getValidationErrors(appData, req);
+
+    if (errors.length) {
+      return renderOrRedirectPage(req, res, formatValidationError(errors));
+    }
+
     if (!appData.update?.trust_data_fetched) {
       const session = req.session as Session;
       await retrieveTrustData(req, appData);
@@ -115,6 +112,13 @@ export const postSubmit = async (req: Request, res: Response, next: NextFunction
     // If no trusts have been reviewed yet then no trusts should get moved by this
     moveReviewableTrustsIntoReview(appData);
     resetReviewStatusOnAllTrustsToBeReviewed(appData);
+
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)) {
+      logger.debugRequest(req, "Removing old NOCs");
+      appData?.[BeneficialOwnerIndividualKey]?.forEach(boi => { delete boi[NonLegalFirmNoc]; });
+      appData?.[BeneficialOwnerOtherKey]?.forEach(boo => { delete boo[NonLegalFirmNoc]; });
+      appData?.[BeneficialOwnerGovKey]?.forEach(bog => { delete bog[NonLegalFirmNoc]; });
+    }
 
     if (hasTrustsToReview(appData)) {
       return res.redirect(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
@@ -151,4 +155,29 @@ const getNextPage = (beneficialOwnerTypeChoices: BeneficialOwnerTypeChoice | Man
       default:
         return config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL;
   }
+};
+
+// Get validation errors that depend on an asynchronous request
+const getValidationErrors = async (appData: ApplicationData, req: Request): Promise<ValidationError[]> => {
+  const beneficialOwnersTypeEmptyNOCListErrors = await beneficialOwnersTypeEmptyNOCList(req, appData);
+
+  return [...beneficialOwnersTypeEmptyNOCListErrors];
+};
+
+const renderOrRedirectPage = async (req: Request, res: Response, errors?: FormattedValidationErrors) => {
+  const appData: ApplicationData = await getApplicationData(req.session);
+
+  const checkIsRedirect = checkAndReviewBeneficialOwner(appData);
+  if (checkIsRedirect && checkIsRedirect !== "") {
+    return res.redirect(checkIsRedirect);
+  }
+
+  const checkMoRedirect = checkAndReviewManagingOfficers(appData);
+  if (checkMoRedirect){
+    return res.redirect(checkMoRedirect);
+  }
+
+  const pageProps = await getPageProperties(req, errors);
+
+  return res.render(pageProps.templateName, pageProps);
 };

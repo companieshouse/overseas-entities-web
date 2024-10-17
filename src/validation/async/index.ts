@@ -10,6 +10,10 @@ import { checkCeasedDateOnOrAfterDateOfBirth, checkCeasedDateOnOrAfterTrustCreat
 import { dateContext } from '../../validation/fields/helper/date.validation.helper';
 import { checkDatePreviousToFilingDate } from '../../validation/custom.validation';
 import isAllowedUrls from './isAllowedUrls';
+import { BeneficialOwnerIndividualKey } from '../../model/beneficial.owner.individual.model';
+import { BeneficialOwnerOtherKey } from '../../model/beneficial.owner.other.model';
+import { BeneficialOwnerGovKey } from '../../model/beneficial.owner.gov.model';
+import { isActiveFeature } from '../../utils/feature.flag';
 
 export const checkTrustIndividualCeasedDate = async (appData: ApplicationData, req: Request): Promise<ValidationError[]> => {
   const allowedUrls = [
@@ -151,4 +155,57 @@ const is_date_within_filing_period_trusts = async (req: Request, trustDateContex
 export const filingPeriodTrustStartDateValidations = async (req: Request) => is_date_within_filing_period_trusts(req, historicalBOStartDateContext, ErrorMessages.START_DATE_BEFORE_FILING_DATE);
 
 export const filingPeriodTrustCeaseDateValidations = async (req: Request) => is_date_within_filing_period_trusts(req, historicalBOEndDateContext, ErrorMessages.CEASED_DATE_BEFORE_FILING_DATE);
+
+export const beneficialOwnersTypeEmptyNOCList = async (req: Request, appData: ApplicationData): Promise<ValidationError[]> => {
+  const allowedUrls = [
+    [config.REGISTER_AN_OVERSEAS_ENTITY_URL, config.BENEFICIAL_OWNER_TYPE_PAGE],
+    [config.UPDATE_AN_OVERSEAS_ENTITY_URL, config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE]
+  ];
+
+  const allowed: boolean = isAllowedUrls(allowedUrls, req);
+
+  const errors: ValidationError[] = [];
+
+  if (!allowed) {
+    return errors;
+  }
+
+  try {
+    const isActive = isActiveFeature(config.FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC);
+
+    const boiList = checkIfBeneficialOwnerHasNOC(appData?.[BeneficialOwnerIndividualKey] ?? [], isActive);
+    const booList = checkIfBeneficialOwnerHasNOC(appData?.[BeneficialOwnerOtherKey] ?? [], isActive);
+    const bogList = checkIfBeneficialOwnerHasNOC(appData?.[BeneficialOwnerGovKey] ?? [], isActive);
+
+    const boList: string[] = [...boiList, ...booList, ...bogList];
+
+    if (boList.length) {
+      throw new Error(`${ErrorMessages.MISSING_NATURE_OF_CONTROL} ${boList.join(", ")}`);
+    }
+
+    return errors;
+  } catch (error) {
+    errors.push({
+      value: '',
+      msg: error.message,
+      param: 'beneficial_owner_list',
+      location: 'body',
+    });
+
+    return errors;
+  }
+};
+
+const checkIfBeneficialOwnerHasNOC = (beneficialOwner, isActive: boolean): string[] => {
+  return beneficialOwner?.filter(bo =>
+    !bo?.beneficial_owner_nature_of_control_types?.length &&
+    !bo?.trustees_nature_of_control_types?.length &&
+    !bo?.non_legal_firm_control_nature_of_control_types?.length &&
+    !bo?.trust_control_nature_of_control_types?.length &&
+    !bo?.owner_of_land_person_nature_of_control_jurisdictions?.length &&
+    !bo?.owner_of_land_other_entity_nature_of_control_jurisdictions?.length &&
+    ((!isActive && !bo?.non_legal_firm_members_nature_of_control_types?.length)
+    || (isActive && (bo?.non_legal_firm_members_nature_of_control_types?.length || !bo?.non_legal_firm_members_nature_of_control_types?.length)))
+  ).map(bo => bo?.first_name ?? bo?.name);
+};
 

@@ -51,8 +51,12 @@ describe("BENEFICIAL OWNER TYPE controller on resume", () => {
 
   describe("POST Submit", () => {
     test(`redirects to the trust interrupt page with entity_number null on resume`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
       mockIsActiveFeature.mockReturnValueOnce(false); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_TRUSTS_WEB
+      mockIsActiveFeature.mockReturnValueOnce(false); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
       const appDataMock = {
         ...APPLICATION_DATA_MOCK,
         [EntityNumberKey]: null,

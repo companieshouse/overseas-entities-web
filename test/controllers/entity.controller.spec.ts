@@ -13,6 +13,21 @@ import { NextFunction, Request, Response } from "express";
 import request from "supertest";
 
 import app from "../../src/app";
+
+import { authentication } from "../../src/middleware/authentication.middleware";
+import { ApplicationDataType } from '../../src/model';
+import { ErrorMessages } from '../../src/validation/error.messages';
+import { EntityKey } from '../../src/model/entity.model';
+
+import { getApplicationData, setApplicationData, prepareData } from "../../src/utils/application.data";
+
+import { hasDueDiligence } from "../../src/middleware/navigation/has.due.diligence.middleware";
+import { WhoIsRegisteringKey, WhoIsRegisteringType } from '../../src/model/who.is.making.filing.model';
+import { MAX_20, MAX_50, MAX_80 } from "../__mocks__/max.length.mock";
+import { isActiveFeature } from "../../src/utils/feature.flag";
+import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
+import { getUrlWithParamsToPath } from "../../src/utils/url";
+
 import {
   BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL,
   DUE_DILIGENCE_URL,
@@ -22,9 +37,7 @@ import {
   LANDING_PAGE_URL,
   OVERSEAS_ENTITY_DUE_DILIGENCE_URL
 } from "../../src/config";
-import { getApplicationData, setApplicationData, prepareData } from "../../src/utils/application.data";
-import { saveAndContinue } from "../../src/utils/save.and.continue";
-import { authentication } from "../../src/middleware/authentication.middleware";
+
 import {
   EMAIL_ADDRESS,
   APPLICATION_DATA_MOCK,
@@ -34,6 +47,7 @@ import {
   ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS,
   OVERSEAS_NAME_MOCK,
 } from "../__mocks__/session.mock";
+
 import {
   BENEFICIAL_OWNER_STATEMENTS_PAGE_REDIRECT,
   ENTITY_PAGE_TITLE,
@@ -53,7 +67,7 @@ import {
   SHOW_OTHER_INFORMATION_ON_PUBLIC_REGISTER,
   EMAIL_ADDRESS_USE_AUTH_CODE_TEXT,
 } from "../__mocks__/text.mock";
-import { ApplicationDataType } from '../../src/model';
+
 import {
   EntityNameKey,
   HasSamePrincipalAddressKey,
@@ -62,36 +76,31 @@ import {
   PublicRegisterNameKey,
   RegistrationNumberKey
 } from '../../src/model/data.types.model';
-import { ErrorMessages } from '../../src/validation/error.messages';
-import { EntityKey } from '../../src/model/entity.model';
+
 import {
   REGISTER_ENTITY_WITH_INVALID_CHARACTERS_FIELDS_MOCK,
   ENTITY_WITH_MAX_LENGTH_FIELDS_MOCK
 } from '../__mocks__/validation.mock';
-import { hasDueDiligence } from "../../src/middleware/navigation/has.due.diligence.middleware";
-import { WhoIsRegisteringKey, WhoIsRegisteringType } from '../../src/model/who.is.making.filing.model';
-import { MAX_20, MAX_50, MAX_80 } from "../__mocks__/max.length.mock";
-import { isActiveFeature } from "../../src/utils/feature.flag";
-import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
-import { getUrlWithParamsToPath } from "../../src/utils/url";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockHasDueDiligenceMiddleware = hasDueDiligence as jest.Mock;
-mockHasDueDiligenceMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockHasDueDiligenceMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
-const mockSetApplicationData = setApplicationData as jest.Mock;
-const mockSaveAndContinue = saveAndContinue as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
+
+const mockSetApplicationData = setApplicationData as jest.Mock;
+mockSetApplicationData.mockReturnValue(true);
+
 const mockAuthenticationMiddleware = authentication as jest.Mock;
-mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const NEXT_PAGE_URL = "/NEXT_PAGE";
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
-mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
 mockGetUrlWithParamsToPath.mockReturnValue(NEXT_PAGE_URL);
@@ -108,7 +117,7 @@ describe("ENTITY controller", () => {
   describe("GET tests", () => {
 
     test(`renders the ${ENTITY_PAGE} page with ${DUE_DILIGENCE_URL} back link`, async () => {
-      mockGetApplicationData.mockReturnValueOnce( { [EntityKey]: null, [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT } );
+      mockGetApplicationData.mockReturnValueOnce({ [EntityKey]: null, [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT });
       const resp = await request(app).get(ENTITY_URL);
 
       expect(resp.status).toEqual(200);
@@ -125,7 +134,7 @@ describe("ENTITY controller", () => {
     });
 
     test(`renders the ${ENTITY_PAGE} page with ${OVERSEAS_ENTITY_DUE_DILIGENCE_URL} back link`, async () => {
-      mockGetApplicationData.mockReturnValueOnce( { [EntityKey]: null, [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE } );
+      mockGetApplicationData.mockReturnValueOnce({ [EntityKey]: null, [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE });
       const resp = await request(app).get(ENTITY_URL);
 
       expect(resp.status).toEqual(200);
@@ -139,7 +148,7 @@ describe("ENTITY controller", () => {
     });
 
     test(`renders the ${ENTITY_PAGE} page with public register jurisdiction field`, async () => {
-      mockGetApplicationData.mockReturnValueOnce( { [EntityKey]: null, [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE } );
+      mockGetApplicationData.mockReturnValueOnce({ [EntityKey]: null, [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE });
       const resp = await request(app).get(ENTITY_URL);
 
       expect(resp.status).toEqual(200);
@@ -151,7 +160,7 @@ describe("ENTITY controller", () => {
     });
 
     test("renders the entity page on GET method with session data populated", async () => {
-      mockGetApplicationData.mockReturnValueOnce( APPLICATION_DATA_MOCK );
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(ENTITY_URL);
 
       expect(resp.status).toEqual(200);
@@ -164,7 +173,7 @@ describe("ENTITY controller", () => {
     });
 
     test("renders the entity page on GET method with Taiwan as country field", async () => {
-      mockGetApplicationData.mockReturnValueOnce( {
+      mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
         [EntityKey]: {
           ...APPLICATION_DATA_MOCK[EntityKey],
@@ -183,7 +192,7 @@ describe("ENTITY controller", () => {
     });
 
     test("renders the entity page on GET method without United Kingdom on incorporation country", async () => {
-      mockGetApplicationData.mockReturnValueOnce( {
+      mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
         [EntityKey]: {
           ...APPLICATION_DATA_MOCK[EntityKey],
@@ -200,7 +209,7 @@ describe("ENTITY controller", () => {
     });
 
     test("renders the entity page on GET method with the three public register fields", async () => {
-      mockGetApplicationData.mockReturnValueOnce( {
+      mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
         [EntityKey]: {
           ...APPLICATION_DATA_MOCK[EntityKey],
@@ -219,7 +228,7 @@ describe("ENTITY controller", () => {
     });
 
     test("catch error when renders the entity page on GET method", async () => {
-      mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockGetApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(ENTITY_URL);
 
       expect(resp.status).toEqual(500);
@@ -230,7 +239,7 @@ describe("ENTITY controller", () => {
   describe("GET with url params tests", () => {
 
     test(`renders the ${ENTITY_PAGE} page with ${DUE_DILIGENCE_URL} back link`, async () => {
-      mockGetApplicationData.mockReturnValueOnce( { [EntityKey]: null, [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT } );
+      mockGetApplicationData.mockReturnValueOnce({ [EntityKey]: null, [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT });
       const resp = await request(app).get(ENTITY_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(200);
@@ -247,7 +256,7 @@ describe("ENTITY controller", () => {
     });
 
     test(`renders the ${ENTITY_PAGE} page with ${OVERSEAS_ENTITY_DUE_DILIGENCE_URL} back link`, async () => {
-      mockGetApplicationData.mockReturnValueOnce( { [EntityKey]: null, [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE } );
+      mockGetApplicationData.mockReturnValueOnce({ [EntityKey]: null, [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE });
       const resp = await request(app).get(ENTITY_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(200);
@@ -261,7 +270,7 @@ describe("ENTITY controller", () => {
     });
 
     test(`renders the ${ENTITY_PAGE} page with public register jurisdiction field`, async () => {
-      mockGetApplicationData.mockReturnValueOnce( { [EntityKey]: null, [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE } );
+      mockGetApplicationData.mockReturnValueOnce({ [EntityKey]: null, [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE });
       const resp = await request(app).get(ENTITY_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(200);
@@ -273,7 +282,7 @@ describe("ENTITY controller", () => {
     });
 
     test("renders the entity page on GET method with session data populated", async () => {
-      mockGetApplicationData.mockReturnValueOnce( APPLICATION_DATA_MOCK );
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(ENTITY_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(200);
@@ -286,7 +295,7 @@ describe("ENTITY controller", () => {
     });
 
     test("renders the entity page on GET method with Taiwan as country field", async () => {
-      mockGetApplicationData.mockReturnValueOnce( {
+      mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
         [EntityKey]: {
           ...APPLICATION_DATA_MOCK[EntityKey],
@@ -305,7 +314,7 @@ describe("ENTITY controller", () => {
     });
 
     test("renders the entity page on GET method without United Kingdom on incorporation country", async () => {
-      mockGetApplicationData.mockReturnValueOnce( {
+      mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
         [EntityKey]: {
           ...APPLICATION_DATA_MOCK[EntityKey],
@@ -322,7 +331,7 @@ describe("ENTITY controller", () => {
     });
 
     test("renders the entity page on GET method with the three public register fields", async () => {
-      mockGetApplicationData.mockReturnValueOnce( {
+      mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
         [EntityKey]: {
           ...APPLICATION_DATA_MOCK[EntityKey],
@@ -341,7 +350,7 @@ describe("ENTITY controller", () => {
     });
 
     test("catch error when renders the entity page on GET method", async () => {
-      mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockGetApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(ENTITY_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(500);
@@ -350,41 +359,42 @@ describe("ENTITY controller", () => {
   });
 
   describe("POST tests", () => {
+
     test("redirect the beneficial owner type page after a successful post from ENTITY page", async () => {
-      mockPrepareData.mockReturnValueOnce( ENTITY_OBJECT_MOCK );
+      mockPrepareData.mockReturnValueOnce(ENTITY_OBJECT_MOCK);
       const resp = await request(app)
         .post(ENTITY_URL)
         .send(REGISTER_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_REDIRECT);
-      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+      expect(mockSetApplicationData).toHaveBeenCalledTimes(1);
     });
 
     test("redirect to the next page page after a successful post from ENTITY page with service address data", async () => {
-      mockPrepareData.mockReturnValueOnce( ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS );
+      mockPrepareData.mockReturnValueOnce(ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS);
       const resp = await request(app)
         .post(ENTITY_URL)
         .send(REGISTER_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_REDIRECT);
-      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+      expect(mockSetApplicationData).toHaveBeenCalledTimes(1);
     });
 
     test("redirect to the next page page after a successful post from ENTITY page without the selection option", async () => {
-      mockPrepareData.mockReturnValueOnce( { ...ENTITY_OBJECT_MOCK, [HasSamePrincipalAddressKey]: "" } );
+      mockPrepareData.mockReturnValueOnce({ ...ENTITY_OBJECT_MOCK, [HasSamePrincipalAddressKey]: "" });
       const resp = await request(app)
         .post(ENTITY_URL)
         .send(REGISTER_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_REDIRECT);
-      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+      expect(mockSetApplicationData).toHaveBeenCalledTimes(1);
     });
 
     test("redirect to the next page page after a successful post from ENTITY page without the register option", async () => {
-      mockPrepareData.mockReturnValueOnce( { ...ENTITY_OBJECT_MOCK, [IsOnRegisterInCountryFormedInKey]: "" } );
+      mockPrepareData.mockReturnValueOnce({ ...ENTITY_OBJECT_MOCK, [IsOnRegisterInCountryFormedInKey]: "" });
       const resp = await request(app)
         .post(ENTITY_URL)
         .send(REGISTER_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS);
@@ -396,18 +406,18 @@ describe("ENTITY controller", () => {
       expect(data[PublicRegisterNameKey]).toEqual('');
       expect(data[PublicRegisterJurisdictionKey]).toEqual('');
       expect(data[RegistrationNumberKey]).toEqual('');
-      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+      expect(mockSetApplicationData).toHaveBeenCalledTimes(1);
     });
 
     test("renders the next page and no errors are reported if email has leading and trailing spaces", async () => {
-      mockPrepareData.mockReturnValueOnce( ENTITY_OBJECT_MOCK );
+      mockPrepareData.mockReturnValueOnce(ENTITY_OBJECT_MOCK);
       const resp = await request(app)
         .post(ENTITY_URL)
         .send(ENTITY_BODY_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES);
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_REDIRECT);
-      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+      expect(mockSetApplicationData).toHaveBeenCalledTimes(1);
 
       // Additionally check that email address is trimmed before it's saved in the session
       const data: ApplicationDataType = mockPrepareData.mock.calls[0][0];
@@ -426,7 +436,7 @@ describe("ENTITY controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.EMAIL);
       expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
-      expect(mockSaveAndContinue).toHaveBeenCalled();
+      expect(mockSetApplicationData).toHaveBeenCalled();
     });
 
     test("Test email is valid with long email name and address", async () => {
@@ -441,7 +451,7 @@ describe("ENTITY controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.EMAIL);
       expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
-      expect(mockSaveAndContinue).toHaveBeenCalled();
+      expect(mockSetApplicationData).toHaveBeenCalled();
     });
 
     test("Test email is valid with very long email name and address", async () => {
@@ -456,11 +466,11 @@ describe("ENTITY controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.EMAIL);
       expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
-      expect(mockSaveAndContinue).toHaveBeenCalled();
+      expect(mockSetApplicationData).toHaveBeenCalled();
     });
 
     test("renders the current page with error messages", async () => {
-      mockPrepareData.mockReturnValueOnce( ENTITY_OBJECT_MOCK );
+      mockPrepareData.mockReturnValueOnce(ENTITY_OBJECT_MOCK);
       const resp = await request(app).post(ENTITY_URL);
 
       expect(resp.status).toEqual(200);
@@ -480,7 +490,7 @@ describe("ENTITY controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_JURISDICTION);
       expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER);
       expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockSetApplicationData).not.toHaveBeenCalled();
     });
 
     test("renders the current page with error messages when public register name and jurisdiction is just over maxlength", async () => {
@@ -505,22 +515,22 @@ describe("ENTITY controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_REDIRECT);
-      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+      expect(mockSetApplicationData).toHaveBeenCalledTimes(1);
       expect(resp.text).not.toContain(ErrorMessages.MAX_ENTITY_PUBLIC_REGISTER_NAME_AND_JURISDICTION_LENGTH);
     });
 
     test(`POST empty object and check for error in page title`, async () => {
-      mockGetApplicationData.mockReturnValueOnce( { [EntityNameKey]: OVERSEAS_NAME_MOCK } );
+      mockGetApplicationData.mockReturnValueOnce({ [EntityNameKey]: OVERSEAS_NAME_MOCK });
       const resp = await request(app).post(ENTITY_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(PAGE_TITLE_ERROR);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockSetApplicationData).not.toHaveBeenCalled();
       expect(resp.text).toContain(OVERSEAS_NAME_MOCK);
     });
 
     test("renders the current page with public register error messages", async () => {
-      mockGetApplicationData.mockReturnValueOnce( { [EntityNameKey]: OVERSEAS_NAME_MOCK } );
-      mockPrepareData.mockReturnValueOnce( ENTITY_OBJECT_MOCK );
+      mockGetApplicationData.mockReturnValueOnce({ [EntityNameKey]: OVERSEAS_NAME_MOCK });
+      mockPrepareData.mockReturnValueOnce(ENTITY_OBJECT_MOCK);
       const resp = await request(app)
         .post(ENTITY_URL)
         .send({ is_on_register_in_country_formed_in: "1", public_register_name: "       " });
@@ -533,11 +543,11 @@ describe("ENTITY controller", () => {
       expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER);
       expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
       expect(resp.text).toContain(OVERSEAS_NAME_MOCK);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockSetApplicationData).not.toHaveBeenCalled();
     });
 
     test("renders the current page with MAX error messages", async () => {
-      mockGetApplicationData.mockReturnValueOnce( { [EntityNameKey]: OVERSEAS_NAME_MOCK } );
+      mockGetApplicationData.mockReturnValueOnce({ [EntityNameKey]: OVERSEAS_NAME_MOCK });
       const resp = await request(app)
         .post(ENTITY_URL)
         .send(ENTITY_WITH_MAX_LENGTH_FIELDS_MOCK);
@@ -569,11 +579,11 @@ describe("ENTITY controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_JURISDICTION);
       expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER);
       expect(resp.text).toContain(OVERSEAS_NAME_MOCK);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockSetApplicationData).not.toHaveBeenCalled();
     });
 
     test("renders the current page with INVALID CHARACTERS error messages", async () => {
-      mockGetApplicationData.mockReturnValueOnce( { [EntityNameKey]: OVERSEAS_NAME_MOCK } );
+      mockGetApplicationData.mockReturnValueOnce({ [EntityNameKey]: OVERSEAS_NAME_MOCK });
       const resp = await request(app)
         .post(ENTITY_URL)
         .send(REGISTER_ENTITY_WITH_INVALID_CHARACTERS_FIELDS_MOCK);
@@ -594,33 +604,34 @@ describe("ENTITY controller", () => {
       expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_JURISDICTION_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER_INVALID_CHARACTERS);
       expect(resp.text).toContain(OVERSEAS_NAME_MOCK);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockSetApplicationData).not.toHaveBeenCalled();
     });
 
     test("catch error when post data from ENTITY page", async () => {
-      mockSetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockSetApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app)
         .post(ENTITY_URL)
         .send(REGISTER_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockSetApplicationData).not.toHaveBeenCalled();
     });
   });
 
   describe("POST with url params tests", () => {
+
     test("redirect the beneficial owner type page after a successful post from ENTITY page with url params", async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
-      mockPrepareData.mockReturnValueOnce( ENTITY_OBJECT_MOCK );
+      mockPrepareData.mockReturnValueOnce(ENTITY_OBJECT_MOCK);
       const resp = await request(app)
         .post(ENTITY_WITH_PARAMS_URL)
         .send(REGISTER_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(NEXT_PAGE_URL);
-      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+      expect(mockSetApplicationData).toHaveBeenCalledTimes(1);
       expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
       expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL);
     });
@@ -628,33 +639,33 @@ describe("ENTITY controller", () => {
     test("redirect to the next page page after a successful post from ENTITY page with service address data", async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
-      mockPrepareData.mockReturnValueOnce( ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS );
+      mockPrepareData.mockReturnValueOnce(ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS);
       const resp = await request(app)
         .post(ENTITY_WITH_PARAMS_URL)
         .send(REGISTER_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(NEXT_PAGE_URL);
-      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+      expect(mockSetApplicationData).toHaveBeenCalledTimes(1);
     });
 
     test("redirect to the next page page after a successful post from ENTITY page without the selection option", async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockPrepareData.mockReturnValueOnce({ ...ENTITY_OBJECT_MOCK, [HasSamePrincipalAddressKey]: "" });
 
-      mockPrepareData.mockReturnValueOnce( { ...ENTITY_OBJECT_MOCK, [HasSamePrincipalAddressKey]: "" } );
       const resp = await request(app)
         .post(ENTITY_WITH_PARAMS_URL)
         .send(REGISTER_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(NEXT_PAGE_URL);
-      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+      expect(mockSetApplicationData).toHaveBeenCalledTimes(1);
     });
 
     test("redirect to the next page page after a successful post from ENTITY page without the register option", async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockPrepareData.mockReturnValueOnce({ ...ENTITY_OBJECT_MOCK, [IsOnRegisterInCountryFormedInKey]: "" });
 
-      mockPrepareData.mockReturnValueOnce( { ...ENTITY_OBJECT_MOCK, [IsOnRegisterInCountryFormedInKey]: "" } );
       const resp = await request(app)
         .post(ENTITY_WITH_PARAMS_URL)
         .send(REGISTER_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS);
@@ -666,20 +677,20 @@ describe("ENTITY controller", () => {
       expect(data[PublicRegisterNameKey]).toEqual('');
       expect(data[PublicRegisterJurisdictionKey]).toEqual('');
       expect(data[RegistrationNumberKey]).toEqual('');
-      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+      expect(mockSetApplicationData).toHaveBeenCalledTimes(1);
     });
 
     test("renders the next page and no errors are reported if email has leading and trailing spaces", async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockPrepareData.mockReturnValueOnce(ENTITY_OBJECT_MOCK);
 
-      mockPrepareData.mockReturnValueOnce( ENTITY_OBJECT_MOCK );
       const resp = await request(app)
         .post(ENTITY_WITH_PARAMS_URL)
         .send(ENTITY_BODY_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES);
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(NEXT_PAGE_URL);
-      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+      expect(mockSetApplicationData).toHaveBeenCalledTimes(1);
 
       // Additionally check that email address is trimmed before it's saved in the session
       const data: ApplicationDataType = mockPrepareData.mock.calls[0][0];
@@ -688,11 +699,11 @@ describe("ENTITY controller", () => {
 
     test("Test email is valid with long email address", async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-
+      mockPrepareData.mockReturnValueOnce(ENTITY_OBJECT_MOCK);
       const entity = {
         ...REGISTER_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS,
         email: "vsocarroll@QQQQQQQT123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
-      mockPrepareData.mockReturnValueOnce(ENTITY_OBJECT_MOCK);
+
       const resp = await request(app)
         .post(ENTITY_WITH_PARAMS_URL)
         .send(entity);
@@ -701,7 +712,7 @@ describe("ENTITY controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.EMAIL);
       expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
-      expect(mockSaveAndContinue).toHaveBeenCalled();
+      expect(mockSetApplicationData).toHaveBeenCalled();
     });
 
     test("Test email is valid with long email name and address", async () => {
@@ -719,16 +730,16 @@ describe("ENTITY controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.EMAIL);
       expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
-      expect(mockSaveAndContinue).toHaveBeenCalled();
+      expect(mockSetApplicationData).toHaveBeenCalled();
     });
 
     test("Test email is valid with very long email name and address", async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-
+      mockPrepareData.mockReturnValueOnce(ENTITY_OBJECT_MOCK);
       const entity = {
         ...REGISTER_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS,
         email: "socarrollA123456789B132456798C123456798D123456789E123456789F123XX@T123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
-      mockPrepareData.mockReturnValueOnce(ENTITY_OBJECT_MOCK);
+
       const resp = await request(app)
         .post(ENTITY_WITH_PARAMS_URL)
         .send(entity);
@@ -737,11 +748,11 @@ describe("ENTITY controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.EMAIL);
       expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
-      expect(mockSaveAndContinue).toHaveBeenCalled();
+      expect(mockSetApplicationData).toHaveBeenCalled();
     });
 
     test("renders the current page with error messages", async () => {
-      mockPrepareData.mockReturnValueOnce( ENTITY_OBJECT_MOCK );
+      mockPrepareData.mockReturnValueOnce(ENTITY_OBJECT_MOCK);
       const resp = await request(app).post(ENTITY_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(200);
@@ -761,7 +772,7 @@ describe("ENTITY controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_JURISDICTION);
       expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER);
       expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockSetApplicationData).not.toHaveBeenCalled();
     });
 
     test("renders the current page with error messages when public register name and jurisdiction is just over maxlength", async () => {
@@ -776,34 +787,35 @@ describe("ENTITY controller", () => {
     });
 
     test("redirect to the next page when public register name and jurisdiction is just on maxlength", async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-
       const publicRegisterName79 = MAX_50 + MAX_20 + "abcdefghi";
       const publicRegisterJurisdiction80 = MAX_80;
       const entity = { ...REGISTER_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS, [PublicRegisterNameKey]: publicRegisterName79, [PublicRegisterJurisdictionKey]: publicRegisterJurisdiction80 };
+
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockPrepareData.mockReturnValueOnce(entity);
+
       const resp = await request(app)
         .post(ENTITY_WITH_PARAMS_URL)
         .send(entity);
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(NEXT_PAGE_URL);
-      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+      expect(mockSetApplicationData).toHaveBeenCalledTimes(1);
       expect(resp.text).not.toContain(ErrorMessages.MAX_ENTITY_PUBLIC_REGISTER_NAME_AND_JURISDICTION_LENGTH);
     });
 
     test(`POST empty object and check for error in page title`, async () => {
-      mockGetApplicationData.mockReturnValueOnce( { [EntityNameKey]: OVERSEAS_NAME_MOCK } );
+      mockGetApplicationData.mockReturnValueOnce({ [EntityNameKey]: OVERSEAS_NAME_MOCK });
       const resp = await request(app).post(ENTITY_WITH_PARAMS_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(PAGE_TITLE_ERROR);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
       expect(resp.text).toContain(OVERSEAS_NAME_MOCK);
+      expect(mockSetApplicationData).not.toHaveBeenCalled();
     });
 
     test("renders the current page with public register error messages", async () => {
-      mockGetApplicationData.mockReturnValueOnce( { [EntityNameKey]: OVERSEAS_NAME_MOCK } );
-      mockPrepareData.mockReturnValueOnce( ENTITY_OBJECT_MOCK );
+      mockGetApplicationData.mockReturnValueOnce({ [EntityNameKey]: OVERSEAS_NAME_MOCK });
+      mockPrepareData.mockReturnValueOnce(ENTITY_OBJECT_MOCK);
       const resp = await request(app)
         .post(ENTITY_WITH_PARAMS_URL)
         .send({ is_on_register_in_country_formed_in: "1", public_register_name: "       " });
@@ -816,11 +828,11 @@ describe("ENTITY controller", () => {
       expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER);
       expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
       expect(resp.text).toContain(OVERSEAS_NAME_MOCK);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockSetApplicationData).not.toHaveBeenCalled();
     });
 
     test("renders the current page with MAX error messages", async () => {
-      mockGetApplicationData.mockReturnValueOnce( { [EntityNameKey]: OVERSEAS_NAME_MOCK } );
+      mockGetApplicationData.mockReturnValueOnce({ [EntityNameKey]: OVERSEAS_NAME_MOCK });
       const resp = await request(app)
         .post(ENTITY_WITH_PARAMS_URL)
         .send(ENTITY_WITH_MAX_LENGTH_FIELDS_MOCK);
@@ -852,11 +864,11 @@ describe("ENTITY controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_JURISDICTION);
       expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER);
       expect(resp.text).toContain(OVERSEAS_NAME_MOCK);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockSetApplicationData).not.toHaveBeenCalled();
     });
 
     test("renders the current page with INVALID CHARACTERS error messages", async () => {
-      mockGetApplicationData.mockReturnValueOnce( { [EntityNameKey]: OVERSEAS_NAME_MOCK } );
+      mockGetApplicationData.mockReturnValueOnce({ [EntityNameKey]: OVERSEAS_NAME_MOCK });
       const resp = await request(app)
         .post(ENTITY_WITH_PARAMS_URL)
         .send(REGISTER_ENTITY_WITH_INVALID_CHARACTERS_FIELDS_MOCK);
@@ -877,18 +889,18 @@ describe("ENTITY controller", () => {
       expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_JURISDICTION_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER_INVALID_CHARACTERS);
       expect(resp.text).toContain(OVERSEAS_NAME_MOCK);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockSetApplicationData).not.toHaveBeenCalled();
     });
 
     test("catch error when post data from ENTITY page", async () => {
-      mockSetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockSetApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app)
         .post(ENTITY_WITH_PARAMS_URL)
         .send(REGISTER_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockSetApplicationData).not.toHaveBeenCalled();
     });
   });
 });

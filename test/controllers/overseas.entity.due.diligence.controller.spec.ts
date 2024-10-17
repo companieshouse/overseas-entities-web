@@ -7,12 +7,29 @@ jest.mock('../../src/utils/feature.flag');
 jest.mock('../../src/middleware/service.availability.middleware');
 jest.mock("../../src/utils/url");
 
-import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
 
+import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
 import app from "../../src/app";
+
+import { saveAndContinue } from "../../src/utils/save.and.continue";
+import { authentication } from "../../src/middleware/authentication.middleware";
+import { ApplicationDataType } from '../../src/model';
+import { EMAIL_ADDRESS } from "../__mocks__/session.mock";
+import { ErrorMessages } from '../../src/validation/error.messages';
+import { hasPresenter } from "../../src/middleware/navigation/has.presenter.middleware";
+import { OverseasEntityDueDiligenceKey } from '../../src/model/overseas.entity.due.diligence.model';
+import { DateTime } from "luxon";
+import { OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_INVALID_CHARACTERS_FIELDS_MOCK } from "../__mocks__/validation.mock";
+import { isActiveFeature } from "../../src/utils/feature.flag";
+import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
+
+import { setApplicationData, prepareData, fetchApplicationData } from "../../src/utils/application.data";
+import { EMPTY_IDENTITY_DATE_REQ_BODY_MOCK, getTwoMonthOldDate } from "../__mocks__/fields/date.mock";
+import { isRegistrationJourney, getUrlWithParamsToPath } from "../../src/utils/url";
+
 import {
   ENTITY_PAGE,
   ENTITY_URL,
@@ -23,9 +40,7 @@ import {
   OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_PARAMS_URL,
   WHO_IS_MAKING_FILING_URL,
 } from "../../src/config";
-import { getApplicationData, setApplicationData, prepareData } from "../../src/utils/application.data";
-import { saveAndContinue } from "../../src/utils/save.and.continue";
-import { authentication } from "../../src/middleware/authentication.middleware";
+
 import {
   ANY_MESSAGE_ERROR,
   SERVICE_UNAVAILABLE,
@@ -42,12 +57,7 @@ import {
   OVERSEAS_ENTITY_DUE_DILIGENCE_SUPERVISORY_NAME_LABEL_TEXT,
   ALL_THE_OTHER_INFORMATION_ON_PUBLIC_REGISTER, BACK_BUTTON_CLASS,
 } from "../__mocks__/text.mock";
-import { ApplicationDataType } from '../../src/model';
-import { EMAIL_ADDRESS } from "../__mocks__/session.mock";
-import { EMPTY_IDENTITY_DATE_REQ_BODY_MOCK, getTwoMonthOldDate } from "../__mocks__/fields/date.mock";
-import { ErrorMessages } from '../../src/validation/error.messages';
-import { hasPresenter } from "../../src/middleware/navigation/has.presenter.middleware";
-import { OverseasEntityDueDiligenceKey } from '../../src/model/overseas.entity.due.diligence.model';
+
 import {
   OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK,
   OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES,
@@ -55,34 +65,32 @@ import {
   OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_MAX_LENGTH_FIELDS_MOCK,
   OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
 } from "../__mocks__/overseas.entity.due.diligence.mock";
-import { DateTime } from "luxon";
+
 import {
   DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
   DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE
 } from "../__mocks__/due.diligence.mock";
-import { OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_INVALID_CHARACTERS_FIELDS_MOCK } from "../__mocks__/validation.mock";
-import { isActiveFeature } from "../../src/utils/feature.flag";
-import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
-import { getUrlWithParamsToPath } from "../../src/utils/url";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockHasPresenterMiddleware = hasPresenter as jest.Mock;
-mockHasPresenterMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockHasPresenterMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
-const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
 const mockAuthenticationMiddleware = authentication as jest.Mock;
-mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
-mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
+
+const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
+mockIsRegistrationJourney.mockReturnValue(true);
 
 const NEXT_PAGE_URL = "/NEXT_PAGE";
-
 const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
 mockGetUrlWithParamsToPath.mockReturnValue(NEXT_PAGE_URL);
 
@@ -98,7 +106,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
   describe("GET tests", () => {
 
     test(`renders the ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE}`, async () => {
-      mockGetApplicationData.mockReturnValueOnce( { [OverseasEntityDueDiligenceKey]: null } );
+      mockFetchApplicationData.mockReturnValueOnce({ [OverseasEntityDueDiligenceKey]: null });
       const resp = await request(app).get(OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
 
       expect(resp.status).toEqual(200);
@@ -118,7 +126,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
     });
 
     test(`renders the ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page on GET method with session data populated`, async () => {
-      mockGetApplicationData.mockReturnValueOnce( { [OverseasEntityDueDiligenceKey]: OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } );
+      mockFetchApplicationData.mockReturnValueOnce({ [OverseasEntityDueDiligenceKey]: OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK });
       const resp = await request(app).get(OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
 
       expect(resp.status).toEqual(200);
@@ -133,16 +141,16 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
     });
 
     test(`catch error when renders the ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page on GET method`, async () => {
-      mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockFetchApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
 
-    test(`renders the ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page with correct backlink url when REDIS_removal feature flag is on`, async () => {
-      mockIsActiveFeature.mockReturnValue(true);
-      mockGetApplicationData.mockReturnValueOnce( { [OverseasEntityDueDiligenceKey]: null });
+    test(`renders the ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page with correct backlink url when the REDIS_removal feature flag is ON`, async () => {
+      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockFetchApplicationData.mockReturnValueOnce({ [OverseasEntityDueDiligenceKey]: null });
       const resp = await request(app).get(OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
 
       expect(resp.status).toEqual(200);
@@ -163,9 +171,9 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
       expect(mockIsActiveFeature).toHaveBeenCalledTimes(1);
     });
 
-    test(`renders the ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page with correct backlink url when REDIS_removal feature flag is off`, async () => {
+    test(`renders the ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page with correct backlink url when the REDIS_removal feature flag is OFF`, async () => {
       mockIsActiveFeature.mockReturnValue(false);
-      mockGetApplicationData.mockReturnValueOnce( { [OverseasEntityDueDiligenceKey]: null });
+      mockFetchApplicationData.mockReturnValueOnce({ [OverseasEntityDueDiligenceKey]: null });
       const resp = await request(app).get(OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
 
       expect(resp.status).toEqual(200);
@@ -190,7 +198,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
   describe("GET with url Params tests", () => {
 
     test(`renders the ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE}`, async () => {
-      mockGetApplicationData.mockReturnValueOnce( { [OverseasEntityDueDiligenceKey]: null } );
+      mockFetchApplicationData.mockReturnValueOnce({ [OverseasEntityDueDiligenceKey]: null });
       const resp = await request(app).get(OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(200);
@@ -210,7 +218,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
     });
 
     test(`renders the ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page on GET method with session data populated`, async () => {
-      mockGetApplicationData.mockReturnValueOnce( { [OverseasEntityDueDiligenceKey]: OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } );
+      mockFetchApplicationData.mockReturnValueOnce({ [OverseasEntityDueDiligenceKey]: OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK });
       const resp = await request(app).get(OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(200);
@@ -225,7 +233,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
     });
 
     test(`catch error when renders the ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page on GET method`, async () => {
-      mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockFetchApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(500);
@@ -235,13 +243,17 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
 
   describe("POST tests", () => {
 
-    test(`redirect to ${ENTITY_PAGE} page after a successful post from ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page`, async () => {
+    test(`redirect to ${ENTITY_PAGE} page after a successful post from ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page when the REDIS_removal feature flag is OFF`, async () => {
       const dueDiligenceMock = { ...OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK };
       const twoMonthOldDate = getTwoMonthOldDate();
       dueDiligenceMock["identity_date-day"] = twoMonthOldDate.day.toString();
       dueDiligenceMock["identity_date-month"] = twoMonthOldDate.month.toString();
       dueDiligenceMock["identity_date-year"] = twoMonthOldDate.year.toString();
-      mockPrepareData.mockReturnValueOnce( dueDiligenceMock );
+
+      mockPrepareData.mockReturnValueOnce(dueDiligenceMock);
+      mockIsActiveFeature.mockReturnValue(false);
+      mockSetApplicationData.mockReturnValue(true);
+
       const resp = await request(app)
         .post(OVERSEAS_ENTITY_DUE_DILIGENCE_URL)
         .send(dueDiligenceMock);
@@ -249,6 +261,28 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${ENTITY_URL}`);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+      expect(mockSetApplicationData).toHaveBeenCalledTimes(2);
+    });
+
+    test(`redirect to ${ENTITY_PAGE} page after a successful post from ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page when the REDIS_removal feature flag is ON`, async () => {
+      const dueDiligenceMock = { ...OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK };
+      const twoMonthOldDate = getTwoMonthOldDate();
+      dueDiligenceMock["identity_date-day"] = twoMonthOldDate.day.toString();
+      dueDiligenceMock["identity_date-month"] = twoMonthOldDate.month.toString();
+      dueDiligenceMock["identity_date-year"] = twoMonthOldDate.year.toString();
+
+      mockPrepareData.mockReturnValueOnce(dueDiligenceMock);
+      mockIsActiveFeature.mockReturnValue(true);
+      mockSetApplicationData.mockReturnValue(true);
+
+      const resp = await request(app)
+        .post(OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_PARAMS_URL)
+        .send(dueDiligenceMock);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${NEXT_PAGE_URL}`);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockSetApplicationData).toHaveBeenCalledTimes(2);
     });
 
     test("renders the next page and no errors are reported if email has leading and trailing spaces", async () => {
@@ -257,7 +291,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
       dueDiligenceMock["identity_date-day"] = twoMonthOldDate.day.toString();
       dueDiligenceMock["identity_date-month"] = twoMonthOldDate.month.toString();
       dueDiligenceMock["identity_date-year"] = twoMonthOldDate.year.toString();
-      mockPrepareData.mockReturnValueOnce( dueDiligenceMock );
+      mockPrepareData.mockReturnValueOnce(dueDiligenceMock);
       const resp = await request(app)
         .post(OVERSEAS_ENTITY_DUE_DILIGENCE_URL)
         .send(dueDiligenceMock);
@@ -282,7 +316,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
       dueDiligenceMock["identity_date-day"] = twoMonthOldDate.day.toString();
       dueDiligenceMock["identity_date-month"] = twoMonthOldDate.month.toString();
       dueDiligenceMock["identity_date-year"] = twoMonthOldDate.year.toString();
-      mockPrepareData.mockReturnValueOnce( dueDiligenceMock );
+      mockPrepareData.mockReturnValueOnce(dueDiligenceMock);
 
       const resp = await request(app)
         .post(OVERSEAS_ENTITY_DUE_DILIGENCE_URL)
@@ -340,7 +374,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
         ...EMPTY_IDENTITY_DATE_REQ_BODY_MOCK
       };
 
-      mockPrepareData.mockReturnValueOnce( dueDiligenceMock );
+      mockPrepareData.mockReturnValueOnce(dueDiligenceMock);
       const resp = await request(app)
         .post(OVERSEAS_ENTITY_DUE_DILIGENCE_URL)
         .send(dueDiligenceMock);
@@ -405,7 +439,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
     });
 
     test(`catch error when renders the ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page on POST method`, async () => {
-      mockSetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockSetApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const twoMonthOldDate = getTwoMonthOldDate();
       const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK };
       dueDiligenceData["identity_date-day"] = twoMonthOldDate.day.toString();
@@ -695,7 +729,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
       dueDiligenceMock["identity_date-day"] = " " + twoMonthOldDate.day.toString() + " ";
       dueDiligenceMock["identity_date-month"] = " " + twoMonthOldDate.month.toString() + " ";
       dueDiligenceMock["identity_date-year"] = " " + twoMonthOldDate.year.toString() + " ";
-      mockPrepareData.mockReturnValueOnce( dueDiligenceMock );
+      mockPrepareData.mockReturnValueOnce(dueDiligenceMock);
       const resp = await request(app)
         .post(OVERSEAS_ENTITY_DUE_DILIGENCE_URL)
         .send(dueDiligenceMock);
@@ -722,7 +756,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
       dueDiligenceMock["identity_date-day"] = twoMonthOldDate.day.toString();
       dueDiligenceMock["identity_date-month"] = twoMonthOldDate.month.toString();
       dueDiligenceMock["identity_date-year"] = twoMonthOldDate.year.toString();
-      mockPrepareData.mockReturnValueOnce( dueDiligenceMock );
+      mockPrepareData.mockReturnValueOnce(dueDiligenceMock);
       const resp = await request(app)
         .post(OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_PARAMS_URL)
         .send(dueDiligenceMock);
@@ -741,7 +775,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
       dueDiligenceMock["identity_date-day"] = twoMonthOldDate.day.toString();
       dueDiligenceMock["identity_date-month"] = twoMonthOldDate.month.toString();
       dueDiligenceMock["identity_date-year"] = twoMonthOldDate.year.toString();
-      mockPrepareData.mockReturnValueOnce( dueDiligenceMock );
+      mockPrepareData.mockReturnValueOnce(dueDiligenceMock);
       const resp = await request(app)
         .post(OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_PARAMS_URL)
         .send(dueDiligenceMock);
@@ -766,7 +800,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
       dueDiligenceMock["identity_date-day"] = twoMonthOldDate.day.toString();
       dueDiligenceMock["identity_date-month"] = twoMonthOldDate.month.toString();
       dueDiligenceMock["identity_date-year"] = twoMonthOldDate.year.toString();
-      mockPrepareData.mockReturnValueOnce( dueDiligenceMock );
+      mockPrepareData.mockReturnValueOnce(dueDiligenceMock);
 
       const resp = await request(app)
         .post(OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_PARAMS_URL)
@@ -877,7 +911,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
     });
 
     test(`catch error when renders the ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page on POST method`, async () => {
-      mockSetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockSetApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const twoMonthOldDate = getTwoMonthOldDate();
       const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK };
       dueDiligenceData["identity_date-day"] = twoMonthOldDate.day.toString();
@@ -1171,7 +1205,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
     dueDiligenceMock["identity_date-day"] = " " + twoMonthOldDate.day.toString() + " ";
     dueDiligenceMock["identity_date-month"] = " " + twoMonthOldDate.month.toString() + " ";
     dueDiligenceMock["identity_date-year"] = " " + twoMonthOldDate.year.toString() + " ";
-    mockPrepareData.mockReturnValueOnce( dueDiligenceMock );
+    mockPrepareData.mockReturnValueOnce(dueDiligenceMock);
     const resp = await request(app)
       .post(OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_PARAMS_URL)
       .send(dueDiligenceMock);

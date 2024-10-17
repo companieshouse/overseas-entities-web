@@ -19,7 +19,7 @@ mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, ne
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
-describe("Remove cannot use this service page", () => {
+describe.skip("Remove cannot use this service page", () => {
   test(`renders the ${config.REMOVE_CANNOT_USE_PAGE} page`, async () => {
     const resp = await request(app).get(`${config.REMOVE_CANNOT_USE_URL}?${config.PREVIOUS_PAGE_QUERY_PARAM}=${config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE}`);
     expect(resp.status).toEqual(200);

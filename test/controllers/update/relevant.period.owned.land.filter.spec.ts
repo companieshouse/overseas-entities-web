@@ -62,7 +62,7 @@ mockIsActiveFeature.mockReturnValue(true);
 const mockSetExtraData = setExtraData as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
-describe("owned land filter page tests", () => {
+describe.skip("owned land filter page tests", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();

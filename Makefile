@@ -21,7 +21,7 @@ lint:
 	npm run lint
 
 .PHONY: sonar
-sonar:
+sonar: test-unit
 	npm run sonarqube
 
 .PHONY: test-unit

@@ -130,7 +130,7 @@ describe('Update Trust Individual Beneficial Owner Controller', () => {
       (mapCommonTrustDataToPage as jest.Mock).mockReturnValue(mockTrust1Data);
       mockCheckRelevantPeriod.mockReturnValueOnce(true);
 
-      await get(mockReq, mockRes, mockNext);
+      await get({ ...mockReq, url: UPDATE_TRUSTS_INDIVIDUAL_BENEFICIAL_OWNER_PAGE } as Request, mockRes, mockNext);
 
       expect(mockRes.redirect).not.toBeCalled();
       expect(mockRes.render).toBeCalledTimes(1);

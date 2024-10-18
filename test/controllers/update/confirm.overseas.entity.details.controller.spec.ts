@@ -7,7 +7,7 @@ jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock("../../../src/utils/feature.flag" );
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
-import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
+import mockJourneyDetectionMiddleware from "../../__mocks__/journey.detection.middleware.mock";
 
 import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 
@@ -46,7 +46,7 @@ import {
 import { UpdateKey } from "../../../src/model/update.type.model";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 
-mockRemoveJourneyMiddleware.mockClear();
+mockJourneyDetectionMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue(false);

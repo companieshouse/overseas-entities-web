@@ -4,6 +4,7 @@ import { ValidationError, validationResult } from 'express-validator';
 import { logger } from '../../utils/logger';
 import {
   ROUTE_PARAM_TRUSTEE_ID,
+  UPDATE_AN_OVERSEAS_ENTITY_URL,
   UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL,
   UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL,
   UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL,
@@ -31,7 +32,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     const formData = trusteeId ? mapFormerTrusteeFromSessionToPage(trustee) : {} as TrustHistoricalBeneficialOwnerForm;
 
-    const pageProperties = getPageProperties(trust, formData);
+    const pageProperties = getPageProperties(trust, formData, req.url);
 
     return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_PAGE, pageProperties);
   } catch (error) {
@@ -56,7 +57,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     if (!errorList.isEmpty() || errors.length) {
       const errorListArray = !errorList.isEmpty() ? errorList.array() : [];
 
-      const pageProperties = getPageProperties(trust, formData, formatValidationError([...errorListArray, ...errors]));
+      const pageProperties = getPageProperties(trust, formData, req.url, formatValidationError([...errorListArray, ...errors]));
       return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_PAGE, pageProperties);
     }
 
@@ -82,9 +83,9 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const getPageProperties = (trust: Trust, formData?: TrustHistoricalBeneficialOwnerForm, errors?: FormattedValidationErrors) => ({
+const getPageProperties = (trust: Trust, formData: TrustHistoricalBeneficialOwnerForm, url: string, errors?: FormattedValidationErrors) => ({
   backLinkUrl: getBackLink(trust.review_status?.reviewed_former_bos),
-  templateName: UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_PAGE,
+  templateName: url ? url.replace(UPDATE_AN_OVERSEAS_ENTITY_URL, "") : UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_PAGE,
   pageParams: {
     title: "Tell us about the former beneficial owner",
   },

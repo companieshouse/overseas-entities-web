@@ -7,9 +7,10 @@ jest.mock('../../../src/utils/save.and.continue');
 jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/relevant.period');
+jest.mock('../../../src/utils/feature.flag');
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
-import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
+import mockJourneyDetectionMiddleware from "../../__mocks__/journey.detection.middleware.mock";
 import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import { DateTime } from "luxon";
 import { describe, expect, jest, test, beforeEach } from "@jest/globals";
@@ -47,6 +48,12 @@ import {
   RELEVANT_PERIOD,
   RELEVANT_PERIOD_INFORMATION,
   SAVE_AND_CONTINUE_BUTTON_TEXT,
+  BO_NOC_HEADING,
+  FIRM_NOC_HEADING,
+  FIRM_CONTROL_NOC_HEADING,
+  TRUST_CONTROL_NOC_HEADING,
+  OWNER_OF_LAND_PERSON_NOC_HEADING,
+  OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING,
 } from "../../__mocks__/text.mock";
 import { logger } from "../../../src/utils/logger";
 import {
@@ -74,8 +81,9 @@ import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/ha
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { checkRelevantPeriod } from "../../../src/utils/relevant.period";
+import { isActiveFeature } from "../../../src/utils/feature.flag";
 
-mockRemoveJourneyMiddleware.mockClear();
+mockJourneyDetectionMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
 const mockHasUpdatePresenter = hasUpdatePresenter as jest.Mock;
 mockHasUpdatePresenter.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -99,6 +107,7 @@ const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const DUMMY_DATA_OBJECT = { dummy: "data" };
 const mockCheckRelevantPeriod = checkRelevantPeriod as jest.Mock;
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
 
 describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
 
@@ -110,7 +119,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
   });
 
   describe("GET tests", () => {
-    test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page`, async () => {
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with the flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC off`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
 
       const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_GOV_URL);
@@ -122,7 +131,36 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
       expect(resp.text).toContain(SHOW_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(resp.text).toContain(BO_NOC_HEADING);
       expect(resp.text).not.toContain(TRUSTS_NOC_HEADING);
+      expect(resp.text).toContain(FIRM_NOC_HEADING);
+      expect(resp.text).not.toContain(FIRM_CONTROL_NOC_HEADING);
+      expect(resp.text).not.toContain(TRUST_CONTROL_NOC_HEADING);
+      expect(resp.text).not.toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
+      expect(resp.text).not.toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
+    });
+
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with the flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC on`, async () => {
+      mockIsActiveFeature.mockReturnValue(true);
+
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
+
+      const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_GOV_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_LANDING_PAGE_URL);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
+      expect(resp.text).toContain(SHOW_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(resp.text).toContain(BO_NOC_HEADING);
+      expect(resp.text).not.toContain(TRUSTS_NOC_HEADING);
+      expect(resp.text).not.toContain(FIRM_NOC_HEADING);
+      expect(resp.text).toContain(FIRM_CONTROL_NOC_HEADING);
+      expect(resp.text).toContain(TRUST_CONTROL_NOC_HEADING);
+      expect(resp.text).toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
+      expect(resp.text).toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
     });
 
     test("catch error when rendering the page", async () => {

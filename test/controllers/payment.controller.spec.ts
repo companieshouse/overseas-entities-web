@@ -64,7 +64,7 @@ describe("Payment controller", () => {
       mockGetApplicationData.mockReturnValueOnce( {} );
       await request(app).get(PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING);
 
-      expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
+      expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(2);
       expect(mockLoggerDebugRequest).not.toHaveBeenCalled();
       expect(mockCreateAndLogErrorRequest).toHaveBeenCalledTimes(1);
     });
@@ -76,7 +76,7 @@ describe("Payment controller", () => {
       expect(resp.status).toEqual(302);
       expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${CONFIRMATION_URL}`);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
-      expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
+      expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(2);
       expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
     });
 
@@ -87,7 +87,7 @@ describe("Payment controller", () => {
       expect(resp.status).toEqual(302);
       expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${PAYMENT_FAILED_URL}`);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
-      expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
+      expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(2);
       expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
     });
 
@@ -112,7 +112,7 @@ describe("Payment controller", () => {
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(NEXT_PAGE_URL);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
-      expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
+      expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(2);
       expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
       expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
       expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(CONFIRMATION_WITH_PARAMS_URL);
@@ -126,7 +126,7 @@ describe("Payment controller", () => {
       expect(resp.status).toEqual(302);
       expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${NEXT_PAGE_URL}`);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
-      expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
+      expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(2);
       expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
       expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
       expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(PAYMENT_FAILED_WITH_PARAMS_URL);

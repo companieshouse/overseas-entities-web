@@ -55,6 +55,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
         isTrustFeatureEnabled: isActiveFeature(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
         isRegistration: true
       },
+      FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC: isActiveFeature(config.FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)
     });
   } catch (error) {
     logger.errorRequest(req, error);

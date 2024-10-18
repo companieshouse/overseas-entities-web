@@ -5,7 +5,7 @@ jest.mock('../../../src/utils/application.data');
 jest.mock("../../../src/utils/feature.flag" );
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
-import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
+import mockJourneyDetectionMiddleware from "../../__mocks__/journey.detection.middleware.mock";
 
 import { NextFunction, Request, Response } from "express";
 import { expect, test, describe, jest } from "@jest/globals";
@@ -25,7 +25,7 @@ import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.a
 import { APPLICATION_DATA_UPDATE_BO_MO_MOCK } from "../../__mocks__/session.mock";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 
-mockRemoveJourneyMiddleware.mockClear();
+mockJourneyDetectionMiddleware.mockClear();
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue(false);

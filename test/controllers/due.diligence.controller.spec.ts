@@ -13,6 +13,23 @@ import { NextFunction, Request, Response } from "express";
 import request from "supertest";
 
 import app from "../../src/app";
+
+import { saveAndContinue } from "../../src/utils/save.and.continue";
+import { authentication } from "../../src/middleware/authentication.middleware";
+import { ApplicationDataType } from '../../src/model';
+import { ErrorMessages } from '../../src/validation/error.messages';
+import { hasPresenter } from "../../src/middleware/navigation/has.presenter.middleware";
+import { EMAIL_ADDRESS } from "../__mocks__/session.mock";
+import { DueDiligenceKey } from '../../src/model/due.diligence.model';
+import { getTwoMonthOldDate } from "../__mocks__/fields/date.mock";
+import { DUE_DILIGENCE_WITH_INVALID_CHARACTERS_FIELDS_MOCK } from "../__mocks__/validation.mock";
+import { DateTime } from "luxon";
+import { isActiveFeature } from "../../src/utils/feature.flag";
+import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
+
+import { isRegistrationJourney, getUrlWithParamsToPath } from "../../src/utils/url";
+import { getApplicationData, setApplicationData, prepareData, fetchApplicationData } from "../../src/utils/application.data";
+
 import {
   DUE_DILIGENCE_PAGE,
   DUE_DILIGENCE_URL,
@@ -23,9 +40,7 @@ import {
   LANDING_PAGE_URL,
   WHO_IS_MAKING_FILING_URL,
 } from "../../src/config";
-import { getApplicationData, setApplicationData, prepareData } from "../../src/utils/application.data";
-import { saveAndContinue } from "../../src/utils/save.and.continue";
-import { authentication } from "../../src/middleware/authentication.middleware";
+
 import {
   ANY_MESSAGE_ERROR,
   SERVICE_UNAVAILABLE,
@@ -43,9 +58,7 @@ import {
   ALL_THE_OTHER_INFORMATION_ON_PUBLIC_REGISTER,
   BACK_BUTTON_CLASS,
 } from "../__mocks__/text.mock";
-import { ApplicationDataType } from '../../src/model';
-import { ErrorMessages } from '../../src/validation/error.messages';
-import { hasPresenter } from "../../src/middleware/navigation/has.presenter.middleware";
+
 import {
   DUE_DILIGENCE_OBJECT_MOCK,
   DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES,
@@ -54,41 +67,39 @@ import {
   DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
   DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE,
 } from "../__mocks__/due.diligence.mock";
-import { EMAIL_ADDRESS } from "../__mocks__/session.mock";
-import { DueDiligenceKey } from '../../src/model/due.diligence.model';
-import { getTwoMonthOldDate } from "../__mocks__/fields/date.mock";
-import { DUE_DILIGENCE_WITH_INVALID_CHARACTERS_FIELDS_MOCK } from "../__mocks__/validation.mock";
-import { DateTime } from "luxon";
-import { isActiveFeature } from "../../src/utils/feature.flag";
-import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
-import { getUrlWithParamsToPath } from "../../src/utils/url";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockHasPresenterMiddleware = hasPresenter as jest.Mock;
-mockHasPresenterMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockHasPresenterMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
+
 const mockAuthenticationMiddleware = authentication as jest.Mock;
-mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
-mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const NEXT_PAGE_URL = "/NEXT_PAGE";
 
 const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
 mockGetUrlWithParamsToPath.mockReturnValue(NEXT_PAGE_URL);
 
+const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
+mockIsRegistrationJourney.mockReturnValue(true);
+
 describe("DUE_DILIGENCE controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetApplicationData.mockReset();
+    mockFetchApplicationData.mockReset();
     mockSetApplicationData.mockReset();
     mockIsActiveFeature.mockReset();
     process.env.FEATURE_FLAG_ENABLE_REDIS_REMOVAL_27092023 = "false";
@@ -96,8 +107,9 @@ describe("DUE_DILIGENCE controller", () => {
 
   describe("GET tests", () => {
 
-    test(`renders the ${DUE_DILIGENCE_PAGE}`, async () => {
-      mockGetApplicationData.mockReturnValueOnce( { [DueDiligenceKey]: null } );
+    test(`renders the ${DUE_DILIGENCE_PAGE} when the REDIS_removal flag is set to OFF`, async () => {
+      mockIsActiveFeature.mockReturnValue(false);
+      mockFetchApplicationData.mockReturnValueOnce({ [DueDiligenceKey]: null });
       const resp = await request(app).get(DUE_DILIGENCE_URL);
 
       expect(resp.status).toEqual(200);
@@ -114,10 +126,11 @@ describe("DUE_DILIGENCE controller", () => {
       expect(resp.text).toContain(DUE_DILIGENCE_PARTNER_NAME_HINT_TEXT);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(mockFetchApplicationData).toHaveBeenCalledTimes(1);
     });
 
     test(`renders the ${DUE_DILIGENCE_PAGE} page on GET method with session data populated`, async () => {
-      mockGetApplicationData.mockReturnValueOnce( { [DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK } );
+      mockFetchApplicationData.mockReturnValueOnce({ [DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK });
       const resp = await request(app).get(DUE_DILIGENCE_URL);
 
       expect(resp.status).toEqual(200);
@@ -134,7 +147,7 @@ describe("DUE_DILIGENCE controller", () => {
     });
 
     test(`catch error when renders the ${DUE_DILIGENCE_PAGE} page on GET method`, async () => {
-      mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockFetchApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(DUE_DILIGENCE_URL);
 
       expect(resp.status).toEqual(500);
@@ -144,8 +157,10 @@ describe("DUE_DILIGENCE controller", () => {
 
   describe("GET with url Params tests", () => {
 
-    test(`renders the ${DUE_DILIGENCE_PAGE}`, async () => {
-      mockGetApplicationData.mockReturnValueOnce( { [DueDiligenceKey]: null } );
+    test(`renders the ${DUE_DILIGENCE_PAGE} when the REDIS_removal flag is set to ON`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false); // SERVICE OFFLINE FEATURE FLAG
+      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockFetchApplicationData.mockReturnValueOnce({ [DueDiligenceKey]: null });
       const resp = await request(app).get(DUE_DILIGENCE_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(200);
@@ -162,10 +177,11 @@ describe("DUE_DILIGENCE controller", () => {
       expect(resp.text).toContain(DUE_DILIGENCE_PARTNER_NAME_HINT_TEXT);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(mockFetchApplicationData).toHaveBeenCalledTimes(1);
     });
 
     test(`renders the ${DUE_DILIGENCE_PAGE} page on GET method with session data populated`, async () => {
-      mockGetApplicationData.mockReturnValueOnce( { [DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK } );
+      mockFetchApplicationData.mockReturnValueOnce({ [DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK });
       const resp = await request(app).get(DUE_DILIGENCE_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(200);
@@ -182,7 +198,7 @@ describe("DUE_DILIGENCE controller", () => {
     });
 
     test(`renders the ${DUE_DILIGENCE_PAGE} page on GET method with correct back link url when REDIS removal feature flag is off`, async () => {
-      mockGetApplicationData.mockReturnValueOnce( { [DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK } );
+      mockFetchApplicationData.mockReturnValueOnce({ [DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK });
       mockIsActiveFeature.mockReturnValue(false);
       const resp = await request(app).get(DUE_DILIGENCE_WITH_PARAMS_URL);
       expect(resp.status).toEqual(200);
@@ -191,7 +207,7 @@ describe("DUE_DILIGENCE controller", () => {
     });
 
     test(`renders the ${DUE_DILIGENCE_PAGE} page on GET method with correct back link url when REDIS removal feature flag is on`, async () => {
-      mockGetApplicationData.mockReturnValueOnce( { [DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK } );
+      mockFetchApplicationData.mockReturnValueOnce({ [DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK });
       mockIsActiveFeature.mockReturnValue(true);
       const resp = await request(app).get(DUE_DILIGENCE_WITH_PARAMS_URL);
       expect(resp.status).toEqual(200);
@@ -200,7 +216,7 @@ describe("DUE_DILIGENCE controller", () => {
     });
 
     test(`catch error when renders the ${DUE_DILIGENCE_PAGE} page on GET method`, async () => {
-      mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockFetchApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(DUE_DILIGENCE_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(500);
@@ -210,8 +226,10 @@ describe("DUE_DILIGENCE controller", () => {
 
   describe("POST tests", () => {
 
-    test(`redirect to ${ENTITY_PAGE} page after a successful post from ${DUE_DILIGENCE_PAGE} page`, async () => {
-      mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK } );
+    test(`redirect to ${ENTITY_PAGE} page after a successful post from ${DUE_DILIGENCE_PAGE} page when the REDIS_removal flag is set to OFF`, async () => {
+      mockIsActiveFeature.mockReturnValue(false);
+      mockSetApplicationData.mockReturnValue(true);
+      mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK });
 
       const twoMonthOldDate = getTwoMonthOldDate();
 
@@ -226,11 +244,13 @@ describe("DUE_DILIGENCE controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${ENTITY_URL}`);
+      expect(mockFetchApplicationData).toHaveBeenCalledTimes(0);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+      expect(mockSetApplicationData).toHaveBeenCalledTimes(2);
     });
 
     test("renders the next page and no errors are reported if email has leading and trailing spaces", async () => {
-      mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK } );
+      mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK });
 
       const twoMonthOldDate = getTwoMonthOldDate();
 
@@ -253,7 +273,7 @@ describe("DUE_DILIGENCE controller", () => {
     });
 
     test("renders the next page and no errors are reported if identity date has leading and trailing spaces", async () => {
-      mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK } );
+      mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK });
 
       const twoMonthOldDate = getTwoMonthOldDate();
 
@@ -530,7 +550,7 @@ describe("DUE_DILIGENCE controller", () => {
     });
 
     test("Test email is valid with long email address", async () => {
-      mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK } );
+      mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK });
       const dueDiligenceData = {
         ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
         email: "vsocarroll@QQQQQQQT123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
@@ -550,7 +570,7 @@ describe("DUE_DILIGENCE controller", () => {
     });
 
     test("Test email is valid with long email name and address", async () => {
-      mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK } );
+      mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK });
       const dueDiligenceData = {
         ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
         email: "socarrollA123456789B132456798C123456798D123456789@T123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
@@ -570,7 +590,7 @@ describe("DUE_DILIGENCE controller", () => {
     });
 
     test("Test email is valid with very long email name and address", async () => {
-      mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK } );
+      mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK });
       const dueDiligenceData = {
         ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
         email: "socarrollA123456789B132456798C123456798D123456789E123456789F123XX@T123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
@@ -720,7 +740,7 @@ describe("DUE_DILIGENCE controller", () => {
     });
 
     test(`catch error when renders the ${DUE_DILIGENCE_PAGE} page on POST method`, async () => {
-      mockSetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockSetApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
 
       const twoMonthOldDate = getTwoMonthOldDate();
 
@@ -741,10 +761,11 @@ describe("DUE_DILIGENCE controller", () => {
 
   describe("POST with url params tests", () => {
 
-    test(`redirect to ${ENTITY_PAGE} page after a successful post from ${DUE_DILIGENCE_PAGE} page with url params`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-
-      mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK } );
+    test(`redirect to ${ENTITY_PAGE} page after a successful post from ${DUE_DILIGENCE_PAGE} page with url params when the REDIS_removal flag is set to ON`, async () => {
+      mockIsActiveFeature.mockReturnValue(false); // SERVICE OFFLINE FEATURE FLAG
+      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockSetApplicationData.mockReturnValue(true);
+      mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK });
 
       const twoMonthOldDate = getTwoMonthOldDate();
 
@@ -759,15 +780,17 @@ describe("DUE_DILIGENCE controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(NEXT_PAGE_URL);
-      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
       expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
       expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(ENTITY_WITH_PARAMS_URL);
+      expect(mockFetchApplicationData).toHaveBeenCalledTimes(0);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(0);
+      expect(mockSetApplicationData).toHaveBeenCalledTimes(2);
     });
 
     test("renders the next page and no errors are reported if email has leading and trailing spaces", async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
-      mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK } );
+      mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK });
 
       const twoMonthOldDate = getTwoMonthOldDate();
 
@@ -792,7 +815,7 @@ describe("DUE_DILIGENCE controller", () => {
     test("renders the next page and no errors are reported if identity date has leading and trailing spaces", async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
-      mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK } );
+      mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK });
 
       const twoMonthOldDate = getTwoMonthOldDate();
 
@@ -1073,7 +1096,7 @@ describe("DUE_DILIGENCE controller", () => {
     test("Test email is valid with long email address", async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
-      mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK } );
+      mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK });
       const dueDiligenceData = {
         ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
         email: "vsocarroll@QQQQQQQT123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
@@ -1095,7 +1118,7 @@ describe("DUE_DILIGENCE controller", () => {
     test("Test email is valid with long email name and address", async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
-      mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK } );
+      mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK });
       const dueDiligenceData = {
         ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
         email: "socarrollA123456789B132456798C123456798D123456789@T123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
@@ -1117,7 +1140,7 @@ describe("DUE_DILIGENCE controller", () => {
     test("Test email is valid with very long email name and address", async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
-      mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK } );
+      mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK });
       const dueDiligenceData = {
         ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
         email: "socarrollA123456789B132456798C123456798D123456789E123456789F123XX@T123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
@@ -1267,7 +1290,7 @@ describe("DUE_DILIGENCE controller", () => {
     });
 
     test(`catch error when renders the ${DUE_DILIGENCE_PAGE} page on POST method`, async () => {
-      mockSetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockSetApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
 
       const twoMonthOldDate = getTwoMonthOldDate();
 

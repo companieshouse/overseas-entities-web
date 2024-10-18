@@ -13,24 +13,36 @@ import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddlewa
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
-import { getApplicationData } from "../../../src/utils/application.data";
+
+import app from "../../../src/app";
+
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { hasOverseasEntity } from "../../../src/middleware/navigation/update/has.overseas.entity.middleware";
 import * as config from "../../../src/config";
-import app from "../../../src/app";
-import { saveAndContinue } from "../../../src/utils/save.and.continue";
-import { APPLICATION_DATA_MOCK, BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK, ERROR } from "../../__mocks__/session.mock";
-import { BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING, INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER, SERVICE_UNAVAILABLE } from "../../__mocks__/text.mock";
 import { BeneficialOwnersStatementType } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
 import { UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE } from "../../../src/config";
 import { BeneficialOwnerStatementKey } from "../../../src/model/beneficial.owner.statement.model";
 import { ErrorMessages } from "../../../src/validation/error.messages";
 
+import { fetchApplicationData, setApplicationData } from "../../../src/utils/application.data";
+
+import {
+  APPLICATION_DATA_MOCK,
+  BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK,
+  ERROR
+} from "../../__mocks__/session.mock";
+
+import {
+  BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING,
+  INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER,
+  SERVICE_UNAVAILABLE
+} from "../../__mocks__/text.mock";
+
 mockJourneyDetectionMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
-const mockSaveAndContinue = saveAndContinue as jest.Mock;
+const mockSetApplicationData = setApplicationData as jest.Mock;
 
 const mockHasOverseasEntity = hasOverseasEntity as jest.Mock;
 mockHasOverseasEntity.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
@@ -43,7 +55,7 @@ mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Respo
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
-const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 
 describe("No change Get beneficial owner statement", () => {
 
@@ -52,8 +64,9 @@ describe("No change Get beneficial owner statement", () => {
   });
 
   describe("GET tests", () => {
+
     test(`that ${UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE} page is rendered`, async() => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL);
 
       expect(resp.status).toEqual(200);
@@ -65,7 +78,7 @@ describe("No change Get beneficial owner statement", () => {
     });
 
     test("catch error when rendering the page", async () => {
-      mockGetApplicationData.mockImplementationOnce(() => { throw ERROR; });
+      mockFetchApplicationData.mockImplementationOnce(() => { throw ERROR; });
       const resp = await request(app).get(config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
       expect(resp.status).toEqual(500);
@@ -73,36 +86,37 @@ describe("No change Get beneficial owner statement", () => {
   });
 
   describe("POST tests", () => {
+
     test(`redirects to ${config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE} page`, async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app)
         .post(config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL)
         .send({ [BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK });
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL);
-      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+      expect(mockSetApplicationData).toHaveBeenCalledTimes(1);
     });
 
     test("renders the current page with error message", async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).post(config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING);
       expect(resp.text).toContain(ErrorMessages.SELECT_IF_ANY_BENEFICIAL_OWNERS_BEEN_IDENTIFIED);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockSetApplicationData).not.toHaveBeenCalled();
     });
 
     test("catch error when posting data", async () => {
-      mockGetApplicationData.mockImplementationOnce(() => { throw ERROR; });
+      mockSetApplicationData.mockImplementationOnce(() => { throw ERROR; });
       const resp = await request(app)
         .post(config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL)
         .send({ [BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK });
 
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
       expect(resp.status).toEqual(500);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockSetApplicationData).toHaveBeenCalled();
     });
   });
 });

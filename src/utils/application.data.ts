@@ -116,7 +116,7 @@ export const setApplicationData = async (sessionOrRequest: Request | Session | u
     }
 
     if (!ApplicationDataArrayType.includes(key)) {
-      appData = { ...appData, [key]: { ...data } } as ApplicationData;
+      appData = { ...appData, [key]: typeof data !== "object" ? data : { ...data } } as ApplicationData;
     } else {
       if (!appData[key]) {
         appData[key] = [];

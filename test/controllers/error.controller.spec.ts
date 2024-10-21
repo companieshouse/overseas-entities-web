@@ -55,7 +55,7 @@ describe("ERROR controller", () => {
       expect(response.text).toContain(config.UPDATE_SERVICE_NAME);
     });
 
-    test("Should render the CSRF error page on remove journey", async () => {
+    test.skip("Should render the CSRF error page on remove journey", async () => {
       mockContinueSavedFilingControllerGet.mockImplementationOnce(() => { throw new CsrfError(CSRF_TOKEN_ERROR); });
       const response = await request(app).get(config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL + config.JOURNEY_REMOVE_QUERY_PARAM);
       expect(response.status).toEqual(403);

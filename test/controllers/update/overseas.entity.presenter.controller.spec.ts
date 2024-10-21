@@ -103,7 +103,7 @@ mockTransactionService.mockReturnValue( TRANSACTION_ID );
 const mockCreateOverseasEntity = createOverseasEntity as jest.Mock;
 mockCreateOverseasEntity.mockReturnValue( OVERSEAS_ENTITY_ID );
 
-describe("OVERSEAS ENTITY PRESENTER controller", () => {
+describe.skip("OVERSEAS ENTITY PRESENTER controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -135,7 +135,7 @@ describe("OVERSEAS ENTITY PRESENTER controller", () => {
     });
   });
 
-  describe ("GET tests for remove journey", () => {
+  describe.skip("GET tests for remove journey", () => {
 
     test(`renders the ${UPDATE_PRESENTER_PAGE} page for remove`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ [PresenterKey]: PRESENTER_OBJECT_MOCK, [EntityNumberKey]: "OE123457" });

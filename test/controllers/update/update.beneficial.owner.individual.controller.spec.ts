@@ -6,6 +6,7 @@ jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/utils/save.and.continue');
 jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
 jest.mock('../../../src/utils/relevant.period');
+jest.mock("../../../src/utils/feature.flag");
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
 import mockJourneyDetectionMiddleware from "../../__mocks__/journey.detection.middleware.mock";
@@ -49,6 +50,12 @@ import {
   RELEVANT_PERIOD,
   RELEVANT_PERIOD_INDIVIDUAL_INFORMATION,
   SAVE_AND_CONTINUE_BUTTON_TEXT,
+  BO_NOC_HEADING,
+  FIRM_NOC_HEADING,
+  FIRM_CONTROL_NOC_HEADING,
+  TRUST_CONTROL_NOC_HEADING,
+  OWNER_OF_LAND_PERSON_NOC_HEADING,
+  OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING,
 } from '../../__mocks__/text.mock';
 import {
   APPLICATION_DATA_UPDATE_BO_MOCK,
@@ -66,7 +73,7 @@ import {
 } from '../../__mocks__/session.mock';
 
 import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from '../../../src/model/beneficial.owner.individual.model';
-import { AddressKeys } from '../../../src/model/data.types.model';
+import { AddressKeys, NatureOfControlJurisdiction, NatureOfControlType } from '../../../src/model/data.types.model';
 import {
   BENEFICIAL_OWNER_INDIVIDUAL_WITH_INVALID_CHARS_MOCK,
   BENEFICIAL_OWNER_INDIVIDUAL_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK,
@@ -80,6 +87,7 @@ import * as config from "../../../src/config";
 import { DateTime } from "luxon";
 import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
 import { checkRelevantPeriod } from "../../../src/utils/relevant.period";
+import { isActiveFeature } from "../../../src/utils/feature.flag";
 
 mockJourneyDetectionMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
@@ -103,6 +111,7 @@ const mockRemoveFromApplicationData = removeFromApplicationData as unknown as je
 const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockCheckRelevantPeriod = checkRelevantPeriod as jest.Mock;
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
 
 const DUMMY_DATA_OBJECT = { dummy: "data" };
 
@@ -113,6 +122,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
     mockSetApplicationData.mockReset();
     mockMapFieldsToDataObject.mockReset();
     mockMapFieldsToDataObject.mockReturnValue(DUMMY_DATA_OBJECT);
+    mockIsActiveFeature.mockReset();
   });
 
   describe("GET tests", () => {
@@ -131,7 +141,39 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
       expect(resp.text).toContain(ALL_THE_OTHER_INFORMATION_ON_PUBLIC_REGISTER);
       expect(resp.text).toContain(NOT_SHOW_BENEFICIAL_OWNER_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(resp.text).toContain(BO_NOC_HEADING);
       expect(resp.text).toContain(TRUSTS_NOC_HEADING);
+      expect(resp.text).toContain(FIRM_NOC_HEADING);
+      expect(resp.text).not.toContain(FIRM_CONTROL_NOC_HEADING);
+      expect(resp.text).not.toContain(TRUST_CONTROL_NOC_HEADING);
+      expect(resp.text).not.toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
+      expect(resp.text).not.toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
+    });
+
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page when FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is active`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
+
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
+      const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(config.UPDATE_LANDING_PAGE_URL);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContain(SECOND_NATIONALITY);
+      expect(resp.text).toContain(SECOND_NATIONALITY_HINT);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
+      expect(resp.text).toContain(ALL_THE_OTHER_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(resp.text).toContain(NOT_SHOW_BENEFICIAL_OWNER_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(resp.text).toContain(BO_NOC_HEADING);
+      expect(resp.text).toContain(TRUSTS_NOC_HEADING);
+      expect(resp.text).not.toContain(FIRM_NOC_HEADING);
+      expect(resp.text).toContain(FIRM_CONTROL_NOC_HEADING);
+      expect(resp.text).toContain(TRUST_CONTROL_NOC_HEADING);
+      expect(resp.text).toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
+      expect(resp.text).toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
     });
 
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with relevant period content when query param is passed`, async () => {
@@ -1073,6 +1115,69 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
         .send(beneficialOwnerIndividual);
       expect(resp.status).toEqual(200);
       expect(resp.text).not.toContain(ErrorMessages.START_DATE_MUST_BE_AFTER_DOB);
+    });
+
+    test.each([
+      ["BO Noc", [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS], null, null, null, null, null],
+      ["Trustee Noc", null, [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS], null, null, null, null],
+      ["Trust control Noc", null, null, [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS], null, null, null],
+      ["Non legal firm control Noc", null, null, null, [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS], null, null],
+      ["Owner of land person Noc", null, null, null, null, [NatureOfControlJurisdiction.ENGLAND_AND_WALES], null],
+      ["Owner of land other entitiy Noc", null, null, null, null, null, [NatureOfControlJurisdiction.ENGLAND_AND_WALES]],
+    ])(`no validation error occurs when submitting NOC %s when FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is ON`, async (_desc, boNoc, trusteeNoc, trustControlNoc, nonLegalFirmControlNoc, landPersonNoc, landOtherEntityNoc) => {
+      mockGetApplicationData.mockReturnValue({
+        ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK
+      });
+      mockGetFromApplicationData.mockReturnValueOnce({ ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK });
+      mockPrepareData.mockReturnValueOnce({ ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK });
+
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
+      const body = {
+        ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK,
+        beneficial_owner_nature_of_control_types: boNoc,
+        trustees_nature_of_control_types: trusteeNoc,
+        trust_control_nature_of_control_types: trustControlNoc,
+        non_legal_firm_members_nature_of_control_types: null, // this noc should neot be visible when feature flag is active
+        non_legal_firm_control_nature_of_control_types: nonLegalFirmControlNoc,
+        owner_of_land_person_nature_of_control_jurisdictions: landPersonNoc,
+        owner_of_land_other_entity_nature_of_control_jurisdictions: landOtherEntityNoc
+      };
+
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)
+        .send(body);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+    });
+
+    test(`Nature of control validation error occurs when submitting no NOCs when FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is ON`, async () => {
+      mockGetApplicationData.mockReturnValue({
+        ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK
+      });
+      mockGetFromApplicationData.mockReturnValueOnce({ ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK });
+      mockPrepareData.mockReturnValueOnce({ ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK });
+
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
+      const body = {
+        ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK,
+        beneficial_owner_nature_of_control_types: null,
+        trustees_nature_of_control_types: null,
+        trust_control_nature_of_control_types: null,
+        non_legal_firm_members_nature_of_control_types: null, // this noc should neot be visible when feature flag is active
+        non_legal_firm_control_nature_of_control_types: null,
+        owner_of_land_person_nature_of_control_jurisdictions: null,
+        owner_of_land_other_entity_nature_of_control_jurisdictions: null
+      };
+
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)
+        .send(body);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ErrorMessages.SELECT_NATURE_OF_CONTROL);
     });
   });
 

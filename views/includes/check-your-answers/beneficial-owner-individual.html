@@ -75,6 +75,21 @@
   {% include "includes/check-your-answers/nocs/beneficial-owner-owner-of-land-other-entity-noc.html" %}
 {% endset %}
 
+{# Initialize boNOCHtml with individual and trustee NOCs #}
+{% set boNOCHtml = boiBeneficialOwnerIndividualNOCs + boiBeneficialOwnerTrusteeNOCs %}
+
+{% if not FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC %}
+  {# Add non-legal firm NOCs if the feature flag is disabled #}
+  {% set boNOCHtml = boNOCHtml + boiBeneficialOwnerNonLegalFirmNOCs %}
+{% else %} 
+  {% if inNoChangeJourney %}
+    {# Add non-legal firm NOCs if in no change journey #}
+    {% set boNOCHtml = boNOCHtml + boiBeneficialOwnerNonLegalFirmNOCs %}
+  {% endif %}
+  {# Add control and land owner NOCs if the feature flag is enabled #}
+  {% set boNOCHtml = boNOCHtml + boiBeneficialOwnerTrustControlNOCs + boiBeneficialOwnerNonLegalFirmControlNOCs + boiOwnerOfLandPersonNOCs + boiOwnerOfLandOtherEntityNOCs %}
+{% endif %}
+
 {% set boiIsOnSanctionsListHtml %}
   {% if boi.is_on_sanctions_list == 1 %}
     Yes
@@ -231,7 +246,7 @@
     text: "Nature of control"
   },
   value: {
-    html: boiBeneficialOwnerIndividualNOCs + boiBeneficialOwnerTrusteeNOCs + boiBeneficialOwnerTrustControlNOCs + boiBeneficialOwnerNonLegalFirmNOCs + boiBeneficialOwnerNonLegalFirmControlNOCs + boiOwnerOfLandPersonNOCs + boiOwnerOfLandOtherEntityNOCs
+    html: boNOCHtml
   },
   actions: {
     items: [CREATE_CHANGE_LINK(

@@ -1,7 +1,7 @@
 import { Session } from '@companieshouse/node-session-handler';
 import { Request } from "express";
+import { createAndLogErrorRequest, logger } from './logger';
 
-import { createAndLogErrorRequest } from './logger';
 import {
   ID,
   BeneficialOwnerNoc,
@@ -10,51 +10,131 @@ import {
   OwnerOfLandOtherEntityJurisdictionsNoc,
   OwnerOfLandPersonJurisdictionsNoc,
   TrustControlNoc,
-  TrusteesNoc
+  TrusteesNoc,
+  OverseasEntityKey,
+  Transactionkey,
 } from '../model/data.types.model';
+
 import {
   ApplicationData,
   APPLICATION_DATA_KEY,
   ApplicationDataType,
   ApplicationDataArrayType
 } from "../model";
+
 import { BeneficialOwnerGov, BeneficialOwnerGovKey } from '../model/beneficial.owner.gov.model';
 import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from '../model/beneficial.owner.individual.model';
 import { BeneficialOwnerOtherKey } from '../model/beneficial.owner.other.model';
 import { ManagingOfficerCorporate, ManagingOfficerCorporateKey } from '../model/managing.officer.corporate.model';
 import { ManagingOfficerIndividual, ManagingOfficerKey } from '../model/managing.officer.model';
+
 import {
   PARAM_BENEFICIAL_OWNER_GOV,
   PARAM_BENEFICIAL_OWNER_INDIVIDUAL,
   PARAM_BENEFICIAL_OWNER_OTHER,
   PARAM_MANAGING_OFFICER_CORPORATE,
   PARAM_MANAGING_OFFICER_INDIVIDUAL,
-  FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+  FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC,
+  FEATURE_FLAG_ENABLE_REDIS_REMOVAL,
+  ROUTE_PARAM_TRANSACTION_ID,
+  ROUTE_PARAM_SUBMISSION_ID
 } from '../config';
+
 import { BeneficialOwnerCorporate } from '@companieshouse/api-sdk-node/dist/services/overseas-entities';
 import { Remove } from 'model/remove.type.model';
 import { isActiveFeature } from "./feature.flag";
 import { isNoChangeJourney } from "./update/no.change.journey";
+import { getOverseasEntity, updateOverseasEntity } from "../service/overseas.entities.service";
 
-export const getApplicationData = async (session: Session | undefined): Promise<ApplicationData> => {
-  return await session?.getExtraData(APPLICATION_DATA_KEY) || {} as ApplicationData;
+/**
+ * @todo: remove this method after REDIS removal has been implemented for the Update/Remove journeys (ROE-2645)
+ */
+export const fetchApplicationData = (req: Request, isRegistration: boolean): Promise<ApplicationData> => {
+  if (isRegistration) {
+    return getApplicationData(req);
+  } else {
+    return getApplicationData(req.session);
+  }
+};
+
+export const getApplicationData = async (sessionOrRequest: Session | Request | undefined): Promise<ApplicationData> => {
+
+  const emptyAppData = {};
+  let req: Request;
+  let session: Session;
+
+  try {
+
+    if (!isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL) || (sessionOrRequest instanceof Session)) {
+      session = sessionOrRequest instanceof Session ? sessionOrRequest : sessionOrRequest?.session as Session;
+      return session?.getExtraData(APPLICATION_DATA_KEY) || {} as ApplicationData;
+    }
+
+    if (!sessionOrRequest) {
+      return emptyAppData;
+    }
+
+    req = sessionOrRequest;
+
+    const transactionId: string = req.params[ROUTE_PARAM_TRANSACTION_ID] ?? "";
+    const submissionId: string = req.params[ROUTE_PARAM_SUBMISSION_ID] ?? "";
+
+    if (transactionId === "" || submissionId === "") {
+      return emptyAppData;
+    }
+
+    const appData = await getOverseasEntity(req, transactionId, submissionId);
+    appData[Transactionkey] = transactionId;
+    appData[OverseasEntityKey] = submissionId;
+
+    return appData;
+
+  } catch (e) {
+    logger.error(`Error getting application data, with error object: ${e}`);
+    return emptyAppData;
+  }
 };
 
 export const deleteApplicationData = (session: Session | undefined): boolean | undefined => {
   return session?.deleteExtraData(APPLICATION_DATA_KEY);
 };
 
-export const setApplicationData = async (session: Session | undefined, data: any, key: string): Promise<undefined | void> => {
-  let appData: ApplicationData = await getApplicationData(session);
+export const setApplicationData = async (sessionOrRequest: Request | Session | undefined, data: any, key: string): Promise<undefined | void> => {
 
-  if (ApplicationDataArrayType.includes(key)){
-    if ( !appData[key] ) { appData[key] = []; }
-    appData[key].push(data);
-  } else {
-    appData = { ...appData, [key]: { ...data } } as ApplicationData;
+  let appData: ApplicationData;
+  let req: Request | undefined;
+  let session: Session | undefined;
+
+  try {
+
+    if (!isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL) || (sessionOrRequest instanceof Session)) {
+      session = sessionOrRequest instanceof Session ? sessionOrRequest : sessionOrRequest?.session as Session;
+      appData = await getApplicationData(session);
+    } else {
+      req = sessionOrRequest;
+      appData = await getApplicationData(req);
+    }
+
+    if (!ApplicationDataArrayType.includes(key)) {
+      appData = { ...appData, [key]: data } as ApplicationData;
+    } else {
+      if (!appData[key]) {
+        appData[key] = [];
+      }
+      appData[key].push(data);
+    }
+
+    if (session) {
+      return setExtraData(session, appData);
+    }
+
+    setExtraData(req?.session as Session, appData);
+    return updateOverseasEntity(req as Request, req?.session as Session, appData);
+
+  } catch (e) {
+    logger.error(`Error setting application data, with error object: ${e}`);
   }
 
-  return setExtraData(session, appData);
 };
 
 export const setExtraData = (session: Session | undefined, appData: ApplicationData): undefined | void => {

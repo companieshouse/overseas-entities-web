@@ -65,6 +65,7 @@ describe("SOLD LAND FILTER controller", () => {
   });
 
   describe("GET tests", () => {
+
     test(`renders the ${config.SOLD_LAND_FILTER_PAGE} page`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ });
       const resp = await request(app).get(config.SOLD_LAND_FILTER_URL);

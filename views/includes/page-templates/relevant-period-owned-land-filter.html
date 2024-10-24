@@ -24,18 +24,12 @@
                     {
                         value: 1,
                         text: "Yes",
-                        checked: update.owned_land_relevant_period == 1,
-                        attributes: {
-                            "data-event-id": "yes-owned-land-relevant-period"
-                        }
+                        checked: update.owned_land_relevant_period == 1
                     },
                     {
                         value: 0,
                         text: "No",
-                        checked: update.owned_land_relevant_period == 0,
-                        attributes: {
-                            "data-event-id": "no-owned-land-relevant-period"
-                        }
+                        checked: update.owned_land_relevant_period == 0
                     }
                 ]
             }) }}
@@ -49,16 +43,12 @@
             </ul>
             <p class=\"govuk-body\">If the overseas entity was the registered owner of UK property or land during this period, you may need to provide additional information as part of this filing.</p>
             <p class=\"govuk-body\">This is a legal requirement so we can understand who was involved in the entities that owned UK property or land from the date the Economic Crime and Transparency Bill came into force (28 February 2022).</p>
-            <p class=\"govuk-body\"><a class=\"govuk-link\" href=\"#\" data-event-id=\"info-required-clicked\">Find out more about what information you may need to provide.</a></p>" %}
+            <p class=\"govuk-body\"><a class=\"govuk-link\" href=\"#\">Find out more about what information you may need to provide.</a></p>" %}
 
             {{ govukDetails({
             summaryText: "What does 'pre-registration period' mean?",
-            html: myHtmlVariable,
-            attributes: {
-                "data-event-id": "pre-regis-explanation-clicked"
-              }
-            })
-            }}
+            html: myHtmlVariable
+            }) }}
 
             {% include "includes/continue-button.html" %}
         </form>

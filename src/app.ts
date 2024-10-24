@@ -9,7 +9,9 @@ import {
   SessionStore,
   SessionMiddleware,
 } from '@companieshouse/node-session-handler';
-// import { uuid } from 'uuidv4'
+import { v4 as uuidv4 } from 'uuid';
+import { prepareCSPConfig } from "./middleware/content.security.policy.middleware";
+import nocache from "nocache";
 
 import * as config from "./config";
 import { logger } from "./utils/logger";
@@ -57,26 +59,14 @@ nunjucksEnv.addGlobal("MATOMO_ASSET_PATH", `//${config.CDN_HOST}`);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-const nonce: string = "db556dea-d694-44b5-b69c-dd035f5c43db"; // uuid();
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'", config.CDN_HOST, `'nonce-${nonce}'`],
-      fontSrc: ["'self'", 'https:', 'data:', `'nonce-${nonce}'`],
-      frameAncestors: ["'self'"],
-      imgSrc: ["'self'", 'data:', `http://${config.CDN_HOST}/`, `'nonce-${nonce}'`],
-      styleSrc: ["'self'", "'unsafe-inline'", `http://${config.CDN_HOST}/stylesheets/govuk-frontend/v4.6.0/govuk-frontend-4.6.0.min.css`, `'nonce-${nonce}'`],
-      scriptSrc: [
-        "'self'",
-        "'unsafe-inline'",
-        'code.jquery.com/jquery-3.6.0.js',
-        config.CDN_HOST,
-        `'nonce-${nonce}'`
-      ],
-      objectSrc: ["'none'"]
-    }
-  }
-}));
+
+const nonce: string = uuidv4();
+app.use(helmet(prepareCSPConfig(nonce)));
+app.use(nocache());
+app.use((req, res, next) => {
+  res.locals.nonce = nonce;
+  next();
+});
 
 const cookieConfig = {
   cookieName: '__SID',
@@ -102,4 +92,5 @@ app.use("/", router);
 
 app.use(errorHandler);
 logger.info("Register an overseas entity has started");
+
 export default app;

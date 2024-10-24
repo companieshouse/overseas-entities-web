@@ -75,6 +75,8 @@ import { retrieveTrustData } from "../../../src/utils/update/trust.model.fetch";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import { BeneficialOwnerTypeChoice, BeneficialOwnerTypeKey } from "../../../src/model/beneficial.owner.type.model";
 import { RELEVANT_PERIOD_QUERY_PARAM } from "../../../src/config";
+import { beneficialOwnerIndividualType } from "../../../src/model";
+import { NatureOfControlType } from "../../../src/model/data.types.model";
 
 mockJourneyDetectionMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
@@ -261,6 +263,65 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toContain(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
+    });
+
+    test('redirects to manage trusts interrupt and remove old NOCs after submission and FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is ON', async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
+      mockRetrieveTrustData.mockReturnValueOnce(Promise.resolve());
+      mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
+      mockSetExtraData.mockReturnValueOnce(null);
+      const mockAppData = {
+        ...APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW,
+        [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [{
+          ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+          non_legal_firm_members_nature_of_control_types: [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS, NatureOfControlType.OVER_25_PERCENT_OF_SHARES]
+        }, BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK ]
+      };
+      mockGetApplicationData.mockReturnValue(mockAppData);
+
+      mockHasTrustsToReview.mockReturnValueOnce(true);
+
+      const resp = await request(app).post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
+
+      expect(mockRetrieveTrustData).toHaveBeenCalled();
+      expect(mockHasTrustsToReview).toHaveBeenCalled();
+      expect(mockSaveAndContinue).toHaveBeenCalled();
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toContain(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
+      expect(mockAppData.beneficial_owners_individual?.[0].non_legal_firm_members_nature_of_control_types).toEqual(undefined);
+      expect(mockAppData.beneficial_owners_individual?.[1].non_legal_firm_members_nature_of_control_types).toEqual(undefined);
+    });
+
+    test('redirects to manage trusts interrupt and not remove old NOCs after submission and FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is OFF', async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockRetrieveTrustData.mockReturnValueOnce(Promise.resolve());
+      mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
+      mockSetExtraData.mockReturnValueOnce(null);
+      const mockAppData = {
+        ...APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW,
+        [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [{
+          ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+          non_legal_firm_members_nature_of_control_types: [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS, NatureOfControlType.OVER_25_PERCENT_OF_SHARES]
+        }, BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK ]
+      };
+      mockGetApplicationData.mockReturnValue(mockAppData);
+
+      mockHasTrustsToReview.mockReturnValueOnce(true);
+
+      const resp = await request(app).post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
+
+      expect(mockRetrieveTrustData).toHaveBeenCalled();
+      expect(mockHasTrustsToReview).toHaveBeenCalled();
+      expect(mockSaveAndContinue).toHaveBeenCalled();
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toContain(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
+      expect(mockAppData.beneficial_owners_individual?.[0].non_legal_firm_members_nature_of_control_types).toEqual(
+        [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS, NatureOfControlType.OVER_25_PERCENT_OF_SHARES]);
     });
 
     test('redirects to manage trusts interrupt if update in app data', async () => {

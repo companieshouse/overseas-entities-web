@@ -38,6 +38,8 @@ import {
 } from '../__mocks__/text.mock';
 import {
   APPLICATION_DATA_MOCK,
+  BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+  BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
   ERROR
 } from '../__mocks__/session.mock';
 import { ErrorMessages } from '../../src/validation/error.messages';
@@ -53,6 +55,8 @@ import { checkEntityRequiresTrusts, getTrustLandingUrl } from "../../src/utils/t
 import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
 import { isActiveFeature } from "../../src/utils/feature.flag";
 import { getUrlWithParamsToPath } from "../../src/utils/url";
+import { beneficialOwnerIndividualType, beneficialOwnerOtherType } from "../../src/model";
+import { NatureOfControlType } from "../../src/model/data.types.model";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
@@ -83,6 +87,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockIsActiveFeature.mockReset();
+    mockGetApplicationData.mockReset();
   });
 
   describe("GET with url params tests", () => {
@@ -511,7 +516,10 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
   describe("POST Submit with url params tests", () => {
 
     test(`redirects to the  ${config.CHECK_YOUR_ANSWERS_PAGE} page`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockcheckEntityRequiresTrusts.mockReturnValueOnce(false);
       const resp = await request(app)
@@ -524,8 +532,124 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
     });
 
-    test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} has both beneficial owner and managing officer with trusts`, async () => {
+    test(`redirects to the  ${config.CHECK_YOUR_ANSWERS_PAGE} page and remove old NOCs after submission and FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is ON`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
+      const mockAppData = {
+        ...APPLICATION_DATA_MOCK,
+        [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [{
+          ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+          non_legal_firm_members_nature_of_control_types: [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS, NatureOfControlType.OVER_25_PERCENT_OF_SHARES]
+        }, BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK ]
+      };
+      mockGetApplicationData.mockReturnValue(mockAppData);
+      mockcheckEntityRequiresTrusts.mockReturnValueOnce(false);
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain(MOCKED_URL);
+      expect(resp.header.location).toEqual(MOCKED_URL);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
+
+      expect(mockAppData.beneficial_owners_individual?.[0].non_legal_firm_members_nature_of_control_types).toEqual(undefined);
+      expect(mockAppData.beneficial_owners_individual?.[1].non_legal_firm_members_nature_of_control_types).toEqual(undefined);
+    });
+
+    test(`redirects to the  ${config.CHECK_YOUR_ANSWERS_PAGE} page and not remove old NOCs after submission and FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is OFF`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false); // For FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockIsActiveFeature.mockReturnValueOnce(false); // For FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
+      const mockAppData = {
+        ...APPLICATION_DATA_MOCK,
+        [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [{
+          ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+          non_legal_firm_members_nature_of_control_types: [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS, NatureOfControlType.OVER_25_PERCENT_OF_SHARES]
+        }, BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK ]
+      };
+      mockGetApplicationData.mockReturnValue(mockAppData);
+      mockcheckEntityRequiresTrusts.mockReturnValueOnce(false);
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain(MOCKED_URL);
+      expect(resp.header.location).toEqual(MOCKED_URL);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
+
+      expect(mockAppData.beneficial_owners_individual?.[0].non_legal_firm_members_nature_of_control_types).toEqual(
+        [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS, NatureOfControlType.OVER_25_PERCENT_OF_SHARES]);
+    });
+
+    test(`return an error message if at least one BO doesn't have valid NOCs and FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is ON`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
+      const mockAppData = {
+        ...APPLICATION_DATA_MOCK,
+        [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [{
+          ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+          non_legal_firm_members_nature_of_control_types: [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS, NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+          beneficial_owner_nature_of_control_types: [],
+          trustees_nature_of_control_types: [],
+        }, BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK ],
+        [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: [{
+          ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
+          non_legal_firm_members_nature_of_control_types: [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS, NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+          beneficial_owner_nature_of_control_types: [],
+          trustees_nature_of_control_types: [],
+        }]
+      };
+      mockGetApplicationData.mockReturnValue(mockAppData);
+      mockcheckEntityRequiresTrusts.mockReturnValueOnce(false);
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(`${ErrorMessages.MISSING_NATURE_OF_CONTROL} ${BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK.first_name}, ${BENEFICIAL_OWNER_OTHER_OBJECT_MOCK.name}`);
+    });
+
+    test(`return an error message if at least one BO doesn't have valid NOCs and FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is OFF`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false); // For FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockIsActiveFeature.mockReturnValueOnce(false); // For FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
+      const mockAppData = {
+        ...APPLICATION_DATA_MOCK,
+        [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [{
+          ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+          non_legal_firm_members_nature_of_control_types: [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS, NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+          beneficial_owner_nature_of_control_types: [],
+          trustees_nature_of_control_types: [],
+        }, BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK ],
+        [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: [{
+          ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
+          non_legal_firm_members_nature_of_control_types: [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS, NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+          beneficial_owner_nature_of_control_types: [],
+          trustees_nature_of_control_types: [],
+        }]
+      };
+      mockGetApplicationData.mockReturnValueOnce(mockAppData);
+      mockcheckEntityRequiresTrusts.mockReturnValueOnce(false);
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).not.toContain(`${ErrorMessages.MISSING_NATURE_OF_CONTROL} ${BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK.first_name}, ${BENEFICIAL_OWNER_OTHER_OBJECT_MOCK.name}`);
+    });
+
+    test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} has both beneficial owner and managing officer with trusts`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockIsActiveFeature.mockReturnValueOnce(false); // For FEATURE_FLAG_ENABLE_TRUSTS_WEB
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockcheckEntityRequiresTrusts.mockReturnValueOnce(true);
       const resp = await request(app)
@@ -536,8 +660,10 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
 
     test(`redirects to the trusts interrupt page with trusts and Feature Flag ON`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
-      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_TRUSTS_WEB
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
 
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockcheckEntityRequiresTrusts.mockReturnValueOnce(true);
@@ -553,6 +679,8 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} has only individual beneficial owner`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
         [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS,
@@ -575,6 +703,8 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} has only ole corporate beneficial owner`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
         [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS,
@@ -597,6 +727,8 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} has only gov beneficial owner`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
         [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS,
@@ -619,6 +751,8 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} has only individual managing officer`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
         [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS,
@@ -641,6 +775,8 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} has only corporate managing officer`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
         [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS,
@@ -663,6 +799,8 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} has no beneficial owner`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
         [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS,
@@ -684,6 +822,8 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} has no managing officer`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
         [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS,
@@ -715,8 +855,11 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
 
     test(`renders the current page with error message with trusts and Feature Flag ON`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
-      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_TRUSTS_WEB
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockcheckEntityRequiresTrusts.mockReturnValueOnce(true);
       mockGetTrustLandingUrl.mockReturnValueOnce(config.TRUST_INTERRUPT_URL);
@@ -739,8 +882,10 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
 
     test(`redirects to the trusts interrupt page with trusts and Feature Flag ON`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_TRUSTS_WEB
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
 
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockcheckEntityRequiresTrusts.mockReturnValueOnce(true);

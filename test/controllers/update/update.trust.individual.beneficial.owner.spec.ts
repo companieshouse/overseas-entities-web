@@ -44,6 +44,7 @@ import { companyAuthentication } from '../../../src/middleware/company.authentic
 import { hasUpdatePresenter } from '../../../src/middleware/navigation/update/has.presenter.middleware';
 import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
 import { checkRelevantPeriod } from "../../../src/utils/relevant.period";
+import { postTrustIndividualBo } from "../../../src/utils/trust.individual.beneficial.owner";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
@@ -243,6 +244,22 @@ describe('Update Trust Individual Beneficial Owner Controller', () => {
       expect(authentication).toBeCalledTimes(1);
       expect(hasTrustWithIdUpdate).toBeCalledTimes(1);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test('successfully call postTrustIndividualBo method to render page for the relevant period', async () => {
+      // Arrange
+      (validationResult as any as jest.Mock).mockImplementationOnce(() => ({
+        isEmpty: jest.fn().mockReturnValue(false),
+        array: jest.fn().mockReturnValue([])
+      }));
+
+      // Act
+      mockReq.query["relevant-period"] = "true";
+      await postTrustIndividualBo(mockReq, mockRes, mockNext, true);
+
+      // Assert
+      expect(validationResult).toBeCalledTimes(1);
+      expect(mockRes.render).toBeCalledTimes(1);
     });
   });
 });

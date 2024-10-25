@@ -1,23 +1,26 @@
 import { NextFunction, Request, Response } from "express";
-
-import { getApplicationData } from "../utils/application.data";
 import { ApplicationData } from "../model";
 import { logger } from "../utils/logger";
-import { checkEntityRequiresTrusts, getTrustLandingUrl } from "../utils/trusts";
 import * as config from "../config";
+import { isActiveFeature } from '../utils/feature.flag';
+import { getUrlWithParamsToPath } from "../utils/url";
+import { getApplicationData } from "../utils/application.data";
+
+import { checkEntityRequiresTrusts, getTrustLandingUrl } from "../utils/trusts";
+
 import {
   BeneficialOwnerTypeChoice,
   BeneficialOwnerTypeKey,
   ManagingOfficerTypeChoice,
 } from "../model/beneficial.owner.type.model";
-import { isActiveFeature } from '../utils/feature.flag';
-import { getUrlWithParamsToPath } from "../utils/url";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
+
   try {
+
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const appData: ApplicationData = await getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req);
     const requiresTrusts: boolean = checkEntityRequiresTrusts(appData);
 
     logger.infoRequest(req, `${config.BENEFICIAL_OWNER_TYPE_PAGE} requiresTrusts=${requiresTrusts}`);
@@ -41,6 +44,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       requiresTrusts,
       ...appData,
     });
+
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);
@@ -49,27 +53,33 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
 export const post = (req: Request, res: Response) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
-
   return res.redirect(getNextPage(req));
 };
 
 export const postSubmit = async (req: Request, res: Response) => {
-  const appData: ApplicationData = await getApplicationData(req.session);
+
+  const appData: ApplicationData = await getApplicationData(req);
   const requiresTrusts: boolean = checkEntityRequiresTrusts(appData);
+
   let nextPageUrl = config.CHECK_YOUR_ANSWERS_URL;
+
   if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
     nextPageUrl = getUrlWithParamsToPath(config.CHECK_YOUR_ANSWERS_WITH_PARAMS_URL, req);
   }
+
   if (requiresTrusts) {
     nextPageUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB)
       ? getTrustLandingUrl(appData, req)
       : config.TRUST_INFO_URL;
   }
+
   return res.redirect(nextPageUrl);
+
 };
 
 // With validation in place we have got just these 5 possible choices
 const getNextPage = (req: Request): string => {
+
   const beneficialOwnerTypeChoices: BeneficialOwnerTypeChoice | ManagingOfficerTypeChoice = req.body[BeneficialOwnerTypeKey];
 
   if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)){

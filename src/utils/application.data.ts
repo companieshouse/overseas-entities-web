@@ -241,22 +241,23 @@ export const setBoNocDataAsArrays = (data: ApplicationDataType) => {
 };
 
 export const removeFromApplicationData = async (req: Request, key: string, id: string): Promise<void> => {
-  const session = req.session;
-  const appData: ApplicationData = await getApplicationData(session);
-
+  const appData: ApplicationData = await getApplicationData(req);
   const index = getIndexInApplicationData(req, appData, key, id, true);
   if (index === -1) {
     throw createAndLogErrorRequest(req, `application.data removeFromApplicationData - unable to find object in session data for key ${key} and ID ${id}`);
   }
   appData[key].splice(index, 1);
-  setExtraData(session, appData);
+  setExtraData(req.session, appData);
+  if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+    await updateOverseasEntity(req, req.session as Session, appData);
+  }
 };
 
 // gets data from ApplicationData. errorIfNotFound boolean indicates whether an error should be thrown if no data found.
 export const getFromApplicationData = async (req: Request, key: string, id: string, errorIfNotFound: boolean = true): Promise<any> => {
-  const appData: ApplicationData = await getApplicationData(req.session);
-
+  const appData: ApplicationData = await getApplicationData(req);
   const index = getIndexInApplicationData(req, appData, key, id, errorIfNotFound);
+
   if (index === -1) {
     if (errorIfNotFound) {
       throw createAndLogErrorRequest(req, `application.data getFromApplicationData - unable to find object in session data for key ${key} and ID ${id}`);
@@ -264,6 +265,7 @@ export const getFromApplicationData = async (req: Request, key: string, id: stri
       return undefined;
     }
   }
+
   if (appData[key] !== undefined) {
     return appData[key][index];
   }

@@ -1,5 +1,3 @@
-import { constants } from "http2";
-
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
@@ -9,12 +7,27 @@ jest.mock('../../src/utils/feature.flag');
 jest.mock('../../src/middleware/service.availability.middleware');
 jest.mock("../../src/utils/url");
 
+import { constants } from "http2";
 import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
+
 import app from "../../src/app";
+
 import { authentication } from "../../src/middleware/authentication.middleware";
+import { saveAndContinue } from "../../src/utils/save.and.continue";
+import { ErrorMessages } from '../../src/validation/error.messages';
+import { ApplicationDataType } from '../../src/model';
+import { hasBeneficialOwnersStatement } from "../../src/middleware/navigation/has.beneficial.owners.statement.middleware";
+import * as config from "../../src/config";
+import { DateTime } from "luxon";
+import { isActiveFeature } from "../../src/utils/feature.flag";
+import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
+
+import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from '../../src/model/beneficial.owner.individual.model';
+import { ServiceAddressKey, ServiceAddressKeys } from "../../src/model/address.model";
+import { isRegistrationJourney, getUrlWithParamsToPath } from "../../src/utils/url";
 
 import {
   BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
@@ -25,15 +38,6 @@ import {
   BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
   REMOVE,
 } from "../../src/config";
-
-import {
-  getFromApplicationData,
-  mapFieldsToDataObject,
-  prepareData,
-  removeFromApplicationData,
-  setApplicationData,
-  getApplicationData
-} from '../../src/utils/application.data';
 
 import {
   ANY_MESSAGE_ERROR,
@@ -83,25 +87,32 @@ import {
   BENEFICIAL_OWNER_INDIVIDUAL_WITH_MAX_LENGTH_FIELDS_MOCK
 } from '../__mocks__/validation.mock';
 
-import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from '../../src/model/beneficial.owner.individual.model';
-import { AddressKeys, EntityNumberKey, NatureOfControlJurisdiction, NatureOfControlType, NonLegalFirmControlNoc, OwnerOfLandOtherEntityJurisdictionsNoc, OwnerOfLandPersonJurisdictionsNoc, TrustControlNoc } from '../../src/model/data.types.model';
-import { saveAndContinue } from "../../src/utils/save.and.continue";
-import { ErrorMessages } from '../../src/validation/error.messages';
-import { ServiceAddressKey, ServiceAddressKeys } from "../../src/model/address.model";
-import { ApplicationDataType } from '../../src/model';
-import { hasBeneficialOwnersStatement } from "../../src/middleware/navigation/has.beneficial.owners.statement.middleware";
-import * as config from "../../src/config";
-import { DateTime } from "luxon";
-import { isActiveFeature } from "../../src/utils/feature.flag";
-import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
-import { getUrlWithParamsToPath } from "../../src/utils/url";
+import {
+  AddressKeys,
+  EntityNumberKey,
+  NatureOfControlJurisdiction,
+  NatureOfControlType,
+  NonLegalFirmControlNoc,
+  OwnerOfLandOtherEntityJurisdictionsNoc,
+  OwnerOfLandPersonJurisdictionsNoc,
+  TrustControlNoc,
+} from '../../src/model/data.types.model';
+
+import {
+  getFromApplicationData,
+  mapFieldsToDataObject,
+  prepareData,
+  removeFromApplicationData,
+  setApplicationData,
+  fetchApplicationData
+} from '../../src/utils/application.data';
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockHasBeneficialOwnersStatementMiddleware = hasBeneficialOwnersStatement as jest.Mock;
-mockHasBeneficialOwnersStatementMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockHasBeneficialOwnersStatementMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
-mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockGetFromApplicationData = getFromApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
@@ -109,14 +120,17 @@ const mockSaveAndContinue = saveAndContinue as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
 const mockRemoveFromApplicationData = removeFromApplicationData as unknown as jest.Mock;
 const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
-const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 
 const DUMMY_DATA_OBJECT = { dummy: "data" };
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
-mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
+
+const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
+mockIsRegistrationJourney.mockReturnValue(true);
 
 const NEXT_PAGE_URL = "/NEXT_PAGE";
 
@@ -134,11 +148,12 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
   });
 
   describe("GET tests", () => {
+
     test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page`, async () => {
       const appData = APPLICATION_DATA_MOCK;
       delete appData[EntityNumberKey];
 
-      mockGetApplicationData.mockReturnValueOnce({ ...appData });
+      mockFetchApplicationData.mockReturnValueOnce({ ...appData });
 
       const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL);
 
@@ -169,7 +184,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       const appData = APPLICATION_DATA_MOCK;
       delete appData[EntityNumberKey];
 
-      mockGetApplicationData.mockReturnValueOnce({ ...appData });
+      mockFetchApplicationData.mockReturnValueOnce({ ...appData });
 
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
@@ -191,7 +206,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
     test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with correct back link url when Redis removal feature flag is off`, async () => {
       const appData = APPLICATION_DATA_MOCK;
       delete appData[EntityNumberKey];
-      mockGetApplicationData.mockReturnValueOnce({ ...appData });
+      mockFetchApplicationData.mockReturnValueOnce({ ...appData });
       mockIsActiveFeature.mockReturnValue(false);
 
       const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL);
@@ -204,11 +219,12 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
   });
 
   describe("GET with url params tests", () => {
+
     test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page`, async () => {
       const appData = APPLICATION_DATA_MOCK;
       delete appData[EntityNumberKey];
 
-      mockGetApplicationData.mockReturnValueOnce({ ...appData });
+      mockFetchApplicationData.mockReturnValueOnce({ ...appData });
 
       const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL);
 
@@ -239,7 +255,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       const appData = APPLICATION_DATA_MOCK;
       delete appData[EntityNumberKey];
 
-      mockGetApplicationData.mockReturnValueOnce({ ...appData });
+      mockFetchApplicationData.mockReturnValueOnce({ ...appData });
 
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
@@ -261,7 +277,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
     test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with correct back link url when feature flag is on`, async () => {
       const appData = APPLICATION_DATA_MOCK;
       delete appData[EntityNumberKey];
-      mockGetApplicationData.mockReturnValueOnce({ ...appData });
+      mockFetchApplicationData.mockReturnValueOnce({ ...appData });
       mockGetUrlWithParamsToPath.mockReturnValueOnce(`${BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL}`);
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
@@ -278,11 +294,12 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
   });
 
   describe("GET BY ID tests", () => {
+
     test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page`, async () => {
       mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
       const applicationDataMock = { ...APPLICATION_DATA_MOCK };
       delete applicationDataMock[EntityNumberKey];
-      mockGetApplicationData.mockReturnValueOnce(applicationDataMock);
+      mockFetchApplicationData.mockReturnValueOnce(applicationDataMock);
 
       const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL);
 
@@ -300,7 +317,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
       const applicationDataMock = { ...APPLICATION_DATA_MOCK };
       delete applicationDataMock[EntityNumberKey];
-      mockGetApplicationData.mockReturnValueOnce(applicationDataMock);
+      mockFetchApplicationData.mockReturnValueOnce(applicationDataMock);
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
@@ -324,7 +341,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
       const applicationDataMock = { ...APPLICATION_DATA_MOCK };
       delete applicationDataMock[EntityNumberKey];
-      mockGetApplicationData.mockReturnValueOnce(applicationDataMock);
+      mockFetchApplicationData.mockReturnValueOnce(applicationDataMock);
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
       mockIsActiveFeature.mockReturnValueOnce(false); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
@@ -344,7 +361,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
     });
 
     test("catch error when rendering the page", async () => {
-      mockGetFromApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockGetFromApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL);
 
       expect(resp.status).toEqual(500);
@@ -353,11 +370,12 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
   });
 
   describe("GET BY ID with url params tests", () => {
+
     test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page`, async () => {
       mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
       const applicationDataMock = { ...APPLICATION_DATA_MOCK };
       delete applicationDataMock[EntityNumberKey];
-      mockGetApplicationData.mockReturnValueOnce(applicationDataMock);
+      mockFetchApplicationData.mockReturnValueOnce(applicationDataMock);
 
       const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL + BO_IND_ID_URL);
 
@@ -372,7 +390,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
     });
 
     test("catch error when rendering the page", async () => {
-      mockGetFromApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockGetFromApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL + BO_IND_ID_URL);
 
       expect(resp.status).toEqual(500);
@@ -381,8 +399,12 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
   });
 
   describe("POST tests", () => {
-    test(`redirects to ${BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
-      mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK );
+
+    test(`redirects to ${BENEFICIAL_OWNER_TYPE_PAGE} page when EDIS_removal flag is set to OFF`, async () => {
+      mockIsActiveFeature.mockReturnValue(false);
+      mockSetApplicationData.mockReturnValueOnce(true);
+      mockSaveAndContinue.mockReturnValueOnce(true);
+      mockPrepareData.mockImplementationOnce(() => BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
 
       const resp = await request(app)
         .post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
@@ -390,11 +412,28 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSetApplicationData).toHaveBeenCalledTimes(1);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
+    test(`redirects to ${BENEFICIAL_OWNER_TYPE_PAGE} page when EDIS_removal flag is set to ON`, async () => {
+      mockIsActiveFeature.mockReturnValue(true);
+      mockSetApplicationData.mockReturnValueOnce(true);
+      mockSaveAndContinue.mockReturnValueOnce(true);
+      mockPrepareData.mockImplementationOnce(() => BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
+
+      const resp = await request(app)
+        .post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+        .send(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(NEXT_PAGE_URL);
+      expect(mockSetApplicationData).toHaveBeenCalledTimes(1);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+    });
+
     test(`redirects to ${BENEFICIAL_OWNER_TYPE_PAGE} page when date of birth contains spaces`, async () => {
-      mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK );
+      mockPrepareData.mockImplementationOnce(() => BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
 
       const submissionMock = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK };
       submissionMock["date_of_birth-day"] = " 1 ";
@@ -417,7 +456,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
     });
 
     test(`POST only radio buttons choices and do not redirect to ${BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
-      mockPrepareData.mockImplementationOnce( () => { return BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_RADIO_BUTTONS; } );
+      mockPrepareData.mockImplementationOnce(() => { return BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_RADIO_BUTTONS; });
       const resp = await request(app)
         .post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_RADIO_BUTTONS);
@@ -428,7 +467,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
     });
 
     test(`redirect to the ${BENEFICIAL_OWNER_TYPE_PAGE} page after a successful post from ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with service address data`, async () => {
-      mockPrepareData.mockReturnValueOnce( { ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO } );
+      mockPrepareData.mockReturnValueOnce({ ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO });
       const resp = await request(app)
         .post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
@@ -439,7 +478,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
     });
 
     test(`POST empty object and do not redirect to ${BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
-      mockPrepareData.mockImplementationOnce( () => REQ_BODY_BENEFICIAL_OWNER_INDIVIDUAL_EMPTY );
+      mockPrepareData.mockImplementationOnce(() => REQ_BODY_BENEFICIAL_OWNER_INDIVIDUAL_EMPTY);
 
       const resp = await request(app)
         .post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
@@ -472,7 +511,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
     });
 
     test(`adds data to the session and redirects to the ${BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
-      mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK );
+      mockPrepareData.mockImplementationOnce(() => BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
 
       const resp = await request(app)
         .post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
@@ -488,7 +527,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
     });
 
     test(`correctly maps natures of control when feature flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is ON`, async () => {
-      mockPrepareData.mockImplementationOnce( () => {
+      mockPrepareData.mockImplementationOnce(() => {
         return {
           ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK,
           non_legal_firm_control_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
@@ -517,7 +556,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
     });
 
     test("catch error when posting data", async () => {
-      mockSetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockSetApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app)
         .post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
@@ -573,16 +612,16 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
       expect(resp.text).toContain(ERROR_LIST);
 
-      expect(resp.text).toContain( ErrorMessages.PROPERTY_NAME_OR_NUMBER_INVALID_CHARACTERS);
-      expect(resp.text).toContain( ErrorMessages.ADDRESS_LINE_1_INVALID_CHARACTERS);
-      expect(resp.text).toContain( ErrorMessages.ADDRESS_LINE_2_INVALID_CHARACTERS);
-      expect(resp.text).toContain( ErrorMessages.CITY_OR_TOWN_INVALID_CHARACTERS);
-      expect(resp.text).toContain( ErrorMessages.COUNTY_STATE_PROVINCE_REGION_INVALID_CHARACTERS);
-      expect(resp.text).toContain( ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE_1_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE_2_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.CITY_OR_TOWN_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.COUNTY_STATE_PROVINCE_REGION_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS);
     });
 
     test(`Service address from the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page is present when same address is set to no`, async () => {
-      mockPrepareData.mockReturnValueOnce( { ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO } );
+      mockPrepareData.mockReturnValueOnce({ ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO });
       await request(app)
         .post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
@@ -593,7 +632,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
     });
 
     test(`Service address from the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page is empty when same address is set to yes`, async () => {
-      mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
+      mockPrepareData.mockImplementationOnce(() => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
       await request(app)
         .post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
@@ -1094,7 +1133,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
         ["Trustee Noc", null, [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS], null],
         ["Non legal firm Noc", null, null, [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS]]
       ])(`redirect to the ${BENEFICIAL_OWNER_TYPE_PAGE} page when page data includes a nature of control and FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is OFF - %s`, async (_desc, boNoc, trusteeNoc, nonLegalNoc) => {
-        mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK );
+        mockPrepareData.mockImplementationOnce(() => BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
 
         const body = {
           ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK,
@@ -1123,7 +1162,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
         mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
         mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
 
-        mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK );
+        mockPrepareData.mockImplementationOnce(() => BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
 
         const body = {
           ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK,
@@ -1182,12 +1221,13 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
   });
 
   describe("POST with url params tests", () => {
+
     test(`redirects to ${BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
 
-      mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK );
+      mockPrepareData.mockImplementationOnce(() => BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
 
       const resp = await request(app)
         .post(BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL)
@@ -1202,7 +1242,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
     });
 
     test(`redirects to ${BENEFICIAL_OWNER_TYPE_PAGE} page when date of birth contains spaces`, async () => {
-      mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK );
+      mockPrepareData.mockImplementationOnce(() => BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
 
       const submissionMock = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK };
       submissionMock["date_of_birth-day"] = " 1 ";
@@ -1232,7 +1272,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
     });
 
     test(`POST only radio buttons choices and do not redirect to ${BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
-      mockPrepareData.mockImplementationOnce( () => { return BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_RADIO_BUTTONS; } );
+      mockPrepareData.mockImplementationOnce(() => { return BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_RADIO_BUTTONS; });
       const resp = await request(app)
         .post(BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL)
         .send(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_RADIO_BUTTONS);
@@ -1247,7 +1287,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
 
-      mockPrepareData.mockReturnValueOnce( { ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO } );
+      mockPrepareData.mockReturnValueOnce({ ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO });
       const resp = await request(app)
         .post(BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL)
         .send(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
@@ -1258,7 +1298,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
     });
 
     test(`POST empty object and do not redirect to ${BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
-      mockPrepareData.mockImplementationOnce( () => REQ_BODY_BENEFICIAL_OWNER_INDIVIDUAL_EMPTY );
+      mockPrepareData.mockImplementationOnce(() => REQ_BODY_BENEFICIAL_OWNER_INDIVIDUAL_EMPTY);
 
       const resp = await request(app)
         .post(BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL)
@@ -1295,7 +1335,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
 
-      mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK );
+      mockPrepareData.mockImplementationOnce(() => BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
 
       const resp = await request(app)
         .post(BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL)
@@ -1311,7 +1351,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
     });
 
     test(`correctly maps natures of control when feature flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is ON`, async () => {
-      mockPrepareData.mockImplementationOnce( () => {
+      mockPrepareData.mockImplementationOnce(() => {
         return {
           ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK,
           non_legal_firm_control_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
@@ -1340,7 +1380,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
     });
 
     test("catch error when posting data", async () => {
-      mockSetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockSetApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app)
         .post(BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL)
         .send(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
@@ -1396,16 +1436,16 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
       expect(resp.text).toContain(ERROR_LIST);
 
-      expect(resp.text).toContain( ErrorMessages.PROPERTY_NAME_OR_NUMBER_INVALID_CHARACTERS);
-      expect(resp.text).toContain( ErrorMessages.ADDRESS_LINE_1_INVALID_CHARACTERS);
-      expect(resp.text).toContain( ErrorMessages.ADDRESS_LINE_2_INVALID_CHARACTERS);
-      expect(resp.text).toContain( ErrorMessages.CITY_OR_TOWN_INVALID_CHARACTERS);
-      expect(resp.text).toContain( ErrorMessages.COUNTY_STATE_PROVINCE_REGION_INVALID_CHARACTERS);
-      expect(resp.text).toContain( ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE_1_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE_2_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.CITY_OR_TOWN_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.COUNTY_STATE_PROVINCE_REGION_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS);
     });
 
     test(`Service address from the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page is present when same address is set to no`, async () => {
-      mockPrepareData.mockReturnValueOnce( { ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO } );
+      mockPrepareData.mockReturnValueOnce({ ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO });
       await request(app)
         .post(BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL)
         .send(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
@@ -1416,7 +1456,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
     });
 
     test(`Service address from the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page is empty when same address is set to yes`, async () => {
-      mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
+      mockPrepareData.mockImplementationOnce(() => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
       await request(app)
         .post(BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL)
         .send(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
@@ -1947,7 +1987,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
         ["Trustee Noc", null, [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS], null],
         ["Non legal firm Noc", null, null, [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS]]
       ])(`redirect to the ${BENEFICIAL_OWNER_TYPE_PAGE} page when page data includes a nature of control - %s`, async (_desc, boNoc, trusteeNoc, nonLegalNoc) => {
-        mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK );
+        mockPrepareData.mockImplementationOnce(() => BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
 
         const body = {
           ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK,
@@ -1976,7 +2016,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
         mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
         mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
 
-        mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK );
+        mockPrepareData.mockImplementationOnce(() => BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
 
         const body = {
           ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK,
@@ -2034,21 +2074,43 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
   });
 
   describe("UPDATE tests", () => {
-    test(`redirects to the ${BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
-      mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
 
+    test(`redirects to the ${BENEFICIAL_OWNER_TYPE_PAGE} page when REDIS_removal flag is set to OFF`, async () => {
+      mockIsActiveFeature.mockReturnValue(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
+      mockSetApplicationData.mockReturnValue(true);
+      mockSaveAndContinue.mockReturnValueOnce(true);
       mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
+
       const resp = await request(app)
         .post(BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)
         .send(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSetApplicationData).toHaveBeenCalledTimes(1);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
+    test(`redirects to the ${BENEFICIAL_OWNER_TYPE_PAGE} page when REDIS_removal flag is set to ON`, async () => {
+      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
+      mockSetApplicationData.mockReturnValue(true);
+      mockSaveAndContinue.mockReturnValueOnce(true);
+      mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
+
+      const resp = await request(app)
+        .post(BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)
+        .send(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(NEXT_PAGE_URL);
+      expect(mockSetApplicationData).toHaveBeenCalledTimes(1);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+    });
+
     test("catch error when updating data", async () => {
-      mockSetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockSetApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app)
         .post(BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)
         .send(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
@@ -2082,7 +2144,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
     test(`Service address from the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} is present when same address is set to no`, async () => {
       mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
-      mockPrepareData.mockReturnValueOnce( { ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO } );
+      mockPrepareData.mockReturnValueOnce({ ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO });
       await request(app)
         .post(BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)
         .send(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
@@ -2094,7 +2156,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
     test(`Service address from the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} is empty when same address is set to yes`, async () => {
       mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
-      mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
+      mockPrepareData.mockImplementationOnce(() => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
       await request(app)
         .post(BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)
         .send(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
@@ -2118,7 +2180,9 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
   });
 
   describe("REMOVE tests", () => {
-    test(`redirects to the ${BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
+
+    test(`redirects to the ${BENEFICIAL_OWNER_TYPE_PAGE} page when the REDIS_removal flag is set to OFF`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
       const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL + REMOVE + BO_IND_ID_URL);
 
@@ -2127,8 +2191,19 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
+    test(`redirects to the ${BENEFICIAL_OWNER_TYPE_PAGE} page when the REDIS_removal flag is set to ON`, async () => {
+      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
+      const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL + REMOVE + BO_IND_ID_URL);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(NEXT_PAGE_URL);
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(2);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+    });
+
     test("catch error when removing data", async () => {
-      mockRemoveFromApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockRemoveFromApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL + REMOVE + BO_IND_ID_URL);
 
       expect(resp.status).toEqual(500);
@@ -2136,18 +2211,31 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled(); // TODO: testing
     });
 
-    test(`removes the object from session`, async () => {
+    test(`removes the object from session and API when REDIS_removal flag is set to OFF`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL + REMOVE + BO_IND_ID_URL);
 
       expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(BeneficialOwnerIndividualKey);
       expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(BO_IND_ID);
-
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test(`removes the object from session and API when REDIS_removal flag is set to ON`, async () => {
+      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL + REMOVE + BO_IND_ID_URL);
+
+      expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(BeneficialOwnerIndividualKey);
+      expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(BO_IND_ID);
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(NEXT_PAGE_URL);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
   });
 
   describe("REMOVE with url params tests", () => {
+
     test(`redirects to the ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
@@ -2160,7 +2248,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
     });
 
     test("catch error when removing data", async () => {
-      mockRemoveFromApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockRemoveFromApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL + REMOVE + BO_IND_ID_URL);
 
       expect(resp.status).toEqual(500);

@@ -8,16 +8,33 @@ jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
 jest.mock('../../../src/utils/relevant.period');
 jest.mock("../../../src/utils/feature.flag");
 
-// import remove journey middleware mock before app to prevent real function being used instead of mock
-import mockJourneyDetectionMiddleware from "../../__mocks__/journey.detection.middleware.mock";
-import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
+import { DateTime } from "luxon";
+
+// import remove journey middleware mock before app to prevent real function being used instead of mock
+import mockJourneyDetectionMiddleware from "../../__mocks__/journey.detection.middleware.mock";
+import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 
 import app from "../../../src/app";
+
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
+import { ErrorMessages } from '../../../src/validation/error.messages';
+import { ServiceAddressKey, ServiceAddressKeys } from "../../../src/model/address.model";
+import { ApplicationDataType } from '../../../src/model';
+import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
+import * as config from "../../../src/config";
+
+import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
+import { checkRelevantPeriod } from "../../../src/utils/relevant.period";
+import { isActiveFeature } from "../../../src/utils/feature.flag";
+import { saveAndContinue } from "../../../src/utils/save.and.continue";
+
+import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from '../../../src/model/beneficial.owner.individual.model';
+import { AddressKeys, NatureOfControlJurisdiction, NatureOfControlType } from '../../../src/model/data.types.model';
+
 import {
   UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
   UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL,
@@ -25,15 +42,7 @@ import {
   UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
   RELEVANT_PERIOD_QUERY_PARAM
 } from "../../../src/config";
-import {
-  getFromApplicationData,
-  mapFieldsToDataObject,
-  prepareData,
-  removeFromApplicationData,
-  setApplicationData,
-  getApplicationData
-} from '../../../src/utils/application.data';
-import { saveAndContinue } from "../../../src/utils/save.and.continue";
+
 import {
   ANY_MESSAGE_ERROR,
   BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING,
@@ -57,6 +66,7 @@ import {
   OWNER_OF_LAND_PERSON_NOC_HEADING,
   OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING,
 } from '../../__mocks__/text.mock';
+
 import {
   APPLICATION_DATA_UPDATE_BO_MOCK,
   BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
@@ -72,22 +82,20 @@ import {
   UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK,
 } from '../../__mocks__/session.mock';
 
-import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from '../../../src/model/beneficial.owner.individual.model';
-import { AddressKeys, NatureOfControlJurisdiction, NatureOfControlType } from '../../../src/model/data.types.model';
 import {
   BENEFICIAL_OWNER_INDIVIDUAL_WITH_INVALID_CHARS_MOCK,
   BENEFICIAL_OWNER_INDIVIDUAL_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK,
   BENEFICIAL_OWNER_INDIVIDUAL_WITH_MAX_LENGTH_FIELDS_MOCK
 } from '../../__mocks__/validation.mock';
-import { ErrorMessages } from '../../../src/validation/error.messages';
-import { ServiceAddressKey, ServiceAddressKeys } from "../../../src/model/address.model";
-import { ApplicationDataType } from '../../../src/model';
-import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
-import * as config from "../../../src/config";
-import { DateTime } from "luxon";
-import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
-import { checkRelevantPeriod } from "../../../src/utils/relevant.period";
-import { isActiveFeature } from "../../../src/utils/feature.flag";
+
+import {
+  getFromApplicationData,
+  mapFieldsToDataObject,
+  prepareData,
+  removeFromApplicationData,
+  setApplicationData,
+  fetchApplicationData
+} from '../../../src/utils/application.data';
 
 mockJourneyDetectionMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
@@ -109,7 +117,7 @@ const mockSaveAndContinue = saveAndContinue as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
 const mockRemoveFromApplicationData = removeFromApplicationData as unknown as jest.Mock;
 const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
-const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 const mockCheckRelevantPeriod = checkRelevantPeriod as jest.Mock;
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 
@@ -127,7 +135,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
   describe("GET tests", () => {
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
+      mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
 
       const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL);
 
@@ -151,7 +159,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
     });
 
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page when FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is active`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
+      mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
 
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
 
@@ -177,7 +185,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
     });
 
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with relevant period content when query param is passed`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
+      mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
 
       const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + "?relevant-period=true");
 
@@ -193,7 +201,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
   describe("GET BY ID tests", () => {
     test(`renders ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page`, async () => {
       mockGetFromApplicationData.mockReturnValueOnce(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
-      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
+      mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
 
       const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL);
 
@@ -210,7 +218,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
     test(`renders ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with relevant period banner when inserting a relevant period object`, async () => {
       mockGetFromApplicationData.mockReturnValueOnce({ ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK, relevant_period: true });
-      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
+      mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
 
       const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL);
 
@@ -1125,7 +1133,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
       ["Owner of land person Noc", null, null, null, null, [NatureOfControlJurisdiction.ENGLAND_AND_WALES], null],
       ["Owner of land other entitiy Noc", null, null, null, null, null, [NatureOfControlJurisdiction.ENGLAND_AND_WALES]],
     ])(`no validation error occurs when submitting NOC %s when FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is ON`, async (_desc, boNoc, trusteeNoc, trustControlNoc, nonLegalFirmControlNoc, landPersonNoc, landOtherEntityNoc) => {
-      mockGetApplicationData.mockReturnValue({
+      mockFetchApplicationData.mockReturnValue({
         ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK
       });
       mockGetFromApplicationData.mockReturnValueOnce({ ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK });
@@ -1153,7 +1161,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
     });
 
     test(`Nature of control validation error occurs when submitting no NOCs when FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is ON`, async () => {
-      mockGetApplicationData.mockReturnValue({
+      mockFetchApplicationData.mockReturnValue({
         ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK
       });
       mockGetFromApplicationData.mockReturnValueOnce({ ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK });

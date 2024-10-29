@@ -8,12 +8,14 @@ jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
 jest.mock('../../../src/utils/relevant.period');
 jest.mock("../../../src/utils/feature.flag");
 
-// import remove journey middleware mock before app to prevent real function being used instead of mock
-import mockJourneyDetectionMiddleware from "../../__mocks__/journey.detection.middleware.mock";
-import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
+import { DateTime } from "luxon";
+
+// import remove journey middleware mock before app to prevent real function being used instead of mock
+import mockJourneyDetectionMiddleware from "../../__mocks__/journey.detection.middleware.mock";
+import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 
 import app from "../../../src/app";
 
@@ -24,7 +26,7 @@ import { ServiceAddressKey, ServiceAddressKeys } from "../../../src/model/addres
 import { ApplicationDataType } from '../../../src/model';
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
 import * as config from "../../../src/config";
-import { DateTime } from "luxon";
+
 import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
 import { checkRelevantPeriod } from "../../../src/utils/relevant.period";
 import { isActiveFeature } from "../../../src/utils/feature.flag";

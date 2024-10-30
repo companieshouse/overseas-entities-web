@@ -5,12 +5,28 @@ jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/utils/save.and.continue');
 jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
-jest.mock("../../../src/utils/feature.flag" );
+jest.mock("../../../src/utils/feature.flag");
 
-import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import { describe, expect, jest, test, beforeEach } from "@jest/globals";
 import request from "supertest";
 import { NextFunction, Request, Response } from "express";
+import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
+
+import app from "../../../src/app";
+
+import { authentication } from "../../../src/middleware/authentication.middleware";
+import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
+import * as config from "../../../src/config";
+import { ApplicationDataType } from "../../../src/model";
+import { ErrorMessages } from "../../../src/validation/error.messages";
+import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
+import { saveAndContinue } from "../../../src/utils/save.and.continue";
+import { DateTime } from "luxon";
+import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
+import { isActiveFeature } from "../../../src/utils/feature.flag";
+
+import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../../../src/model/beneficial.owner.other.model";
+import { ServiceAddressKey, ServiceAddressKeys } from "../../../src/model/address.model";
 
 import {
   UPDATE_BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS,
@@ -30,22 +46,23 @@ import {
   APPLICATION_DATA_UPDATE_BO_MOCK,
   UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
 } from "../../__mocks__/session.mock";
+
 import {
   getFromApplicationData, mapFieldsToDataObject,
   prepareData,
   removeFromApplicationData,
   setApplicationData,
-  getApplicationData
+  getApplicationData,
+  fetchApplicationData,
 } from "../../../src/utils/application.data";
-import { authentication } from "../../../src/middleware/authentication.middleware";
-import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
-import app from "../../../src/app";
+
 import {
   RELEVANT_PERIOD_QUERY_PARAM,
   UPDATE_BENEFICIAL_OWNER_OTHER_PAGE,
   UPDATE_BENEFICIAL_OWNER_OTHER_URL,
   UPDATE_BENEFICIAL_OWNER_TYPE_URL
 } from "../../../src/config";
+
 import {
   BENEFICIAL_OWNER_OTHER_PAGE_HEADING,
   BO_NOC_HEADING,
@@ -67,38 +84,29 @@ import {
   TRUST_CONTROL_NOC_HEADING,
   TRUSTS_NOC_HEADING,
 } from "../../__mocks__/text.mock";
+
 import {
   AddressKeys,
   IsOnSanctionsListKey,
   NatureOfControlType, PublicRegisterNameKey, RegistrationNumberKey,
   yesNoResponse
 } from "../../../src/model/data.types.model";
-import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../../../src/model/beneficial.owner.other.model";
+
 import {
   BENEFICIAL_OWNER_OTHER_WITH_INVALID_CHARS_MOCK,
   BENEFICIAL_OWNER_OTHER_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK,
   BENEFICIAL_OWNER_OTHER_WITH_MAX_LENGTH_FIELDS_MOCK
 } from '../../__mocks__/validation.mock';
-import { ApplicationDataType } from "../../../src/model";
-import { ServiceAddressKey, ServiceAddressKeys } from "../../../src/model/address.model";
-import { ErrorMessages } from "../../../src/validation/error.messages";
-
-import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
-import * as config from "../../../src/config";
-import { saveAndContinue } from "../../../src/utils/save.and.continue";
-import { DateTime } from "luxon";
-import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
-import { isActiveFeature } from "../../../src/utils/feature.flag";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockHasUpdatePresenter = hasUpdatePresenter as jest.Mock;
-mockHasUpdatePresenter.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockHasUpdatePresenter.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockCompanyAuthenticationMiddleware = companyAuthentication as jest.Mock;
-mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
@@ -111,6 +119,8 @@ const mockRemoveFromApplicationData = removeFromApplicationData as unknown as je
 const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+mockFetchApplicationData.mockReturnValue({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 
 const DUMMY_DATA_OBJECT = { dummy: "data" };
@@ -125,6 +135,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
   });
 
   describe("GET tests", () => {
+
     test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page with the flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC off`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
 
@@ -148,7 +159,6 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
 
     test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page with the flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC on`, async () => {
       mockIsActiveFeature.mockReturnValue(true);
-
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
 
       const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_OTHER_URL);
@@ -182,6 +192,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
   });
 
   describe("GET BY ID tests", () => {
+
     test("Renders the page through GET", async () => {
       mockGetFromApplicationData.mockReturnValueOnce(UPDATE_BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS);
       const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL);
@@ -236,6 +247,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
   });
 
   describe("POST tests", () => {
+
     test(`Sets session data and renders the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
       const beneficialOwnerOtherMock = { ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK, [IsOnSanctionsListKey]: "0" };
       mockPrepareData.mockReturnValueOnce(beneficialOwnerOtherMock);
@@ -862,6 +874,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
   });
 
   describe("UPDATE tests", () => {
+
     test(`Redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
       mockGetFromApplicationData.mockReturnValueOnce(UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK);
       mockPrepareData.mockReturnValueOnce({ ...UPDATE_BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS });

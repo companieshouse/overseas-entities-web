@@ -185,7 +185,6 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       delete appData[EntityNumberKey];
 
       mockFetchApplicationData.mockReturnValueOnce({ ...appData });
-
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
 
@@ -256,7 +255,6 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       delete appData[EntityNumberKey];
 
       mockFetchApplicationData.mockReturnValueOnce({ ...appData });
-
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
 
@@ -1161,7 +1159,6 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
         mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
         mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
         mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
-
         mockPrepareData.mockImplementationOnce(() => BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
 
         const body = {
@@ -1226,7 +1223,6 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
-
       mockPrepareData.mockImplementationOnce(() => BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
 
       const resp = await request(app)
@@ -1286,8 +1282,8 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
-
       mockPrepareData.mockReturnValueOnce({ ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO });
+
       const resp = await request(app)
         .post(BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL)
         .send(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
@@ -1334,7 +1330,6 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
-
       mockPrepareData.mockImplementationOnce(() => BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
 
       const resp = await request(app)
@@ -2015,7 +2010,6 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
         mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
         mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
         mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
-
         mockPrepareData.mockImplementationOnce(() => BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
 
         const body = {

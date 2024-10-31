@@ -82,7 +82,7 @@ const getNextPage = (req: Request): string => {
 
   const beneficialOwnerTypeChoices: BeneficialOwnerTypeChoice | ManagingOfficerTypeChoice = req.body[BeneficialOwnerTypeKey];
 
-  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)){
+  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
     if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.individual) {
       return getUrlWithParamsToPath(config.BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL, req);
     } else if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.otherLegal) {

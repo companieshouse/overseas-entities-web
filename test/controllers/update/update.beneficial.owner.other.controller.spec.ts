@@ -10,6 +10,7 @@ jest.mock("../../../src/utils/feature.flag");
 import { describe, expect, jest, test, beforeEach } from "@jest/globals";
 import request from "supertest";
 import { NextFunction, Request, Response } from "express";
+import { DateTime } from "luxon";
 import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 
 import app from "../../../src/app";
@@ -21,7 +22,6 @@ import { ApplicationDataType } from "../../../src/model";
 import { ErrorMessages } from "../../../src/validation/error.messages";
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
-import { DateTime } from "luxon";
 import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 

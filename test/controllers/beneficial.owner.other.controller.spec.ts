@@ -8,9 +8,9 @@ jest.mock('../../src/middleware/service.availability.middleware');
 jest.mock("../../src/utils/url");
 jest.mock('../../src/utils/relevant.period');
 
-import { describe, expect, jest, test, beforeEach } from "@jest/globals";
 import request from "supertest";
 import { NextFunction, Request, Response } from "express";
+import { DateTime } from "luxon";
 import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
 
 import app from "../../src/app";
@@ -21,7 +21,6 @@ import { ApplicationDataType } from "../../src/model";
 import { ErrorMessages } from "../../src/validation/error.messages";
 import { hasBeneficialOwnersStatement } from "../../src/middleware/navigation/has.beneficial.owners.statement.middleware";
 import { saveAndContinue } from "../../src/utils/save.and.continue";
-import { DateTime } from "luxon";
 import { isActiveFeature } from "../../src/utils/feature.flag";
 import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
 import { checkRelevantPeriod } from "../../src/utils/relevant.period";

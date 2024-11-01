@@ -221,6 +221,7 @@ describe("Trust Legal Entity Beneficial Owner Controller", () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
 
       mockReq.url = "/register-an-overseas-entity/transaction/123/submission/456/trusts/trust-legal-entity-beneficial-owner";
+      mockReq.query = {};
       mockReq.body = {};
 
       await post(mockReq, mockRes, mockNext);
@@ -236,6 +237,7 @@ describe("Trust Legal Entity Beneficial Owner Controller", () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
 
       mockReq.url = "/register-an-overseas-entity/trusts/trust-legal-entity-beneficial-owner";
+      mockReq.query = {};
       mockReq.body = {};
 
       await post(mockReq, mockRes, mockNext);

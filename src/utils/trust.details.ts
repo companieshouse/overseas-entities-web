@@ -168,16 +168,16 @@ export const postTrustDetails = async (req: Request, res: Response, next: NextFu
 
     if (!errorList.isEmpty() || errors.length) {
       const errorListArray = !errorList.isEmpty() ? errorList.array() : [];
+      const formattedErrors = formatValidationError([...errorListArray, ...errors]);
 
-      const pageProps = await getPageProperties(
-        req,
-        formData,
-        isUpdate,
-        isReview,
-        formatValidationError([...errorListArray, ...errors]),
-      );
+      let pageProps;
+      if (req.query["relevant-period"] === "true") {
+        pageProps = await getPagePropertiesRelevantPeriod(req, formData, isUpdate, isReview, formattedErrors);
+      } else {
+        pageProps = await getPageProperties(req, formData, isUpdate, isReview, formattedErrors);
+      }
 
-      return res.render(pageProps.templateName, pageProps);
+      return res.render(pageProps.template, pageProps);
     }
 
     //  map form data to session trust data

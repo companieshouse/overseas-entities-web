@@ -127,15 +127,17 @@ export const postTrustLegalEntityBo = async (req: Request, res: Response, next: 
 
     if (!errorList.isEmpty() || errors.length) {
       const errorListArray = !errorList.isEmpty() ? errorList.array() : [];
+      const formattedErrors = formatValidationError([...errorListArray, ...errors]);
 
-      const pageProps = await getPageProperties(
-        req,
-        trustId,
-        isUpdate,
-        formData,
-        formatValidationError([...errorListArray, ...errors]),
-      );
+      let pageProps;
+      if (req.query["relevant-period"] === "true") {
+        pageProps = await getRelevantPeriodPageProperties(req, trustId, isUpdate, formData, formattedErrors);
+      } else {
+        pageProps = await getPageProperties(req, trustId, isUpdate, formData, formattedErrors);
+      }
+
       setEntityNameInRelevantPeriodPageBanner(pageProps, appData ? appData.entity_name : pageProps.pageData.trustData.trustName);
+
       return res.render(pageProps.template, pageProps);
     }
 

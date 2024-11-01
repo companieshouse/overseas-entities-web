@@ -59,8 +59,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const formData = trustee ? mapIndividualTrusteeFromSessionToPage(trustee) : {};
     const relevant_period = req.query['relevant-period'];
 
-    if (relevant_period) {
-      return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE, getPagePropertiesRelevantPeriod(relevant_period, trust, formData, trustee, appData.entity_name, req.url));
+    if (relevant_period || (trustee && trustee.relevant_period)) {
+      return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE, getPagePropertiesRelevantPeriod(true, trust, formData, trustee, appData.entity_name, req.url));
     } else {
       return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE, getPageProperties(trust, formData, trustee, req.url));
     }
@@ -87,10 +87,10 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       const trustee = getTrustee(trust, trusteeId, TrusteeType.INDIVIDUAL) as IndividualTrustee;
       const errorListArray = !errorList.isEmpty() ? errorList.array() : [];
 
-      if (relevant_period) {
+      if (relevant_period || (trustee && trustee.relevant_period)) {
         return res.render(
           UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE,
-          getPagePropertiesRelevantPeriod(relevant_period, trust, formData, trustee, appData.entity_name, req.url, formatValidationError([...errorListArray, ...errors])),
+          getPagePropertiesRelevantPeriod(true, trust, formData, trustee, appData.entity_name, req.url, formatValidationError([...errorListArray, ...errors])),
         );
       } else {
         return res.render(

@@ -73,7 +73,6 @@ const cookieConfig = {
   cookieName: '__SID',
   cookieSecret: config.COOKIE_SECRET,
   cookieDomain: config.COOKIE_DOMAIN,
-  // cookieSecureFlag: config.COOKIE_SECURE_ONLY === "true",
   cookieTimeToLiveInSeconds: parseInt(config.DEFAULT_SESSION_EXPIRATION, 10)
 };
 const sessionStore = new SessionStore(new Redis(`redis://${config.CACHE_SERVER}`));

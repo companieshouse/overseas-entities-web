@@ -54,6 +54,7 @@ nunjucksEnv.addGlobal("PIWIK_START_GOAL_ID", config.PIWIK_START_GOAL_ID);
 nunjucksEnv.addGlobal("PIWIK_UPDATE_START_GOAL_ID", config.PIWIK_UPDATE_START_GOAL_ID);
 nunjucksEnv.addGlobal("PIWIK_REMOVE_START_GOAL_ID", config.PIWIK_REMOVE_START_GOAL_ID);
 nunjucksEnv.addGlobal("PIWIK_RELEVANT_PERIOD_START_GOAL_ID", config.PIWIK_RELEVANT_PERIOD_START_GOAL_ID);
+// nunjucksEnv.addGlobal("PIWIK_CHS_DOMAIN", config.PIWIK_CHS_DOMAIN);
 nunjucksEnv.addGlobal("MATOMO_ASSET_PATH", `//${config.CDN_HOST}`);
 
 app.use(express.json());
@@ -72,6 +73,7 @@ const cookieConfig = {
   cookieName: '__SID',
   cookieSecret: config.COOKIE_SECRET,
   cookieDomain: config.COOKIE_DOMAIN,
+  // cookieSecureFlag: config.COOKIE_SECURE_ONLY === "true",
   cookieTimeToLiveInSeconds: parseInt(config.DEFAULT_SESSION_EXPIRATION, 10)
 };
 const sessionStore = new SessionStore(new Redis(`redis://${config.CACHE_SERVER}`));

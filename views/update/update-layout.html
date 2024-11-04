@@ -34,7 +34,6 @@
   <link rel="icon" href="//{{CDN_HOST}}/images/favicon.ico" type="image/x-icon" />
 
   <script src="https://code.jquery.com/jquery-3.6.0.js"
-          nonce={{ nonce | dump | safe }}
           integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
           crossorigin="anonymous">
   </script>
@@ -103,7 +102,7 @@
 {% endblock %}
 
 {% block bodyEnd %}
-  <script src="//{{CDN_HOST}}/javascripts/govuk-frontend/v4.6.0/govuk-frontend-4.6.0.min.js" nonce={{ nonce | dump | safe }}></script>
+  <script src="//{{CDN_HOST}}/javascripts/govuk-frontend/v4.6.0/govuk-frontend-4.6.0.min.js"></script>
   <script nonce={{ nonce | dump | safe }}>window.GOVUKFrontend.initAll()</script>
   {% include "includes/piwik-scripts.html" %}
 {% endblock %}

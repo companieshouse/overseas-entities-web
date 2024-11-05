@@ -65,7 +65,7 @@ const nonce: string = uuidv4();
 app.use(helmet(prepareCSPConfig(nonce)));
 app.use(nocache());
 app.use((req, res, next) => {
-  res.locals.nonce = nonce;
+  res.locals.cspNonce = nonce;
   next();
 });
 

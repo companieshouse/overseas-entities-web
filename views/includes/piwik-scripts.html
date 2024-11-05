@@ -1,5 +1,5 @@
 <script src="{{MATOMO_ASSET_PATH}}/javascripts/app/piwik-enable.js"></script>
-<script type="application/javascript" nonce={{ nonce | dump | safe }}>
+<script type="application/javascript" nonce={{ cspNonce | dump | safe }}>
     const journeyTypes = {
         "register-an-overseas-entity": "Register",
         "update-an-overseas-entity": "Update",

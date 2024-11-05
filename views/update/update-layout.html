@@ -103,6 +103,6 @@
 
 {% block bodyEnd %}
   <script src="//{{CDN_HOST}}/javascripts/govuk-frontend/v4.6.0/govuk-frontend-4.6.0.min.js"></script>
-  <script nonce={{ nonce | dump | safe }}>window.GOVUKFrontend.initAll()</script>
+  <script nonce={{ cspNonce | dump | safe }}>window.GOVUKFrontend.initAll()</script>
   {% include "includes/piwik-scripts.html" %}
 {% endblock %}

@@ -47,7 +47,8 @@ import {
 } from "../__mocks__/session.mock";
 
 import {
-  getFromApplicationData, mapFieldsToDataObject,
+  getFromApplicationData,
+  mapFieldsToDataObject,
   prepareData,
   removeFromApplicationData,
   setApplicationData,
@@ -222,7 +223,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       const appData = APPLICATION_DATA_MOCK;
       delete appData[EntityNumberKey];
 
-      mockGetApplicationData.mockReturnValueOnce({ ...appData });
+      mockFetchApplicationData.mockReturnValueOnce({ ...appData });
 
       const resp = await request(app).get(BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL);
 

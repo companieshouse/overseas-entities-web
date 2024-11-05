@@ -87,7 +87,6 @@ CHS_URL | CHS local url | `http://chs.local`
 COOKIE_DOMAIN | The domain of the cookie | `chs.local`
 COOKIE_NAME | The name of the cookie | __SID
 COOKIE_SECRET | The shared secret used in validating/calculating the session cookie signature | secret
-COOKIE_SECURE_ONLY | Only allow secure cookies | true
 INTERNAL_API_URL | Internal API URL | `http://api.chs.local:4001`
 LANDING_PAGE_URL | Register OE landing Page | `/register-an-overseas-entity/sold-land-filter?start=0`
 UPDATE_LANDING_PAGE_URL | Update OE landing Page | `/update-an-overseas-entity/overseas-entity-query`

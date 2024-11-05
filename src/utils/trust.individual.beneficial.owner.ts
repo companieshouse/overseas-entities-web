@@ -95,6 +95,9 @@ export const getTrustIndividualBo = async (req: Request, res: Response, next: Ne
       const pagePropertiesRelevantPeriod = await getPagePropertiesRelevantPeriod(isRelevantPeriod, req, trustId, isUpdate, formData, appData.entity_name);
       return res.render(pageProps.template, pagePropertiesRelevantPeriod);
     } else {
+      if (appData) {
+        pageProps.pageData.entity_name = appData.entity_name;
+      }
       return res.render(pageProps.template, pageProps);
     }
   } catch (error) {
@@ -131,9 +134,9 @@ export const postTrustIndividualBo = async (req: Request, res: Response, next: N
         formatValidationError([...errorListArray, ...errors]),
       );
 
-      const isRelevantPeriod = req.query['relevant-period'];
-      if (isRelevantPeriod) {
-        const pagePropertiesRelevantPeriod = await getPagePropertiesRelevantPeriod(isRelevantPeriod, req, trustId, isUpdate, formData, appData.entity_name, formatValidationError([...errorListArray, ...errors]));
+      const isRelevantPeriod = req.query ? req.query["relevant-period"] === "true" : false;
+      if (isRelevantPeriod || individualTrusteeData.relevant_period) {
+        const pagePropertiesRelevantPeriod = await getPagePropertiesRelevantPeriod(true, req, trustId, isUpdate, formData, appData.entity_name, formatValidationError([...errorListArray, ...errors]));
         return res.render(pageProps.template, pagePropertiesRelevantPeriod);
       } else {
         return res.render(pageProps.template, pageProps);

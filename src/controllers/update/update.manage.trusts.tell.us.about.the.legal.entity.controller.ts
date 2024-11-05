@@ -36,7 +36,7 @@ const getPageProperties = (trust, formData, url: string, errors?: FormattedValid
         trustName: trust?.trust_name,
       },
       roleWithinTrustType: RoleWithinTrustType,
-      entity_name: trust?.trust_name,
+      entity_name: null,
     },
     formData,
     errors,
@@ -63,8 +63,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     const formData = trustee ? mapLegalEntityTrusteeFromSessionToPage(trustee) : {};
 
-    if (isRelevantPeriod) {
-      return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE, getPagePropertiesRelevantPeriod(isRelevantPeriod, trust, formData, req.url, appData.entity_name));
+    if (isRelevantPeriod || (trustee && trustee.relevant_period)) {
+      return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE, getPagePropertiesRelevantPeriod(true, trust, formData, req.url, appData.entity_name));
     } else {
       return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE, getPageProperties(trust, formData, req.url));
     }
@@ -79,6 +79,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const appData = await getApplicationData(req.session);
     const trusteeId = req.params[ROUTE_PARAM_TRUSTEE_ID];
     const trust = getTrustInReview(appData) as Trust;
+    const trustee = getTrustee(trust, trusteeId, TrusteeType.LEGAL_ENTITY) as TrustCorporate;
 
     const isRelevantPeriod = req.query['relevant-period'];
     const formData = req.body as TrustLegalEntityForm;
@@ -88,10 +89,10 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     if (!errorList.isEmpty() || errors.length) {
       const errorListArray = !errorList.isEmpty() ? errorList.array() : [];
 
-      if (isRelevantPeriod) {
+      if (isRelevantPeriod || (trustee && trustee.relevant_period)) {
         return res.render(
           UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE,
-          getPagePropertiesRelevantPeriod(isRelevantPeriod, trust, formData, req.url, appData.entity_name, formatValidationError([...errorListArray, ...errors])),
+          getPagePropertiesRelevantPeriod(true, trust, formData, req.url, appData.entity_name, formatValidationError([...errorListArray, ...errors])),
         );
       } else {
         return res.render(

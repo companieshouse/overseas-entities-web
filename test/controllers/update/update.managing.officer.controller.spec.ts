@@ -7,17 +7,28 @@ jest.mock('../../../src/utils/application.data');
 jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/utils/save.and.continue');
 
+import { DateTime } from "luxon";
+import { NextFunction, Request, Response } from "express";
+import { describe, expect, test, jest, beforeEach } from '@jest/globals';
+import request from "supertest";
+
 // import remove journey middleware mock before app to prevent real function being used instead of mock
 import mockJourneyDetectionMiddleware from "../../__mocks__/journey.detection.middleware.mock";
 import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
-import { describe, expect, test, jest, beforeEach } from '@jest/globals';
-import { NextFunction, Request, Response } from "express";
-import request from "supertest";
-import { ServiceAddressKey, ServiceAddressKeys } from "../../../src/model/address.model";
+
 import app from "../../../src/app";
+
+import { logger } from "../../../src/utils/logger";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
+import { ErrorMessages } from '../../../src/validation/error.messages';
+import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
+import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
+
+import { ServiceAddressKey, ServiceAddressKeys } from "../../../src/model/address.model";
+import { ApplicationDataType, managingOfficerType } from '../../../src/model';
+
 import {
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
   UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
@@ -26,14 +37,16 @@ import {
   UPDATE_MANAGING_OFFICER_URL,
   REMOVE
 } from "../../../src/config";
+
 import {
-  getApplicationData,
+  fetchApplicationData,
   getFromApplicationData,
   mapFieldsToDataObject,
   prepareData,
   removeFromApplicationData,
   setApplicationData
 } from '../../../src/utils/application.data';
+
 import {
   MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_FORMER_NAMES_NO,
   MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_FORMER_NAMES_YES,
@@ -50,6 +63,7 @@ import {
   APPLICATION_DATA_MOCK,
   REQ_BODY_UPDATE_MANAGING_OFFICER_INACTIVE
 } from "../../__mocks__/session.mock";
+
 import {
   ALL_THE_OTHER_INFORMATION_ON_PUBLIC_REGISTER,
   ANY_MESSAGE_ERROR,
@@ -65,23 +79,24 @@ import {
   MANAGING_OFFICER_PAGE_HEADING,
   SAVE_AND_CONTINUE_BUTTON_TEXT
 } from '../../__mocks__/text.mock';
-import { ApplicationDataType, managingOfficerType } from '../../../src/model';
-import { ErrorMessages } from '../../../src/validation/error.messages';
+
 import {
   AddressKeys,
   HasFormerNames,
   HasSameResidentialAddressKey
 } from '../../../src/model/data.types.model';
+
 import {
   MANAGING_OFFICER_INDIVIDUAL_WITH_INVALID_CHARS_MOCK,
   MANAGING_OFFICER_INDIVIDUAL_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK,
   MANAGING_OFFICER_INDIVIDUAL_WITH_MAX_LENGTH_FIELDS_MOCK
 } from '../../__mocks__/validation.mock';
-import { FormerNamesKey, ManagingOfficerIndividual, ManagingOfficerKey } from '../../../src/model/managing.officer.model';
-import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
-import { DateTime } from "luxon";
-import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
-import { logger } from "../../../src/utils/logger";
+
+import {
+  FormerNamesKey,
+  ManagingOfficerIndividual,
+  ManagingOfficerKey
+} from '../../../src/model/managing.officer.model';
 
 mockJourneyDetectionMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
@@ -104,7 +119,7 @@ const mockPrepareData = prepareData as jest.Mock;
 const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 const mockRemoveFromApplicationData = removeFromApplicationData as jest.Mock;
-const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 
 const DUMMY_DATA_OBJECT = { dummy: "data" };
 
@@ -118,8 +133,9 @@ describe("UPDATE MANAGING OFFICER controller", () => {
   });
 
   describe("GET tests", () => {
+
     test(`renders the ${UPDATE_MANAGING_OFFICER_PAGE} page`, async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(UPDATE_MANAGING_OFFICER_URL);
 
       expect(resp.status).toEqual(200);
@@ -136,6 +152,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
   });
 
   describe("POST tests", () => {
+
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page after all mandatory fields for ${UPDATE_MANAGING_OFFICER_PAGE} have been populated`, async () => {
       mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_OBJECT_MOCK );
 
@@ -721,9 +738,10 @@ describe("UPDATE MANAGING OFFICER controller", () => {
   });
 
   describe("GET BY ID tests", () => {
+
     test(`renders ${UPDATE_MANAGING_OFFICER_PAGE} page`, async () => {
       mockGetFromApplicationData.mockReturnValueOnce(REQ_BODY_UPDATE_MANAGING_OFFICER_ACTIVE);
-      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_CH_REF_UPDATE_MOCK });
+      mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_CH_REF_UPDATE_MOCK });
 
       const resp = await request(app).get(UPDATE_MANAGING_OFFICER_URL + MO_IND_ID_URL);
 
@@ -741,7 +759,9 @@ describe("UPDATE MANAGING OFFICER controller", () => {
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
   });
+
   describe("UPDATE tests", () => {
+
     test(`redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
       mockPrepareData.mockReturnValueOnce(MANAGING_OFFICER_OBJECT_MOCK);
       const resp = await request(app)
@@ -773,10 +793,8 @@ describe("UPDATE MANAGING OFFICER controller", () => {
 
       expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(ManagingOfficerKey);
       expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(MO_IND_ID);
-
       expect(mockSetApplicationData.mock.calls[0][1].id).toEqual(MO_IND_ID);
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(ManagingOfficerKey);
-
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
@@ -840,6 +858,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
   });
 
   describe("REMOVE tests", () => {
+
     test(`redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
       mockPrepareData.mockReturnValueOnce(MANAGING_OFFICER_OBJECT_MOCK);
       const resp = await request(app).get(UPDATE_MANAGING_OFFICER_URL + REMOVE + MO_IND_ID_URL);
@@ -863,7 +882,6 @@ describe("UPDATE MANAGING OFFICER controller", () => {
 
       expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(ManagingOfficerKey);
       expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(MO_IND_ID);
-
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);

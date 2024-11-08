@@ -1,4 +1,8 @@
 import { NextFunction, Request, Response } from "express";
+import * as config from "../config";
+import { isActiveFeature } from "../utils/feature.flag";
+import { getUrlWithParamsToPath } from "../utils/url";
+
 import {
   getManagingOfficer,
   getManagingOfficerById,
@@ -6,11 +10,6 @@ import {
   updateManagingOfficer,
   removeManagingOfficer
 } from "../utils/managing.officer.individual";
-
-import * as config from "../config";
-
-import { isActiveFeature } from "../utils/feature.flag";
-import { getUrlWithParamsToPath } from "../utils/url";
 
 export const get = async (req: Request, res: Response) => {
   await getManagingOfficer(req, res, getBeneficialOwnerTypeUrl(req), config.MANAGING_OFFICER_PAGE);

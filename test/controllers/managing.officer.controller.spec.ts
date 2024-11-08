@@ -8,13 +8,25 @@ jest.mock('../../src/middleware/service.availability.middleware');
 jest.mock("../../src/utils/feature.flag" );
 jest.mock("../../src/utils/url");
 
-import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
-import { describe, expect, test, jest, beforeEach } from '@jest/globals';
+import { DateTime } from "luxon";
 import { NextFunction, Request, Response } from "express";
+import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import request from "supertest";
-import { ServiceAddressKey, ServiceAddressKeys } from "../../src/model/address.model";
+
+import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
 import app from "../../src/app";
+import { logger } from "../../src/utils/logger";
 import { authentication } from "../../src/middleware/authentication.middleware";
+import { ErrorMessages } from '../../src/validation/error.messages';
+import { hasBeneficialOwnersStatement } from "../../src/middleware/navigation/has.beneficial.owners.statement.middleware";
+import { saveAndContinue } from "../../src/utils/save.and.continue";
+import { isActiveFeature } from "../../src/utils/feature.flag";
+import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
+import { getUrlWithParamsToPath, isRegistrationJourney } from "../../src/utils/url";
+
+import { ServiceAddressKey, ServiceAddressKeys } from "../../src/model/address.model";
+import { ApplicationDataType, managingOfficerType } from '../../src/model';
+
 import {
   BENEFICIAL_OWNER_TYPE_URL,
   LANDING_PAGE_URL,
@@ -25,14 +37,16 @@ import {
   MANAGING_OFFICER_WITH_PARAMS_URL,
   BENEFICIAL_OWNER_TYPE_PAGE
 } from "../../src/config";
+
 import {
-  getApplicationData,
+  fetchApplicationData,
   getFromApplicationData,
   mapFieldsToDataObject,
   prepareData,
   removeFromApplicationData,
   setApplicationData
 } from '../../src/utils/application.data';
+
 import {
   APPLICATION_DATA_MOCK,
   MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_FORMER_NAMES_NO,
@@ -47,6 +61,7 @@ import {
   REQ_BODY_MANAGING_OFFICER_OBJECT_EMPTY,
   RR_CARRIAGE_RETURN,
 } from "../__mocks__/session.mock";
+
 import {
   ALL_THE_OTHER_INFORMATION_ON_PUBLIC_REGISTER,
   ANY_MESSAGE_ERROR,
@@ -62,27 +77,25 @@ import {
   SERVICE_UNAVAILABLE,
   BACK_BUTTON_CLASS
 } from '../__mocks__/text.mock';
-import { ApplicationDataType, managingOfficerType } from '../../src/model';
-import { ErrorMessages } from '../../src/validation/error.messages';
+
 import {
   AddressKeys,
   EntityNumberKey,
   HasFormerNames,
   HasSameResidentialAddressKey
 } from '../../src/model/data.types.model';
+
 import {
   MANAGING_OFFICER_INDIVIDUAL_WITH_INVALID_CHARS_MOCK,
   MANAGING_OFFICER_INDIVIDUAL_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK,
   MANAGING_OFFICER_INDIVIDUAL_WITH_MAX_LENGTH_FIELDS_MOCK
 } from '../__mocks__/validation.mock';
-import { logger } from "../../src/utils/logger";
-import { FormerNamesKey, ManagingOfficerIndividual, ManagingOfficerKey } from '../../src/model/managing.officer.model';
-import { hasBeneficialOwnersStatement } from "../../src/middleware/navigation/has.beneficial.owners.statement.middleware";
-import { saveAndContinue } from "../../src/utils/save.and.continue";
-import { DateTime } from "luxon";
-import { isActiveFeature } from "../../src/utils/feature.flag";
-import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
-import { getUrlWithParamsToPath } from "../../src/utils/url";
+
+import {
+  FormerNamesKey,
+  ManagingOfficerIndividual,
+  ManagingOfficerKey
+} from '../../src/model/managing.officer.model';
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockHasBeneficialOwnersStatementMiddleware = hasBeneficialOwnersStatement as jest.Mock;
@@ -92,7 +105,7 @@ const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
-const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 const mockGetFromApplicationData = getFromApplicationData as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
@@ -112,6 +125,9 @@ const NEXT_PAGE_URL = "/NEXT_PAGE";
 const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
 mockGetUrlWithParamsToPath.mockReturnValue(NEXT_PAGE_URL);
 
+const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
+mockIsRegistrationJourney.mockReturnValue(true);
+
 describe("MANAGING_OFFICER controller", () => {
 
   beforeEach(() => {
@@ -125,7 +141,7 @@ describe("MANAGING_OFFICER controller", () => {
   describe("GET tests", () => {
 
     test(`renders the ${MANAGING_OFFICER_PAGE} page`, async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(MANAGING_OFFICER_URL);
 
       expect(resp.status).toEqual(200);
@@ -141,7 +157,7 @@ describe("MANAGING_OFFICER controller", () => {
     });
 
     test(`renders the ${MANAGING_OFFICER_PAGE} page when REDIS_removal flag is ON`, async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockIsActiveFeature.mockReturnValue(true);
       const resp = await request(app).get(MANAGING_OFFICER_WITH_PARAMS_URL);
 
@@ -160,7 +176,7 @@ describe("MANAGING_OFFICER controller", () => {
     });
 
     test(`renders the ${MANAGING_OFFICER_PAGE} page when REDIS_removal flag is OFF`, async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockIsActiveFeature.mockReturnValue(false);
       const resp = await request(app).get(MANAGING_OFFICER_WITH_PARAMS_URL);
 
@@ -182,7 +198,7 @@ describe("MANAGING_OFFICER controller", () => {
   describe("GET with url params tests", () => {
 
     test(`renders the ${MANAGING_OFFICER_PAGE} page`, async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(MANAGING_OFFICER_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(200);
@@ -207,7 +223,7 @@ describe("MANAGING_OFFICER controller", () => {
         [ManagingOfficerKey]: [moMock],
         [EntityNumberKey]: undefined,
       };
-      mockGetApplicationData.mockReturnValueOnce(appData);
+      mockFetchApplicationData.mockReturnValueOnce(appData);
       mockGetFromApplicationData.mockReturnValueOnce(moMock);
       const resp = await request(app).get(MANAGING_OFFICER_URL + MO_IND_ID_URL);
 
@@ -228,7 +244,7 @@ describe("MANAGING_OFFICER controller", () => {
         [ManagingOfficerKey]: [moMock],
         [EntityNumberKey]: undefined,
       };
-      mockGetApplicationData.mockReturnValueOnce(appData);
+      mockFetchApplicationData.mockReturnValueOnce(appData);
       mockGetFromApplicationData.mockReturnValueOnce(moMock);
       mockIsActiveFeature.mockReturnValue(true);
       const resp = await request(app).get(MANAGING_OFFICER_WITH_PARAMS_URL + MO_IND_ID_URL);
@@ -252,7 +268,7 @@ describe("MANAGING_OFFICER controller", () => {
         [ManagingOfficerKey]: [moMock],
         [EntityNumberKey]: undefined,
       };
-      mockGetApplicationData.mockReturnValueOnce(appData);
+      mockFetchApplicationData.mockReturnValueOnce(appData);
       mockGetFromApplicationData.mockReturnValueOnce(moMock);
       mockIsActiveFeature.mockReturnValue(false);
       const resp = await request(app).get(MANAGING_OFFICER_URL + MO_IND_ID_URL);
@@ -287,7 +303,7 @@ describe("MANAGING_OFFICER controller", () => {
         [ManagingOfficerKey]: [moMock],
         [EntityNumberKey]: undefined,
       };
-      mockGetApplicationData.mockReturnValueOnce(appData);
+      mockFetchApplicationData.mockReturnValueOnce(appData);
       mockGetFromApplicationData.mockReturnValueOnce(moMock);
       const resp = await request(app).get(MANAGING_OFFICER_WITH_PARAMS_URL + MO_IND_ID_URL);
 
@@ -312,7 +328,8 @@ describe("MANAGING_OFFICER controller", () => {
 
   describe("POST tests", () => {
 
-    test(`renders the ${BENEFICIAL_OWNER_TYPE_URL} page after all mandatory fields for ${MANAGING_OFFICER_URL} have been populated`, async () => {
+    test(`renders the ${BENEFICIAL_OWNER_TYPE_URL} page after all mandatory fields for ${MANAGING_OFFICER_URL} have been populated and the REDIS_removal flag is set to OFF`, async () => {
+      mockIsActiveFeature.mockReturnValue(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_OBJECT_MOCK );
 
       const resp = await request(app)
@@ -321,7 +338,22 @@ describe("MANAGING_OFFICER controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSetApplicationData).toHaveBeenCalledTimes(1);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test(`renders the ${BENEFICIAL_OWNER_TYPE_URL} page after all mandatory fields for ${MANAGING_OFFICER_URL} have been populated and the REDIS_removal flag is set to ON`, async () => {
+      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_OBJECT_MOCK );
+
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_WITH_PARAMS_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(NEXT_PAGE_URL);
+      expect(mockSetApplicationData).toHaveBeenCalledTimes(1);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`sets session data and renders the ${BENEFICIAL_OWNER_TYPE_URL} page after all mandatory fields for ${MANAGING_OFFICER_URL} have been populated`, async () => {
@@ -872,9 +904,9 @@ describe("MANAGING_OFFICER controller", () => {
   });
 
   describe("POST with url params tests", () => {
+
     test(`redirects to ${BENEFICIAL_OWNER_TYPE_PAGE} page after all mandatory fields for ${MANAGING_OFFICER_PAGE} have been populated`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-
       mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_OBJECT_MOCK );
 
       const resp = await request(app)
@@ -1447,7 +1479,9 @@ describe("MANAGING_OFFICER controller", () => {
   });
 
   describe("UPDATE tests", () => {
-    test(`redirects to the ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
+
+    test(`redirects to the ${BENEFICIAL_OWNER_TYPE_URL} page when the REDIS_removal flag is set to OFF`, async () => {
+      mockIsActiveFeature.mockReturnValue(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockPrepareData.mockReturnValueOnce(MANAGING_OFFICER_OBJECT_MOCK);
       const resp = await request(app)
         .post(MANAGING_OFFICER_URL + MO_IND_ID_URL)
@@ -1455,7 +1489,21 @@ describe("MANAGING_OFFICER controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSetApplicationData).toHaveBeenCalledTimes(1);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test(`redirects to the ${BENEFICIAL_OWNER_TYPE_URL} page when the REDIS_removal flag is set to ON`, async () => {
+      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockPrepareData.mockReturnValueOnce(MANAGING_OFFICER_OBJECT_MOCK);
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_WITH_PARAMS_URL + MO_IND_ID_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(NEXT_PAGE_URL);
+      expect(mockSetApplicationData).toHaveBeenCalledTimes(1);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test("catch error when updating data", async () => {
@@ -1545,6 +1593,7 @@ describe("MANAGING_OFFICER controller", () => {
   });
 
   describe("UPDATE with url params tests", () => {
+
     test(`redirects to the ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockPrepareData.mockReturnValueOnce(MANAGING_OFFICER_OBJECT_MOCK);
@@ -1581,10 +1630,8 @@ describe("MANAGING_OFFICER controller", () => {
 
       expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(ManagingOfficerKey);
       expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(MO_IND_ID);
-
       expect(mockSetApplicationData.mock.calls[0][1].id).toEqual(MO_IND_ID);
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(ManagingOfficerKey);
-
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(NEXT_PAGE_URL);
       expect(resp.text).toContain(NEXT_PAGE_URL);
@@ -1651,13 +1698,25 @@ describe("MANAGING_OFFICER controller", () => {
   });
 
   describe("REMOVE tests", () => {
-    test(`redirects to the ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
+
+    test(`redirects to the ${BENEFICIAL_OWNER_TYPE_URL} page when the REDIS_removal flag is set to OFF`, async () => {
+      mockIsActiveFeature.mockReturnValue(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockPrepareData.mockReturnValueOnce(MANAGING_OFFICER_OBJECT_MOCK);
       const resp = await request(app).get(MANAGING_OFFICER_URL + REMOVE + MO_IND_ID_URL);
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test(`redirects to the ${BENEFICIAL_OWNER_TYPE_URL} page when the REDIS_removal flag is set to ON`, async () => {
+      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockPrepareData.mockReturnValueOnce(MANAGING_OFFICER_OBJECT_MOCK);
+      const resp = await request(app).get(MANAGING_OFFICER_WITH_PARAMS_URL + REMOVE + MO_IND_ID_URL);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(NEXT_PAGE_URL);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test("catch error when removing data", async () => {
@@ -1674,7 +1733,6 @@ describe("MANAGING_OFFICER controller", () => {
 
       expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(ManagingOfficerKey);
       expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(MO_IND_ID);
-
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
@@ -1682,6 +1740,7 @@ describe("MANAGING_OFFICER controller", () => {
   });
 
   describe("REMOVE with url params tests", () => {
+
     test(`redirects to the ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockPrepareData.mockReturnValueOnce(MANAGING_OFFICER_OBJECT_MOCK);
@@ -1710,7 +1769,6 @@ describe("MANAGING_OFFICER controller", () => {
 
       expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(ManagingOfficerKey);
       expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(MO_IND_ID);
-
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(NEXT_PAGE_URL);
       expect(resp.text).toContain(NEXT_PAGE_URL);

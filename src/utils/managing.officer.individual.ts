@@ -17,7 +17,8 @@ import {
   mapFieldsToDataObject,
   prepareData,
   setApplicationData,
-  removeFromApplicationData, fetchApplicationData,
+  removeFromApplicationData,
+  fetchApplicationData,
 } from "../utils/application.data";
 
 import {

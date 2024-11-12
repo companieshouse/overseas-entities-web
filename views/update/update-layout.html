@@ -45,7 +45,9 @@
 {% endblock %}
 
 {% block beforeContent %}
+
   {% include "includes/update_phase_banner.html" %}
+
   <div class="govuk-navigation">
     {% block backLink %}
     {% endblock %}
@@ -53,6 +55,7 @@
       {% include "includes/sign-out-user-banner.html" %}
     {% endblock %}
   </div>
+
 {% endblock %}
 
 {% if (journey == "remove") %}

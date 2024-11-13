@@ -101,13 +101,13 @@ import {
 mockJourneyDetectionMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
 const mockHasUpdatePresenterMiddleware = hasUpdatePresenter as jest.Mock;
-mockHasUpdatePresenterMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockHasUpdatePresenterMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
-mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockCompanyAuthenticationMiddleware = companyAuthentication as jest.Mock;
-mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
@@ -154,7 +154,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
   describe("POST tests", () => {
 
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page after all mandatory fields for ${UPDATE_MANAGING_OFFICER_PAGE} have been populated`, async () => {
-      mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_OBJECT_MOCK );
+      mockPrepareData.mockImplementationOnce(() => MANAGING_OFFICER_OBJECT_MOCK);
 
       const resp = await request(app)
         .post(UPDATE_MANAGING_OFFICER_URL)
@@ -166,7 +166,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
     });
 
     test(`sets session data and renders the ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page for valid active MO`, async () => {
-      mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_OBJECT_MOCK );
+      mockPrepareData.mockImplementationOnce(() => MANAGING_OFFICER_OBJECT_MOCK);
 
       const resp = await request(app)
         .post(UPDATE_MANAGING_OFFICER_URL)
@@ -185,7 +185,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
     });
 
     test(`sets session data and renders the ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page for valid inactive MO`, async () => {
-      mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_OBJECT_MOCK );
+      mockPrepareData.mockImplementationOnce(() => MANAGING_OFFICER_OBJECT_MOCK);
 
       const resp = await request(app)
         .post(UPDATE_MANAGING_OFFICER_URL)
@@ -206,7 +206,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
     });
 
     test(`POST only radio buttons choices and redirect to ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
-      mockPrepareData.mockImplementationOnce( () => { return { [HasSameResidentialAddressKey]: 0, [HasFormerNames]: 0 }; } );
+      mockPrepareData.mockImplementationOnce(() => { return { [HasSameResidentialAddressKey]: 0, [HasFormerNames]: 0 }; });
 
       const resp = await request(app)
         .post(UPDATE_MANAGING_OFFICER_URL)
@@ -218,7 +218,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
     });
 
     test("catch error when posting data", async () => {
-      mockSetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockSetApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
 
       const resp = await request(app)
         .post(UPDATE_MANAGING_OFFICER_URL)
@@ -362,7 +362,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
     });
 
     test(`Service address from the ${UPDATE_MANAGING_OFFICER_PAGE} is present when same address is set to no`, async () => {
-      mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
+      mockPrepareData.mockImplementationOnce(() => MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
       await request(app)
         .post(UPDATE_MANAGING_OFFICER_URL)
         .send(REQ_BODY_UPDATE_MANAGING_OFFICER_ACTIVE);
@@ -372,7 +372,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
     });
 
     test(`Service address from the ${UPDATE_MANAGING_OFFICER_PAGE} is empty when same address is set to yes`, async () => {
-      mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
+      mockPrepareData.mockImplementationOnce(() => MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
       await request(app)
         .post(UPDATE_MANAGING_OFFICER_URL)
         .send(REQ_BODY_UPDATE_MANAGING_OFFICER_ACTIVE);
@@ -383,7 +383,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
     });
 
     test(`Former names data from the ${UPDATE_MANAGING_OFFICER_PAGE} is empty when has former names is set to yes`, async () => {
-      mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_FORMER_NAMES_YES);
+      mockPrepareData.mockImplementationOnce(() => MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_FORMER_NAMES_YES);
       await request(app)
         .post(UPDATE_MANAGING_OFFICER_URL)
         .send(REQ_BODY_UPDATE_MANAGING_OFFICER_ACTIVE);
@@ -392,7 +392,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
     });
 
     test(`Former names data from the ${UPDATE_MANAGING_OFFICER_PAGE} is empty when when has former names is set to no`, async () => {
-      mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_FORMER_NAMES_NO);
+      mockPrepareData.mockImplementationOnce(() => MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_FORMER_NAMES_NO);
       await request(app)
         .post(UPDATE_MANAGING_OFFICER_URL)
         .send(REQ_BODY_UPDATE_MANAGING_OFFICER_ACTIVE);
@@ -752,7 +752,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
     });
 
     test(`catch error when rendering the ${UPDATE_MANAGING_OFFICER_PAGE} page`, async () => {
-      mockGetFromApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockGetFromApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(UPDATE_MANAGING_OFFICER_URL + MO_IND_ID_URL);
 
       expect(resp.status).toEqual(500);
@@ -774,7 +774,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
     });
 
     test("catch error when updating data", async () => {
-      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockLoggerDebugRequest.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app)
         .post(UPDATE_MANAGING_OFFICER_URL + MO_IND_ID_URL)
         .send(REQ_BODY_UPDATE_MANAGING_OFFICER_ACTIVE);
@@ -801,7 +801,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
     });
 
     test(`Service address from the ${UPDATE_MANAGING_OFFICER_PAGE} is present when same address is set to no`, async () => {
-      mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
+      mockPrepareData.mockImplementationOnce(() => MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
       await request(app)
         .post(UPDATE_MANAGING_OFFICER_URL)
         .send(REQ_BODY_UPDATE_MANAGING_OFFICER_ACTIVE);
@@ -812,7 +812,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
     });
 
     test(`Service address from the ${UPDATE_MANAGING_OFFICER_PAGE} is empty when same address is set to yes`, async () => {
-      mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES );
+      mockPrepareData.mockImplementationOnce(() => MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
       await request(app)
         .post(UPDATE_MANAGING_OFFICER_URL)
         .send(REQ_BODY_UPDATE_MANAGING_OFFICER_ACTIVE);
@@ -824,7 +824,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
     });
 
     test(`Former names data from the ${UPDATE_MANAGING_OFFICER_PAGE} is empty when has former names is set to yes`, async () => {
-      mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_FORMER_NAMES_YES);
+      mockPrepareData.mockImplementationOnce(() => MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_FORMER_NAMES_YES);
       await request(app)
         .post(UPDATE_MANAGING_OFFICER_URL)
         .send(REQ_BODY_UPDATE_MANAGING_OFFICER_ACTIVE);
@@ -834,7 +834,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
     });
 
     test(`Former names data from the ${UPDATE_MANAGING_OFFICER_PAGE} is empty when when has former names is set to no`, async () => {
-      mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_FORMER_NAMES_NO);
+      mockPrepareData.mockImplementationOnce(() => MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_FORMER_NAMES_NO);
       await request(app)
         .post(UPDATE_MANAGING_OFFICER_URL)
         .send(REQ_BODY_UPDATE_MANAGING_OFFICER_ACTIVE);
@@ -869,7 +869,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
     });
 
     test("catch error when removing data", async () => {
-      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockLoggerDebugRequest.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(UPDATE_MANAGING_OFFICER_URL + REMOVE + MO_IND_ID_URL);
 
       expect(resp.status).toEqual(500);

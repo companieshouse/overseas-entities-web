@@ -8,12 +8,25 @@ jest.mock('../../src/utils/feature.flag');
 jest.mock('../../src/middleware/service.availability.middleware');
 jest.mock("../../src/utils/url");
 
-import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
-import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
+import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import request from "supertest";
 
+import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
 import app from "../../src/app";
+
+import { authentication } from "../../src/middleware/authentication.middleware";
+import { saveAndContinue } from "../../src/utils/save.and.continue";
+import { ErrorMessages } from "../../src/validation/error.messages";
+import { logger } from "../../src/utils/logger";
+import { hasBeneficialOwnersStatement } from "../../src/middleware/navigation/has.beneficial.owners.statement.middleware";
+import { isActiveFeature } from "../../src/utils/feature.flag";
+import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
+
+import { getUrlWithParamsToPath, isRegistrationJourney } from "../../src/utils/url";
+import { ServiceAddressKey, ServiceAddressKeys } from "../../src/model/address.model";
+import { ApplicationDataType, managingOfficerCorporateType } from "../../src/model";
+import { ManagingOfficerCorporate, ManagingOfficerCorporateKey } from '../../src/model/managing.officer.corporate.model';
 
 import {
   AddressKeys,
@@ -21,7 +34,7 @@ import {
   HasSamePrincipalAddressKey,
   IsOnRegisterInCountryFormedInKey, PublicRegisterNameKey, RegistrationNumberKey,
 } from "../../src/model/data.types.model";
-import { ServiceAddressKey, ServiceAddressKeys } from "../../src/model/address.model";
+
 import {
   MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
   MANAGING_OFFICER_CORPORATE_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES,
@@ -37,7 +50,7 @@ import {
   APPLICATION_DATA_MOCK,
   EMAIL_ADDRESS
 } from "../__mocks__/session.mock";
-import { authentication } from "../../src/middleware/authentication.middleware";
+
 import {
   BENEFICIAL_OWNER_TYPE_URL,
   BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
@@ -47,6 +60,7 @@ import {
   MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL,
   REMOVE
 } from "../../src/config";
+
 import {
   INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER,
   JURISDICTION_FIELD_LABEL,
@@ -60,37 +74,30 @@ import {
   NOT_SHOW_NAME_OR_EMAIL_ON_PUBLIC_REGISTER,
   BACK_BUTTON_CLASS
 } from "../__mocks__/text.mock";
+
 import {
-  getApplicationData,
+  fetchApplicationData,
   getFromApplicationData,
   mapFieldsToDataObject,
   prepareData,
   removeFromApplicationData,
   setApplicationData
 } from "../../src/utils/application.data";
-import { saveAndContinue } from "../../src/utils/save.and.continue";
-import { ApplicationDataType, managingOfficerCorporateType } from "../../src/model";
-import { ManagingOfficerCorporate, ManagingOfficerCorporateKey } from '../../src/model/managing.officer.corporate.model';
-import { ErrorMessages } from "../../src/validation/error.messages";
+
 import {
   MANAGING_OFFICER_CORPORATE_WITH_INVALID_CHARS_MOCK,
   MANAGING_OFFICER_CORPORATE_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK,
   MANAGING_OFFICER_CORPORATE_WITH_MAX_LENGTH_FIELDS_MOCK
 } from "../__mocks__/validation.mock";
-import { logger } from "../../src/utils/logger";
-import { hasBeneficialOwnersStatement } from "../../src/middleware/navigation/has.beneficial.owners.statement.middleware";
-import { isActiveFeature } from "../../src/utils/feature.flag";
-import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
-import { getUrlWithParamsToPath } from "../../src/utils/url";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockHasBeneficialOwnersStatementMiddleware = hasBeneficialOwnersStatement as jest.Mock;
-mockHasBeneficialOwnersStatementMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockHasBeneficialOwnersStatementMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
-const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 const mockGetFromApplicationData = getFromApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
@@ -104,12 +111,15 @@ const DUMMY_DATA_OBJECT = { dummy: "data" };
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
-mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const NEXT_PAGE_URL = "/NEXT_PAGE";
 
 const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
 mockGetUrlWithParamsToPath.mockReturnValue(NEXT_PAGE_URL);
+
+const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
+mockIsRegistrationJourney.mockReturnValue(true);
 
 describe("MANAGING_OFFICER CORPORATE controller", () => {
 
@@ -124,7 +134,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
   describe("GET tests", () => {
 
     test(`renders the ${MANAGING_OFFICER_CORPORATE_PAGE} page`, async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(MANAGING_OFFICER_CORPORATE_URL);
 
       expect(resp.status).toEqual(200);
@@ -139,7 +149,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
 
     test(`renders the ${MANAGING_OFFICER_CORPORATE_PAGE} page with correct backlink url when REDIS_removal feature flag is ON`, async () => {
       mockIsActiveFeature.mockReturnValue(true);
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(MANAGING_OFFICER_CORPORATE_URL);
 
       expect(resp.status).toEqual(200);
@@ -158,7 +168,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
     test(`renders the ${MANAGING_OFFICER_CORPORATE_PAGE} page with correct backlink url when REDIS_removal feature flag is OFF`, async () => {
       mockIsActiveFeature.mockReturnValue(false);
       mockIsActiveFeature.mockReturnValue(false);
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(MANAGING_OFFICER_CORPORATE_URL);
 
       expect(resp.status).toEqual(200);
@@ -173,7 +183,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
     });
 
     test(`renders the ${MANAGING_OFFICER_CORPORATE_PAGE} page`, async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(MANAGING_OFFICER_CORPORATE_URL);
 
       expect(resp.status).toEqual(200);
@@ -196,7 +206,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
         [ManagingOfficerCorporateKey]: [moMock],
         [EntityNumberKey]: undefined,
       };
-      mockGetApplicationData.mockReturnValueOnce(appData);
+      mockFetchApplicationData.mockReturnValueOnce(appData);
       mockGetFromApplicationData.mockReturnValueOnce(moMock);
       const resp = await request(app).get(MANAGING_OFFICER_CORPORATE_URL + MO_CORP_ID_URL);
 
@@ -213,7 +223,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
     });
 
     test("Should render the error page", async () => {
-      mockGetFromApplicationData.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
+      mockGetFromApplicationData.mockImplementationOnce(() => { throw new Error(MESSAGE_ERROR); });
       const response = await request(app).get(MANAGING_OFFICER_CORPORATE_URL + MO_CORP_ID_URL);
 
       expect(response.status).toEqual(500);
@@ -224,7 +234,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
   describe("GET with url params tests", () => {
 
     test(`renders the ${MANAGING_OFFICER_CORPORATE_PAGE} page`, async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(200);
@@ -238,7 +248,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
     });
 
     test(`renders the ${MANAGING_OFFICER_CORPORATE_PAGE} page without public register jurisdiction field`, async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(200);
@@ -260,7 +270,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
         [ManagingOfficerCorporateKey]: [moMock],
         [EntityNumberKey]: undefined,
       };
-      mockGetApplicationData.mockReturnValueOnce(appData);
+      mockFetchApplicationData.mockReturnValueOnce(appData);
       mockGetFromApplicationData.mockReturnValueOnce(moMock);
       const resp = await request(app).get(MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL + MO_CORP_ID_URL);
 
@@ -277,7 +287,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
     });
 
     test("Should render the error page", async () => {
-      mockGetFromApplicationData.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
+      mockGetFromApplicationData.mockImplementationOnce(() => { throw new Error(MESSAGE_ERROR); });
       const response = await request(app).get(MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL + MO_CORP_ID_URL);
 
       expect(response.status).toEqual(500);
@@ -287,8 +297,9 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
 
   describe("POST tests", () => {
 
-    test(`sets session data and renders the ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
-      mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
+    test(`sets session data and renders the ${BENEFICIAL_OWNER_TYPE_URL} page when the REDIS_removal flag is set to OFF`, async () => {
+      mockIsActiveFeature.mockReturnValue(false);
+      mockPrepareData.mockImplementationOnce(() => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
 
       const resp = await request(app)
         .post(MANAGING_OFFICER_CORPORATE_URL)
@@ -310,8 +321,32 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
+    test(`sets session data and renders the ${BENEFICIAL_OWNER_TYPE_URL} page when the REDIS_removal flag is set to ON`, async () => {
+      mockIsActiveFeature.mockReturnValue(true);
+      mockPrepareData.mockImplementationOnce(() => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
+
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
+
+      const managingOfficerCorporate = mockSetApplicationData.mock.calls[0][1];
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(NEXT_PAGE_URL);
+      expect(managingOfficerCorporate).toEqual(MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
+      expect(managingOfficerCorporate.name).toEqual("Joe Bloggs Ltd");
+      expect(managingOfficerCorporate.legal_form).toEqual("legalForm");
+      expect(managingOfficerCorporate.law_governed).toEqual("LegAuth");
+      expect(managingOfficerCorporate.registration_number).toEqual("123456789");
+      expect(managingOfficerCorporate.role_and_responsibilities).toEqual("role and responsibilities text");
+      expect(managingOfficerCorporate.contact_full_name).toEqual("Joe Bloggs");
+      expect(managingOfficerCorporate.contact_email).toEqual("jbloggs@bloggs.co.ru");
+      expect(mockSetApplicationData.mock.calls[0][2]).toEqual(managingOfficerCorporateType.ManagingOfficerCorporateKey);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+    });
+
     test(`POST only radio buttons choices and redirect to ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
-      mockPrepareData.mockImplementationOnce( () => { return { [IsOnRegisterInCountryFormedInKey]: 0, [HasSamePrincipalAddressKey]: 0 }; } );
+      mockPrepareData.mockImplementationOnce(() => { return { [IsOnRegisterInCountryFormedInKey]: 0, [HasSamePrincipalAddressKey]: 0 }; });
 
       const resp = await request(app)
         .post(MANAGING_OFFICER_CORPORATE_URL)
@@ -323,7 +358,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
     });
 
     test("Test email is valid with long email address", async () => {
-      mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
+      mockPrepareData.mockImplementationOnce(() => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
       const managingOfficerCorporate = {
         ...REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS,
         contact_email: "vsocarroll@QQQQQQQT123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
@@ -339,7 +374,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
     });
 
     test("Test email is valid with long email name and address", async () => {
-      mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
+      mockPrepareData.mockImplementationOnce(() => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
       const managingOfficerCorporate = {
         ...REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS,
         contact_email: "socarrollA123456789B132456798C123456798D123456789@T123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
@@ -355,7 +390,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
     });
 
     test("Test email is valid with very long email name and address", async () => {
-      mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
+      mockPrepareData.mockImplementationOnce(() => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
       const managingOfficerCorporate = {
         ...REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS,
         contact_email: "socarrollA123456789B132456798C123456798D123456789E123456789F123XX@T123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
@@ -371,7 +406,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
     });
 
     test("catch error when posting data", async () => {
-      mockSetApplicationData.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
+      mockSetApplicationData.mockImplementationOnce(() => { throw new Error(MESSAGE_ERROR); });
 
       const resp = await request(app)
         .post(MANAGING_OFFICER_CORPORATE_URL)
@@ -522,7 +557,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
     });
 
     test(`Service address from the ${MANAGING_OFFICER_CORPORATE_URL} is present when same address is set to no`, async () => {
-      mockPrepareData.mockImplementation( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
+      mockPrepareData.mockImplementation(() => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
       await request(app)
         .post(MANAGING_OFFICER_CORPORATE_URL)
         .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
@@ -533,7 +568,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
     });
 
     test(`Service address from the ${MANAGING_OFFICER_CORPORATE_URL} is empty when same address is set to yes`, async () => {
-      mockPrepareData.mockImplementation( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
+      mockPrepareData.mockImplementation(() => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
       await request(app)
         .post(MANAGING_OFFICER_CORPORATE_URL)
         .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
@@ -544,7 +579,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
     });
 
     test(`Public register data from the ${MANAGING_OFFICER_CORPORATE_URL} is present when is on register set to yes`, async () => {
-      mockPrepareData.mockImplementation( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES);
+      mockPrepareData.mockImplementation(() => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES);
       await request(app)
         .post(MANAGING_OFFICER_CORPORATE_URL)
         .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
@@ -555,7 +590,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
     });
 
     test(`Public register data from the ${MANAGING_OFFICER_CORPORATE_URL} is empty when is on register set to no`, async () => {
-      mockPrepareData.mockImplementation( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO);
+      mockPrepareData.mockImplementation(() => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO);
       await request(app)
         .post(MANAGING_OFFICER_CORPORATE_URL)
         .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
@@ -584,7 +619,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
 
     test(`sets session data and renders the ${BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL} page`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-      mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
+      mockPrepareData.mockImplementationOnce(() => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
 
       const resp = await request(app)
         .post(MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL)
@@ -609,7 +644,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
 
     test(`POST only radio buttons choices and redirect to ${BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL} page`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-      mockPrepareData.mockImplementationOnce( () => { return { [IsOnRegisterInCountryFormedInKey]: 0, [HasSamePrincipalAddressKey]: 0 }; } );
+      mockPrepareData.mockImplementationOnce(() => { return { [IsOnRegisterInCountryFormedInKey]: 0, [HasSamePrincipalAddressKey]: 0 }; });
 
       const resp = await request(app)
         .post(MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL)
@@ -621,7 +656,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
     });
 
     test("Test email is valid with long email address", async () => {
-      mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
+      mockPrepareData.mockImplementationOnce(() => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
       const managingOfficerCorporate = {
         ...REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS,
         contact_email: "vsocarroll@QQQQQQQT123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
@@ -637,7 +672,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
     });
 
     test("Test email is valid with long email name and address", async () => {
-      mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
+      mockPrepareData.mockImplementationOnce(() => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
       const managingOfficerCorporate = {
         ...REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS,
         contact_email: "socarrollA123456789B132456798C123456798D123456789@T123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
@@ -653,7 +688,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
     });
 
     test("Test email is valid with very long email name and address", async () => {
-      mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
+      mockPrepareData.mockImplementationOnce(() => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
       const managingOfficerCorporate = {
         ...REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS,
         contact_email: "socarrollA123456789B132456798C123456798D123456789E123456789F123XX@T123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
@@ -669,7 +704,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
     });
 
     test("catch error when posting data", async () => {
-      mockSetApplicationData.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
+      mockSetApplicationData.mockImplementationOnce(() => { throw new Error(MESSAGE_ERROR); });
 
       const resp = await request(app)
         .post(MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL)
@@ -823,7 +858,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
     });
 
     test(`Service address from the ${MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL} is present when same address is set to no`, async () => {
-      mockPrepareData.mockImplementation( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
+      mockPrepareData.mockImplementation(() => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
       await request(app)
         .post(MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL)
         .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
@@ -834,7 +869,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
     });
 
     test(`Service address from the ${MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL} is empty when same address is set to yes`, async () => {
-      mockPrepareData.mockImplementation( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
+      mockPrepareData.mockImplementation(() => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
       await request(app)
         .post(MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL)
         .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
@@ -845,7 +880,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
     });
 
     test(`Public register data from the ${MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL} is present when is on register set to yes`, async () => {
-      mockPrepareData.mockImplementation( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES);
+      mockPrepareData.mockImplementation(() => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES);
       await request(app)
         .post(MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL)
         .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
@@ -856,7 +891,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
     });
 
     test(`Public register data from the ${MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL} is empty when is on register set to no`, async () => {
-      mockPrepareData.mockImplementation( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO);
+      mockPrepareData.mockImplementation(() => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO);
       await request(app)
         .post(MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL)
         .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
@@ -883,7 +918,9 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
   });
 
   describe("UPDATE tests", () => {
-    test(`redirects to the ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
+
+    test(`redirects to the ${BENEFICIAL_OWNER_TYPE_URL} page when the REDIS_removal flag is set to OFF`, async () => {
+      mockIsActiveFeature.mockReturnValue(false);
       mockPrepareData.mockReturnValueOnce(MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
       const resp = await request(app)
         .post(MANAGING_OFFICER_CORPORATE_URL + MO_CORP_ID_URL)
@@ -894,8 +931,21 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
+    test(`redirects to the ${BENEFICIAL_OWNER_TYPE_URL} page when the REDIS_removal flag is set to ON`, async () => {
+      mockIsActiveFeature.mockReturnValue(true);
+      mockPrepareData.mockReturnValueOnce(MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL + MO_CORP_ID_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(NEXT_PAGE_URL);
+      expect(mockSetApplicationData).toHaveBeenCalledTimes(1);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+    });
+
     test("catch error when updating data", async () => {
-      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
+      mockLoggerDebugRequest.mockImplementationOnce(() => { throw new Error(MESSAGE_ERROR); });
       const resp = await request(app)
         .post(MANAGING_OFFICER_CORPORATE_URL + MO_CORP_ID_URL)
         .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
@@ -914,17 +964,15 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
 
       expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(ManagingOfficerCorporateKey);
       expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(MO_CORP_ID);
-
       expect(mockSetApplicationData.mock.calls[0][1].id).toEqual(MO_CORP_ID);
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(ManagingOfficerCorporateKey);
-
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`Service address from the ${MANAGING_OFFICER_CORPORATE_URL} is present when same address is set to no`, async () => {
-      mockPrepareData.mockImplementation( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
+      mockPrepareData.mockImplementation(() => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
       await request(app)
         .post(MANAGING_OFFICER_CORPORATE_URL + MO_CORP_ID_URL)
         .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
@@ -935,7 +983,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
     });
 
     test(`Service address from the ${MANAGING_OFFICER_CORPORATE_URL} is empty when same address is set to yes`, async () => {
-      mockPrepareData.mockImplementation( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
+      mockPrepareData.mockImplementation(() => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
       await request(app)
         .post(MANAGING_OFFICER_CORPORATE_URL + MO_CORP_ID_URL)
         .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
@@ -946,7 +994,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
     });
 
     test(`Public register data from the ${MANAGING_OFFICER_CORPORATE_URL} is present when is on register set to yes`, async () => {
-      mockPrepareData.mockImplementation( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES);
+      mockPrepareData.mockImplementation(() => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES);
       await request(app)
         .post(MANAGING_OFFICER_CORPORATE_URL + MO_CORP_ID_URL)
         .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
@@ -957,7 +1005,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
     });
 
     test(`Public register data from the ${MANAGING_OFFICER_CORPORATE_URL} is empty when is on register set to no`, async () => {
-      mockPrepareData.mockImplementation( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO);
+      mockPrepareData.mockImplementation(() => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO);
       await request(app)
         .post(MANAGING_OFFICER_CORPORATE_URL + MO_CORP_ID_URL)
         .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
@@ -969,6 +1017,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
   });
 
   describe("UPDATE with url params tests", () => {
+
     test(`redirects to the ${BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL} page`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockPrepareData.mockReturnValueOnce(MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
@@ -983,7 +1032,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
     });
 
     test("catch error when updating data", async () => {
-      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
+      mockLoggerDebugRequest.mockImplementationOnce(() => { throw new Error(MESSAGE_ERROR); });
       const resp = await request(app)
         .post(MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL + MO_CORP_ID_URL)
         .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
@@ -1013,7 +1062,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
     });
 
     test(`Service address from the ${MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL} is present when same address is set to no`, async () => {
-      mockPrepareData.mockImplementation( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
+      mockPrepareData.mockImplementation(() => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
       await request(app)
         .post(MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL + MO_CORP_ID_URL)
         .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
@@ -1024,7 +1073,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
     });
 
     test(`Service address from the ${MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL} is empty when same address is set to yes`, async () => {
-      mockPrepareData.mockImplementation( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
+      mockPrepareData.mockImplementation(() => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
       await request(app)
         .post(MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL + MO_CORP_ID_URL)
         .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
@@ -1035,7 +1084,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
     });
 
     test(`Public register data from the ${MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL} is present when is on register set to yes`, async () => {
-      mockPrepareData.mockImplementation( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES);
+      mockPrepareData.mockImplementation(() => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES);
       await request(app)
         .post(MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL + MO_CORP_ID_URL)
         .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
@@ -1046,7 +1095,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
     });
 
     test(`Public register data from the ${MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL} is empty when is on register set to no`, async () => {
-      mockPrepareData.mockImplementation( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO);
+      mockPrepareData.mockImplementation(() => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO);
       await request(app)
         .post(MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL + MO_CORP_ID_URL)
         .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
@@ -1058,7 +1107,9 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
   });
 
   describe("REMOVE tests", () => {
-    test(`redirects to the ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
+
+    test(`redirects to the ${BENEFICIAL_OWNER_TYPE_URL} page when the REDIS_removal flag is set to OFF`, async () => {
+      mockIsActiveFeature.mockReturnValue(false);
       mockPrepareData.mockReturnValueOnce(MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
       const resp = await request(app).get(MANAGING_OFFICER_CORPORATE_URL + REMOVE + MO_CORP_ID_URL);
 
@@ -1067,8 +1118,18 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
+    test(`redirects to the ${BENEFICIAL_OWNER_TYPE_URL} page when the REDIS_removal flag is set to ON`, async () => {
+      mockIsActiveFeature.mockReturnValue(true);
+      mockPrepareData.mockReturnValueOnce(MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
+      const resp = await request(app).get(MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL + REMOVE + MO_CORP_ID_URL);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(NEXT_PAGE_URL);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+    });
+
     test("catch error when removing data", async () => {
-      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
+      mockLoggerDebugRequest.mockImplementationOnce(() => { throw new Error(MESSAGE_ERROR); });
       const resp = await request(app).get(MANAGING_OFFICER_CORPORATE_URL + REMOVE + MO_CORP_ID_URL);
 
       expect(resp.status).toEqual(500);
@@ -1089,6 +1150,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
   });
 
   describe("REMOVE with url params tests", () => {
+
     test(`redirects to the ${BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL} page`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockPrepareData.mockReturnValueOnce(MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
@@ -1102,7 +1164,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
     });
 
     test("catch error when removing data", async () => {
-      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
+      mockLoggerDebugRequest.mockImplementationOnce(() => { throw new Error(MESSAGE_ERROR); });
       const resp = await request(app).get(MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL + REMOVE + MO_CORP_ID_URL);
 
       expect(resp.status).toEqual(500);
@@ -1116,7 +1178,6 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
 
       expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(ManagingOfficerCorporateKey);
       expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(MO_CORP_ID);
-
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(NEXT_PAGE_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);

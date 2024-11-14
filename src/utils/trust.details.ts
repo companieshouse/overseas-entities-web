@@ -16,6 +16,7 @@ import { isActiveFeature } from "../utils/feature.flag";
 import { ValidationError } from 'express-validator';
 import { checkTrustStillInvolved } from '../validation/stillInvolved.validation';
 import { updateOverseasEntity } from "../service/overseas.entities.service";
+import { Trust } from "../model/trust.model";
 
 import { getUrlWithParamsToPath, isRegistrationJourney } from "../utils/url";
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
@@ -209,21 +210,7 @@ export const postTrustDetails = async (req: Request, res: Response, next: NextFu
       details.trust_id = mapperDetails.generateTrustId(appData);
     }
 
-    // if present, get existing trust from session (as it might have attached trustees)
-    let trust;
-    if (isReview) {
-      trust = getReviewTrustById(appData, details.trust_id);
-    } else {
-      trust = getTrustByIdFromApp(appData, details.trust_id);
-    }
-    Object.keys(details).forEach(key => trust[key] = details[key]);
-
-    // update trust in application data at session
-    if (isReview) {
-      updateTrustInReviewList(appData, trust);
-    } else {
-      appData = saveTrustInApp(appData, trust);
-    }
+    appData = getAndUpdateTrustData(req, isReview, appData, details);
 
     // update trusts in beneficial owners
     const selectedBoIds = req.body?.beneficialOwnersIds ?? [];
@@ -247,6 +234,23 @@ export const postTrustDetails = async (req: Request, res: Response, next: NextFu
     logger.errorRequest(req, error);
     return next(error);
   }
+};
+
+const getAndUpdateTrustData = (req: Request, isReview: boolean, appData: ApplicationData, details: Trust) => {
+  // if present, get existing trust from appData (as it might have attached trustees)
+  let trust;
+  if (isReview) {
+    trust = getReviewTrustById(appData, details.trust_id);
+  } else {
+    trust = getTrustByIdFromApp(appData, details.trust_id);
+  }
+  Object.keys(details).forEach(key => trust[key] = details[key]);
+  if (isReview) {
+    updateTrustInReviewList(appData, trust);
+  } else {
+    appData = saveTrustInApp(appData, trust);
+  }
+  return appData;
 };
 
 const getBackLinkUrl = (isUpdate: boolean, appData: ApplicationData, req: Request, isReview?: boolean) => {
@@ -275,10 +279,10 @@ const getBackLinkUrl = (isUpdate: boolean, appData: ApplicationData, req: Reques
 };
 
 const getPageTemplate = (isUpdate: boolean, isReview: boolean, url: string) => {
-  if (isReview){
+  if (isReview) {
     return { template: config.UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_PAGE, templateName: config.UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_PAGE };
   }
-  if (isUpdate){
+  if (isUpdate) {
     return { template: config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_PAGE, templateName: url.replace(config.UPDATE_AN_OVERSEAS_ENTITY_URL, "") };
   } else {
     return { template: config.TRUST_DETAILS_PAGE, templateName: config.TRUST_DETAILS_PAGE };
@@ -286,7 +290,7 @@ const getPageTemplate = (isUpdate: boolean, isReview: boolean, url: string) => {
 };
 
 const getUrl = (isUpdate: boolean) => {
-  if (isUpdate){
+  if (isUpdate) {
     return config.UPDATE_AN_OVERSEAS_ENTITY_URL;
   } else {
     return config.REGISTER_AN_OVERSEAS_ENTITY_URL;

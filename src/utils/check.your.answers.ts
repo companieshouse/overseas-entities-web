@@ -92,7 +92,8 @@ export const getDataForReview = async (req: Request, res: Response, next: NextFu
         isRPStatementExists: isRPStatementExists,
         noChangeFlag: isNoChangeJourney,
         isTrustFeatureEnabled: isActiveFeature(FEATURE_FLAG_ENABLE_TRUSTS_WEB),
-        hasAnyBosWithTrusteeNocs
+        hasAnyBosWithTrusteeNocs,
+        no_change: appData.update?.no_change ?? ""
       },
       FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC: isActiveFeature(FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)
     });

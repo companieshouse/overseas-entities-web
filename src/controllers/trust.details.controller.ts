@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from "express";
-
 import { getTrustDetails, postTrustDetails } from "../utils/trust.details";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {

@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
-import * as config from '../config';
+import { Session } from '@companieshouse/node-session-handler';
+
 import { logger } from '../utils/logger';
-import { getBoIndividualAssignableToTrust, getBoOtherAssignableToTrust, getTrustArray, containsTrustData, saveTrustInApp, getTrustByIdFromApp, hasNoBoAssignableToTrust } from '../utils/trusts';
-import { getApplicationData, setExtraData } from '../utils/application.data';
+import * as config from '../config';
 import * as mapperDetails from '../utils/trust/details.mapper';
 import * as mapperBo from '../utils/trust/beneficial.owner.mapper';
 import { ApplicationData } from '../model/application.model';
@@ -11,14 +11,32 @@ import { BeneficialOwnerIndividualKey } from '../model/beneficial.owner.individu
 import { BeneficialOwnerOtherKey } from '../model/beneficial.owner.other.model';
 import { safeRedirect } from '../utils/http.ext';
 import { validationResult } from 'express-validator/src/validation-result';
-import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
 import { saveAndContinue } from '../utils/save.and.continue';
-import { Session } from '@companieshouse/node-session-handler';
-import { setTrustDetailsAsReviewed, getReviewTrustById, updateTrustInReviewList } from './update/review_trusts';
 import { isActiveFeature } from "../utils/feature.flag";
-import { getUrlWithParamsToPath } from "../utils/url";
 import { ValidationError } from 'express-validator';
 import { checkTrustStillInvolved } from '../validation/stillInvolved.validation';
+import { updateOverseasEntity } from "../service/overseas.entities.service";
+import { Trust } from "../model/trust.model";
+
+import { getUrlWithParamsToPath, isRegistrationJourney } from "../utils/url";
+import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
+import { fetchApplicationData, setExtraData } from '../utils/application.data';
+
+import {
+  setTrustDetailsAsReviewed,
+  getReviewTrustById,
+  updateTrustInReviewList,
+} from './update/review_trusts';
+
+import {
+  getBoIndividualAssignableToTrust,
+  getBoOtherAssignableToTrust,
+  getTrustArray,
+  containsTrustData,
+  saveTrustInApp,
+  getTrustByIdFromApp,
+  hasNoBoAssignableToTrust,
+} from '../utils/trusts';
 
 export const TRUST_DETAILS_TEXTS = {
   title: 'Tell us about the trust',
@@ -52,16 +70,16 @@ const getPageProperties = async (
   isReview: boolean,
   errors?: FormattedValidationErrors,
 ): Promise<TrustDetailPageProperties> => {
-  const appData: ApplicationData = await getApplicationData(req.session);
 
+  const { templateName, template } = getPageTemplate(isUpdate, isReview, req.url);
+  const isRegistration = isRegistrationJourney(req);
+  const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
   const boAvailableForTrust = [
     ...getBoIndividualAssignableToTrust(appData)
       .map(mapperBo.mapBoIndividualToPage),
     ...getBoOtherAssignableToTrust(appData)
       .map(mapperBo.mapBoOtherToPage),
   ];
-
-  const { templateName, template } = getPageTemplate(isUpdate, isReview, req.url);
 
   return {
     backLinkUrl: getBackLinkUrl(isUpdate, appData, req, isReview),
@@ -89,25 +107,30 @@ const getPagePropertiesRelevantPeriod = async (req, formData, isUpdate, isReview
   return pageProps;
 };
 
-export const getTrustDetails = async (req: Request, res: Response, next: NextFunction, isUpdate: boolean, isReview: boolean): Promise<void> => {
+export const getTrustDetails = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+  isUpdate: boolean,
+  isReview: boolean
+): Promise<void> => {
+
   try {
+
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const appData: ApplicationData = await getApplicationData(req.session);
+    const isRegistration = isRegistrationJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
 
     let trustId;
-    if (isReview) {
+    if (!isReview) {
+      trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
+    } else {
       const trustInReview = appData.update?.review_trusts?.find(trust => trust.review_status);
       trustId = trustInReview?.trust_id;
-    } else {
-      trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
     }
 
-    const formData: PageModel.TrustDetailsForm = mapperDetails.mapDetailToPage(
-      appData,
-      trustId,
-      isReview,
-    );
+    const formData: PageModel.TrustDetailsForm = mapperDetails.mapDetailToPage(appData, trustId, isReview,);
 
     let pageProps;
     if (req.query["relevant-period"] === "true") {
@@ -117,6 +140,7 @@ export const getTrustDetails = async (req: Request, res: Response, next: NextFun
     }
 
     return res.render(pageProps.template, pageProps);
+
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);
@@ -156,10 +180,12 @@ export const postTrustDetails = async (req: Request, res: Response, next: NextFu
   };
 
   try {
+
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    //  get trust data from session
-    let appData: ApplicationData = await getApplicationData(req.session);
+    const session = req.session as Session;
+    const isRegistration = isRegistrationJourney(req);
+    let appData: ApplicationData = await fetchApplicationData(req, isRegistration);
 
     // check for errors
     const errorList = validationResult(req);
@@ -169,67 +195,68 @@ export const postTrustDetails = async (req: Request, res: Response, next: NextFu
     if (!errorList.isEmpty() || errors.length) {
       const errorListArray = !errorList.isEmpty() ? errorList.array() : [];
       const formattedErrors = formatValidationError([...errorListArray, ...errors]);
-
       let pageProps;
       if (req.query["relevant-period"] === "true") {
         pageProps = await getPagePropertiesRelevantPeriod(req, formData, isUpdate, isReview, formattedErrors);
       } else {
         pageProps = await getPageProperties(req, formData, isUpdate, isReview, formattedErrors);
       }
-
       return res.render(pageProps.template, pageProps);
     }
 
-    //  map form data to session trust data
+    // map form data to session trust data
     const details = mapperDetails.mapDetailToSession(req.body, hasNoBoAssignableToTrust(appData));
     if (!details.trust_id) {
       details.trust_id = mapperDetails.generateTrustId(appData);
     }
 
-    //  if present, get existing trust from session (as it might have attached trustees)
-    let trust;
-    if (isReview) {
-      trust = getReviewTrustById(appData, details.trust_id);
-    } else {
-      trust = getTrustByIdFromApp(appData, details.trust_id);
-    }
-    Object.keys(details).forEach(key => trust[key] = details[key]);
+    appData = getAndUpdateTrustData(req, isReview, appData, details);
 
-    //  update trust  in application data at session
-    if (isReview) {
-      updateTrustInReviewList(appData, trust);
-    } else {
-      appData = saveTrustInApp(appData, trust);
-    }
-
-    //  update trusts in beneficial owners
+    // update trusts in beneficial owners
     const selectedBoIds = req.body?.beneficialOwnersIds ?? [];
     appData = updateBeneficialOwnersTrustInApp(appData, details.trust_id, selectedBoIds);
 
-    // // if reviewing a trust, mark trust as in review
+    // if reviewing a trust, mark trust as in review
     if (isReview) {
       setTrustDetailsAsReviewed(appData);
     }
 
-    //  save to session
-    const session = req.session as Session;
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {
+      await updateOverseasEntity(req, session, appData);
+    } else {
+      await saveAndContinue(req, session);
+    }
     setExtraData(session, appData);
 
-    await saveAndContinue(req, session);
-
     return safeRedirect(res, getNextPage(isUpdate, details.trust_id, req, isReview));
+
   } catch (error) {
     logger.errorRequest(req, error);
-
     return next(error);
   }
+};
+
+const getAndUpdateTrustData = (req: Request, isReview: boolean, appData: ApplicationData, trustDetails: Trust) => {
+  // if present, get existing trust from appData (as it might have attached trustees)
+  let trust;
+  if (isReview) {
+    trust = getReviewTrustById(appData, trustDetails.trust_id);
+  } else {
+    trust = getTrustByIdFromApp(appData, trustDetails.trust_id);
+  }
+  Object.keys(trustDetails).forEach(key => trust[key] = trustDetails[key]);
+  if (isReview) {
+    updateTrustInReviewList(appData, trust);
+  } else {
+    appData = saveTrustInApp(appData, trust);
+  }
+  return appData;
 };
 
 const getBackLinkUrl = (isUpdate: boolean, appData: ApplicationData, req: Request, isReview?: boolean) => {
   let backLinkUrl: string;
   if (isUpdate) {
     backLinkUrl = config.UPDATE_TRUSTS_SUBMISSION_INTERRUPT_URL;
-
     if (containsTrustData(getTrustArray(appData))) {
       backLinkUrl = `${config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL}`;
     }
@@ -238,7 +265,6 @@ const getBackLinkUrl = (isUpdate: boolean, appData: ApplicationData, req: Reques
       ? getUrlWithParamsToPath(config.TRUST_ENTRY_WITH_PARAMS_URL, req)
       : config.TRUST_ENTRY_URL;
     backLinkUrl += config.TRUST_INTERRUPT_URL;
-
     if (containsTrustData(getTrustArray(appData))) {
       backLinkUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
         ? getUrlWithParamsToPath(config.TRUST_ENTRY_WITH_PARAMS_URL, req)
@@ -246,19 +272,17 @@ const getBackLinkUrl = (isUpdate: boolean, appData: ApplicationData, req: Reques
       backLinkUrl += config.ADD_TRUST_URL;
     }
   }
-
   if (isReview) {
     backLinkUrl = config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL;
   }
-
   return backLinkUrl;
 };
 
 const getPageTemplate = (isUpdate: boolean, isReview: boolean, url: string) => {
-  if (isReview){
+  if (isReview) {
     return { template: config.UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_PAGE, templateName: config.UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_PAGE };
   }
-  if (isUpdate){
+  if (isUpdate) {
     return { template: config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_PAGE, templateName: url.replace(config.UPDATE_AN_OVERSEAS_ENTITY_URL, "") };
   } else {
     return { template: config.TRUST_DETAILS_PAGE, templateName: config.TRUST_DETAILS_PAGE };
@@ -266,7 +290,7 @@ const getPageTemplate = (isUpdate: boolean, isReview: boolean, url: string) => {
 };
 
 const getUrl = (isUpdate: boolean) => {
-  if (isUpdate){
+  if (isUpdate) {
     return config.UPDATE_AN_OVERSEAS_ENTITY_URL;
   } else {
     return config.REGISTER_AN_OVERSEAS_ENTITY_URL;
@@ -287,7 +311,6 @@ const getNextPage = (isUpdate: boolean, trustId: string, req: Request, isReview?
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       nextPageUrl = getUrlWithParamsToPath(`${config.TRUST_ENTRY_WITH_PARAMS_URL}/${trustId}${config.TRUST_INVOLVED_URL}`, req);
     }
-
     return nextPageUrl;
   }
 };
@@ -295,7 +318,6 @@ const getNextPage = (isUpdate: boolean, trustId: string, req: Request, isReview?
 // Get validation errors that depend on an asynchronous request
 const getValidationErrors = (appData: ApplicationData, req: Request): ValidationError[] => {
   const stillInvolvedErrors = checkTrustStillInvolved(appData, req);
-
   return [...stillInvolvedErrors];
 };
 

@@ -7,28 +7,58 @@ jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/update/review_trusts');
 
-import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
+import { DateTime } from 'luxon';
+import { NextFunction } from 'express';
 import { beforeEach, jest, test, describe } from '@jest/globals';
 import request from 'supertest';
-import { NextFunction } from 'express';
 
+import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import app from '../../../src/app';
-import { SECURE_UPDATE_FILTER_URL, UPDATE_MANAGE_TRUSTS_INTERRUPT_URL, UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL, UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL } from '../../../src/config';
-import { authentication } from '../../../src/middleware/authentication.middleware';
-import { companyAuthentication } from '../../../src/middleware/company.authentication.middleware';
-import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
-import { getApplicationData } from '../../../src/utils/application.data';
-import { isActiveFeature } from '../../../src/utils/feature.flag';
-import { APPLICATION_DATA_MOCK, BENEFICIAL_OWNER_INDIVIDUAL_NO_TRUSTEE_OBJECT_MOCK, BENEFICIAL_OWNER_OTHER_NO_TRUSTEE_OBJECT_MOCK, TRUST } from '../../__mocks__/session.mock';
-import { PAGE_TITLE_ERROR, ERROR_LIST, UPDATE_REVIEW_THE_TRUST, ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE, TRUST_NOT_ASSOCIATED_WITH_BENEFICIAL_OWNER_TEXT, TRUST_CEASED_DATE_TEXT, TRUST_SELECT_TRUSTEES_TEXT, SAVE_AND_CONTINUE_BUTTON_TEXT } from '../../__mocks__/text.mock';
-import { saveAndContinue } from "../../../src/utils/save.and.continue";
-import { ErrorMessages } from "../../../src/validation/error.messages";
-import { getReviewTrustById, hasTrustsToReview, updateTrustInReviewList } from '../../../src/utils/update/review_trusts';
+
 import { UpdateKey } from '../../../src/model/update.type.model';
 import { Trust } from '../../../src/model/trust.model';
 import { ApplicationData } from '../../../src/model/application.model';
+import { authentication } from '../../../src/middleware/authentication.middleware';
+import { companyAuthentication } from '../../../src/middleware/company.authentication.middleware';
+import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
+import { isActiveFeature } from '../../../src/utils/feature.flag';
+import { saveAndContinue } from "../../../src/utils/save.and.continue";
+import { ErrorMessages } from "../../../src/validation/error.messages";
+
+import { getApplicationData, fetchApplicationData } from '../../../src/utils/application.data';
 import { beneficialOwnerIndividualType, beneficialOwnerOtherType } from '../../../src/model';
-import { DateTime } from 'luxon';
+
+import {
+  getReviewTrustById,
+  hasTrustsToReview,
+  updateTrustInReviewList
+} from '../../../src/utils/update/review_trusts';
+
+import {
+  SECURE_UPDATE_FILTER_URL,
+  UPDATE_MANAGE_TRUSTS_INTERRUPT_URL,
+  UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL,
+  UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL
+} from '../../../src/config';
+
+import {
+  APPLICATION_DATA_MOCK,
+  BENEFICIAL_OWNER_INDIVIDUAL_NO_TRUSTEE_OBJECT_MOCK,
+  BENEFICIAL_OWNER_OTHER_NO_TRUSTEE_OBJECT_MOCK,
+  TRUST
+} from '../../__mocks__/session.mock';
+
+import {
+  PAGE_TITLE_ERROR,
+  ERROR_LIST,
+  UPDATE_REVIEW_THE_TRUST,
+  ANY_MESSAGE_ERROR,
+  SERVICE_UNAVAILABLE,
+  TRUST_NOT_ASSOCIATED_WITH_BENEFICIAL_OWNER_TEXT,
+  TRUST_CEASED_DATE_TEXT,
+  TRUST_SELECT_TRUSTEES_TEXT,
+  SAVE_AND_CONTINUE_BUTTON_TEXT
+} from '../../__mocks__/text.mock';
 
 const mockTrust = {
   ...TRUST,
@@ -66,6 +96,7 @@ const appDataWithNoTrustNocBOs = {
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
@@ -89,13 +120,16 @@ mockGetReviewTrustById.mockReturnValue(mockTrust);
 const mockUpdateTrustInReviewList = updateTrustInReviewList as jest.Mock;
 
 describe('Update - Manage Trusts - Review the trust', () => {
+
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetApplicationData.mockReturnValue(appDataWithReviewTrust);
+    mockFetchApplicationData.mockReturnValue(appDataWithReviewTrust);
     mockIsActiveFeature.mockReset();
   });
 
   describe('GET tests', () => {
+
     test('when manage trusts feature flag is on, page is returned', async () => {
 
       const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);
@@ -113,7 +147,7 @@ describe('Update - Manage Trusts - Review the trust', () => {
     test('when feature flags are on and no associated beneficial owners, page shows ceased date', async () => {
 
       // use app data with no trust associated BOs - i.e. no BOs have Trust nature of controls
-      mockGetApplicationData.mockReturnValue(appDataWithNoTrustNocBOs);
+      mockFetchApplicationData.mockReturnValue(appDataWithNoTrustNocBOs);
 
       const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);
 
@@ -277,6 +311,7 @@ describe('Update - Manage Trusts - Review the trust', () => {
 
       // use app data with no trust associated BOs - i.e. no BOs have Trust nature of controls
       mockGetApplicationData.mockReturnValue(appDataWithNoTrustNocBOs);
+      mockFetchApplicationData.mockReturnValue(appDataWithNoTrustNocBOs);
 
       const DAY = "11";
       const MONTH = "12";

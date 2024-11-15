@@ -11,7 +11,7 @@ jest.mock('../../src/middleware/service.availability.middleware');
 jest.mock("../../src/utils/url");
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
-import mockRemoveJourneyMiddleware from "../__mocks__/remove.journey.middleware.mock";
+import mockJourneyDetectionMiddleware from "../__mocks__/journey.detection.middleware.mock";
 import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
 
 import { NextFunction, Request, Response } from "express";
@@ -77,7 +77,29 @@ import {
   CHANGE_LINK_MO_INDIVIDUAL,
   CHANGE_LINK_MO_CORPORATE,
   BACK_BUTTON_CLASS,
-  TRUST_INVOLVED
+  TRUST_INVOLVED,
+  BO_NOC_HEADING,
+  TRUSTS_NOC_HEADING,
+  FIRM_NOC_HEADING,
+  FIRM_CONTROL_NOC_HEADING,
+  TRUST_CONTROL_NOC_HEADING,
+  OWNER_OF_LAND_PERSON_NOC_HEADING,
+  OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING,
+  BO_NOC_OVER_25_PERCENT_OF_SHARES,
+  BO_NOC_TRUSTEE_OF_TRUST_OVER_25_PERCENT_OF_VOTING_RIGHTS,
+  BO_NOC_MEMBER_OF_FIRM_APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS,
+  BO_NOC_OVER_25_PERCENT_OF_VOTING_RIGHTS,
+  BO_NOC_APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS,
+  BO_NOC_SIGNIFICANT_INFLUENCE_OR_CONTROL,
+  BO_NOC_TRUSTEE_OF_TRUST_OVER_25_PERCENT_OF_SHARES,
+  BO_NOC_TRUSTEE_OF_TRUST_APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS,
+  BO_NOC_TRUSTEE_OF_TRUST_SIGNIFICANT_INFLUENCE_OR_CONTROL,
+  BO_NOC_MEMBER_OF_FIRM_OVER_25_PERCENT_OF_SHARES,
+  BO_NOC_MEMBER_OF_FIRM_OVER_25_PERCENT_OF_VOTING_RIGHTS,
+  BO_NOC_MEMBER_OF_FIRM_SIGNIFICANT_INFLUENCE_OR_CONTROL,
+  BO_NOC_JURISDICTION_ENGLAND_AND_WALES,
+  BO_NOC_JURISDICTION_SCOTLAND,
+  BO_NOC_JURISDICTION_NORTHERN_IRELAND
 } from "../__mocks__/text.mock";
 import {
   ERROR,
@@ -98,6 +120,8 @@ import {
   BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
   MANAGING_OFFICER_OBJECT_MOCK,
   OVERSEAS_NAME_MOCK,
+  BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
+  BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
 } from "../__mocks__/session.mock";
 
 import { authentication } from "../../src/middleware/authentication.middleware";
@@ -107,7 +131,7 @@ import { getApplicationData } from "../../src/utils/application.data";
 import { closeTransaction } from "../../src/service/transaction.service";
 import { updateOverseasEntity } from "../../src/service/overseas.entities.service";
 
-import { dueDiligenceType, entityType, overseasEntityDueDiligenceType } from "../../src/model";
+import { beneficialOwnerGovType, beneficialOwnerIndividualType, beneficialOwnerOtherType, dueDiligenceType, entityType, overseasEntityDueDiligenceType } from "../../src/model";
 import { hasBOsOrMOs } from "../../src/middleware/navigation/has.beneficial.owners.or.managing.officers.middleware";
 import { DUE_DILIGENCE_OBJECT_MOCK } from "../__mocks__/due.diligence.mock";
 import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from "../__mocks__/overseas.entity.due.diligence.mock";
@@ -119,9 +143,11 @@ import { ManagingOfficerKey } from "../../src/model/managing.officer.model";
 import { TrustKey } from "../../src/model/trust.model";
 import { isActiveFeature } from "../../src/utils/feature.flag";
 import { getUrlWithParamsToPath } from "../../src/utils/url";
+import { NatureOfControlJurisdiction, NatureOfControlType } from "../../src/model/data.types.model";
+import { stringCount } from "../utils/test.utils";
 
 mockCsrfProtectionMiddleware.mockClear();
-mockRemoveJourneyMiddleware.mockClear();
+mockJourneyDetectionMiddleware.mockClear();
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue( false );
@@ -156,7 +182,7 @@ describe("GET tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including presenter details`, async () => {
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
     expect(resp.status).toEqual(200);
@@ -180,7 +206,7 @@ describe("GET tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including print button`, async () => {
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
     expect(resp.status).toEqual(200);
@@ -190,7 +216,7 @@ describe("GET tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including change links`, async () => {
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
     expect(resp.status).toEqual(200);
@@ -382,7 +408,7 @@ describe("GET tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with someone else change links when this is selected`, async () => {
-    const applicationData = { APPLICATION_DATA_MOCK };
+    const applicationData = { ...APPLICATION_DATA_MOCK };
     applicationData[WhoIsRegisteringKey] = WhoIsRegisteringType.SOMEONE_ELSE;
     mockGetApplicationData.mockReturnValueOnce(applicationData);
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
@@ -404,7 +430,7 @@ describe("GET tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including identity checks - Agent (The UK-regulated agent) selected`, async () => {
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
     expect(resp.status).toEqual(200);
@@ -440,12 +466,12 @@ describe("GET tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page (entity service address not same as principal address)`, async () => {
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
-    const tempEntity = APPLICATION_DATA_MOCK[entityType.EntityKey];
-    APPLICATION_DATA_MOCK[entityType.EntityKey] = ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS;
+    mockGetApplicationData.mockReturnValueOnce({
+      ...APPLICATION_DATA_MOCK,
+      [entityType.EntityKey]: ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS
+    });
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
-    APPLICATION_DATA_MOCK[entityType.EntityKey] = tempEntity;
 
     expect(resp.status).toEqual(200);
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TITLE);
@@ -458,7 +484,7 @@ describe("GET tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page (entity service address same as principal address)`, async () => {
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
@@ -476,7 +502,7 @@ describe("GET tests", () => {
     mockIsActiveFeature.mockReturnValueOnce(false);
     mockIsActiveFeature.mockReturnValueOnce(false);
 
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
@@ -496,9 +522,9 @@ describe("GET tests", () => {
     mockIsActiveFeature.mockReturnValueOnce(true);
     mockIsActiveFeature.mockReturnValueOnce(true);
 
-    APPLICATION_DATA_MOCK.entity_number = undefined;
     const mockAppData = {
       ...APPLICATION_DATA_MOCK,
+      entity_number: undefined,
       [TrustKey]: [
         TRUST_WITH_ID,
       ]
@@ -521,7 +547,7 @@ describe("GET tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with no trust data`, async () => {
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_NO_TRUSTS_MOCK);
+    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_NO_TRUSTS_MOCK });
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
@@ -546,7 +572,7 @@ describe("GET tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE}`, async () => {
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
@@ -567,9 +593,9 @@ describe("GET tests", () => {
     expect(resp.text).toContain("county");
     expect(resp.text).toContain("BY 2");
     expect(resp.text).toContain("1999");
-    expect(resp.text).toContain("Holds, directly or indirectly, more than 25% of the shares in the entity");
-    expect(resp.text).toContain("The trustees of that trust (in their capacity as such) hold, directly or indirectly, more than 25% of the voting rights in the entity");
-    expect(resp.text).toContain("The members of that firm (in their capacity as such) hold the right, directly or indirectly, to appoint or remove a majority of the board of directors of the company");
+    expect(resp.text).toContain(BO_NOC_OVER_25_PERCENT_OF_SHARES);
+    expect(resp.text).toContain(BO_NOC_TRUSTEE_OF_TRUST_OVER_25_PERCENT_OF_VOTING_RIGHTS);
+    expect(resp.text).toContain(BO_NOC_MEMBER_OF_FIRM_APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS);
 
     // Beneficial Owner Statement
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_TITLE);
@@ -650,6 +676,169 @@ describe("GET tests", () => {
     expect(resp.text).toContain(PUBLIC_REGISTER_NAME + " / " + PUBLIC_REGISTER_JURISDICTION + " / " + REGISTRATION_NUMBER);
     expect(resp.text).toContain(SOMEONE_ELSE_REGISTERING);
   });
+
+  test.each([
+    [CHECK_YOUR_ANSWERS_URL],
+    [CHECK_YOUR_ANSWERS_WITH_PARAMS_URL]
+  ])(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with correct Beneficial Owner natures of control using url and the flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC off, %s`, async (url) => {
+    mockGetApplicationData.mockReturnValueOnce({
+      ...APPLICATION_DATA_MOCK,
+      [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [
+        {
+          ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+          beneficial_owner_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          trustees_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          non_legal_firm_members_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          trust_control_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          non_legal_firm_control_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          owner_of_land_person_nature_of_control_jurisdictions: [ ...Object.values(NatureOfControlJurisdiction) ],
+          owner_of_land_other_entity_nature_of_control_jurisdictions: [ ...Object.values(NatureOfControlJurisdiction) ]
+        }],
+      [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: [
+        {
+          ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
+          beneficial_owner_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          trustees_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          non_legal_firm_members_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          trust_control_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          non_legal_firm_control_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          owner_of_land_person_nature_of_control_jurisdictions: [ ...Object.values(NatureOfControlJurisdiction) ],
+          owner_of_land_other_entity_nature_of_control_jurisdictions: [ ...Object.values(NatureOfControlJurisdiction) ]
+        }],
+      [beneficialOwnerGovType.BeneficialOwnerGovKey]: [
+        {
+          ...BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
+          beneficial_owner_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          non_legal_firm_members_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          trust_control_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          non_legal_firm_control_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          owner_of_land_person_nature_of_control_jurisdictions: [ ...Object.values(NatureOfControlJurisdiction) ],
+          owner_of_land_other_entity_nature_of_control_jurisdictions: [ ...Object.values(NatureOfControlJurisdiction) ]
+        }],
+    });
+
+    const resp = await request(app).get(url);
+
+    expect(resp.status).toEqual(200);
+    expect(resp.text).toContain(LANDING_PAGE_URL);
+    expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TITLE);
+
+    // Count NOC Headings
+    expect(stringCount(BO_NOC_HEADING, resp.text)).toEqual(3);
+    expect(stringCount(TRUSTS_NOC_HEADING, resp.text)).toEqual(2); // BO Gov doesn't have the trustee of a trust NOC
+    expect(stringCount(FIRM_NOC_HEADING, resp.text)).toEqual(3);
+    expect(stringCount(FIRM_CONTROL_NOC_HEADING, resp.text)).toEqual(0);
+    expect(stringCount(TRUST_CONTROL_NOC_HEADING, resp.text)).toEqual(0);
+    expect(stringCount(OWNER_OF_LAND_PERSON_NOC_HEADING, resp.text)).toEqual(0);
+    expect(stringCount(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING, resp.text)).toEqual(0);
+
+    // Count the NOCs
+    expect(stringCount(BO_NOC_OVER_25_PERCENT_OF_SHARES, resp.text)).toEqual(3);
+    expect(stringCount(BO_NOC_OVER_25_PERCENT_OF_VOTING_RIGHTS, resp.text)).toEqual(3);
+    expect(stringCount(BO_NOC_APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS, resp.text)).toEqual(3);
+    expect(stringCount(BO_NOC_SIGNIFICANT_INFLUENCE_OR_CONTROL, resp.text)).toEqual(3);
+
+    // The same NOC text is used for 'trustee of a trust' and 'control of trust' Nocs.
+    // The BO Gov only has 'control of trust' and not 'trustee of a trust' so these NOCs should appear 5 times
+    expect(stringCount(escapeNOCText(BO_NOC_TRUSTEE_OF_TRUST_OVER_25_PERCENT_OF_SHARES), resp.text)).toEqual(2);
+    expect(stringCount(escapeNOCText(BO_NOC_TRUSTEE_OF_TRUST_OVER_25_PERCENT_OF_VOTING_RIGHTS), resp.text)).toEqual(2);
+    expect(stringCount(escapeNOCText(BO_NOC_TRUSTEE_OF_TRUST_APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS), resp.text)).toEqual(2);
+    expect(stringCount(escapeNOCText(BO_NOC_TRUSTEE_OF_TRUST_SIGNIFICANT_INFLUENCE_OR_CONTROL), resp.text)).toEqual(2);
+
+    // The same NOC text is used for 'member of a firm' and 'control of firm' Nocs.
+    expect(stringCount(escapeNOCText(BO_NOC_MEMBER_OF_FIRM_OVER_25_PERCENT_OF_SHARES), resp.text)).toEqual(3);
+    expect(stringCount(escapeNOCText(BO_NOC_MEMBER_OF_FIRM_OVER_25_PERCENT_OF_VOTING_RIGHTS), resp.text)).toEqual(3);
+    expect(stringCount(escapeNOCText(BO_NOC_MEMBER_OF_FIRM_APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS), resp.text)).toEqual(3);
+    expect(stringCount(escapeNOCText(BO_NOC_MEMBER_OF_FIRM_SIGNIFICANT_INFLUENCE_OR_CONTROL), resp.text)).toEqual(3);
+
+    // The same NOC text is used for 'person owner of land' and 'other entity owner of land' Nocs.
+    expect(stringCount(BO_NOC_JURISDICTION_ENGLAND_AND_WALES, resp.text)).toEqual(0);
+    expect(stringCount(BO_NOC_JURISDICTION_SCOTLAND, resp.text)).toEqual(0);
+    expect(stringCount(BO_NOC_JURISDICTION_NORTHERN_IRELAND, resp.text)).toEqual(0);
+  });
+
+  test.each([
+    [CHECK_YOUR_ANSWERS_URL],
+    [CHECK_YOUR_ANSWERS_WITH_PARAMS_URL]
+  ])(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with correct Beneficial Owner natures of control using url and the flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC on, %s`, async (url) => {
+    mockIsActiveFeature.mockReturnValue(true);
+
+    mockGetApplicationData.mockReturnValueOnce({
+      ...APPLICATION_DATA_MOCK,
+      [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [
+        {
+          ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+          beneficial_owner_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          trustees_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          non_legal_firm_members_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          trust_control_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          non_legal_firm_control_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          owner_of_land_person_nature_of_control_jurisdictions: [ ...Object.values(NatureOfControlJurisdiction) ],
+          owner_of_land_other_entity_nature_of_control_jurisdictions: [ ...Object.values(NatureOfControlJurisdiction) ]
+        }],
+      [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: [
+        {
+          ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
+          beneficial_owner_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          trustees_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          non_legal_firm_members_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          trust_control_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          non_legal_firm_control_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          owner_of_land_person_nature_of_control_jurisdictions: [ ...Object.values(NatureOfControlJurisdiction) ],
+          owner_of_land_other_entity_nature_of_control_jurisdictions: [ ...Object.values(NatureOfControlJurisdiction) ]
+        }],
+      [beneficialOwnerGovType.BeneficialOwnerGovKey]: [
+        {
+          ...BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
+          beneficial_owner_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          non_legal_firm_members_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          trust_control_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          non_legal_firm_control_nature_of_control_types: [ ...Object.values(NatureOfControlType) ],
+          owner_of_land_person_nature_of_control_jurisdictions: [ ...Object.values(NatureOfControlJurisdiction) ],
+          owner_of_land_other_entity_nature_of_control_jurisdictions: [ ...Object.values(NatureOfControlJurisdiction) ]
+        }],
+    });
+
+    const resp = await request(app).get(url);
+
+    expect(resp.status).toEqual(200);
+    expect(resp.text).toContain(LANDING_PAGE_URL);
+    expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TITLE);
+
+    // Count NOC Headings
+    expect(stringCount(BO_NOC_HEADING, resp.text)).toEqual(3);
+    expect(stringCount(TRUSTS_NOC_HEADING, resp.text)).toEqual(2); // BO Gov doesn't have the trustee of a trust NOC
+    expect(stringCount(FIRM_NOC_HEADING, resp.text)).toEqual(0);
+    expect(stringCount(FIRM_CONTROL_NOC_HEADING, resp.text)).toEqual(3);
+    expect(stringCount(TRUST_CONTROL_NOC_HEADING, resp.text)).toEqual(3);
+    expect(stringCount(OWNER_OF_LAND_PERSON_NOC_HEADING, resp.text)).toEqual(3);
+    expect(stringCount(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING, resp.text)).toEqual(3);
+
+    // Count the NOCs
+    expect(stringCount(BO_NOC_OVER_25_PERCENT_OF_SHARES, resp.text)).toEqual(3);
+    expect(stringCount(BO_NOC_OVER_25_PERCENT_OF_VOTING_RIGHTS, resp.text)).toEqual(3);
+    expect(stringCount(BO_NOC_APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS, resp.text)).toEqual(3);
+    expect(stringCount(BO_NOC_SIGNIFICANT_INFLUENCE_OR_CONTROL, resp.text)).toEqual(3);
+
+    // The same NOC text is used for 'trustee of a trust' and 'control of trust' Nocs.
+    // The BO Gov only has 'control of trust' and not 'trustee of a trust' so these NOCs should appear 5 times
+    expect(stringCount(escapeNOCText(BO_NOC_TRUSTEE_OF_TRUST_OVER_25_PERCENT_OF_SHARES), resp.text)).toEqual(5);
+    expect(stringCount(escapeNOCText(BO_NOC_TRUSTEE_OF_TRUST_OVER_25_PERCENT_OF_VOTING_RIGHTS), resp.text)).toEqual(5);
+    expect(stringCount(escapeNOCText(BO_NOC_TRUSTEE_OF_TRUST_APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS), resp.text)).toEqual(5);
+    expect(stringCount(escapeNOCText(BO_NOC_TRUSTEE_OF_TRUST_SIGNIFICANT_INFLUENCE_OR_CONTROL), resp.text)).toEqual(5);
+
+    // The same NOC text is used for 'member of a firm' and 'control of firm' Nocs.
+    expect(stringCount(escapeNOCText(BO_NOC_MEMBER_OF_FIRM_OVER_25_PERCENT_OF_SHARES), resp.text)).toEqual(3);
+    expect(stringCount(escapeNOCText(BO_NOC_MEMBER_OF_FIRM_OVER_25_PERCENT_OF_VOTING_RIGHTS), resp.text)).toEqual(3);
+    expect(stringCount(escapeNOCText(BO_NOC_MEMBER_OF_FIRM_APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS), resp.text)).toEqual(3);
+    expect(stringCount(escapeNOCText(BO_NOC_MEMBER_OF_FIRM_SIGNIFICANT_INFLUENCE_OR_CONTROL), resp.text)).toEqual(3);
+
+    // The same NOC text is used for 'person owner of land' and 'other entity owner of land' Nocs.
+    expect(stringCount(BO_NOC_JURISDICTION_ENGLAND_AND_WALES, resp.text)).toEqual(6);
+    expect(stringCount(BO_NOC_JURISDICTION_SCOTLAND, resp.text)).toEqual(6);
+    expect(stringCount(BO_NOC_JURISDICTION_NORTHERN_IRELAND, resp.text)).toEqual(6);
+  });
+
 });
 
 describe("GET with url params tests tests", () => {
@@ -660,7 +849,7 @@ describe("GET with url params tests tests", () => {
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including presenter details`, async () => {
     mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
 
     expect(resp.status).toEqual(200);
@@ -685,7 +874,7 @@ describe("GET with url params tests tests", () => {
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including print button`, async () => {
     mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
 
     expect(resp.status).toEqual(200);
@@ -696,7 +885,7 @@ describe("GET with url params tests tests", () => {
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including change links`, async () => {
     mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
 
     expect(resp.status).toEqual(200);
@@ -888,7 +1077,7 @@ describe("GET with url params tests tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with someone else change links when this is selected`, async () => {
-    const applicationData = { APPLICATION_DATA_MOCK };
+    const applicationData = { ...APPLICATION_DATA_MOCK };
     applicationData[WhoIsRegisteringKey] = WhoIsRegisteringType.SOMEONE_ELSE;
     mockGetApplicationData.mockReturnValueOnce(applicationData);
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
@@ -910,7 +1099,7 @@ describe("GET with url params tests tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including identity checks - Agent (The UK-regulated agent) selected`, async () => {
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
 
     expect(resp.status).toEqual(200);
@@ -946,12 +1135,12 @@ describe("GET with url params tests tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page (entity service address not same as principal address)`, async () => {
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
-    const tempEntity = APPLICATION_DATA_MOCK[entityType.EntityKey];
-    APPLICATION_DATA_MOCK[entityType.EntityKey] = ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS;
+    mockGetApplicationData.mockReturnValueOnce({
+      ...APPLICATION_DATA_MOCK,
+      [entityType.EntityKey]: ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS
+    });
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
-    APPLICATION_DATA_MOCK[entityType.EntityKey] = tempEntity;
 
     expect(resp.status).toEqual(200);
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TITLE);
@@ -964,7 +1153,7 @@ describe("GET with url params tests tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page (entity service address same as principal address)`, async () => {
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
 
@@ -976,7 +1165,7 @@ describe("GET with url params tests tests", () => {
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with trust data and feature flag off`, async () => {
     mockIsActiveFeature.mockReturnValue(false); // FEATURE_FLAG_ENABLE_TRUSTS_WEB flag
 
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
 
@@ -994,9 +1183,9 @@ describe("GET with url params tests tests", () => {
     mockIsActiveFeature.mockReturnValueOnce(true);
     mockIsActiveFeature.mockReturnValueOnce(true);
 
-    APPLICATION_DATA_MOCK.entity_number = undefined;
     const mockAppData = {
       ...APPLICATION_DATA_MOCK,
+      entity_number: undefined,
       [TrustKey]: [
         TRUST_WITH_ID,
       ]
@@ -1017,7 +1206,7 @@ describe("GET with url params tests tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with no trust data`, async () => {
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_NO_TRUSTS_MOCK);
+    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_NO_TRUSTS_MOCK });
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
 
@@ -1041,7 +1230,7 @@ describe("GET with url params tests tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE}`, async () => {
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
 
@@ -1154,7 +1343,7 @@ describe("POST tests", () => {
   });
 
   test(`redirect the ${CONFIRMATION_PAGE} page after fetching transaction and OE id from appData`, async () => {
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
     const resp = await request(app).post(CHECK_YOUR_ANSWERS_URL);
 
     expect(resp.status).toEqual(302);
@@ -1162,7 +1351,7 @@ describe("POST tests", () => {
   });
 
   test(`redirect to ${PAYMENT_LINK_JOURNEY}, the first Payment web journey page, after fetching transaction and OE id from appData`, async () => {
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
     mockPaymentsSession.mockReturnValueOnce(PAYMENT_LINK_JOURNEY);
     const resp = await request(app).post(CHECK_YOUR_ANSWERS_URL);
 
@@ -1191,7 +1380,7 @@ describe("POST with url param tests", () => {
   });
 
   test(`redirect the ${CONFIRMATION_PAGE} page after fetching transaction and OE id from appData`, async () => {
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
     const resp = await request(app).post(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
 
     expect(resp.status).toEqual(302);
@@ -1199,7 +1388,7 @@ describe("POST with url param tests", () => {
   });
 
   test(`redirect to ${PAYMENT_LINK_JOURNEY}, the first Payment web journey page, after fetching transaction and OE id from appData`, async () => {
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
     mockPaymentsSession.mockReturnValueOnce(PAYMENT_LINK_JOURNEY);
     const resp = await request(app).post(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
 
@@ -1220,3 +1409,7 @@ describe("POST with url param tests", () => {
     expect(resp.text).toContain(SERVICE_UNAVAILABLE);
   });
 });
+
+const escapeNOCText = (input: string): string => {
+  return input.replace("(", "\\(").replace(")", "\\)");
+};

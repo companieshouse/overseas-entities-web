@@ -1,5 +1,3 @@
-import { DateTime } from "luxon";
-
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock("../../src/utils/logger");
@@ -10,22 +8,37 @@ jest.mock('../../src/utils/feature.flag');
 jest.mock('../../src/middleware/service.availability.middleware');
 jest.mock("../../src/utils/url");
 
-import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
+import { NextFunction, Request, Response } from "express";
+import { DateTime } from "luxon";
 import { describe, expect, jest, test, beforeEach } from "@jest/globals";
 import request from "supertest";
-import { NextFunction, Request, Response } from "express";
 
-import { authentication } from "../../src/middleware/authentication.middleware";
+import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
 import app from "../../src/app";
+import { authentication } from "../../src/middleware/authentication.middleware";
 import * as config from "../../src/config";
+import { logger } from "../../src/utils/logger";
+import { ApplicationDataType } from '../../src/model';
+import { ErrorMessages } from "../../src/validation/error.messages";
+import { hasBeneficialOwnersStatement } from "../../src/middleware/navigation/has.beneficial.owners.statement.middleware";
+import { saveAndContinue } from "../../src/utils/save.and.continue";
+import { isActiveFeature } from "../../src/utils/feature.flag";
+import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
+
+import { getUrlWithParamsToPath, isRegistrationJourney } from "../../src/utils/url";
+import { ServiceAddressKey, ServiceAddressKeys } from "../../src/model/address.model";
+import { BeneficialOwnerGov, BeneficialOwnerGovKey } from "../../src/model/beneficial.owner.gov.model";
+
 import {
   getFromApplicationData,
   mapFieldsToDataObject,
   prepareData,
   removeFromApplicationData,
   setApplicationData,
-  getApplicationData
+  getApplicationData,
+  fetchApplicationData,
 } from '../../src/utils/application.data';
+
 import {
   BENEFICIAL_OWNER_GOV_PAGE_HEADING,
   ERROR_LIST,
@@ -40,8 +53,14 @@ import {
   YES_SANCTIONS_TEXT_IT,
   SANCTIONS_HINT_TEXT_IT,
   TRUSTS_NOC_HEADING,
+  BO_NOC_HEADING,
+  FIRM_NOC_HEADING,
+  FIRM_CONTROL_NOC_HEADING,
+  TRUST_CONTROL_NOC_HEADING,
+  OWNER_OF_LAND_PERSON_NOC_HEADING,
+  OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING
 } from "../__mocks__/text.mock";
-import { logger } from "../../src/utils/logger";
+
 import {
   BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO,
   BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES,
@@ -53,27 +72,30 @@ import {
   REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_START_DATE_VALIDATION,
   APPLICATION_DATA_MOCK,
 } from "../__mocks__/session.mock";
-import { AddressKeys, EntityNumberKey } from '../../src/model/data.types.model';
-import { ServiceAddressKey, ServiceAddressKeys } from "../../src/model/address.model";
-import { ApplicationDataType } from '../../src/model';
+
+import {
+  AddressKeys,
+  EntityNumberKey,
+  BeneficialOwnerNoc,
+  TrustControlNoc,
+  NatureOfControlJurisdiction,
+  NatureOfControlType,
+  NonLegalFirmControlNoc,
+  OwnerOfLandOtherEntityJurisdictionsNoc,
+  OwnerOfLandPersonJurisdictionsNoc
+} from '../../src/model/data.types.model';
+
 import {
   BENEFICIAL_OWNER_GOV_WITH_INVALID_CHARACTERS_FIELDS_MOCK,
   BENEFICIAL_OWNER_GOV_WITH_MAX_LENGTH_FIELDS_MOCK
 } from "../__mocks__/validation.mock";
-import { ErrorMessages } from "../../src/validation/error.messages";
-import { BeneficialOwnerGov, BeneficialOwnerGovKey } from "../../src/model/beneficial.owner.gov.model";
-import { hasBeneficialOwnersStatement } from "../../src/middleware/navigation/has.beneficial.owners.statement.middleware";
-import { saveAndContinue } from "../../src/utils/save.and.continue";
-import { isActiveFeature } from "../../src/utils/feature.flag";
-import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
-import { getUrlWithParamsToPath } from "../../src/utils/url";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockHasBeneficialOwnersStatementMiddleware = hasBeneficialOwnersStatement as jest.Mock;
-mockHasBeneficialOwnersStatementMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockHasBeneficialOwnersStatementMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
-mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetFromApplicationData = getFromApplicationData as jest.Mock;
@@ -83,18 +105,21 @@ const mockRemoveFromApplicationData = removeFromApplicationData as unknown as je
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 
 const DUMMY_DATA_OBJECT = { dummy: "data" };
-
 const NEXT_PAGE_URL = "/NEXT_PAGE";
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
-mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
 mockGetUrlWithParamsToPath.mockReturnValue(NEXT_PAGE_URL);
+
+const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
+mockIsRegistrationJourney.mockReturnValue(true);
 
 describe("BENEFICIAL OWNER GOV controller", () => {
 
@@ -127,7 +152,33 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).toContain(YES_SANCTIONS_TEXT_IT);
       expect(resp.text).toContain(NO_SANCTIONS_TEXT_IT);
       expect(resp.text).toContain(SANCTIONS_HINT_TEXT_IT);
+      expect(resp.text).toContain(BO_NOC_HEADING);
       expect(resp.text).not.toContain(TRUSTS_NOC_HEADING);
+      expect(resp.text).toContain(FIRM_NOC_HEADING);
+      expect(resp.text).not.toContain(FIRM_CONTROL_NOC_HEADING);
+      expect(resp.text).not.toContain(TRUST_CONTROL_NOC_HEADING);
+      expect(resp.text).not.toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
+      expect(resp.text).not.toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
+    });
+
+    test(`renders the ${config.BENEFICIAL_OWNER_GOV_PAGE} page renders natures of control correctly when FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is active`, async () => {
+      const appData = APPLICATION_DATA_MOCK;
+      delete appData[EntityNumberKey];
+
+      mockGetApplicationData.mockReturnValueOnce({ ...appData });
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
+      const resp = await request(app).get(config.BENEFICIAL_OWNER_GOV_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BO_NOC_HEADING);
+      expect(resp.text).not.toContain(TRUSTS_NOC_HEADING);
+      expect(resp.text).not.toContain(FIRM_NOC_HEADING);
+      expect(resp.text).toContain(FIRM_CONTROL_NOC_HEADING);
+      expect(resp.text).toContain(TRUST_CONTROL_NOC_HEADING);
+      expect(resp.text).toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
+      expect(resp.text).toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
     });
   });
 
@@ -152,7 +203,33 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).toContain(YES_SANCTIONS_TEXT_IT);
       expect(resp.text).toContain(NO_SANCTIONS_TEXT_IT);
       expect(resp.text).toContain(SANCTIONS_HINT_TEXT_IT);
+      expect(resp.text).toContain(BO_NOC_HEADING);
       expect(resp.text).not.toContain(TRUSTS_NOC_HEADING);
+      expect(resp.text).toContain(FIRM_NOC_HEADING);
+      expect(resp.text).not.toContain(FIRM_CONTROL_NOC_HEADING);
+      expect(resp.text).not.toContain(TRUST_CONTROL_NOC_HEADING);
+      expect(resp.text).not.toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
+      expect(resp.text).not.toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
+    });
+
+    test(`renders the ${config.BENEFICIAL_OWNER_GOV_PAGE} page natures of control correctly when FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is active`, async () => {
+      const appData = APPLICATION_DATA_MOCK;
+      delete appData[EntityNumberKey];
+
+      mockGetApplicationData.mockReturnValueOnce({ ...appData });
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
+      const resp = await request(app).get(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BO_NOC_HEADING);
+      expect(resp.text).not.toContain(TRUSTS_NOC_HEADING);
+      expect(resp.text).not.toContain(FIRM_NOC_HEADING);
+      expect(resp.text).toContain(FIRM_CONTROL_NOC_HEADING);
+      expect(resp.text).toContain(TRUST_CONTROL_NOC_HEADING);
+      expect(resp.text).toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
+      expect(resp.text).toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
     });
   });
 
@@ -162,7 +239,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
       const applicationDataMock = { ...APPLICATION_DATA_MOCK };
       delete applicationDataMock[EntityNumberKey];
-      mockGetApplicationData.mockReturnValueOnce(applicationDataMock);
+      mockFetchApplicationData.mockReturnValue(applicationDataMock);
 
       const resp = await request(app).get(config.BENEFICIAL_OWNER_GOV_URL + BO_GOV_ID_URL);
 
@@ -179,7 +256,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
     });
 
     test("Should render the error page", async () => {
-      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
+      mockLoggerDebugRequest.mockImplementationOnce(() => { throw new Error(MESSAGE_ERROR); });
       const response = await request(app).get(config.BENEFICIAL_OWNER_GOV_URL + BO_GOV_ID_URL);
 
       expect(response.status).toEqual(500);
@@ -210,7 +287,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
     });
 
     test("Should render the error page", async () => {
-      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
+      mockLoggerDebugRequest.mockImplementationOnce(() => { throw new Error(MESSAGE_ERROR); });
       const response = await request(app).get(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL + BO_GOV_ID_URL);
 
       expect(response.status).toEqual(500);
@@ -220,7 +297,8 @@ describe("BENEFICIAL OWNER GOV controller", () => {
 
   describe("POST tests", () => {
 
-    test(`redirects to the ${config.BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
+    test(`redirects to the ${config.BENEFICIAL_OWNER_TYPE_URL} page when the REDIS_removal flag is set to OFF`, async () => {
+      mockIsActiveFeature.mockReturnValue(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_GOV_OBJECT_MOCK);
       const resp = await request(app)
         .post(config.BENEFICIAL_OWNER_GOV_URL)
@@ -228,11 +306,55 @@ describe("BENEFICIAL OWNER GOV controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSetApplicationData).toHaveBeenCalledTimes(1);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
+    test(`redirects to the ${config.BENEFICIAL_OWNER_TYPE_URL} page when the REDIS_removal flag is set to ON`, async () => {
+      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_GOV_OBJECT_MOCK);
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL)
+        .send(BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(NEXT_PAGE_URL);
+      expect(mockSetApplicationData).toHaveBeenCalledTimes(1);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+    });
+
+    test(`correctly maps natures of control when feature flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is ON`, async () => {
+      mockPrepareData.mockImplementationOnce(() => {
+        return {
+          ...BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS,
+          trust_control_nature_of_control_types: [NatureOfControlType.SIGNIFICANT_INFLUENCE_OR_CONTROL],
+          non_legal_firm_control_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+          owner_of_land_person_nature_of_control_jurisdictions: [NatureOfControlJurisdiction.ENGLAND_AND_WALES],
+          owner_of_land_other_entity_nature_of_control_jurisdictions: [NatureOfControlJurisdiction.NORTHERN_IRELAND]
+        };
+      });
+
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
+      await request(app)
+        .post(config.BENEFICIAL_OWNER_GOV_URL)
+        .send({
+          ...BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS,
+        });
+
+      const appData: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+
+      expect(appData[BeneficialOwnerNoc]).toEqual([NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS]);
+      expect(appData[TrustControlNoc]).toEqual([NatureOfControlType.SIGNIFICANT_INFLUENCE_OR_CONTROL]);
+      expect(appData[NonLegalFirmControlNoc]).toEqual([NatureOfControlType.OVER_25_PERCENT_OF_SHARES]);
+      expect(appData[OwnerOfLandPersonJurisdictionsNoc]).toEqual([NatureOfControlJurisdiction.ENGLAND_AND_WALES]);
+      expect(appData[OwnerOfLandOtherEntityJurisdictionsNoc]).toEqual([NatureOfControlJurisdiction.NORTHERN_IRELAND]);
+    });
+
     test("catch error when posting data", async () => {
-      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
+      mockLoggerDebugRequest.mockImplementationOnce(() => { throw new Error(MESSAGE_ERROR); });
       const resp = await request(app)
         .post(config.BENEFICIAL_OWNER_GOV_URL)
         .send(BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
@@ -243,7 +365,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
     });
 
     test(`POST empty object and do not redirect to ${config.BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
-      mockPrepareData.mockImplementationOnce( () => REQ_BODY_BENEFICIAL_OWNER_GOV_EMPTY );
+      mockPrepareData.mockImplementationOnce(() => REQ_BODY_BENEFICIAL_OWNER_GOV_EMPTY);
 
       const resp = await request(app).post(config.BENEFICIAL_OWNER_GOV_URL);
 
@@ -300,7 +422,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
     });
 
     test(`Service address from the ${config.BENEFICIAL_OWNER_GOV_PAGE} is present when same address is set to no`, async () => {
-      mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
+      mockPrepareData.mockImplementation(() => BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
 
       await request(app)
         .post(config.BENEFICIAL_OWNER_GOV_URL)
@@ -313,7 +435,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
     });
 
     test(`Service address from the ${config.BENEFICIAL_OWNER_GOV_PAGE} is empty when same address is set to yes`, async () => {
-      mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
+      mockPrepareData.mockImplementation(() => BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
 
       await request(app)
         .post(config.BENEFICIAL_OWNER_GOV_URL)
@@ -639,13 +761,136 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
+
+    describe("Nature of control tests", () => {
+
+      test.each([
+        ["BO Noc", [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS], null],
+        ["Non legal firm Noc", null, [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS]]
+      ])(`redirect to the ${config.BENEFICIAL_OWNER_TYPE_PAGE} page when page data includes a nature of control and FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is OFF - %s`, async (_desc, boNoc, nonLegalNoc) => {
+        mockPrepareData.mockImplementationOnce(() => ({ ...BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS }));
+
+        const body = {
+          ...BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS,
+          beneficial_owner_nature_of_control_types: boNoc,
+          non_legal_firm_members_nature_of_control_types: nonLegalNoc
+        };
+
+        const resp = await request(app)
+          .post(config.BENEFICIAL_OWNER_GOV_URL)
+          .send(body);
+
+        expect(resp.status).toEqual(302);
+        expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
+      });
+
+      test.each([
+        ["BO Noc", [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS], null, null, null, null],
+        ["Trust control control Noc", null, [NatureOfControlType.SIGNIFICANT_INFLUENCE_OR_CONTROL], null, null, null],
+        ["Non legal firm control Noc", null, null, [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS], null, null],
+        ["Owner of land person Noc", null, null, null, null, [NatureOfControlJurisdiction.ENGLAND_AND_WALES], null],
+        ["Owner of land other entity Noc", null, null, null, null, [NatureOfControlJurisdiction.ENGLAND_AND_WALES]]
+      ])(`redirect to the ${config.BENEFICIAL_OWNER_TYPE_PAGE} page when page data includes a nature of control and FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is ON - %s`, async (_desc, boNoc, trustControlNoc, nonLegalFirmControlNoc, landPersonNoc, landOtherEntityNoc) => {
+        mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+        mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+        mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+        mockPrepareData.mockImplementationOnce(() => ({ ...BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS }));
+
+        const body = {
+          ...BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS,
+          beneficial_owner_nature_of_control_types: boNoc,
+          non_legal_firm_members_nature_of_control_types: null,
+          trust_control_nature_of_control_types: trustControlNoc,
+          non_legal_firm_control_nature_of_control_types: nonLegalFirmControlNoc,
+          owner_of_land_person_nature_of_control_jurisdictions: landPersonNoc,
+          owner_of_land_other_entity_nature_of_control_jurisdictions: landOtherEntityNoc
+        };
+
+        const resp = await request(app)
+          .post(config.BENEFICIAL_OWNER_GOV_URL)
+          .send(body);
+
+        expect(resp.status).toEqual(302);
+        expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
+      });
+
+      test(`correctly maps natures of control when feature flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is ON`, async () => {
+        mockPrepareData.mockImplementationOnce(() => {
+          return {
+            ...BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS,
+            non_legal_firm_members_nature_of_control_types: null,
+            trust_control_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+            non_legal_firm_control_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+            owner_of_land_person_nature_of_control_jurisdictions: [NatureOfControlJurisdiction.ENGLAND_AND_WALES],
+            owner_of_land_other_entity_nature_of_control_jurisdictions: [NatureOfControlJurisdiction.NORTHERN_IRELAND]
+          };
+        });
+
+        mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+        mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+        mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
+        await request(app)
+          .post(config.BENEFICIAL_OWNER_GOV_URL)
+          .send({
+            ...BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS,
+          });
+
+        const appData: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+
+        expect(appData[TrustControlNoc]).toEqual([NatureOfControlType.OVER_25_PERCENT_OF_SHARES]);
+        expect(appData[NonLegalFirmControlNoc]).toEqual([NatureOfControlType.OVER_25_PERCENT_OF_SHARES]);
+        expect(appData[OwnerOfLandPersonJurisdictionsNoc]).toEqual([NatureOfControlJurisdiction.ENGLAND_AND_WALES]);
+        expect(appData[OwnerOfLandOtherEntityJurisdictionsNoc]).toEqual([NatureOfControlJurisdiction.NORTHERN_IRELAND]);
+      });
+
+      test(`renders the ${config.BENEFICIAL_OWNER_GOV_PAGE} page with nature of control error when no nature of control is provided and FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is ON`, async () => {
+        mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+        mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+        mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
+        const beneficialOwnerGov = {
+          ...BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
+          beneficial_owner_nature_of_control_types: null,
+          trust_control_nature_of_control_types: null,
+          non_legal_firm_members_nature_of_control_types: null,
+          non_legal_firm_control_nature_of_control_types: null,
+          owner_of_land_person_nature_of_control_jurisdictions: null,
+          owner_of_land_other_entity_nature_of_control_jurisdictions: null
+        };
+
+        const resp = await request(app).post(config.BENEFICIAL_OWNER_GOV_URL)
+          .send(beneficialOwnerGov);
+
+        expect(resp.status).toEqual(200);
+        expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
+        expect(resp.text).toContain(ErrorMessages.SELECT_NATURE_OF_CONTROL);
+      });
+
+      test(`Renders the ${config.BENEFICIAL_OWNER_GOV_PAGE} page with validation errors with correct nature of controls with FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is OFF`, async () => {
+        mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+        mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+        mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+
+        const resp = await request(app).post(config.BENEFICIAL_OWNER_GOV_URL);
+
+        expect(resp.status).toEqual(200);
+        expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
+        expect(resp.text).toContain(BO_NOC_HEADING);
+        expect(resp.text).toContain(FIRM_NOC_HEADING);
+        expect(resp.text).not.toContain(FIRM_CONTROL_NOC_HEADING);
+        expect(resp.text).not.toContain(TRUST_CONTROL_NOC_HEADING);
+        expect(resp.text).not.toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
+        expect(resp.text).not.toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
+      });
+    });
   });
 
   describe("POST with url params tests", () => {
 
     test(`redirects to the ${config.BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-
       mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_GOV_OBJECT_MOCK);
       const resp = await request(app)
         .post(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL)
@@ -660,7 +905,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
     });
 
     test("catch error when posting data", async () => {
-      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
+      mockLoggerDebugRequest.mockImplementationOnce(() => { throw new Error(MESSAGE_ERROR); });
       const resp = await request(app)
         .post(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL)
         .send(BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
@@ -671,7 +916,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
     });
 
     test(`POST empty object and do not redirect to ${config.BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
-      mockPrepareData.mockImplementationOnce( () => REQ_BODY_BENEFICIAL_OWNER_GOV_EMPTY );
+      mockPrepareData.mockImplementationOnce(() => REQ_BODY_BENEFICIAL_OWNER_GOV_EMPTY);
 
       const resp = await request(app).post(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL);
 
@@ -728,7 +973,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
     });
 
     test(`Service address from the ${config.BENEFICIAL_OWNER_GOV_PAGE} is present when same address is set to no`, async () => {
-      mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
+      mockPrepareData.mockImplementation(() => BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
 
       await request(app)
         .post(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL)
@@ -741,7 +986,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
     });
 
     test(`Service address from the ${config.BENEFICIAL_OWNER_GOV_PAGE} is empty when same address is set to yes`, async () => {
-      mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
+      mockPrepareData.mockImplementation(() => BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
 
       await request(app)
         .post(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL)
@@ -1067,10 +1312,137 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
+
+    describe("Nature of control tests", () => {
+
+      test.each([
+        ["BO Noc", [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS], null],
+        ["Non legal firm Noc", null, [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS]]
+      ])(`redirect to the ${config.BENEFICIAL_OWNER_TYPE_PAGE} page when page data includes a nature of control and FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is OFF - %s`, async (_desc, boNoc, nonLegalNoc) => {
+        mockPrepareData.mockImplementationOnce(() => ({ ...BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS }));
+
+        const body = {
+          ...BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS,
+          beneficial_owner_nature_of_control_types: boNoc,
+          non_legal_firm_members_nature_of_control_types: nonLegalNoc
+        };
+
+        const resp = await request(app)
+          .post(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL)
+          .send(body);
+
+        expect(resp.status).toEqual(302);
+        expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
+      });
+
+      test.each([
+        ["BO Noc", [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS], null, null, null, null],
+        ["Trust control control Noc", null, [NatureOfControlType.SIGNIFICANT_INFLUENCE_OR_CONTROL], null, null, null],
+        ["Non legal firm control Noc", null, null, [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS], null, null],
+        ["Owner of land person Noc", null, null, null, null, [NatureOfControlJurisdiction.ENGLAND_AND_WALES], null],
+        ["Owner of land other entity Noc", null, null, null, null, [NatureOfControlJurisdiction.ENGLAND_AND_WALES]]
+      ])(`redirect to the ${config.BENEFICIAL_OWNER_TYPE_PAGE} page when page data includes a nature of control and FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is ON - %s`, async (_desc, boNoc, trustControlNoc, nonLegalFirmControlNoc, landPersonNoc, landOtherEntityNoc) => {
+        mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+        mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+        mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
+        mockPrepareData.mockImplementationOnce(() => ({ ...BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS }));
+
+        const body = {
+          ...BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS,
+          beneficial_owner_nature_of_control_types: boNoc,
+          non_legal_firm_members_nature_of_control_types: null,
+          trust_control_nature_of_control_types: trustControlNoc,
+          non_legal_firm_control_nature_of_control_types: nonLegalFirmControlNoc,
+          owner_of_land_person_nature_of_control_jurisdictions: landPersonNoc,
+          owner_of_land_other_entity_nature_of_control_jurisdictions: landOtherEntityNoc
+        };
+
+        const resp = await request(app)
+          .post(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL)
+          .send(body);
+
+        expect(resp.status).toEqual(302);
+        expect(resp.header.location).toEqual(NEXT_PAGE_URL);
+      });
+
+      test(`correctly maps natures of control when feature flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is ON`, async () => {
+        mockPrepareData.mockImplementationOnce(() => {
+          return {
+            ...BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS,
+            non_legal_firm_members_nature_of_control_types: null,
+            trust_control_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+            non_legal_firm_control_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+            owner_of_land_person_nature_of_control_jurisdictions: [NatureOfControlJurisdiction.ENGLAND_AND_WALES],
+            owner_of_land_other_entity_nature_of_control_jurisdictions: [NatureOfControlJurisdiction.NORTHERN_IRELAND]
+          };
+        });
+
+        mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+        mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+        mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
+        await request(app)
+          .post(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL)
+          .send({
+            ...BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS,
+          });
+
+        const appData: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+
+        expect(appData[TrustControlNoc]).toEqual([NatureOfControlType.OVER_25_PERCENT_OF_SHARES]);
+        expect(appData[NonLegalFirmControlNoc]).toEqual([NatureOfControlType.OVER_25_PERCENT_OF_SHARES]);
+        expect(appData[OwnerOfLandPersonJurisdictionsNoc]).toEqual([NatureOfControlJurisdiction.ENGLAND_AND_WALES]);
+        expect(appData[OwnerOfLandOtherEntityJurisdictionsNoc]).toEqual([NatureOfControlJurisdiction.NORTHERN_IRELAND]);
+      });
+
+      test(`renders the ${config.BENEFICIAL_OWNER_GOV_PAGE} page with nature of control error when no nature of control is provided and FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is ON`, async () => {
+        mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+        mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+        mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+
+        const beneficialOwnerGov = {
+          ...BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
+          beneficial_owner_nature_of_control_types: null,
+          trust_control_nature_of_control_types: null,
+          non_legal_firm_members_nature_of_control_types: null,
+          non_legal_firm_control_nature_of_control_types: null,
+          owner_of_land_person_nature_of_control_jurisdictions: null,
+          owner_of_land_other_entity_nature_of_control_jurisdictions: null
+        };
+
+        const resp = await request(app).post(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL)
+          .send(beneficialOwnerGov);
+
+        expect(resp.status).toEqual(200);
+        expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
+        expect(resp.text).toContain(ErrorMessages.SELECT_NATURE_OF_CONTROL);
+      });
+
+      test(`Renders the ${config.BENEFICIAL_OWNER_GOV_PAGE} page with validation errors with correct nature of controls with FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is OFF`, async () => {
+        mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+        mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+        mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+
+        const resp = await request(app).post(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL);
+
+        expect(resp.status).toEqual(200);
+        expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
+
+        expect(resp.text).toContain(BO_NOC_HEADING);
+        expect(resp.text).toContain(FIRM_NOC_HEADING);
+        expect(resp.text).not.toContain(FIRM_CONTROL_NOC_HEADING);
+        expect(resp.text).not.toContain(TRUST_CONTROL_NOC_HEADING);
+        expect(resp.text).not.toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
+        expect(resp.text).not.toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
+      });
+    });
   });
 
   describe("UPDATE tests", () => {
-    test(`redirects to the ${config.BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
+
+    test(`redirects to the ${config.BENEFICIAL_OWNER_TYPE_URL} page when the REDIS_removal flag is set to OFF`, async () => {
+      mockIsActiveFeature.mockReturnValue(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_GOV_OBJECT_MOCK);
 
       const resp = await request(app)
@@ -1080,10 +1452,25 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+      expect(mockSetApplicationData).toHaveBeenCalledTimes(1);
+    });
+
+    test(`redirects to the ${config.BENEFICIAL_OWNER_TYPE_URL} page when the REDIS_removal flag is set to ON`, async () => {
+      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_GOV_OBJECT_MOCK);
+
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL + BO_GOV_ID_URL)
+        .send(BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(NEXT_PAGE_URL);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockSetApplicationData).toHaveBeenCalledTimes(1);
     });
 
     test("catch error when updating data", async () => {
-      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
+      mockLoggerDebugRequest.mockImplementationOnce(() => { throw new Error(MESSAGE_ERROR); });
 
       const resp = await request(app)
         .post(config.BENEFICIAL_OWNER_GOV_URL + BO_GOV_ID_URL)
@@ -1104,17 +1491,15 @@ describe("BENEFICIAL OWNER GOV controller", () => {
 
       expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(BeneficialOwnerGovKey);
       expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(BO_GOV_ID);
-
       expect(mockSetApplicationData.mock.calls[0][1].id).toEqual(BO_GOV_ID);
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(BeneficialOwnerGovKey);
-
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`Service address from the ${config.BENEFICIAL_OWNER_GOV_PAGE} is present when same address is set to no`, async () => {
-      mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
+      mockPrepareData.mockImplementation(() => BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
 
       await request(app)
         .post(config.BENEFICIAL_OWNER_GOV_URL + BO_GOV_ID_URL)
@@ -1127,7 +1512,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
     });
 
     test(`Service address from the ${config.BENEFICIAL_OWNER_GOV_PAGE} is empty when same address is set to yes`, async () => {
-      mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
+      mockPrepareData.mockImplementation(() => BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
 
       await request(app)
         .post(config.BENEFICIAL_OWNER_GOV_URL + BO_GOV_ID_URL)
@@ -1141,7 +1526,9 @@ describe("BENEFICIAL OWNER GOV controller", () => {
   });
 
   describe("UPDATE with url params tests", () => {
+
     test(`redirects to the ${config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL} page with substituted ids`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
       mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_GOV_OBJECT_MOCK);
@@ -1159,7 +1546,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
     });
 
     test("catch error when updating data", async () => {
-      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
+      mockLoggerDebugRequest.mockImplementationOnce(() => { throw new Error(MESSAGE_ERROR); });
 
       const resp = await request(app)
         .post(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL + BO_GOV_ID_URL)
@@ -1172,6 +1559,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
     });
 
     test(`replaces existing object on submit`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
       const newGovData: BeneficialOwnerGov = { id: BO_GOV_ID, name: "new name" };
@@ -1183,10 +1571,8 @@ describe("BENEFICIAL OWNER GOV controller", () => {
 
       expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(BeneficialOwnerGovKey);
       expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(BO_GOV_ID);
-
       expect(mockSetApplicationData.mock.calls[0][1].id).toEqual(BO_GOV_ID);
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(BeneficialOwnerGovKey);
-
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(NEXT_PAGE_URL);
       expect(resp.text).toContain(NEXT_PAGE_URL);
@@ -1194,7 +1580,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
     });
 
     test(`Service address from the ${config.BENEFICIAL_OWNER_GOV_PAGE} is present when same address is set to no`, async () => {
-      mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
+      mockPrepareData.mockImplementation(() => BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
 
       await request(app)
         .post(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL + BO_GOV_ID_URL)
@@ -1207,7 +1593,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
     });
 
     test(`Service address from the ${config.BENEFICIAL_OWNER_GOV_PAGE} is empty when same address is set to yes`, async () => {
-      mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
+      mockPrepareData.mockImplementation(() => BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
 
       await request(app)
         .post(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL + BO_GOV_ID_URL)
@@ -1221,7 +1607,9 @@ describe("BENEFICIAL OWNER GOV controller", () => {
   });
 
   describe("REMOVE tests", () => {
-    test(`redirects to the ${config.BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
+
+    test(`redirects to the ${config.BENEFICIAL_OWNER_TYPE_URL} page hwnr the REDIS_removal flag is set to OFF`, async () => {
+      mockIsActiveFeature.mockReturnValue(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_GOV_OBJECT_MOCK);
 
       const resp = await request(app).get(config.BENEFICIAL_OWNER_GOV_URL + config.REMOVE + BO_GOV_ID_URL);
@@ -1231,8 +1619,19 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
+    test(`redirects to the ${config.BENEFICIAL_OWNER_TYPE_URL} page hwnr the REDIS_removal flag is set to ON`, async () => {
+      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_GOV_OBJECT_MOCK);
+
+      const resp = await request(app).get(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL + config.REMOVE + BO_GOV_ID_URL);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(NEXT_PAGE_URL);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+    });
+
     test("catch error when removing data", async () => {
-      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
+      mockLoggerDebugRequest.mockImplementationOnce(() => { throw new Error(MESSAGE_ERROR); });
       const resp = await request(app).get(config.BENEFICIAL_OWNER_GOV_URL + config.REMOVE + BO_GOV_ID_URL);
 
       expect(resp.status).toEqual(500);
@@ -1245,7 +1644,6 @@ describe("BENEFICIAL OWNER GOV controller", () => {
 
       expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(BeneficialOwnerGovKey);
       expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(BO_GOV_ID);
-
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
@@ -1253,9 +1651,9 @@ describe("BENEFICIAL OWNER GOV controller", () => {
   });
 
   describe("REMOVE with url params tests", () => {
+
     test(`redirects to the ${config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL} page with substituted ids`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-
       mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_GOV_OBJECT_MOCK);
 
       const resp = await request(app).get(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL + config.REMOVE + BO_GOV_ID_URL);
@@ -1270,7 +1668,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
     });
 
     test("catch error when removing data", async () => {
-      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
+      mockLoggerDebugRequest.mockImplementationOnce(() => { throw new Error(MESSAGE_ERROR); });
       const resp = await request(app).get(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL + config.REMOVE + BO_GOV_ID_URL);
 
       expect(resp.status).toEqual(500);
@@ -1285,7 +1683,6 @@ describe("BENEFICIAL OWNER GOV controller", () => {
 
       expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(BeneficialOwnerGovKey);
       expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(BO_GOV_ID);
-
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(NEXT_PAGE_URL);
       expect(resp.text).toContain(NEXT_PAGE_URL);

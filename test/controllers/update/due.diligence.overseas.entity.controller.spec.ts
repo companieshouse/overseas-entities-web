@@ -5,30 +5,38 @@ jest.mock("../../../src/utils/application.data");
 jest.mock('../../../src/middleware/navigation/update/has.who.is.making.update.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/save.and.continue');
+jest.mock("../../../src/utils/url");
 
-// import remove journey middleware mock before app to prevent real function being used instead of mock
-import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
-import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import { describe, expect, test, jest, beforeEach } from "@jest/globals";
 import { NextFunction, Request, Response } from "express";
+
+// import remove journey middleware mock before app to prevent real function being used instead of mock
+import mockJourneyDetectionMiddleware from "../../__mocks__/journey.detection.middleware.mock";
+import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import request from "supertest";
+
 import app from "../../../src/app";
+
 import { hasWhoIsMakingUpdate } from "../../../src/middleware/navigation/update/has.who.is.making.update.middleware";
 import { OverseasEntityDueDiligenceKey } from "../../../src/model/overseas.entity.due.diligence.model";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
-import { getApplicationData, setApplicationData, prepareData } from "../../../src/utils/application.data";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { ApplicationDataType } from '../../../src/model';
 import { EMAIL_ADDRESS } from "../../__mocks__/session.mock";
-import { EMPTY_IDENTITY_DATE_REQ_BODY_MOCK, getTwoMonthOldDate } from "../../__mocks__/fields/date.mock";
 import { ErrorMessages } from '../../../src/validation/error.messages';
 import { DateTime } from "luxon";
 import { OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_INVALID_CHARACTERS_FIELDS_MOCK } from "../../__mocks__/validation.mock";
+import { isRegistrationJourney } from "../../../src/utils/url";
+
+import { EMPTY_IDENTITY_DATE_REQ_BODY_MOCK, getTwoMonthOldDate } from "../../__mocks__/fields/date.mock";
+import { fetchApplicationData, setApplicationData, prepareData } from "../../../src/utils/application.data";
+
 import {
   DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
   DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE
 } from "../../__mocks__/due.diligence.mock";
+
 import {
   OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK,
   OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES,
@@ -36,6 +44,7 @@ import {
   OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_MAX_LENGTH_FIELDS_MOCK,
   OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK
 } from "../../__mocks__/overseas.entity.due.diligence.mock";
+
 import {
   WHO_IS_MAKING_UPDATE_URL,
   UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE,
@@ -43,6 +52,7 @@ import {
   UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE,
   UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL
 } from "../../../src/config";
+
 import {
   ANY_MESSAGE_ERROR,
   SERVICE_UNAVAILABLE,
@@ -59,14 +69,14 @@ import {
   ALL_THE_OTHER_INFORMATION_ON_PUBLIC_REGISTER,
 } from "../../__mocks__/text.mock";
 
-mockRemoveJourneyMiddleware.mockClear();
+mockJourneyDetectionMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
-const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 
 const mockCompanyAuthenticationMiddleware = companyAuthentication as jest.Mock;
-mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockHasWhoIsMakingUpdate = hasWhoIsMakingUpdate as jest.Mock;
 mockHasWhoIsMakingUpdate.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
@@ -77,6 +87,9 @@ mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, ne
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
+const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
+mockIsRegistrationJourney.mockReturnValue(false);
+
 describe("UPDATE DUE DILIGENCE OVERSEAS ENTITY controller", () => {
 
   beforeEach(() => {
@@ -86,7 +99,7 @@ describe("UPDATE DUE DILIGENCE OVERSEAS ENTITY controller", () => {
 
   describe("GET tests", () => {
     test(`renders the ${UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE} page`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ [OverseasEntityDueDiligenceKey]: null });
+      mockFetchApplicationData.mockReturnValueOnce({ [OverseasEntityDueDiligenceKey]: null });
       const resp = await request(app).get(UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL);
 
       expect(resp.status).toEqual(200);
@@ -104,7 +117,7 @@ describe("UPDATE DUE DILIGENCE OVERSEAS ENTITY controller", () => {
     });
 
     test(`renders the ${UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE} page on GET method with session data populated`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ [OverseasEntityDueDiligenceKey]: OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK });
+      mockFetchApplicationData.mockReturnValueOnce({ [OverseasEntityDueDiligenceKey]: OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK });
       const resp = await request(app).get(UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL);
 
       expect(resp.status).toEqual(200);
@@ -117,7 +130,7 @@ describe("UPDATE DUE DILIGENCE OVERSEAS ENTITY controller", () => {
     });
 
     test(`catch error when renders the ${UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE} page on GET method`, async () => {
-      mockGetApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockFetchApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL);
 
       expect(resp.status).toEqual(500);

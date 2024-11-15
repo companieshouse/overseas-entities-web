@@ -5,6 +5,7 @@ import { Session } from '@companieshouse/node-session-handler';
 
 import {
   ROUTE_PARAM_TRUSTEE_ID,
+  UPDATE_AN_OVERSEAS_ENTITY_URL,
   UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL,
   UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL,
   UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL,
@@ -24,9 +25,9 @@ import { ApplicationData } from 'model';
 import { checkTrustIndividualCeasedDate } from '../../validation/async';
 import { checkTrustIndividualBeneficialOwnerStillInvolved } from '../../validation/stillInvolved.validation';
 
-const getPageProperties = (trust, formData, trustee: TrustIndividual, errors?: FormattedValidationErrors) => {
+const getPageProperties = (trust, formData, trustee: TrustIndividual, url: string, errors?: FormattedValidationErrors) => {
   return {
-    templateName: UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE,
+    templateName: url ? url.replace(UPDATE_AN_OVERSEAS_ENTITY_URL, "") : UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE,
     backLinkUrl: getBackLink(trust.review_status.reviewed_individuals),
     pageParams: {
       title: 'Tell us about the individual',
@@ -58,10 +59,10 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const formData = trustee ? mapIndividualTrusteeFromSessionToPage(trustee) : {};
     const relevant_period = req.query['relevant-period'];
 
-    if (relevant_period) {
-      return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE, getPagePropertiesRelevantPeriod(relevant_period, trust, formData, trustee, appData.entity_name));
+    if (relevant_period || (trustee && trustee.relevant_period)) {
+      return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE, getPagePropertiesRelevantPeriod(true, trust, formData, trustee, appData.entity_name, req.url));
     } else {
-      return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE, getPageProperties(trust, formData, trustee));
+      return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE, getPageProperties(trust, formData, trustee, req.url));
     }
 
   } catch (error) {
@@ -86,15 +87,15 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       const trustee = getTrustee(trust, trusteeId, TrusteeType.INDIVIDUAL) as IndividualTrustee;
       const errorListArray = !errorList.isEmpty() ? errorList.array() : [];
 
-      if (relevant_period) {
+      if (relevant_period || (trustee && trustee.relevant_period)) {
         return res.render(
           UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE,
-          getPagePropertiesRelevantPeriod(relevant_period, trust, formData, trustee, appData.entity_name, formatValidationError([...errorListArray, ...errors])),
+          getPagePropertiesRelevantPeriod(true, trust, formData, trustee, appData.entity_name, req.url, formatValidationError([...errorListArray, ...errors])),
         );
       } else {
         return res.render(
           UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE,
-          getPageProperties(trust, formData, trustee, formatValidationError([...errorListArray, ...errors])),
+          getPageProperties(trust, formData, trustee, req.url, formatValidationError([...errorListArray, ...errors])),
         );
       }
     }
@@ -127,8 +128,8 @@ const getBackLink = (individualsReviewed: boolean) => {
   }
 };
 
-const getPagePropertiesRelevantPeriod = (relevant_period, trust, formData, trustee: TrustIndividual, entityName, errors?: FormattedValidationErrors) => {
-  const pageProps = getPageProperties(trust, formData, trustee, errors);
+const getPagePropertiesRelevantPeriod = (relevant_period, trust, formData, trustee: TrustIndividual, entityName, url: string, errors?: FormattedValidationErrors) => {
+  const pageProps = getPageProperties(trust, formData, trustee, url, errors);
   pageProps.formData.relevant_period = relevant_period;
   pageProps.pageData.entity_name = entityName;
   return pageProps;

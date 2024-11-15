@@ -1,6 +1,6 @@
 {% set makeChangesOeEntity = "Do you need to make any changes to this overseas entity?" %}
 {% set changesAnswer %}
-    {% if appData.update.no_change == 1 %}
+    {% if pageParams.no_change %}
         No
     {% else %}
         Yes
@@ -26,6 +26,6 @@
                 "make-oe-change-link"
             ) ]
         } if not hidePresenterChangeLink
-    }
-]
+        }
+    ]
 }) }}

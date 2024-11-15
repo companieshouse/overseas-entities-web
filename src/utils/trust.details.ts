@@ -30,6 +30,7 @@ export const TRUST_DETAILS_TEXTS = {
 type TrustDetailPageProperties = {
   backLinkUrl: string;
   templateName: string;
+  template: string;
   isUpdate: boolean;
   isReview?: boolean,
   pageParams: {
@@ -48,7 +49,7 @@ const getPageProperties = async (
   req: Request,
   formData: PageModel.TrustDetailsForm,
   isUpdate: boolean,
-  isReview?: boolean,
+  isReview: boolean,
   errors?: FormattedValidationErrors,
 ): Promise<TrustDetailPageProperties> => {
   const appData: ApplicationData = await getApplicationData(req.session);
@@ -60,9 +61,12 @@ const getPageProperties = async (
       .map(mapperBo.mapBoOtherToPage),
   ];
 
+  const { templateName, template } = getPageTemplate(isUpdate, isReview, req.url);
+
   return {
     backLinkUrl: getBackLinkUrl(isUpdate, appData, req, isReview),
-    templateName: getPageTemplate(isUpdate, isReview),
+    templateName,
+    template,
     pageParams: {
       title: isReview ? TRUST_DETAILS_TEXTS.review_title : TRUST_DETAILS_TEXTS.title,
       subtitle: isReview ? TRUST_DETAILS_TEXTS.review_subtitle : TRUST_DETAILS_TEXTS.subtitle,
@@ -112,14 +116,14 @@ export const getTrustDetails = async (req: Request, res: Response, next: NextFun
       pageProps = await getPageProperties(req, formData, isUpdate, isReview);
     }
 
-    return res.render(pageProps.templateName, pageProps);
+    return res.render(pageProps.template, pageProps);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);
   }
 };
 
-export const postTrustDetails = async (req: Request, res: Response, next: NextFunction, isUpdate: boolean, isReview?: boolean) => {
+export const postTrustDetails = async (req: Request, res: Response, next: NextFunction, isUpdate: boolean, isReview: boolean) => {
   /**
    * Set/remove trust id to/from beneficial owner in Application data
    *
@@ -164,16 +168,16 @@ export const postTrustDetails = async (req: Request, res: Response, next: NextFu
 
     if (!errorList.isEmpty() || errors.length) {
       const errorListArray = !errorList.isEmpty() ? errorList.array() : [];
+      const formattedErrors = formatValidationError([...errorListArray, ...errors]);
 
-      const pageProps = await getPageProperties(
-        req,
-        formData,
-        isUpdate,
-        isReview,
-        formatValidationError([...errorListArray, ...errors]),
-      );
+      let pageProps;
+      if (req.query["relevant-period"] === "true") {
+        pageProps = await getPagePropertiesRelevantPeriod(req, formData, isUpdate, isReview, formattedErrors);
+      } else {
+        pageProps = await getPageProperties(req, formData, isUpdate, isReview, formattedErrors);
+      }
 
-      return res.render(pageProps.templateName, pageProps);
+      return res.render(pageProps.template, pageProps);
     }
 
     //  map form data to session trust data
@@ -250,14 +254,14 @@ const getBackLinkUrl = (isUpdate: boolean, appData: ApplicationData, req: Reques
   return backLinkUrl;
 };
 
-const getPageTemplate = (isUpdate: boolean, isReview?: boolean) => {
+const getPageTemplate = (isUpdate: boolean, isReview: boolean, url: string) => {
   if (isReview){
-    return config.UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_PAGE;
+    return { template: config.UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_PAGE, templateName: config.UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_PAGE };
   }
   if (isUpdate){
-    return config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_PAGE;
+    return { template: config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_PAGE, templateName: url.replace(config.UPDATE_AN_OVERSEAS_ENTITY_URL, "") };
   } else {
-    return config.TRUST_DETAILS_PAGE;
+    return { template: config.TRUST_DETAILS_PAGE, templateName: config.TRUST_DETAILS_PAGE };
   }
 };
 

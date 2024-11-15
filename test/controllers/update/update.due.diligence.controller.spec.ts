@@ -7,19 +7,38 @@ jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/utils/save.and.continue');
 
-// import remove journey middleware mock before app to prevent real function being used instead of mock
-import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
-import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
+
+// import remove journey middleware mock before app to prevent real function being used instead of mock
+import mockJourneyDetectionMiddleware from "../../__mocks__/journey.detection.middleware.mock";
+import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import request from "supertest";
+
+import app from "../../../src/app";
+
+import { ErrorMessages } from '../../../src/validation/error.messages';
+import { authentication } from "../../../src/middleware/authentication.middleware";
+import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
+import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
+import { logger } from "../../../src/utils/logger";
+import { ApplicationDataType } from '../../../src/model';
+import { hasWhoIsMakingUpdate } from "../../../src/middleware/navigation/update/has.who.is.making.update.middleware";
+import { EMAIL_ADDRESS } from "../../__mocks__/session.mock";
+import { DueDiligenceKey } from '../../../src/model/due.diligence.model';
+import { getTwoMonthOldDate } from "../../__mocks__/fields/date.mock";
+import { DUE_DILIGENCE_WITH_INVALID_CHARACTERS_FIELDS_MOCK } from "../../__mocks__/validation.mock";
+import { DateTime } from "luxon";
+import { saveAndContinue } from "../../../src/utils/save.and.continue";
+
+import { getApplicationData, setApplicationData, prepareData, fetchApplicationData } from "../../../src/utils/application.data";
+
 import {
   UPDATE_DUE_DILIGENCE_PAGE,
   UPDATE_DUE_DILIGENCE_URL,
   UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE,
   UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL
 } from "../../../src/config";
-import app from "../../../src/app";
 
 import {
   ANY_MESSAGE_ERROR,
@@ -46,22 +65,7 @@ import {
   DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK
 } from "../../__mocks__/due.diligence.mock";
 
-import { ErrorMessages } from '../../../src/validation/error.messages';
-import { getApplicationData, setApplicationData, prepareData } from "../../../src/utils/application.data";
-import { authentication } from "../../../src/middleware/authentication.middleware";
-import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
-import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
-import { logger } from "../../../src/utils/logger";
-import { ApplicationDataType } from '../../../src/model';
-import { hasWhoIsMakingUpdate } from "../../../src/middleware/navigation/update/has.who.is.making.update.middleware";
-import { EMAIL_ADDRESS } from "../../__mocks__/session.mock";
-import { DueDiligenceKey } from '../../../src/model/due.diligence.model';
-import { getTwoMonthOldDate } from "../../__mocks__/fields/date.mock";
-import { DUE_DILIGENCE_WITH_INVALID_CHARACTERS_FIELDS_MOCK } from "../../__mocks__/validation.mock";
-import { DateTime } from "luxon";
-import { saveAndContinue } from "../../../src/utils/save.and.continue";
-
-mockRemoveJourneyMiddleware.mockClear();
+mockJourneyDetectionMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
@@ -77,6 +81,7 @@ mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Respons
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
@@ -86,12 +91,13 @@ describe("Update due diligence controller tests", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetApplicationData.mockReset();
+    mockFetchApplicationData.mockReset();
     mockSetApplicationData.mockReset();
   });
 
   describe("GET tests", () => {
     test(`renders the ${UPDATE_DUE_DILIGENCE_PAGE}`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ [DueDiligenceKey]: null });
+      mockFetchApplicationData.mockReturnValueOnce({ [DueDiligenceKey]: null });
       const resp = await request(app).get(UPDATE_DUE_DILIGENCE_URL);
 
       expect(resp.status).toEqual(200);
@@ -115,7 +121,7 @@ describe("Update due diligence controller tests", () => {
     });
 
     test(`renders the ${UPDATE_DUE_DILIGENCE_PAGE} page on GET method with session data populated`, async () => {
-      mockGetApplicationData.mockReturnValueOnce( { [DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK } );
+      mockFetchApplicationData.mockReturnValueOnce({ [DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK } );
       const resp = await request(app).get(UPDATE_DUE_DILIGENCE_URL);
 
       expect(resp.status).toEqual(200);
@@ -279,6 +285,7 @@ describe("Update due diligence controller tests", () => {
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
       expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
     });
+
     test(`renders the ${UPDATE_DUE_DILIGENCE_PAGE} page with only DAY error when identity date day is empty`, async () => {
       const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE };
       dueDiligenceData["identity_date-month"] = "11";

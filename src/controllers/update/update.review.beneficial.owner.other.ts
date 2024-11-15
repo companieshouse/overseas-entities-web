@@ -2,7 +2,8 @@ import {
   UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
   UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_PAGE,
-  RELEVANT_PERIOD_QUERY_PARAM
+  RELEVANT_PERIOD_QUERY_PARAM,
+  FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
 } from "../../config";
 import { NextFunction, Request, Response } from "express";
 import { getApplicationData, mapDataObjectToFields, removeFromApplicationData, setApplicationData } from "../../utils/application.data";
@@ -23,6 +24,7 @@ import {
 } from "../../model/address.model";
 import { AddressKeys, EntityNumberKey } from "../../model/data.types.model";
 import { checkRelevantPeriod } from "../../utils/relevant.period";
+import { isActiveFeature } from "../../utils/feature.flag";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -45,6 +47,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       ...principalAddress,
       ...serviceAddress,
       entity_number: appData[EntityNumberKey],
+      FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC: isActiveFeature(FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)
     };
 
     if (CeasedDateKey in dataToReview) {

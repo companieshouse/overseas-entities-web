@@ -6,7 +6,7 @@ jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
 jest.mock('../../src/middleware/navigation/has.sold.land.middleware');
 jest.mock("../../src/middleware/service.availability.middleware");
-jest.mock("../../src/middleware/navigation/remove/remove.journey.middleware");
+jest.mock("../../src/middleware/navigation/journey.detection.middleware");
 jest.mock('../../src/service/transaction.service');
 jest.mock('../../src/service/overseas.entities.service');
 jest.mock('../../src/utils/feature.flag');
@@ -18,11 +18,19 @@ import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
-import mockRemoveJourneyMiddleware from "../__mocks__/remove.journey.middleware.mock";
+import mockJourneyDetectionMiddleware from "../__mocks__/journey.detection.middleware.mock";
 
 import app from "../../src/app";
 import * as config from "../../src/config";
 import { ErrorMessages } from "../../src/validation/error.messages";
+import { authentication } from "../../src/middleware/authentication.middleware";
+import { logger } from "../../src/utils/logger";
+import { hasSoldLand } from "../../src/middleware/navigation/has.sold.land.middleware";
+import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
+import { isActiveFeature } from "../../src/utils/feature.flag";
+import { updateOverseasEntity } from "../../src/service/overseas.entities.service";
+import { getUrlWithParamsToPath } from "../../src/utils/url";
+
 import {
   ANY_MESSAGE_ERROR,
   INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER,
@@ -34,21 +42,20 @@ import {
   SERVICE_UNAVAILABLE,
   BACK_BUTTON_CLASS
 } from "../__mocks__/text.mock";
+
 import {
   SECURE_REGISTER_FILTER_URL,
   SECURE_REGISTER_FILTER_WITH_PARAMS_URL,
   SOLD_LAND_FILTER_URL
 } from "../../src/config";
 
-import { getApplicationData, setExtraData } from "../../src/utils/application.data";
-import { authentication } from "../../src/middleware/authentication.middleware";
-import { logger } from "../../src/utils/logger";
-import { hasSoldLand } from "../../src/middleware/navigation/has.sold.land.middleware";
-import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
-import { isActiveFeature } from "../../src/utils/feature.flag";
-import { isRemoveJourney, getUrlWithTransactionIdAndSubmissionId } from "./../../src/utils/url";
-import { updateOverseasEntity } from "../../src/service/overseas.entities.service";
-import { getUrlWithParamsToPath } from "../../src/utils/url";
+import {
+  isRemoveJourney,
+  getUrlWithTransactionIdAndSubmissionId,
+  isRegistrationJourney
+} from "./../../src/utils/url";
+
+import { getApplicationData, setExtraData, fetchApplicationData } from "../../src/utils/application.data";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockAuthenticationMiddleware = authentication as jest.Mock;
@@ -61,14 +68,19 @@ const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetExtraData = setExtraData as jest.Mock;
 const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
-mockRemoveJourneyMiddleware.mockClear();
+mockJourneyDetectionMiddleware.mockClear();
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockIsRemoveJourney = isRemoveJourney as jest.Mock;
+const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
+mockIsRegistrationJourney.mockReturnValue(true);
+
 const mockGetUrlWithTransactionIdAndSubmissionId = getUrlWithTransactionIdAndSubmissionId as jest.Mock;
 const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
 
@@ -84,7 +96,7 @@ describe( "SECURE REGISTER FILTER controller", () => {
   describe("GET tests", () => {
 
     test(`renders the ${config.SECURE_REGISTER_FILTER_PAGE} page`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({});
+      mockFetchApplicationData.mockReturnValueOnce({});
       const resp = await request(app).get(SECURE_REGISTER_FILTER_URL);
 
       expect(resp.status).toEqual(200);
@@ -101,7 +113,7 @@ describe( "SECURE REGISTER FILTER controller", () => {
     test(`renders the ${config.SECURE_REGISTER_FILTER_PAGE} page and REDIS_removal flag is set to OFF`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(false);
       mockGetUrlWithParamsToPath.mockReturnValueOnce('/some-url');
-      mockGetApplicationData.mockReturnValueOnce({});
+      mockFetchApplicationData.mockReturnValueOnce({});
       mockIsRemoveJourney.mockReturnValue(false);
       const resp = await request(app).get(SECURE_REGISTER_FILTER_URL);
 
@@ -116,14 +128,13 @@ describe( "SECURE REGISTER FILTER controller", () => {
       expect(resp.text).toContain(NOT_SHOW_INFORMATION_ON_PUBLIC_REGISTER);
       expect(mockIsActiveFeature).toHaveBeenCalledTimes(1);
       expect(mockGetUrlWithParamsToPath).not.toHaveBeenCalled();
-      expect(mockGetApplicationData).toHaveBeenCalledTimes(1);
       expect(mockIsRemoveJourney).toHaveBeenCalledTimes(1);
     });
 
     test(`renders the ${config.SECURE_REGISTER_FILTER_PAGE} page and REDIS_removal flag is set to ON`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
       mockGetUrlWithParamsToPath.mockReturnValueOnce('/some-url');
-      mockGetApplicationData.mockReturnValueOnce({});
+      mockFetchApplicationData.mockReturnValueOnce({});
       mockIsRemoveJourney.mockReturnValue(false);
       const resp = await request(app).get(SECURE_REGISTER_FILTER_WITH_PARAMS_URL);
 
@@ -139,7 +150,6 @@ describe( "SECURE REGISTER FILTER controller", () => {
       expect(resp.text).toContain(BACK_BUTTON_CLASS);
       expect(mockIsActiveFeature).toHaveBeenCalledTimes(1);
       expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
-      expect(mockGetApplicationData).toHaveBeenCalledTimes(1);
       expect(mockIsRemoveJourney).toHaveBeenCalledTimes(1);
     });
 
@@ -152,7 +162,7 @@ describe( "SECURE REGISTER FILTER controller", () => {
     });
 
     test(`renders the ${config.SECURE_REGISTER_FILTER_PAGE} page with radios selected to yes`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ is_secure_register: 1 });
+      mockFetchApplicationData.mockReturnValueOnce({ is_secure_register: 1 });
       const resp = await request(app).get(SECURE_REGISTER_FILTER_URL);
 
       expect(resp.status).toEqual(200);

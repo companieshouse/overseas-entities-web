@@ -30,7 +30,7 @@ import { authentication } from '../../src/middleware/authentication.middleware';
 import { hasTrustWithIdRegister } from '../../src/middleware/navigation/has.trust.middleware';
 import { TRUST_ENTRY_URL, TRUST_ENTRY_WITH_PARAMS_URL, TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE, TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL, TRUST_INVOLVED_URL } from '../../src/config';
 import { getApplicationData, setExtraData } from '../../src/utils/application.data';
-import { TRUST_WITH_ID } from '../__mocks__/session.mock';
+import { APPLICATION_DATA_MOCK, TRUST_WITH_ID } from '../__mocks__/session.mock';
 import { IndividualTrustee, Trust, TrustKey } from '../../src/model/trust.model';
 import { mapCommonTrustDataToPage } from '../../src/utils/trust/common.trust.data.mapper';
 import { mapIndividualTrusteeToSession, mapIndividualTrusteeByIdFromSessionToPage } from '../../src/utils/trust/individual.trustee.mapper';
@@ -194,6 +194,36 @@ describe('Trust Individual Beneficial Owner Controller', () => {
 
       expect(mockNext).toBeCalledTimes(1);
       expect(mockNext).toBeCalledWith(error);
+    });
+
+    test('no selection to add trust with url params - render with errors', async () => {
+      (validationResult as any as jest.Mock).mockImplementationOnce(() => ({
+        isEmpty: jest.fn().mockReturnValue(true),
+      }));
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+
+      mockReq.url = "/register-an-overseas-entity/transaction/123/submission/456/trusts/trust-individual-beneficial-owner";
+      mockReq.body = {};
+
+      await post(mockReq, mockRes, mockNext);
+
+      expect(mockRes.render).toBeCalledTimes(1);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+    });
+
+    test('no selection to add trust with url no params - render with errors', async () => {
+      (validationResult as any as jest.Mock).mockImplementationOnce(() => ({
+        isEmpty: jest.fn().mockReturnValue(true),
+      }));
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+
+      mockReq.url = "/register-an-overseas-entity/trusts/trust-individual-beneficial-owner";
+      mockReq.body = {};
+
+      await post(mockReq, mockRes, mockNext);
+
+      expect(mockRes.render).toBeCalledTimes(1);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
   });
 

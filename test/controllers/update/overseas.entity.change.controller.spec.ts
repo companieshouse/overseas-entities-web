@@ -14,7 +14,7 @@ jest.mock("../../../src/utils/feature.flag");
 jest.mock("../../../src/utils/update/trust.model.fetch");
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
-import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
+import mockJourneyDetectionMiddleware from "../../__mocks__/journey.detection.middleware.mock";
 import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
@@ -62,7 +62,7 @@ import { getBeneficialOwnersPrivateData } from '../../../src/service/private.ove
 import { retrieveTrustData } from "../../../src/utils/update/trust.model.fetch";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 
-mockRemoveJourneyMiddleware.mockClear();
+mockJourneyDetectionMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
 const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
 const mockGetBeneficialOwnersPrivateData = getBeneficialOwnersPrivateData as jest.Mock;

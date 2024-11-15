@@ -92,6 +92,7 @@ describe("owned review statements page tests", () => {
 
     test("catch error when rendering the page", async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL);
 

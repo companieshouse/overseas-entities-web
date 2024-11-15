@@ -29,5 +29,5 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     nextPageUrl = getUrlWithParamsToPath(DUE_DILIGENCE_WITH_PARAMS_URL, req);
     oeNextPageUrl = getUrlWithParamsToPath(OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_PARAMS_URL, req);
   }
-  await postWhoIsFiling(req, res, next, nextPageUrl, oeNextPageUrl, true);
+  await postWhoIsFiling(req, res, next, nextPageUrl, oeNextPageUrl);
 };

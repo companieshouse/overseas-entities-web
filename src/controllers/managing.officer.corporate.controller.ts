@@ -1,5 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import * as config from "../config";
+import { isActiveFeature } from "../utils/feature.flag";
+import { getUrlWithParamsToPath } from "../utils/url";
+
 import {
   getManagingOfficerCorporate,
   getManagingOfficerCorporateById,
@@ -7,8 +10,6 @@ import {
   updateManagingOfficerCorporate,
   removeManagingOfficerCorporate
 } from "../utils/managing.officer.corporate";
-import { isActiveFeature } from "../utils/feature.flag";
-import { getUrlWithParamsToPath } from "../utils/url";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   const backLinkUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)

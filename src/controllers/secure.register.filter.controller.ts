@@ -20,5 +20,5 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   const usePaperUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
     ? config.USE_PAPER_WITH_PARAMS_URL
     : config.USE_PAPER_URL;
-  await postFilterPage(req, res, next, usePaperUrl, nextPageUrl, true);
+  await postFilterPage(req, res, next, usePaperUrl, nextPageUrl);
 };

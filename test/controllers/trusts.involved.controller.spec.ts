@@ -23,7 +23,7 @@ import { Session } from '@companieshouse/node-session-handler';
 import request from "supertest";
 import app from "../../src/app";
 import { TRUST_WITH_ID } from '../__mocks__/session.mock';
-import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR, TRUST_INVOLVED_TITLE } from '../__mocks__/text.mock';
+import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR, TRUST_INVOLVED_TITLE, TRUSTS_URL } from '../__mocks__/text.mock';
 import {
   ADD_TRUST_URL,
   REGISTER_AN_OVERSEAS_ENTITY_URL,
@@ -41,7 +41,7 @@ import {
   UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE,
   TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE,
   TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE,
-  UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_PAGE,
+  UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_PAGE, LANDING_URL,
 } from '../../src/config';
 import { get, post } from "../../src/controllers/trust.involved.controller";
 import { authentication } from '../../src/middleware/authentication.middleware';
@@ -227,6 +227,10 @@ describe('Trust Involved controller', () => {
         "/" + UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE + RELEVANT_PERIOD_QUERY_PARAM,
       ],
       [
+        TrusteeType.LEGAL_ENTITY,
+        "/" + UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE,
+      ],
+      [
         TrusteeType.RELEVANT_PERIOD_LEGAL_ENTITY,
         "/" + UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE + RELEVANT_PERIOD_QUERY_PARAM,
       ],
@@ -253,6 +257,18 @@ describe('Trust Involved controller', () => {
         "/" + UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE + "/" + TRUST_WITH_ID.trust_id + "/" + TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + RELEVANT_PERIOD_QUERY_PARAM,
       ],
     ];
+
+    const dpPostRegisterRelevantPeriodTrustees = [
+      [
+        TrusteeType.RELEVANT_PERIOD_INDIVIDUAL_BENEFICIARY,
+        "/" + TRUSTS_URL + "/" + TRUST_WITH_ID.trust_id + "/" + TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE + RELEVANT_PERIOD_QUERY_PARAM,
+      ],
+      [
+        TrusteeType.RELEVANT_PERIOD_LEGAL_ENTITY,
+        "/" + TRUSTS_URL + "/" + TRUST_WITH_ID.trust_id + "/" + TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + RELEVANT_PERIOD_QUERY_PARAM,
+      ],
+    ];
+
     test.each(dpPostTrustee)(
       'success push with %p type',
       async (typeOfTrustee: string, expectedUrl: string) => {
@@ -320,9 +336,25 @@ describe('Trust Involved controller', () => {
         const isReview: boolean = false;
         await postTrustInvolvedPage(mockReq, mockRes, mockNext, isUpdate, isReview);
 
-        // TODO Implement pages for relevant period
-        console.log('TODO Implement pages for relevant period on URL:' + expectedUrl);
-        // expect(mockRes.redirect).toBeCalledWith(`${UPDATE_LANDING_URL}${expectedUrl}`);
+        expect(mockRes.redirect).toBeCalledWith(`${UPDATE_LANDING_URL}${expectedUrl}`);
+      },
+    );
+
+    test.each(dpPostRegisterRelevantPeriodTrustees)(
+      'success push with %p type',
+      async (typeOfTrustee: string, expectedUrl: string) => {
+        mockReq.body = {
+          typeOfTrustee,
+        };
+
+        (validationResult as any as jest.Mock).mockImplementationOnce(() => ({
+          isEmpty: jest.fn().mockReturnValue(true),
+        }));
+        const isUpdate: boolean = false;
+        const isReview: boolean = false;
+        await postTrustInvolvedPage(mockReq, mockRes, mockNext, isUpdate, isReview);
+
+        expect(mockRes.redirect).toBeCalledWith(`${LANDING_URL}${expectedUrl}`);
       },
     );
 

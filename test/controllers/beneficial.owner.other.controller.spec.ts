@@ -8,10 +8,26 @@ jest.mock('../../src/middleware/service.availability.middleware');
 jest.mock("../../src/utils/url");
 jest.mock('../../src/utils/relevant.period');
 
-import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
-import { describe, expect, jest, test, beforeEach } from "@jest/globals";
 import request from "supertest";
 import { NextFunction, Request, Response } from "express";
+import { DateTime } from "luxon";
+import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
+
+import app from "../../src/app";
+
+import { authentication } from "../../src/middleware/authentication.middleware";
+import * as config from "../../src/config";
+import { ApplicationDataType } from "../../src/model";
+import { ErrorMessages } from "../../src/validation/error.messages";
+import { hasBeneficialOwnersStatement } from "../../src/middleware/navigation/has.beneficial.owners.statement.middleware";
+import { saveAndContinue } from "../../src/utils/save.and.continue";
+import { isActiveFeature } from "../../src/utils/feature.flag";
+import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
+import { checkRelevantPeriod } from "../../src/utils/relevant.period";
+
+import { isRegistrationJourney, getUrlWithParamsToPath } from "../../src/utils/url";
+import { ServiceAddressKey, ServiceAddressKeys } from "../../src/model/address.model";
+import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../../src/model/beneficial.owner.other.model";
 
 import {
   APPLICATION_DATA_MOCK,
@@ -29,15 +45,17 @@ import {
   BO_OTHER_ID_URL,
   REQ_BODY_BENEFICIAL_OWNER_OTHER_EMPTY,
 } from "../__mocks__/session.mock";
+
 import {
-  getFromApplicationData, mapFieldsToDataObject,
+  getFromApplicationData,
+  mapFieldsToDataObject,
   prepareData,
   removeFromApplicationData,
   setApplicationData,
-  getApplicationData
+  getApplicationData,
+  fetchApplicationData,
 } from "../../src/utils/application.data";
-import { authentication } from "../../src/middleware/authentication.middleware";
-import app from "../../src/app";
+
 import {
   BENEFICIAL_OWNER_OTHER_PAGE,
   BENEFICIAL_OWNER_TYPE_PAGE,
@@ -47,6 +65,7 @@ import {
   BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
   REMOVE
 } from "../../src/config";
+
 import {
   BENEFICIAL_OWNER_OTHER_PAGE_HEADING,
   ERROR_LIST,
@@ -63,13 +82,14 @@ import {
   UK_SANCTIONS_DETAILS,
   YES_SANCTIONS_TEXT_IT,
   TRUSTS_NOC_HEADING,
-  FIRM_NOC_HEADING_NEW,
+  FIRM_CONTROL_NOC_HEADING,
   TRUST_CONTROL_NOC_HEADING,
   OWNER_OF_LAND_PERSON_NOC_HEADING,
   OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING,
   FIRM_NOC_HEADING,
   BO_NOC_HEADING,
 } from "../__mocks__/text.mock";
+
 import {
   AddressKeys,
   EntityNumberKey,
@@ -84,24 +104,12 @@ import {
   RegistrationNumberKey,
   yesNoResponse
 } from "../../src/model/data.types.model";
-import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../../src/model/beneficial.owner.other.model";
+
 import {
   BENEFICIAL_OWNER_OTHER_WITH_INVALID_CHARS_MOCK,
   BENEFICIAL_OWNER_OTHER_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK,
   BENEFICIAL_OWNER_OTHER_WITH_MAX_LENGTH_FIELDS_MOCK
 } from '../__mocks__/validation.mock';
-import { ApplicationDataType } from "../../src/model";
-import { ServiceAddressKey, ServiceAddressKeys } from "../../src/model/address.model";
-import { ErrorMessages } from "../../src/validation/error.messages";
-
-import { hasBeneficialOwnersStatement } from "../../src/middleware/navigation/has.beneficial.owners.statement.middleware";
-import * as config from "../../src/config";
-import { saveAndContinue } from "../../src/utils/save.and.continue";
-import { DateTime } from "luxon";
-import { isActiveFeature } from "../../src/utils/feature.flag";
-import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
-import { getUrlWithParamsToPath } from "../../src/utils/url";
-import { checkRelevantPeriod } from "../../src/utils/relevant.period";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockHasBeneficialOwnersStatementMiddleware = hasBeneficialOwnersStatement as jest.Mock;
@@ -117,6 +125,7 @@ const mockPrepareData = prepareData as jest.Mock;
 const mockRemoveFromApplicationData = removeFromApplicationData as unknown as jest.Mock;
 const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 
 const DUMMY_DATA_OBJECT = { dummy: "data" };
 
@@ -130,6 +139,9 @@ const NEXT_PAGE_URL = "/NEXT_PAGE/";
 
 const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
 mockGetUrlWithParamsToPath.mockReturnValue(NEXT_PAGE_URL);
+
+const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
+mockIsRegistrationJourney.mockReturnValue(true);
 
 describe("BENEFICIAL OWNER OTHER controller", () => {
 
@@ -165,7 +177,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).toContain(BO_NOC_HEADING);
       expect(resp.text).toContain(TRUSTS_NOC_HEADING);
       expect(resp.text).toContain(FIRM_NOC_HEADING);
-      expect(resp.text).not.toContain(FIRM_NOC_HEADING_NEW);
+      expect(resp.text).not.toContain(FIRM_CONTROL_NOC_HEADING);
       expect(resp.text).not.toContain(TRUST_CONTROL_NOC_HEADING);
       expect(resp.text).not.toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
       expect(resp.text).not.toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
@@ -176,7 +188,6 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       delete appData[EntityNumberKey];
 
       mockGetApplicationData.mockReturnValueOnce({ ...appData });
-
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
 
@@ -188,7 +199,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).toContain(BO_NOC_HEADING);
       expect(resp.text).toContain(TRUSTS_NOC_HEADING);
       expect(resp.text).not.toContain(FIRM_NOC_HEADING);
-      expect(resp.text).toContain(FIRM_NOC_HEADING_NEW);
+      expect(resp.text).toContain(FIRM_CONTROL_NOC_HEADING);
       expect(resp.text).toContain(TRUST_CONTROL_NOC_HEADING);
       expect(resp.text).toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
       expect(resp.text).toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
@@ -212,7 +223,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       const appData = APPLICATION_DATA_MOCK;
       delete appData[EntityNumberKey];
 
-      mockGetApplicationData.mockReturnValueOnce({ ...appData });
+      mockFetchApplicationData.mockReturnValueOnce({ ...appData });
 
       const resp = await request(app).get(BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL);
 
@@ -230,7 +241,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).toContain(BO_NOC_HEADING);
       expect(resp.text).toContain(TRUSTS_NOC_HEADING);
       expect(resp.text).toContain(FIRM_NOC_HEADING);
-      expect(resp.text).not.toContain(FIRM_NOC_HEADING_NEW);
+      expect(resp.text).not.toContain(FIRM_CONTROL_NOC_HEADING);
       expect(resp.text).not.toContain(TRUST_CONTROL_NOC_HEADING);
       expect(resp.text).not.toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
       expect(resp.text).not.toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
@@ -241,7 +252,6 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       delete appData[EntityNumberKey];
 
       mockGetApplicationData.mockReturnValueOnce({ ...appData });
-
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
 
@@ -253,7 +263,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).toContain(BO_NOC_HEADING);
       expect(resp.text).toContain(TRUSTS_NOC_HEADING);
       expect(resp.text).not.toContain(FIRM_NOC_HEADING);
-      expect(resp.text).toContain(FIRM_NOC_HEADING_NEW);
+      expect(resp.text).toContain(FIRM_CONTROL_NOC_HEADING);
       expect(resp.text).toContain(TRUST_CONTROL_NOC_HEADING);
       expect(resp.text).toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
       expect(resp.text).toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
@@ -277,7 +287,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS);
       const applicationDataMock = { ...APPLICATION_DATA_MOCK };
       delete applicationDataMock[EntityNumberKey];
-      mockGetApplicationData.mockReturnValueOnce(applicationDataMock);
+      mockFetchApplicationData.mockReturnValueOnce(applicationDataMock);
 
       const resp = await request(app).get(BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL);
 
@@ -308,7 +318,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       mockGetFromApplicationData.mockReturnValueOnce({ ...BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS });
       const applicationDataMock = { ...APPLICATION_DATA_MOCK };
       delete applicationDataMock[EntityNumberKey];
-      mockGetApplicationData.mockReturnValueOnce(applicationDataMock);
+      mockFetchApplicationData.mockReturnValueOnce(applicationDataMock);
 
       const resp = await request(app).get(BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL + BO_OTHER_ID_URL);
 
@@ -338,9 +348,10 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
 
   describe("POST tests", () => {
 
-    test(`Sets session data and renders the ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
+    test(`Sets session data and renders the ${BENEFICIAL_OWNER_TYPE_URL} page when the REDIS_removal flag is set to OFF`, async () => {
       const beneficialOwnerOtherMock = { ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK, [IsOnSanctionsListKey]: "0" };
       mockPrepareData.mockReturnValueOnce(beneficialOwnerOtherMock);
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       const resp = await request(app).post(BENEFICIAL_OWNER_OTHER_URL)
         .send({ ...BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS });
 
@@ -359,6 +370,30 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(BeneficialOwnerOtherKey);
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test(`Sets session data and renders the ${BENEFICIAL_OWNER_TYPE_URL} page when the REDIS_removal flag is set to ON`, async () => {
+      const beneficialOwnerOtherMock = { ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK, [IsOnSanctionsListKey]: "0" };
+      mockPrepareData.mockReturnValueOnce(beneficialOwnerOtherMock);
+      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      const resp = await request(app).post(BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL)
+        .send({ ...BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS });
+
+      expect(resp.status).toEqual(302);
+      const beneficialOwnerOther = mockSetApplicationData.mock.calls[0][1];
+      expect(beneficialOwnerOther.name).toEqual("TestCorporation");
+      expect(beneficialOwnerOther.legal_form).toEqual("TheLegalForm");
+      expect(beneficialOwnerOther.law_governed).toEqual("TheLaw");
+      expect(beneficialOwnerOther.public_register_name).toEqual( "ThisRegister");
+      expect(beneficialOwnerOther.registration_number).toEqual("123456789");
+      expect(beneficialOwnerOther.is_on_register_in_country_formed_in).toEqual(yesNoResponse.Yes);
+      expect(beneficialOwnerOther.beneficial_owner_nature_of_control_types).toEqual([NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS]);
+      expect(beneficialOwnerOther.trustees_nature_of_control_types).toEqual([NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS]);
+      expect(beneficialOwnerOther.non_legal_firm_members_nature_of_control_types).toEqual([NatureOfControlType.OVER_25_PERCENT_OF_SHARES]);
+      expect(beneficialOwnerOther[IsOnSanctionsListKey]).toEqual(yesNoResponse.No);
+      expect(mockSetApplicationData.mock.calls[0][2]).toEqual(BeneficialOwnerOtherKey);
+      expect(resp.header.location).toEqual(NEXT_PAGE_URL);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`correctly maps natures of control when feature flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is ON`, async () => {
@@ -863,7 +898,6 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
         mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
         mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
         mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
-
         mockPrepareData.mockImplementationOnce( () => ( { ...BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS } ));
 
         const body = {
@@ -948,7 +982,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
         expect(resp.text).toContain(BO_NOC_HEADING);
         expect(resp.text).toContain(TRUSTS_NOC_HEADING);
         expect(resp.text).toContain(FIRM_NOC_HEADING);
-        expect(resp.text).not.toContain(FIRM_NOC_HEADING_NEW);
+        expect(resp.text).not.toContain(FIRM_CONTROL_NOC_HEADING);
         expect(resp.text).not.toContain(TRUST_CONTROL_NOC_HEADING);
         expect(resp.text).not.toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
         expect(resp.text).not.toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
@@ -1462,7 +1496,6 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
         mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
         mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
         mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
-
         mockPrepareData.mockImplementationOnce( () => ( { ...BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS } ));
 
         const body = {
@@ -1497,7 +1530,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
         expect(resp.text).toContain(BO_NOC_HEADING);
         expect(resp.text).toContain(TRUSTS_NOC_HEADING);
         expect(resp.text).not.toContain(FIRM_NOC_HEADING);
-        expect(resp.text).toContain(FIRM_NOC_HEADING_NEW);
+        expect(resp.text).toContain(FIRM_CONTROL_NOC_HEADING);
         expect(resp.text).toContain(TRUST_CONTROL_NOC_HEADING);
         expect(resp.text).toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
         expect(resp.text).toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
@@ -1517,7 +1550,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
         expect(resp.text).toContain(BO_NOC_HEADING);
         expect(resp.text).toContain(TRUSTS_NOC_HEADING);
         expect(resp.text).toContain(FIRM_NOC_HEADING);
-        expect(resp.text).not.toContain(FIRM_NOC_HEADING_NEW);
+        expect(resp.text).not.toContain(FIRM_CONTROL_NOC_HEADING);
         expect(resp.text).not.toContain(TRUST_CONTROL_NOC_HEADING);
         expect(resp.text).not.toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
         expect(resp.text).not.toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
@@ -1526,6 +1559,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
   });
 
   describe("UPDATE tests", () => {
+
     test(`Redirects to the ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
       mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_OTHER_OBJECT_MOCK);
       mockPrepareData.mockReturnValueOnce({ ...BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS });
@@ -1547,7 +1581,8 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-    test(`Replaces existing object on submit`, async () => {
+    test(`Replaces existing object on submit when the REDIS_removal flag is set to OFF`, async () => {
+      mockIsActiveFeature.mockReturnValue(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_OTHER_OBJECT_MOCK);
       mockPrepareData.mockReturnValueOnce({ ...BENEFICIAL_OWNER_OTHER_REPLACE });
       const resp = await request(app)
@@ -1567,6 +1602,29 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test(`Replaces existing object on submit when the REDIS_removal flag is set to ON`, async () => {
+      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_OTHER_OBJECT_MOCK);
+      mockPrepareData.mockReturnValueOnce({ ...BENEFICIAL_OWNER_OTHER_REPLACE });
+      const resp = await request(app)
+        .post(BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL + BO_OTHER_ID_URL)
+        .send(BENEFICIAL_OWNER_OTHER_REPLACE);
+
+      expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(BeneficialOwnerOtherKey);
+      expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(BO_OTHER_ID);
+
+      const data = mockSetApplicationData.mock.calls[0][1];
+      expect(data.id).toEqual(BO_OTHER_ID);
+      expect(mockSetApplicationData.mock.calls[0][2]).toEqual(BeneficialOwnerOtherKey);
+
+      // Ensure that trust ids on the original BO aren't lost during the update
+      expect((data as BeneficialOwnerOther).trust_ids).toEqual(BENEFICIAL_OWNER_OTHER_OBJECT_MOCK.trust_ids);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(NEXT_PAGE_URL);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`Service address from the ${BENEFICIAL_OWNER_OTHER_PAGE} is present when same address is set to no`, async () => {
@@ -1617,6 +1675,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
   });
 
   describe("REMOVE tests", () => {
+
     test(`Redirects to the ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
       mockPrepareData.mockReturnValueOnce({ ...BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS });
       const resp = await request(app).get(BENEFICIAL_OWNER_OTHER_URL + REMOVE + BO_OTHER_ID_URL);
@@ -1636,14 +1695,26 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-    test(`Removes the object from session`, async () => {
+    test(`Removes the object from session when REDIS_removal flag is set to OFF`, async () => {
+      mockIsActiveFeature.mockReturnValue(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       const resp = await request(app).get(BENEFICIAL_OWNER_OTHER_URL + REMOVE + BO_OTHER_ID_URL);
-
-      expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(BeneficialOwnerOtherKey);
-      expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(BO_OTHER_ID);
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(BeneficialOwnerOtherKey);
+      expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(BO_OTHER_ID);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test(`Removes the object when REDIS_removal flag is set to ON`, async () => {
+      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      const resp = await request(app).get(BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL + REMOVE + BO_OTHER_ID_URL);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(NEXT_PAGE_URL);
+      expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(BeneficialOwnerOtherKey);
+      expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(BO_OTHER_ID);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
   });
 });

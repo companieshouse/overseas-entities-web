@@ -2,7 +2,8 @@ import {
   UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
   UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
-  RELEVANT_PERIOD_QUERY_PARAM
+  RELEVANT_PERIOD_QUERY_PARAM,
+  FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
 } from "../../config";
 import { NextFunction, Request, Response } from "express";
 import { getApplicationData, mapDataObjectToFields, removeFromApplicationData, setApplicationData } from "../../utils/application.data";
@@ -18,6 +19,7 @@ import { addCeasedDateToTemplateOptions } from "../../utils/update/ceased_date_u
 import { CeasedDateKey, HaveDayOfBirthKey } from "../../model/date.model";
 import { ServiceAddressKey, ServiceAddressKeys, UsualResidentialAddressKey, UsualResidentialAddressKeys } from "../../model/address.model";
 import { checkRelevantPeriod } from "../../utils/relevant.period";
+import { isActiveFeature } from "../../utils/feature.flag";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -40,7 +42,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       populateResidentialAddress: false,
       ...serviceAddress,
       ...usual_residential_address,
-      entity_number: appData[EntityNumberKey]
+      entity_number: appData[EntityNumberKey],
+      FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC: isActiveFeature(FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)
     };
 
     // Ceased date is undefined and residential address is private for initial review of BO - don't set ceased date data or residential address in this scenario

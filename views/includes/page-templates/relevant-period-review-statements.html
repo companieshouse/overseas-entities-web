@@ -68,10 +68,11 @@
                 {{ govukButton({
                 text: "Agree and continue",
                 attributes: {
-                "id": "submit"
+                "id": "submit",
+                "data-event-id": "relevant-period-statements-confirmed"
                 }
                 }) }}
-                <a href="{{ backLinkUrl }}" class="govuk-link govuk-link--no-visited-state">I need to change the statements</a>
+                <a href="{{ backLinkUrl }}" class="govuk-link govuk-link--no-visited-state" data-event-id="back-link-relevant-period-statements">I need to change the statements</a>
             </div>
         </form>
     </div>

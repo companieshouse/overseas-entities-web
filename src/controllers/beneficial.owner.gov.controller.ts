@@ -1,17 +1,16 @@
 /* eslint-disable require-await */
 import { NextFunction, Request, Response } from "express";
+import * as config from "../config";
+import { isActiveFeature } from "../utils/feature.flag";
+import { getUrlWithParamsToPath } from "../utils/url";
+
 import {
   getBeneficialOwnerGov,
   getBeneficialOwnerGovById,
   postBeneficialOwnerGov,
   removeBeneficialOwnerGov,
-  updateBeneficialOwnerGov
+  updateBeneficialOwnerGov,
 } from "../utils/beneficial.owner.gov";
-
-import * as config from "../config";
-
-import { isActiveFeature } from "../utils/feature.flag";
-import { getUrlWithParamsToPath } from "../utils/url";
 
 export const get = async (req: Request, res: Response, next: NextFunction,) => {
   return getBeneficialOwnerGov(req, res, next, config.BENEFICIAL_OWNER_GOV_PAGE, getBeneficialOwnerTypeUrl(req));
@@ -38,6 +37,5 @@ const getBeneficialOwnerTypeUrl = (req: Request): string => {
   if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)){
     nextPageUrl = getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req);
   }
-
   return nextPageUrl;
 };

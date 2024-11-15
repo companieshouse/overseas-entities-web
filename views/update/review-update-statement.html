@@ -103,14 +103,14 @@ update.filing_date["year"]) %}
       {% if isRemoveJourney %}
         <h1 class="govuk-heading-xl">Review the information before submitting</h1>
       {% else %}
-        {% if feature_flag_relevant_period === "true" and not pageParams.isRPStatementExists %}
+        {% if feature_flag_relevant_period === "true" and not pageParams.isRPStatementExists and not pageParams.noChangeFlag %}
           <h1 class="govuk-heading-xl">Check your answers before submitting</h1>
         {% else %}
           <h1 class="govuk-heading-xl">Review the information before submitting this update statement</h1>
         {% endif %}
       {% endif %}
 
-      {% if feature_flag_relevant_period === "true" %}
+      {% if feature_flag_relevant_period === "true" and not isRemoveJourney %}
         {% include "includes/check-your-answers/relevant-period-check-your-answers.html" %}
       {% else %}
         {{ govukSummaryList({

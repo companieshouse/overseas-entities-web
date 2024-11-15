@@ -26,7 +26,8 @@ import {
   UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL,
   UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL,
   JourneyType,
-  REMOVE_CONFIRM_STATEMENT_URL
+  REMOVE_CONFIRM_STATEMENT_URL,
+  FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
 } from "../config";
 import { RoleWithinTrustType } from "../model/role.within.trust.type.model";
 import { fetchManagingOfficersPrivateData } from "./update/fetch.managing.officers.private.data";
@@ -74,6 +75,7 @@ export const getDataForReview = async (req: Request, res: Response, next: NextFu
           hasAnyBosWithTrusteeNocs,
           today: getTodaysDate()
         },
+        FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC: isActiveFeature(FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)
       });
     }
 
@@ -90,8 +92,10 @@ export const getDataForReview = async (req: Request, res: Response, next: NextFu
         isRPStatementExists: isRPStatementExists,
         noChangeFlag: isNoChangeJourney,
         isTrustFeatureEnabled: isActiveFeature(FEATURE_FLAG_ENABLE_TRUSTS_WEB),
-        hasAnyBosWithTrusteeNocs
+        hasAnyBosWithTrusteeNocs,
+        no_change: appData.update?.no_change ?? ""
       },
+      FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC: isActiveFeature(FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)
     });
   } catch (error) {
     logger.errorRequest(req, error);

@@ -13,9 +13,23 @@ import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
-
 import * as config from "../../src/config";
+
 import app from "../../src/app";
+
+import { ErrorMessages } from '../../src/validation/error.messages';
+import { authentication } from "../../src/middleware/authentication.middleware";
+import { logger } from "../../src/utils/logger";
+import { hasPresenter } from "../../src/middleware/navigation/has.presenter.middleware";
+import { isActiveFeature } from "../../src/utils/feature.flag";
+import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
+import { updateOverseasEntity } from "../../src/service/overseas.entities.service";
+import { APPLICATION_DATA_MOCK } from "../__mocks__/session.mock";
+
+import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../src/model/who.is.making.filing.model";
+import { isRegistrationJourney, getUrlWithParamsToPath } from "../../src/utils/url";
+import { setExtraData, fetchApplicationData } from "../../src/utils/application.data";
+
 import {
   ANY_MESSAGE_ERROR, BACK_BUTTON_CLASS,
   PAGE_TITLE_ERROR,
@@ -25,18 +39,6 @@ import {
   UK_REGULATED_AGENT,
   WHO_IS_MAKING_FILING_PAGE_TITLE,
 } from "../__mocks__/text.mock";
-import { ErrorMessages } from '../../src/validation/error.messages';
-
-import { getApplicationData, setExtraData } from "../../src/utils/application.data";
-import { authentication } from "../../src/middleware/authentication.middleware";
-import { logger } from "../../src/utils/logger";
-import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../src/model/who.is.making.filing.model";
-import { hasPresenter } from "../../src/middleware/navigation/has.presenter.middleware";
-import { isActiveFeature } from "../../src/utils/feature.flag";
-import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
-import { getUrlWithParamsToPath } from "../../src/utils/url";
-import { updateOverseasEntity } from "../../src/service/overseas.entities.service";
-import { APPLICATION_DATA_MOCK } from "../__mocks__/session.mock";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockHasPresenterMiddleware = hasPresenter as jest.Mock;
@@ -46,8 +48,9 @@ const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
-const mockGetApplicationData = getApplicationData as jest.Mock;
+
 const mockSetExtraData = setExtraData as jest.Mock;
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 
@@ -60,6 +63,9 @@ mockGetUrlWithParamsToPath.mockReturnValue(NEXT_PAGE_URL);
 
 const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
 
+const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
+mockIsRegistrationJourney.mockReturnValue(true);
+
 describe("Who is making filing controller tests", () => {
 
   beforeEach(() => {
@@ -71,7 +77,7 @@ describe("Who is making filing controller tests", () => {
   describe("GET tests", () => {
 
     test(`renders the ${config.WHO_IS_MAKING_FILING_PAGE} page`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ });
+      mockFetchApplicationData.mockReturnValueOnce({});
       const resp = await request(app).get(config.WHO_IS_MAKING_FILING_URL);
 
       expect(resp.status).toEqual(200);
@@ -84,7 +90,7 @@ describe("Who is making filing controller tests", () => {
     });
 
     test(`renders the ${config.WHO_IS_MAKING_FILING_PAGE} page with correct back link url when feature flag is off`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ });
+      mockFetchApplicationData.mockReturnValueOnce({});
       mockIsActiveFeature.mockReturnValue(false);
       const resp = await request(app).get(config.WHO_IS_MAKING_FILING_URL);
       expect(resp.status).toEqual(200);
@@ -93,7 +99,7 @@ describe("Who is making filing controller tests", () => {
     });
 
     test(`renders the ${config.WHO_IS_MAKING_FILING_PAGE} page with correct back link url when feature flag is on`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ });
+      mockFetchApplicationData.mockReturnValueOnce({});
       mockIsActiveFeature.mockReturnValue(true);
       const resp = await request(app).get(config.WHO_IS_MAKING_FILING_URL);
       expect(resp.status).toEqual(200);
@@ -102,7 +108,7 @@ describe("Who is making filing controller tests", () => {
     });
 
     test(`renders the ${config.WHO_IS_MAKING_FILING_PAGE} page with radios selected to ${WhoIsRegisteringType.AGENT}`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT });
+      mockFetchApplicationData.mockReturnValueOnce({ [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT });
       const resp = await request(app).get(config.WHO_IS_MAKING_FILING_URL);
 
       expect(resp.status).toEqual(200);
@@ -110,7 +116,7 @@ describe("Who is making filing controller tests", () => {
     });
 
     test(`renders the ${config.WHO_IS_MAKING_FILING_PAGE} page with radios selected to ${WhoIsRegisteringType.SOMEONE_ELSE}`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE });
+      mockFetchApplicationData.mockReturnValueOnce({ [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE });
       const resp = await request(app).get(config.WHO_IS_MAKING_FILING_URL);
 
       expect(resp.status).toEqual(200);
@@ -118,7 +124,7 @@ describe("Who is making filing controller tests", () => {
     });
 
     test("catch error when rendering the page", async () => {
-      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockLoggerDebugRequest.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(config.WHO_IS_MAKING_FILING_URL);
 
       expect(resp.status).toEqual(500);
@@ -129,7 +135,7 @@ describe("Who is making filing controller tests", () => {
   describe("GET with url Params tests", () => {
 
     test(`renders the ${config.WHO_IS_MAKING_FILING_PAGE} page`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT });
+      mockFetchApplicationData.mockReturnValueOnce({ [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT });
       const resp = await request(app).get(config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(200);
@@ -142,7 +148,7 @@ describe("Who is making filing controller tests", () => {
     });
 
     test(`renders the ${config.WHO_IS_MAKING_FILING_PAGE} page with radios selected to ${WhoIsRegisteringType.AGENT}`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT });
+      mockFetchApplicationData.mockReturnValueOnce({ [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT });
       const resp = await request(app).get(config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(200);
@@ -150,7 +156,7 @@ describe("Who is making filing controller tests", () => {
     });
 
     test(`renders the ${config.WHO_IS_MAKING_FILING_PAGE} page with radios selected to ${WhoIsRegisteringType.SOMEONE_ELSE}`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE });
+      mockFetchApplicationData.mockReturnValueOnce({ [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE });
       const resp = await request(app).get(config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(200);
@@ -158,7 +164,7 @@ describe("Who is making filing controller tests", () => {
     });
 
     test("catch error when rendering the page", async () => {
-      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockLoggerDebugRequest.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(500);
@@ -170,7 +176,7 @@ describe("Who is making filing controller tests", () => {
 
     test(`redirects to the ${config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL} page when the ${WhoIsRegisteringType.SOMEONE_ELSE} option is selected and REDIS_flag is set to OFF`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(false);
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockIsActiveFeature.mockReturnValueOnce(false);
       mockUpdateOverseasEntity.mockReturnValueOnce(false);
       const resp = await request(app)
@@ -186,7 +192,7 @@ describe("Who is making filing controller tests", () => {
 
     test(`redirects to the ${config.OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_PARAMS_URL} page and updates the overseas entity when the ${WhoIsRegisteringType.SOMEONE_ELSE} option is selected and REDIS_flag is set to ON`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockIsActiveFeature.mockReturnValueOnce(true);
       mockUpdateOverseasEntity.mockReturnValueOnce(true);
       const resp = await request(app)
@@ -202,7 +208,7 @@ describe("Who is making filing controller tests", () => {
 
     test(`redirects to the ${config.DUE_DILIGENCE_URL} page when the ${WhoIsRegisteringType.AGENT} option is selected and the REDIS_flag is set to OFF`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(false);
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockIsActiveFeature.mockReturnValueOnce(false);
       mockUpdateOverseasEntity.mockReturnValueOnce(false);
       const resp = await request(app)
@@ -218,7 +224,7 @@ describe("Who is making filing controller tests", () => {
 
     test(`redirects to the ${config.DUE_DILIGENCE_WITH_PARAMS_URL} page and updates the overseas-entity when the ${WhoIsRegisteringType.AGENT} option is selected and the REDIS_flag is set to ON`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockIsActiveFeature.mockReturnValueOnce(true);
       mockUpdateOverseasEntity.mockReturnValueOnce(true);
       const resp = await request(app)
@@ -248,7 +254,7 @@ describe("Who is making filing controller tests", () => {
     });
 
     test("catch error when posting the page", async () => {
-      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockLoggerDebugRequest.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app)
         .post(config.WHO_IS_MAKING_FILING_URL)
         .send({ [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT });
@@ -276,7 +282,7 @@ describe("Who is making filing controller tests", () => {
     });
 
     test("catch error when posting the page", async () => {
-      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockLoggerDebugRequest.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app)
         .post(config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL)
         .send({ [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT });

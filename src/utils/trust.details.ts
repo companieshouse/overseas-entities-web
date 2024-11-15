@@ -236,15 +236,15 @@ export const postTrustDetails = async (req: Request, res: Response, next: NextFu
   }
 };
 
-const getAndUpdateTrustData = (req: Request, isReview: boolean, appData: ApplicationData, details: Trust) => {
+const getAndUpdateTrustData = (req: Request, isReview: boolean, appData: ApplicationData, trustDetails: Trust) => {
   // if present, get existing trust from appData (as it might have attached trustees)
   let trust;
   if (isReview) {
-    trust = getReviewTrustById(appData, details.trust_id);
+    trust = getReviewTrustById(appData, trustDetails.trust_id);
   } else {
-    trust = getTrustByIdFromApp(appData, details.trust_id);
+    trust = getTrustByIdFromApp(appData, trustDetails.trust_id);
   }
-  Object.keys(details).forEach(key => trust[key] = details[key]);
+  Object.keys(trustDetails).forEach(key => trust[key] = trustDetails[key]);
   if (isReview) {
     updateTrustInReviewList(appData, trust);
   } else {

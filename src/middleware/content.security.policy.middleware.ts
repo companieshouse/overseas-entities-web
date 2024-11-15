@@ -1,7 +1,8 @@
 import { HelmetOptions } from "helmet";
 
 export const prepareCSPConfig = (nonce: string): HelmetOptions => {
-  const CDN = process.env.CDN_HOST as string;
+  const removeProtocol = (url) => url.replace(/(^\w+:|^)\/\//, '');
+  const CDN = removeProtocol(process.env.CDN_HOST) as string;
   const PIWIK_URL = process.env.PIWIK_URL as string;
   const PIWIK_CHS_DOMAIN = process.env.PIWIK_CHS_DOMAIN as string;
   const JQUERY = 'code.jquery.com';

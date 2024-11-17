@@ -13,17 +13,42 @@ jest.mock('../../src/utils/trusts');
 jest.mock('../../src/utils/feature.flag');
 jest.mock('../../src/utils/url');
 
-import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
-import { constants } from 'http2';
-import { beforeEach, describe, expect, jest, test } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
+import { beforeEach, describe, expect, jest, test } from '@jest/globals';
+import { constants } from 'http2';
 import { Params } from 'express-serve-static-core';
-import { validationResult } from 'express-validator/src/validation-result';
 import { Session } from '@companieshouse/node-session-handler';
+
+import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
+import { validationResult } from 'express-validator/src/validation-result';
 import request from "supertest";
 import app from "../../src/app";
+import { authentication } from '../../src/middleware/authentication.middleware';
+import { hasTrustWithIdRegister } from '../../src/middleware/navigation/has.trust.middleware';
+import { ErrorMessages } from '../../src/validation/error.messages';
+import { TrusteeType } from '../../src/model/trustee.type.model';
+import { mapCommonTrustDataToPage } from '../../src/utils/trust/common.trust.data.mapper';
+import { mapTrustWhoIsInvolvedToPage } from '../../src/utils/trust/who.is.involved.mapper';
+import { isActiveFeature } from '../../src/utils/feature.flag';
+import { postTrustInvolvedPage } from "../../src/utils/trust.involved";
 import { TRUST_WITH_ID } from '../__mocks__/session.mock';
-import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR, TRUST_INVOLVED_TITLE, TRUSTS_URL } from '../__mocks__/text.mock';
+
+import { get, post } from "../../src/controllers/trust.involved.controller";
+import { getUrlWithParamsToPath, isRegistrationJourney } from '../../src/utils/url';
+import { getApplicationData, fetchApplicationData } from '../../src/utils/application.data';
+
+import {
+  getFormerTrusteesFromTrust,
+  getIndividualTrusteesFromTrust
+} from '../../src/utils/trusts';
+
+import {
+  ANY_MESSAGE_ERROR,
+  PAGE_TITLE_ERROR,
+  TRUST_INVOLVED_TITLE,
+  TRUSTS_URL
+} from '../__mocks__/text.mock';
+
 import {
   ADD_TRUST_URL,
   REGISTER_AN_OVERSEAS_ENTITY_URL,
@@ -43,18 +68,6 @@ import {
   TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE,
   UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_PAGE, LANDING_URL,
 } from '../../src/config';
-import { get, post } from "../../src/controllers/trust.involved.controller";
-import { authentication } from '../../src/middleware/authentication.middleware';
-import { hasTrustWithIdRegister } from '../../src/middleware/navigation/has.trust.middleware';
-import { ErrorMessages } from '../../src/validation/error.messages';
-import { TrusteeType } from '../../src/model/trustee.type.model';
-import { getApplicationData } from '../../src/utils/application.data';
-import { mapCommonTrustDataToPage } from '../../src/utils/trust/common.trust.data.mapper';
-import { mapTrustWhoIsInvolvedToPage } from '../../src/utils/trust/who.is.involved.mapper';
-import { getFormerTrusteesFromTrust, getIndividualTrusteesFromTrust } from '../../src/utils/trusts';
-import { isActiveFeature } from '../../src/utils/feature.flag';
-import { getUrlWithParamsToPath } from '../../src/utils/url';
-import { postTrustInvolvedPage } from "../../src/utils/trust.involved";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
@@ -64,18 +77,23 @@ const MOCKED_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + "MOCKED_URL";
 const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
 mockGetUrlWithParamsToPath.mockReturnValue(MOCKED_URL);
 
-describe('Trust Involved controller', () => {
-  const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
+mockIsRegistrationJourney.mockReturnValue(true);
 
+describe('Trust Involved controller', () => {
+
+  const mockGetApplicationData = getApplicationData as jest.Mock;
+  const mockFetchApplicationData = fetchApplicationData as jest.Mock;
   const trustId = TRUST_WITH_ID.trust_id;
   const pageUrl = `${TRUST_ENTRY_URL}/${trustId}${TRUST_INVOLVED_URL}`;
+  const mockNext = jest.fn();
 
   let mockReq = {} as Request;
+
   const mockRes = {
     render: jest.fn() as any,
     redirect: jest.fn() as any,
   } as Response;
-  const mockNext = jest.fn();
 
   const mockAppData = {
     dummyAppDataKey: 'dummyApplicationDataValue',
@@ -83,7 +101,7 @@ describe('Trust Involved controller', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-
+    mockIsActiveFeature.mockReset();
     mockReq = {
       params: {
         trustId: trustId,
@@ -97,8 +115,9 @@ describe('Trust Involved controller', () => {
   });
 
   describe('GET unit tests', () => {
+
     test(('success'), async () => {
-      mockGetApplicationData.mockReturnValue(mockAppData);
+      mockFetchApplicationData.mockReturnValue(mockAppData);
 
       const mockTrustData = {
         trustName: 'dummy',
@@ -125,19 +144,14 @@ describe('Trust Involved controller', () => {
       await get(mockReq, mockRes, mockNext);
 
       expect(mockRes.redirect).not.toBeCalled();
-
       expect(mapCommonTrustDataToPage).toBeCalledTimes(1);
       expect(mapCommonTrustDataToPage).toBeCalledWith(mockAppData, trustId, false);
-
       expect(mapTrustWhoIsInvolvedToPage).toBeCalledTimes(1);
       expect(mapTrustWhoIsInvolvedToPage).toBeCalledWith(mockAppData, trustId, false);
-
       expect(getIndividualTrusteesFromTrust).toBeCalledTimes(1);
       expect(getIndividualTrusteesFromTrust).toBeCalledWith(mockAppData, trustId, false);
-
       expect(getFormerTrusteesFromTrust).toBeCalledTimes(1);
       expect(getFormerTrusteesFromTrust).toBeCalledWith(mockAppData, trustId, false);
-
       expect(mockRes.render).toBeCalledTimes(1);
       expect(mockRes.render).toBeCalledWith(
         TRUST_INVOLVED_PAGE,
@@ -171,7 +185,7 @@ describe('Trust Involved controller', () => {
 
     test('catch error when renders the page', () => {
       const error = new Error(ANY_MESSAGE_ERROR);
-      mockGetApplicationData.mockImplementationOnce(() => {
+      mockFetchApplicationData.mockImplementationOnce(() => {
         throw error;
       });
 
@@ -183,11 +197,12 @@ describe('Trust Involved controller', () => {
   });
 
   describe('POST unit tests', () => {
-    test('no more to add button pushed', async () => {
+
+    test('"no more to add" button is pushed and REDIS_removal flag is set to OFF', async () => {
       mockReq.body = {
         noMoreToAdd: 'noMoreToAdd',
       };
-
+      mockIsActiveFeature.mockReturnValue(false);
       await post(mockReq, mockRes, mockNext);
 
       expect(mockRes.redirect).toBeCalledTimes(1);
@@ -286,6 +301,7 @@ describe('Trust Involved controller', () => {
         expect(mockRes.redirect).toBeCalledWith(`${TRUST_ENTRY_URL}/${trustId}${expectedUrl}`);
       },
     );
+
     test.each(dpPostReviewTrustee)(
       'success push with %p type',
       async (typeOfTrustee: string, expectedUrl: string) => {
@@ -389,13 +405,10 @@ describe('Trust Involved controller', () => {
       await post(mockReq, mockRes, mockNext);
 
       expect(mockRes.redirect).not.toBeCalled;
-
       expect(mapCommonTrustDataToPage).toBeCalledTimes(1);
       expect(mapCommonTrustDataToPage).toBeCalledWith(mockAppData, trustId, false);
-
       expect(mapTrustWhoIsInvolvedToPage).toBeCalledTimes(1);
       expect(mapTrustWhoIsInvolvedToPage).toBeCalledWith(mockAppData, trustId, false);
-
       expect(mockRes.render).toBeCalledTimes(1);
       expect(mockRes.render).toBeCalledWith(
         TRUST_INVOLVED_PAGE,
@@ -439,12 +452,13 @@ describe('Trust Involved controller', () => {
   });
 
   describe('POST with url params unit tests', () => {
-    test('no more to add button pushed with url params', async () => {
+
+    test('"no more to add" button is pushed with url params and REDIS_removal flag is set to ON', async () => {
       mockReq.body = {
         noMoreToAdd: 'noMoreToAdd',
       };
 
-      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockIsActiveFeature.mockReturnValue(true);
 
       await post(mockReq, mockRes, mockNext);
 
@@ -524,13 +538,10 @@ describe('Trust Involved controller', () => {
       await post(mockReq, mockRes, mockNext);
 
       expect(mockRes.redirect).not.toBeCalled;
-
       expect(mapCommonTrustDataToPage).toBeCalledTimes(1);
       expect(mapCommonTrustDataToPage).toBeCalledWith(mockAppData, trustId, false);
-
       expect(mapTrustWhoIsInvolvedToPage).toBeCalledTimes(1);
       expect(mapTrustWhoIsInvolvedToPage).toBeCalledWith(mockAppData, trustId, false);
-
       expect(mockRes.render).toBeCalledTimes(1);
       expect(mockRes.render).toBeCalledWith(
         TRUST_INVOLVED_PAGE,
@@ -574,6 +585,7 @@ describe('Trust Involved controller', () => {
   });
 
   describe('Endpoint Access tests with supertest', () => {
+
     beforeEach(() => {
       (authentication as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
       (hasTrustWithIdRegister as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());

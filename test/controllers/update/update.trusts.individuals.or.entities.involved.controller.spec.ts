@@ -8,25 +8,11 @@ jest.mock('../../../src/utils/trust/common.trust.data.mapper');
 jest.mock("../../../src/middleware/navigation/update/has.presenter.middleware");
 jest.mock("../../../src/middleware/navigation/has.trust.middleware");
 
-import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
-import request from 'supertest';
 import { NextFunction } from 'express';
+import request from 'supertest';
 
+import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import app from '../../../src/app';
-import {
-  UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL,
-  UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL,
-  TRUST_INVOLVED_URL,
-  TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL, RELEVANT_PERIOD_QUERY_PARAM
-} from '../../../src/config';
-import { authentication } from '../../../src/middleware/authentication.middleware';
-import { companyAuthentication } from '../../../src/middleware/company.authentication.middleware';
-import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
-import { getApplicationData } from '../../../src/utils/application.data';
-import { isActiveFeature } from '../../../src/utils/feature.flag';
-
-import { APPLICATION_DATA_MOCK, TRUST_WITH_ID } from '../../__mocks__/session.mock';
-import { PAGE_TITLE_ERROR, TRUST_INVOLVED_TITLE, ERROR_LIST, RELEVANT_PERIOD } from '../../__mocks__/text.mock';
 import { mapCommonTrustDataToPage } from '../../../src/utils/trust/common.trust.data.mapper';
 import { RoleWithinTrustType } from "../../../src/model/role.within.trust.type.model";
 import { yesNoResponse } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
@@ -35,39 +21,68 @@ import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/ha
 import { hasTrustWithIdUpdate } from "../../../src/middleware/navigation/has.trust.middleware";
 import * as trusts from "../../../src/utils/trusts";
 import { Trust } from "../../../src/model/trust.model";
+import { authentication } from '../../../src/middleware/authentication.middleware';
+import { companyAuthentication } from '../../../src/middleware/company.authentication.middleware';
+import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
+import { isActiveFeature } from '../../../src/utils/feature.flag';
+
+import { getApplicationData, fetchApplicationData } from '../../../src/utils/application.data';
+
+import {
+  UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL,
+  UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL,
+  TRUST_INVOLVED_URL,
+  TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL, RELEVANT_PERIOD_QUERY_PARAM
+} from '../../../src/config';
+
+import {
+  APPLICATION_DATA_MOCK,
+  TRUST_WITH_ID
+} from '../../__mocks__/session.mock';
+
+import {
+  PAGE_TITLE_ERROR,
+  TRUST_INVOLVED_TITLE,
+  ERROR_LIST,
+  RELEVANT_PERIOD
+} from '../../__mocks__/text.mock';
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockGetApplicationData = getApplicationData as jest.Mock;
-mockGetApplicationData.mockReturnValue( APPLICATION_DATA_MOCK );
+mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
+
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
-mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockCompanyAuthenticationMiddleware = companyAuthentication as jest.Mock;
-mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
-mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
-
 const mockMapCommonTrustDataToPage = mapCommonTrustDataToPage as jest.Mock;
 
 const mockHasUpdatePresenter = hasUpdatePresenter as jest.Mock;
-mockHasUpdatePresenter.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockHasUpdatePresenter.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockHasTrustWithIdUpdate = hasTrustWithIdUpdate as jest.Mock;
-mockHasTrustWithIdUpdate.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockHasTrustWithIdUpdate.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const trustId = TRUST_WITH_ID.trust_id;
 const pageUrl = UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + "/" + trustId + TRUST_INVOLVED_URL;
 
 describe('Update - Trusts - Individuals or entities involved', () => {
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   describe('GET tests', () => {
+
     test('when feature flag is on, page is returned', async () => {
       const mockTrustData = {
         trustName: 'dummy',
@@ -84,10 +99,9 @@ describe('Update - Trusts - Individuals or entities involved', () => {
   });
 
   describe('POST tests', () => {
+
     test('redirects to trusts associated with the entity page', async () => {
-
       const resp = await request(app).post(pageUrl).send({ noMoreToAdd: 'noMoreToAdd' });
-
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL);
     });
@@ -228,7 +242,6 @@ describe('Update - Trusts - Individuals or entities involved', () => {
       expect(resp.text).toContain(ERROR_LIST);
       expect(resp.text).toContain(RELEVANT_PERIOD);
       expect(resp.text).toContain(ErrorMessages.DATE_BEFORE_TRUST_CREATION_DATE_CEASED_TRUSTEE);
-
     });
   });
 });

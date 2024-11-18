@@ -1,11 +1,23 @@
 jest.mock('../../src/utils/feature.flag');
 jest.mock('../../src/service/overseas.entities.service');
+jest.mock("../../src/utils/url");
 
 import { Request } from "express";
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
 
+import { ADDRESS } from "../__mocks__/fields/address.mock";
+import { ServiceAddressKeys } from '../../src/model/address.model';
+import { BeneficialOwnerIndividualKey } from "../../src/model/beneficial.owner.individual.model";
+import { BeneficialOwnerOtherKey } from "../../src/model/beneficial.owner.other.model";
+import { ManagingOfficerCorporateKey } from "../../src/model/managing.officer.corporate.model";
+import { ManagingOfficerKey } from "../../src/model/managing.officer.model";
+import { isActiveFeature } from "../../src/utils/feature.flag";
+import { NatureOfControlType } from "../../src/model/data.types.model";
+import { isRegistrationJourney } from "../../src/utils/url";
+
 import {
   getApplicationData,
+  fetchApplicationData,
   setApplicationData,
   prepareData,
   deleteApplicationData,
@@ -23,8 +35,13 @@ import {
   checkActiveMOExists,
   allManagingOfficers,
   getRemove,
-  setBoNocDataAsArrays
+  setBoNocDataAsArrays,
 } from "../../src/utils/application.data";
+
+import {
+  getOverseasEntity,
+  updateOverseasEntity,
+} from "../../src/service/overseas.entities.service";
 
 import {
   APPLICATION_DATA_UPDATE_BO_MOCK,
@@ -62,6 +79,7 @@ import {
   PARAM_BENEFICIAL_OWNER_OTHER,
   PARAM_MANAGING_OFFICER_CORPORATE,
   PARAM_MANAGING_OFFICER_INDIVIDUAL,
+  REGISTER_AN_OVERSEAS_ENTITY_URL,
 } from "../..//src/config";
 
 import {
@@ -82,21 +100,14 @@ import {
   UpdateKey,
 } from "../../src/model/update.type.model";
 
-import { ADDRESS } from "../__mocks__/fields/address.mock";
-import { ServiceAddressKeys } from '../../src/model/address.model';
-import { BeneficialOwnerIndividualKey } from "../../src/model/beneficial.owner.individual.model";
-import { BeneficialOwnerOtherKey } from "../../src/model/beneficial.owner.other.model";
-import { ManagingOfficerCorporateKey } from "../../src/model/managing.officer.corporate.model";
-import { ManagingOfficerKey } from "../../src/model/managing.officer.model";
-import { isActiveFeature } from "../../src/utils/feature.flag";
-import { NatureOfControlType } from "../../src/model/data.types.model";
-import { getOverseasEntity, updateOverseasEntity } from "../../src/service/overseas.entities.service";
-
 let req: Request;
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetOverseasEntity = getOverseasEntity as jest.Mock;
 const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
+
+const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
+mockIsRegistrationJourney.mockReturnValue(false);
 
 describe("Application data utils", () => {
 
@@ -565,64 +576,97 @@ describe("Application data utils", () => {
     expect(response).toEqual({});
   });
 
-  test("removeFromApplicationData should remove specified object from data", async () => {
-    const session = getSessionRequestWithExtraData();
-    req.session = session;
-    let data = await getApplicationData(session);
-    const boGov = data[BeneficialOwnerGovKey]?.find(boGov => boGov.id === BO_GOV_ID);
-    expect(boGov).not.toBeUndefined();
+  describe("removeFromApplicationData tests", () => {
 
-    await removeFromApplicationData(req, BeneficialOwnerGovKey, BO_GOV_ID);
+    test("should remove specified object from application data stored in session", async () => {
+      const session = getSessionRequestWithExtraData();
+      req.session = session;
+      req.params = {};
+      let data = await fetchApplicationData(req, false);
+      const boGov = data[BeneficialOwnerGovKey]?.find(boGov => boGov.id === BO_GOV_ID);
+      expect(boGov).not.toBeUndefined();
 
-    data = await getApplicationData(session);
-    expect(data[BeneficialOwnerGovKey]?.find(boGov => boGov.id === BO_GOV_ID)).toBeUndefined();
+      await removeFromApplicationData(req, BeneficialOwnerGovKey, BO_GOV_ID);
 
-    // restore the boGov object so other tests don't fail as data does not get reset
-    if (boGov) {
-      data[BeneficialOwnerGovKey]?.push(boGov);
-    }
-    expect(data[BeneficialOwnerGovKey]?.find(boGov => boGov.id === BO_GOV_ID)).not.toBeUndefined();
+      data = await getApplicationData(session);
+      expect(data[BeneficialOwnerGovKey]?.find(boGov => boGov.id === BO_GOV_ID)).toBeUndefined();
+
+      // restore the boGov object so other tests don't fail as data does not get reset
+      if (boGov) {
+        data[BeneficialOwnerGovKey]?.push(boGov);
+      }
+      expect(data[BeneficialOwnerGovKey]?.find(boGov => boGov.id === BO_GOV_ID)).not.toBeUndefined();
+    });
+
+    test("should remove specified object from application data stored in api", async () => {
+      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockIsRegistrationJourney.mockReturnValueOnce(true);
+      mockGetOverseasEntity.mockReturnValue(APPLICATION_DATA_MOCK);
+      const session = getSessionRequestWithExtraData();
+      req.session = session;
+      req.originalUrl = `${REGISTER_AN_OVERSEAS_ENTITY_URL}/transaction/${APPLICATION_DATA_MOCK.transaction_id}/submission/${APPLICATION_DATA_MOCK.overseas_entity_id}`;
+      req.params = {
+        transactionId: APPLICATION_DATA_MOCK.transaction_id, // eslint-disable-line
+        submissionId: APPLICATION_DATA_MOCK.overseas_entity_id, // eslint-disable-line
+      };
+      let data = await fetchApplicationData(req, true);
+      const boGov = data[BeneficialOwnerGovKey]?.find(boGov => boGov.id === BO_GOV_ID);
+      expect(boGov).not.toBeUndefined();
+      await removeFromApplicationData(req, BeneficialOwnerGovKey, BO_GOV_ID);
+      data = await fetchApplicationData(req, true);
+      expect(data[BeneficialOwnerGovKey]?.find(boGov => boGov.id === BO_GOV_ID)).toBeUndefined();
+
+      // restore the boGov object so other tests don't fail as data does not get reset
+      if (boGov) {
+        data[BeneficialOwnerGovKey]?.push(boGov);
+      }
+      expect(data[BeneficialOwnerGovKey]?.find(boGov => boGov.id === BO_GOV_ID)).not.toBeUndefined();
+    });
+
+    test("should throw error when id not found", () => {
+      const session = getSessionRequestWithExtraData();
+      req.session = session;
+      expect(removeFromApplicationData(req, BeneficialOwnerGovKey, "no id")).rejects.toThrow(`${BeneficialOwnerGovKey}`);
+    });
+
   });
 
-  test("removeFromApplicationData should throw error when id not found", () => {
-    const session = getSessionRequestWithExtraData();
-    req.session = session;
-    expect(removeFromApplicationData(req, BeneficialOwnerGovKey, "no id")).rejects.toThrow(`${BeneficialOwnerGovKey}`);
-  });
+  describe("getFromApplicationData tests", () => {
 
-  test("getFromApplicationData should return specified object from data", async () => {
-    const session = getSessionRequestWithExtraData();
-    req.session = session;
-    const boGov: BeneficialOwnerGov = await getFromApplicationData(req, BeneficialOwnerGovKey, BO_GOV_ID);
+    test("should return specified object from data", async () => {
+      const session = getSessionRequestWithExtraData();
+      req.session = session;
+      const boGov: BeneficialOwnerGov = await getFromApplicationData(req, BeneficialOwnerGovKey, BO_GOV_ID);
 
-    expect(boGov).not.toBeUndefined();
-    expect(boGov.id).toEqual(BO_GOV_ID);
-  });
+      expect(boGov).not.toBeUndefined();
+      expect(boGov.id).toEqual(BO_GOV_ID);
+    });
 
-  test("getFromApplicationData should throw error when id not found", () => {
-    const session = getSessionRequestWithExtraData();
-    req.session = session;
-    expect(getFromApplicationData(req, BeneficialOwnerGovKey, "no id")).rejects.toThrow(`${BeneficialOwnerGovKey}`);
-  });
+    test("should throw error when id not found", () => {
+      const session = getSessionRequestWithExtraData();
+      req.session = session;
+      expect(getFromApplicationData(req, BeneficialOwnerGovKey, "no id")).rejects.toThrow(`${BeneficialOwnerGovKey}`);
+    });
 
-  test("getFromApplicationData should throw error when id undefined", () => {
-    const session = getSessionRequestWithExtraData();
-    req.session = session;
-    expect(getFromApplicationData(req, BeneficialOwnerGovKey, undefined as unknown as string)).rejects.toThrow(`${BeneficialOwnerGovKey}`);
-  });
+    test("should throw error when id undefined", () => {
+      const session = getSessionRequestWithExtraData();
+      req.session = session;
+      expect(getFromApplicationData(req, BeneficialOwnerGovKey, undefined as unknown as string)).rejects.toThrow(`${BeneficialOwnerGovKey}`);
+    });
 
-  test("getFromApplicationData should return undefined if error boolean false and id not found", async () => {
-    const session = getSessionRequestWithExtraData();
-    req.session = session;
-    const bo: BeneficialOwnerGov = await getFromApplicationData(req, BeneficialOwnerGovKey, "no id", false);
-    expect(bo).toBeUndefined;
-  });
+    test("should return undefined if error boolean false and id not found", async () => {
+      const session = getSessionRequestWithExtraData();
+      req.session = session;
+      const bo: BeneficialOwnerGov = await getFromApplicationData(req, BeneficialOwnerGovKey, "no id", false);
+      expect(bo).toBeUndefined;
+    });
 
-  test("getFromApplicationData should return undefined if error boolean false and id undefined", async () => {
-    const session = getSessionRequestWithPermission();
-    req.session = session;
-    const bo: BeneficialOwnerGov = await getFromApplicationData(req, BeneficialOwnerGovKey, undefined as unknown as string, false);
-    expect(bo).toBeUndefined;
+    test("should return undefined if error boolean false and id undefined", async () => {
+      const session = getSessionRequestWithPermission();
+      req.session = session;
+      const bo: BeneficialOwnerGov = await getFromApplicationData(req, BeneficialOwnerGovKey, undefined as unknown as string, false);
+      expect(bo).toBeUndefined;
+    });
   });
 
   test.each([

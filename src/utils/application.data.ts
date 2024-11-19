@@ -1,6 +1,18 @@
-import { Session } from '@companieshouse/node-session-handler';
 import { Request } from "express";
+import { Session } from '@companieshouse/node-session-handler';
+import { BeneficialOwnerCorporate } from '@companieshouse/api-sdk-node/dist/services/overseas-entities';
+import { BeneficialOwnerOtherKey } from '../model/beneficial.owner.other.model';
+import { Remove } from 'model/remove.type.model';
+import { isActiveFeature } from "./feature.flag";
+import { isNoChangeJourney } from "./update/no.change.journey";
+import { isRegistrationJourney } from "./url";
+
 import { createAndLogErrorRequest, logger } from './logger';
+import { getOverseasEntity, updateOverseasEntity } from "../service/overseas.entities.service";
+import { BeneficialOwnerGov, BeneficialOwnerGovKey } from '../model/beneficial.owner.gov.model';
+import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from '../model/beneficial.owner.individual.model';
+import { ManagingOfficerCorporate, ManagingOfficerCorporateKey } from '../model/managing.officer.corporate.model';
+import { ManagingOfficerIndividual, ManagingOfficerKey } from '../model/managing.officer.model';
 
 import {
   ID,
@@ -16,19 +28,6 @@ import {
 } from '../model/data.types.model';
 
 import {
-  ApplicationData,
-  APPLICATION_DATA_KEY,
-  ApplicationDataType,
-  ApplicationDataArrayType
-} from "../model";
-
-import { BeneficialOwnerGov, BeneficialOwnerGovKey } from '../model/beneficial.owner.gov.model';
-import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from '../model/beneficial.owner.individual.model';
-import { BeneficialOwnerOtherKey } from '../model/beneficial.owner.other.model';
-import { ManagingOfficerCorporate, ManagingOfficerCorporateKey } from '../model/managing.officer.corporate.model';
-import { ManagingOfficerIndividual, ManagingOfficerKey } from '../model/managing.officer.model';
-
-import {
   PARAM_BENEFICIAL_OWNER_GOV,
   PARAM_BENEFICIAL_OWNER_INDIVIDUAL,
   PARAM_BENEFICIAL_OWNER_OTHER,
@@ -40,11 +39,12 @@ import {
   ROUTE_PARAM_SUBMISSION_ID
 } from '../config';
 
-import { BeneficialOwnerCorporate } from '@companieshouse/api-sdk-node/dist/services/overseas-entities';
-import { Remove } from 'model/remove.type.model';
-import { isActiveFeature } from "./feature.flag";
-import { isNoChangeJourney } from "./update/no.change.journey";
-import { getOverseasEntity, updateOverseasEntity } from "../service/overseas.entities.service";
+import {
+  ApplicationData,
+  APPLICATION_DATA_KEY,
+  ApplicationDataType,
+  ApplicationDataArrayType
+} from "../model";
 
 /**
  * @todo: remove this method after REDIS removal has been implemented for the Update/Remove journeys (ROE-2645)
@@ -241,21 +241,23 @@ export const setBoNocDataAsArrays = (data: ApplicationDataType) => {
 };
 
 export const removeFromApplicationData = async (req: Request, key: string, id: string): Promise<void> => {
-  const appData: ApplicationData = await getApplicationData(req);
+  const isRegistration = isRegistrationJourney(req);
+  const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
   const index = getIndexInApplicationData(req, appData, key, id, true);
   if (index === -1) {
     throw createAndLogErrorRequest(req, `application.data removeFromApplicationData - unable to find object in session data for key ${key} and ID ${id}`);
   }
   appData[key].splice(index, 1);
   setExtraData(req.session, appData);
-  if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+  if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {
     await updateOverseasEntity(req, req.session as Session, appData);
   }
 };
 
 // gets data from ApplicationData. errorIfNotFound boolean indicates whether an error should be thrown if no data found.
 export const getFromApplicationData = async (req: Request, key: string, id: string, errorIfNotFound: boolean = true): Promise<any> => {
-  const appData: ApplicationData = await getApplicationData(req);
+  const isRegistration = isRegistrationJourney(req);
+  const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
   const index = getIndexInApplicationData(req, appData, key, id, errorIfNotFound);
 
   if (index === -1) {

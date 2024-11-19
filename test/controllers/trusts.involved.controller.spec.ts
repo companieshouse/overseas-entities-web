@@ -14,15 +14,14 @@ jest.mock('../../src/utils/feature.flag');
 jest.mock('../../src/utils/url');
 
 import { NextFunction, Request, Response } from "express";
-import { beforeEach, describe, expect, jest, test } from '@jest/globals';
 import { constants } from 'http2';
 import { Params } from 'express-serve-static-core';
 import { Session } from '@companieshouse/node-session-handler';
 
 import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
+import app from "../../src/app";
 import { validationResult } from 'express-validator/src/validation-result';
 import request from "supertest";
-import app from "../../src/app";
 import { authentication } from '../../src/middleware/authentication.middleware';
 import { hasTrustWithIdRegister } from '../../src/middleware/navigation/has.trust.middleware';
 import { ErrorMessages } from '../../src/validation/error.messages';

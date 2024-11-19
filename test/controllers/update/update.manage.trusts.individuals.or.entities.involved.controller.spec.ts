@@ -1,5 +1,3 @@
-import { UpdateKey } from "../../../src/model/update.type.model";
-
 jest.mock('ioredis');
 jest.mock('../../../src/utils/feature.flag' );
 jest.mock('../../../src/utils/application.data');
@@ -9,12 +7,12 @@ jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/save.and.continue');
 
 import { NextFunction } from 'express';
-import { beforeEach, jest, test, describe } from '@jest/globals';
 import request from 'supertest';
 
 import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import app from '../../../src/app';
 
+import { UpdateKey } from "../../../src/model/update.type.model";
 import { authentication } from '../../../src/middleware/authentication.middleware';
 import { companyAuthentication } from '../../../src/middleware/company.authentication.middleware';
 import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';

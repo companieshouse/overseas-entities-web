@@ -1,27 +1,29 @@
 import { NextFunction, Request, Response } from 'express';
+import { Session } from '@companieshouse/node-session-handler';
 import * as config from '../config';
 import { TrusteeType } from '../model/trustee.type.model';
 import { BeneficialOwnerTypeChoice } from '../model/beneficial.owner.type.model';
-import { CommonTrustData, TrustWhoIsInvolved, TrustWhoIsInvolvedForm } from '../model/trust.page.model';
 import { validationResult } from 'express-validator/src/validation-result';
 import { logger } from './logger';
 import { safeRedirect } from './http.ext';
-import { getApplicationData, setExtraData } from './application.data';
 import { checkRelevantPeriod } from './relevant.period';
 import { mapCommonTrustDataToPage } from './trust/common.trust.data.mapper';
 import { mapTrustWhoIsInvolvedToPage } from './trust/who.is.involved.mapper';
-import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
-import { IndividualTrustee, TrustHistoricalBeneficialOwner } from '../model/trust.model';
 import { RoleWithinTrustType } from '../model/role.within.trust.type.model';
-import { getIndividualTrusteesFromTrust, getFormerTrusteesFromTrust } from './trusts';
-import { getTrustInReview, moveTrustOutOfReview } from './update/review_trusts';
 import { saveAndContinue } from './save.and.continue';
-import { Session } from '@companieshouse/node-session-handler';
 import { mapIndividualTrusteeFromSessionToPage } from '../utils/trust/individual.trustee.mapper';
 import { mapFormerTrusteeFromSessionToPage } from '../utils/trust/historical.beneficial.owner.mapper';
 import { isActiveFeature } from './feature.flag';
-import { getUrlWithParamsToPath } from './url';
 import { ApplicationData } from "../model";
+import { updateOverseasEntity } from "../service/overseas.entities.service";
+
+import { getUrlWithParamsToPath, isRegistrationJourney } from './url';
+import { fetchApplicationData, setExtraData } from './application.data';
+import { getTrustInReview, moveTrustOutOfReview } from './update/review_trusts';
+import { getIndividualTrusteesFromTrust, getFormerTrusteesFromTrust } from './trusts';
+import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
+import { IndividualTrustee, TrustHistoricalBeneficialOwner } from '../model/trust.model';
+import { CommonTrustData, TrustWhoIsInvolved, TrustWhoIsInvolvedForm } from '../model/trust.page.model';
 
 export const TRUST_INVOLVED_TEXTS = {
   title: 'Individuals or entities involved in the trust',
@@ -68,7 +70,9 @@ const getPageProperties = async (
   formData?: TrustWhoIsInvolvedForm,
   errors?: FormattedValidationErrors,
 ): Promise<TrustInvolvedPageProperties> => {
-  const appData = await getApplicationData(req.session);
+
+  const isRegistration = isRegistrationJourney(req);
+  const appData = await fetchApplicationData(req, isRegistration);
   let trustId;
   let individualTrusteeData;
   let formerTrusteeData;
@@ -105,13 +109,13 @@ const getPageProperties = async (
       ...mapTrustWhoIsInvolvedToPage(appData, trustId, isReview),
       beneficialOwnerTypeTitle: TRUST_INVOLVED_TEXTS.boTypeTitle,
       trusteeTypeTitle: TRUST_INVOLVED_TEXTS.trusteeTypeTitle,
-      individualTrusteeData: individualTrusteeData,
-      formerTrusteeData: formerTrusteeData,
+      individualTrusteeData,
+      formerTrusteeData,
       trusteeType: TrusteeType,
       checkYourAnswersUrl: getCheckYourAnswersUrl(isUpdate),
       beneficialOwnerUrlDetach: `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_BENEFICIAL_OWNER_DETACH_URL}`,
-      isUpdate: isUpdate,
-      isReview: isReview,
+      isUpdate,
+      isReview,
       isRelevantPeriod: isUpdate ? checkRelevantPeriod(appData) : false,
     },
     formData,
@@ -127,13 +131,17 @@ export const getTrustInvolvedPage = async (
   isUpdate: boolean,
   isReview: boolean
 ): Promise<void> => {
-  try {
-    logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const appData: ApplicationData = await getApplicationData(req.session);
 
+  try {
+
+    logger.debugRequest(req, `${req.method} ${req.route.path}`);
+
+    const isRegistration = isRegistrationJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
     const pageProps = await getPageProperties(req, isUpdate, isReview);
 
     return res.render(pageProps.template, { ...pageProps, ...appData });
+
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);
@@ -147,21 +155,28 @@ export const postTrustInvolvedPage = async (
   isUpdate: boolean,
   isReview: boolean
 ): Promise <void> => {
+
   try {
+
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     if (req.body.noMoreToAdd) {
       if (isReview) {
-        const appData = await getApplicationData(req.session);
+        const session = req.session as Session;
+        const isRegistration = isRegistrationJourney(req);
+        const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
         moveTrustOutOfReview(appData);
         setExtraData(req.session, appData);
-        await saveAndContinue(req, req.session as Session);
+        if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {
+          await updateOverseasEntity(req, session, appData);
+        } else {
+          await saveAndContinue(req, session);
+        }
       }
       return safeRedirect(res, getNextPage(isUpdate, isReview, req));
     }
 
-    //  check on errors
-    const errorList = validationResult(req);
+    const errorList = validationResult(req); // check on errors
 
     if (!errorList.isEmpty()) {
       const pageProps = await getPageProperties(
@@ -171,7 +186,6 @@ export const postTrustInvolvedPage = async (
         req.body,
         formatValidationError(errorList.array()),
       );
-
       return res.render(pageProps.template, pageProps);
     }
 
@@ -228,7 +242,6 @@ export const postTrustInvolvedPage = async (
     return safeRedirect(res, url);
   } catch (error) {
     logger.errorRequest(req, error);
-
     return next(error);
   }
 };

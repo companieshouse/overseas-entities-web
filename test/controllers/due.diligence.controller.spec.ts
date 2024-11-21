@@ -6,9 +6,9 @@ jest.mock('../../src/middleware/navigation/has.presenter.middleware');
 jest.mock('../../src/utils/feature.flag');
 jest.mock('../../src/middleware/service.availability.middleware');
 jest.mock("../../src/utils/url");
+jest.mock('../../src/service/overseas.entities.service');
 
 import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
-import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
 
@@ -16,7 +16,6 @@ import app from "../../src/app";
 
 import { saveAndContinue } from "../../src/utils/save.and.continue";
 import { authentication } from "../../src/middleware/authentication.middleware";
-import { ApplicationDataType } from '../../src/model';
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { hasPresenter } from "../../src/middleware/navigation/has.presenter.middleware";
 import { EMAIL_ADDRESS } from "../__mocks__/session.mock";
@@ -26,7 +25,9 @@ import { DUE_DILIGENCE_WITH_INVALID_CHARACTERS_FIELDS_MOCK } from "../__mocks__/
 import { DateTime } from "luxon";
 import { isActiveFeature } from "../../src/utils/feature.flag";
 import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
+import { updateOverseasEntity } from "../../src/service/overseas.entities.service";
 
+import { APPLICATION_DATA_KEY, ApplicationDataType } from '../../src/model';
 import { isRegistrationJourney, getUrlWithParamsToPath } from "../../src/utils/url";
 import { getApplicationData, setApplicationData, prepareData, fetchApplicationData } from "../../src/utils/application.data";
 
@@ -94,6 +95,8 @@ mockGetUrlWithParamsToPath.mockReturnValue(NEXT_PAGE_URL);
 const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
 mockIsRegistrationJourney.mockReturnValue(true);
 
+const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
+
 describe("DUE_DILIGENCE controller", () => {
 
   beforeEach(() => {
@@ -102,6 +105,7 @@ describe("DUE_DILIGENCE controller", () => {
     mockFetchApplicationData.mockReset();
     mockSetApplicationData.mockReset();
     mockIsActiveFeature.mockReset();
+    mockUpdateOverseasEntity.mockReset();
     process.env.FEATURE_FLAG_ENABLE_REDIS_REMOVAL_27092023 = "false";
   });
 
@@ -253,7 +257,6 @@ describe("DUE_DILIGENCE controller", () => {
       mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK });
 
       const twoMonthOldDate = getTwoMonthOldDate();
-
       const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES };
       dueDiligenceData["identity_date-day"] = twoMonthOldDate.day.toString();
       dueDiligenceData["identity_date-month"] = twoMonthOldDate.month.toString();
@@ -276,7 +279,6 @@ describe("DUE_DILIGENCE controller", () => {
       mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK });
 
       const twoMonthOldDate = getTwoMonthOldDate();
-
       const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK };
       dueDiligenceData["identity_date-day"] = " " + twoMonthOldDate.day.toString() + " ";
       dueDiligenceData["identity_date-month"] = " " + twoMonthOldDate.month.toString() + " ";
@@ -764,6 +766,8 @@ describe("DUE_DILIGENCE controller", () => {
     test(`redirect to ${ENTITY_PAGE} page after a successful post from ${DUE_DILIGENCE_PAGE} page with url params when the REDIS_removal flag is set to ON`, async () => {
       mockIsActiveFeature.mockReturnValue(false); // SERVICE OFFLINE FEATURE FLAG
       mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_KEY);
+      mockUpdateOverseasEntity.mockReturnValue(true);
       mockSetApplicationData.mockReturnValue(true);
       mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK });
 
@@ -782,18 +786,17 @@ describe("DUE_DILIGENCE controller", () => {
       expect(resp.text).toContain(NEXT_PAGE_URL);
       expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
       expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(ENTITY_WITH_PARAMS_URL);
-      expect(mockFetchApplicationData).toHaveBeenCalledTimes(0);
+      expect(mockFetchApplicationData).toHaveBeenCalledTimes(1);
+      expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(0);
-      expect(mockSetApplicationData).toHaveBeenCalledTimes(2);
+      expect(mockSetApplicationData).toHaveBeenCalledTimes(0);
     });
 
     test("renders the next page and no errors are reported if email has leading and trailing spaces", async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-
       mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK });
 
       const twoMonthOldDate = getTwoMonthOldDate();
-
       const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES };
       dueDiligenceData["identity_date-day"] = twoMonthOldDate.day.toString();
       dueDiligenceData["identity_date-month"] = twoMonthOldDate.month.toString();
@@ -814,11 +817,9 @@ describe("DUE_DILIGENCE controller", () => {
 
     test("renders the next page and no errors are reported if identity date has leading and trailing spaces", async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-
       mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK });
 
       const twoMonthOldDate = getTwoMonthOldDate();
-
       const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK };
       dueDiligenceData["identity_date-day"] = " " + twoMonthOldDate.day.toString() + " ";
       dueDiligenceData["identity_date-month"] = " " + twoMonthOldDate.month.toString() + " ";
@@ -1117,7 +1118,6 @@ describe("DUE_DILIGENCE controller", () => {
 
     test("Test email is valid with long email name and address", async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-
       mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK });
       const dueDiligenceData = {
         ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
@@ -1139,7 +1139,6 @@ describe("DUE_DILIGENCE controller", () => {
 
     test("Test email is valid with very long email name and address", async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-
       mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK });
       const dueDiligenceData = {
         ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
@@ -1293,7 +1292,6 @@ describe("DUE_DILIGENCE controller", () => {
       mockSetApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
 
       const twoMonthOldDate = getTwoMonthOldDate();
-
       const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK };
       dueDiligenceData["identity_date-day"] = twoMonthOldDate.day.toString();
       dueDiligenceData["identity_date-month"] = twoMonthOldDate.month.toString();

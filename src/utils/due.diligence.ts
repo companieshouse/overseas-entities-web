@@ -1,11 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import { Session } from "@companieshouse/node-session-handler";
-import { ApplicationData } from "../model";
 import { logger } from "../utils/logger";
+import * as config from "../config";
+import { ApplicationData } from "../model";
 import { isRegistrationJourney } from "./url";
 import { saveAndContinue } from "../utils/save.and.continue";
 import { isActiveFeature } from "./feature.flag";
-import * as config from "../config";
+import { updateOverseasEntity } from "../service/overseas.entities.service";
 
 import { DueDiligenceKey, DueDiligenceKeys } from "../model/due.diligence.model";
 import { IdentityDateKey, IdentityDateKeys } from "../model/date.model";
@@ -66,11 +67,13 @@ export const postDueDiligencePage = async (req: Request, res: Response, next: Ne
     agentData[IdentityDateKey] = mapFieldsToDataObject(req.body, IdentityDateKeys, InputDateKeys);
 
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {
-      await setApplicationData(req, agentData, DueDiligenceKey);
-      await setApplicationData(req, {}, OverseasEntityDueDiligenceKey); // set OverseasEntityDueDiligence object to empty
+      let appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+      appData = Object.assign(appData, { [DueDiligenceKey]: agentData });
+      appData = Object.assign(appData, { [OverseasEntityDueDiligenceKey]: {} }); // set overseasEntityDueDiligence object to empty
+      await updateOverseasEntity(req, session, appData);
     } else {
       await setApplicationData(session, agentData, DueDiligenceKey);
-      await setApplicationData(session, {}, OverseasEntityDueDiligenceKey); // set OverseasEntityDueDiligence object to empty
+      await setApplicationData(session, {}, OverseasEntityDueDiligenceKey); // set overseasEntityDueDiligence object to empty
       await saveAndContinue(req, session);
     }
 

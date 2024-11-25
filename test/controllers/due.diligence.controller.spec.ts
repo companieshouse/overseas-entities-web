@@ -29,7 +29,14 @@ import { updateOverseasEntity } from "../../src/service/overseas.entities.servic
 
 import { APPLICATION_DATA_KEY, ApplicationDataType } from '../../src/model';
 import { isRegistrationJourney, getUrlWithParamsToPath } from "../../src/utils/url";
-import { getApplicationData, setApplicationData, prepareData, fetchApplicationData } from "../../src/utils/application.data";
+
+import {
+  getApplicationData,
+  setApplicationData,
+  prepareData,
+  fetchApplicationData,
+  setExtraData,
+} from "../../src/utils/application.data";
 
 import {
   DUE_DILIGENCE_PAGE,
@@ -96,6 +103,7 @@ const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
 mockIsRegistrationJourney.mockReturnValue(true);
 
 const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
+const mockSetExtraData = setExtraData as jest.Mock;
 
 describe("DUE_DILIGENCE controller", () => {
 
@@ -769,6 +777,7 @@ describe("DUE_DILIGENCE controller", () => {
       mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_KEY);
       mockUpdateOverseasEntity.mockReturnValue(true);
       mockSetApplicationData.mockReturnValue(true);
+      mockSetExtraData.mockReturnValue(true);
       mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK });
 
       const twoMonthOldDate = getTwoMonthOldDate();
@@ -790,6 +799,7 @@ describe("DUE_DILIGENCE controller", () => {
       expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(0);
       expect(mockSetApplicationData).toHaveBeenCalledTimes(0);
+      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 
     test("renders the next page and no errors are reported if email has leading and trailing spaces", async () => {

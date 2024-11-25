@@ -24,6 +24,7 @@ import {
   mapDataObjectToFields,
   mapFieldsToDataObject,
   fetchApplicationData,
+  setExtraData,
 } from "../utils/application.data";
 
 export const getDueDiligence = async (
@@ -74,6 +75,7 @@ export const postDueDiligence = async (req: Request, res: Response, next: NextFu
       appData = Object.assign(appData, { [OverseasEntityDueDiligenceKey]: data });
       appData = Object.assign(appData, { [DueDiligenceKey]: {} }); // set dueDiligence object to empty
       await updateOverseasEntity(req, session, appData);
+      setExtraData(session, appData);
     } else {
       await setApplicationData(session, data, OverseasEntityDueDiligenceKey);
       await setApplicationData(session, {}, DueDiligenceKey); // set dueDiligence object to empty

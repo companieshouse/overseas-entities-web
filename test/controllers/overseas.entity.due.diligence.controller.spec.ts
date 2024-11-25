@@ -26,10 +26,16 @@ import { updateOverseasEntity } from "../../src/service/overseas.entities.servic
 import { OverseasEntityDueDiligenceKey } from '../../src/model/overseas.entity.due.diligence.model';
 import { OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_INVALID_CHARACTERS_FIELDS_MOCK } from "../__mocks__/validation.mock";
 
-import { setApplicationData, prepareData, fetchApplicationData } from "../../src/utils/application.data";
 import { EMPTY_IDENTITY_DATE_REQ_BODY_MOCK, getTwoMonthOldDate } from "../__mocks__/fields/date.mock";
 import { isRegistrationJourney, getUrlWithParamsToPath } from "../../src/utils/url";
 import { APPLICATION_DATA_KEY, ApplicationDataType } from '../../src/model';
+
+import {
+  setApplicationData,
+  prepareData,
+  fetchApplicationData,
+  setExtraData,
+} from "../../src/utils/application.data";
 
 import {
   ENTITY_PAGE,
@@ -96,6 +102,7 @@ const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
 mockGetUrlWithParamsToPath.mockReturnValue(NEXT_PAGE_URL);
 
 const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
+const mockSetExtraData = setExtraData as jest.Mock;
 
 describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
 
@@ -279,6 +286,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
       mockIsActiveFeature.mockReturnValue(true);
       mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_KEY);
       mockUpdateOverseasEntity.mockReturnValue(true);
+      mockSetExtraData.mockReturnValue(true);
       mockSetApplicationData.mockReturnValue(true);
 
       const resp = await request(app)
@@ -290,6 +298,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
       expect(mockFetchApplicationData).toHaveBeenCalledTimes(1);
       expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
       expect(mockSetApplicationData).not.toHaveBeenCalled();
     });
 

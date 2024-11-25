@@ -20,6 +20,7 @@ import {
   prepareData,
   mapDataObjectToFields,
   mapFieldsToDataObject,
+  setExtraData,
 } from "../utils/application.data";
 
 export const getDueDiligencePage = async (
@@ -71,6 +72,7 @@ export const postDueDiligencePage = async (req: Request, res: Response, next: Ne
       appData = Object.assign(appData, { [DueDiligenceKey]: agentData });
       appData = Object.assign(appData, { [OverseasEntityDueDiligenceKey]: {} }); // set overseasEntityDueDiligence object to empty
       await updateOverseasEntity(req, session, appData);
+      setExtraData(session, appData);
     } else {
       await setApplicationData(session, agentData, DueDiligenceKey);
       await setApplicationData(session, {}, OverseasEntityDueDiligenceKey); // set overseasEntityDueDiligence object to empty

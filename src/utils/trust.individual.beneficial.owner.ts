@@ -1,22 +1,23 @@
 import { NextFunction, Request, Response } from 'express';
-import * as config from '../config';
 import { logger } from './logger';
+import * as config from '../config';
 import * as CommonTrustDataMapper from './trust/common.trust.data.mapper';
 import { RoleWithinTrustType } from '../model/role.within.trust.type.model';
-import { getApplicationData, setExtraData } from './application.data';
-import { getTrustByIdFromApp, saveTrustInApp, saveIndividualTrusteeInTrust } from './trusts';
 import * as PageModel from '../model/trust.page.model';
 import { ApplicationData } from '../model';
-import { mapIndividualTrusteeToSession, mapIndividualTrusteeByIdFromSessionToPage } from './trust/individual.trustee.mapper';
 import { safeRedirect } from './http.ext';
-import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
-import { ValidationError, validationResult } from 'express-validator';
 import { Session } from '@companieshouse/node-session-handler';
 import { saveAndContinue } from './save.and.continue';
 import { isActiveFeature } from './feature.flag';
-import { getUrlWithParamsToPath } from './url';
+import { getUrlWithParamsToPath, isRegistrationJourney } from './url';
 import { checkTrustIndividualCeasedDate } from '../validation/async';
 import { checkTrustIndividualBeneficialOwnerStillInvolved } from '../validation/stillInvolved.validation';
+import { ValidationError, validationResult } from 'express-validator';
+import { fetchApplicationData, setExtraData } from './application.data';
+import { getTrustByIdFromApp, saveTrustInApp, saveIndividualTrusteeInTrust } from './trusts';
+import { mapIndividualTrusteeToSession, mapIndividualTrusteeByIdFromSessionToPage } from './trust/individual.trustee.mapper';
+import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
+import { updateOverseasEntity } from "../service/overseas.entities.service";
 
 export const INDIVIDUAL_BO_TEXTS = {
   title: 'Tell us about the individual',
@@ -48,8 +49,9 @@ const getPageProperties = async (
   formData: PageModel.IndividualTrusteesFormCommon,
   errors?: FormattedValidationErrors,
 ): Promise<TrustIndividualBeneificalOwnerPageProperties> => {
-  const appData = await getApplicationData(req.session);
 
+  const isRegistration = isRegistrationJourney(req);
+  const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
   const { templateName, template } = getPageTemplate(isUpdate, req.url);
 
   return {
@@ -78,27 +80,36 @@ const getPagePropertiesRelevantPeriod = async (isRelevantPeriod, req, trustId, i
 };
 
 export const getTrustIndividualBo = async (req: Request, res: Response, next: NextFunction, isUpdate: boolean): Promise<void> => {
+
   try {
+
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
+
     const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
     const trusteeId = req.params[config.ROUTE_PARAM_TRUSTEE_ID];
-    const appData: ApplicationData = await getApplicationData(req.session);
+    const isRegistration = isRegistrationJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
     const isRelevantPeriod = req.query['relevant-period'];
-
     const formData: PageModel.IndividualTrusteesFormCommon = mapIndividualTrusteeByIdFromSessionToPage(
       appData,
       trustId,
       trusteeId
     );
     const pageProps = await getPageProperties(req, trustId, isUpdate, formData);
-    if (isRelevantPeriod) {
-      const pagePropertiesRelevantPeriod = await getPagePropertiesRelevantPeriod(isRelevantPeriod, req, trustId, isUpdate, formData, appData.entity_name);
-      return res.render(pageProps.template, pagePropertiesRelevantPeriod);
-    } else {
+    if (!isRelevantPeriod) {
       if (appData) {
         pageProps.pageData.entity_name = appData.entity_name;
       }
       return res.render(pageProps.template, pageProps);
+    } else {
+      const pagePropertiesRelevantPeriod = await getPagePropertiesRelevantPeriod(
+        isRelevantPeriod,
+        req, trustId,
+        isUpdate,
+        formData,
+        appData.entity_name
+      );
+      return res.render(pageProps.template, pagePropertiesRelevantPeriod);
     }
   } catch (error) {
     logger.errorRequest(req, error);
@@ -107,25 +118,23 @@ export const getTrustIndividualBo = async (req: Request, res: Response, next: Ne
 };
 
 export const postTrustIndividualBo = async (req: Request, res: Response, next: NextFunction, isUpdate: boolean): Promise<void> => {
+
   try {
+
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
+
+    const session = req.session as Session;
+    const isRegistration = isRegistrationJourney(req);
+    let appData: ApplicationData = await fetchApplicationData(req, isRegistration);
     const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
-
-    // convert from data to application (session) object
     const individualTrusteeData = mapIndividualTrusteeToSession(req.body);
-
-    // get trust data from session
-    let appData: ApplicationData = await getApplicationData(req.session);
-
-    // check for errors
     const errorList = validationResult(req);
     const errors = await getValidationErrors(appData, req);
-
     const formData: PageModel.IndividualTrusteesFormCommon = req.body as PageModel.IndividualTrusteesFormCommon;
-    // if no errors present rerender the page
+
+    // if errors are present, rerender the page
     if (!errorList.isEmpty() || errors.length > 0) {
       const errorListArray = !errorList.isEmpty() ? errorList.array() : [];
-
       const pageProps = await getPageProperties(
         req,
         trustId,
@@ -133,31 +142,35 @@ export const postTrustIndividualBo = async (req: Request, res: Response, next: N
         formData,
         formatValidationError([...errorListArray, ...errors]),
       );
-
       const isRelevantPeriod = req.query ? req.query["relevant-period"] === "true" : false;
-      if (isRelevantPeriod || individualTrusteeData.relevant_period) {
-        const pagePropertiesRelevantPeriod = await getPagePropertiesRelevantPeriod(true, req, trustId, isUpdate, formData, appData.entity_name, formatValidationError([...errorListArray, ...errors]));
-        return res.render(pageProps.template, pagePropertiesRelevantPeriod);
-      } else {
+      if (!isRelevantPeriod && !individualTrusteeData?.relevant_period) {
         return res.render(pageProps.template, pageProps);
+      } else {
+        const pagePropertiesRelevantPeriod = await getPagePropertiesRelevantPeriod(
+          true,
+          req,
+          trustId,
+          isUpdate,
+          formData,
+          appData.entity_name,
+          formatValidationError([...errorListArray, ...errors])
+        );
+        return res.render(pageProps.template, pagePropertiesRelevantPeriod);
       }
     }
 
-    const trustUpdate = saveIndividualTrusteeInTrust(
-      getTrustByIdFromApp(appData, trustId),
-      individualTrusteeData
-    );
-
-    //  update trust in application data
+    const trustUpdate = saveIndividualTrusteeInTrust(getTrustByIdFromApp(appData, trustId), individualTrusteeData);
     appData = saveTrustInApp(appData, trustUpdate);
-
-    // save to session
-    const session = req.session as Session;
     setExtraData(session, appData);
 
-    await saveAndContinue(req, session);
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {
+      await updateOverseasEntity(req, session, appData);
+    } else {
+      await saveAndContinue(req, session);
+    }
 
     return safeRedirect(res, getTrustInvolvedUrl(isUpdate, trustId, req));
+
   } catch (error) {
     logger.errorRequest(req, error);
     return next(error);
@@ -196,6 +209,5 @@ const getUrl = (isUpdate: boolean) => {
 const getValidationErrors = async (appData: ApplicationData, req: Request): Promise<ValidationError[]> => {
   const stillInvolvedErrors = checkTrustIndividualBeneficialOwnerStillInvolved(appData, req);
   const ceasedDateErrors = await checkTrustIndividualCeasedDate(appData, req);
-
   return [...stillInvolvedErrors, ...ceasedDateErrors];
 };

@@ -1,17 +1,22 @@
 import { NextFunction, Request, Response } from "express";
 import { Session } from "@companieshouse/node-session-handler";
-import { ApplicationData } from "../model";
 import { logger } from "../utils/logger";
+import * as config from "../config";
+import { ApplicationData } from "../model";
 import { isRegistrationJourney } from "./url";
 import { isActiveFeature } from "./feature.flag";
-import * as config from "../config";
 import { saveAndContinue } from "./save.and.continue";
-
 import { DueDiligenceKey } from "../model/due.diligence.model";
+import { updateOverseasEntity } from "../service/overseas.entities.service";
+
 import { IdentityAddressKey, IdentityAddressKeys } from "../model/address.model";
 import { AddressKeys, InputDateKeys } from "../model/data.types.model";
 import { IdentityDateKey, IdentityDateKeys } from "../model/date.model";
-import { OverseasEntityDueDiligenceKey, OverseasEntityDueDiligenceKeys } from "../model/overseas.entity.due.diligence.model";
+
+import {
+  OverseasEntityDueDiligenceKey,
+  OverseasEntityDueDiligenceKeys
+} from "../model/overseas.entity.due.diligence.model";
 
 import {
   setApplicationData,
@@ -65,11 +70,13 @@ export const postDueDiligence = async (req: Request, res: Response, next: NextFu
     data[IdentityDateKey] = mapFieldsToDataObject(req.body, IdentityDateKeys, InputDateKeys);
 
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {
-      await setApplicationData(req, data, OverseasEntityDueDiligenceKey);
-      await setApplicationData(req, {}, DueDiligenceKey); // set DueDiligence object to empty
+      let appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+      appData = Object.assign(appData, { [OverseasEntityDueDiligenceKey]: data });
+      appData = Object.assign(appData, { [DueDiligenceKey]: {} }); // set dueDiligence object to empty
+      await updateOverseasEntity(req, session, appData);
     } else {
       await setApplicationData(session, data, OverseasEntityDueDiligenceKey);
-      await setApplicationData(session, {}, DueDiligenceKey); // set DueDiligence object to empty
+      await setApplicationData(session, {}, DueDiligenceKey); // set dueDiligence object to empty
       await saveAndContinue(req, session);
     }
 

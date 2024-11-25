@@ -6,9 +6,10 @@ jest.mock('../../src/middleware/navigation/has.presenter.middleware');
 jest.mock('../../src/utils/feature.flag');
 jest.mock('../../src/middleware/service.availability.middleware');
 jest.mock("../../src/utils/url");
+jest.mock('../../src/service/overseas.entities.service');
 
-import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
+import { DateTime } from "luxon";
 import request from "supertest";
 
 import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
@@ -16,19 +17,19 @@ import app from "../../src/app";
 
 import { saveAndContinue } from "../../src/utils/save.and.continue";
 import { authentication } from "../../src/middleware/authentication.middleware";
-import { ApplicationDataType } from '../../src/model';
 import { EMAIL_ADDRESS } from "../__mocks__/session.mock";
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { hasPresenter } from "../../src/middleware/navigation/has.presenter.middleware";
-import { OverseasEntityDueDiligenceKey } from '../../src/model/overseas.entity.due.diligence.model';
-import { DateTime } from "luxon";
-import { OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_INVALID_CHARACTERS_FIELDS_MOCK } from "../__mocks__/validation.mock";
 import { isActiveFeature } from "../../src/utils/feature.flag";
 import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
+import { updateOverseasEntity } from "../../src/service/overseas.entities.service";
+import { OverseasEntityDueDiligenceKey } from '../../src/model/overseas.entity.due.diligence.model';
+import { OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_INVALID_CHARACTERS_FIELDS_MOCK } from "../__mocks__/validation.mock";
 
 import { setApplicationData, prepareData, fetchApplicationData } from "../../src/utils/application.data";
 import { EMPTY_IDENTITY_DATE_REQ_BODY_MOCK, getTwoMonthOldDate } from "../__mocks__/fields/date.mock";
 import { isRegistrationJourney, getUrlWithParamsToPath } from "../../src/utils/url";
+import { APPLICATION_DATA_KEY, ApplicationDataType } from '../../src/model';
 
 import {
   ENTITY_PAGE,
@@ -94,12 +95,15 @@ const NEXT_PAGE_URL = "/NEXT_PAGE";
 const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
 mockGetUrlWithParamsToPath.mockReturnValue(NEXT_PAGE_URL);
 
+const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
+
 describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
     mockSetApplicationData.mockReset();
     mockIsActiveFeature.mockReset();
+    mockUpdateOverseasEntity.mockReset();
     process.env.FEATURE_FLAG_ENABLE_REDIS_REMOVAL_27092023 = "false";
   });
 
@@ -273,6 +277,8 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
 
       mockPrepareData.mockReturnValueOnce(dueDiligenceMock);
       mockIsActiveFeature.mockReturnValue(true);
+      mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_KEY);
+      mockUpdateOverseasEntity.mockReturnValue(true);
       mockSetApplicationData.mockReturnValue(true);
 
       const resp = await request(app)
@@ -281,8 +287,10 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${NEXT_PAGE_URL}`);
+      expect(mockFetchApplicationData).toHaveBeenCalledTimes(1);
+      expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
-      expect(mockSetApplicationData).toHaveBeenCalledTimes(2);
+      expect(mockSetApplicationData).not.toHaveBeenCalled();
     });
 
     test("renders the next page and no errors are reported if email has leading and trailing spaces", async () => {

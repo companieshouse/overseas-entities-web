@@ -82,7 +82,6 @@ const getTrustLandingUrl = (appData: ApplicationData, req?: Request): string => 
 
 const getBeneficialOwnerList = (appData: ApplicationData): BeneficialOwnerItem[] => {
   const bo_list: BeneficialOwnerItem[] = [];
-
   if (appData.beneficial_owners_individual) {
     for (const boi of appData.beneficial_owners_individual) {
       const text: string = boi.first_name + " " + boi.last_name;
@@ -96,7 +95,6 @@ const getBeneficialOwnerList = (appData: ApplicationData): BeneficialOwnerItem[]
       bo_list.push(b);
     }
   }
-
   return bo_list;
 };
 
@@ -148,23 +146,14 @@ const getReviewTrustArray = (appData: ApplicationData): Trust[] => {
  */
 const saveTrustInApp = (appData: ApplicationData, trustToSave: Trust): ApplicationData => {
   const trusts: Trust[] = appData[TrustKey] ?? [];
-
   //  get index of trust in trusts array, if exists
   const trustIndex: number = trusts.findIndex((trust: Trust) => trust.trust_id === trustToSave.trust_id);
-
   if (trustIndex >= 0) {
-    //  update existing trust in array
-    trusts[trustIndex] = trustToSave;
-
+    trusts[trustIndex] = trustToSave; //  update existing trust in array
   } else {
-    // add new trust to array
-    trusts.push(trustToSave);
+    trusts.push(trustToSave); // add new trust to array
   }
-
-  return {
-    ...appData,
-    [TrustKey]: trusts,
-  };
+  return { ...appData, [TrustKey]: trusts, };
 };
 
 const getBoIndividualAssignableToTrust = (
@@ -275,7 +264,6 @@ const getFormerTrustee = (
   if (formerTrustees.length === 0 || trusteeId === undefined) {
     return {} as TrustHistoricalBeneficialOwner;
   }
-
   return formerTrustees.find(trustee => trustee.id === trusteeId) ?? {} as TrustHistoricalBeneficialOwner;
 };
 
@@ -308,7 +296,6 @@ const saveHistoricalBoInTrust = (
     ...(bos ?? []),
     boData,
   ];
-
   return trust;
 };
 
@@ -353,18 +340,15 @@ const saveLegalEntityBoInTrust = (
     ...(legalEntities ?? []),
     legalEntityData,
   ];
-
   return trust;
 };
 
 const saveIndividualTrusteeInTrust = (trust: Trust, trusteeData: IndividualTrustee ): Trust => {
   const trusteeItem = trust.INDIVIDUALS?.filter((trustee) => trustee?.id !== trusteeData?.id);
-
   trust.INDIVIDUALS = [
     ...(trusteeItem ?? []),
     trusteeData
   ];
-
   return trust;
 };
 

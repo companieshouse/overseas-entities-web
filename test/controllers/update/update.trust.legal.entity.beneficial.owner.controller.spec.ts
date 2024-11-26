@@ -12,58 +12,61 @@ jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/utils/feature.flag');
 jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
+jest.mock("../../../src/utils/url");
 
-import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
-import { constants } from "http2";
-import { beforeEach, describe, expect, jest, test } from "@jest/globals";
 import { NextFunction, Request, Response } from "express";
+import { constants } from "http2";
 import { Params } from "express-serve-static-core";
+import request from "supertest";
 import { validationResult } from 'express-validator/src/validation-result';
 import { Session } from "@companieshouse/node-session-handler";
-import request from "supertest";
+
+import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import app from "../../../src/app";
-import {
-  get,
-  post,
-} from "../../../src/controllers/update/update.trusts.legal.entity.beneficial.owner.controller";
+
+import { authentication } from "../../../src/middleware/authentication.middleware";
+import { hasTrustWithIdUpdate } from "../../../src/middleware/navigation/has.trust.middleware";
+import { mapCommonTrustDataToPage } from "../../../src/utils/trust/common.trust.data.mapper";
+import { RoleWithinTrustType } from "../../../src/model/role.within.trust.type.model";
+import { isActiveFeature } from "../../../src/utils/feature.flag";
+import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
+import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
+import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
+import { isRegistrationJourney } from "../../../src/utils/url";
 import { LEGAL_ENTITY_BO_TEXTS } from "../../../src/utils/trust.legal.entity.bo";
+
+import { get, post, } from "../../../src/controllers/update/update.trusts.legal.entity.beneficial.owner.controller";
+import { fetchApplicationData, getApplicationData, setExtraData, } from "../../../src/utils/application.data";
+import { Trust, TrustCorporate, TrustKey } from "../../../src/model/trust.model";
+
 import {
   ANY_MESSAGE_ERROR,
   IMPORTANT_BANNER_TEXT,
   PAGE_TITLE_ERROR,
   TRUSTEE_STILL_INVOLVED_TEXT
 } from "../../__mocks__/text.mock";
-import { authentication } from "../../../src/middleware/authentication.middleware";
-import { hasTrustWithIdUpdate } from "../../../src/middleware/navigation/has.trust.middleware";
+
 import {
   TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL,
   TRUST_INVOLVED_URL,
   UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL,
 } from "../../../src/config";
-import { Trust, TrustCorporate, TrustKey } from "../../../src/model/trust.model";
-import {
-  getApplicationData,
-  setExtraData,
-} from "../../../src/utils/application.data";
+
 import {
   getTrustByIdFromApp,
   saveLegalEntityBoInTrust,
   saveTrustInApp,
 } from "../../../src/utils/trusts";
-import { mapCommonTrustDataToPage } from "../../../src/utils/trust/common.trust.data.mapper";
+
 import {
   mapLegalEntityToSession,
   mapLegalEntityTrusteeByIdFromSessionToPage
 } from "../../../src/utils/trust/legal.entity.beneficial.owner.mapper";
-import { RoleWithinTrustType } from "../../../src/model/role.within.trust.type.model";
-import { isActiveFeature } from "../../../src/utils/feature.flag";
-import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
-import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
-import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 
 const mockAuthentication = (authentication as jest.Mock);
 mockAuthentication.mockImplementation((_, __, next: NextFunction) => next());
@@ -80,7 +83,11 @@ mockHasTrustWithIdUpdate.mockImplementation((_, __, next: NextFunction) => next(
 const mockServiceAvailabilityMiddleware = (serviceAvailabilityMiddleware as jest.Mock);
 mockServiceAvailabilityMiddleware.mockImplementation((_, __, next: NextFunction) => next());
 
+const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
+mockIsRegistrationJourney.mockReturnValue(false);
+
 describe('Trust Legal Entity Beneficial Owner Controller', () => {
+
   const trustId = '99999';
   const pageUrl = UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + "/" + trustId + TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL;
 
@@ -111,7 +118,7 @@ describe('Trust Legal Entity Beneficial Owner Controller', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-
+    mockFetchApplicationData.mockReset();
     mockIsActiveFeature.mockReturnValue(true);
 
     mockAppData = {
@@ -163,12 +170,11 @@ describe('Trust Legal Entity Beneficial Owner Controller', () => {
   });
 
   describe('GET unit tests', () => {
+
     test('catch error when renders the page', async () => {
       const error = new Error(ANY_MESSAGE_ERROR);
-      mockGetApplicationData.mockImplementationOnce(() => { throw error; });
-
+      mockFetchApplicationData.mockImplementation(() => { throw error; });
       await get(mockReq, mockRes, mockNext);
-
       expect(mockNext).toBeCalledTimes(1);
       expect(mockNext).toBeCalledWith(error);
     });
@@ -176,18 +182,18 @@ describe('Trust Legal Entity Beneficial Owner Controller', () => {
     test('execute render outwith the relevant period', () => {
       const error = new Error(ANY_MESSAGE_ERROR);
       (mapLegalEntityToSession as jest.Mock).mockImplementation(() => { throw error; });
-
       get(mockReq, mockRes, mockRelevantPeriodNext);
       expect(mockRelevantPeriodNext).not.toBeCalled();
     });
   });
 
   describe('POST unit tests', () => {
+
     test('Save', async () => {
       const mockBoData = {} as TrustCorporate;
       (mapLegalEntityToSession as jest.Mock).mockReturnValue(mockBoData);
 
-      mockGetApplicationData.mockReturnValue(mockAppData);
+      mockFetchApplicationData.mockReturnValue(mockAppData);
 
       const mockUpdatedTrust = {} as Trust;
       (saveLegalEntityBoInTrust as jest.Mock).mockReturnValue(mockBoData);
@@ -206,16 +212,12 @@ describe('Trust Legal Entity Beneficial Owner Controller', () => {
 
       expect(mapLegalEntityToSession).toBeCalledTimes(1);
       expect(mapLegalEntityToSession).toBeCalledWith(mockReq.body);
-
       expect(getTrustByIdFromApp).toBeCalledTimes(1);
       expect(getTrustByIdFromApp).toBeCalledWith(mockAppData, trustId);
-
       expect(saveLegalEntityBoInTrust).toBeCalledTimes(1);
       expect(saveLegalEntityBoInTrust).toBeCalledWith(mockTrust, mockBoData);
-
       expect(saveTrustInApp).toBeCalledTimes(1);
       expect(saveTrustInApp).toBeCalledWith(mockAppData, mockUpdatedTrust);
-
       expect(setExtraData as jest.Mock).toBeCalledWith(
         mockReq.session,
         mockUpdatedAppData,
@@ -225,27 +227,24 @@ describe('Trust Legal Entity Beneficial Owner Controller', () => {
     test('catch error when renders the page', async () => {
       const error = new Error(ANY_MESSAGE_ERROR);
       (mapLegalEntityToSession as jest.Mock).mockImplementationOnce(() => { throw error; });
-
       await post(mockReq, mockRes, mockNext);
-
       expect(mockNext).toBeCalledTimes(1);
       expect(mockNext).toBeCalledWith(error);
     });
   });
 
   describe('Endpoint Access tests', () => {
+
     test('successfully access GET method and render', async () => {
       (mapCommonTrustDataToPage as jest.Mock).mockReturnValue({ trustName: 'dummyName' });
 
       const resp = await request(app).get(pageUrl);
 
       expect(resp.text).toContain('dummyName');
-
       expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
       expect(resp.text).toContain(LEGAL_ENTITY_BO_TEXTS.title);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(TRUSTEE_STILL_INVOLVED_TEXT);
-
       expect(authentication).toBeCalledTimes(1);
       expect(hasTrustWithIdUpdate).toBeCalledTimes(1);
     });
@@ -258,25 +257,21 @@ describe('Trust Legal Entity Beneficial Owner Controller', () => {
       const resp = await request(app).get(pageUrl + "?relevant-period=true").send({ relevant_period: true });
 
       expect(resp.text).toContain('dummyName');
-
       expect(resp.text).toContain(IMPORTANT_BANNER_TEXT);
       expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
       expect(resp.text).toContain(LEGAL_ENTITY_BO_TEXTS.title);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(TRUSTEE_STILL_INVOLVED_TEXT);
-
       expect(authentication).toBeCalledTimes(1);
       expect(hasTrustWithIdUpdate).toBeCalledTimes(1);
     });
 
     test('successfully access POST method', async () => {
       const resp = await request(app).post(pageUrl).send({});
-
       expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
       expect(resp.header.location).toEqual(
         `${UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL}/${trustId}${TRUST_INVOLVED_URL}`
       );
-
       expect(authentication).toBeCalledTimes(1);
       expect(hasTrustWithIdUpdate).toBeCalledTimes(1);
     });

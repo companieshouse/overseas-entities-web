@@ -77,14 +77,14 @@ const getPageProperties = async (
   };
 };
 
-export const getRelevantPeriodPageProperties = async (
+export const getRelevantPeriodPageProperties = (
   req: Request,
   trustId: string,
   isUpdate: boolean,
   formData?: TrustLegalEntityForm,
   errors?: FormattedValidationErrors,
 ): Promise<TrustLegalEntityBeneficialOwnerPageProperties> => {
-  return await getPageProperties(req, trustId, isUpdate, formData, errors);
+  return getPageProperties(req, trustId, isUpdate, formData, errors);
 };
 
 export const getTrustLegalEntityBo = async (req: Request, res: Response, next: NextFunction, isUpdate: boolean): Promise<void> => {

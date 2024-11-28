@@ -6,19 +6,48 @@ jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/middleware/service.availability.middleware');
 jest.mock('../../src/middleware/navigation/has.beneficial.owners.or.managing.officers.middleware');
 jest.mock('../../src/utils/application.data');
-jest.mock("../../src/utils/feature.flag" );
+jest.mock("../../src/utils/feature.flag");
 jest.mock('../../src/middleware/service.availability.middleware');
 jest.mock("../../src/utils/url");
+
+import { NextFunction, Request, Response } from "express";
+import request from "supertest";
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
 import mockJourneyDetectionMiddleware from "../__mocks__/journey.detection.middleware.mock";
 import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
-
-import { NextFunction, Request, Response } from "express";
-import { describe, expect, jest, test, beforeEach } from "@jest/globals";
-import request from "supertest";
-
 import app from "../../src/app";
+
+import { authentication } from "../../src/middleware/authentication.middleware";
+import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
+import { startPaymentsSession } from "../../src/service/payment.service";
+import { closeTransaction } from "../../src/service/transaction.service";
+import { updateOverseasEntity } from "../../src/service/overseas.entities.service";
+import { hasBOsOrMOs } from "../../src/middleware/navigation/has.beneficial.owners.or.managing.officers.middleware";
+import { DUE_DILIGENCE_OBJECT_MOCK } from "../__mocks__/due.diligence.mock";
+import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from "../__mocks__/overseas.entity.due.diligence.mock";
+import { BeneficialOwnerIndividualKey } from "../../src/model/beneficial.owner.individual.model";
+import { BeneficialOwnerOtherKey } from "../../src/model/beneficial.owner.other.model";
+import { BeneficialOwnerGovKey } from "../../src/model/beneficial.owner.gov.model";
+import { ManagingOfficerKey } from "../../src/model/managing.officer.model";
+import { TrustKey } from "../../src/model/trust.model";
+import { isActiveFeature } from "../../src/utils/feature.flag";
+import { getUrlWithParamsToPath } from "../../src/utils/url";
+import * as CHANGE_LINKS from "../../src/config";
+import { stringCount } from "../utils/test.utils";
+import { fetchApplicationData } from "../../src/utils/application.data";
+
+import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../src/model/who.is.making.filing.model";
+import { NatureOfControlJurisdiction, NatureOfControlType } from "../../src/model/data.types.model";
+
+import {
+  beneficialOwnerGovType,
+  beneficialOwnerIndividualType,
+  beneficialOwnerOtherType,
+  dueDiligenceType,
+  entityType,
+  overseasEntityDueDiligenceType
+} from "../../src/model";
 
 import {
   BENEFICIAL_OWNER_GOV_URL,
@@ -36,8 +65,6 @@ import {
   TRUST_DETAILS_URL,
   CHECK_YOUR_ANSWERS_WITH_PARAMS_URL
 } from "../../src/config";
-
-import * as CHANGE_LINKS from "../../src/config";
 
 import {
   AGENT_REGISTERING,
@@ -101,6 +128,7 @@ import {
   BO_NOC_JURISDICTION_SCOTLAND,
   BO_NOC_JURISDICTION_NORTHERN_IRELAND
 } from "../__mocks__/text.mock";
+
 import {
   ERROR,
   APPLICATION_DATA_MOCK,
@@ -124,51 +152,30 @@ import {
   BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
 } from "../__mocks__/session.mock";
 
-import { authentication } from "../../src/middleware/authentication.middleware";
-import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
-import { startPaymentsSession } from "../../src/service/payment.service";
-import { getApplicationData } from "../../src/utils/application.data";
-import { closeTransaction } from "../../src/service/transaction.service";
-import { updateOverseasEntity } from "../../src/service/overseas.entities.service";
-
-import { beneficialOwnerGovType, beneficialOwnerIndividualType, beneficialOwnerOtherType, dueDiligenceType, entityType, overseasEntityDueDiligenceType } from "../../src/model";
-import { hasBOsOrMOs } from "../../src/middleware/navigation/has.beneficial.owners.or.managing.officers.middleware";
-import { DUE_DILIGENCE_OBJECT_MOCK } from "../__mocks__/due.diligence.mock";
-import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from "../__mocks__/overseas.entity.due.diligence.mock";
-import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../src/model/who.is.making.filing.model";
-import { BeneficialOwnerIndividualKey } from "../../src/model/beneficial.owner.individual.model";
-import { BeneficialOwnerOtherKey } from "../../src/model/beneficial.owner.other.model";
-import { BeneficialOwnerGovKey } from "../../src/model/beneficial.owner.gov.model";
-import { ManagingOfficerKey } from "../../src/model/managing.officer.model";
-import { TrustKey } from "../../src/model/trust.model";
-import { isActiveFeature } from "../../src/utils/feature.flag";
-import { getUrlWithParamsToPath } from "../../src/utils/url";
-import { NatureOfControlJurisdiction, NatureOfControlType } from "../../src/model/data.types.model";
-import { stringCount } from "../utils/test.utils";
-
 mockCsrfProtectionMiddleware.mockClear();
 mockJourneyDetectionMiddleware.mockClear();
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
-mockIsActiveFeature.mockReturnValue( false );
+mockIsActiveFeature.mockReturnValue(false);
 
 const mockHasBOsOrMOsMiddleware = hasBOsOrMOs as jest.Mock;
-mockHasBOsOrMOsMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockHasBOsOrMOsMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
-const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+
 const mockAuthenticationMiddleware = authentication as jest.Mock;
-mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
-mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockCloseTransaction = closeTransaction as jest.Mock;
-mockCloseTransaction.mockReturnValue( TRANSACTION_CLOSED_RESPONSE );
+mockCloseTransaction.mockReturnValue(TRANSACTION_CLOSED_RESPONSE);
 
 const mockPaymentsSession = startPaymentsSession as jest.Mock;
-mockPaymentsSession.mockReturnValue( CONFIRMATION_URL );
+mockPaymentsSession.mockReturnValue(CONFIRMATION_URL);
 
 const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
 const MOCKED_URL = "MOCKED_URL";
@@ -182,7 +189,7 @@ describe("GET tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including presenter details`, async () => {
-    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+    mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
     expect(resp.status).toEqual(200);
@@ -206,9 +213,8 @@ describe("GET tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including print button`, async () => {
-    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+    mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
-
     expect(resp.status).toEqual(200);
     expect(resp.text).toContain(LANDING_PAGE_URL);
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TITLE);
@@ -216,7 +222,7 @@ describe("GET tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including change links`, async () => {
-    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+    mockFetchApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
     expect(resp.status).toEqual(200);
@@ -246,7 +252,7 @@ describe("GET tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including change links BO Individual no second nationality`, async () => {
-    mockGetApplicationData.mockReturnValueOnce({
+    mockFetchApplicationData.mockReturnValueOnce({
       ...APPLICATION_DATA_MOCK,
       [BeneficialOwnerGovKey]: [],
       [BeneficialOwnerOtherKey]: []
@@ -279,7 +285,7 @@ describe("GET tests", () => {
     const boIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK };
     boIndividual.second_nationality = "Swedish";
 
-    mockGetApplicationData.mockReturnValueOnce({
+    mockFetchApplicationData.mockReturnValueOnce({
       ...APPLICATION_DATA_MOCK,
       [BeneficialOwnerIndividualKey]: [ boIndividual ],
       [BeneficialOwnerGovKey]: [],
@@ -310,7 +316,7 @@ describe("GET tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including change links BO Other legal entity`, async () => {
-    mockGetApplicationData.mockReturnValueOnce({
+    mockFetchApplicationData.mockReturnValueOnce({
       ...APPLICATION_DATA_MOCK,
       [BeneficialOwnerIndividualKey]: [],
       [BeneficialOwnerGovKey]: []
@@ -329,7 +335,7 @@ describe("GET tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including change links BO Gov`, async () => {
-    mockGetApplicationData.mockReturnValueOnce({
+    mockFetchApplicationData.mockReturnValueOnce({
       ...APPLICATION_DATA_MOCK,
       [BeneficialOwnerIndividualKey]: [],
       [BeneficialOwnerOtherKey]: []
@@ -349,9 +355,7 @@ describe("GET tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including change links MO Individual no second nationality`, async () => {
-    mockGetApplicationData.mockReturnValueOnce({
-      ...APPLICATION_DATA_MOCK
-    });
+    mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
     expect(resp.status).toEqual(200);
@@ -370,7 +374,7 @@ describe("GET tests", () => {
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including change links MO Individual with second nationality`, async () => {
     const moIndividual = { ...MANAGING_OFFICER_OBJECT_MOCK };
     moIndividual.second_nationality = "Swedish";
-    mockGetApplicationData.mockReturnValueOnce({
+    mockFetchApplicationData.mockReturnValueOnce({
       ...APPLICATION_DATA_MOCK,
       [ManagingOfficerKey]: [moIndividual]
     });
@@ -390,9 +394,7 @@ describe("GET tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including change links MO Corporate`, async () => {
-    mockGetApplicationData.mockReturnValueOnce({
-      ...APPLICATION_DATA_MOCK
-    });
+    mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
     expect(resp.status).toEqual(200);
@@ -410,14 +412,13 @@ describe("GET tests", () => {
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with someone else change links when this is selected`, async () => {
     const applicationData = { ...APPLICATION_DATA_MOCK };
     applicationData[WhoIsRegisteringKey] = WhoIsRegisteringType.SOMEONE_ELSE;
-    mockGetApplicationData.mockReturnValueOnce(applicationData);
+    mockFetchApplicationData.mockReturnValueOnce(applicationData);
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
     expect(resp.status).toEqual(200);
     expect(resp.text).toContain(LANDING_PAGE_URL);
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TITLE);
     expect(resp.text).toContain(CHANGE_LINK);
-
     expect(resp.text).toContain(CHANGE_LINKS.ENTITY_CHANGE_PUBLIC_REGISTER);
     expect(resp.text).toContain(CHANGE_LINKS.DUE_DILIGENCE_CHANGE_WHO);
     expect(resp.text).toContain(CHANGE_LINKS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_DATE);
@@ -430,7 +431,7 @@ describe("GET tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including identity checks - Agent (The UK-regulated agent) selected`, async () => {
-    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+    mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
     expect(resp.status).toEqual(200);
@@ -446,7 +447,7 @@ describe("GET tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including identity checks - OE (Someone else) selected`, async () => {
-    mockGetApplicationData.mockReturnValueOnce({
+    mockFetchApplicationData.mockReturnValueOnce({
       ...APPLICATION_DATA_MOCK,
       [dueDiligenceType.DueDiligenceKey]: {},
       [overseasEntityDueDiligenceType.OverseasEntityDueDiligenceKey]: OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK,
@@ -466,7 +467,7 @@ describe("GET tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page (entity service address not same as principal address)`, async () => {
-    mockGetApplicationData.mockReturnValueOnce({
+    mockFetchApplicationData.mockReturnValueOnce({
       ...APPLICATION_DATA_MOCK,
       [entityType.EntityKey]: ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS
     });
@@ -484,7 +485,7 @@ describe("GET tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page (entity service address same as principal address)`, async () => {
-    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+    mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
@@ -502,7 +503,7 @@ describe("GET tests", () => {
     mockIsActiveFeature.mockReturnValueOnce(false);
     mockIsActiveFeature.mockReturnValueOnce(false);
 
-    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+    mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
@@ -530,7 +531,7 @@ describe("GET tests", () => {
       ]
     };
 
-    mockGetApplicationData.mockReturnValueOnce(mockAppData);
+    mockFetchApplicationData.mockReturnValueOnce(mockAppData);
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
@@ -547,17 +548,15 @@ describe("GET tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with no trust data`, async () => {
-    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_NO_TRUSTS_MOCK });
-
+    mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_NO_TRUSTS_MOCK });
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
-
     expect(resp.status).toEqual(200);
     expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_LINK); // continue button
     expect(resp.text).not.toContain(TRUST_INFORMATION_LINK); // back button
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with empty trust data`, async () => {
-    mockGetApplicationData.mockReturnValueOnce({
+    mockFetchApplicationData.mockReturnValueOnce({
       ...APPLICATION_DATA_NO_TRUSTS_MOCK,
       [TrustKey]: []
     });
@@ -572,7 +571,7 @@ describe("GET tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE}`, async () => {
-    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+    mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
@@ -635,11 +634,8 @@ describe("GET tests", () => {
   });
 
   test("catch error when getting data", async () => {
-    mockGetApplicationData.mockImplementationOnce(() => {
-      throw ERROR;
-    });
+    mockFetchApplicationData.mockImplementationOnce(() => { throw ERROR; });
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
-
     expect(resp.status).toEqual(500);
     expect(resp.text).toContain(SERVICE_UNAVAILABLE);
   });
@@ -647,7 +643,7 @@ describe("GET tests", () => {
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with identity check by uk agent`, async () => {
     const applicationDataWithSomeoneElse = { ...APPLICATION_DATA_MOCK };
     applicationDataWithSomeoneElse[WhoIsRegisteringKey] = WhoIsRegisteringType.AGENT;
-    mockGetApplicationData.mockReturnValueOnce(applicationDataWithSomeoneElse);
+    mockFetchApplicationData.mockReturnValueOnce(applicationDataWithSomeoneElse);
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
@@ -658,7 +654,7 @@ describe("GET tests", () => {
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with identity check by someone else`, async () => {
     const applicationDataWithSomeoneElse = { ...APPLICATION_DATA_MOCK };
     applicationDataWithSomeoneElse[WhoIsRegisteringKey] = WhoIsRegisteringType.SOMEONE_ELSE;
-    mockGetApplicationData.mockReturnValueOnce(applicationDataWithSomeoneElse);
+    mockFetchApplicationData.mockReturnValueOnce(applicationDataWithSomeoneElse);
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
@@ -669,7 +665,7 @@ describe("GET tests", () => {
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with all three public register fields`, async () => {
     const applicationDataWithSomeoneElse = { ...APPLICATION_DATA_MOCK };
     applicationDataWithSomeoneElse[WhoIsRegisteringKey] = WhoIsRegisteringType.SOMEONE_ELSE;
-    mockGetApplicationData.mockReturnValueOnce(applicationDataWithSomeoneElse);
+    mockFetchApplicationData.mockReturnValueOnce(applicationDataWithSomeoneElse);
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
     expect(resp.status).toEqual(200);
@@ -681,7 +677,7 @@ describe("GET tests", () => {
     [CHECK_YOUR_ANSWERS_URL],
     [CHECK_YOUR_ANSWERS_WITH_PARAMS_URL]
   ])(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with correct Beneficial Owner natures of control using url and the flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC off, %s`, async (url) => {
-    mockGetApplicationData.mockReturnValueOnce({
+    mockFetchApplicationData.mockReturnValueOnce({
       ...APPLICATION_DATA_MOCK,
       [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [
         {
@@ -763,7 +759,7 @@ describe("GET tests", () => {
   ])(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with correct Beneficial Owner natures of control using url and the flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC on, %s`, async (url) => {
     mockIsActiveFeature.mockReturnValue(true);
 
-    mockGetApplicationData.mockReturnValueOnce({
+    mockFetchApplicationData.mockReturnValueOnce({
       ...APPLICATION_DATA_MOCK,
       [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [
         {
@@ -849,7 +845,7 @@ describe("GET with url params tests tests", () => {
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including presenter details`, async () => {
     mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+    mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
 
     expect(resp.status).toEqual(200);
@@ -874,7 +870,7 @@ describe("GET with url params tests tests", () => {
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including print button`, async () => {
     mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+    mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
 
     expect(resp.status).toEqual(200);
@@ -885,7 +881,7 @@ describe("GET with url params tests tests", () => {
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including change links`, async () => {
     mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+    mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
 
     expect(resp.status).toEqual(200);
@@ -915,7 +911,7 @@ describe("GET with url params tests tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including change links BO Individual no second nationality`, async () => {
-    mockGetApplicationData.mockReturnValueOnce({
+    mockFetchApplicationData.mockReturnValueOnce({
       ...APPLICATION_DATA_MOCK,
       [BeneficialOwnerGovKey]: [],
       [BeneficialOwnerOtherKey]: []
@@ -948,7 +944,7 @@ describe("GET with url params tests tests", () => {
     const boIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK };
     boIndividual.second_nationality = "Swedish";
 
-    mockGetApplicationData.mockReturnValueOnce({
+    mockFetchApplicationData.mockReturnValueOnce({
       ...APPLICATION_DATA_MOCK,
       [BeneficialOwnerIndividualKey]: [ boIndividual ],
       [BeneficialOwnerGovKey]: [],
@@ -979,7 +975,7 @@ describe("GET with url params tests tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including change links BO Other legal entity`, async () => {
-    mockGetApplicationData.mockReturnValueOnce({
+    mockFetchApplicationData.mockReturnValueOnce({
       ...APPLICATION_DATA_MOCK,
       [BeneficialOwnerIndividualKey]: [],
       [BeneficialOwnerGovKey]: []
@@ -998,7 +994,7 @@ describe("GET with url params tests tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including change links BO Gov`, async () => {
-    mockGetApplicationData.mockReturnValueOnce({
+    mockFetchApplicationData.mockReturnValueOnce({
       ...APPLICATION_DATA_MOCK,
       [BeneficialOwnerIndividualKey]: [],
       [BeneficialOwnerOtherKey]: []
@@ -1018,7 +1014,7 @@ describe("GET with url params tests tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including change links MO Individual no second nationality`, async () => {
-    mockGetApplicationData.mockReturnValueOnce({
+    mockFetchApplicationData.mockReturnValueOnce({
       ...APPLICATION_DATA_MOCK
     });
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
@@ -1039,7 +1035,7 @@ describe("GET with url params tests tests", () => {
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including change links MO Individual with second nationality`, async () => {
     const moIndividual = { ...MANAGING_OFFICER_OBJECT_MOCK };
     moIndividual.second_nationality = "Swedish";
-    mockGetApplicationData.mockReturnValueOnce({
+    mockFetchApplicationData.mockReturnValueOnce({
       ...APPLICATION_DATA_MOCK,
       [ManagingOfficerKey]: [moIndividual]
     });
@@ -1059,7 +1055,7 @@ describe("GET with url params tests tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including change links MO Corporate`, async () => {
-    mockGetApplicationData.mockReturnValueOnce({
+    mockFetchApplicationData.mockReturnValueOnce({
       ...APPLICATION_DATA_MOCK
     });
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
@@ -1079,14 +1075,13 @@ describe("GET with url params tests tests", () => {
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with someone else change links when this is selected`, async () => {
     const applicationData = { ...APPLICATION_DATA_MOCK };
     applicationData[WhoIsRegisteringKey] = WhoIsRegisteringType.SOMEONE_ELSE;
-    mockGetApplicationData.mockReturnValueOnce(applicationData);
+    mockFetchApplicationData.mockReturnValueOnce(applicationData);
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
 
     expect(resp.status).toEqual(200);
     expect(resp.text).toContain(LANDING_PAGE_URL);
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TITLE);
     expect(resp.text).toContain(CHANGE_LINK);
-
     expect(resp.text).toContain(CHANGE_LINKS.ENTITY_CHANGE_PUBLIC_REGISTER);
     expect(resp.text).toContain(CHANGE_LINKS.DUE_DILIGENCE_CHANGE_WHO);
     expect(resp.text).toContain(CHANGE_LINKS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_DATE);
@@ -1099,7 +1094,7 @@ describe("GET with url params tests tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including identity checks - Agent (The UK-regulated agent) selected`, async () => {
-    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+    mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
 
     expect(resp.status).toEqual(200);
@@ -1115,7 +1110,7 @@ describe("GET with url params tests tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including identity checks - OE (Someone else) selected`, async () => {
-    mockGetApplicationData.mockReturnValueOnce({
+    mockFetchApplicationData.mockReturnValueOnce({
       ...APPLICATION_DATA_MOCK,
       [dueDiligenceType.DueDiligenceKey]: {},
       [overseasEntityDueDiligenceType.OverseasEntityDueDiligenceKey]: OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK,
@@ -1135,7 +1130,7 @@ describe("GET with url params tests tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page (entity service address not same as principal address)`, async () => {
-    mockGetApplicationData.mockReturnValueOnce({
+    mockFetchApplicationData.mockReturnValueOnce({
       ...APPLICATION_DATA_MOCK,
       [entityType.EntityKey]: ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS
     });
@@ -1153,7 +1148,7 @@ describe("GET with url params tests tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page (entity service address same as principal address)`, async () => {
-    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+    mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
 
@@ -1164,8 +1159,7 @@ describe("GET with url params tests tests", () => {
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with trust data and feature flag off`, async () => {
     mockIsActiveFeature.mockReturnValue(false); // FEATURE_FLAG_ENABLE_TRUSTS_WEB flag
-
-    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+    mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
 
@@ -1191,7 +1185,7 @@ describe("GET with url params tests tests", () => {
       ]
     };
 
-    mockGetApplicationData.mockReturnValueOnce(mockAppData);
+    mockFetchApplicationData.mockReturnValueOnce(mockAppData);
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
     expect(resp.status).toEqual(200);
@@ -1206,7 +1200,7 @@ describe("GET with url params tests tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with no trust data`, async () => {
-    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_NO_TRUSTS_MOCK });
+    mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_NO_TRUSTS_MOCK });
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
 
@@ -1216,7 +1210,7 @@ describe("GET with url params tests tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with empty trust data`, async () => {
-    mockGetApplicationData.mockReturnValueOnce({
+    mockFetchApplicationData.mockReturnValueOnce({
       ...APPLICATION_DATA_NO_TRUSTS_MOCK,
       [TrustKey]: []
     });
@@ -1230,7 +1224,7 @@ describe("GET with url params tests tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE}`, async () => {
-    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+    mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
 
@@ -1293,11 +1287,8 @@ describe("GET with url params tests tests", () => {
   });
 
   test("catch error when getting data", async () => {
-    mockGetApplicationData.mockImplementationOnce(() => {
-      throw ERROR;
-    });
+    mockFetchApplicationData.mockImplementationOnce(() => { throw ERROR; });
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
-
     expect(resp.status).toEqual(500);
     expect(resp.text).toContain(SERVICE_UNAVAILABLE);
   });
@@ -1305,7 +1296,7 @@ describe("GET with url params tests tests", () => {
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with identity check by uk agent`, async () => {
     const applicationDataWithSomeoneElse = { ...APPLICATION_DATA_MOCK };
     applicationDataWithSomeoneElse[WhoIsRegisteringKey] = WhoIsRegisteringType.AGENT;
-    mockGetApplicationData.mockReturnValueOnce(applicationDataWithSomeoneElse);
+    mockFetchApplicationData.mockReturnValueOnce(applicationDataWithSomeoneElse);
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
 
@@ -1316,7 +1307,7 @@ describe("GET with url params tests tests", () => {
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with identity check by someone else`, async () => {
     const applicationDataWithSomeoneElse = { ...APPLICATION_DATA_MOCK };
     applicationDataWithSomeoneElse[WhoIsRegisteringKey] = WhoIsRegisteringType.SOMEONE_ELSE;
-    mockGetApplicationData.mockReturnValueOnce(applicationDataWithSomeoneElse);
+    mockFetchApplicationData.mockReturnValueOnce(applicationDataWithSomeoneElse);
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
 
@@ -1327,7 +1318,7 @@ describe("GET with url params tests tests", () => {
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with all three public register fields`, async () => {
     const applicationDataWithSomeoneElse = { ...APPLICATION_DATA_MOCK };
     applicationDataWithSomeoneElse[WhoIsRegisteringKey] = WhoIsRegisteringType.SOMEONE_ELSE;
-    mockGetApplicationData.mockReturnValueOnce(applicationDataWithSomeoneElse);
+    mockFetchApplicationData.mockReturnValueOnce(applicationDataWithSomeoneElse);
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
     expect(resp.status).toEqual(200);
@@ -1343,15 +1334,14 @@ describe("POST tests", () => {
   });
 
   test(`redirect the ${CONFIRMATION_PAGE} page after fetching transaction and OE id from appData`, async () => {
-    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+    mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
     const resp = await request(app).post(CHECK_YOUR_ANSWERS_URL);
-
     expect(resp.status).toEqual(302);
     expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${CONFIRMATION_URL}`);
   });
 
   test(`redirect to ${PAYMENT_LINK_JOURNEY}, the first Payment web journey page, after fetching transaction and OE id from appData`, async () => {
-    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+    mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
     mockPaymentsSession.mockReturnValueOnce(PAYMENT_LINK_JOURNEY);
     const resp = await request(app).post(CHECK_YOUR_ANSWERS_URL);
 
@@ -1363,11 +1353,8 @@ describe("POST tests", () => {
   });
 
   test(`catch error when post data from ${CHECK_YOUR_ANSWERS_PAGE} page`, async () => {
-    mockGetApplicationData.mockImplementation(() => {
-      throw ERROR;
-    });
+    mockFetchApplicationData.mockImplementation(() => { throw ERROR; });
     const resp = await request(app).post(CHECK_YOUR_ANSWERS_URL);
-
     expect(resp.status).toEqual(500);
     expect(resp.text).toContain(SERVICE_UNAVAILABLE);
   });
@@ -1380,15 +1367,14 @@ describe("POST with url param tests", () => {
   });
 
   test(`redirect the ${CONFIRMATION_PAGE} page after fetching transaction and OE id from appData`, async () => {
-    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+    mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
     const resp = await request(app).post(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
-
     expect(resp.status).toEqual(302);
     expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${CONFIRMATION_URL}`);
   });
 
   test(`redirect to ${PAYMENT_LINK_JOURNEY}, the first Payment web journey page, after fetching transaction and OE id from appData`, async () => {
-    mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+    mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
     mockPaymentsSession.mockReturnValueOnce(PAYMENT_LINK_JOURNEY);
     const resp = await request(app).post(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
 
@@ -1400,11 +1386,8 @@ describe("POST with url param tests", () => {
   });
 
   test(`catch error when post data from ${CHECK_YOUR_ANSWERS_PAGE} page`, async () => {
-    mockGetApplicationData.mockImplementation(() => {
-      throw ERROR;
-    });
+    mockFetchApplicationData.mockImplementation(() => { throw ERROR; });
     const resp = await request(app).post(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
-
     expect(resp.status).toEqual(500);
     expect(resp.text).toContain(SERVICE_UNAVAILABLE);
   });

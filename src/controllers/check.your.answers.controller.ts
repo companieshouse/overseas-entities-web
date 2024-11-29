@@ -1,26 +1,27 @@
-import { Session } from "@companieshouse/node-session-handler";
 import { NextFunction, Request, Response } from "express";
-
+import { Session } from "@companieshouse/node-session-handler";
+import { logger } from "../utils/logger";
+import * as config from "../config";
 import { updateOverseasEntity } from "../service/overseas.entities.service";
 import { closeTransaction } from "../service/transaction.service";
-
-import * as config from "../config";
 import { isActiveFeature } from "../utils/feature.flag";
-import { logger } from "../utils/logger";
-import { checkEntityRequiresTrusts, getTrustLandingUrl } from "../utils/trusts";
 import { ApplicationData } from "../model";
-import { getApplicationData } from "../utils/application.data";
 import { startPaymentsSession } from "../service/payment.service";
-import { OverseasEntityKey, Transactionkey } from "../model/data.types.model";
 import { RoleWithinTrustType } from "../model/role.within.trust.type.model";
-import { getUrlWithParamsToPath } from "../utils/url";
+import { fetchApplicationData } from "../utils/application.data";
+
+import { getUrlWithParamsToPath, isRegistrationJourney } from "../utils/url";
+import { checkEntityRequiresTrusts, getTrustLandingUrl } from "../utils/trusts";
+import { OverseasEntityKey, Transactionkey } from "../model/data.types.model";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
+
   try {
+
     logger.debugRequest(req, `GET ${config.CHECK_YOUR_ANSWERS_PAGE}`);
 
-    const appData: ApplicationData = await getApplicationData(req.session);
-
+    const isRegistration = isRegistrationJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
     const requiresTrusts: boolean = checkEntityRequiresTrusts(appData);
     const changeLinkUrl: string = config.ENTITY_URL;
     const overseasEntityHeading: string = config.OVERSEAS_ENTITY_SECTION_HEADING;
@@ -64,23 +65,24 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
+
   try {
+
     logger.debugRequest(req, `POST ${config.CHECK_YOUR_ANSWERS_PAGE}`);
 
     const session = req.session as Session;
-    const appData: ApplicationData = await getApplicationData(session);
-
+    const isRegistration = isRegistrationJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
     const transactionID = appData[Transactionkey] as string;
     const overseasEntityID = appData[OverseasEntityKey] as string;
     await updateOverseasEntity(req, session);
-
     const transactionClosedResponse = await closeTransaction(req, session, transactionID, overseasEntityID);
     logger.infoRequest(req, `Transaction Closed, ID: ${transactionID}`);
-
     const redirectPath = await startPaymentsSession(req, session, transactionID, overseasEntityID, transactionClosedResponse);
     logger.infoRequest(req, `Payments Session created with, Trans_ID: ${transactionID}, OE_ID: ${overseasEntityID}. Redirect to: ${redirectPath}`);
 
     return res.redirect(redirectPath);
+
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

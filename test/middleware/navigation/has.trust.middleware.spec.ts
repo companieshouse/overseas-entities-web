@@ -1,23 +1,45 @@
-jest.mock(".../../../src/utils/application.data");
 jest.mock("ioredis");
+jest.mock("../../../src/utils/url");
+jest.mock(".../../../src/utils/application.data");
 
 import { Request, Response } from "express";
-import { beforeEach, describe, expect, jest, test } from "@jest/globals";
-import { logger } from "../../../src/utils/logger";
-import { hasTrustWithIdRegister, hasTrustDataRegister, hasTrustWithIdUpdate, hasTrustDataUpdate, hasTrusteeWithIdUpdate } from "../../../src/middleware/navigation/has.trust.middleware";
 import { Session } from "@companieshouse/node-session-handler";
 import { Params } from "express-serve-static-core";
-import { ANY_MESSAGE_ERROR } from "../../__mocks__/text.mock";
-import { APPLICATION_DATA_NO_TRUSTS_MOCK, APPLICATION_DATA_WITH_TRUST_ID_MOCK, TRUST_WITH_ID } from "../../__mocks__/session.mock";
-import { getApplicationData } from "../../../src/utils/application.data";
-import { SECURE_UPDATE_FILTER_URL, SOLD_LAND_FILTER_URL } from "../../../src/config";
+import { logger } from "../../../src/utils/logger";
+import { fetchApplicationData, getApplicationData } from "../../../src/utils/application.data";
+import { isRegistrationJourney } from "../../../src/utils/url";
 import { ApplicationData } from "../../../src/model";
 import { yesNoResponse } from "../../../src/model/data.types.model";
 import { RoleWithinTrustType } from "../../../src/model/role.within.trust.type.model";
 import { TrusteeType } from "../../../src/model/trustee.type.model";
+import { ANY_MESSAGE_ERROR } from "../../__mocks__/text.mock";
+
+import {
+  SECURE_UPDATE_FILTER_URL,
+  SOLD_LAND_FILTER_URL
+} from "../../../src/config";
+
+import {
+  APPLICATION_DATA_NO_TRUSTS_MOCK,
+  APPLICATION_DATA_WITH_TRUST_ID_MOCK,
+  TRUST_WITH_ID
+} from "../../__mocks__/session.mock";
+
+import {
+  hasTrustWithIdRegister,
+  hasTrustDataRegister,
+  hasTrustWithIdUpdate,
+  hasTrustDataUpdate,
+  hasTrusteeWithIdUpdate
+} from "../../../src/middleware/navigation/has.trust.middleware";
+
+const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
+mockIsRegistrationJourney.mockReturnValue(true);
 
 describe("Trusts Middleware tests", () => {
+
   const mockGetApplicationData = getApplicationData as jest.Mock;
+  const mockFetchApplicationData = fetchApplicationData as jest.Mock;
   const next = jest.fn();
 
   const res = {
@@ -35,6 +57,7 @@ describe("Trusts Middleware tests", () => {
   });
 
   describe('register tests', () => {
+
     test("Trust present, return next", async () => {
       req = {
         params: {
@@ -46,6 +69,7 @@ describe("Trusts Middleware tests", () => {
       } as Request;
 
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_WITH_TRUST_ID_MOCK);
+      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_WITH_TRUST_ID_MOCK);
 
       await hasTrustWithIdRegister(req, res, next);
 
@@ -64,6 +88,7 @@ describe("Trusts Middleware tests", () => {
       } as Request;
 
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_WITH_TRUST_ID_MOCK);
+      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_WITH_TRUST_ID_MOCK);
 
       await hasTrustWithIdRegister(req, res, next);
 
@@ -74,18 +99,16 @@ describe("Trusts Middleware tests", () => {
 
     test("Submission contains trust data", async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_WITH_TRUST_ID_MOCK);
-
+      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_WITH_TRUST_ID_MOCK);
       await hasTrustDataRegister(req, res, next);
-
       expect(next).toBeCalled();
       expect(res.redirect).not.toBeCalled();
     });
 
     test("Submission does not contain trust data", async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_NO_TRUSTS_MOCK);
-
+      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_NO_TRUSTS_MOCK);
       await hasTrustDataRegister(req, res, next);
-
       expect(res.redirect).toBeCalled();
       expect(res.redirect).toBeCalledWith(SOLD_LAND_FILTER_URL);
       expect(next).not.toBeCalled();
@@ -103,6 +126,7 @@ describe("Trusts Middleware tests", () => {
 
       const error = new Error(ANY_MESSAGE_ERROR);
       mockGetApplicationData.mockImplementationOnce(() => { throw error; });
+      mockFetchApplicationData.mockImplementationOnce(() => { throw error; });
 
       await hasTrustWithIdRegister(req, res, next);
 
@@ -123,6 +147,7 @@ describe("Trusts Middleware tests", () => {
       } as Request;
 
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_WITH_TRUST_ID_MOCK);
+      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_WITH_TRUST_ID_MOCK);
 
       await hasTrustWithIdUpdate(req, res, next);
 
@@ -147,6 +172,7 @@ describe("Trusts Middleware tests", () => {
       } as Request;
 
       mockGetApplicationData.mockReturnValueOnce(appData);
+      mockFetchApplicationData.mockReturnValueOnce(appData);
 
       await hasTrusteeWithIdUpdate(req, res, next);
 
@@ -234,6 +260,7 @@ describe("Trusts Middleware tests", () => {
       } as Request;
 
       mockGetApplicationData.mockReturnValueOnce(appData);
+      mockFetchApplicationData.mockReturnValueOnce(appData);
 
       await hasTrusteeWithIdUpdate(req, res, next);
 
@@ -252,6 +279,7 @@ describe("Trusts Middleware tests", () => {
       } as Request;
 
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_WITH_TRUST_ID_MOCK);
+      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_WITH_TRUST_ID_MOCK);
 
       await hasTrustWithIdUpdate(req, res, next);
 
@@ -262,6 +290,7 @@ describe("Trusts Middleware tests", () => {
 
     test("Submission contains trust data", async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_WITH_TRUST_ID_MOCK);
+      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_WITH_TRUST_ID_MOCK);
 
       await hasTrustDataUpdate(req, res, next);
 
@@ -271,6 +300,7 @@ describe("Trusts Middleware tests", () => {
 
     test("Submission does not contain trust data", async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_NO_TRUSTS_MOCK);
+      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_NO_TRUSTS_MOCK);
 
       await hasTrustDataUpdate(req, res, next);
 
@@ -291,6 +321,7 @@ describe("Trusts Middleware tests", () => {
 
       const error = new Error(ANY_MESSAGE_ERROR);
       mockGetApplicationData.mockImplementationOnce(() => { throw error; });
+      mockFetchApplicationData.mockImplementationOnce(() => { throw error; });
 
       await hasTrustWithIdUpdate(req, res, next);
 

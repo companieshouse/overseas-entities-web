@@ -7,13 +7,36 @@ jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/middleware/navigation/update/has.beneficial.owners.or.managing.officers.update.middleware');
 jest.mock('../../../src/middleware/navigation/update/is.in.change.journey.middleware');
 jest.mock('../../../src/utils/save.and.continue');
+jest.mock("../../../src/utils/url");
+
+import { NextFunction } from 'express';
+import request from 'supertest';
 
 import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
-import { beforeEach, jest, test, describe } from '@jest/globals';
-import request from 'supertest';
-import { NextFunction } from 'express';
-
 import app from '../../../src/app';
+
+import { authentication } from '../../../src/middleware/authentication.middleware';
+import { companyAuthentication } from '../../../src/middleware/company.authentication.middleware';
+import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
+import { isInChangeJourney } from '../../../src/middleware/navigation/update/is.in.change.journey.middleware';
+import { isActiveFeature } from '../../../src/utils/feature.flag';
+import { saveAndContinue } from '../../../src/utils/save.and.continue';
+import { ApplicationData } from '../../../src/model';
+import { Trust } from '../../../src/model/trust.model';
+import { UpdateKey } from '../../../src/model/update.type.model';
+import { TrusteeType } from '../../../src/model/trustee.type.model';
+import { yesNoResponse } from '../../../src/model/data.types.model';
+import { RoleWithinTrustType } from '../../../src/model/role.within.trust.type.model';
+import { isRegistrationJourney } from "../../../src/utils/url";
+import { hasBOsOrMOsUpdate } from '../../../src/middleware/navigation/update/has.beneficial.owners.or.managing.officers.update.middleware';
+
+import { getApplicationData, fetchApplicationData, setExtraData } from '../../../src/utils/application.data';
+
+import {
+  ANY_MESSAGE_ERROR,
+  SERVICE_UNAVAILABLE,
+} from '../../__mocks__/text.mock';
+
 import {
   SECURE_UPDATE_FILTER_URL,
   UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL,
@@ -28,21 +51,6 @@ import {
   UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL,
   UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL,
 } from '../../../src/config';
-import { authentication } from '../../../src/middleware/authentication.middleware';
-import { companyAuthentication } from '../../../src/middleware/company.authentication.middleware';
-import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
-import { isInChangeJourney } from '../../../src/middleware/navigation/update/is.in.change.journey.middleware';
-import { getApplicationData, setExtraData } from '../../../src/utils/application.data';
-import { isActiveFeature } from '../../../src/utils/feature.flag';
-import { saveAndContinue } from '../../../src/utils/save.and.continue';
-import { ApplicationData } from '../../../src/model';
-import { hasBOsOrMOsUpdate } from '../../../src/middleware/navigation/update/has.beneficial.owners.or.managing.officers.update.middleware';
-import { ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE } from '../../__mocks__/text.mock';
-import { Trust } from '../../../src/model/trust.model';
-import { UpdateKey } from '../../../src/model/update.type.model';
-import { TrusteeType } from '../../../src/model/trustee.type.model';
-import { yesNoResponse } from '../../../src/model/data.types.model';
-import { RoleWithinTrustType } from '../../../src/model/role.within.trust.type.model';
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockAuthenticationMiddleware = authentication as jest.Mock;
@@ -64,8 +72,12 @@ const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue(true);
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 const mockSetExtraData = setExtraData as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
+
+const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
+mockIsRegistrationJourney.mockReturnValue(false);
 
 const createAppData = ({ reviewTrusts }): ApplicationData => ({
   update: {
@@ -84,10 +96,12 @@ const get = async () => (await request(app).get(UPDATE_MANAGE_TRUSTS_ORCHESTRATO
 const post = async () => (await request(app).post(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL));
 
 describe('Update - Manage Trusts - Orchestrator', () => {
+
   beforeEach(() => {
     jest.clearAllMocks();
     mockIsActiveFeature.mockReturnValue(true);
     mockGetApplicationData.mockReset();
+    mockFetchApplicationData.mockReset();
     mockSetExtraData.mockReset();
     mockSaveAndContinue.mockReset();
   });
@@ -98,6 +112,7 @@ describe('Update - Manage Trusts - Orchestrator', () => {
   ])('%s - when no trusts to review, redirects to Trusts associated with the OE page', async (_, handler) => {
     const appData: ApplicationData = createAppData({ reviewTrusts: [] });
     mockGetApplicationData.mockReturnValue(appData);
+    mockFetchApplicationData.mockReturnValue(appData);
 
     const resp = await handler();
 
@@ -111,6 +126,7 @@ describe('Update - Manage Trusts - Orchestrator', () => {
   ])('%s - when a trust to review, and none in review, redirects to Review the trust page, and sets up trust for review', async (_, handler) => {
     const appData: ApplicationData = createAppData({ reviewTrusts: [{ trust_name: 'Trust 1' }] });
     mockGetApplicationData.mockReturnValue(appData);
+    mockFetchApplicationData.mockReturnValue(appData);
 
     const resp = await handler();
 
@@ -146,6 +162,7 @@ describe('Update - Manage Trusts - Orchestrator', () => {
       }],
     });
     mockGetApplicationData.mockReturnValue(appData);
+    mockFetchApplicationData.mockReturnValue(appData);
 
     const resp = await handler();
 
@@ -174,6 +191,7 @@ describe('Update - Manage Trusts - Orchestrator', () => {
       }],
     });
     mockGetApplicationData.mockReturnValue(appData);
+    mockFetchApplicationData.mockReturnValue(appData);
 
     const resp = await handler();
 
@@ -202,6 +220,7 @@ describe('Update - Manage Trusts - Orchestrator', () => {
       }],
     });
     mockGetApplicationData.mockReturnValue(appData);
+    mockFetchApplicationData.mockReturnValue(appData);
 
     const resp = await handler();
 
@@ -230,6 +249,7 @@ describe('Update - Manage Trusts - Orchestrator', () => {
       }],
     });
     mockGetApplicationData.mockReturnValue(appData);
+    mockFetchApplicationData.mockReturnValue(appData);
 
     const resp = await handler();
 
@@ -258,6 +278,7 @@ describe('Update - Manage Trusts - Orchestrator', () => {
       }],
     });
     mockGetApplicationData.mockReturnValue(appData);
+    mockFetchApplicationData.mockReturnValue(appData);
 
     const resp = await handler();
 
@@ -286,6 +307,7 @@ describe('Update - Manage Trusts - Orchestrator', () => {
       }],
     });
     mockGetApplicationData.mockReturnValue(appData);
+    mockFetchApplicationData.mockReturnValue(appData);
 
     const resp = await handler();
 
@@ -314,6 +336,7 @@ describe('Update - Manage Trusts - Orchestrator', () => {
       }],
     });
     mockGetApplicationData.mockReturnValue(appData);
+    mockFetchApplicationData.mockReturnValue(appData);
 
     const resp = await handler();
 
@@ -342,6 +365,7 @@ describe('Update - Manage Trusts - Orchestrator', () => {
       }],
     });
     mockGetApplicationData.mockReturnValue(appData);
+    mockFetchApplicationData.mockReturnValue(appData);
 
     const resp = await handler();
 
@@ -370,6 +394,7 @@ describe('Update - Manage Trusts - Orchestrator', () => {
       }],
     });
     mockGetApplicationData.mockReturnValue(appData);
+    mockFetchApplicationData.mockReturnValue(appData);
 
     const resp = await handler();
 
@@ -381,6 +406,7 @@ describe('Update - Manage Trusts - Orchestrator', () => {
 });
 
 describe('Update - Mange Trusts - Orchestrator - Change Handler', () => {
+
   beforeEach(() => {
     jest.clearAllMocks();
     mockIsActiveFeature.mockReturnValue(true);
@@ -388,12 +414,14 @@ describe('Update - Mange Trusts - Orchestrator - Change Handler', () => {
 
   test('passing TrustId puts trust back into review and redirects to the update-manage-trusts-review-the-trust page', async () => {
     const trustId = '1';
-    mockGetApplicationData.mockReturnValue({
+    const appData = {
       trusts: [{ trust_id: trustId, trust_name: 'trust name' } as Trust],
       [UpdateKey]: {
         review_trusts: []
       }
-    });
+    };
+    mockGetApplicationData.mockReturnValue(appData);
+    mockFetchApplicationData.mockReturnValue(appData);
 
     const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_CHANGE_HANDLER_URL + '/' + trustId);
     expect(resp.status).toBe(302);
@@ -404,6 +432,7 @@ describe('Update - Mange Trusts - Orchestrator - Change Handler', () => {
 
   test('passing invalid TrustId redirects user to the secure-update-filter page', async () => {
     mockGetApplicationData.mockReturnValue({});
+    mockFetchApplicationData.mockReturnValue({});
 
     const resp = await request(app).get(`${UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_CHANGE_HANDLER_URL}/1234`);
     expect(resp.status).toBe(302);
@@ -413,13 +442,14 @@ describe('Update - Mange Trusts - Orchestrator - Change Handler', () => {
   });
 
   test("catch error", async () => {
-    mockGetApplicationData.mockReturnValue({
+    const appData = {
       trusts: [{ trust_id: '1', trust_name: 'trust name' } as Trust],
       [UpdateKey]: {
         review_trusts: []
       }
-    });
-
+    };
+    mockGetApplicationData.mockReturnValue(appData);
+    mockFetchApplicationData.mockReturnValue(appData);
     mockSetExtraData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
 
     const resp = await request(app).get(`${UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_CHANGE_HANDLER_URL}/1`);
@@ -500,6 +530,7 @@ describe('Update - Mange Trusts - Orchestrator - Change Handler', () => {
       ]
     });
     mockGetApplicationData.mockReturnValue(appData);
+    mockFetchApplicationData.mockReturnValue(appData);
 
     const resp = await request(app).get(`${UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_CHANGE_HANDLER_URL}/1/${trusteeType}/1`);
 
@@ -525,6 +556,7 @@ describe('Update - Mange Trusts - Orchestrator - Change Handler', () => {
       ]
     });
     mockGetApplicationData.mockReturnValue(appData);
+    mockFetchApplicationData.mockReturnValue(appData);
 
     const resp = await request(app).get(`${UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_CHANGE_HANDLER_URL}/1//1`);
 
@@ -548,6 +580,7 @@ describe('Update - Mange Trusts - Orchestrator - Change Handler', () => {
       ]
     });
     mockGetApplicationData.mockReturnValue(appData);
+    mockFetchApplicationData.mockReturnValue(appData);
 
     const resp = await request(app).get(`${UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_CHANGE_HANDLER_URL}/1/${undefined}/1`);
 
@@ -574,6 +607,7 @@ describe('Update - Mange Trusts - Orchestrator - Change Handler', () => {
       ]
     });
     mockGetApplicationData.mockReturnValue(appData);
+    mockFetchApplicationData.mockReturnValue(appData);
 
     const resp = await request(app).get(`${UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_CHANGE_HANDLER_URL}/${trustId}`);
 

@@ -6,6 +6,7 @@ jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/middleware/navigation/update/has.overseas.entity.middleware');
 jest.mock('../../../src/utils/save.and.continue');
+jest.mock("../../../src/utils/url");
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
 import mockJourneyDetectionMiddleware from "../../__mocks__/journey.detection.middleware.mock";
@@ -25,6 +26,7 @@ import { BeneficialOwnersStatementType } from "@companieshouse/api-sdk-node/dist
 import { UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE } from "../../../src/config";
 import { BeneficialOwnerStatementKey } from "../../../src/model/beneficial.owner.statement.model";
 import { ErrorMessages } from "../../../src/validation/error.messages";
+import { isRegistrationJourney } from "../../../src/utils/url";
 
 import { fetchApplicationData, setApplicationData } from "../../../src/utils/application.data";
 
@@ -56,6 +58,9 @@ mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Respo
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+
+const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
+mockIsRegistrationJourney.mockReturnValue(false);
 
 describe("No change Get beneficial owner statement", () => {
 
@@ -109,6 +114,7 @@ describe("No change Get beneficial owner statement", () => {
     });
 
     test("catch error when posting data", async () => {
+      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockSetApplicationData.mockImplementationOnce(() => { throw ERROR; });
       const resp = await request(app)
         .post(config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL)

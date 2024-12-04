@@ -2,16 +2,37 @@ jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock("../../src/utils/application.data");
 jest.mock('../../src/utils/save.and.continue');
+jest.mock("../../src/utils/url");
 jest.mock('../../src/middleware/navigation/has.beneficial.owners.or.managing.officers.middleware');
 
-import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
-import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
 
+import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
 import app from "../../src/app";
+
+import * as config from "../../src/config";
 import { authentication } from "../../src/middleware/authentication.middleware";
-import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR, SERVICE_UNAVAILABLE, TRUST_INFO_PAGE_TITLE } from "../__mocks__/text.mock";
+import { ErrorMessages } from '../../src/validation/error.messages';
+import { saveAndContinue } from "../../src/utils/save.and.continue";
+import { hasBOsOrMOs } from "../../src/middleware/navigation/has.beneficial.owners.or.managing.officers.middleware";
+import { trustType } from '../../src/model';
+import { isRegistrationJourney } from "../../src/utils/url";
+
+import {
+  getApplicationData,
+  fetchApplicationData,
+  prepareData,
+  getFromApplicationData
+} from "../../src/utils/application.data";
+
+import {
+  ANY_MESSAGE_ERROR,
+  PAGE_TITLE_ERROR,
+  SERVICE_UNAVAILABLE,
+  TRUST_INFO_PAGE_TITLE
+} from "../__mocks__/text.mock";
+
 import {
   APPLICATION_DATA_MOCK,
   APPLICATION_DATA_NO_TRUST_NAME_MOCK,
@@ -29,11 +50,7 @@ import {
   TRUSTS_EMPTY_CHECKBOX,
   TRUSTS_SUBMIT_LEADING_AND_TRAILING_WHITESPACE
 } from '../__mocks__/session.mock';
-import * as config from "../../src/config";
-import { ErrorMessages } from '../../src/validation/error.messages';
-import { getApplicationData, prepareData, getFromApplicationData } from "../../src/utils/application.data";
-import { saveAndContinue } from "../../src/utils/save.and.continue";
-import { hasBOsOrMOs } from "../../src/middleware/navigation/has.beneficial.owners.or.managing.officers.middleware";
+
 import {
   TRUSTS_SUBMIT_CORPORATE_RO_ADDRESS_PREMISES_TOO_LONG,
   TRUSTS_SUBMIT_CORPORATE_SA_ADDRESS_PREMISES_TOO_LONG,
@@ -41,7 +58,6 @@ import {
   TRUSTS_SUBMIT_INDIVIDUAL_SA_ADDRESS_PREMISES_TOO_LONG,
   TRUSTS_SUBMIT_INDIVIDUAL_URA_ADDRESS_PREMISES_TOO_LONG
 } from "../__mocks__/validation.mock";
-import { trustType } from '../../src/model';
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockHasBOsOrMOsMiddleware = hasBOsOrMOs as jest.Mock;
@@ -51,41 +67,52 @@ const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 const mockGetFromApplicationData = getFromApplicationData as jest.Mock;
+
 const mockPrepareData = prepareData as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
+
+const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
+mockIsRegistrationJourney.mockReturnValue(true);
 
 describe("TRUST INFORMATION controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetApplicationData.mockClear();
+    mockFetchApplicationData.mockClear();
+    mockPrepareData.mockClear();
   });
 
   describe("GET tests", () => {
+
     test(`renders the ${config.TRUST_INFO_PAGE} page`, async () => {
       mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
+      mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(config.TRUST_INFO_URL);
-
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(TRUST_INFO_PAGE_TITLE);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 
     test("catch error when rendering the page", async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
-      mockGetApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
-
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockImplementation(() => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockFetchApplicationData.mockImplementation(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(config.TRUST_INFO_URL);
-
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
   });
 
   describe("POST tests", () => {
+
     test(`redirects to the ${config.CHECK_YOUR_ANSWERS_PAGE} page`, async () => {
       mockPrepareData.mockImplementationOnce( () => TRUSTS_SUBMIT );
       mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
+      mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
       const bo = BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK;
       bo.trust_ids = undefined;
       mockGetFromApplicationData.mockReturnValueOnce(bo);
@@ -98,7 +125,7 @@ describe("TRUST INFORMATION controller", () => {
 
     test(`redirects to the ${config.TRUST_INFO_PAGE} page`, async () => {
       mockPrepareData.mockImplementationOnce( () => TRUSTS_SUBMIT );
-      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
+      mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
       mockGetFromApplicationData.mockReturnValueOnce(undefined);
       const bo = BENEFICIAL_OWNER_OTHER_OBJECT_MOCK;
       bo.trust_ids = undefined;
@@ -113,6 +140,7 @@ describe("TRUST INFORMATION controller", () => {
     test(`mandatory field missing: trust name`, async () => {
       mockPrepareData.mockImplementationOnce( () => TRUSTS_SUBMIT_NO_NAME );
       mockGetApplicationData.mockReturnValue(APPLICATION_DATA_NO_TRUST_NAME_MOCK);
+      mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_NO_TRUST_NAME_MOCK);
       mockGetFromApplicationData.mockReturnValueOnce(undefined);
       const bo = BENEFICIAL_OWNER_OTHER_OBJECT_MOCK;
       bo.trust_ids = undefined;
@@ -127,6 +155,7 @@ describe("TRUST INFORMATION controller", () => {
     test(`mandatory field missing: trust creation date`, async () => {
       mockPrepareData.mockImplementationOnce( () => TRUSTS_SUBMIT_NO_CREATION_DATE );
       mockGetApplicationData.mockReturnValue(APPLICATION_DATA_NO_TRUST_DATE_MOCK);
+      mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_NO_TRUST_DATE_MOCK);
       mockGetFromApplicationData.mockReturnValueOnce(undefined);
       const bo = BENEFICIAL_OWNER_OTHER_OBJECT_MOCK;
       bo.trust_ids = undefined;
@@ -141,6 +170,7 @@ describe("TRUST INFORMATION controller", () => {
     test(`mandatory field missing: partial trust creation date`, async () => {
       mockPrepareData.mockImplementationOnce( () => TRUSTS_SUBMIT_PARTIAL_CREATION_DATE );
       mockGetApplicationData.mockReturnValue(APPLICATION_DATA_PARTIAL_TRUST_DATE_MOCK);
+      mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_PARTIAL_TRUST_DATE_MOCK);
       mockGetFromApplicationData.mockReturnValueOnce(undefined);
       const bo = BENEFICIAL_OWNER_OTHER_OBJECT_MOCK;
       bo.trust_ids = undefined;
@@ -154,6 +184,7 @@ describe("TRUST INFORMATION controller", () => {
 
     test(`POST empty object and check for error in page title`, async () => {
       mockGetApplicationData.mockReturnValue(APPLICATION_DATA_PARTIAL_TRUST_DATE_MOCK);
+      mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_PARTIAL_TRUST_DATE_MOCK);
       const resp = await request(app)
         .post(config.TRUST_INFO_URL)
         .send({ TrustKey: "Trust info" });
@@ -163,8 +194,8 @@ describe("TRUST INFORMATION controller", () => {
     });
 
     test("catch error when rendering the page", async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
-      mockGetApplicationData.mockImplementationOnce(() => { throw ERROR; });
+      mockGetApplicationData.mockImplementation(() => { throw ERROR; });
+      mockFetchApplicationData.mockImplementation(() => { throw ERROR; });
       const resp = await request(app)
         .post(config.TRUST_INFO_URL)
         .send({ TrustKey: "Trust info" });
@@ -176,6 +207,7 @@ describe("TRUST INFORMATION controller", () => {
     test("renders the current page with TRUST_DATA_EMPTY error messages", async () => {
       mockPrepareData.mockImplementationOnce( () => TRUSTS_SUBMIT );
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockGetFromApplicationData.mockReturnValueOnce(undefined);
       const bo = BENEFICIAL_OWNER_OTHER_OBJECT_MOCK;
       bo.trust_ids = undefined;
@@ -191,6 +223,7 @@ describe("TRUST INFORMATION controller", () => {
     test("renders the current page with TRUSTS_EMPTY_CHECKBOX error messages", async () => {
       mockPrepareData.mockImplementationOnce( () => TRUSTS_SUBMIT );
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockGetFromApplicationData.mockReturnValueOnce(undefined);
       const bo = BENEFICIAL_OWNER_OTHER_OBJECT_MOCK;
       bo.trust_ids = undefined;
@@ -206,6 +239,7 @@ describe("TRUST INFORMATION controller", () => {
     test(`renders error message when corporate RO address premises field too long`, async () => {
       mockPrepareData.mockImplementationOnce( () => TRUSTS_SUBMIT_CORPORATE_RO_ADDRESS_PREMISES_TOO_LONG );
       mockGetApplicationData.mockReturnValue(TRUSTS_SUBMIT_CORPORATE_RO_ADDRESS_PREMISES_TOO_LONG);
+      mockFetchApplicationData.mockReturnValue(TRUSTS_SUBMIT_CORPORATE_RO_ADDRESS_PREMISES_TOO_LONG);
       const resp = await request(app).post(config.TRUST_INFO_URL).send(TRUSTS_SUBMIT_CORPORATE_RO_ADDRESS_PREMISES_TOO_LONG);
 
       expect(resp.status).toEqual(200);
@@ -216,6 +250,7 @@ describe("TRUST INFORMATION controller", () => {
     test(`renders error message when corporate SA address premises field too long`, async () => {
       mockPrepareData.mockImplementationOnce( () => TRUSTS_SUBMIT_CORPORATE_SA_ADDRESS_PREMISES_TOO_LONG );
       mockGetApplicationData.mockReturnValue(TRUSTS_SUBMIT_CORPORATE_SA_ADDRESS_PREMISES_TOO_LONG);
+      mockFetchApplicationData.mockReturnValue(TRUSTS_SUBMIT_CORPORATE_SA_ADDRESS_PREMISES_TOO_LONG);
       const resp = await request(app).post(config.TRUST_INFO_URL).send(TRUSTS_SUBMIT_CORPORATE_SA_ADDRESS_PREMISES_TOO_LONG);
 
       expect(resp.status).toEqual(200);
@@ -226,6 +261,7 @@ describe("TRUST INFORMATION controller", () => {
     test(`renders error message when individual URA address premises field too long`, async () => {
       mockPrepareData.mockImplementationOnce( () => TRUSTS_SUBMIT_INDIVIDUAL_URA_ADDRESS_PREMISES_TOO_LONG );
       mockGetApplicationData.mockReturnValue(TRUSTS_SUBMIT_INDIVIDUAL_URA_ADDRESS_PREMISES_TOO_LONG);
+      mockFetchApplicationData.mockReturnValue(TRUSTS_SUBMIT_INDIVIDUAL_URA_ADDRESS_PREMISES_TOO_LONG);
       const resp = await request(app).post(config.TRUST_INFO_URL).send(TRUSTS_SUBMIT_INDIVIDUAL_URA_ADDRESS_PREMISES_TOO_LONG);
 
       expect(resp.status).toEqual(200);
@@ -236,6 +272,7 @@ describe("TRUST INFORMATION controller", () => {
     test(`renders error message when individual SA address premises field too long`, async () => {
       mockPrepareData.mockImplementationOnce( () => TRUSTS_SUBMIT_INDIVIDUAL_SA_ADDRESS_PREMISES_TOO_LONG );
       mockGetApplicationData.mockReturnValue(TRUSTS_SUBMIT_INDIVIDUAL_SA_ADDRESS_PREMISES_TOO_LONG);
+      mockFetchApplicationData.mockReturnValue(TRUSTS_SUBMIT_INDIVIDUAL_SA_ADDRESS_PREMISES_TOO_LONG);
       const resp = await request(app).post(config.TRUST_INFO_URL).send(TRUSTS_SUBMIT_INDIVIDUAL_SA_ADDRESS_PREMISES_TOO_LONG);
 
       expect(resp.status).toEqual(200);
@@ -246,6 +283,7 @@ describe("TRUST INFORMATION controller", () => {
     test(`does not display error message when address premises fields are not submitted`, async () => {
       mockPrepareData.mockImplementationOnce( () => TRUSTS_SUBMIT_INDIVIDUAL_AND_CORPORATE_NO_ADDRESS_PREMISES );
       mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
+      mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
       const bo = BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK;
       bo.trust_ids = undefined;
       mockGetFromApplicationData.mockReturnValueOnce(bo);
@@ -258,7 +296,8 @@ describe("TRUST INFORMATION controller", () => {
 
     test(`trims values in trust data and does not display error message when trust data with leading and trailing spaces submitted`, async () => {
       mockPrepareData.mockImplementationOnce( () => TRUSTS_SUBMIT_INDIVIDUAL_AND_CORPORATE_NO_ADDRESS_PREMISES );
-      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const bo = BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK;
       bo.trust_ids = undefined;
       mockGetFromApplicationData.mockReturnValueOnce(bo);
@@ -269,11 +308,10 @@ describe("TRUST INFORMATION controller", () => {
 
       // do the test
       const resp = await request(app).post(config.TRUST_INFO_URL).send(TRUSTS_SUBMIT_LEADING_AND_TRAILING_WHITESPACE);
-
       const trustDataAfterTrimming = mockPrepareData.mock.calls[0][0];
+
       expect(trustDataAfterTrimming[trustType.TrustKey][0]["trust_name"]).toEqual("name of trust");
       expect(trustDataAfterTrimming[trustType.TrustKey][0]["INDIVIDUALS"][0]["type"]).toEqual("Beneficiary");
-
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.CHECK_YOUR_ANSWERS_PAGE);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);

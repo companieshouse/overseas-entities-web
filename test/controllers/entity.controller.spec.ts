@@ -7,26 +7,30 @@ jest.mock('../../src/utils/feature.flag');
 jest.mock('../../src/middleware/service.availability.middleware');
 jest.mock("../../src/utils/url");
 
-import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
-import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
 
+import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
 import app from "../../src/app";
 
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { ApplicationDataType } from '../../src/model';
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { EntityKey } from '../../src/model/entity.model';
-
-import { getApplicationData, setApplicationData, prepareData } from "../../src/utils/application.data";
-
 import { hasDueDiligence } from "../../src/middleware/navigation/has.due.diligence.middleware";
-import { WhoIsRegisteringKey, WhoIsRegisteringType } from '../../src/model/who.is.making.filing.model';
-import { MAX_20, MAX_50, MAX_80 } from "../__mocks__/max.length.mock";
 import { isActiveFeature } from "../../src/utils/feature.flag";
 import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
-import { getUrlWithParamsToPath } from "../../src/utils/url";
+import { getUrlWithParamsToPath, isRegistrationJourney } from "../../src/utils/url";
+
+import { WhoIsRegisteringKey, WhoIsRegisteringType } from '../../src/model/who.is.making.filing.model';
+import { MAX_20, MAX_50, MAX_80 } from "../__mocks__/max.length.mock";
+
+import {
+  getApplicationData,
+  fetchApplicationData,
+  setApplicationData,
+  prepareData
+} from "../../src/utils/application.data";
 
 import {
   BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL,
@@ -87,6 +91,7 @@ const mockHasDueDiligenceMiddleware = hasDueDiligence as jest.Mock;
 mockHasDueDiligenceMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
 
 const mockSetApplicationData = setApplicationData as jest.Mock;
@@ -104,6 +109,11 @@ mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Respons
 
 const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
 mockGetUrlWithParamsToPath.mockReturnValue(NEXT_PAGE_URL);
+
+const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
+mockIsRegistrationJourney.mockReturnValue(true);
+
+const appData = { [EntityNameKey]: OVERSEAS_NAME_MOCK };
 
 describe("ENTITY controller", () => {
 
@@ -520,7 +530,8 @@ describe("ENTITY controller", () => {
     });
 
     test(`POST empty object and check for error in page title`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ [EntityNameKey]: OVERSEAS_NAME_MOCK });
+      mockGetApplicationData.mockReturnValueOnce(appData);
+      mockFetchApplicationData.mockReturnValueOnce(appData);
       const resp = await request(app).post(ENTITY_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(PAGE_TITLE_ERROR);
@@ -529,7 +540,8 @@ describe("ENTITY controller", () => {
     });
 
     test("renders the current page with public register error messages", async () => {
-      mockGetApplicationData.mockReturnValueOnce({ [EntityNameKey]: OVERSEAS_NAME_MOCK });
+      mockGetApplicationData.mockReturnValueOnce(appData);
+      mockFetchApplicationData.mockReturnValueOnce(appData);
       mockPrepareData.mockReturnValueOnce(ENTITY_OBJECT_MOCK);
       const resp = await request(app)
         .post(ENTITY_URL)
@@ -547,7 +559,8 @@ describe("ENTITY controller", () => {
     });
 
     test("renders the current page with MAX error messages", async () => {
-      mockGetApplicationData.mockReturnValueOnce({ [EntityNameKey]: OVERSEAS_NAME_MOCK });
+      mockGetApplicationData.mockReturnValueOnce(appData);
+      mockFetchApplicationData.mockReturnValueOnce(appData);
       const resp = await request(app)
         .post(ENTITY_URL)
         .send(ENTITY_WITH_MAX_LENGTH_FIELDS_MOCK);
@@ -584,6 +597,7 @@ describe("ENTITY controller", () => {
 
     test("renders the current page with INVALID CHARACTERS error messages", async () => {
       mockGetApplicationData.mockReturnValueOnce({ [EntityNameKey]: OVERSEAS_NAME_MOCK });
+      mockFetchApplicationData.mockReturnValueOnce({ [EntityNameKey]: OVERSEAS_NAME_MOCK });
       const resp = await request(app)
         .post(ENTITY_URL)
         .send(REGISTER_ENTITY_WITH_INVALID_CHARACTERS_FIELDS_MOCK);
@@ -805,7 +819,8 @@ describe("ENTITY controller", () => {
     });
 
     test(`POST empty object and check for error in page title`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ [EntityNameKey]: OVERSEAS_NAME_MOCK });
+      mockGetApplicationData.mockReturnValueOnce(appData);
+      mockFetchApplicationData.mockReturnValueOnce(appData);
       const resp = await request(app).post(ENTITY_WITH_PARAMS_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(PAGE_TITLE_ERROR);
@@ -814,7 +829,8 @@ describe("ENTITY controller", () => {
     });
 
     test("renders the current page with public register error messages", async () => {
-      mockGetApplicationData.mockReturnValueOnce({ [EntityNameKey]: OVERSEAS_NAME_MOCK });
+      mockGetApplicationData.mockReturnValueOnce(appData);
+      mockFetchApplicationData.mockReturnValueOnce(appData);
       mockPrepareData.mockReturnValueOnce(ENTITY_OBJECT_MOCK);
       const resp = await request(app)
         .post(ENTITY_WITH_PARAMS_URL)
@@ -832,7 +848,8 @@ describe("ENTITY controller", () => {
     });
 
     test("renders the current page with MAX error messages", async () => {
-      mockGetApplicationData.mockReturnValueOnce({ [EntityNameKey]: OVERSEAS_NAME_MOCK });
+      mockGetApplicationData.mockReturnValueOnce(appData);
+      mockFetchApplicationData.mockReturnValueOnce(appData);
       const resp = await request(app)
         .post(ENTITY_WITH_PARAMS_URL)
         .send(ENTITY_WITH_MAX_LENGTH_FIELDS_MOCK);
@@ -868,7 +885,8 @@ describe("ENTITY controller", () => {
     });
 
     test("renders the current page with INVALID CHARACTERS error messages", async () => {
-      mockGetApplicationData.mockReturnValueOnce({ [EntityNameKey]: OVERSEAS_NAME_MOCK });
+      mockGetApplicationData.mockReturnValueOnce(appData);
+      mockFetchApplicationData.mockReturnValueOnce(appData);
       const resp = await request(app)
         .post(ENTITY_WITH_PARAMS_URL)
         .send(REGISTER_ENTITY_WITH_INVALID_CHARACTERS_FIELDS_MOCK);

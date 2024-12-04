@@ -1,16 +1,16 @@
 import { Request, Response, NextFunction } from 'express';
-
 import { logger } from '../../utils/logger';
-import { SOLD_LAND_FILTER_URL } from '../../config';
-import { getApplicationData } from "../../utils/application.data";
-import { checkIsSecureRegisterDetailsEntered, NavigationErrorMessage } from './check.condition';
+import { fetchApplicationData } from "../../utils/application.data";
 import { ApplicationData } from 'model';
+import { isRegistrationJourney } from "../../utils/url";
+import { SOLD_LAND_FILTER_URL } from '../../config';
+import { NavigationErrorMessage, checkIsSecureRegisterDetailsEntered } from './check.condition';
 
 export const isSecureRegister = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const appData: ApplicationData = await getApplicationData(req.session);
-
-    if ( !checkIsSecureRegisterDetailsEntered(appData)){
+    const isRegistration = isRegistrationJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+    if (!checkIsSecureRegisterDetailsEntered(appData)){
       logger.infoRequest(req, NavigationErrorMessage);
       return res.redirect(SOLD_LAND_FILTER_URL);
     }

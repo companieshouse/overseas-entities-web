@@ -2,12 +2,10 @@ jest.mock("ioredis");
 jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/middleware/navigation/check.condition');
 
-import { describe, expect, test, beforeEach, jest } from '@jest/globals';
 import { Request, Response } from 'express';
-
-import { REGISTER_AN_OVERSEAS_ENTITY_URL, UPDATE_AN_OVERSEAS_ENTITY_URL } from '../../../src/config';
 import { logger } from "../../../src/utils/logger";
 import { generateSignOutBaseUrl } from '../../../src/middleware/navigation/sign.out.base.url';
+import { REGISTER_AN_OVERSEAS_ENTITY_URL, UPDATE_AN_OVERSEAS_ENTITY_URL } from '../../../src/config';
 
 const next = jest.fn();
 const mockLoggerInfoRequest = logger.info as jest.Mock;

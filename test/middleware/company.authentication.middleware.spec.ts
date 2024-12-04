@@ -1,26 +1,27 @@
 jest.mock("ioredis");
+jest.mock("@companieshouse/web-security-node");
 jest.mock('../../src/service/transaction.service');
 jest.mock("../../src/utils/logger");
 jest.mock("../../src/utils/url");
-jest.mock("@companieshouse/web-security-node");
 
-import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { Request, Response, NextFunction } from 'express';
 import { Params } from 'express-serve-static-core';
-import {
-  getSessionRequestWithExtraData,
-  COMPANY_NUMBER,
-  getSessionRequestWithPermission,
-  APPLICATION_DATA_REGISTRATION_MOCK,
-  APPLICATION_DATA_MOCK
-} from '../__mocks__/session.mock';
+
+import { logger } from '../../src/utils/logger';
 import { companyAuthentication } from "../../src/middleware/company.authentication.middleware";
 import { getTransaction } from "../../src/service/transaction.service";
 import { authMiddleware } from "@companieshouse/web-security-node";
-import { logger } from '../../src/utils/logger';
 import { ANY_MESSAGE_ERROR } from '../__mocks__/text.mock';
 import { MOCK_GET_UPDATE_TRANSACTION_RESPONSE } from '../__mocks__/transaction.mock';
 import { isRemoveJourney } from "../../src/utils/url";
+
+import {
+  COMPANY_NUMBER,
+  APPLICATION_DATA_MOCK,
+  APPLICATION_DATA_REGISTRATION_MOCK,
+  getSessionRequestWithExtraData,
+  getSessionRequestWithPermission,
+} from '../__mocks__/session.mock';
 
 const mockLoggerErrorRequest = logger.errorRequest as jest.Mock;
 const mockLoggerInfoRequest = logger.infoRequest as jest.Mock;
@@ -41,6 +42,7 @@ mockCompanyAuthMiddleware.mockImplementation(() => {
 const mockGetTransactionService = getTransaction as jest.Mock;
 
 describe('Company Authentication middleware', () => {
+
   beforeEach(() => {
     jest.clearAllMocks();
     res.locals = {};

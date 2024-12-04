@@ -8,13 +8,29 @@ jest.mock('../../src/utils/feature.flag');
 jest.mock('../../src/middleware/service.availability.middleware');
 jest.mock("../../src/utils/url");
 
-import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
-import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
 
+import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
 import app from "../../src/app";
+
 import { authentication } from "../../src/middleware/authentication.middleware";
+import { isSecureRegister } from "../../src/middleware/navigation/is.secure.register.middleware";
+import { postTransaction } from "../../src/service/transaction.service";
+import { ErrorMessages } from '../../src/validation/error.messages';
+import { isActiveFeature } from "../../src/utils/feature.flag";
+import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
+
+import { getApplicationData, fetchApplicationData, setExtraData } from "../../src/utils/application.data";
+import { createOverseasEntity, updateOverseasEntity } from "../../src/service/overseas.entities.service";
+import { EntityNameKey, OverseasEntityKey, Transactionkey } from '../../src/model/data.types.model';
+
+import {
+  getUrlWithParamsToPath,
+  getUrlWithTransactionIdAndSubmissionId,
+  transactionIdAndSubmissionIdExistInRequest
+} from "../../src/utils/url";
+
 import {
   INTERRUPT_CARD_URL,
   INTERRUPT_CARD_WITH_PARAMS_URL,
@@ -26,7 +42,7 @@ import {
   OVERSEAS_NAME_WITH_PARAMS_URL,
   PRESENTER_PAGE,
 } from "../../src/config";
-import { getApplicationData, setExtraData } from "../../src/utils/application.data";
+
 import {
   ANY_MESSAGE_ERROR,
   FOUND_REDIRECT_TO,
@@ -34,20 +50,13 @@ import {
   SAVE_AND_CONTINUE_BUTTON_TEXT,
   SERVICE_UNAVAILABLE
 } from '../__mocks__/text.mock';
+
 import {
   APPLICATION_DATA_MOCK,
   OVERSEAS_ENTITY_ID,
   OVERSEAS_NAME_MOCK,
   TRANSACTION_ID
 } from '../__mocks__/session.mock';
-import { isSecureRegister } from "../../src/middleware/navigation/is.secure.register.middleware";
-import { postTransaction } from "../../src/service/transaction.service";
-import { createOverseasEntity, updateOverseasEntity } from "../../src/service/overseas.entities.service";
-import { EntityNameKey, OverseasEntityKey, Transactionkey } from '../../src/model/data.types.model';
-import { ErrorMessages } from '../../src/validation/error.messages';
-import { isActiveFeature } from "../../src/utils/feature.flag";
-import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
-import { getUrlWithParamsToPath, getUrlWithTransactionIdAndSubmissionId, transactionIdAndSubmissionIdExistInRequest } from "../../src/utils/url";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockTransactionService = postTransaction as jest.Mock;
@@ -62,7 +71,7 @@ const mockIsSecureRegisterMiddleware = isSecureRegister as jest.Mock;
 mockIsSecureRegisterMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
-mockGetApplicationData.mockReturnValue( APPLICATION_DATA_MOCK );
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 
 const mockSetExtraData = setExtraData as jest.Mock;
 
@@ -91,9 +100,12 @@ describe("Overseas Name controller", () => {
     jest.clearAllMocks();
     mockIsActiveFeature.mockReset();
     mockSetExtraData.mockReset();
+    mockGetApplicationData.mockReset();
+    mockFetchApplicationData.mockReset();
   });
 
   describe("GET tests", () => {
+
     test(`renders the ${OVERSEAS_NAME_PAGE} page with empty data`, async () => {
       mockGetApplicationData.mockReturnValueOnce(undefined);
       const resp = await request(app).get(OVERSEAS_NAME_URL);
@@ -133,6 +145,7 @@ describe("Overseas Name controller", () => {
   });
 
   describe("GET with url params tests", () => {
+
     test(`renders the ${OVERSEAS_NAME_PAGE} page with empty data`, async () => {
       mockGetApplicationData.mockReturnValueOnce(undefined);
       const resp = await request(app).get(OVERSEAS_NAME_WITH_PARAMS_URL);
@@ -175,6 +188,7 @@ describe("Overseas Name controller", () => {
   });
 
   describe("POST tests", () => {
+
     test(`redirect to the ${PRESENTER_PAGE} page after a successful post from ${OVERSEAS_NAME_PAGE} page`, async () => {
       const resp = await request(app).post(OVERSEAS_NAME_URL).send({ [EntityNameKey]: OVERSEAS_NAME_MOCK });
 
@@ -293,6 +307,7 @@ describe("Overseas Name controller", () => {
   });
 
   describe("POST with url params tests", () => {
+
     test(`redirect to the ${PRESENTER_PAGE} page after a successful post from ${OVERSEAS_NAME_PAGE} page`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
@@ -355,9 +370,9 @@ describe("Overseas Name controller", () => {
     });
 
     test(`catch error when post data from ${OVERSEAS_NAME_PAGE} page`, async () => {
-      mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockGetApplicationData.mockImplementation( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockFetchApplicationData.mockImplementation( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).post(OVERSEAS_NAME_WITH_PARAMS_URL).send({ [EntityNameKey]: OVERSEAS_NAME_MOCK });
-
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });

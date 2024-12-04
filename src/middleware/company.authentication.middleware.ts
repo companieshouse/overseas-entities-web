@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from 'express';
 import { authMiddleware, AuthOptions } from "@companieshouse/web-security-node";
 
 import { logger } from '../utils/logger';
-import * as config from "../config";
 import { ApplicationData } from "../model";
 import { EntityNumberKey } from "../model/data.types.model";
 import { getTransaction } from "../service/transaction.service";
@@ -18,6 +17,8 @@ import {
   UPDATE_FILING_DATE_URL,
   OVERSEAS_ENTITY_PRESENTER_URL,
   JOURNEY_REMOVE_QUERY_PARAM,
+  FEATURE_FLAG_ENABLE_RELEVANT_PERIOD,
+  RELEVANT_PERIOD_QUERY_PARAM,
   RELEVANT_PERIOD_OWNED_LAND_FILTER_URL,
 } from '../config';
 
@@ -31,9 +32,9 @@ export const companyAuthentication = async (req: Request, res: Response, next: N
     const isRegistration = isRegistrationJourney(req);
     const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
     let entityNumber: string | undefined = appData?.[EntityNumberKey];
-    let returnURL = !isActiveFeature(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD)
+    let returnURL = !isActiveFeature(FEATURE_FLAG_ENABLE_RELEVANT_PERIOD)
       ? UPDATE_FILING_DATE_URL
-      : RELEVANT_PERIOD_OWNED_LAND_FILTER_URL + config.RELEVANT_PERIOD_QUERY_PARAM;
+      : RELEVANT_PERIOD_OWNED_LAND_FILTER_URL + RELEVANT_PERIOD_QUERY_PARAM;
 
     if (isRemove) {
       logger.debugRequest(req, "Remove journey proceed directly to the presenter page");

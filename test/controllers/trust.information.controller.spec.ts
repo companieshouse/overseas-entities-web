@@ -98,7 +98,8 @@ describe("TRUST INFORMATION controller", () => {
 
     test("catch error when rendering the page", async () => {
       mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
-      mockGetApplicationData.mockImplementation(() => { throw new Error(ANY_MESSAGE_ERROR); });mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockImplementation(() => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockFetchApplicationData.mockImplementation(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(config.TRUST_INFO_URL);
       expect(resp.status).toEqual(500);
@@ -193,7 +194,6 @@ describe("TRUST INFORMATION controller", () => {
     });
 
     test("catch error when rendering the page", async () => {
-      // mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockGetApplicationData.mockImplementation(() => { throw ERROR; });
       mockFetchApplicationData.mockImplementation(() => { throw ERROR; });
       const resp = await request(app)

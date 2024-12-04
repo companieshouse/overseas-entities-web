@@ -1,6 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
-
 import { logger } from '../utils/logger';
+
+import {
+  checkUserSignedIn,
+  getLoggedInUserEmail
+} from "../utils/session";
+
 import {
   JOURNEY_QUERY_PARAM,
   JourneyType,
@@ -14,11 +19,6 @@ import {
   UPDATE_AN_OVERSEAS_ENTITY_URL,
   UPDATE_CONTINUE_WITH_SAVED_FILING_URL
 } from '../config';
-
-import {
-  checkUserSignedIn,
-  getLoggedInUserEmail
-} from "../utils/session";
 
 export const authentication = (req: Request, res: Response, next: NextFunction): void => {
   try {

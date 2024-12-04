@@ -1,18 +1,24 @@
 jest.mock("ioredis");
 
-import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { Request, Response } from 'express';
 import request from "supertest";
 
 import app from "../../src/app";
+import { logger } from '../../src/utils/logger';
+import { authentication } from "../../src/middleware/authentication.middleware";
+import { isActiveFeature } from "../../src/utils/feature.flag";
 
 import {
   getSessionRequestWithPermission,
   RESUME_SUBMISSION_URL,
   userMail
 } from '../__mocks__/session.mock';
-import { authentication } from "../../src/middleware/authentication.middleware";
-import { logger } from '../../src/utils/logger';
+
+import {
+  ANY_MESSAGE_ERROR,
+  REDIRECT_TO_SIGN_IN_PAGE
+} from '../__mocks__/text.mock';
+
 import {
   JOURNEY_QUERY_PARAM,
   JourneyType,
@@ -24,9 +30,6 @@ import {
   SECURE_UPDATE_FILTER_URL,
   UPDATE_CONTINUE_WITH_SAVED_FILING_URL
 } from '../../src/config';
-
-import { ANY_MESSAGE_ERROR, REDIRECT_TO_SIGN_IN_PAGE } from '../__mocks__/text.mock';
-import { isActiveFeature } from "../../src/utils/feature.flag";
 
 jest.mock("../../src/utils/feature.flag" );
 jest.mock('../../src/utils/logger', () => {
@@ -51,6 +54,7 @@ function setReadOnlyRequestProperty(req: Request, propertyName: string, property
 }
 
 describe('Authentication middleware', () => {
+
   beforeEach(() => {
     jest.clearAllMocks();
     mockIsActiveFeature.mockReset();
@@ -64,11 +68,9 @@ describe('Authentication middleware', () => {
     authentication(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
-
     expect(logger.infoRequest).toHaveBeenCalledTimes(1);
     expect(logger.infoRequest).toHaveBeenCalledWith(req, mockLogInfoMsg);
     expect(logger.errorRequest).not.toHaveBeenCalled();
-
     expect(res.redirect).not.toHaveBeenCalled();
     expect(res.locals).toEqual({ userEmail: userMail });
   });
@@ -81,11 +83,9 @@ describe('Authentication middleware', () => {
     authentication(req, res, next);
 
     expect(next).not.toHaveBeenCalled();
-
     expect(res.redirect).toHaveBeenCalledTimes(1);
     expect(res.redirect).toHaveBeenCalledWith(signinRedirectPath);
     expect(res.locals).toEqual({});
-
     expect(logger.infoRequest).toHaveBeenCalledTimes(1);
     expect(logger.infoRequest).toHaveBeenCalledWith(req, REDIRECT_TO_SIGN_IN_PAGE);
     expect(logger.errorRequest).not.toHaveBeenCalled();
@@ -99,11 +99,9 @@ describe('Authentication middleware', () => {
     authentication(req, res, next);
 
     expect(next).not.toHaveBeenCalled();
-
     expect(res.redirect).toHaveBeenCalledTimes(1);
     expect(res.redirect).toHaveBeenCalledWith(signinRedirectPath);
     expect(res.locals).toEqual({});
-
     expect(logger.infoRequest).toHaveBeenCalledTimes(1);
     expect(logger.infoRequest).toHaveBeenCalledWith(req, REDIRECT_TO_SIGN_IN_PAGE);
     expect(logger.errorRequest).not.toHaveBeenCalled();
@@ -118,12 +116,9 @@ describe('Authentication middleware', () => {
 
     expect(res.redirect).toHaveBeenCalledTimes(1);
     expect(res.redirect).toHaveBeenCalledWith(signinRedirectPath);
-
     expect(logger.infoRequest).toHaveBeenCalledTimes(1);
     expect(logger.infoRequest).toHaveBeenCalledWith(req, REDIRECT_TO_SIGN_IN_PAGE);
-
     expect(logger.errorRequest).not.toHaveBeenCalled();
-
     expect(next).not.toHaveBeenCalled();
   });
 
@@ -136,12 +131,9 @@ describe('Authentication middleware', () => {
 
     expect(res.redirect).toHaveBeenCalledTimes(1);
     expect(res.redirect).toHaveBeenCalledWith(signinRedirectPath);
-
     expect(logger.infoRequest).toHaveBeenCalledTimes(1);
     expect(logger.infoRequest).toHaveBeenCalledWith(req, REDIRECT_TO_SIGN_IN_PAGE);
-
     expect(logger.errorRequest).not.toHaveBeenCalled();
-
     expect(next).not.toHaveBeenCalled();
   });
 
@@ -154,10 +146,8 @@ describe('Authentication middleware', () => {
 
     expect(next).toHaveBeenCalledTimes(1);
     expect(next).toHaveBeenCalledWith(error);
-
     expect(logger.infoRequest).toHaveBeenCalledTimes(1);
     expect(logger.errorRequest).toHaveBeenCalledTimes(1);
-
     expect(res.locals).toEqual({});
   });
 
@@ -168,7 +158,6 @@ describe('Authentication middleware', () => {
 
     expect(resp.status).toEqual(302);
     expect(resp.text).toContain('/signin');
-
     expect(res.locals).toEqual({});
   });
 
@@ -182,7 +171,6 @@ describe('Authentication middleware', () => {
 
     expect(resp.status).toEqual(302);
     expect(resp.header.location).toEqual(signinRedirectPath);
-
     expect(res.locals).toEqual({});
   });
 
@@ -196,7 +184,6 @@ describe('Authentication middleware', () => {
 
     expect(resp.status).toEqual(302);
     expect(resp.header.location).toEqual(signinRedirectPath);
-
     expect(res.locals).toEqual({});
   });
 
@@ -207,12 +194,9 @@ describe('Authentication middleware', () => {
     authentication(req, res, next);
 
     expect(res.redirect).not.toHaveBeenCalled();
-
     expect(next).toHaveBeenCalledTimes(1);
-
     expect(logger.infoRequest).toHaveBeenCalledTimes(1);
     expect(logger.errorRequest).toHaveBeenCalledTimes(1);
-
     expect(res.locals).toEqual({});
   });
 });

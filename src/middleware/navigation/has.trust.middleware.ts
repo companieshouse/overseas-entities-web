@@ -1,27 +1,34 @@
 import { NextFunction, Request, Response } from 'express';
-import { createAndLogErrorRequest, logger } from '../../utils/logger';
-import { SOLD_LAND_FILTER_URL, SECURE_UPDATE_FILTER_URL, ROUTE_PARAM_TRUST_ID, ROUTE_PARAM_TRUSTEE_ID, ROUTE_PARAM_TRUSTEE_TYPE } from '../../config';
-import { getApplicationData } from "../../utils/application.data";
+import { fetchApplicationData } from "../../utils/application.data";
 import { ApplicationData } from '../../model/application.model';
 import { TrustKey } from '../../model/trust.model';
 import { NavigationErrorMessage } from './check.condition';
-import { containsTrustData, getTrustArray } from '../../utils/trusts';
 import { TrusteeType } from '../../model/trustee.type.model';
+import { isRegistrationJourney } from "../../utils/url";
+
+import { createAndLogErrorRequest, logger } from '../../utils/logger';
+import { containsTrustData, getTrustArray } from '../../utils/trusts';
+
+import {
+  SOLD_LAND_FILTER_URL,
+  SECURE_UPDATE_FILTER_URL,
+  ROUTE_PARAM_TRUST_ID,
+  ROUTE_PARAM_TRUSTEE_ID,
+  ROUTE_PARAM_TRUSTEE_TYPE
+} from '../../config';
 
 const hasTrustWithId = async (req: Request, res: Response, next: NextFunction, url: string): Promise<void> => {
   try {
     const trustId = req.params[ROUTE_PARAM_TRUST_ID];
-    const appData: ApplicationData = await getApplicationData(req.session);
-
+    const isRegistration = isRegistrationJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
     const isTrustPresent = appData[TrustKey]?.some(
       (trust) => trust.trust_id === trustId,
     );
     if (!isTrustPresent) {
       logger.infoRequest(req, NavigationErrorMessage);
-
       return res.redirect(url);
     }
-
     return next();
   } catch (err) {
     next(err);
@@ -29,23 +36,25 @@ const hasTrustWithId = async (req: Request, res: Response, next: NextFunction, u
 };
 
 const hasTrusteeWithId = async (req: Request, res: Response, next: NextFunction, url: string): Promise<void> => {
+
   try {
+
     const trustId = req.params[ROUTE_PARAM_TRUST_ID];
     const trusteeId = req.params[ROUTE_PARAM_TRUSTEE_ID];
     const trusteeType = req.params[ROUTE_PARAM_TRUSTEE_TYPE];
-    const appData: ApplicationData = await getApplicationData(req.session);
-
+    const isRegistration = isRegistrationJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
     const isTrustPresent = appData[TrustKey]?.some(
       (trust) => trust.trust_id === trustId,
     );
 
     if (!isTrustPresent) {
       logger.infoRequest(req, NavigationErrorMessage);
-
       return res.redirect(url);
     }
 
     let hasTrusteeForChange = false;
+
     if (trusteeId && trusteeType) {
       switch (trusteeType as TrusteeType){
           case TrusteeType.HISTORICAL:
@@ -68,6 +77,7 @@ const hasTrusteeWithId = async (req: Request, res: Response, next: NextFunction,
     }
 
     return next();
+
   } catch (err) {
     next(err);
   }
@@ -75,12 +85,11 @@ const hasTrusteeWithId = async (req: Request, res: Response, next: NextFunction,
 
 const hasTrustData = async (req: Request, res: Response, next: NextFunction, url: string): Promise<void> => {
   try {
-    const appData: ApplicationData = await getApplicationData(req.session);
-
+    const isRegistration = isRegistrationJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
     if (containsTrustData(getTrustArray(appData))) {
       return next();
     }
-
     logger.infoRequest(req, NavigationErrorMessage);
     return res.redirect(url);
   } catch (err) {

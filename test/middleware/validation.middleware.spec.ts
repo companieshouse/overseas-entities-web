@@ -2,9 +2,8 @@ jest.mock("ioredis");
 jest.mock("express-validator" );
 jest.mock("../../src/utils/logger");
 
-import { describe, expect, test, beforeEach, jest } from '@jest/globals';
-import { validationResult } from "express-validator";
 import { Request, Response } from 'express';
+import { validationResult } from "express-validator";
 
 import { checkValidations } from '../../src/middleware/validation.middleware';
 import { logger } from "../../src/utils/logger";
@@ -18,6 +17,7 @@ const res = { redirect: jest.fn() as any } as Response;
 const next = jest.fn();
 
 describe("Validation Middleware tests", () => {
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -25,7 +25,6 @@ describe("Validation Middleware tests", () => {
   test("should catch the error and call next(err)", async () => {
     mockValidationResult.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
     await checkValidations(req, res, next);
-
     expect(next).toHaveBeenCalledTimes(1);
     expect(mockLoggerErrorRequest).toHaveBeenCalledTimes(1);
   });

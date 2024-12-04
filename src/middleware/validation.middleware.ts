@@ -1,8 +1,31 @@
 import { NextFunction, Request, Response } from "express";
 import { validationResult, ValidationError } from "express-validator";
 
-import { getApplicationData, prepareData } from "../utils/application.data";
+import { logger } from '../utils/logger';
+import * as config from "../config";
 import { NAVIGATION } from "../utils/navigation";
+import { getBeneficialOwnerList } from "../utils/trusts";
+import { isActiveFeature } from "../utils/feature.flag";
+import { ApplicationData } from "../model/application.model";
+
+import { EntityNameKey, EntityNumberKey, ID } from "../model/data.types.model";
+import { fetchApplicationData, prepareData } from "../utils/application.data";
+
+import {
+  getUrlWithParamsToPath,
+  isRegistrationJourney,
+  isRemoveJourney,
+} from "../utils/url";
+
+import {
+  beneficialOwnersTypeSubmission,
+  checkNoChangeReviewStatement,
+  checkNoChangeStatementSubmission,
+  filingPeriodCeasedDateValidations,
+  filingPeriodResignedDateValidations,
+  filingPeriodStartDateValidations,
+} from "../validation/async/validation-middleware";
+
 import {
   DateOfBirthKey,
   StartDateKey,
@@ -18,23 +41,15 @@ import {
   ResignedOnDateKey
 } from "../model/date.model";
 
-import { logger } from '../utils/logger';
-import { EntityNameKey, EntityNumberKey, ID } from "../model/data.types.model";
-import { ApplicationData } from "../model/application.model";
-import { getBeneficialOwnerList } from "../utils/trusts";
-import { isActiveFeature } from "../utils/feature.flag";
-import * as config from "../config";
-import { getUrlWithParamsToPath, isRemoveJourney } from "../utils/url";
-import { beneficialOwnersTypeSubmission, checkNoChangeReviewStatement, checkNoChangeStatementSubmission, filingPeriodCeasedDateValidations, filingPeriodResignedDateValidations, filingPeriodStartDateValidations } from "../validation/async/validation-middleware";
-
 export const checkValidations = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+
   try {
+
     const errorList = validationResult(req);
     const customErrors = await getValidationErrors(req);
 
     if (!errorList.isEmpty() || customErrors.length > 0) {
       const errorListArray = !errorList.isEmpty() ? errorList.array() : [];
-
       const errors = formatValidationError([...errorListArray, ...customErrors]);
 
       // Bypass the direct use of variables with dashes that
@@ -54,7 +69,8 @@ export const checkValidations = async (req: Request, res: Response, next: NextFu
       // when changing BO or MO data after failing validation. If not present, undefined will be passed in, which is fine as those pages
       // that don't use id will just ignore it.
       const id = req.params[ID];
-      const appData: ApplicationData = await getApplicationData(req.session);
+      const isRegistration = isRegistrationJourney(req);
+      const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
       let entityName = req.body[EntityNameKey];
 
       if (req.body[EntityNameKey] === undefined) {
@@ -119,6 +135,7 @@ export const checkValidations = async (req: Request, res: Response, next: NextFu
     }
 
     return next();
+
   } catch (err) {
     logger.errorRequest(req, err);
     next(err);
@@ -126,12 +143,16 @@ export const checkValidations = async (req: Request, res: Response, next: NextFu
 };
 
 export const checkTrustValidations = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+
   try {
+
     const errorList = validationResult(req);
+
     if (!errorList.isEmpty()) {
       const errors = formatValidationError(errorList.array());
       const routePath = req.route.path;
-      const appData: ApplicationData = await getApplicationData(req.session);
+      const isRegistration = isRegistrationJourney(req);
+      const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
 
       return res.render(NAVIGATION[routePath].currentPage, {
         backLinkUrl: await NAVIGATION[routePath].previousPage(appData),
@@ -145,6 +166,7 @@ export const checkTrustValidations = async (req: Request, res: Response, next: N
     }
 
     return next();
+
   } catch (err) {
     logger.errorRequest(req, err);
     next(err);

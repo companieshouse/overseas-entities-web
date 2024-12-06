@@ -1,18 +1,17 @@
+import { Request } from "express";
 import { Transaction } from "@companieshouse/api-sdk-node/dist/services/transaction/types";
 import { Session } from "@companieshouse/node-session-handler";
 import { ApiResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
-
-import { Request } from "express";
-
 import { createAndLogErrorRequest, logger } from "../utils/logger";
-import { DESCRIPTION, REFERENCE } from "../config";
-import { getApplicationData } from "../utils/application.data";
+import { fetchApplicationData } from "../utils/application.data";
 import { ApplicationData } from "../model";
 import { makeApiCallWithRetry } from "./retry.handler.service";
 import { EntityNameKey, EntityNumberKey } from "../model/data.types.model";
+import { isRegistrationJourney } from "../utils/url";
+import { DESCRIPTION, REFERENCE } from "../config";
 
 export const postTransaction = async (req: Request, session: Session, data?: ApplicationData): Promise<string> => {
-  const applicationData: ApplicationData = data ?? await getApplicationData(session);
+  const applicationData: ApplicationData = data ?? await fetchApplicationData(req, isRegistrationJourney(req));
   const companyName = applicationData[EntityNameKey];
   const companyNumber = applicationData[EntityNumberKey];
 

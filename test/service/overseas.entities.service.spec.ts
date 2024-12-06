@@ -1,19 +1,21 @@
 jest.mock("../../src/utils/logger");
 jest.mock("../../src/utils/application.data");
+jest.mock("../../src/utils/url");
 jest.mock("../../src/service/retry.handler.service");
 
-import { describe, expect, test, jest, beforeEach } from "@jest/globals";
 import { Request } from "express";
-
 import { createAndLogErrorRequest, logger } from "../../src/utils/logger";
-import { getApplicationData } from "../../src/utils/application.data";
+import { isRegistrationJourney, } from "../../src/utils/url";
+import { makeApiCallWithRetry } from "../../src/service/retry.handler.service";
+import { fetchApplicationData } from "../../src/utils/application.data";
+import { BAD_REQUEST, UNAUTHORISED } from "../__mocks__/text.mock";
 
 import {
   createOverseasEntity,
   getOverseasEntity,
   updateOverseasEntity
 } from "../../src/service/overseas.entities.service";
-import { makeApiCallWithRetry } from "../../src/service/retry.handler.service";
+
 import {
   APPLICATION_DATA_MOCK,
   ERROR,
@@ -24,19 +26,22 @@ import {
   serviceNameOE,
   TRANSACTION_ID,
 } from "../__mocks__/session.mock";
-import { BAD_REQUEST, UNAUTHORISED } from "../__mocks__/text.mock";
 
-const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 const mockInfoRequestLog = logger.infoRequest as jest.Mock;
 const mockCreateAndLogErrorRequest = createAndLogErrorRequest as jest.Mock;
 mockCreateAndLogErrorRequest.mockReturnValue(ERROR);
 
 const mockMakeApiCallWithRetry = makeApiCallWithRetry as jest.Mock;
 
+const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
+mockIsRegistrationJourney.mockReturnValue(true);
+
 const session = getSessionRequestWithExtraData();
 const req: Request = { session } as Request;
 
 describe(`Overseas Entity Service test suite`, () => {
+
   beforeEach (() => {
     jest.clearAllMocks();
   });
@@ -44,7 +49,7 @@ describe(`Overseas Entity Service test suite`, () => {
   test(`createOverseasEntity should respond with created httpStatusCode`, async () => {
     const mockResponse = { httpStatusCode: 201, resource: { id: OVERSEAS_ENTITY_ID } };
     mockMakeApiCallWithRetry.mockReturnValueOnce(mockResponse);
-    mockGetApplicationData.mockReturnValueOnce( APPLICATION_DATA_MOCK );
+    mockFetchApplicationData.mockReturnValueOnce( APPLICATION_DATA_MOCK );
     const response = await createOverseasEntity(req, session, TRANSACTION_ID);
 
     expect(response).toEqual(OVERSEAS_ENTITY_ID);
@@ -87,13 +92,14 @@ describe(`Overseas Entity Service test suite`, () => {
 });
 
 describe(`Update Overseas Entity Service test suite`, () => {
+
   beforeEach (() => {
     jest.clearAllMocks();
   });
 
   test(`updateOverseasEntity should respond with created httpStatusCode`, async () => {
     const mockResponse = { httpStatusCode: 200 };
-    mockGetApplicationData.mockReturnValueOnce( APPLICATION_DATA_MOCK );
+    mockFetchApplicationData.mockReturnValueOnce( APPLICATION_DATA_MOCK );
     mockMakeApiCallWithRetry.mockResolvedValueOnce( mockResponse);
 
     await updateOverseasEntity(req, getSessionRequestWithExtraData());
@@ -117,7 +123,7 @@ describe(`Update Overseas Entity Service test suite`, () => {
   test(`updateOverseasEntity should respond with 400 (Bad Request) error message`, async () => {
     const mockResponse = { httpStatusCode: 400, errors: [BAD_REQUEST] };
     const errorMsg = `'putOverseasEntity' for transaction id '${TRANSACTION_ID}' and overseas entity id '${OVERSEAS_ENTITY_ID}' encountered an error - ${JSON.stringify(mockResponse)}`;
-    mockGetApplicationData.mockReturnValueOnce( APPLICATION_DATA_MOCK );
+    mockFetchApplicationData.mockReturnValueOnce( APPLICATION_DATA_MOCK );
     mockMakeApiCallWithRetry.mockResolvedValueOnce(mockResponse);
 
     await expect( updateOverseasEntity(req, session) ).rejects.toThrow(ERROR);

@@ -2,9 +2,12 @@ jest.mock('../../src/utils/feature.flag');
 jest.mock('../../src/utils/application.data');
 jest.mock('../../src/utils/update/no.change.journey');
 
-import { describe, expect, jest, test } from '@jest/globals';
 import { Request } from "express";
 import * as config from "../../src/config";
+import { isActiveFeature } from "../../src/utils/feature.flag";
+import { getApplicationData } from "../../src/utils/application.data";
+import { isNoChangeJourney } from "../../src/utils/update/no.change.journey";
+
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from '../../src/model/who.is.making.filing.model';
 
 import {
@@ -16,10 +19,6 @@ import {
   getOverseasEntityPresenterBackLink,
   getUpdateReviewStatementBackLink
 } from "../../src/utils/navigation";
-
-import { isActiveFeature } from "../../src/utils/feature.flag";
-import { getApplicationData } from "../../src/utils/application.data";
-import { isNoChangeJourney } from "../../src/utils/update/no.change.journey";
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
@@ -103,6 +102,11 @@ describe("NAVIGATION utils", () => {
   test(`NAVIGATION returns ${config.SOLD_LAND_FILTER_URL} when calling previousPage on ${config.SECURE_REGISTER_FILTER_URL} object`, async () => {
     const navigation = await NAVIGATION[config.SECURE_REGISTER_FILTER_URL].previousPage();
     expect(navigation).toEqual(config.SOLD_LAND_FILTER_URL);
+  });
+
+  test(`NAVIGATION returns ${config.SOLD_LAND_FILTER_WITH_PARAMS_URL} when calling previousPage on ${config.SECURE_REGISTER_FILTER_WITH_PARAMS_URL} object`, async () => {
+    const navigation = await NAVIGATION[config.SECURE_REGISTER_FILTER_WITH_PARAMS_URL].previousPage(mockGetApplicationData(), mockRequestWithParams);
+    expect(navigation).toEqual(config.SOLD_LAND_FILTER_WITH_PARAMS_URL);
   });
 
   test(`NAVIGATION returns ${config.SECURE_REGISTER_FILTER_URL} when calling previousPage on ${config.INTERRUPT_CARD_URL} object`, async () => {

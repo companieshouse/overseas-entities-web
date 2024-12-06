@@ -181,6 +181,11 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.SOLD_LAND_FILTER_URL,
     nextPage: [config.INTERRUPT_CARD_URL]
   },
+  [config.SECURE_REGISTER_FILTER_WITH_PARAMS_URL]: {
+    currentPage: config.SECURE_REGISTER_FILTER_PAGE,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.SOLD_LAND_FILTER_WITH_PARAMS_URL, req),
+    nextPage: [config.INTERRUPT_CARD_WITH_PARAMS_URL]
+  },
   [config.INTERRUPT_CARD_URL]: {
     currentPage: config.INTERRUPT_CARD_PAGE,
     previousPage: () => config.SECURE_REGISTER_FILTER_URL,

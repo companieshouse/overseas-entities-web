@@ -2,11 +2,31 @@ import { Request } from "express";
 import { v4 as uuidv4 } from 'uuid';
 import { Session } from "@companieshouse/node-session-handler";
 import ApiClient from "@companieshouse/api-sdk-node/dist/client";
-import { CreatePaymentRequest, Payment } from "@companieshouse/api-sdk-node/dist/services/payment";
-
+import { isActiveFeature } from "../utils/feature.flag";
+import { ApplicationData } from "model";
 import { createAndLogErrorRequest, logger } from "../utils/logger";
 import { createOAuthApiClient } from "./api.service";
-import { getApplicationData, setApplicationData, setExtraData } from "../utils/application.data";
+
+import { CreatePaymentRequest, Payment } from "@companieshouse/api-sdk-node/dist/services/payment";
+
+import {
+  OverseasEntityKey,
+  PaymentKey,
+  Transactionkey,
+} from "../model/data.types.model";
+
+import {
+  fetchApplicationData,
+  setApplicationData,
+  setExtraData,
+} from "../utils/application.data";
+
+import {
+  getUrlWithParamsToPath,
+  getUrlWithTransactionIdAndSubmissionId,
+  isRegistrationJourney,
+} from "../utils/url";
+
 import {
   PAYMENT_REQUIRED_HEADER,
   REFERENCE,
@@ -22,10 +42,6 @@ import {
   ACTIVE_SUBMISSION_BASE_PATH,
   LANDING_URL,
 } from "../config";
-import { OverseasEntityKey, PaymentKey, Transactionkey } from "../model/data.types.model";
-import { getUrlWithParamsToPath, getUrlWithTransactionIdAndSubmissionId } from "../utils/url";
-import { isActiveFeature } from "../utils/feature.flag";
-import { ApplicationData } from "model";
 
 // If the transaction response is fee-bearing, a `X-Payment-Required` header will be received,
 // directing the application to the Payment Platform to begin a payment session, otherwise
@@ -39,7 +55,8 @@ export const startPaymentsSession = async (
   baseURL?: string
 ): Promise<string> => {
 
-  const appData: ApplicationData = await getApplicationData(req.session);
+  const isRegistration = isRegistrationJourney(req);
+  const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
 
   setExtraData(session, {
     ...appData,
@@ -52,9 +69,6 @@ export const startPaymentsSession = async (
   if (!paymentUrl) {
     // Only if transaction does not have a fee
     let confirmationPageUrl = CONFIRMATION_URL;
-
-    // TODO Remove this and the check for being on the registration journey when ids are in the Update journey URLs
-    const isRegistration: boolean = req.path.startsWith(LANDING_URL);
 
     if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration){
       confirmationPageUrl = getUrlWithParamsToPath(CONFIRMATION_WITH_PARAMS_URL, req);

@@ -1,11 +1,11 @@
-import { Session } from "@companieshouse/node-session-handler";
 import { Request } from "express";
-
+import { Session } from "@companieshouse/node-session-handler";
 import { createAndLogErrorRequest, logger } from "../utils/logger";
-import { getApplicationData } from "../utils/application.data";
-import { Transactionkey, OverseasEntityKey } from "../model/data.types.model";
+import { fetchApplicationData } from "../utils/application.data";
 import { makeApiCallWithRetry } from "./retry.handler.service";
 import { ApplicationData } from "../model/application.model";
+import { isRegistrationJourney } from "../utils/url";
+import { Transactionkey, OverseasEntityKey } from "../model/data.types.model";
 
 export const createOverseasEntity = async (
   req: Request,
@@ -16,7 +16,7 @@ export const createOverseasEntity = async (
 
   logger.infoRequest(req, `Calling 'postOverseasEntity' for transaction id '${transactionId}'`);
 
-  const appData: ApplicationData = data ?? await getApplicationData(session);
+  const appData: ApplicationData = data ?? await fetchApplicationData(req, isRegistrationJourney(req));
 
   const response = await makeApiCallWithRetry(
     "overseasEntity",
@@ -38,7 +38,8 @@ export const createOverseasEntity = async (
 };
 
 export const updateOverseasEntity = async (req: Request, session: Session, data?: ApplicationData) => {
-  const appData: ApplicationData = data ?? await getApplicationData(session);
+
+  const appData: ApplicationData = data ?? await fetchApplicationData(req, isRegistrationJourney(req));
   const transactionId = appData[Transactionkey] as string;
   const overseasEntityId = appData[OverseasEntityKey] as string;
 
@@ -56,7 +57,6 @@ export const updateOverseasEntity = async (req: Request, session: Session, data?
 
   if (response.httpStatusCode !== 200) {
     const errorMsg = `'putOverseasEntity' for transaction id '${transactionId}' and overseas entity id '${overseasEntityId}' encountered an error - ${JSON.stringify(response)}`;
-
     throw createAndLogErrorRequest(req, errorMsg);
   }
 

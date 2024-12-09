@@ -1,8 +1,27 @@
 jest.mock('../../src/utils/logger');
 jest.mock("../../src/utils/application.data");
+jest.mock("../../src/utils/url");
 jest.mock("../../src/service/retry.handler.service");
 
-import { describe, expect, test, jest, beforeEach } from "@jest/globals";
+import { Request } from "express";
+import { createAndLogErrorRequest, logger } from '../../src/utils/logger';
+import { makeApiCallWithRetry } from "../../src/service/retry.handler.service";
+import { isRegistrationJourney, } from "../../src/utils/url";
+import { fetchApplicationData } from "../../src/utils/application.data";
+
+import { EntityNameKey, EntityNumberKey } from "../../src/model/data.types.model";
+
+import {
+  closeTransaction,
+  postTransaction,
+  getTransaction
+} from "../../src/service/transaction.service";
+
+import {
+  MOCK_GET_ERROR_TRANSACTION_RESPONSE,
+  MOCK_GET_TRANSACTION_RESPONSE,
+  MOCK_TRANSACTION_ID
+} from "../__mocks__/transaction.mock";
 
 import {
   APPLICATION_DATA_MOCK,
@@ -21,30 +40,17 @@ import {
   TRANSACTION_ID,
   TRANSACTION_POST_PARAMS,
 } from "../__mocks__/session.mock";
-import { createAndLogErrorRequest, logger } from '../../src/utils/logger';
-import { getApplicationData } from "../../src/utils/application.data";
-
-import { Request } from "express";
-import {
-  closeTransaction,
-  postTransaction,
-  getTransaction
-} from "../../src/service/transaction.service";
-import { makeApiCallWithRetry } from "../../src/service/retry.handler.service";
-import { EntityNameKey, EntityNumberKey } from "../../src/model/data.types.model";
-import {
-  MOCK_GET_ERROR_TRANSACTION_RESPONSE,
-  MOCK_GET_TRANSACTION_RESPONSE,
-  MOCK_TRANSACTION_ID
-} from "../__mocks__/transaction.mock";
 
 const mockInfoRequestLog = logger.infoRequest as jest.Mock;
 
 const mockCreateAndLogErrorRequest = createAndLogErrorRequest as jest.Mock;
 mockCreateAndLogErrorRequest.mockReturnValue(ERROR);
 
-const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 const mockMakeApiCallWithRetry = makeApiCallWithRetry as jest.Mock;
+
+const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
+mockIsRegistrationJourney.mockReturnValue(true);
 
 const session = getSessionRequestWithExtraData();
 const req: Request = {} as Request;
@@ -56,10 +62,11 @@ describe('Transaction Service test suite', () => {
   });
 
   describe('POST Transaction', () => {
+
     test(`Should successfully post a transaction when ${EntityNameKey} is blank`, async () => {
       const companyNumber = "undefined";
       const companyName = 'undefined';
-      mockGetApplicationData.mockReturnValueOnce( { ...APPLICATION_DATA_MOCK, [EntityNameKey]: companyName, [EntityNumberKey]: companyNumber } );
+      mockFetchApplicationData.mockReturnValueOnce( { ...APPLICATION_DATA_MOCK, [EntityNameKey]: companyName, [EntityNumberKey]: companyNumber } );
       const mockResponse = { httpStatusCode: 200, resource: TRANSACTION };
       mockMakeApiCallWithRetry.mockReturnValueOnce( mockResponse );
       const response = await postTransaction(req, session);
@@ -76,7 +83,7 @@ describe('Transaction Service test suite', () => {
     test(`Should successfully post a transaction when ${EntityNameKey} is not blank`, async () => {
       const companyNumber = "OE111129";
       const companyName = 'overseasEntityName';
-      mockGetApplicationData.mockReturnValueOnce( { ...APPLICATION_DATA_MOCK, [EntityNameKey]: companyName, [EntityNumberKey]: companyNumber } );
+      mockFetchApplicationData.mockReturnValueOnce( { ...APPLICATION_DATA_MOCK, [EntityNameKey]: companyName, [EntityNumberKey]: companyNumber } );
       const mockResponse = { httpStatusCode: 200, resource: TRANSACTION };
       mockMakeApiCallWithRetry.mockReturnValueOnce(mockResponse);
       const response = await postTransaction(req, session);
@@ -91,18 +98,16 @@ describe('Transaction Service test suite', () => {
     });
 
     test(`Should throw an error when HTTP status code is 500`, async () => {
-      mockGetApplicationData.mockReturnValueOnce( APPLICATION_DATA_MOCK );
+      mockFetchApplicationData.mockReturnValueOnce( APPLICATION_DATA_MOCK );
       mockMakeApiCallWithRetry.mockReturnValueOnce( { httpStatusCode: 500 } );
-
       await expect( postTransaction(req, session) ).rejects.toThrow(ERROR);
       expect(mockInfoRequestLog).toHaveBeenCalledWith(req, `Calling 'postTransaction' for company number '${COMPANY_NUMBER}' with name '${OVERSEAS_NAME_MOCK}'`);
       expect(mockCreateAndLogErrorRequest).toBeCalledWith(req, `'postTransaction' for company number '${COMPANY_NUMBER}' with name '${OVERSEAS_NAME_MOCK}' returned HTTP status code 500`);
     });
 
     test(`Should throw an error when no transaction api response is received`, async () => {
-      mockGetApplicationData.mockReturnValueOnce( APPLICATION_DATA_MOCK );
+      mockFetchApplicationData.mockReturnValueOnce( APPLICATION_DATA_MOCK );
       mockMakeApiCallWithRetry.mockResolvedValueOnce({ httpStatusCode: 200 });
-
       await expect( postTransaction(req, session) ).rejects.toThrow(ERROR);
       expect(mockInfoRequestLog).toHaveBeenCalledWith(req, `Calling 'postTransaction' for company number '${COMPANY_NUMBER}' with name '${OVERSEAS_NAME_MOCK}'`);
       expect(mockCreateAndLogErrorRequest).toBeCalledWith(req, `'postTransaction' for company number '${COMPANY_NUMBER}' with name '${OVERSEAS_NAME_MOCK}' returned no response`);
@@ -110,6 +115,7 @@ describe('Transaction Service test suite', () => {
   });
 
   describe('CLOSE Transaction', () => {
+
     test('Should successfully update (change status to close) transaction', async () => {
       mockMakeApiCallWithRetry.mockResolvedValueOnce(TRANSACTION_CLOSED_RESPONSE);
       const response = await closeTransaction(req, session, TRANSACTION_ID, OVERSEAS_ENTITY_ID);
@@ -132,7 +138,6 @@ describe('Transaction Service test suite', () => {
 
     test(`Should throw an error when no response returned`, async () => {
       mockMakeApiCallWithRetry.mockResolvedValueOnce(null);
-
       await expect( closeTransaction(req, session, TRANSACTION_ID, OVERSEAS_ENTITY_ID) ).rejects.toThrow(ERROR);
       expect(mockInfoRequestLog).toHaveBeenCalledWith(req, `Calling 'putTransaction' for transaction id '${TRANSACTION_ID}'`);
       expect(mockCreateAndLogErrorRequest).toBeCalledWith(req, `'putTransaction' for transaction id '${TRANSACTION_ID}' returned no response`);
@@ -140,6 +145,7 @@ describe('Transaction Service test suite', () => {
   });
 
   describe('GET Transaction', () => {
+
     test('Should successfully get transaction', async () => {
       mockMakeApiCallWithRetry.mockResolvedValueOnce(MOCK_GET_TRANSACTION_RESPONSE);
       const mockReq = { session } as Request;
@@ -149,14 +155,12 @@ describe('Transaction Service test suite', () => {
         serviceNameTransaction, fnNameGetTransaction, mockReq, session, MOCK_TRANSACTION_ID
       );
       expect(response).toEqual(MOCK_GET_TRANSACTION_RESPONSE.resource);
-
       expect(mockInfoRequestLog).toHaveBeenCalledWith(mockReq, `Calling 'getTransaction' for transaction id '${MOCK_TRANSACTION_ID}'`);
       expect(mockInfoRequestLog).toHaveBeenCalledWith(mockReq, `Response from 'getTransaction' for transaction id '${MOCK_TRANSACTION_ID}': ${JSON.stringify(MOCK_GET_TRANSACTION_RESPONSE)}`);
     });
 
     test(`Should throw an error when HTTP response code is 500`, async () => {
       mockMakeApiCallWithRetry.mockResolvedValueOnce(MOCK_GET_ERROR_TRANSACTION_RESPONSE);
-
       await expect( getTransaction(req, MOCK_TRANSACTION_ID) ).rejects.toThrow(ERROR);
       expect(mockInfoRequestLog).toHaveBeenCalledWith(req, `Calling 'getTransaction' for transaction id '${MOCK_TRANSACTION_ID}'`);
       expect(mockCreateAndLogErrorRequest).toBeCalledWith(req, `'getTransaction' for transaction id '${MOCK_TRANSACTION_ID}' returned HTTP status code 500`);
@@ -164,7 +168,6 @@ describe('Transaction Service test suite', () => {
 
     test(`Should throw an error when response is not correct`, async () => {
       mockMakeApiCallWithRetry.mockResolvedValueOnce( null );
-
       await expect( getTransaction(req, MOCK_TRANSACTION_ID) ).rejects.toThrow(ERROR);
       expect(mockInfoRequestLog).toHaveBeenCalledWith(req, `Calling 'getTransaction' for transaction id '${MOCK_TRANSACTION_ID}'`);
       expect(mockCreateAndLogErrorRequest).toBeCalledWith(
@@ -175,7 +178,6 @@ describe('Transaction Service test suite', () => {
 
     test(`Should throw an error when response does not have httpStatusCode field`, async () => {
       mockMakeApiCallWithRetry.mockResolvedValueOnce( { status: "any", body: "any" } );
-
       await expect( getTransaction(req, MOCK_TRANSACTION_ID) ).rejects.toThrow(ERROR);
       expect(mockInfoRequestLog).toHaveBeenCalledWith(req, `Calling 'getTransaction' for transaction id '${MOCK_TRANSACTION_ID}'`);
       expect(mockCreateAndLogErrorRequest).toBeCalledWith(
@@ -186,7 +188,6 @@ describe('Transaction Service test suite', () => {
 
     test(`Should throw an error when no resource returned`, async () => {
       mockMakeApiCallWithRetry.mockResolvedValueOnce({ httpStatusCode: 200, any: "any" });
-
       await expect( getTransaction(req, MOCK_TRANSACTION_ID) ).rejects.toThrow(ERROR);
       expect(mockInfoRequestLog).toHaveBeenCalledWith(req, `Calling 'getTransaction' for transaction id '${MOCK_TRANSACTION_ID}'`);
       expect(mockCreateAndLogErrorRequest).toBeCalledWith(

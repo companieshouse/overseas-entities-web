@@ -12,14 +12,19 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 import { prepareCSPConfig } from "./middleware/content.security.policy.middleware";
 import nocache from "nocache";
-
 import * as config from "./config";
 import { logger } from "./utils/logger";
 import router from "./routes";
 import errorHandler from "./controllers/error.controller";
-import { createChangeLinkConfig, createSummaryListLink } from "./utils/change.link";
 import { countryFilter } from "./utils/country.filter";
 import { ErrorMessages } from "./validation/error.messages";
+import { isActiveFeature } from "./utils/feature.flag";
+import { getTransactionIdAndSubmissionIdFromOriginalUrl } from "./utils/url";
+import {
+  createChangeLinkConfig,
+  createSummaryListLink,
+  createChangeLinkWithIds,
+} from "./utils/change.link";
 
 const app = express();
 
@@ -39,6 +44,7 @@ const nunjucksEnv = nunjucks.configure([
   autoescape: true,
   express: app,
 });
+
 nunjucksEnv.addGlobal("CDN_HOST", config.CDN_HOST);
 nunjucksEnv.addGlobal("SERVICE_NAME", config.SERVICE_NAME);
 nunjucksEnv.addGlobal("UPDATE_SERVICE_NAME", config.UPDATE_SERVICE_NAME);
@@ -47,7 +53,9 @@ nunjucksEnv.addGlobal("OE_CONFIGS", config);
 nunjucksEnv.addGlobal("ERROR_MESSAGES", ErrorMessages);
 nunjucksEnv.addGlobal("COUNTRY_FILTER", countryFilter );
 nunjucksEnv.addGlobal("CREATE_CHANGE_LINK", createChangeLinkConfig);
+nunjucksEnv.addGlobal("CREATE_CHANGE_LINK_WITH_IDs", createChangeLinkWithIds);
 nunjucksEnv.addGlobal("SUMMARY_LIST_LINK", createSummaryListLink);
+nunjucksEnv.addGlobal("IS_REDIS_REMOVAL_ENABLED", isActiveFeature(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB));
 nunjucksEnv.addGlobal("PIWIK_URL", config.PIWIK_URL);
 nunjucksEnv.addGlobal("PIWIK_SITE_ID", config.PIWIK_SITE_ID);
 nunjucksEnv.addGlobal("PIWIK_START_GOAL_ID", config.PIWIK_START_GOAL_ID);
@@ -60,6 +68,13 @@ nunjucksEnv.addGlobal("MATOMO_ASSET_PATH", `//${config.CDN_HOST}`);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+app.use((req, res, next) => {
+  const ids = getTransactionIdAndSubmissionIdFromOriginalUrl(req);
+  nunjucksEnv.addGlobal("OE_TRANSACTION_ID", ids?.transactionId);
+  nunjucksEnv.addGlobal("OE_SUBMISSION_ID", ids?.submissionId);
+  next();
+});
 
 const nonce: string = uuidv4();
 app.use(helmet(prepareCSPConfig(nonce)));

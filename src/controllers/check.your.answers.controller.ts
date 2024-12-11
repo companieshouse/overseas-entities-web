@@ -52,9 +52,11 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       changeLinkUrl,
       overseasEntityHeading,
       whoIsCompletingChangeLink,
+      transactionId: req?.params[config.ROUTE_PARAM_TRANSACTION_ID],
+      submissionId: req?.params[config.ROUTE_PARAM_SUBMISSION_ID],
       pageParams: {
         isTrustFeatureEnabled: isActiveFeature(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
-        isRegistration: true
+        isRegistration: true,
       },
       FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC: isActiveFeature(config.FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)
     });

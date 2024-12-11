@@ -1,6 +1,10 @@
 {% set inNoChangeJourney = pageParams.noChangeFlag %}
 {% set inChangeJourney = not inNoChangeJourney %}
 
+{% if pageParams.isRegistration and IS_REDIS_REMOVAL_ENABLED %}
+  {% set changeLinkUrl = CREATE_CHANGE_LINK_WITH_IDs(OE_CONFIGS.ENTITY_WITH_PARAMS_URL, OE_TRANSACTION_ID, OE_SUBMISSION_ID) %}
+{% endif %}
+
 {% set formattedPrincipalAddressHtml %}
   {% set address = entity.principal_address %}
   {% include "includes/display_address.html" %}
@@ -29,8 +33,13 @@
 {% endset %}
 
 {% if pageParams.isRegistration %}
+  {% if not IS_REDIS_REMOVAL_ENABLED %}
+    {% set changeLinkEntityName = OE_CONFIGS.ENTITY_CHANGE_NAME %}
+  {% else %}
+    {% set changeLinkEntityName = CREATE_CHANGE_LINK_WITH_IDs(OE_CONFIGS.ENTITY_CHANGE_NAME_WITH_PARAMS, OE_TRANSACTION_ID, OE_SUBMISSION_ID) %}
+  {% endif %}
   {% set entityNameLink = CREATE_CHANGE_LINK(
-    OE_CONFIGS.ENTITY_CHANGE_NAME,
+    changeLinkEntityName,
     "Name of the overseas entity",
     "change-entity-name-button")
   %}
@@ -102,7 +111,6 @@
   }
   %}
 {% endif %}
-
 
 <h1 class="govuk-heading-l">{{ overseasEntityHeading }}</h1>
 

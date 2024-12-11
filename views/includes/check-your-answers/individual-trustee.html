@@ -42,7 +42,11 @@
 {% endset %}
 
 {% if pageParams.isRegistration %}
-  {% set changeLinkUrl = OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE + "/" + individualTrustee.id %}
+  {% if not IS_REDIS_REMOVAL_ENABLED %}
+    {% set changeLinkUrl = OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE + "/" + individualTrustee.id %}
+  {% else %}
+    {% set changeLinkUrl = CREATE_CHANGE_LINK_WITH_IDs(OE_CONFIGS.TRUST_ENTRY_WITH_PARAMS_URL, OE_TRANSACTION_ID, OE_SUBMISSION_ID) +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE + "/" + individualTrustee.id %}
+  {% endif %}
 {% else %}
   {% set stillInvolved = individualTrustee.still_involved %}
   {% set isNotStillInvolved = stillInvolved === "No" %}    

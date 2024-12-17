@@ -55,7 +55,7 @@ nunjucksEnv.addGlobal("COUNTRY_FILTER", countryFilter );
 nunjucksEnv.addGlobal("CREATE_CHANGE_LINK", createChangeLinkConfig);
 nunjucksEnv.addGlobal("CREATE_CHANGE_LINK_WITH_IDs", createChangeLinkWithIds);
 nunjucksEnv.addGlobal("SUMMARY_LIST_LINK", createSummaryListLink);
-nunjucksEnv.addGlobal("IS_REDIS_REMOVAL_ENABLED", isActiveFeature(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB));
+nunjucksEnv.addGlobal("IS_REDIS_REMOVAL_ENABLED", isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL));
 nunjucksEnv.addGlobal("PIWIK_URL", config.PIWIK_URL);
 nunjucksEnv.addGlobal("PIWIK_SITE_ID", config.PIWIK_SITE_ID);
 nunjucksEnv.addGlobal("PIWIK_START_GOAL_ID", config.PIWIK_START_GOAL_ID);

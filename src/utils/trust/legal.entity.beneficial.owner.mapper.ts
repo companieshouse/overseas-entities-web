@@ -125,20 +125,20 @@ const mapLegalEntityTrusteeFromSessionToPage = (
     is_newly_added: trustee.ch_references ? false : true,
     roleWithinTrust: trustee.type,
     legalEntityName: trustee.name,
-    principal_address_property_name_number: trustee.ro_address_premises,
-    principal_address_line_1: trustee.ro_address_line_1,
-    principal_address_line_2: trustee.ro_address_line_2,
-    principal_address_town: trustee.ro_address_locality,
-    principal_address_county: trustee.ro_address_region,
-    principal_address_country: trustee.ro_address_country,
-    principal_address_postcode: trustee.ro_address_postal_code,
-    service_address_property_name_number: trustee.sa_address_premises,
-    service_address_line_1: trustee.sa_address_line_1,
-    service_address_line_2: trustee.sa_address_line_2,
-    service_address_town: trustee.sa_address_locality,
-    service_address_county: trustee.sa_address_region,
-    service_address_country: trustee.sa_address_country,
-    service_address_postcode: trustee.sa_address_postal_code,
+    principal_address_property_name_number: trustee.ro_address_premises ?? trustee?.registered_office_address?.property_name_number,
+    principal_address_line_1: trustee.ro_address_line_1 ?? trustee?.registered_office_address?.line_1,
+    principal_address_line_2: trustee.ro_address_line_2 ?? trustee?.registered_office_address?.line_2,
+    principal_address_town: trustee.ro_address_locality ?? trustee?.registered_office_address?.town,
+    principal_address_county: trustee.ro_address_region ?? trustee?.registered_office_address?.county,
+    principal_address_country: trustee.ro_address_country ?? trustee?.registered_office_address?.country,
+    principal_address_postcode: trustee.ro_address_postal_code ?? trustee?.registered_office_address?.postcode,
+    service_address_property_name_number: trustee.sa_address_premises ?? trustee?.service_address?.property_name_number,
+    service_address_line_1: trustee.sa_address_line_1 ?? trustee?.service_address?.line_1,
+    service_address_line_2: trustee.sa_address_line_2 ?? trustee?.service_address?.line_2,
+    service_address_town: trustee.sa_address_locality ?? trustee?.service_address?.town,
+    service_address_county: trustee.sa_address_region ?? trustee?.service_address?.county,
+    service_address_country: trustee.sa_address_country ?? trustee?.service_address?.country,
+    service_address_postcode: trustee.sa_address_postal_code ?? trustee?.service_address?.postcode,
     governingLaw: trustee.identification_legal_authority,
     legalForm: trustee.identification_legal_form,
     public_register_name: trustee.identification_place_registered,
@@ -158,13 +158,13 @@ const mapLegalEntityTrusteeFromSessionToPage = (
   const stillInvolvedInTrust: string =
   !trustee.still_involved || !isYesOrNo(trustee.still_involved) ? "" : YesOrNo[trustee.still_involved];
 
-  if (trustee.type === RoleWithinTrustType.INTERESTED_PERSON) {
+  if (trustee?.type && (trustee.type.toLowerCase() === RoleWithinTrustType.INTERESTED_PERSON.toLowerCase())) {
     return {
       ...data,
       interestedPersonStartDateDay: trustee.date_became_interested_person_day,
       interestedPersonStartDateMonth: trustee.date_became_interested_person_month,
       interestedPersonStartDateYear: trustee.date_became_interested_person_year,
-      principal_address_property_name_number: trustee.ro_address_premises,
+      principal_address_property_name_number: trustee.ro_address_premises ?? trustee?.registered_office_address?.property_name_number,
       stillInvolved: stillInvolvedInTrust,
     } as Page.TrustLegalEntityForm;
   }

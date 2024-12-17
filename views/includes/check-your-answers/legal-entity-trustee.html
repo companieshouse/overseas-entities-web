@@ -8,13 +8,13 @@
 
 {% set legalEntityFormattedResidentialAddressHtml %}
    {% set address = {
-      property_name_number: legalEntity.ro_address_premises,
-      line_1: legalEntity.ro_address_line_1,
-      line_2: legalEntity.ro_address_line_2,
-      town: legalEntity.ro_address_locality,
-      county: legalEntity.ro_address_region,
-      country: legalEntity.ro_address_country,
-      postcode: legalEntity.ro_address_postal_code
+      property_name_number: legalEntity.registered_office_address.property_name_number,
+      line_1: legalEntity.ro_address_line_1 or legalEntity.registered_office_address.line_1,
+      line_2: legalEntity.ro_address_line_2 or legalEntity.registered_office_address.line_2,
+      town: legalEntity.ro_address_locality or legalEntity.registered_office_address.town,
+      county: legalEntity.ro_address_region or legalEntity.registered_office_address.county,
+      country: legalEntity.ro_address_country or legalEntity.registered_office_address.country,
+      postcode: legalEntity.ro_address_postal_code or legalEntity.registered_office_address.postcode
     } %}
   {% include "includes/display_address.html" %}
 {% endset %}
@@ -27,13 +27,13 @@
   {% else %}
     {% set legalEntityChangeServiceAddressHtml = OE_CONFIGS.CHANGE_SERVICE_ADDRESS %}
     {% set address = {
-      property_name_number: legalEntity.sa_address_premises,
-      line_1: legalEntity.sa_address_line_1,
-      line_2: legalEntity.sa_address_line_2,
-      town: legalEntity.sa_address_locality,
-      county: legalEntity.sa_address_region,
-      country: legalEntity.sa_address_country,
-      postcode: legalEntity.sa_address_postal_code
+      property_name_number: legalEntity.sa_address_premises or legalEntity.service_address.property_name_number,
+      line_1: legalEntity.sa_address_line_1 or legalEntity.service_address.line_1,
+      line_2: legalEntity.sa_address_line_2 or legalEntity.service_address.line_2,
+      town: legalEntity.sa_address_locality or legalEntity.service_address.town,
+      county: legalEntity.sa_address_region or legalEntity.service_address.county,
+      country: legalEntity.sa_address_country or legalEntity.service_address.country,
+      postcode: legalEntity.sa_address_postal_code or legalEntity.service_address.postcode
     } %}
     {% include "includes/display_address.html" %}
   {% endif %}
@@ -59,7 +59,7 @@
   {% endif %}
 {% else %}
   {% set stillInvolved = legalEntity.still_involved %}
-  {% set isNotStillInvolved = stillInvolved === "No" %}    
+  {% set isNotStillInvolved = stillInvolved === "No" %}
   {% set trusteeCeasedDate = dateMacros.formatDate(legalEntity.ceased_date_day, legalEntity.ceased_date_month, legalEntity.ceased_date_year) %}
   {% if manageTrusts %}
     {% set changeLinkUrl = OE_CONFIGS.UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_CHANGE_HANDLER_URL + "/" + trust.trust_id + "/legalEntity/" + legalEntity.id %}
@@ -222,7 +222,7 @@
 }), rows) %}
 
 {% if not pageParams.isRegistration and
-      not inNoChangeJourney and 
+      not inNoChangeJourney and
       (isTrustStillInvolved or isNotStillInvolved) %}
   {% set rows = (rows.push({
     key: {
@@ -239,7 +239,7 @@
         ) ]
       }
     }), rows) %}
-    
+
     {% set rows = (rows.push({
       key: {
         text: "Date it ceased to be involved in the trust"
@@ -253,9 +253,9 @@
           "Legal entity " + legalEntity.name + " - ceased date",
           "change-legal-entity-ceased-date-button"
         ) ]
-      } 
-    }) if isNotStillInvolved, rows) %} 
-{% endif %}   
+      }
+    }) if isNotStillInvolved, rows) %}
+{% endif %}
 
 <h3 class="govuk-heading-m">Legal Entity for {{trust.trust_name}}</h3>
 

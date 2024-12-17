@@ -10,13 +10,13 @@
 
 {% set individualTrusteeFormattedResidentialAddressHtml %}
    {% set address = {
-      property_name_number: individualTrustee.ura_address_premises,
-      line_1: individualTrustee.ura_address_line_1,
-      line_2: individualTrustee.ura_address_line_2,
-      town: individualTrustee.ura_address_locality,
-      county: individualTrustee.ura_address_region,
-      country: individualTrustee.ura_address_country,
-      postcode: individualTrustee.ura_address_postal_code
+      property_name_number: individualTrustee.ura_address_premises or individualTrustee.usual_residential_address.property_name_number,
+      line_1: individualTrustee.ura_address_line_1 or individualTrustee.usual_residential_address.line_1,
+      line_2: individualTrustee.ura_address_line_2 or individualTrustee.usual_residential_address.line_2,
+      town: individualTrustee.ura_address_locality or individualTrustee.usual_residential_address.town,
+      county: individualTrustee.ura_address_region or individualTrustee.usual_residential_address.county,
+      country: individualTrustee.ura_address_country or individualTrustee.usual_residential_address.country,
+      postcode: individualTrustee.ura_address_postal_code or individualTrustee.usual_residential_address.postcode
     } %}
   {% include "includes/display_address.html" %}
 {% endset %}
@@ -30,12 +30,12 @@
     {% set individualTrusteeChangeServiceAddressHtml = OE_CONFIGS.CHANGE_SERVICE_ADDRESS %}
     {% set address = {
       property_name_number: individualTrustee.sa_address_premises,
-      line_1: individualTrustee.sa_address_line_1,
-      line_2: individualTrustee.sa_address_line_2,
-      town: individualTrustee.sa_address_locality,
-      county: individualTrustee.sa_address_region,
-      country: individualTrustee.sa_address_country,
-      postcode: individualTrustee.sa_address_postal_code
+      line_1: individualTrustee.sa_address_line_1 or individualTrustee.service_address.line_1,
+      line_2: individualTrustee.sa_address_line_2 or individualTrustee.service_address.line_2,
+      town: individualTrustee.sa_address_locality or individualTrustee.service_address.town,
+      county: individualTrustee.sa_address_region or individualTrustee.service_address.county,
+      country: individualTrustee.sa_address_country or individualTrustee.service_address.country,
+      postcode: individualTrustee.sa_address_postal_code or individualTrustee.service_address.postcode
     } %}
     {% include "includes/display_address.html" %}
   {% endif %}
@@ -49,7 +49,7 @@
   {% endif %}
 {% else %}
   {% set stillInvolved = individualTrustee.still_involved %}
-  {% set isNotStillInvolved = stillInvolved === "No" %}    
+  {% set isNotStillInvolved = stillInvolved === "No" %}
   {% set trusteeCeasedDate = dateMacros.formatDate(individualTrustee.ceased_date_day, individualTrustee.ceased_date_month, individualTrustee.ceased_date_year) %}
   {% if manageTrusts %}
     {% set changeLinkUrl = OE_CONFIGS.UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_CHANGE_HANDLER_URL +  "/" + trust.trust_id + "/individual/" + individualTrustee.id %}
@@ -213,8 +213,8 @@
   }), rows) %}
 {% endif %}
 
-{% if not pageParams.isRegistration and 
-      not inNoChangeJourney and 
+{% if not pageParams.isRegistration and
+      not inNoChangeJourney and
       (isTrustStillInvolved or isNotStillInvolved) %}
   {% set rows = (rows.push({
     key: {
@@ -231,7 +231,7 @@
         ) ]
       }
     }), rows) %}
-    
+
     {% set rows = (rows.push({
       key: {
         text: "Date they ceased to be involved in the trust"
@@ -245,8 +245,8 @@
           "Individual beneficial owner " + individualTrusteeFullName + " - ceased date",
           "change-individual-beneficial-owner-ceased-date-button"
         ) ]
-      } 
-    }) if isNotStillInvolved, rows) %} 
+      }
+    }) if isNotStillInvolved, rows) %}
 {% endif %}
 
 <h3 class="govuk-heading-m">Individual for {{trust.trust_name}}</h3>

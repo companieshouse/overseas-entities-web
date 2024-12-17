@@ -86,7 +86,6 @@ export const getTrustFormerBo = async (req: Request, res: Response, next: NextFu
       trusteeId
     );
     const pageProps = await getPageProperties(req, trustId, isUpdate, formData);
-
     return res.render(pageProps.template, pageProps);
 
   } catch (error) {

@@ -1,8 +1,7 @@
 jest.mock('uuid');
-
-import { beforeEach, describe, expect, jest, test } from "@jest/globals";
-import { ApplicationData } from "../../../src/model";
 import * as uuid from 'uuid';
+import { yesNoResponse } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
+import { ApplicationData } from "../../../src/model";
 import { TrustLegalEntityForm } from '../../../src/model/trust.page.model';
 import { TrustCorporate, TrustKey } from "../../../src/model/trust.model";
 import { TrusteeType } from "../../../src/model/trustee.type.model";
@@ -13,14 +12,15 @@ import {
   mapLegalEntityToSession,
   mapLegalEntityTrusteeByIdFromSessionToPage,
 } from '../../../src/utils/trust/legal.entity.beneficial.owner.mapper';
-import { yesNoResponse } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
 
 describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   describe('Test session mapper methods', () => {
+
     describe('Test trust legal entity form to session mapping', () => {
       const mockFormDataBasic = {
         legalEntityId: "9999",
@@ -148,7 +148,9 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
           still_involved: "No",
         });
       });
+
       test('Map start_date to session when relevant_period is true', () => {
+
         const mockFormData = {
           ...mockFormDataBasic,
           roleWithinTrust: RoleWithinTrustType.INTERESTED_PERSON,
@@ -203,10 +205,10 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
           still_involved: "No",
         });
       });
+
       test('test generateId', () => {
         const expectNewId = '9999';
         jest.spyOn(uuid, 'v4').mockReturnValue(expectNewId);
-
         expect(generateId()).toBe(expectNewId);
       });
     });
@@ -246,6 +248,7 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
         ceased_date_year: "2020",
         still_involved: "No"
       };
+
       test("Map legal entity trustee session data to page", () => {
 
         const trustId = '987';
@@ -352,6 +355,7 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
           stillInvolved: "0"
         });
       });
+
       test("Map legal entity trustee session data to page trustee item", () => {
         expect(
           mapLegalEntityItemToPage(mockSessionDataBasic as TrustCorporate)
@@ -367,18 +371,18 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
 
         const trustId = '987';
         const trusteeId = '9998';
-
         const mockSessionData = {
           ...mockSessionDataBasic,
           still_involved: "Yes",
+          type: RoleWithinTrustType.GRANTOR
         };
-
         const appData = {
           [TrustKey]: [{
             'trust_id': trustId,
             'CORPORATES': [ mockSessionData ] as TrustCorporate[],
           }]
         } as ApplicationData;
+
         expect(
           mapLegalEntityTrusteeByIdFromSessionToPage(appData, trustId, trusteeId)
         ).toEqual({
@@ -409,7 +413,12 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
           ceasedDateDay: mockSessionData.ceased_date_day,
           ceasedDateMonth: mockSessionData.ceased_date_month,
           ceasedDateYear: mockSessionData.ceased_date_year,
-          stillInvolved: "1"
+          stillInvolved: "1",
+          relevant_period: undefined,
+          roleWithinTrust: RoleWithinTrustType.GRANTOR,
+          startDateDay: undefined,
+          startDateMonth: undefined,
+          startDateYear: undefined,
         });
       });
 
@@ -417,18 +426,18 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
 
         const trustId = '987';
         const trusteeId = '9998';
-
         const mockSessionData = {
           ...mockSessionDataBasic,
           still_involved: "No",
+          type: RoleWithinTrustType.BENEFICIARY
         };
-
         const appData = {
           [TrustKey]: [{
             'trust_id': trustId,
             'CORPORATES': [ mockSessionData ] as TrustCorporate[],
           }]
         } as ApplicationData;
+
         expect(
           mapLegalEntityTrusteeByIdFromSessionToPage(appData, trustId, trusteeId)
         ).toEqual({
@@ -459,7 +468,12 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
           ceasedDateDay: mockSessionData.ceased_date_day,
           ceasedDateMonth: mockSessionData.ceased_date_month,
           ceasedDateYear: mockSessionData.ceased_date_year,
-          stillInvolved: "0"
+          stillInvolved: "0",
+          relevant_period: undefined,
+          roleWithinTrust: "Beneficiary",
+          startDateDay: undefined,
+          startDateMonth: undefined,
+          startDateYear: undefined
         });
       });
 
@@ -467,18 +481,18 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
 
         const trustId = '987';
         const trusteeId = '9998';
-
         const mockSessionData = {
           ...mockSessionDataBasic,
           still_involved: undefined,
+          type: RoleWithinTrustType.BENEFICIARY
         };
-
         const appData = {
           [TrustKey]: [{
             'trust_id': trustId,
             'CORPORATES': [ mockSessionData ] as TrustCorporate[],
           }]
         } as ApplicationData;
+
         expect(
           mapLegalEntityTrusteeByIdFromSessionToPage(appData, trustId, trusteeId)
         ).toEqual({
@@ -509,7 +523,12 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
           ceasedDateDay: mockSessionData.ceased_date_day,
           ceasedDateMonth: mockSessionData.ceased_date_month,
           ceasedDateYear: mockSessionData.ceased_date_year,
-          stillInvolved: ""
+          stillInvolved: "",
+          relevant_period: undefined,
+          roleWithinTrust: RoleWithinTrustType.BENEFICIARY,
+          startDateDay: undefined,
+          startDateMonth: undefined,
+          startDateYear: undefined,
         });
       });
 
@@ -517,18 +536,18 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
 
         const trustId = '987';
         const trusteeId = '9998';
-
         const mockSessionData = {
           ...mockSessionDataBasic,
           still_involved: "Wrong",
+          type: RoleWithinTrustType.BENEFICIARY
         };
-
         const appData = {
           [TrustKey]: [{
             'trust_id': trustId,
             'CORPORATES': [ mockSessionData ] as TrustCorporate[],
           }]
         } as ApplicationData;
+
         expect(
           mapLegalEntityTrusteeByIdFromSessionToPage(appData, trustId, trusteeId)
         ).toEqual({
@@ -559,10 +578,14 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
           ceasedDateDay: mockSessionData.ceased_date_day,
           ceasedDateMonth: mockSessionData.ceased_date_month,
           ceasedDateYear: mockSessionData.ceased_date_year,
-          stillInvolved: ""
+          stillInvolved: "",
+          relevant_period: undefined,
+          roleWithinTrust: RoleWithinTrustType.BENEFICIARY,
+          startDateDay: undefined,
+          startDateMonth: undefined,
+          startDateYear: undefined,
         });
       });
-
     });
   });
 });

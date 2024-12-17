@@ -1,8 +1,8 @@
 import { BeneficialOwnerIndividual } from '../model/beneficial.owner.individual.model';
 import { BeneficialOwnerOther } from '../model/beneficial.owner.other.model';
 import { BeneficialOwnerTypeChoice } from '../model/beneficial.owner.type.model';
-import { yesNoResponse } from './data.types.model';
 import { RoleWithinTrustType } from './role.within.trust.type.model';
+import { Address, yesNoResponse } from './data.types.model';
 
 export const TrustKey = "trusts";
 
@@ -89,6 +89,8 @@ export interface TrustIndividual {
   ceased_date_month?: string;
   ceased_date_year?: string;
   relevant_period?: boolean;
+  usual_residential_address?: Address
+  service_address?: Address
 }
 
 interface TrustHistoricalBeneficialOwnerCommon {
@@ -172,6 +174,8 @@ export type TrustCorporate = {
   start_date_month?: string;
   start_date_year?: string;
   relevant_period?: boolean;
+  registered_office_address?: Address;
+  service_address?: Address
 };
 
 export interface BeneficialOwnerItem {

@@ -59,7 +59,8 @@ const mapFormerTrusteeFromSessionToPage = (
     endDateYear: trustee.ceased_date_year,
     is_newly_added: trustee.ch_references ? false : true
   };
-  if (trustee.corporate_indicator === yesNoResponse.Yes && 'corporate_name' in trustee) {
+
+  if (trustee.corporate_indicator && 'corporate_name' in trustee) {
     return {
       ...data,
       type: TrusteeType.LEGAL_ENTITY,

@@ -229,7 +229,6 @@ const getIndividualTrustee = (
   isReview?: boolean,
 ): IndividualTrustee => {
   const individualTrustees = getIndividualTrusteesFromTrust(appData, trustId, isReview);
-
   if (individualTrustees.length === 0 || trusteeId === undefined) {
     return {} as IndividualTrustee;
   }

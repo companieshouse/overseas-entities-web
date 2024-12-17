@@ -1,12 +1,13 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
+
     {% include "includes/list/errors.html" %}
 
     <span class="govuk-caption-l">{{ pageData.trustData.trustName }}</span>
     <h1 class="govuk-heading-xl govuk-!-margin-0">{{ pageParams.title }}</h1>
     <br> <p class="govuk-body">You can add more later.</p> <br>
 
-    <form class="form" method="post"> 
+    <form class="form" method="post">
       {% include "includes/csrf_token.html" %}
 
       {% set legalEntityHtml %}
@@ -51,7 +52,7 @@
           {
             value: pageData.trusteeType.LEGAL_ENTITY,
             text: "Legal Entity",
-            checked: formData.type == pageData.trusteeType.LEGAL_ENTITY,
+            checked: (formData.type | lower) === (pageData.trusteeType.LEGAL_ENTITY | lower),
             conditional: {
               html: legalEntityHtml
             }
@@ -59,7 +60,7 @@
           {
             value: pageData.trusteeType.INDIVIDUAL,
             text: "Individual",
-            checked: formData.type == pageData.trusteeType.INDIVIDUAL,
+            checked: (formData.type | lower) === (pageData.trusteeType.INDIVIDUAL | lower),
             conditional: {
               html: individualBoHtml
             }

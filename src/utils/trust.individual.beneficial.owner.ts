@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import { Session } from '@companieshouse/node-session-handler';
 import { logger } from './logger';
 import * as config from '../config';
 import * as CommonTrustDataMapper from './trust/common.trust.data.mapper';
@@ -6,18 +7,17 @@ import { RoleWithinTrustType } from '../model/role.within.trust.type.model';
 import * as PageModel from '../model/trust.page.model';
 import { ApplicationData } from '../model';
 import { safeRedirect } from './http.ext';
-import { Session } from '@companieshouse/node-session-handler';
 import { saveAndContinue } from './save.and.continue';
+import { updateOverseasEntity } from "../service/overseas.entities.service";
 import { isActiveFeature } from './feature.flag';
-import { getUrlWithParamsToPath, isRegistrationJourney } from './url';
 import { checkTrustIndividualCeasedDate } from '../validation/async';
 import { checkTrustIndividualBeneficialOwnerStillInvolved } from '../validation/stillInvolved.validation';
+import { getUrlWithParamsToPath, isRegistrationJourney } from './url';
 import { ValidationError, validationResult } from 'express-validator';
 import { fetchApplicationData, setExtraData } from './application.data';
 import { getTrustByIdFromApp, saveTrustInApp, saveIndividualTrusteeInTrust } from './trusts';
 import { mapIndividualTrusteeToSession, mapIndividualTrusteeByIdFromSessionToPage } from './trust/individual.trustee.mapper';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
-import { updateOverseasEntity } from "../service/overseas.entities.service";
 
 export const INDIVIDUAL_BO_TEXTS = {
   title: 'Tell us about the individual',
@@ -104,7 +104,8 @@ export const getTrustIndividualBo = async (req: Request, res: Response, next: Ne
     } else {
       const pagePropertiesRelevantPeriod = await getPagePropertiesRelevantPeriod(
         isRelevantPeriod,
-        req, trustId,
+        req,
+        trustId,
         isUpdate,
         formData,
         appData.entity_name

@@ -61,28 +61,28 @@
           {
             value: pageData.roleWithinTrustType.BENEFICIARY,
             text: "Beneficiary",
-            checked: formData.roleWithinTrust == pageData.roleWithinTrustType.BENEFICIARY,
+            checked: (formData.roleWithinTrust | lower) == (pageData.roleWithinTrustType.BENEFICIARY | lower),
             attributes: {
               "data-event-id": "beneficiaries-type-radio-option"
             }
           }, {
             value: pageData.roleWithinTrustType.SETTLOR,
             text: "Settlor",
-            checked: formData.roleWithinTrust == pageData.roleWithinTrustType.SETTLOR,
+            checked: (formData.roleWithinTrust | lower) == (pageData.roleWithinTrustType.SETTLOR | lower),
             attributes: {
               "data-event-id": "settlors-type-radio-option"
             }
           }, {
             value: pageData.roleWithinTrustType.GRANTOR,
             text: "Grantor",
-            checked: formData.roleWithinTrust == pageData.roleWithinTrustType.GRANTOR,
+            checked: (formData.roleWithinTrust | lower) == (pageData.roleWithinTrustType.GRANTOR | lower),
             attributes: {
               "data-event-id": "grantors-type-radio-option"
             }
           }, {
             value: pageData.roleWithinTrustType.INTERESTED_PERSON,
             text: "Interested Person",
-            checked: formData.roleWithinTrust == pageData.roleWithinTrustType.INTERESTED_PERSON,
+            checked: (formData.roleWithinTrust | lower) == (pageData.roleWithinTrustType.INTERESTED_PERSON | lower),
             attributes: {
               "data-event-id": "interested-persons-type-radio-option"
             },

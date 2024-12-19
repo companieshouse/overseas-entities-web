@@ -3,21 +3,16 @@ import { v4 as uuidv4 } from "uuid";
 import { Session } from "@companieshouse/node-session-handler";
 
 import * as config from "../../config";
-
 import { ApplicationData } from "../../model";
 import { createAndLogErrorRequest, logger } from "../../utils/logger";
 import { setExtraData } from "../../utils/application.data";
 import { isActiveFeature } from "../../utils/feature.flag";
 import { getOverseasEntity } from "../../service/overseas.entities.service";
+import { startPaymentsSession } from "../../service/payment.service";
+import { getTransaction } from "../../service/transaction.service";
+import { mapTrustApiReturnModelToWebModel } from "../../utils/trusts";
+import { isRegistrationJourney } from "../../utils/url";
 
-import {
-  HasSoldLandKey,
-  ID,
-  NonLegalFirmNoc,
-  IsSecureRegisterKey,
-  OverseasEntityKey,
-  Transactionkey
-} from "../../model/data.types.model";
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../model/who.is.making.filing.model";
 import { OverseasEntityDueDiligenceKey } from "../../model/overseas.entity.due.diligence.model";
 import { DueDiligenceKey } from "../../model/due.diligence.model";
@@ -27,9 +22,14 @@ import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../../model/benef
 import { ManagingOfficerCorporate, ManagingOfficerCorporateKey } from "../../model/managing.officer.corporate.model";
 import { ManagingOfficerIndividual, ManagingOfficerKey } from "../../model/managing.officer.model";
 
-import { startPaymentsSession } from "../../service/payment.service";
-import { getTransaction } from "../../service/transaction.service";
-import { mapTrustApiReturnModelToWebModel } from "../../utils/trusts";
+import {
+  ID,
+  HasSoldLandKey,
+  NonLegalFirmNoc,
+  IsSecureRegisterKey,
+  OverseasEntityKey,
+  Transactionkey
+} from "../../model/data.types.model";
 
 export const getResumePage = async (req: Request, res: Response, next: NextFunction, resumePage: string) => {
   try {
@@ -37,7 +37,7 @@ export const getResumePage = async (req: Request, res: Response, next: NextFunct
 
     const { transactionId, overseaEntityId } = req.params;
     const infoMsg = `Transaction ID: ${transactionId}, OverseasEntity ID: ${overseaEntityId}`;
-    const isRegistration: boolean = req.path.startsWith(config.LANDING_URL);
+    const isRegistration: boolean = isRegistrationJourney(req);
 
     logger.infoRequest(req, `Resuming OE - ${infoMsg}`);
 
@@ -48,7 +48,7 @@ export const getResumePage = async (req: Request, res: Response, next: NextFunct
     }
 
     const session = req.session as Session;
-    setWebApplicationData(session, appData, transactionId, overseaEntityId);
+    setWebApplicationData(session, appData, transactionId, overseaEntityId, isRegistration);
 
     const transactionResource = await getTransaction(req, transactionId);
 
@@ -85,28 +85,33 @@ export const getResumePage = async (req: Request, res: Response, next: NextFunct
  * @param transactionId
  * @param overseaEntityId
  */
-const setWebApplicationData = (session: Session, appData: ApplicationData, transactionId: string, overseaEntityId: string) => {
+const setWebApplicationData = (session: Session, appData: ApplicationData, transactionId: string, overseaEntityId: string, isRegistration: boolean) => {
+
   appData[BeneficialOwnerIndividualKey] = (appData[BeneficialOwnerIndividualKey] as BeneficialOwnerIndividual[])
-    .map( boi => { return { ...boi, [ID]: uuidv4() }; } );
-  appData[BeneficialOwnerOtherKey] = (appData[BeneficialOwnerOtherKey] as BeneficialOwnerOther[] )
-    .map( boo => { return { ...boo, [ID]: uuidv4() }; } );
+    .map(boi => { return { ...boi, [ID]: uuidv4() }; });
+  appData[BeneficialOwnerOtherKey] = (appData[BeneficialOwnerOtherKey] as BeneficialOwnerOther[])
+    .map(boo => { return { ...boo, [ID]: uuidv4() }; });
   appData[BeneficialOwnerGovKey] = (appData[BeneficialOwnerGovKey] as BeneficialOwnerGov[])
-    .map( bog => { return { ...bog, [ID]: uuidv4() }; } );
+    .map(bog => { return { ...bog, [ID]: uuidv4() }; });
   appData[ManagingOfficerKey] = (appData[ManagingOfficerKey] as ManagingOfficerIndividual[])
-    .map( moi => { return { ...moi, [ID]: uuidv4() }; } );
+    .map(moi => { return { ...moi, [ID]: uuidv4() }; });
   appData[ManagingOfficerCorporateKey] = (appData[ManagingOfficerCorporateKey] as ManagingOfficerCorporate[])
-    .map( moc => { return { ...moc, [ID]: uuidv4() }; } );
+    .map(moc => { return { ...moc, [ID]: uuidv4() }; });
 
-  appData[HasSoldLandKey] = '0';
-  appData[IsSecureRegisterKey] = '0';
-  appData[Transactionkey] = transactionId;
-  appData[OverseasEntityKey] = overseaEntityId;
+  if (!isRegistration || !isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
 
-  if (appData[OverseasEntityDueDiligenceKey] && Object.keys(appData[OverseasEntityDueDiligenceKey]).length) {
-    appData[WhoIsRegisteringKey] = WhoIsRegisteringType.SOMEONE_ELSE;
-  } else if (appData[DueDiligenceKey] && Object.keys(appData[DueDiligenceKey]).length){
-    appData[WhoIsRegisteringKey] = WhoIsRegisteringType.AGENT;
+    appData[HasSoldLandKey] = '0';
+    appData[IsSecureRegisterKey] = '0';
+    appData[Transactionkey] = transactionId;
+    appData[OverseasEntityKey] = overseaEntityId;
+
+    if (appData[OverseasEntityDueDiligenceKey] && Object.keys(appData[OverseasEntityDueDiligenceKey]).length) {
+      appData[WhoIsRegisteringKey] = WhoIsRegisteringType.SOMEONE_ELSE;
+    } else if (appData[DueDiligenceKey] && Object.keys(appData[DueDiligenceKey]).length) {
+      appData[WhoIsRegisteringKey] = WhoIsRegisteringType.AGENT;
+    }
   }
+
   if (isActiveFeature(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB)) {
     mapTrustApiReturnModelToWebModel(appData);
   }

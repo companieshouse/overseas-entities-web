@@ -52,10 +52,14 @@
 {% endset %}
 
 {% if pageParams.isRegistration %}
-  {% set changeLinkUrl = OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id %}
+  {% if not IS_REDIS_REMOVAL_ENABLED %}
+    {% set changeLinkUrl = OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id %}
+  {% else %}
+    {% set changeLinkUrl = CREATE_CHANGE_LINK_WITH_IDS(OE_CONFIGS.TRUST_ENTRY_WITH_PARAMS_URL, OE_TRANSACTION_ID, OE_SUBMISSION_ID) +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id %}
+  {% endif %}
 {% else %}
   {% set stillInvolved = legalEntity.still_involved %}
-  {% set isNotStillInvolved = stillInvolved === "No" %}    
+  {% set isNotStillInvolved = stillInvolved === "No" %}
   {% set trusteeCeasedDate = dateMacros.formatDate(legalEntity.ceased_date_day, legalEntity.ceased_date_month, legalEntity.ceased_date_year) %}
   {% if manageTrusts %}
     {% set changeLinkUrl = OE_CONFIGS.UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_CHANGE_HANDLER_URL + "/" + trust.trust_id + "/legalEntity/" + legalEntity.id %}
@@ -218,7 +222,7 @@
 }), rows) %}
 
 {% if not pageParams.isRegistration and
-      not inNoChangeJourney and 
+      not inNoChangeJourney and
       (isTrustStillInvolved or isNotStillInvolved) %}
   {% set rows = (rows.push({
     key: {
@@ -235,7 +239,7 @@
         ) ]
       }
     }), rows) %}
-    
+
     {% set rows = (rows.push({
       key: {
         text: "Date it ceased to be involved in the trust"
@@ -249,9 +253,9 @@
           "Legal entity " + legalEntity.name + " - ceased date",
           "change-legal-entity-ceased-date-button"
         ) ]
-      } 
-    }) if isNotStillInvolved, rows) %} 
-{% endif %}   
+      }
+    }) if isNotStillInvolved, rows) %}
+{% endif %}
 
 <h3 class="govuk-heading-m">Legal Entity for {{trust.trust_name}}</h3>
 

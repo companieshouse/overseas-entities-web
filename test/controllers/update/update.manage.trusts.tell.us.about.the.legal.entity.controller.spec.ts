@@ -338,6 +338,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       mockFetchApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
       mockGetTrustee.mockReturnValue(trustee);
+
       const response = await request(app).get(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL);
 
       expect(response.status).toEqual(200);

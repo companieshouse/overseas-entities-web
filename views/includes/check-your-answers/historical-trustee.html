@@ -13,9 +13,12 @@
 {% set formerTrusteeStartDate = dateMacros.formatDate(formerTrustee.notified_date_day, formerTrustee.notified_date_month, formerTrustee.notified_date_year) %}
 {% set formerTrusteeEndDate = dateMacros.formatDate(formerTrustee.ceased_date_day, formerTrustee.ceased_date_month, formerTrustee.ceased_date_year) %}
 
-
 {% if pageParams.isRegistration %}
-  {% set changeLinkUrl = OE_CONFIGS.TRUSTS_URL + "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE + "/" + formerTrustee.id %}
+  {% if not IS_REDIS_REMOVAL_ENABLED %}
+    {% set changeLinkUrl = OE_CONFIGS.TRUSTS_URL + "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE + "/" + formerTrustee.id %}
+  {% else %}
+    {% set changeLinkUrl = CREATE_CHANGE_LINK_WITH_IDS(OE_CONFIGS.TRUST_ENTRY_WITH_PARAMS_URL, OE_TRANSACTION_ID, OE_SUBMISSION_ID) + "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE + "/" + formerTrustee.id %}
+  {% endif %}
 {% else %}
   {% if manageTrusts %}
     {% set changeLinkUrl = OE_CONFIGS.UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_CHANGE_HANDLER_URL +  "/" + trust.trust_id + "/historical/" + formerTrustee.id %}

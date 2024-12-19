@@ -52,16 +52,15 @@ const getPagePropertiesRelevantPeriod = (isRelevantPeriod, trust, formData, url:
 };
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
-
   try {
-
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-
     const appData = await getApplicationData(req.session);
     const trusteeId = req.params[ROUTE_PARAM_TRUSTEE_ID];
     const isRelevantPeriod = req.query['relevant-period'];
+
     const trust = getTrustInReview(appData) as Trust;
     const trustee = getTrustee(trust, trusteeId, TrusteeType.LEGAL_ENTITY) as TrustCorporate;
+
     const formData = trustee ? mapLegalEntityTrusteeFromSessionToPage(trustee) : {};
 
     if (isRelevantPeriod || (trustee && trustee.relevant_period)) {

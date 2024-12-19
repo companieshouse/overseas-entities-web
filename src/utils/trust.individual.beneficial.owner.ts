@@ -13,11 +13,16 @@ import { isActiveFeature } from './feature.flag';
 import { checkTrustIndividualCeasedDate } from '../validation/async';
 import { checkTrustIndividualBeneficialOwnerStillInvolved } from '../validation/stillInvolved.validation';
 import { getUrlWithParamsToPath, isRegistrationJourney } from './url';
+import { mapTrustApiToWebWhenFlagsAreSet } from "../utils/trust/api.to.web.mapper";
 import { ValidationError, validationResult } from 'express-validator';
 import { fetchApplicationData, setExtraData } from './application.data';
-import { getTrustByIdFromApp, saveTrustInApp, saveIndividualTrusteeInTrust } from './trusts';
 import { mapIndividualTrusteeToSession, mapIndividualTrusteeByIdFromSessionToPage } from './trust/individual.trustee.mapper';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
+import {
+  getTrustByIdFromApp,
+  saveTrustInApp,
+  saveIndividualTrusteeInTrust,
+} from './trusts';
 
 export const INDIVIDUAL_BO_TEXTS = {
   title: 'Tell us about the individual',
@@ -89,6 +94,7 @@ export const getTrustIndividualBo = async (req: Request, res: Response, next: Ne
     const trusteeId = req.params[config.ROUTE_PARAM_TRUSTEE_ID];
     const isRegistration = isRegistrationJourney(req);
     const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+    mapTrustApiToWebWhenFlagsAreSet(appData, isRegistration);
     const isRelevantPeriod = req.query['relevant-period'];
     const formData: PageModel.IndividualTrusteesFormCommon = mapIndividualTrusteeByIdFromSessionToPage(
       appData,

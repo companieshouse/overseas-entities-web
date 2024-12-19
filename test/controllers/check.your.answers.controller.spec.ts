@@ -191,7 +191,6 @@ describe("GET tests", () => {
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including presenter details`, async () => {
     mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
-
     expect(resp.status).toEqual(200);
     expect(resp.text).toContain(LANDING_PAGE_URL);
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TITLE);

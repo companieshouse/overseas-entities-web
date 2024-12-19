@@ -22,12 +22,7 @@ export const createChangeLinkConfig = (href: string, text: string, dataEventId: 
 
 /**
  * Return a change link with the transactionId and submissionId included
- *   - In case of an exception, return an HTML-safe hash(#)
  */
 export const createChangeLinkWithIds = (link: string, transactionId: string, submissionId: string) => {
-  try {
-    return getUrlWithTransactionIdAndSubmissionId(link, transactionId, submissionId);
-  } catch (e) {
-    return "#";
-  }
+  return getUrlWithTransactionIdAndSubmissionId(link, transactionId, submissionId);
 };

@@ -19,7 +19,7 @@
     {% if not IS_REDIS_REMOVAL_ENABLED %}
       {% set changeLinkUrl = OE_CONFIGS.TRUST_DETAILS_URL %}
     {% else %}
-      {% set changeLinkUrl = CREATE_CHANGE_LINK_WITH_IDs(OE_CONFIGS.TRUST_ENTRY_WITH_PARAMS_URL, OE_TRANSACTION_ID, OE_SUBMISSION_ID) %}
+      {% set changeLinkUrl = CREATE_CHANGE_LINK_WITH_IDS(OE_CONFIGS.TRUST_ENTRY_WITH_PARAMS_URL, OE_TRANSACTION_ID, OE_SUBMISSION_ID) %}
     {% endif %}
   {% else %}
     {% set trustStillInvolved = trust.trust_still_involved_in_overseas_entity %}

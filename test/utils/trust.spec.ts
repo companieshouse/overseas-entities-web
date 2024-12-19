@@ -1,8 +1,31 @@
 jest.mock('../../src/utils/feature.flag');
 jest.mock('../../src/utils/url');
 
-import { describe, expect, test } from '@jest/globals';
-import { TRUST_DETAILS_URL, TRUST_INTERRUPT_URL, TRUST_ENTRY_URL, ADD_TRUST_URL, TRUST_ENTRY_WITH_PARAMS_URL } from "../../src/config";
+import { TrustIndividual } from '@companieshouse/api-sdk-node/dist/services/overseas-entities';
+import { isActiveFeature } from '../../src/utils/feature.flag';
+import { Request } from 'express';
+import { getUrlWithParamsToPath } from '../../src/utils/url';
+import { ApplicationData } from '../../src/model';
+import { NatureOfControlType } from '../../src/model/data.types.model';
+
+import {
+  BeneficialOwnerOther,
+  BeneficialOwnerOtherKey
+} from '../../src/model/beneficial.owner.other.model';
+
+import {
+  BeneficialOwnerIndividual,
+  BeneficialOwnerIndividualKey,
+} from '../../src/model/beneficial.owner.individual.model';
+
+import {
+  TRUST_DETAILS_URL,
+  TRUST_INTERRUPT_URL,
+  TRUST_ENTRY_URL,
+  ADD_TRUST_URL,
+  TRUST_ENTRY_WITH_PARAMS_URL
+} from "../../src/config";
+
 import {
   addTrustToBeneficialOwner,
   getBoIndividualAssignableToTrust,
@@ -26,18 +49,15 @@ import {
   getFormerTrustee,
   mapTrustApiReturnModelToWebModel,
 } from '../../src/utils/trusts';
-import { ApplicationData } from '../../src/model';
-import { NatureOfControlType } from '../../src/model/data.types.model';
-import { Trust, TrustBeneficialOwner, TrustHistoricalBeneficialOwner, TrustKey, TrustCorporate, IndividualTrustee } from '../../src/model/trust.model';
+
 import {
-  BeneficialOwnerIndividual,
-  BeneficialOwnerIndividualKey,
-} from '../../src/model/beneficial.owner.individual.model';
-import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from '../../src/model/beneficial.owner.other.model';
-import { TrustIndividual } from '@companieshouse/api-sdk-node/dist/services/overseas-entities';
-import { isActiveFeature } from '../../src/utils/feature.flag';
-import { Request } from 'express';
-import { getUrlWithParamsToPath } from '../../src/utils/url';
+  Trust,
+  TrustBeneficialOwner,
+  TrustHistoricalBeneficialOwner,
+  TrustKey,
+  TrustCorporate,
+  IndividualTrustee
+} from '../../src/model/trust.model';
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue(false);
@@ -49,6 +69,12 @@ mockGetUrlWithParamsToPath.mockReturnValue(MOCKED_URL);
 const mockRequest = {} as Request;
 
 describe('Trust Utils method tests', () => {
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockIsActiveFeature.mockReset();
+  });
+
   const trustId = 'dummyExistsTrustId';
   const newTrustId = 'dummyTrustId';
 
@@ -167,7 +193,6 @@ describe('Trust Utils method tests', () => {
       ...mockAppData
     };
     mockAppDataWithACeasedIndividualBO[BeneficialOwnerIndividualKey].push(mockBoCeasedIndividualWithTrusteeNoc);
-
     expect(getBoIndividualAssignableToTrust(mockAppDataWithACeasedIndividualBO)).toEqual([mockBoIndividual1]);
   });
 
@@ -176,7 +201,6 @@ describe('Trust Utils method tests', () => {
       ...mockAppData
     };
     mockAppDataWithACeasedIndividualBO[BeneficialOwnerIndividualKey].push(mockBoCeasedIndividualWithTrusteeNocRelevantPeriod);
-
     expect(getBoIndividualAssignableToTrust(mockAppDataWithACeasedIndividualBO)).toEqual([mockBoIndividual1, mockBoCeasedIndividualWithTrusteeNocRelevantPeriod]);
   });
 
@@ -189,7 +213,6 @@ describe('Trust Utils method tests', () => {
       ...mockAppData
     };
     mockAppDataWithACeasedOtherBO[BeneficialOwnerOtherKey].push(mockBoCeasedOleWithTrusteeNoc);
-
     expect(getBoOtherAssignableToTrust(mockAppDataWithACeasedOtherBO)).toEqual([mockBoOle2]);
   });
 
@@ -198,7 +221,6 @@ describe('Trust Utils method tests', () => {
       ...mockAppData
     };
     mockAppDataWithACeasedOtherBO[BeneficialOwnerOtherKey].push(mockBoCeasedOleWithTrusteeNocRelevantPeriod);
-
     expect(getBoOtherAssignableToTrust(mockAppDataWithACeasedOtherBO)).toEqual([mockBoOle2, mockBoCeasedOleWithTrusteeNocRelevantPeriod]);
   });
 
@@ -210,7 +232,6 @@ describe('Trust Utils method tests', () => {
     const mockBo = {
       id: '9999',
     } as TrustBeneficialOwner;
-
     expect(addTrustToBeneficialOwner(mockBo, newTrustId)).toEqual({
       ...mockBo,
       trust_ids: [newTrustId],
@@ -624,13 +645,11 @@ describe('Trust Utils method tests', () => {
   describe('test if overseas entity requires trust data', () => {
 
     test("test checkEntityRequiresTrusts with application data and trustee nature of control", () => {
-
       const result = checkEntityRequiresTrusts(mockAppData);
       expect(result).toEqual(true);
     });
 
     test("test checkEntityRequiresTrusts with application data and no trustee nature of control", () => {
-
       const appData = {
         [TrustKey]: [
           mockTrust1Data,
@@ -662,19 +681,16 @@ describe('Trust Utils method tests', () => {
   describe('test if overseas entity contains any trust data', () => {
 
     test("test getBeneficialOwnerList with application data and trustee nature of control", () => {
-
       const result = getTrustLandingUrl(mockAppData);
       expect(result).toEqual(`${TRUST_ENTRY_URL + ADD_TRUST_URL}`);
     });
 
     test("test getTrustLandingUrl with bo having trust data", () => {
-
       const result = getTrustLandingUrl(mockAppData);
       expect(result).toEqual(`${TRUST_ENTRY_URL + ADD_TRUST_URL}`);
     });
 
     test("test getTrustLandingUrl with bo having trust nature of control but no trust data", () => {
-
       const mockBoIndividualNoTrustData = {
         id: '9001',
         trustees_nature_of_control_types: ['dummyType' as NatureOfControlType],
@@ -699,7 +715,6 @@ describe('Trust Utils method tests', () => {
       const result = getTrustLandingUrl(appData);
       expect(result).toEqual(`${TRUST_DETAILS_URL}${TRUST_INTERRUPT_URL}`);
     });
-
   });
 
   describe('test if overseas entity contains any trust data with params for redis removal', () => {
@@ -942,7 +957,7 @@ describe('Trust Utils method tests', () => {
       ]
     };
 
-    test("test Web Model OK for multi-trust app data with all trusees types", () => {
+    test("test Web Model OK for multi-trust app data with all trustee types", () => {
 
       const trusts = apiData.trusts ?? [];
 
@@ -1114,8 +1129,8 @@ describe('Trust Utils method tests', () => {
       expect(historicalTrusteesWebModel[1]["ceased_date_month"]).toEqual("02");
       expect(historicalTrusteesWebModel[1]["ceased_date_year"]).toEqual("2022");
     });
-
   });
+
   test("no trust data so nothing happens in mapTrustApiReturnModelToWebModel", () => {
     mapTrustApiReturnModelToWebModel({});
   });
@@ -1125,14 +1140,12 @@ describe('Trust Utils method tests', () => {
     test('when no BOs have trustee of a trust noc returns false', () => {
       const appData = {
       };
-
       const result = checkEntityRequiresTrusts(appData as ApplicationData);
       expect(result).toBe(false);
     });
 
     test('when no app data returns false', () => {
       const appData = undefined;
-
       const result = checkEntityRequiresTrusts(appData);
       expect(result).toBe(false);
     });
@@ -1141,7 +1154,6 @@ describe('Trust Utils method tests', () => {
       const appData = {
         beneficial_owners_corporate: [{ trustees_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES] }]
       };
-
       const result = checkEntityRequiresTrusts(appData as ApplicationData);
       expect(result).toBe(true);
     });
@@ -1157,25 +1169,20 @@ describe('Trust Utils method tests', () => {
 
     test('when no BOs to review have trustee of a trust noc returns false', () => {
       const appData = {
-        update: {
-        }
+        update: {}
       };
-
       const result = checkEntityReviewRequiresTrusts(appData as ApplicationData);
       expect(result).toBe(false);
     });
 
     test('when no BOs to review as no update in app data returns false', () => {
-      const appData = {
-      };
-
+      const appData = {};
       const result = checkEntityReviewRequiresTrusts(appData as ApplicationData);
       expect(result).toBe(false);
     });
 
     test('when no BOs to review as no app data returns false', () => {
       const appData = undefined;
-
       const result = checkEntityReviewRequiresTrusts(appData);
       expect(result).toBe(false);
     });
@@ -1186,7 +1193,6 @@ describe('Trust Utils method tests', () => {
           review_beneficial_owners_corporate: [{ trustees_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES, NatureOfControlType.SIGNIFICANT_INFLUENCE_OR_CONTROL] }]
         }
       };
-
       const result = checkEntityReviewRequiresTrusts(appData as ApplicationData);
       expect(result).toBe(true);
     });
@@ -1197,7 +1203,6 @@ describe('Trust Utils method tests', () => {
           review_beneficial_owners_individual: [{ trustees_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES] }]
         }
       };
-
       const result = checkEntityReviewRequiresTrusts(appData as ApplicationData);
       expect(result).toBe(true);
     });

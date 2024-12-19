@@ -29,7 +29,7 @@
 {% if not IS_REDIS_REMOVAL_ENABLED %}
   {% set changeLinkUrl = OE_CONFIGS.MANAGING_OFFICER_CORPORATE_URL + "/" + moc.id %}
 {% else %}
-  {% set changeLinkUrl = CREATE_CHANGE_LINK_WITH_IDs(OE_CONFIGS.MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL, OE_TRANSACTION_ID, OE_SUBMISSION_ID) + "/" + moc.id %} %}
+  {% set changeLinkUrl = CREATE_CHANGE_LINK_WITH_IDS(OE_CONFIGS.MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL, OE_TRANSACTION_ID, OE_SUBMISSION_ID) + "/" + moc.id %} %}
 {% endif %}
 
 <h3 class="govuk-heading-m">Corporate managing officer</h3>

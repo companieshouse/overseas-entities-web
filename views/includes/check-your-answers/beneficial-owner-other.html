@@ -98,7 +98,7 @@
   {% if not IS_REDIS_REMOVAL_ENABLED %}
     {% set changeLinkUrl = OE_CONFIGS.BENEFICIAL_OWNER_OTHER_URL + "/" + boc.id %}
   {% else %}
-    {% set changeLinkUrl = CREATE_CHANGE_LINK_WITH_IDs(OE_CONFIGS.BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL, OE_TRANSACTION_ID, OE_SUBMISSION_ID) + "/" + boc.id %}
+    {% set changeLinkUrl = CREATE_CHANGE_LINK_WITH_IDS(OE_CONFIGS.BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL, OE_TRANSACTION_ID, OE_SUBMISSION_ID) + "/" + boc.id %}
   {% endif %}
 {% else %}
   {% if boc.ch_reference %}

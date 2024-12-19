@@ -10,31 +10,10 @@ jest.mock("../../src/utils/logger");
 jest.mock("../../src/utils/trusts");
 jest.mock("../../src/utils/url");
 
-import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
 
 import app from "../../src/app";
-import {
-  SOLD_LAND_FILTER_URL,
-  SOLD_LAND_FILTER_PAGE
-} from "../../src/config";
-import {
-  ANY_MESSAGE_ERROR,
-  FOUND_REDIRECT_TO,
-  SERVICE_UNAVAILABLE
-} from '../__mocks__/text.mock';
-import {
-  APPLICATION_DATA_MOCK,
-  BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
-  BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
-  BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
-  RESUME_SUBMISSION_URL,
-  OVERSEAS_ENTITY_ID,
-  TRANSACTION_ID,
-  FULL_PAYMENT_REDIRECT_PATH,
-  PAYMENT_HEADER
-} from '../__mocks__/session.mock';
 import * as config from '../../src/config';
 import { createAndLogErrorRequest, logger } from "../../src/utils/logger";
 import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
@@ -46,13 +25,49 @@ import { startPaymentsSession } from "../../src/service/payment.service";
 import { isActiveFeature } from "../../src/utils/feature.flag";
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from '../../src/model/who.is.making.filing.model';
 import { DueDiligenceKey } from '../../src/model/due.diligence.model';
-import { EntityNumberKey, HasSoldLandKey, IsSecureRegisterKey, NatureOfControlType, OverseasEntityKey, Transactionkey } from '../../src/model/data.types.model';
 import { OverseasEntityDueDiligenceKey } from '../../src/model/overseas.entity.due.diligence.model';
 import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from '../__mocks__/overseas.entity.due.diligence.mock';
 import { MOCK_GET_TRANSACTION_RESPONSE } from '../__mocks__/transaction.mock';
 import { mapTrustApiReturnModelToWebModel } from '../../src/utils/trusts';
-import { getUrlWithTransactionIdAndSubmissionId } from "../../src/utils/url";
-import { beneficialOwnerIndividualType, beneficialOwnerOtherType, beneficialOwnerGovType } from "../../src/model";
+import { getUrlWithTransactionIdAndSubmissionId, isRegistrationJourney } from "../../src/utils/url";
+
+import {
+  beneficialOwnerIndividualType,
+  beneficialOwnerOtherType,
+  beneficialOwnerGovType
+} from "../../src/model";
+
+import {
+  SOLD_LAND_FILTER_URL,
+  SOLD_LAND_FILTER_PAGE
+} from "../../src/config";
+
+import {
+  ANY_MESSAGE_ERROR,
+  FOUND_REDIRECT_TO,
+  SERVICE_UNAVAILABLE
+} from '../__mocks__/text.mock';
+
+import {
+  APPLICATION_DATA_MOCK,
+  BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+  BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
+  BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
+  RESUME_SUBMISSION_URL,
+  OVERSEAS_ENTITY_ID,
+  TRANSACTION_ID,
+  FULL_PAYMENT_REDIRECT_PATH,
+  PAYMENT_HEADER
+} from '../__mocks__/session.mock';
+
+import {
+  EntityNumberKey,
+  HasSoldLandKey,
+  IsSecureRegisterKey,
+  NatureOfControlType,
+  OverseasEntityKey,
+  Transactionkey
+} from '../../src/model/data.types.model';
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -79,6 +94,9 @@ mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, ne
 const mockMapTrustApiReturnModelToWebModel = mapTrustApiReturnModelToWebModel as jest.Mock;
 
 const mockGetUrlWithTransactionIdAndSubmissionId = getUrlWithTransactionIdAndSubmissionId as jest.Mock;
+
+const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
+mockIsRegistrationJourney.mockReturnValue(true);
 
 const baseURL = `${config.CHS_URL}${config.REGISTER_AN_OVERSEAS_ENTITY_URL}`;
 
@@ -116,6 +134,7 @@ describe("Resume submission controller", () => {
       [IsSecureRegisterKey]: "",
     };
     mockGetOverseasEntity.mockReturnValueOnce( mockAppData );
+
     const resp = await request(app).get(RESUME_SUBMISSION_URL);
 
     expect(resp.status).toEqual(302);
@@ -185,7 +204,9 @@ describe("Resume submission controller", () => {
 
   test(`Redirect to starting payment page after resuming the OverseasEntity object and trusts feature flag on and REDIS_flag set to OFF`, async () => {
     mockIsActiveFeature.mockReturnValueOnce( false ); // REDIS flag
+    mockIsActiveFeature.mockReturnValueOnce( false ); // REDIS flag
     mockIsActiveFeature.mockReturnValueOnce( true ); // trusts feature flag
+    mockIsActiveFeature.mockReturnValueOnce( true ); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
     mockGetOverseasEntity.mockReturnValueOnce( {
       ...APPLICATION_DATA_MOCK,
       [OverseasEntityDueDiligenceKey]: {}
@@ -211,13 +232,15 @@ describe("Resume submission controller", () => {
     expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
     expect(mockMapTrustApiReturnModelToWebModel).toHaveBeenCalledTimes(1);
-    expect(mockIsActiveFeature).toHaveBeenCalledTimes(3);
+    expect(mockIsActiveFeature).toHaveBeenCalledTimes(4);
     expect(mockGetUrlWithTransactionIdAndSubmissionId).not.toHaveBeenCalled();
   });
 
   test(`Redirect to starting payment page after resuming the OverseasEntity object and trusts feature flag on and REDIS_flag set to ON`, async () => {
     mockIsActiveFeature.mockReturnValueOnce( true ); // REDIS flag
+    mockIsActiveFeature.mockReturnValueOnce( true ); // REDIS flag
     mockIsActiveFeature.mockReturnValueOnce( true ); // trusts feature flag
+    mockIsActiveFeature.mockReturnValueOnce( false ); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
     mockGetOverseasEntity.mockReturnValueOnce( {
       ...APPLICATION_DATA_MOCK,
       [OverseasEntityDueDiligenceKey]: {}
@@ -243,7 +266,7 @@ describe("Resume submission controller", () => {
     expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
     expect(mockMapTrustApiReturnModelToWebModel).toHaveBeenCalledTimes(1);
-    expect(mockIsActiveFeature).toHaveBeenCalledTimes(3);
+    expect(mockIsActiveFeature).toHaveBeenCalledTimes(4);
     expect(mockGetUrlWithTransactionIdAndSubmissionId).toHaveBeenCalledTimes(1);
   });
 
@@ -265,12 +288,12 @@ describe("Resume submission controller", () => {
   test("Catch error when resuming Overseas Entity", async () => {
     mockGetOverseasEntity.mockReturnValueOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
     const resp = await request(app).get(RESUME_SUBMISSION_URL);
-
     expect(resp.status).toEqual(500);
     expect(resp.text).toContain(SERVICE_UNAVAILABLE);
   });
 
   test(`Remove old NOCs after resuming the OverseasEntity Registration submission and FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is ON`, async () => {
+    mockIsActiveFeature.mockReturnValueOnce( true ); // REDIS flag
     mockIsActiveFeature.mockReturnValueOnce( true ); // REDIS flag
     mockIsActiveFeature.mockReturnValueOnce( true ); // trusts feature flag
     mockIsActiveFeature.mockReturnValueOnce( true ); // new NOCs

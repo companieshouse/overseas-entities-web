@@ -15,9 +15,6 @@ import {
   DATA_EVENT_ID
 } from '../__mocks__/text.mock';
 
-const transcationId = "123abc";
-const submissionId = "abc123";
-
 describe('createChangeLinkConfig test suite', () => {
 
   test('should check if the object returned is correct, and contains the change link configs', () => {
@@ -29,14 +26,10 @@ describe('createChangeLinkConfig test suite', () => {
   });
 
   test('should correctly substitute the transactionId and submissionId in a url ', () => {
+    const transcationId = "123abc";
+    const submissionId = "abc123";
     const substitutedUrl = createChangeLinkWithIds(REGISTER_AN_OVERSEAS_ENTITY_WITH_PARAMS_URL, transcationId, submissionId);
     expect(substitutedUrl).toEqual(`${LANDING_URL}/transaction/${transcationId}/submission/${submissionId}/`);
-  });
-
-  test('should return a hash value if the substitution for transactionId and submissionId fails', () => {
-    // eslint-disable-next-line
-    const substitutedUrl = createChangeLinkWithIds(undefined, transcationId, submissionId);
-    expect(substitutedUrl).toEqual('#');
   });
 
 });

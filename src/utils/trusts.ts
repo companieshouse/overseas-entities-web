@@ -1,10 +1,16 @@
 import { Request } from "express";
-import { RoleWithinTrustType } from "../model/role.within.trust.type.model";
 import { v4 as uuidv4 } from "uuid";
 import * as config from "../config";
+import { RoleWithinTrustType } from "../model/role.within.trust.type.model";
 import { ApplicationData } from "../model";
+import { yesNoResponse } from "../model/data.types.model";
+import { isActiveFeature } from "./feature.flag";
+import { getUrlWithParamsToPath } from "./url";
+
+import { ReviewTrustKey, UpdateKey } from "../model/update.type.model";
 import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from "../model/beneficial.owner.individual.model";
 import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../model/beneficial.owner.other.model";
+
 import {
   BeneficialOwnerItem,
   Trust,
@@ -14,10 +20,6 @@ import {
   TrustKey,
   TrustCorporate,
 } from "../model/trust.model";
-import { yesNoResponse } from "../model/data.types.model";
-import { isActiveFeature } from "./feature.flag";
-import { getUrlWithParamsToPath } from "./url";
-import { ReviewTrustKey, UpdateKey } from "../model/update.type.model";
 
 /**
  * Checks whether any beneficial owners requires trust data due to at least one of them

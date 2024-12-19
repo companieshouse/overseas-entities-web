@@ -18,13 +18,13 @@ import router from "./routes";
 import errorHandler from "./controllers/error.controller";
 import { countryFilter } from "./utils/country.filter";
 import { ErrorMessages } from "./validation/error.messages";
-import { isActiveFeature } from "./utils/feature.flag";
 import { getTransactionIdAndSubmissionIdFromOriginalUrl } from "./utils/url";
 import {
   createChangeLinkConfig,
   createSummaryListLink,
   createChangeLinkWithIds,
 } from "./utils/change.link";
+import { isActiveFeature } from "./utils/feature.flag";
 
 const app = express();
 
@@ -53,7 +53,7 @@ nunjucksEnv.addGlobal("OE_CONFIGS", config);
 nunjucksEnv.addGlobal("ERROR_MESSAGES", ErrorMessages);
 nunjucksEnv.addGlobal("COUNTRY_FILTER", countryFilter );
 nunjucksEnv.addGlobal("CREATE_CHANGE_LINK", createChangeLinkConfig);
-nunjucksEnv.addGlobal("CREATE_CHANGE_LINK_WITH_IDs", createChangeLinkWithIds);
+nunjucksEnv.addGlobal("CREATE_CHANGE_LINK_WITH_IDS", createChangeLinkWithIds);
 nunjucksEnv.addGlobal("SUMMARY_LIST_LINK", createSummaryListLink);
 nunjucksEnv.addGlobal("IS_REDIS_REMOVAL_ENABLED", isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL));
 nunjucksEnv.addGlobal("PIWIK_URL", config.PIWIK_URL);

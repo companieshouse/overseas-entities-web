@@ -1,11 +1,16 @@
 {% if pageParams.isRegistration %}
   {% set contactDetailsSubText = "Who can we contact about this application?" %}
-  {% set presenterNameChangeLink = OE_CONFIGS.PRESENTER_CHANGE_FULL_NAME %}
-  {% set presenterEmailChangeLink = OE_CONFIGS.PRESENTER_CHANGE_EMAIL %}
   {% set nameFieldLabel = "Name" %}
   {% set emailFieldLabel = "Email" %}
   {% set nameChangeText = "Full name - Who can we contact about this application" %}
   {% set emailChangeText = "Email address - Who can we contact about this application" %}
+  {% if not IS_REDIS_REMOVAL_ENABLED %}
+    {% set presenterNameChangeLink = OE_CONFIGS.PRESENTER_CHANGE_FULL_NAME %}
+    {% set presenterEmailChangeLink = OE_CONFIGS.PRESENTER_CHANGE_EMAIL %}
+  {% else %}
+    {% set presenterNameChangeLink = CREATE_CHANGE_LINK_WITH_IDS(OE_CONFIGS.PRESENTER_CHANGE_FULL_NAME_WITH_PARAMS, OE_TRANSACTION_ID, OE_SUBMISSION_ID) %}
+    {% set presenterEmailChangeLink = CREATE_CHANGE_LINK_WITH_IDS(OE_CONFIGS.PRESENTER_CHANGE_EMAIL_WITH_PARAMS, OE_TRANSACTION_ID, OE_SUBMISSION_ID) %}
+  {% endif %}
 {% else %}
   {% set contactDetailsSubText %}
     {% if pageParams.noChangeFlag %}

@@ -9,10 +9,10 @@ import { ApplicationData } from "../model";
 import { startPaymentsSession } from "../service/payment.service";
 import { RoleWithinTrustType } from "../model/role.within.trust.type.model";
 import { fetchApplicationData } from "../utils/application.data";
-
+import { OverseasEntityKey, Transactionkey } from "../model/data.types.model";
 import { getUrlWithParamsToPath, isRegistrationJourney } from "../utils/url";
 import { checkEntityRequiresTrusts, getTrustLandingUrl } from "../utils/trusts";
-import { OverseasEntityKey, Transactionkey } from "../model/data.types.model";
+import { mapTrustApiToWebWhenFlagsAreSet } from "../utils/trust/api.to.web.mapper";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -22,6 +22,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     const isRegistration = isRegistrationJourney(req);
     const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+    mapTrustApiToWebWhenFlagsAreSet (appData, isRegistration);
     const requiresTrusts: boolean = checkEntityRequiresTrusts(appData);
     const changeLinkUrl: string = config.ENTITY_URL;
     const overseasEntityHeading: string = config.OVERSEAS_ENTITY_SECTION_HEADING;

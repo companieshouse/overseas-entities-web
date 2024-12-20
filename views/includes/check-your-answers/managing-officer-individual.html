@@ -26,7 +26,11 @@
   {% endif %}
 {% endset %}
 
-{% set changeLinkUrl = OE_CONFIGS.MANAGING_OFFICER_URL + "/" + moi.id %}
+{% if not IS_REDIS_REMOVAL_ENABLED %}
+  {% set changeLinkUrl = OE_CONFIGS.MANAGING_OFFICER_URL + "/" + moi.id %}
+{% else %}
+  {% set changeLinkUrl = CREATE_CHANGE_LINK_WITH_IDS(OE_CONFIGS.MANAGING_OFFICER_WITH_PARAMS_URL, OE_TRANSACTION_ID, OE_SUBMISSION_ID) + "/" + moi.id %}
+{% endif %}
 
 {# Build and add each govukSummaryList row separately so that some rows can be optional #}
 {% set rows=[] %}

@@ -9,7 +9,7 @@
 {% set interestedPersonDate = dateMacros.formatDate(individualTrustee.date_became_interested_person_day, individualTrustee.date_became_interested_person_month, individualTrustee.date_became_interested_person_year) %}
 
 {% set individualTrusteeFormattedResidentialAddressHtml %}
-   {% set address = {
+    {% set address = {
       property_name_number: individualTrustee.ura_address_premises,
       line_1: individualTrustee.ura_address_line_1,
       line_2: individualTrustee.ura_address_line_2,
@@ -42,10 +42,14 @@
 {% endset %}
 
 {% if pageParams.isRegistration %}
-  {% set changeLinkUrl = OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE + "/" + individualTrustee.id %}
+  {% if not IS_REDIS_REMOVAL_ENABLED %}
+    {% set changeLinkUrl = OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE + "/" + individualTrustee.id %}
+  {% else %}
+    {% set changeLinkUrl = CREATE_CHANGE_LINK_WITH_IDS(OE_CONFIGS.TRUST_ENTRY_WITH_PARAMS_URL, OE_TRANSACTION_ID, OE_SUBMISSION_ID) +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE + "/" + individualTrustee.id %}
+  {% endif %}
 {% else %}
   {% set stillInvolved = individualTrustee.still_involved %}
-  {% set isNotStillInvolved = stillInvolved === "No" %}    
+  {% set isNotStillInvolved = stillInvolved === "No" %}
   {% set trusteeCeasedDate = dateMacros.formatDate(individualTrustee.ceased_date_day, individualTrustee.ceased_date_month, individualTrustee.ceased_date_year) %}
   {% if manageTrusts %}
     {% set changeLinkUrl = OE_CONFIGS.UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_CHANGE_HANDLER_URL +  "/" + trust.trust_id + "/individual/" + individualTrustee.id %}
@@ -209,8 +213,8 @@
   }), rows) %}
 {% endif %}
 
-{% if not pageParams.isRegistration and 
-      not inNoChangeJourney and 
+{% if not pageParams.isRegistration and
+      not inNoChangeJourney and
       (isTrustStillInvolved or isNotStillInvolved) %}
   {% set rows = (rows.push({
     key: {
@@ -227,7 +231,7 @@
         ) ]
       }
     }), rows) %}
-    
+
     {% set rows = (rows.push({
       key: {
         text: "Date they ceased to be involved in the trust"
@@ -241,8 +245,8 @@
           "Individual beneficial owner " + individualTrusteeFullName + " - ceased date",
           "change-individual-beneficial-owner-ceased-date-button"
         ) ]
-      } 
-    }) if isNotStillInvolved, rows) %} 
+      }
+    }) if isNotStillInvolved, rows) %}
 {% endif %}
 
 <h3 class="govuk-heading-m">Individual for {{trust.trust_name}}</h3>

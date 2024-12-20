@@ -16,10 +16,16 @@ import { getUrlWithParamsToPath, isRegistrationJourney } from './url';
 import { checkTrustLegalEntityBeneficialOwnerStillInvolved } from '../validation/stillInvolved.validation';
 import { fetchApplicationData, setExtraData } from '../utils/application.data';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
-import { getTrustByIdFromApp, saveHistoricalBoInTrust, saveTrustInApp } from '../utils/trusts';
 import { mapBeneficialOwnerToSession, mapFormerTrusteeByIdFromSessionToPage } from '../utils/trust/historical.beneficial.owner.mapper';
 import { filingPeriodTrustCeaseDateValidations, filingPeriodTrustStartDateValidations } from '../validation/async';
 import { updateOverseasEntity } from "../service/overseas.entities.service";
+import { mapTrustApiToWebWhenFlagsAreSet } from "../utils/trust/api.to.web.mapper";
+
+import {
+  getTrustByIdFromApp,
+  saveHistoricalBoInTrust,
+  saveTrustInApp
+} from '../utils/trusts';
 
 export const HISTORICAL_BO_TEXTS = {
   title: 'Tell us about the former beneficial owner',
@@ -76,10 +82,11 @@ export const getTrustFormerBo = async (req: Request, res: Response, next: NextFu
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const isRegistration = isRegistrationJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
     const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
     const trusteeId = req.params[config.ROUTE_PARAM_TRUSTEE_ID];
+    const isRegistration = isRegistrationJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+    mapTrustApiToWebWhenFlagsAreSet(appData, isRegistration);
     const formData: PageModel.TrustHistoricalBeneficialOwnerForm = mapFormerTrusteeByIdFromSessionToPage(
       appData,
       trustId,

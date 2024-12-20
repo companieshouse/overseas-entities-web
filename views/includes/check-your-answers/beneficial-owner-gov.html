@@ -80,7 +80,11 @@
 {% endset %}
 
 {% if pageParams.isRegistration %}
-  {% set changeLinkUrl = OE_CONFIGS.BENEFICIAL_OWNER_GOV_URL + "/" + bog.id %}
+  {% if not IS_REDIS_REMOVAL_ENABLED %}
+    {% set changeLinkUrl = OE_CONFIGS.BENEFICIAL_OWNER_GOV_URL + "/" + bog.id %}
+  {% else %}
+    {% set changeLinkUrl = CREATE_CHANGE_LINK_WITH_IDS(OE_CONFIGS.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL, OE_TRANSACTION_ID, OE_SUBMISSION_ID) + "/" + bog.id %}
+  {% endif %}
 {% else %}
   {% if bog.ch_reference %}
     {% set changeLinkUrl = OE_CONFIGS.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + loop.index0 %}

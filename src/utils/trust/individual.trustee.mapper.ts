@@ -145,7 +145,7 @@ export const mapIndividualTrusteeFromSessionToPage = (
     relevant_period: trustee.relevant_period,
   };
 
-  if (trustee.type === RoleWithinTrustType.INTERESTED_PERSON){
+  if (trustee.type === RoleWithinTrustType.INTERESTED_PERSON) {
     return {
       ...data,
       dateBecameIPDay: trustee.date_became_interested_person_day,

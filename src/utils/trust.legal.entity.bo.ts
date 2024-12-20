@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { Session } from '@companieshouse/node-session-handler';
+
 import { logger } from './logger';
 import * as config from '../config';
 import { safeRedirect } from './http.ext';
@@ -18,6 +19,7 @@ import { CommonTrustData, TrustLegalEntityForm } from '../model/trust.page.model
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
 import { ValidationError, validationResult } from 'express-validator';
 import { getUrlWithParamsToPath, isRegistrationJourney } from './url';
+import { mapTrustApiToWebWhenFlagsAreSet } from "../utils/trust/api.to.web.mapper";
 
 import {
   getTrustByIdFromApp,
@@ -95,6 +97,7 @@ export const getTrustLegalEntityBo = async (req: Request, res: Response, next: N
 
     const isRegistration = isRegistrationJourney(req);
     const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+    mapTrustApiToWebWhenFlagsAreSet(appData, isRegistration);
     const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
     const trusteeId = req.params[config.ROUTE_PARAM_TRUSTEE_ID];
     const isRelevantPeriod = req.query ? req.query["relevant-period"] === "true" : false;

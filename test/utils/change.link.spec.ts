@@ -1,8 +1,10 @@
-import { describe, expect, test } from '@jest/globals';
-
-import { CHANGE_LINK, CHANGE_LINK_NAME_PRESENTER, DATA_EVENT_ID } from '../__mocks__/text.mock';
-import { PRESENTER_CHANGE_FULL_NAME } from '../../src/config';
 import { createChangeLinkConfig } from '../../src/utils/change.link';
+import { PRESENTER_CHANGE_FULL_NAME } from '../../src/config';
+import {
+  CHANGE_LINK,
+  CHANGE_LINK_NAME_PRESENTER,
+  DATA_EVENT_ID
+} from '../__mocks__/text.mock';
 
 describe('createChangeLinkConfig test suite', () => {
 
@@ -13,5 +15,4 @@ describe('createChangeLinkConfig test suite', () => {
     expect(testChangeLinkConfig.visuallyHiddenText).toEqual(CHANGE_LINK_NAME_PRESENTER);
     expect(testChangeLinkConfig.attributes['data-event-id']).toEqual(DATA_EVENT_ID);
   });
-
 });

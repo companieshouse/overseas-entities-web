@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Session } from "@companieshouse/node-session-handler";
 import ApiClient from "@companieshouse/api-sdk-node/dist/client";
 import { isActiveFeature } from "../utils/feature.flag";
-import { ApplicationData } from "model";
+import { ApplicationData } from "../model";
 import { createAndLogErrorRequest, logger } from "../utils/logger";
 import { createOAuthApiClient } from "./api.service";
 

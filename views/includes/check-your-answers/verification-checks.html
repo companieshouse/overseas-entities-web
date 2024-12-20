@@ -5,6 +5,7 @@
 
 {% if pageParams.isRegistration %}
   {% set whoIsCompletingText = "Who is completing this registration" %}
+  {% set whoIsCompletingChangeLink = OE_CONFIGS.WHO_IS_MAKING_FILING_CHANGE %}
   {% if not IS_REDIS_REMOVAL_ENABLED %}
     {% if who_is_registering == "agent" %}
       {% set whoIsCompleting = ukAgent %}
@@ -27,6 +28,7 @@
       {% set partnerChangeLink = OE_CONFIGS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_PARTNER_NAME %}
     {% endif %}
   {% else %}
+    {% set whoIsCompletingChangeLink = CREATE_CHANGE_LINK_WITH_IDS(OE_CONFIGS.WHO_IS_MAKING_FILING_CHANGE_WITH_PARAMS, OE_TRANSACTION_ID, OE_SUBMISSION_ID) %}
     {% if who_is_registering == "agent" %}
       {% set whoIsCompleting = ukAgent %}
       {% set agentChangeLink = CREATE_CHANGE_LINK_WITH_IDS(OE_CONFIGS.DUE_DILIGENCE_CHANGE_AGENT_CODE_WITH_PARAMS, OE_TRANSACTION_ID, OE_SUBMISSION_ID) %}

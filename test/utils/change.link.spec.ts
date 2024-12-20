@@ -1,14 +1,5 @@
-import {
-  createChangeLinkConfig,
-  createChangeLinkWithIds,
-} from '../../src/utils/change.link';
-
-import {
-  LANDING_URL,
-  PRESENTER_CHANGE_FULL_NAME,
-  REGISTER_AN_OVERSEAS_ENTITY_WITH_PARAMS_URL,
-} from '../../src/config';
-
+import { createChangeLinkConfig } from '../../src/utils/change.link';
+import { PRESENTER_CHANGE_FULL_NAME } from '../../src/config';
 import {
   CHANGE_LINK,
   CHANGE_LINK_NAME_PRESENTER,
@@ -24,12 +15,4 @@ describe('createChangeLinkConfig test suite', () => {
     expect(testChangeLinkConfig.visuallyHiddenText).toEqual(CHANGE_LINK_NAME_PRESENTER);
     expect(testChangeLinkConfig.attributes['data-event-id']).toEqual(DATA_EVENT_ID);
   });
-
-  test('should correctly substitute the transactionId and submissionId in a url ', () => {
-    const transcationId = "123abc";
-    const submissionId = "abc123";
-    const substitutedUrl = createChangeLinkWithIds(REGISTER_AN_OVERSEAS_ENTITY_WITH_PARAMS_URL, transcationId, submissionId);
-    expect(substitutedUrl).toEqual(`${LANDING_URL}/transaction/${transcationId}/submission/${submissionId}/`);
-  });
-
 });

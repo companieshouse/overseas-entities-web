@@ -1,4 +1,3 @@
-
 jest.mock("ioredis");
 jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/middleware/authentication.middleware');
@@ -7,29 +6,43 @@ jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/service/transaction.service');
 jest.mock('../../../src/service/overseas.entities.service');
-jest.mock("../../../src/utils/feature.flag" );
+jest.mock("../../../src/utils/feature.flag");
 jest.mock('../../../src/middleware/navigation/update/has.overseas.entity.middleware');
 jest.mock("../../../src/service/company.profile.service");
 jest.mock('../../../src/utils/relevant.period');
+jest.mock('../../../src/utils/url');
+
+import request from "supertest";
+import { NextFunction } from "express";
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
 import mockJourneyDetectionMiddleware from "../../__mocks__/journey.detection.middleware.mock";
 import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
-import * as config from "../../../src/config";
 import app from "../../../src/app";
-import request from "supertest";
-import { beforeEach, jest, test, describe } from "@jest/globals";
+
+import * as config from "../../../src/config";
 import { createAndLogErrorRequest, logger } from "../../../src/utils/logger";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
-import { createOverseasEntity, updateOverseasEntity } from "../../../src/service/overseas.entities.service";
 import { postTransaction } from "../../../src/service/transaction.service";
-import { getApplicationData, mapDataObjectToFields, mapFieldsToDataObject } from "../../../src/utils/application.data";
-import { OverseasEntityKey, Transactionkey } from '../../../src/model/data.types.model';
+import { ErrorMessages } from "../../../src/validation/error.messages";
+import { getConfirmationStatementNextMadeUpToDateAsIsoString } from "../../../src/service/company.profile.service";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { hasOverseasEntity } from "../../../src/middleware/navigation/update/has.overseas.entity.middleware";
 import { checkRelevantPeriod } from "../../../src/utils/relevant.period";
+import { FILING_DATE_REQ_BODY_MOCK } from '../../__mocks__/fields/date.mock';
+import { isRegistrationJourney } from "../../../src/utils/url";
+
+import { OverseasEntityKey, Transactionkey } from '../../../src/model/data.types.model';
+import { createOverseasEntity, updateOverseasEntity } from "../../../src/service/overseas.entities.service";
+
+import {
+  fetchApplicationData,
+  getApplicationData,
+  mapDataObjectToFields,
+  mapFieldsToDataObject
+} from "../../../src/utils/application.data";
 
 import {
   APPLICATION_DATA_MOCK,
@@ -49,12 +62,6 @@ import {
   UPDATE_DATE_OF_UPDATE_STATEMENT_TEXT,
 } from "../../__mocks__/text.mock";
 
-import { FILING_DATE_REQ_BODY_MOCK } from '../../__mocks__/fields/date.mock';
-
-import { NextFunction } from "express";
-import { ErrorMessages } from "../../../src/validation/error.messages";
-import { getConfirmationStatementNextMadeUpToDateAsIsoString } from "../../../src/service/company.profile.service";
-
 const NEXT_MADE_UP_TO_DATE = "2024-03-19";
 
 mockJourneyDetectionMiddleware.mockClear();
@@ -64,18 +71,21 @@ const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockCreateAndLogErrorRequest = createAndLogErrorRequest as jest.Mock;
 
 const mockHasOverseasEntity = hasOverseasEntity as jest.Mock;
-mockHasOverseasEntity.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockHasOverseasEntity.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockTransactionService = postTransaction as jest.Mock;
-mockTransactionService.mockReturnValue( TRANSACTION_ID );
+mockTransactionService.mockReturnValue(TRANSACTION_ID);
 
 const mockCreateOverseasEntity = createOverseasEntity as jest.Mock;
-mockCreateOverseasEntity.mockReturnValue( OVERSEAS_ENTITY_ID );
+mockCreateOverseasEntity.mockReturnValue(OVERSEAS_ENTITY_ID);
 
 const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
-mockGetApplicationData.mockReturnValue( APPLICATION_DATA_MOCK );
+mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
+
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
 
 const mockGetConfirmationStatementNextMadeUpToDateAsIsoString = getConfirmationStatementNextMadeUpToDateAsIsoString as jest.Mock;
 mockGetConfirmationStatementNextMadeUpToDateAsIsoString.mockReturnValue(NEXT_MADE_UP_TO_DATE);
@@ -85,18 +95,21 @@ const mockMapDataObjectToFields = mapDataObjectToFields as jest.Mock;
 const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
-mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockCompanyAuthenticationMiddleware = companyAuthentication as jest.Mock;
-mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
-mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue(true);
 
 const mockCheckRelevantPeriod = checkRelevantPeriod as jest.Mock;
+
+const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
+mockIsRegistrationJourney.mockReturnValue(false);
 
 const FILING_DATE_FORM_DATA = {
   "filing_date-day": "1",
@@ -108,7 +121,6 @@ describe("Update Filing Date controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockGetApplicationData.mockReturnValue( APPLICATION_DATA_MOCK );
   });
 
   describe("GET tests", () => {
@@ -183,9 +195,7 @@ describe("Update Filing Date controller", () => {
 
     test('does not get next made up to date if filing date already present in application data', async () => {
       mockMapDataObjectToFields.mockReturnValueOnce({ "filing_date-day": "1", "filing_date-month": "1", "filing_date-year": "2022" });
-
       const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
-
       expect(mockGetConfirmationStatementNextMadeUpToDateAsIsoString).not.toHaveBeenCalled();
       expect(resp.status).toEqual(200);
     });
@@ -236,7 +246,7 @@ describe("Update Filing Date controller", () => {
     });
 
     test('catch error when rendering the page', async () => {
-      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockLoggerDebugRequest.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
@@ -354,8 +364,8 @@ describe("Update Filing Date controller", () => {
     });
 
     test(`renders the service unavailable page when unable to get the entity number`, async () => {
-      const mockData = { };
-      mockGetApplicationData.mockReturnValue(mockData);
+      const mockData = {};
+      mockFetchApplicationData.mockReturnValue(mockData);
 
       const resp = await request(app)
         .post(config.UPDATE_FILING_DATE_URL)
@@ -366,7 +376,7 @@ describe("Update Filing Date controller", () => {
     });
 
     test(`catch error on POST action for ${config.UPDATE_FILING_DATE_URL} page`, async () => {
-      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockLoggerDebugRequest.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app)
         .post(config.UPDATE_FILING_DATE_URL)
         .send({ ...FILING_DATE_REQ_BODY_MOCK });

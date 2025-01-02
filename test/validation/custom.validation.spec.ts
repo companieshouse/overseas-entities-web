@@ -1,17 +1,22 @@
 jest.mock('../../src/utils/application.data');
 jest.mock("../../src/service/company.profile.service");
 jest.mock("../../src/utils/logger");
+jest.mock("../../src/utils/url");
 
-import * as custom from "../../src/validation/custom.validation";
-import { ErrorMessages } from "../../src/validation/error.messages";
 import { DateTime } from 'luxon';
-import { MAX_80 } from "../__mocks__/max.length.mock";
-import { getApplicationData } from "../../src/utils/application.data";
 import { Request } from "express";
 import { Session } from '@companieshouse/node-session-handler';
+import * as custom from "../../src/validation/custom.validation";
+import { ErrorMessages } from "../../src/validation/error.messages";
+import { MAX_80 } from "../__mocks__/max.length.mock";
+import { fetchApplicationData } from "../../src/utils/application.data";
 import { Trust } from "../../src/model/trust.model";
 import { ROUTE_PARAM_TRUST_ID } from "../../src/config/index";
+import { isRegistrationJourney } from "../../src/utils/url";
 import { DefaultErrorsSecondNationality } from "../../src/validation/models/second.nationality.error.model";
+
+const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
+mockIsRegistrationJourney.mockReturnValue(true);
 
 const public_register_name = MAX_80 + "1";
 const public_register_jurisdiction = MAX_80;
@@ -21,7 +26,6 @@ describe('checkCeasedDateOnOrAfterStartDate', () => {
   test('should throw error if ceased date before start date', () => {
     const ceaseDate = ["2", "2", "2023"];
     const startDate = ["3", "3", "2023"];
-
     expect(() => custom.checkCeasedDateOnOrAfterStartDate(...ceaseDate, ...startDate, ErrorMessages.CEASED_DATE_BEFORE_START_DATE)).toThrowError(ErrorMessages.CEASED_DATE_BEFORE_START_DATE);
   });
 
@@ -35,14 +39,12 @@ describe('checkCeasedDateOnOrAfterStartDate', () => {
   test('should return true if ceased date = start date', () => {
     const ceaseDate = ["3", "3", "2023"];
     const startDate = ["3", "3", "2023"];
-
     expect(custom.checkCeasedDateOnOrAfterStartDate(...ceaseDate, ...startDate)).toBe(true);
   });
 
   test('should throw error if filing date before start date', () => {
     const filingDate = ["2", "2", "2023"];
     const startDate = ["3", "3", "2023"];
-
     expect(() => custom.checkFirstDateOnOrAfterSecondDate(...filingDate, ...startDate, ErrorMessages.START_DATE_BEFORE_FILING_DATE))
       .toThrowError(ErrorMessages.START_DATE_BEFORE_FILING_DATE);
   });
@@ -57,7 +59,6 @@ describe('checkCeasedDateOnOrAfterStartDate', () => {
   test('should return true if filing date after start date', () => {
     const filingDate = ["3", "3", "2023"];
     const startDate = ["2", "2", "2023"];
-
     expect(custom.checkFirstDateOnOrAfterSecondDate(...filingDate, ...startDate)).toBe(true);
   });
 
@@ -71,6 +72,7 @@ describe('checkCeasedDateOnOrAfterStartDate', () => {
 });
 
 describe('tests for isUnableToObtainAllTrustInfo', () => {
+
   let mockReq = {} as Request;
 
   beforeEach(() => {
@@ -99,7 +101,7 @@ describe('tests for isUnableToObtainAllTrustInfo', () => {
         } as Trust]
       }
     };
-    (getApplicationData as jest.Mock).mockReturnValue(appData);
+    (fetchApplicationData as jest.Mock).mockReturnValue(appData);
     expect(await custom.isUnableToObtainAllTrustInfo(mockReq)).toBe(expectedResult);
   });
 
@@ -115,13 +117,14 @@ describe('tests for isUnableToObtainAllTrustInfo', () => {
         unable_to_obtain_all_trust_info: notAllInfoFlag
       } as Trust]
     };
-    (getApplicationData as jest.Mock).mockReturnValue(appData);
+    (fetchApplicationData as jest.Mock).mockReturnValue(appData);
     expect(await custom.isUnableToObtainAllTrustInfo(mockReq)).toBe(expectedResult);
   });
 
 });
 
 describe('tests for custom Date fields', () => {
+
   const today = DateTime.local();
   const tomorrow = today.plus({ days: 1 });
   const threeMonthsBack = today.minus({ months: 3 });
@@ -225,15 +228,13 @@ describe('tests for checkDatePreviousToFilingDate ', () => {
   });
 
   test("should return error if startDate is after filingDate", () => {
-    (getApplicationData as jest.Mock).mockReturnValue(mockAppData);
-
+    (fetchApplicationData as jest.Mock).mockReturnValue(mockAppData);
     expect(() => custom.checkDatePreviousToFilingDate(mockReq, "15", "6", "2023", ErrorMessages.START_DATE_BEFORE_FILING_DATE))
       .toBeTruthy();
   });
 
   test("should return error if startDate is after filingDate", async () => {
-    (getApplicationData as jest.Mock).mockReturnValue(mockAppData);
-
+    (fetchApplicationData as jest.Mock).mockReturnValue(mockAppData);
     await expect(custom.checkDatePreviousToFilingDate(mockReq, "3", "8", "2023", ErrorMessages.START_DATE_BEFORE_FILING_DATE)).rejects
       .toThrowError(ErrorMessages.START_DATE_BEFORE_FILING_DATE);
   });

@@ -1,5 +1,26 @@
+import { Request, Response, NextFunction } from "express";
+import { DateTime } from "luxon";
 import { body } from "express-validator";
 import { RoleWithinTrustType } from "../../model/role.within.trust.type.model";
+import { ApplicationData } from "../../model";
+import { fetchApplicationData } from "../../utils/application.data";
+import { createAndLogErrorRequest, logger } from "../../utils/logger";
+import { ROUTE_PARAM_TRUST_ID } from "../../config";
+import { getReviewTrustById, getTrustInReview } from "../../utils/update/review_trusts";
+import { getTrustByIdFromApp } from "../../utils/trusts";
+import { Trust } from "../../model/trust.model";
+import { isRegistrationJourney } from "../../utils/url";
+import { ErrorMessages } from "../error.messages";
+import { getConfirmationStatementNextMadeUpToDateAsIsoString } from "../../service/company.profile.service";
+
+import {
+  dateContext,
+  dateContextWithCondition,
+  dateValidations,
+  conditionalDateValidations,
+  conditionalHistoricalBODateValidations,
+} from "./helper/date.validation.helper";
+
 import {
   checkBirthDate,
   checkDateIPIndividualBO,
@@ -25,18 +46,6 @@ import {
   checkFilingDate,
   checkTrusteeCeasedDate,
 } from "../custom.validation";
-import { ErrorMessages } from "../error.messages";
-import { conditionalDateValidations, conditionalHistoricalBODateValidations, dateContext, dateContextWithCondition, dateValidations } from "./helper/date.validation.helper";
-import { Request, Response, NextFunction } from "express";
-import { ApplicationData } from "../../model";
-import { getConfirmationStatementNextMadeUpToDateAsIsoString } from "../../service/company.profile.service";
-import { getApplicationData } from "../../utils/application.data";
-import { createAndLogErrorRequest, logger } from "../../utils/logger";
-import { DateTime } from "luxon";
-import { ROUTE_PARAM_TRUST_ID } from "../../config";
-import { getReviewTrustById, getTrustInReview } from "../../utils/update/review_trusts";
-import { getTrustByIdFromApp } from "../../utils/trusts";
-import { Trust } from "../../model/trust.model";
 
 export const NEXT_MADE_UP_TO_ISO_DATE = 'nextMadeUpToIsoDate';
 
@@ -148,7 +157,8 @@ export const identity_check_date_validations = [
 ];
 
 export const addNextMadeUpToDateToRequest = async (req: Request, res: Response, next: NextFunction) => {
-  const appData: ApplicationData = await getApplicationData(req.session);
+  const isRegistration = isRegistrationJourney(req);
+  const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
   if (!appData.entity_number) {
     logger.errorRequest(req, "addNextMadeUpToDateToRequest - Unable to find entity number in application data.");
     return next(new Error(ErrorMessages.UNABLE_TO_RETRIEVE_ENTITY_NUMBER));
@@ -470,7 +480,8 @@ export const checkLegalEntityCeasedDateOnOrAfterInterestedPersonStartDate = (req
 
 export const checkCeasedDateOnOrAfterTrustCreationDate = async (req, errorMessage: ErrorMessages) => {
   const trustId = req.params ? req.params[ROUTE_PARAM_TRUST_ID] : undefined;
-  const appData: ApplicationData = await getApplicationData(req.session);
+  const isRegistration = isRegistrationJourney(req);
+  const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
   const trust: Trust | undefined = getTrust(appData, trustId);
   if (trust) {
     checkFirstDateOnOrAfterSecondDate(

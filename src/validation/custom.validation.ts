@@ -1,29 +1,29 @@
 // Custom validation utils - For now checking is not empty
-
-import { VALID_CHARACTERS, VALID_EMAIL_FORMAT } from "./regex/regex.validation";
 import { DateTime } from "luxon";
+import { Request } from "express";
+import { logger } from "../utils/logger";
 import { ErrorMessages } from "./error.messages";
-import { ApplicationData, trustType } from "../model";
 import { BeneficialOwnersStatementType } from "../model/beneficial.owner.statement.model";
-import { CONCATENATED_VALUES_SEPARATOR, ROUTE_PARAM_TRUST_ID } from "../config";
-import { getApplicationData } from "../utils/application.data";
+import { fetchApplicationData } from "../utils/application.data";
 import { FilingDateKey } from '../model/date.model';
 import { DefaultErrorsSecondNationality } from "./models/second.nationality.error.model";
-import { getTrustByIdFromApp } from "../utils/trusts" ;
-import { getTrustInReview, hasTrustsToReview } from "../utils/update/review_trusts";
-import { logger } from "../utils/logger";
-import { Request } from "express";
+import { getTrustByIdFromApp } from "../utils/trusts";
 import { InputDate } from "../model/data.types.model";
+import { isRegistrationJourney } from "../utils/url";
+import { ApplicationData, trustType } from "../model";
+import { getTrustInReview, hasTrustsToReview } from "../utils/update/review_trusts";
+import { VALID_CHARACTERS, VALID_EMAIL_FORMAT } from "./regex/regex.validation";
+import { CONCATENATED_VALUES_SEPARATOR, ROUTE_PARAM_TRUST_ID } from "../config";
 
 export const checkFieldIfRadioButtonSelected = (selected: boolean, errMsg: string, value: string = "") => {
-  if ( selected && !value.trim() ) {
+  if (selected && !value.trim()) {
     throw new Error(errMsg);
   }
   return true;
 };
 
 export const checkMaxFieldIfRadioButtonSelected = (selected: boolean, errMsg: string, maxValue: number, value: string = "") => {
-  if ( selected && value.length > maxValue) {
+  if (selected && value.length > maxValue) {
     throw new Error(errMsg);
   }
   return true;
@@ -37,7 +37,7 @@ export const checkInvalidCharactersIfRadioButtonSelected = (selected: boolean, e
 };
 
 export const checkDateIsNotCompletelyEmpty = (day: string = "", month: string = "", year: string = "") => {
-  if ( !day.trim() && !month.trim() && !year.trim() ) {
+  if (!day.trim() && !month.trim() && !year.trim()) {
     return false;
   }
   return true;
@@ -75,9 +75,7 @@ export const checkDateIsWithinLast3Months = (errMsg: string, day: string = "", m
 
 export const checkDateValueIsValid = (invalidDateErrMsg: string, dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   const dayMonthRegex = /^\d{1,2}$/; // string consisting of 1 or 2 digits only
-
   const day = parseInt(dayStr), month = parseInt(monthStr), year = parseInt(yearStr);
-
   if (isNaN(day) || isNaN(month) || isNaN(year) ||
     !dayMonthRegex.test(dayStr) || !dayMonthRegex.test(monthStr) ||
     year.toString() !== yearStr ||
@@ -462,7 +460,7 @@ export const checkDateFieldsForErrors = (dateErrors: DateFieldErrors, dayStr: st
 export const checkDayFieldForErrors = (dateErrors: DayFieldErrors, dayStr: string = "") => {
   if (dayStr === "") {
     throw new Error(dateErrors.noDayError);
-  } else if (dayStr.length > 2){
+  } else if (dayStr.length > 2) {
     throw new Error(dateErrors.wrongDayLength);
   }
   return true;
@@ -471,7 +469,7 @@ export const checkDayFieldForErrors = (dateErrors: DayFieldErrors, dayStr: strin
 export const checkMonthFieldForErrors = (dateErrors: MonthFieldErrors, monthStr: string = "") => {
   if (monthStr === "") {
     throw new Error(dateErrors.noMonthError);
-  } else if (monthStr.length > 2){
+  } else if (monthStr.length > 2) {
     throw new Error(dateErrors.wrongMonthLength);
   }
   return true;
@@ -480,7 +478,7 @@ export const checkMonthFieldForErrors = (dateErrors: MonthFieldErrors, monthStr:
 export const checkYearFieldForErrors = (dateErrors: YearFieldErrors, yearStr: string = "") => {
   if (yearStr === "") {
     throw new Error(dateErrors.noYearError);
-  } else if (yearStr.length !== 4){
+  } else if (yearStr.length !== 4) {
     throw new Error(dateErrors.wrongYearLength);
   }
   return true;
@@ -497,11 +495,11 @@ export const checkMoreThanOneDateOfBirthFieldIsNotMissing = (dayStr: string = ""
 };
 
 export const checkOverseasName = (value: string = "") => {
-  if ( !value.trim() ) {
+  if (!value.trim()) {
     throw new Error(ErrorMessages.ENTITY_NAME);
-  } else if ( value.length > 160) {
+  } else if (value.length > 160) {
     throw new Error(ErrorMessages.MAX_NAME_LENGTH);
-  } else if ( !VALID_CHARACTERS.test(value) ) {
+  } else if (!VALID_CHARACTERS.test(value)) {
     throw new Error(ErrorMessages.ENTITY_NAME_INVALID_CHARACTERS);
   }
 
@@ -510,9 +508,9 @@ export const checkOverseasName = (value: string = "") => {
 
 export const checkSecondNationality = (nationality: string = "", secondNationality: string = "", errors?: DefaultErrorsSecondNationality) => {
 
-  if ( nationality && nationality === secondNationality ) {
+  if (nationality && nationality === secondNationality) {
     throw new Error(errors?.sameError ?? ErrorMessages.SECOND_NATIONALITY_IS_SAME);
-  } else if ( nationality && secondNationality && `${nationality}${CONCATENATED_VALUES_SEPARATOR}${secondNationality}`.length > 50) {
+  } else if (nationality && secondNationality && `${nationality}${CONCATENATED_VALUES_SEPARATOR}${secondNationality}`.length > 50) {
     throw new Error(errors?.lengthError ?? ErrorMessages.NATIONALITIES_TOO_LONG);
   }
 
@@ -539,14 +537,10 @@ export const checkAtLeastOneFieldHasValue = (errMsg: string, ...fields: any[]) =
 export const checkTrustFields = (trustsJson: string) => {
   const trusts: trustType.Trust[] = JSON.parse(trustsJson);
   const addressMaxLength = 50;
-
   for (const trust of trusts) {
     checkTrustCreationDate(trust);
-
     checkTrustName(trust);
-
     checkIndividualsAddress(trust, addressMaxLength);
-
     checkCorporatesAddress(trust, addressMaxLength);
   }
   return true;
@@ -566,7 +560,8 @@ export const checkBeneficialOwnerType = (beneficialOwnersStatement: string, valu
 };
 
 export const checkBeneficialOwnersSubmission = async (req) => {
-  const appData: ApplicationData = await getApplicationData(req.session);
+  const isRegistration = isRegistrationJourney(req);
+  const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
   if (appData?.beneficial_owners_statement === BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS) {
     if (!hasBeneficialOwners(appData)) {
       throw new Error(ErrorMessages.MUST_ADD_BENEFICIAL_OWNER);
@@ -579,20 +574,19 @@ export const checkBeneficialOwnersSubmission = async (req) => {
 };
 
 export const checkDatePreviousToFilingDate = async (req, dateDay: string, dateMonth: string, dateYear: string, errorMessage: string) => {
-  const appData: ApplicationData = await getApplicationData(req.session);
 
+  const isRegistration = isRegistrationJourney(req);
+  const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
   const filingDateDay = appData?.update?.[FilingDateKey]?.day;
   const filingDateMonth = appData?.update?.[FilingDateKey]?.month;
   const filingDateYear = appData?.update?.[FilingDateKey]?.year;
 
-  return checkFirstDateOnOrAfterSecondDate(
-    filingDateDay, filingDateMonth, filingDateYear,
-    dateDay, dateMonth, dateYear,
-    errorMessage);
+  return checkFirstDateOnOrAfterSecondDate(filingDateDay, filingDateMonth, filingDateYear, dateDay, dateMonth, dateYear, errorMessage);
 };
 
 export const isUnableToObtainAllTrustInfo = async (req) => {
-  const appData: ApplicationData = await getApplicationData(req.session);
+  const isRegistration = isRegistrationJourney(req);
+  const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
   let trust;
   // Check first if the trust is in review.
   if (hasTrustsToReview(appData)) {
@@ -601,7 +595,7 @@ export const isUnableToObtainAllTrustInfo = async (req) => {
     const trustId = req.params[ROUTE_PARAM_TRUST_ID];
     trust = getTrustByIdFromApp(appData, trustId);
   }
-  if (trust?.unable_to_obtain_all_trust_info === "Yes"){
+  if (trust?.unable_to_obtain_all_trust_info === "Yes") {
     return true;
   }
   return false;
@@ -694,8 +688,8 @@ const checkCorrectIsFormat = (email: string) => {
  * @returns boolean
  */
 export const addressFieldsHaveNoValue = (formData: any, keys: string[], radioButtonSelected: boolean) => {
-  if (radioButtonSelected){
-    return Promise.resolve(keys.every(key => formData[`${key}`] === "" ));
+  if (radioButtonSelected) {
+    return Promise.resolve(keys.every(key => formData[`${key}`] === ""));
   }
   return false;
 };
@@ -713,7 +707,7 @@ export const checkFieldIfRadioButtonSelectedAndFieldsEmpty = (isPrimaryField: bo
   if (!allEmpty) {
     checkFieldIfRadioButtonSelected(selected, errMsg, value);
   } else {
-    if (isPrimaryField){
+    if (isPrimaryField) {
       throw new Error(ErrorMessages.ENTITY_CORRESPONDENCE_ADDRESS);
     } else {
       return false;

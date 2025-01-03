@@ -16,10 +16,28 @@ jest.mock('express-validator', () => ({
 jest.mock('../../src/utils/application.data');
 jest.mock('../../src/service/company.profile.service');
 jest.mock("../../src/utils/logger");
+jest.mock("../../src/utils/url");
 
+import { Request, Response } from 'express';
 import { DateTime } from 'luxon';
+import { logger } from '../../src/utils/logger';
 import { RoleWithinTrustType } from '../../src/model/role.within.trust.type.model';
-import { checkBirthDate,
+import { ErrorMessages } from '../../src/validation/error.messages';
+import { getConfirmationStatementNextMadeUpToDateAsIsoString } from "../../src/service/company.profile.service";
+import { isRegistrationJourney } from "../../src/utils/url";
+import { fetchApplicationData, getApplicationData } from '../../src/utils/application.data';
+
+import { NEXT_MADE_UP_TO_ISO_DATE, addNextMadeUpToDateToRequest } from "../../src/validation/fields/date.validation";
+
+import {
+  dateValidations,
+  dateContext,
+  conditionalDateValidations,
+  dateContextWithCondition,
+} from '../../src/validation/fields/helper/date.validation.helper';
+
+import {
+  checkBirthDate,
   checkDateIPIndividualBO,
   checkDateIPLegalEntityBO,
   checkDateIsInPast,
@@ -29,25 +47,33 @@ import { checkBirthDate,
   checkDateOfBirthFieldsArePresent,
   checkDateValueIsValid,
   checkDayFieldForErrors,
-  checkHistoricalBOEndDate, checkHistoricalBOStartDate, checkIdentityDate, checkMonthFieldForErrors, checkMoreThanOneDateOfBirthFieldIsNotMissing, checkOptionalDateDetails, checkDate,
+  checkHistoricalBOEndDate,
+  checkHistoricalBOStartDate,
+  checkIdentityDate,
+  checkMonthFieldForErrors,
+  checkMoreThanOneDateOfBirthFieldIsNotMissing,
+  checkOptionalDateDetails,
+  checkDate,
   checkTrustDate,
   checkYearFieldForErrors,
-  isYearEitherMissingOrCorrectLength } from '../../src/validation/custom.validation';
-import { ErrorMessages } from '../../src/validation/error.messages';
-import { dateValidations, dateContext, conditionalDateValidations, dateContextWithCondition } from '../../src/validation/fields/helper/date.validation.helper';
-import { getApplicationData } from '../../src/utils/application.data';
-import { getConfirmationStatementNextMadeUpToDateAsIsoString } from "../../src/service/company.profile.service";
-import { Request, Response } from 'express';
-import { NEXT_MADE_UP_TO_ISO_DATE, addNextMadeUpToDateToRequest } from "../../src/validation/fields/date.validation";
-import { logger } from '../../src/utils/logger';
+  isYearEitherMissingOrCorrectLength
+} from '../../src/validation/custom.validation';
 
 let mockReq = {} as Request;
 const mockRes = {} as Response;
 const mockNext = jest.fn();
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 const mockGetConfirmationStatementNextMadeUpToDateAsIsoString = getConfirmationStatementNextMadeUpToDateAsIsoString as jest.Mock;
 const mockErrorLogger = logger.errorRequest as jest.Mock;
+
+const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
+mockIsRegistrationJourney.mockReturnValue(true);
+
+const entityNumber = {
+  entity_number: "123456"
+};
 
 describe('Test to validate date validator', () => {
 
@@ -375,6 +401,7 @@ describe("test date method", () => {
 });
 
 describe("test day, month and year error checkers", () => {
+
   const errors = {
     noDayError: ErrorMessages.DAY,
     noMonthError: ErrorMessages.MONTH,
@@ -464,6 +491,7 @@ describe("test day, month and year error checkers", () => {
 });
 
 describe("should check date functions for custom validation", () => {
+
   const today = DateTime.local();
   const tomorrow = today.plus({ days: 1 });
   const yesterday = today.minus({ days: 1 });
@@ -628,34 +656,34 @@ describe("should check date functions for custom validation", () => {
 });
 
 describe("addNextMadeUpToDateToRequest tests", () => {
+
   beforeEach(() => {
     mockReq = {} as Request;
     mockNext.mockClear();
     mockErrorLogger.mockClear();
     mockGetApplicationData.mockReset();
+    mockFetchApplicationData.mockReset();
   });
 
   test("test addNextMadeUpToDateToRequest adds made up to date to request object", async () => {
-    mockGetApplicationData.mockReturnValueOnce({
-      entity_number: "123456"
-    });
+    mockFetchApplicationData.mockReturnValueOnce(entityNumber);
+    mockGetApplicationData.mockReturnValueOnce(entityNumber);
     mockGetConfirmationStatementNextMadeUpToDateAsIsoString.mockReturnValueOnce("2024-03-01");
-
     await addNextMadeUpToDateToRequest(mockReq, mockRes, mockNext);
     expect(mockReq[NEXT_MADE_UP_TO_ISO_DATE]).toEqual("2024-03-01");
   });
 
   test("test addNextMadeUpToDateToRequest sends error to next function when entity number missing", async () => {
-    mockGetApplicationData.mockReturnValueOnce({ });
+    mockFetchApplicationData.mockReturnValueOnce({});
+    mockGetApplicationData.mockReturnValueOnce({});
     await addNextMadeUpToDateToRequest(mockReq, mockRes, mockNext);
     expect(mockErrorLogger.mock.calls[0][1]).toContain("addNextMadeUpToDateToRequest - Unable to find entity number in application data.");
     expect(mockNext).toBeCalledWith(expect.objectContaining({ 'message': ErrorMessages.UNABLE_TO_RETRIEVE_ENTITY_NUMBER }));
   });
 
   test("test addNextMadeUpToDateToRequest sends error to next function when next made up to date is missing", async () => {
-    mockGetApplicationData.mockReturnValueOnce({
-      entity_number: "123456"
-    });
+    mockFetchApplicationData.mockReturnValueOnce(entityNumber);
+    mockGetApplicationData.mockReturnValueOnce(entityNumber);
     mockGetConfirmationStatementNextMadeUpToDateAsIsoString.mockReturnValueOnce(undefined);
     await addNextMadeUpToDateToRequest(mockReq, mockRes, mockNext);
     expect(mockErrorLogger.mock.calls[0][1]).toContain("addNextMadeUpToDateToRequest - Unable to find next made up to date for entity 123456");

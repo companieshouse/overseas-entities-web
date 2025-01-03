@@ -1,36 +1,56 @@
 jest.mock('ioredis');
-jest.mock('../../../src/utils/feature.flag' );
+jest.mock('../../../src/utils/feature.flag');
 jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/save.and.continue');
+jest.mock('../../../src/utils/url');
+
+import { NextFunction } from 'express';
+import request from 'supertest';
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
 import mockJourneyDetectionMiddleware from "../../__mocks__/journey.detection.middleware.mock";
 import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
-import { beforeEach, jest, test, describe } from '@jest/globals';
-import request from 'supertest';
-import { NextFunction } from 'express';
-
 import app from '../../../src/app';
-import { SECURE_UPDATE_FILTER_URL, UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL, UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL, UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL } from '../../../src/config';
+
 import { authentication } from '../../../src/middleware/authentication.middleware';
 import { companyAuthentication } from '../../../src/middleware/company.authentication.middleware';
 import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
-import { checkBOsDetailsEntered, getApplicationData, setExtraData } from '../../../src/utils/application.data';
-import { isActiveFeature } from '../../../src/utils/feature.flag';
-
-import { TRUST } from '../../__mocks__/session.mock';
-import { PAGE_TITLE_ERROR, UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_FORMER_BO_TITLE, ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE } from '../../__mocks__/text.mock';
-import { UpdateKey } from '../../../src/model/update.type.model';
-import { Trust, TrustHistoricalBeneficialOwner } from '../../../src/model/trust.model';
 import { yesNoResponse } from '../../../src/model/data.types.model';
 import { ApplicationData } from '../../../src/model';
 import { saveAndContinue } from '../../../src/utils/save.and.continue';
+import { isActiveFeature } from '../../../src/utils/feature.flag';
+import { TRUST } from '../../__mocks__/session.mock';
+import { UpdateKey } from '../../../src/model/update.type.model';
+import { isRegistrationJourney } from "../../../src/utils/url";
+
+import { Trust, TrustHistoricalBeneficialOwner } from '../../../src/model/trust.model';
+
+import {
+  checkBOsDetailsEntered, fetchApplicationData,
+  getApplicationData,
+  setExtraData
+} from '../../../src/utils/application.data';
+
+import {
+  PAGE_TITLE_ERROR,
+  UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_FORMER_BO_TITLE,
+  ANY_MESSAGE_ERROR,
+  SERVICE_UNAVAILABLE
+} from '../../__mocks__/text.mock';
+
+import {
+  SECURE_UPDATE_FILTER_URL,
+  UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL,
+  UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL,
+  UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL
+} from '../../../src/config';
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 
 const mockApplicationData: ApplicationData = {
   [UpdateKey]: {
@@ -80,13 +100,13 @@ const mockApplicationData: ApplicationData = {
 mockJourneyDetectionMiddleware.mockClear();
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
-mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockCompanyAuthenticationMiddleware = companyAuthentication as jest.Mock;
-mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
-mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockCheckBOsDetailsEntered = checkBOsDetailsEntered as jest.Mock;
 mockCheckBOsDetailsEntered.mockReturnValue(true);
@@ -96,18 +116,22 @@ mockIsActiveFeature.mockReturnValue(true);
 
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
+const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
+mockIsRegistrationJourney.mockReturnValue(false);
+
 describe('Update - Manage Trusts - Review former beneficial owners', () => {
+
   beforeEach(() => {
     jest.clearAllMocks();
-
     // This performs a deep copy of the mock application data object, to ensure that the HISTORICAL_BO list is
     // created new each time and doesn't grow
     const clonedMockApplicationData = JSON.parse(JSON.stringify(mockApplicationData));
-
     mockGetApplicationData.mockReturnValue(clonedMockApplicationData);
+    mockFetchApplicationData.mockReturnValue(clonedMockApplicationData);
   });
 
   describe('GET tests', () => {
+
     test('when feature flag is on, page is returned for adding new former BO', async () => {
       mockIsActiveFeature.mockReturnValue(true);
 
@@ -137,28 +161,23 @@ describe('Update - Manage Trusts - Review former beneficial owners', () => {
     test('when feature flag is on, redirect if user tries to access with nothing to review', async () => {
       mockIsActiveFeature.mockReturnValue(true);
       mockGetApplicationData.mockReturnValueOnce({ [UpdateKey]: { review_trusts: [] } });
-
+      mockFetchApplicationData.mockReturnValueOnce({ [UpdateKey]: { review_trusts: [] } });
       const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL);
-
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(SECURE_UPDATE_FILTER_URL);
     });
 
     test('when feature flag is on, redirect if user tries to access with wrong ID', async () => {
       mockIsActiveFeature.mockReturnValue(true);
-
       const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL + "/12");
-
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(SECURE_UPDATE_FILTER_URL);
     });
 
     test("catch error when rendering the page", async () => {
       mockIsActiveFeature.mockReturnValue(true);
-      mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-
+      mockGetApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL);
-
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
@@ -166,14 +185,14 @@ describe('Update - Manage Trusts - Review former beneficial owners', () => {
 
   describe('POST tests', () => {
 
+    const clonedMockApplicationData = JSON.parse(JSON.stringify(mockApplicationData));
+
     beforeEach(() => {
       jest.clearAllMocks();
-
       // This performs a deep copy of the mock application data object, to ensure that the HISTORICAL_BO list is
       // created new each time and doesn't grow
-      const clonedMockApplicationData = JSON.parse(JSON.stringify(mockApplicationData));
-
       mockGetApplicationData.mockReturnValue(clonedMockApplicationData);
+      mockFetchApplicationData.mockReturnValue(clonedMockApplicationData);
     });
 
     test('when feature flag is on, and adding new legal former BO, redirects to update-manage-trusts-orchestrator', async () => {
@@ -253,6 +272,8 @@ describe('Update - Manage Trusts - Review former beneficial owners', () => {
 
     test('Redirects to update-manage-trusts-orchestrator wih no validation errors when dates contain spaces', async () => {
       mockIsActiveFeature.mockReturnValue(true);
+      mockGetApplicationData.mockReturnValue(mockApplicationData);
+      mockFetchApplicationData.mockReturnValue(mockApplicationData);
 
       const mockSetExtraData = setExtraData as jest.Mock;
 
@@ -286,10 +307,9 @@ describe('Update - Manage Trusts - Review former beneficial owners', () => {
 
     test("catch error when posting", async () => {
       mockIsActiveFeature.mockReturnValue(true);
-      mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-
+      mockGetApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockFetchApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL);
-
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });

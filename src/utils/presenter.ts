@@ -1,16 +1,24 @@
 import { NextFunction, Request, Response } from "express";
 import { Session } from "@companieshouse/node-session-handler";
+import * as config from "../config";
 import { ApplicationData } from "../model";
-import { PresenterKey, PresenterKeys } from "../model/presenter.model";
-import { IsRemoveKey, OverseasEntityKey, Transactionkey } from '../model/data.types.model';
-import { getApplicationData, fetchApplicationData, setApplicationData, prepareData, setExtraData } from "./application.data";
 import { logger } from "./logger";
 import { saveAndContinue } from "./save.and.continue";
-import { isRegistrationJourney, isRemoveJourney } from "../utils/url";
-import * as config from "../config";
 import { postTransaction } from "../service/transaction.service";
 import { createOverseasEntity } from "../service/overseas.entities.service";
 import { isActiveFeature } from "./feature.flag";
+
+import { PresenterKey, PresenterKeys } from "../model/presenter.model";
+import { isRegistrationJourney, isRemoveJourney } from "../utils/url";
+import { IsRemoveKey, OverseasEntityKey, Transactionkey } from '../model/data.types.model';
+
+import {
+  prepareData,
+  setExtraData,
+  setApplicationData,
+  getApplicationData,
+  fetchApplicationData,
+} from "./application.data";
 
 export const getPresenterPage = async (
   req: Request,
@@ -24,8 +32,8 @@ export const getPresenterPage = async (
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const isRegistration = isRegistrationJourney(req);
     const isRemove: boolean = await isRemoveJourney(req);
+    const isRegistration = isRegistrationJourney(req);
     const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
     const presenter = appData[PresenterKey];
 

@@ -144,6 +144,8 @@ const mockIsRemove = isRemoveJourney as jest.Mock;
 const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
 mockIsRegistrationJourney.mockReturnValue(false);
 
+const mockIsRemoveJourney = isRemoveJourney as jest.Mock;
+
 const appData = { ...APPLICATION_DATA_CH_REF_UPDATE_MOCK, };
 
 describe("Update review overseas entity information controller tests", () => {
@@ -156,6 +158,7 @@ describe("Update review overseas entity information controller tests", () => {
     mockCheckActiveMOExists.mockReturnValue(true);
     mockCheckActiveBOExists.mockReturnValue(true);
     mockIsRemove.mockReset();
+    mockIsRemoveJourney.mockReset();
   });
 
   describe("GET tests", () => {
@@ -177,6 +180,7 @@ describe("Update review overseas entity information controller tests", () => {
       const mockAppData = getMockAppDataWithoutEmail();
 
       mockGetApplicationData.mockReturnValue(mockAppData);
+      mockFetchApplicationData.mockReturnValue(mockAppData);
       mockGetPrivateOeDetails.mockReturnValueOnce({ email_address: "tester@test.com" });
 
       const resp = await request(app).get(UPDATE_REVIEW_STATEMENT_URL);
@@ -198,6 +202,7 @@ describe("Update review overseas entity information controller tests", () => {
       const mockAppData = getMockAppDataWithoutEmail();
 
       mockGetApplicationData.mockReturnValue(mockAppData);
+      mockFetchApplicationData.mockReturnValue(mockAppData);
       mockGetPrivateOeDetails.mockReturnValueOnce(undefined);
 
       const resp = await request(app).get(UPDATE_REVIEW_STATEMENT_URL);
@@ -301,7 +306,7 @@ describe("Update review overseas entity information controller tests", () => {
 
     test(`that the ${UPDATE_REVIEW_STATEMENT_PAGE} page managing officer section is rendered if MO data exists`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
-      mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK_WITH_OWNER_UPDATE_REVIEW_DATA });
+      mockFetchApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK_WITH_OWNER_UPDATE_REVIEW_DATA });
 
       const resp = await request(app).get(UPDATE_REVIEW_STATEMENT_URL);
       expect(resp.status).toEqual(200);
@@ -329,8 +334,14 @@ describe("Update review overseas entity information controller tests", () => {
     ])(`renders the ${UPDATE_REVIEW_STATEMENT_PAGE} page with the NOCs when flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC on, %s`, async (_journeyType, mockAppData) => {
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_TRUSTS_WEB
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+      mockIsRemoveJourney.mockReturnValue(false);
 
       mockGetApplicationData.mockReturnValue({
+        ...mockAppData,
+        update: { ...UPDATE_OWNERS_DATA_WITH_VALUE }
+      } as ApplicationData);
+
+      mockFetchApplicationData.mockReturnValue({
         ...mockAppData,
         update: { ...UPDATE_OWNERS_DATA_WITH_VALUE }
       } as ApplicationData);
@@ -354,6 +365,11 @@ describe("Update review overseas entity information controller tests", () => {
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
 
       mockGetApplicationData.mockReturnValue({
+        ...mockAppData,
+        update: { ...UPDATE_OWNERS_DATA_WITH_VALUE }
+      } as ApplicationData);
+
+      mockFetchApplicationData.mockReturnValue({
         ...mockAppData,
         update: { ...UPDATE_OWNERS_DATA_WITH_VALUE }
       } as ApplicationData);

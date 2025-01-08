@@ -1,67 +1,66 @@
 import { NextFunction, Request, Response } from "express";
-
-import { logger } from "../utils/logger";
 import { Session } from "@companieshouse/node-session-handler";
 
+import { logger } from "../utils/logger";
 import { ApplicationData } from "../model";
-import { getApplicationData } from "../utils/application.data";
 import { isActiveFeature } from "../utils/feature.flag";
 import { OverseasEntityKey, Transactionkey } from "../model/data.types.model";
 import { closeTransaction } from "../service/transaction.service";
 import { startPaymentsSession } from "../service/payment.service";
-import { checkEntityRequiresTrusts, checkEntityReviewRequiresTrusts } from "./trusts";
 import { fetchOverseasEntityEmailAddress } from "./update/fetch.overseas.entity.email";
 import { fetchBeneficialOwnersPrivateData } from "./update/fetch.beneficial.owners.private.data";
+import { RoleWithinTrustType } from "../model/role.within.trust.type.model";
+import { fetchManagingOfficersPrivateData } from "./update/fetch.managing.officers.private.data";
+import { getTodaysDate } from "./date";
+import { checkRPStatementsExist } from "./relevant.period";
+import { fetchApplicationData } from "../utils/application.data";
+
+import { isRegistrationJourney, isRemoveJourney } from "./url";
+import { checkEntityRequiresTrusts, checkEntityReviewRequiresTrusts } from "./trusts";
 
 import {
-  OVERSEAS_ENTITY_UPDATE_DETAILS_URL,
-  OVERSEAS_ENTITY_SECTION_HEADING,
+  CHS_URL,
+  JourneyType,
   WHO_IS_MAKING_UPDATE_URL,
   UPDATE_AN_OVERSEAS_ENTITY_URL,
-  CHS_URL,
-  UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL,
   FEATURE_FLAG_ENABLE_TRUSTS_WEB,
   UPDATE_CHECK_YOUR_ANSWERS_PAGE,
   UPDATE_REVIEW_STATEMENT_PAGE,
-  UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL,
-  UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL,
-  JourneyType,
   REMOVE_CONFIRM_STATEMENT_URL,
-  FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+  OVERSEAS_ENTITY_SECTION_HEADING,
+  OVERSEAS_ENTITY_UPDATE_DETAILS_URL,
+  UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL,
+  UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL,
+  FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC,
+  UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL,
 } from "../config";
-import { RoleWithinTrustType } from "../model/role.within.trust.type.model";
-import { fetchManagingOfficersPrivateData } from "./update/fetch.managing.officers.private.data";
-import { isRemoveJourney } from "./url";
-import { getTodaysDate } from "./date";
-import { checkRPStatementsExist } from "./relevant.period";
 
 export const getDataForReview = async (req: Request, res: Response, next: NextFunction, isNoChangeJourney: boolean) => {
+
   const session = req.session as Session;
-  const appData: ApplicationData = await getApplicationData(session);
   const isRemove: boolean = await isRemoveJourney(req);
+  const isRegistration = isRegistrationJourney(req);
+  const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
   const hasAnyBosWithTrusteeNocs = isNoChangeJourney ? checkEntityReviewRequiresTrusts(appData) : checkEntityRequiresTrusts(appData);
   const backLinkUrl = getBackLinkUrl(isNoChangeJourney, hasAnyBosWithTrusteeNocs, isRemove);
   const templateName = getTemplateName(isNoChangeJourney);
   const isRPStatementExists = checkRPStatementsExist(appData);
 
   try {
+
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     if (isNoChangeJourney) {
-
       await fetchBeneficialOwnersPrivateData(appData, req);
-
       await fetchManagingOfficersPrivateData(appData, req);
-
       await fetchOverseasEntityEmailAddress(appData, req, session);
-
     }
 
     if (isRemove) {
       return res.render(templateName, {
         journey: JourneyType.remove,
         backLinkUrl,
-        templateName: templateName,
+        templateName,
         changeLinkUrl: OVERSEAS_ENTITY_UPDATE_DETAILS_URL,
         overseasEntityHeading: OVERSEAS_ENTITY_SECTION_HEADING,
         whoIsCompletingChangeLink: WHO_IS_MAKING_UPDATE_URL,
@@ -81,7 +80,7 @@ export const getDataForReview = async (req: Request, res: Response, next: NextFu
 
     return res.render(templateName, {
       backLinkUrl,
-      templateName: templateName,
+      templateName,
       changeLinkUrl: OVERSEAS_ENTITY_UPDATE_DETAILS_URL,
       overseasEntityHeading: OVERSEAS_ENTITY_SECTION_HEADING,
       whoIsCompletingChangeLink: WHO_IS_MAKING_UPDATE_URL,
@@ -104,11 +103,14 @@ export const getDataForReview = async (req: Request, res: Response, next: NextFu
 };
 
 export const postDataForReview = async (req: Request, res: Response, next: NextFunction) => {
+
   try {
+
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const session = req.session as Session;
-    const appData: ApplicationData = await getApplicationData(session);
+    const isRegistration = isRegistrationJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
     const noChangeReviewStatement = req.body["no_change_review_statement"];
 
     if (noChangeReviewStatement === "0") {
@@ -117,11 +119,10 @@ export const postDataForReview = async (req: Request, res: Response, next: NextF
 
     const transactionID = appData[Transactionkey] as string;
     const overseasEntityID = appData[OverseasEntityKey] as string;
-
     const transactionClosedResponse = await closeTransaction(req, session, transactionID, overseasEntityID);
     logger.infoRequest(req, `Transaction Closed, ID: ${transactionID}`);
-
     const baseURL = `${CHS_URL}${UPDATE_AN_OVERSEAS_ENTITY_URL}`;
+
     const redirectPath = await startPaymentsSession(
       req,
       session,
@@ -134,6 +135,7 @@ export const postDataForReview = async (req: Request, res: Response, next: NextF
     logger.infoRequest(req, `Payments Session created with, Trans_ID: ${transactionID}, OE_ID: ${overseasEntityID}. Redirect to: ${redirectPath}`);
 
     return res.redirect(redirectPath);
+
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);
@@ -158,8 +160,6 @@ const getBackLinkUrl = (isNoChangeJourney: boolean, hasAnyBosWithTrusteeNocs: bo
 };
 
 const getTemplateName = (isNoChangeJourney: boolean) => (
-  isNoChangeJourney
-    ? UPDATE_REVIEW_STATEMENT_PAGE
-    : UPDATE_CHECK_YOUR_ANSWERS_PAGE
+  isNoChangeJourney ? UPDATE_REVIEW_STATEMENT_PAGE : UPDATE_CHECK_YOUR_ANSWERS_PAGE
 );
 

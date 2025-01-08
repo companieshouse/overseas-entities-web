@@ -32,7 +32,7 @@ import { BeneficialOwnerGovKey } from "../../src/model/beneficial.owner.gov.mode
 import { ManagingOfficerKey } from "../../src/model/managing.officer.model";
 import { TrustKey } from "../../src/model/trust.model";
 import { isActiveFeature } from "../../src/utils/feature.flag";
-import { getUrlWithParamsToPath } from "../../src/utils/url";
+import { isRegistrationJourney, getUrlWithParamsToPath } from "../../src/utils/url";
 import * as CHANGE_LINKS from "../../src/config";
 import { stringCount } from "../utils/test.utils";
 import { fetchApplicationData } from "../../src/utils/application.data";
@@ -180,6 +180,9 @@ mockPaymentsSession.mockReturnValue(CONFIRMATION_URL);
 const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
 const MOCKED_URL = "MOCKED_URL";
 mockGetUrlWithParamsToPath.mockReturnValue(MOCKED_URL);
+
+const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
+mockIsRegistrationJourney.mockReturnValue(false);
 
 describe("GET tests", () => {
 

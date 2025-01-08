@@ -11,14 +11,43 @@ jest.mock('../../../src/utils/application.data');
 jest.mock("../../../src/utils/feature.flag");
 jest.mock('../../../src/middleware/statement.validation.middleware');
 jest.mock("../../../src/utils/date");
+jest.mock("../../../src/utils/url");
+
+import { NextFunction, Request, Response } from "express";
+import request from "supertest";
 
 import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
-import { NextFunction, Request, Response } from "express";
-import { beforeEach, expect, jest, test, describe } from "@jest/globals";
+import app from "../../../src/app";
+
 import { logger } from "../../../src/utils/logger";
-import request from "supertest";
+import { DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/due.diligence.mock";
+import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/overseas.entity.due.diligence.mock";
+import { authentication } from "../../../src/middleware/authentication.middleware";
+import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
+import { updateOverseasEntity } from "../../../src/service/overseas.entities.service";
+import { startPaymentsSession } from "../../../src/service/payment.service";
+import { fetchApplicationData, getApplicationData } from "../../../src/utils/application.data";
+import { isActiveFeature } from "../../../src/utils/feature.flag";
+import { hasBOsOrMOsUpdate } from "../../../src/middleware/navigation/update/has.beneficial.owners.or.managing.officers.update.middleware";
+import { BeneficialOwnerIndividualKey } from "../../../src/model/beneficial.owner.individual.model";
+import { BeneficialOwnerGovKey } from "../../../src/model/beneficial.owner.gov.model";
+import { ADDRESS } from "../../__mocks__/fields/address.mock";
+import { BeneficialOwnerOtherKey } from "../../../src/model/beneficial.owner.other.model";
+import { getTodaysDate } from "../../../src/utils/date";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
+import { isRegistrationJourney, isRemoveJourney } from "../../../src/utils/url";
+
+import { postTransaction, closeTransaction } from "../../../src/service/transaction.service";
+import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../../src/model/who.is.making.filing.model";
 import { validateStatements, summaryPagesGuard } from "../../../src/middleware/statement.validation.middleware";
+import { InputDate, OverseasEntityKey, Transactionkey } from '../../../src/model/data.types.model';
+
+import {
+  beneficialOwnerIndividualType,
+  dueDiligenceType,
+  managingOfficerType,
+  overseasEntityDueDiligenceType
+} from "../../../src/model";
 
 import {
   UPDATE_CHECK_YOUR_ANSWERS_PAGE,
@@ -46,7 +75,7 @@ import {
   UPDATE_DUE_DILIGENCE_CHANGE_AML_NUMBER,
   UPDATE_DUE_DILIGENCE_CHANGE_PARTNER_NAME
 } from "../../../src/config";
-import app from "../../../src/app";
+
 import {
   PAGE_TITLE_ERROR,
   SERVICE_UNAVAILABLE,
@@ -137,6 +166,7 @@ import {
   OWNER_OF_LAND_PERSON_NOC_HEADING,
   OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING
 } from "../../__mocks__/text.mock";
+
 import {
   ERROR,
   OVERSEAS_ENTITY_ID,
@@ -164,33 +194,11 @@ import {
   UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
   UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK
 } from "../../__mocks__/session.mock";
-import { DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/due.diligence.mock";
-import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/overseas.entity.due.diligence.mock";
-import { InputDate, OverseasEntityKey, Transactionkey } from '../../../src/model/data.types.model';
-import { authentication } from "../../../src/middleware/authentication.middleware";
-import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
-import { postTransaction, closeTransaction } from "../../../src/service/transaction.service";
-import { updateOverseasEntity } from "../../../src/service/overseas.entities.service";
-import { startPaymentsSession } from "../../../src/service/payment.service";
-import { getApplicationData } from "../../../src/utils/application.data";
-import { isActiveFeature } from "../../../src/utils/feature.flag";
-import {
-  beneficialOwnerIndividualType,
-  dueDiligenceType,
-  managingOfficerType,
-  overseasEntityDueDiligenceType
-} from "../../../src/model";
-import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../../src/model/who.is.making.filing.model";
-import { hasBOsOrMOsUpdate } from "../../../src/middleware/navigation/update/has.beneficial.owners.or.managing.officers.update.middleware";
-import { BeneficialOwnerIndividualKey } from "../../../src/model/beneficial.owner.individual.model";
-import { BeneficialOwnerGovKey } from "../../../src/model/beneficial.owner.gov.model";
-import { ADDRESS } from "../../__mocks__/fields/address.mock";
-import { BeneficialOwnerOtherKey } from "../../../src/model/beneficial.owner.other.model";
-import { getTodaysDate } from "../../../src/utils/date";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -224,16 +232,23 @@ mockPaymentsSession.mockReturnValue( "CONFIRMATION_URL" );
 
 const mockGetTodaysDate = getTodaysDate as jest.Mock;
 
+const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
+mockIsRegistrationJourney.mockReturnValue(false);
+
+const mockIsRemoveJourney = isRemoveJourney as jest.Mock;
+
 describe("CHECK YOUR ANSWERS controller", () => {
+
   beforeEach(() => {
     jest.clearAllMocks();
-
     mockValidateStatements.mockImplementation((_: Request, __: Response, next: NextFunction) => next());
     mockSummaryPagesGuard.mockImplementation((_: Request, __: Response, next: NextFunction) => next());
     mockGetTodaysDate.mockReturnValue({ day: "5", month: "4", year: "2024" } as InputDate);
+    mockIsRemoveJourney.mockReset();
   });
 
   describe("GET tests", () => {
+
     test('runs summaryPagesGuard middleware', async () => {
       mockValidateStatements.mockImplementation((req: Request, _: Response, next: NextFunction) => {
         req['statementErrorList'] = ["There are no active registrable beneficial owners."];
@@ -251,10 +266,37 @@ describe("CHECK YOUR ANSWERS controller", () => {
     });
 
     test.each([
-      ["on remove journey", APPLICATION_DATA_REMOVE_BO_MOCK, REMOVE_CONFIRM_STATEMENT_URL],
       ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK, UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL]
     ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with contact details section %s`, async (_journeyType, mockAppData, backLink) => {
       mockGetApplicationData.mockReturnValue(mockAppData);
+      mockFetchApplicationData.mockReturnValue(mockAppData);
+      mockIsRemoveJourney.mockReturnValue(false);
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE);
+      expect(resp.text).toContain(backLink);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(CHANGE_LINK);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_WHO_CAN_WE_CONTACT);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_TITLE);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE);
+      expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_FULL_NAME);
+      expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_EMAIL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_INDIVIDUAL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_GOVERNMENT);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_OTHER);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_MO_INDIVIDUAL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_MO_CORPORATE);
+    });
+
+    test.each([
+      ["on remove journey", APPLICATION_DATA_REMOVE_BO_MOCK, REMOVE_CONFIRM_STATEMENT_URL],
+    ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with contact details section %s`, async (_journeyType, mockAppData, backLink) => {
+      mockGetApplicationData.mockReturnValue(mockAppData);
+      mockFetchApplicationData.mockReturnValue(mockAppData);
+      mockIsRemoveJourney.mockReturnValue(true);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
       expect(resp.status).toEqual(200);
@@ -284,6 +326,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
       };
 
       mockGetApplicationData.mockReturnValue(appData);
+      mockFetchApplicationData.mockReturnValue(appData);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
       expect(resp.status).toEqual(200);
@@ -312,11 +355,12 @@ describe("CHECK YOUR ANSWERS controller", () => {
     });
 
     test.each([
-      ["on remove journey", APPLICATION_DATA_REMOVE_BO_MOCK, REMOVE_CONFIRM_STATEMENT_URL],
       ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK, UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL]
     ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with the flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC off, %s`, async (_journeyType, mockAppData, backLink) => {
       mockIsActiveFeature.mockReturnValue(false);
       mockGetApplicationData.mockReturnValue(mockAppData);
+      mockFetchApplicationData.mockReturnValue(mockAppData);
+      mockIsRemoveJourney.mockReturnValue(false);
 
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
@@ -347,10 +391,81 @@ describe("CHECK YOUR ANSWERS controller", () => {
 
     test.each([
       ["on remove journey", APPLICATION_DATA_REMOVE_BO_MOCK, REMOVE_CONFIRM_STATEMENT_URL],
+    ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with the flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC off, %s`, async (_journeyType, mockAppData, backLink) => {
+      mockIsActiveFeature.mockReturnValue(false);
+      mockGetApplicationData.mockReturnValue(mockAppData);
+      mockFetchApplicationData.mockReturnValue(mockAppData);
+      mockIsRemoveJourney.mockReturnValue(true);
+
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE);
+      expect(resp.text).toContain(backLink);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(CHANGE_LINK);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_WHO_CAN_WE_CONTACT);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_TITLE);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE);
+      expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_FULL_NAME);
+      expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_EMAIL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_INDIVIDUAL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_GOVERNMENT);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_OTHER);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_MO_INDIVIDUAL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_MO_CORPORATE);
+      expect(resp.text).toContain(BO_NOC_HEADING);
+      expect(resp.text).toContain(TRUSTS_NOC_HEADING);
+      expect(resp.text).toContain(FIRM_NOC_HEADING);
+      expect(resp.text).not.toContain(FIRM_CONTROL_NOC_HEADING);
+      expect(resp.text).not.toContain(TRUST_CONTROL_NOC_HEADING);
+      expect(resp.text).not.toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
+      expect(resp.text).not.toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
+    });
+
+    test.each([
       ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK, UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL]
     ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with the flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC on, %s`, async (_journeyType, mockAppData, backLink) => {
       mockIsActiveFeature.mockReturnValue(true);
       mockGetApplicationData.mockReturnValue(mockAppData);
+      mockFetchApplicationData.mockReturnValue(mockAppData);
+      mockIsRemoveJourney.mockReturnValue(false);
+
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE);
+      expect(resp.text).toContain(backLink);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(CHANGE_LINK);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_WHO_CAN_WE_CONTACT);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_TITLE);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE);
+      expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_FULL_NAME);
+      expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_EMAIL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_INDIVIDUAL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_GOVERNMENT);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_OTHER);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_MO_INDIVIDUAL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_MO_CORPORATE);
+      expect(resp.text).toContain(BO_NOC_HEADING);
+      expect(resp.text).toContain(TRUSTS_NOC_HEADING);
+      expect(resp.text).not.toContain(FIRM_NOC_HEADING);
+      expect(resp.text).toContain(FIRM_CONTROL_NOC_HEADING);
+      expect(resp.text).toContain(TRUST_CONTROL_NOC_HEADING);
+      expect(resp.text).toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
+      expect(resp.text).toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
+    });
+
+    test.each([
+      ["on remove journey", APPLICATION_DATA_REMOVE_BO_MOCK, REMOVE_CONFIRM_STATEMENT_URL],
+    ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with the flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC on, %s`, async (_journeyType, mockAppData, backLink) => {
+      mockIsActiveFeature.mockReturnValue(true);
+      mockGetApplicationData.mockReturnValue(mockAppData);
+      mockFetchApplicationData.mockReturnValue(mockAppData);
+      mockIsRemoveJourney.mockReturnValue(true);
 
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
@@ -388,6 +503,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
       };
 
       mockGetApplicationData.mockReturnValue(appData);
+      mockFetchApplicationData.mockReturnValue(appData);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
       expect(resp.status).toEqual(200);
@@ -418,6 +534,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
       ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK ]
     ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with relevant period statement not selected relevant journey %s`, async (_journeyType, mockAppData) => {
       mockGetApplicationData.mockReturnValue(mockAppData);
+      mockFetchApplicationData.mockReturnValue(mockAppData);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
       expect(resp.status).toEqual(200);
@@ -452,6 +569,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
       };
 
       mockGetApplicationData.mockReturnValue(appData);
+      mockFetchApplicationData.mockReturnValue(appData);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
       expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_RP_BENEFICIAL_OWNER_TITLE);
       expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_INDIVIDUAL);
@@ -466,6 +584,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
       };
 
       mockGetApplicationData.mockReturnValue(appData);
+      mockFetchApplicationData.mockReturnValue(appData);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
       expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_INDIVIDUAL);
       expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_GOVERNMENT);
@@ -479,6 +598,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
       ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK ]
     ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} with statement validation on and trusts flag on with trust details section %s`, async (_journeyType, mockAppData) => {
       mockGetApplicationData.mockReturnValue(mockAppData);
+      mockFetchApplicationData.mockReturnValue(mockAppData);
       mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(true);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
@@ -509,6 +629,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
         update: UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE
       };
       mockGetApplicationData.mockReturnValue(appData);
+      mockFetchApplicationData.mockReturnValue(appData);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_DATE_OF_UPDATE_STATEMENT_TITLE);
@@ -525,6 +646,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
         update: UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE
       };
       mockGetApplicationData.mockReturnValue(appData);
+      mockFetchApplicationData.mockReturnValue(appData);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(CHECK_YOUR_ANSWERS_CHANGES_TO_THE_UPDATE_PERIOD_TITLE);
@@ -533,10 +655,11 @@ describe("CHECK YOUR ANSWERS controller", () => {
     });
 
     test.each([
-      ["on remove journey", APPLICATION_DATA_REMOVE_BO_MOCK, REMOVE_CONFIRM_STATEMENT_URL],
       ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK, UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL]
     ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} with statement validation off and trusts flag on with trust details section %s`, async (_journeyType, mockAppData, backLink) => {
       mockGetApplicationData.mockReturnValue(mockAppData);
+      mockFetchApplicationData.mockReturnValue(mockAppData);
+      mockIsRemoveJourney.mockReturnValue(false);
       mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(false);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
@@ -560,10 +683,39 @@ describe("CHECK YOUR ANSWERS controller", () => {
     });
 
     test.each([
-      ["on remove journey", APPLICATION_DATA_CH_REF_REMOVE_MOCK, REMOVE_CONFIRM_STATEMENT_URL],
+      ["on remove journey", APPLICATION_DATA_REMOVE_BO_MOCK, REMOVE_CONFIRM_STATEMENT_URL],
+    ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} with statement validation off and trusts flag on with trust details section %s`, async (_journeyType, mockAppData, backLink) => {
+      mockGetApplicationData.mockReturnValue(mockAppData);
+      mockFetchApplicationData.mockReturnValue(mockAppData);
+      mockIsRemoveJourney.mockReturnValue(true);
+      mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(false);
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE);
+      expect(resp.text).toContain(backLink);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(CHANGE_LINK);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_WHO_CAN_WE_CONTACT);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_TITLE);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE);
+      expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_FULL_NAME);
+      expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_EMAIL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_INDIVIDUAL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_GOVERNMENT);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_OTHER);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_MO_INDIVIDUAL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_MO_CORPORATE);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TRUST_TITLE);
+    });
+
+    test.each([
       ["on update journey", APPLICATION_DATA_CH_REF_UPDATE_MOCK, UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL]
     ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with contact details section with (ceased) existing BO %s`, async (_journeyType, mockAppData, backLink) => {
       mockGetApplicationData.mockReturnValue(mockAppData);
+      mockFetchApplicationData.mockReturnValue(mockAppData);
+      mockIsRemoveJourney.mockReturnValue(false);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
       expect(resp.status).toEqual(200);
@@ -584,10 +736,59 @@ describe("CHECK YOUR ANSWERS controller", () => {
     });
 
     test.each([
-      ["on remove journey", APPLICATION_DATA_REMOVE_BO_MOCK, REMOVE_CHECK_YOUR_ANSWERS_PAGE_TITLE, REMOVE_CONFIRM_STATEMENT_URL],
+      ["on remove journey", APPLICATION_DATA_CH_REF_REMOVE_MOCK, REMOVE_CONFIRM_STATEMENT_URL],
+    ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with contact details section with (ceased) existing BO %s`, async (_journeyType, mockAppData, backLink) => {
+      mockGetApplicationData.mockReturnValue(mockAppData);
+      mockFetchApplicationData.mockReturnValue(mockAppData);
+      mockIsRemoveJourney.mockReturnValue(true);
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE);
+      expect(resp.text).toContain(backLink);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(CHANGE_LINK);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_WHO_CAN_WE_CONTACT);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_TITLE);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE);
+      expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_FULL_NAME);
+      expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_EMAIL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_REVIEWED_BO_INDIVIDUAL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_REVIEWED_BO_GOVERNMENT);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_REVIEWED_BO_OTHER);
+      expect(resp.text).toContain(HOME_ADDRESS_LINE1);
+    });
+
+    test.each([
       ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK, CHECK_YOUR_ANSWERS_PAGE_TITLE, UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL]
     ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page %s`, async (_journeyType, mockAppData, pageTitle, backLink) => {
       mockGetApplicationData.mockReturnValue(mockAppData);
+      mockFetchApplicationData.mockReturnValue(mockAppData);
+      mockIsRemoveJourney.mockReturnValue(false);
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(pageTitle);
+      expect(resp.text).toContain(backLink);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_TITLE);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE);
+      expect(resp.text).toContain(CHANGE_LINK);
+      expect(resp.text).toContain(CHANGE_LINK_ENTITY_NAME);
+      expect(resp.text).toContain(CHANGE_LINK_ENTITY_PRINCIPAL_ADDRESS);
+      expect(resp.text).toContain(CHANGE_LINK_ENTITY_SERVICE_ADDRESS);
+      expect(resp.text).toContain(CHANGE_LINK_ENTITY_EMAIL);
+      expect(resp.text).toContain(CHANGE_LINK_ENTITY_LEGAL_FORM);
+      expect(resp.text).toContain(CHANGE_LINK_ENTITY_GOVERNING_LAW);
+    });
+
+    test.each([
+      ["on remove journey", APPLICATION_DATA_REMOVE_BO_MOCK, REMOVE_CHECK_YOUR_ANSWERS_PAGE_TITLE, REMOVE_CONFIRM_STATEMENT_URL],
+    ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page %s`, async (_journeyType, mockAppData, pageTitle, backLink) => {
+      mockGetApplicationData.mockReturnValue(mockAppData);
+      mockFetchApplicationData.mockReturnValue(mockAppData);
+      mockIsRemoveJourney.mockReturnValue(true);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
       expect(resp.status).toEqual(200);
@@ -613,6 +814,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
         update: UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE, UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE
       };
       mockGetApplicationData.mockReturnValue(appData);
+      mockFetchApplicationData.mockReturnValue(appData);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
       expect(resp.status).toEqual(200);
@@ -627,6 +829,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
       ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK ]
     ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with verification checks - Agent selected %s`, async (_journeyType, mockAppData) => {
       mockGetApplicationData.mockReturnValue(mockAppData);
+      mockFetchApplicationData.mockReturnValue(mockAppData);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
       expect(resp.status).toEqual(200);
@@ -656,6 +859,12 @@ describe("CHECK YOUR ANSWERS controller", () => {
       ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK ]
     ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with verification checks - OE (Someone else) selected %s`, async (_journeyType, mockAppData) => {
       mockGetApplicationData.mockReturnValue({
+        ...mockAppData,
+        [dueDiligenceType.DueDiligenceKey]: {},
+        [overseasEntityDueDiligenceType.OverseasEntityDueDiligenceKey]: OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK,
+        [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE
+      });
+      mockFetchApplicationData.mockReturnValue({
         ...mockAppData,
         [dueDiligenceType.DueDiligenceKey]: {},
         [overseasEntityDueDiligenceType.OverseasEntityDueDiligenceKey]: OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK,
@@ -714,6 +923,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
       };
 
       mockGetApplicationData.mockReturnValue(updatedMockDataForBo);
+      mockFetchApplicationData.mockReturnValue(updatedMockDataForBo);
 
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
@@ -740,6 +950,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
       };
 
       mockGetApplicationData.mockReturnValue(updatedMockDataForMo);
+      mockFetchApplicationData.mockReturnValue(updatedMockDataForMo);
 
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
@@ -749,7 +960,9 @@ describe("CHECK YOUR ANSWERS controller", () => {
     });
 
     test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with extra info for remove journey `, async () => {
+      mockIsRemoveJourney.mockReturnValue(true);
       mockGetApplicationData.mockReturnValue(APPLICATION_DATA_REMOVE_BO_MOCK);
+      mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_REMOVE_BO_MOCK);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
       expect(resp.status).toEqual(200);
@@ -790,6 +1003,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
       };
 
       mockGetApplicationData.mockReturnValue(appData);
+      mockFetchApplicationData.mockReturnValue(appData);
       mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
       expect(resp.status).toEqual(200);
@@ -825,6 +1039,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
       };
 
       mockGetApplicationData.mockReturnValue(appData);
+      mockFetchApplicationData.mockReturnValue(appData);
       mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
       expect(resp.status).toEqual(200);
@@ -863,6 +1078,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
       };
 
       mockGetApplicationData.mockReturnValue(appData);
+      mockFetchApplicationData.mockReturnValue(appData);
       mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
       expect(resp.status).toEqual(200);
@@ -898,6 +1114,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
       };
 
       mockGetApplicationData.mockReturnValue(appData);
+      mockFetchApplicationData.mockReturnValue(appData);
       mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
       expect(resp.status).toEqual(200);
@@ -933,6 +1150,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
       };
 
       mockGetApplicationData.mockReturnValue(appData);
+      mockFetchApplicationData.mockReturnValue(appData);
       mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
       expect(resp.status).toEqual(200);
@@ -966,7 +1184,9 @@ describe("CHECK YOUR ANSWERS controller", () => {
           INDIVIDUALS: [trustee]
         }]
       };
+
       mockGetApplicationData.mockReturnValue(appData);
+      mockFetchApplicationData.mockReturnValue(appData);
 
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
       expect(resp.status).toEqual(200);
@@ -1010,7 +1230,9 @@ describe("CHECK YOUR ANSWERS controller", () => {
           INDIVIDUALS: [trustee]
         }]
       };
+
       mockGetApplicationData.mockReturnValue(appData);
+      mockFetchApplicationData.mockReturnValue(appData);
 
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
       expect(resp.status).toEqual(200);
@@ -1055,7 +1277,9 @@ describe("CHECK YOUR ANSWERS controller", () => {
           CORPORATES: [trustee]
         }]
       };
+
       mockGetApplicationData.mockReturnValue(appData);
+      mockFetchApplicationData.mockReturnValue(appData);
 
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
       expect(resp.status).toEqual(200);
@@ -1100,7 +1324,9 @@ describe("CHECK YOUR ANSWERS controller", () => {
           CORPORATES: [trustee]
         }]
       };
+
       mockGetApplicationData.mockReturnValue(appData);
+      mockFetchApplicationData.mockReturnValue(appData);
 
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
       expect(resp.status).toEqual(200);
@@ -1151,7 +1377,9 @@ describe("CHECK YOUR ANSWERS controller", () => {
           CORPORATES: [coprorateTrustee]
         }]
       };
+
       mockGetApplicationData.mockReturnValue(appData);
+      mockFetchApplicationData.mockReturnValue(appData);
 
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
       expect(resp.status).toEqual(200);
@@ -1192,7 +1420,9 @@ describe("CHECK YOUR ANSWERS controller", () => {
           CORPORATES: [coprorateTrustee]
         }]
       };
+
       mockGetApplicationData.mockReturnValue(appData);
+      mockFetchApplicationData.mockReturnValue(appData);
 
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
       expect(resp.status).toEqual(200);
@@ -1237,7 +1467,9 @@ describe("CHECK YOUR ANSWERS controller", () => {
           CORPORATES: [coprorateTrustee]
         }]
       };
+
       mockGetApplicationData.mockReturnValue(appData);
+      mockFetchApplicationData.mockReturnValue(appData);
 
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
       expect(resp.status).toEqual(200);
@@ -1279,7 +1511,9 @@ describe("CHECK YOUR ANSWERS controller", () => {
           CORPORATES: [coprorateTrustee]
         }]
       };
+
       mockGetApplicationData.mockReturnValue(appData);
+      mockFetchApplicationData.mockReturnValue(appData);
 
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
       expect(resp.status).toEqual(200);
@@ -1323,6 +1557,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
       };
 
       mockGetApplicationData.mockReturnValue(appData);
+      mockFetchApplicationData.mockReturnValue(appData);
       mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
@@ -1363,7 +1598,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
         }]
       };
 
-      mockGetApplicationData.mockReturnValue(appData);
+      mockFetchApplicationData.mockReturnValue(appData);
       mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
@@ -1388,9 +1623,11 @@ describe("CHECK YOUR ANSWERS controller", () => {
   });
 
   describe("POST tests", () => {
+
     test(`redirect to ${PAYMENT_LINK_JOURNEY}, with transaction and OE id`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
       mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_BO_MOCK);
+      mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_BO_MOCK);
       mockPaymentsSession.mockReturnValueOnce(PAYMENT_LINK_JOURNEY);
       const resp = await request(app).post(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
@@ -1402,6 +1639,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
       mockIsActiveFeature.mockReturnValueOnce(false);
       const mockData = { ...APPLICATION_DATA_UPDATE_BO_MOCK, [Transactionkey]: "", [OverseasEntityKey]: "" };
       mockGetApplicationData.mockReturnValue(mockData);
+      mockFetchApplicationData.mockReturnValue(mockData);
       mockPaymentsSession.mockReturnValueOnce(PAYMENT_LINK_JOURNEY);
       const resp = await request(app).post(UPDATE_CHECK_YOUR_ANSWERS_URL);
 

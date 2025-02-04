@@ -37,7 +37,7 @@ export const createOverseasEntity = async (
   return response.resource.id;
 };
 
-export const updateOverseasEntity = async (req: Request, session: Session, data?: ApplicationData) => {
+export const updateOverseasEntity = async (req: Request, session: Session, data?: ApplicationData, forceUpdate: boolean = false) => {
 
   const appData: ApplicationData = data ?? await fetchApplicationData(req, isRegistrationJourney(req));
   const transactionId = appData[Transactionkey] as string;
@@ -52,7 +52,8 @@ export const updateOverseasEntity = async (req: Request, session: Session, data?
     session,
     transactionId,
     overseasEntityId,
-    appData
+    appData,
+    forceUpdate
   );
 
   if (response.httpStatusCode !== 200) {
@@ -66,7 +67,8 @@ export const updateOverseasEntity = async (req: Request, session: Session, data?
 export const getOverseasEntity = async (
   req: Request,
   transactionId: string,
-  overseasEntityId: string
+  overseasEntityId: string,
+  forceFetch: boolean = false
 ): Promise<ApplicationData> => {
 
   logger.infoRequest(req, `Calling 'getOverseasEntity' for transaction id '${transactionId}' and overseas entity id '${overseasEntityId}'`);
@@ -77,7 +79,8 @@ export const getOverseasEntity = async (
     req,
     req.session as Session,
     transactionId,
-    overseasEntityId
+    overseasEntityId,
+    forceFetch
   );
 
   if (response.httpStatusCode !== 200) {

@@ -74,18 +74,17 @@ export const MO_IND_ID = "0dccbd5e-cc09-4f8f-828e-f7cc9fc352ac";
 export const MO_IND_ID_URL = "/" + MO_IND_ID;
 export const MO_CORP_ID = "2df18e59-74dd-42d7-9494-8d40b953ddbe";
 export const MO_CORP_ID_URL = "/" + MO_CORP_ID;
-
 export const COMPANY_NAME = "my company name";
 export const COMPANY_NUMBER = "SA000392";
-
 export const EMAIL_ADDRESS = "user@domain.roe";
 export const PUBLIC_REGISTER_NAME = "publicRegister";
 export const PUBLIC_REGISTER_JURISDICTION = "jurisdiction";
 export const REGISTRATION_NUMBER = "123";
-
 export const ERROR: Error = new Error(ANY_MESSAGE_ERROR);
 export const TRANSACTION_ID = "038138-572616-526863";
 export const OVERSEAS_ENTITY_ID = "6281fe0790bdb128549bf09f";
+export const FORCE_UPDATE = false;
+export const FORCE_FETCH = false;
 export const TRANSACTION = {
   id: TRANSACTION_ID,
   reference: `${REFERENCE}_${TRANSACTION_ID}`,

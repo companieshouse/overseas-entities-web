@@ -81,7 +81,6 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     logger.infoRequest(req, `Transaction Closed, ID: ${transactionID}`);
     const redirectPath = await startPaymentsSession(req, session, transactionID, overseasEntityID, transactionClosedResponse);
     logger.infoRequest(req, `Payments Session created with, Trans_ID: ${transactionID}, OE_ID: ${overseasEntityID}. Redirect to: ${redirectPath}`);
-
     return res.redirect(redirectPath);
 
   } catch (error) {

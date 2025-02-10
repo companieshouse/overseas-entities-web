@@ -2,10 +2,32 @@
     {{ govukButton({
         text: "Continue",
         attributes: {
-            "id": "submit",
-            "onclick": "_paq.push(['trackGoal', '" + PIWIK_RELEVANT_PERIOD_START_GOAL_ID + "'])"
+            "id": "submit"
         }
     }) }}
 {% else %}
     {% include "includes/continue-button.html" %}
 {% endif %}
+
+<script nonce={{ cspNonce | dump | safe }}>
+    function trackGoal(elementId, goalId) {
+            document
+                .getElementById(elementId)
+                .addEventListener("click", () => {
+                    _paq.push(["trackGoal", goalId]);
+                });
+        }
+
+
+        function addGoalEventListeners() {
+            trackGoal("submit", {{PIWIK_RELEVANT_PERIOD_START_GOAL_ID}} );
+        }
+
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", function (e) {
+                addGoalEventListeners()
+            });
+        } else {
+            addGoalEventListeners()
+        }
+</script>

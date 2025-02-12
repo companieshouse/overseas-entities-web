@@ -5,29 +5,7 @@
             "id": "submit"
         }
     }) }}
+    {% include "includes/piwik-goal.html" %}
 {% else %}
     {% include "includes/continue-button.html" %}
 {% endif %}
-
-<script nonce={{ cspNonce | dump | safe }}>
-    function trackGoal(elementId, goalId) {
-            document
-                .getElementById(elementId)
-                .addEventListener("click", () => {
-                    _paq.push(["trackGoal", goalId]);
-                });
-        }
-
-
-        function addGoalEventListeners() {
-            trackGoal("submit", {{PIWIK_REMOVE_START_GOAL_ID}} );
-        }
-
-        if (document.readyState === "loading") {
-            document.addEventListener("DOMContentLoaded", function (e) {
-                addGoalEventListeners()
-            });
-        } else {
-            addGoalEventListeners()
-        }
-</script>

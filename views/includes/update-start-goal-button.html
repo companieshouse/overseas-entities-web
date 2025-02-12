@@ -2,10 +2,10 @@
     {{ govukButton({
         text: "Continue",
         attributes: {
-            "id": "submit",
-            "onclick": "_paq.push(['trackGoal', '" + PIWIK_UPDATE_START_GOAL_ID + "'])"
+            "id": "submit"
         }
     }) }}
+    {% include "includes/piwik-goal.html"   %}
 {% else %}
     {% include "includes/continue-button.html" %}
 {% endif %}

@@ -1,0 +1,27 @@
+<script nonce={{ cspNonce | dump | safe }}>
+  function trackGoal(elementId, goalId) {
+    document
+      .getElementById(elementId)
+      .addEventListener("click", () => {
+        _paq.push(["trackGoal", goalId]);
+      });
+  }
+
+  function addGoalEventListeners() {
+    {% if (journey == "remove") %}
+    trackGoal("submit", {{PIWIK_REMOVE_START_GOAL_ID}} );
+    {% elif (update.owned_land_relevant_period == 1) %}
+    trackGoal("submit", {{PIWIK_RELEVANT_PERIOD_START_GOAL_ID}} );
+    {% else %}
+    trackGoal("submit", {{PIWIK_UPDATE_START_GOAL_ID}} );
+    {% endif %}
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", function (e) {
+      addGoalEventListeners()
+    });
+  } else {
+    addGoalEventListeners()
+  }
+</script>

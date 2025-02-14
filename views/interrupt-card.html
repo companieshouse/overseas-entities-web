@@ -33,9 +33,10 @@
 
         {% endif %}
 
-    <a href="{{pageParams.nextPageUrl}}" id="continue" onclick="_paq.push(['trackGoal', '{{PIWIK_START_GOAL_ID}}'])" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+    <a href="{{pageParams.nextPageUrl}}" id="continue" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
       Continue
     </a>
+    {%  include "includes/piwik-goal.html" %}
 
       </div>
     </div>

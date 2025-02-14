@@ -232,7 +232,7 @@ describe("Resume submission controller", () => {
     expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
     expect(mockMapTrustApiReturnModelToWebModel).toHaveBeenCalledTimes(1);
-    expect(mockIsActiveFeature).toHaveBeenCalledTimes(4);
+    expect(mockIsActiveFeature).toHaveBeenCalledTimes(5);
     expect(mockGetUrlWithTransactionIdAndSubmissionId).not.toHaveBeenCalled();
   });
 
@@ -266,7 +266,7 @@ describe("Resume submission controller", () => {
     expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
     expect(mockMapTrustApiReturnModelToWebModel).toHaveBeenCalledTimes(1);
-    expect(mockIsActiveFeature).toHaveBeenCalledTimes(4);
+    expect(mockIsActiveFeature).toHaveBeenCalledTimes(5);
     expect(mockGetUrlWithTransactionIdAndSubmissionId).toHaveBeenCalledTimes(1);
   });
 

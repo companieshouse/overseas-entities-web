@@ -172,6 +172,7 @@ export const REVIEW_OWNER_INDEX_PARAM = "?index=";
 export const UPDATE_REVIEW_OWNERS_PARAMS = REVIEW_OWNER_INDEX_PARAM + ID;
 export const ROUTE_PARAM_TRANSACTION_ID = "transactionId";
 export const ROUTE_PARAM_SUBMISSION_ID = "submissionId";
+export const ROUTE_PARAM_OVERSEAS_ENTITY_ID = "overseasEntityId";
 export const LANDING_PAGE_QUERY_PARAM = "start";
 export const JOURNEY_QUERY_PARAM = "journey";
 export const PREVIOUS_PAGE_QUERY_PARAM = "previousPage";
@@ -327,7 +328,7 @@ export const TRANSACTION = "transaction";
 export const OVERSEAS_ENTITY = "overseas-entity";
 
 const TRANSACTION_PATH = TRANSACTION + "/:transactionId/";
-const OVERSEAS_ENTITY_PATH = OVERSEAS_ENTITY + "/:overseaEntityId/";
+const OVERSEAS_ENTITY_PATH = OVERSEAS_ENTITY + "/:overseasEntityId/";
 export const PAYMENT_WITH_TRANSACTION_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + TRANSACTION_PATH + OVERSEAS_ENTITY_PATH + PAYMENT;
 export const OVERSEAS_ENTITY_PAYMENT_WITH_TRANSACTION_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + TRANSACTION_PATH + OVERSEAS_ENTITY_PATH + PAYMENT;
 

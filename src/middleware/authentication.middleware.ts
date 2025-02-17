@@ -17,7 +17,7 @@ import {
   STARTING_NEW_URL,
   SECURE_UPDATE_FILTER_URL,
   UPDATE_AN_OVERSEAS_ENTITY_URL,
-  UPDATE_CONTINUE_WITH_SAVED_FILING_URL
+  UPDATE_CONTINUE_WITH_SAVED_FILING_URL,
 } from '../config';
 
 export const authentication = (req: Request, res: Response, next: NextFunction): void => {

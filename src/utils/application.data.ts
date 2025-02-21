@@ -52,6 +52,7 @@ import {
  */
 export const fetchApplicationData = (req: Request, isRegistration: boolean, forceFetch: boolean = false): Promise<ApplicationData> => {
   if (isRegistration) {
+    logger.info("AAAAAAAA3 forceFetch from fetchApplicationData method: " + forceFetch);
     return getApplicationData(req, forceFetch);
   } else {
     return getApplicationData(req.session);
@@ -83,7 +84,7 @@ export const getApplicationData = async (sessionOrRequest: Session | Request | u
     if (transactionId === "" || submissionId === "") {
       return emptyAppData;
     }
-
+    logger.info("AAAAAA1  forceFetch from applicationData getApplicationData : " + forceFetch);
     const appData = await getOverseasEntity(req, transactionId, submissionId, forceFetch);
     appData[Transactionkey] = transactionId;
     appData[OverseasEntityKey] = submissionId;
@@ -132,6 +133,7 @@ export const setApplicationData = async (sessionOrRequest: Request | Session | u
     setExtraData(req?.session as Session, appData);
 
     const forceUpdate: boolean = key === PaymentKey;
+    logger.info("AAAAAAA2 forceUpdate from applicationData: " + forceUpdate + " for paymentKey: " + key);
     return updateOverseasEntity(req as Request, req?.session as Session, appData, forceUpdate);
 
   } catch (e) {

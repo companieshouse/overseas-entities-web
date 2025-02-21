@@ -44,7 +44,7 @@ export const updateOverseasEntity = async (req: Request, session: Session, data?
   const overseasEntityId = appData[OverseasEntityKey] as string;
 
   logger.infoRequest(req, `Calling 'putOverseasEntity' for transaction id '${transactionId}' and overseas entity id '${overseasEntityId}'`);
-
+  logger.info("BBBBBB3 forceUpdate from updateOverseasEntity: " + forceUpdate);
   const response = await makeApiCallWithRetry(
     "overseasEntity",
     "putOverseasEntity",
@@ -55,7 +55,7 @@ export const updateOverseasEntity = async (req: Request, session: Session, data?
     appData,
     forceUpdate
   );
-
+  logger.info("BBBBBB4 forceUpdate from updateOverseasEntity AFTER: " + forceUpdate);
   if (response.httpStatusCode !== 200) {
     const errorMsg = `'putOverseasEntity' for transaction id '${transactionId}' and overseas entity id '${overseasEntityId}' encountered an error - ${JSON.stringify(response)}`;
     throw createAndLogErrorRequest(req, errorMsg);
@@ -72,7 +72,7 @@ export const getOverseasEntity = async (
 ): Promise<ApplicationData> => {
 
   logger.infoRequest(req, `Calling 'getOverseasEntity' for transaction id '${transactionId}' and overseas entity id '${overseasEntityId}'`);
-
+  logger.info("BBBBBB1 forceFetch from getOverseasEntity: " + forceFetch);
   const response = await makeApiCallWithRetry(
     "overseasEntity",
     "getOverseasEntity",
@@ -82,7 +82,7 @@ export const getOverseasEntity = async (
     overseasEntityId,
     forceFetch
   );
-
+  logger.info("BBBBBB2 forceFetch from forceFetch AFTER : " + forceFetch);
   if (response.httpStatusCode !== 200) {
     const errorMsg = `'getOverseasEntity' for transaction id '${transactionId}' and overseas entity id '${overseasEntityId}' encountered an error - ${JSON.stringify(response)}`;
     throw createAndLogErrorRequest(req, errorMsg);

@@ -56,7 +56,7 @@ export const startPaymentsSession = async (
 
   const isRegistration = isRegistrationJourney(req);
   const appData: ApplicationData = {
-    ...(await fetchApplicationData(req, isRegistration)),
+    ...(await fetchApplicationData(req, isRegistration, true)),
     [Transactionkey]: transactionId,
     [OverseasEntityKey]: overseasEntityId
   };

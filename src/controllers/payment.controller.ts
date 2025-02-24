@@ -23,7 +23,7 @@ export const get = async (req: Request, res: Response, next: NextFunction): Prom
 
     const { status, state } = req.query;
     const isRegistration: boolean = isRegistrationJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+    const appData: ApplicationData = await fetchApplicationData(req, isRegistration, true);
     const savedPayment = appData[PaymentKey] || {} as CreatePaymentRequest;
 
     logger.infoRequest(req, `Returned state: ${ state }, saved state: ${savedPayment.state}, with status: ${ status }`);

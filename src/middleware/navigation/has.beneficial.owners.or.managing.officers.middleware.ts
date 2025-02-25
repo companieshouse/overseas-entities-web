@@ -9,8 +9,8 @@ import { SOLD_LAND_FILTER_URL } from '../../config';
 export const hasBOsOrMOs = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const isRegistration = isRegistrationJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
-    if ( !checkBOsOrMOsDetailsEntered(appData) ) {
+    const appData: ApplicationData = await fetchApplicationData(req, isRegistration, true);
+    if (!checkBOsOrMOsDetailsEntered(appData)) {
       logger.infoRequest(req, NavigationErrorMessage);
       return res.redirect(SOLD_LAND_FILTER_URL);
     }

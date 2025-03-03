@@ -144,7 +144,7 @@ describe("BENEFICIAL OWNER DELETE WARNING controller", () => {
   });
 
   describe("POST tests", () => {
-    test("redirects to the beneficial owner type page if No option has been selected", async () => {
+    test("redirects to the beneficial owner type page if No option has been selected and REDIS_removal flag is set to OFF", async () => {
       const resp = await request(app)
         .post(config.BENEFICIAL_OWNER_DELETE_WARNING_URL)
         .send({ delete_beneficial_owners: "0" });
@@ -157,7 +157,21 @@ describe("BENEFICIAL OWNER DELETE WARNING controller", () => {
       expect(mockUpdateOverseasEntity).not.toHaveBeenCalled();
     });
 
-    test(`redirects to the beneficial owner type page if Yes option has been selected and REDIS_removal flag is set to ON and
+    test("redirects to the beneficial owner type page if No option has been selected and REDIS_removal flag is set to ON", async () => {
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_DELETE_WARNING_WITH_PARAMS_URL)
+        .send({ delete_beneficial_owners: "0" });
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_STATEMENTS_URL);
+      expect(mockSetExtraData).not.toHaveBeenCalled();
+      expect(mockCheckBOsDetailsEntered).not.toHaveBeenCalled();
+      expect(mockCheckMOsDetailsEntered).not.toHaveBeenCalled();
+      expect(mockUpdateOverseasEntity).not.toHaveBeenCalled();
+    });
+
+    test(`redirects to the beneficial owner type page if Yes option has been selected when REDIS_removal flag is set to ON and
         ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} as statement type`, async () => {
 
       mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);

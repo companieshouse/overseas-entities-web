@@ -55,6 +55,7 @@ export const post = async (req: Request, res: Response, next: NextFunction): Pro
   try {
 
     logger.debugRequest(req, `POST ${config.BENEFICIAL_OWNER_DELETE_WARNING_PAGE}`);
+    let nextPageUrl: string;
 
     if (req.body["delete_beneficial_owners"] === '1') {
       const boStatement = req.body[BeneficialOwnerStatementKey];
@@ -77,14 +78,19 @@ export const post = async (req: Request, res: Response, next: NextFunction): Pro
         await updateOverseasEntity(req, req.session as Session, appData);
       }
       setExtraData(req.session, appData);
-      const nextPageUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
+      nextPageUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
         ? getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req)
         : config.BENEFICIAL_OWNER_TYPE_URL;
 
       return res.redirect(nextPageUrl);
     }
 
-    return res.redirect(config.BENEFICIAL_OWNER_STATEMENTS_URL);
+    nextPageUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
+      ? getUrlWithParamsToPath(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL, req)
+      : config.BENEFICIAL_OWNER_STATEMENTS_URL;
+
+    return res.redirect(nextPageUrl);
+
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

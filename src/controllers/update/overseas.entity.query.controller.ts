@@ -70,8 +70,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-function createEntityNumberError(entityNumber: string): any {
-  const msg = `An Overseas Entity with OE number "${entityNumber}" was not found.`;
+function createEntityNumberError(): any {
+  const msg = `Enter a correct Overseas Entity ID.`;
   const errors = { errorList: [] } as any;
   errors.errorList.push({ href: "#entity_number", text: msg });
   errors.entity_number = { text: msg };
@@ -79,7 +79,7 @@ function createEntityNumberError(entityNumber: string): any {
 }
 
 const renderGetPageWithError = async (req: Request, res: Response, entityNumber: any) => {
-  const errors = createEntityNumberError(entityNumber);
+  const errors = createEntityNumberError();
   const isRemove: boolean = await isRemoveJourney(req);
 
   if (isRemove) {

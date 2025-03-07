@@ -35,7 +35,7 @@ import { ApplicationData } from "../../../src/model";
 
 const testOENumber = "OE123456";
 const invalidOENUmberError = "OE number must be &quot;OE&quot; followed by 6 digits";
-const notFoundOENumberError = "An Overseas Entity with OE number &quot;" + testOENumber + "&quot; was not found";
+const notFoundOENumberError = "Enter a correct Overseas Entity ID";
 
 mockJourneyDetectionMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();

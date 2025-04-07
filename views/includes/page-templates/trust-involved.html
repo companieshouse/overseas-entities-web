@@ -173,6 +173,7 @@
         {% include "includes/csrf_token.html" %}
 
         {% set fieldParam = {
+          id: "typeOfTrustee",
           name: 'typeOfTrustee',
           label: 'Which type of individual or entity do you want to add to this trust?',
           error: errors.typeOfTrustee,
@@ -220,6 +221,7 @@
           </div>
 
           {% set fieldParam = {
+            id: "typeOfTrusteeRelevantPeriod",
             name: 'typeOfTrustee',
             error: errors.typeOfTrustee,
             items: [

@@ -93,14 +93,15 @@ const cookieConfig = {
   cookieTimeToLiveInSeconds: parseInt(config.DEFAULT_SESSION_EXPIRATION, 10)
 };
 const sessionStore = new SessionStore(new Redis(`redis://${config.CACHE_SERVER}`));
-app.use(SessionMiddleware(cookieConfig, sessionStore));
+
+app.use(config.EXCLUDED_PATHS, SessionMiddleware(cookieConfig, sessionStore));
 
 const csrfProtectionMiddleware = CsrfProtectionMiddleware({
   sessionStore,
   enabled: true,
   sessionCookieName: config.COOKIE_NAME
 });
-app.use(csrfProtectionMiddleware);
+app.use(config.EXCLUDED_PATHS, csrfProtectionMiddleware);
 
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "html");

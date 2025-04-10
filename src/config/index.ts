@@ -44,6 +44,8 @@ export const CLOSED_PENDING_PAYMENT = "closed pending payment";
 export const PAYMENTS = "/payments";
 export const YOUR_FILINGS_PATH = "/user/transactions";
 
+export const EXCLUDED_PATHS = /\/register-an-overseas-entity\/((?!healthcheck).)*/;
+
 //  FEATURE FLAGS
 export const SHOW_SERVICE_OFFLINE_PAGE = getEnvironmentValue("SHOW_SERVICE_OFFLINE_PAGE");
 export const FEATURE_FLAG_ENABLE_TRUSTS_WEB = getEnvironmentValue('FEATURE_FLAG_ENABLE_TRUSTS_WEB_07112022', 'false');

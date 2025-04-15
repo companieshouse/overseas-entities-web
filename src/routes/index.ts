@@ -695,7 +695,7 @@ router.route(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL)
     navigation.hasUpdatePresenter
   )
   .get(updateBeneficialOwnerType.get)
-  .post(...validator.updateBeneficialOwnerAndManagingOfficerType, updateBeneficialOwnerType.post);
+  .post(...validator.updateBeneficialOwnerAndManagingOfficerType, ...validator.updateBeneficialOwnerRPType, updateBeneficialOwnerType.post);
 
 router.post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL, authentication, navigation.hasUpdatePresenter, updateBeneficialOwnerType.postSubmit);
 

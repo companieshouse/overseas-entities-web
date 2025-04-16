@@ -8,9 +8,7 @@
   }
 
   function addGoalEventListeners() {
-    {% if (journey == "register") %}
-    trackGoal("continue", {{PIWIK_START_GOAL_ID}} );
-    {% elif (journey == "remove") %}
+    {% if (journey == "remove") %}
     trackGoal("submit", {{PIWIK_REMOVE_START_GOAL_ID}} );
     {% elif (update.owned_land_relevant_period == 1) %}
     trackGoal("submit", {{PIWIK_RELEVANT_PERIOD_START_GOAL_ID}} );

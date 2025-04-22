@@ -4,7 +4,7 @@ import { beneficialOwnerOther, updateBeneficialOwnerOther, updateReviewBeneficia
 import { beneficialOwnersStatement } from "./beneficial.owner.statements.validation";
 import { beneficialOwnerDeleteWarning } from "./beneficial.owner.delete.warning.validation";
 import { confirmToRemove } from "./confirm.to.remove.validation";
-import { beneficialOwnersType, updateBeneficialOwnerAndManagingOfficerType, updateBeneficialOwnerRPType } from "./beneficial.owner.type.validation";
+import { beneficialOwnersType, updateBeneficialOwnerAndManagingOfficerType, /* updateBeneficialOwnerRPType */ } from "./beneficial.owner.type.validation";
 import { soldLandFilter } from "./sold.land.filter.validation";
 import { entity } from "./entity.validation";
 import { managingOfficerCorporate, reviewManagingOfficerCorporate, updateManagingOfficerCorporate } from "./managing.officer.corporate.validation";
@@ -65,7 +65,7 @@ export const validator = {
   trustDetails,
   reviewTrustDetails,
   updateBeneficialOwnerAndManagingOfficerType,
-  updateBeneficialOwnerRPType,
+  /* updateBeneficialOwnerRPType, */
   updateBeneficialOwnerStatements,
   updateBeneficialOwnerIndividual,
   updateBeneficialOwnerGov,

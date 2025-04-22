@@ -5,7 +5,7 @@
 </div>
 
 {{ govukRadios({
-    errorMessage: errors.beneficial_owner_type_relevant_period if errors,
+    errorMessage: errors.beneficial_owner_type {# _relevant_period #} if errors,
     idPrefix: "beneficial_owner_type_relevant_period",
     name: "beneficial_owner_type",
     fieldset: {

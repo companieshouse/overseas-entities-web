@@ -2444,6 +2444,10 @@ export const UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_WITH_PARAM_URL_TEST = `${
 export const serviceNameGetCompanyPsc = "companyPsc";
 export const fnNameGetCompanyPsc = "getCompanyPsc";
 
+// get company psc statements mocks
+export const serviceNameGetCompanyPscStatements = "companyPscStatements";
+export const fnNameGetCompanyPscStatements = "getCompanyPscStatements";
+
 export const RESET_DATA_FOR_CHANGE_RESPONSE = {
   [PaymentKey]: undefined,
   [beneficialOwnerStatementType.BeneficialOwnerStatementKey]: undefined,

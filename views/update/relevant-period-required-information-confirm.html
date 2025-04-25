@@ -1,0 +1,89 @@
+{% extends "update-layout.html" %}
+
+{% set title = "You'll need to tell us about the pre-registration period" %}
+
+{% block pageTitle %}
+  {% include "includes/update-page-title.html" %}
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        {% include "includes/page-templates/important-banner.html" %}
+
+        <span class="govuk-caption-l">{{ entity_name }} - {{ entity_number }}</span>
+
+        <h1 class="govuk-heading-xl">You'll need to tell us about the pre-registration period</h1>
+
+        <p class="govuk-body">You've told us that <strong>{{ entity_name }}</strong> was the registered owner of UK property or land during the pre-registration period.</p>
+
+        <p class="govuk-body">In this update statement, you'll need to provide information from the pre-registration period about:</p>
+
+        <ul class="govuk-list govuk-list--bullet">
+            <li>registrable beneficial owners</li>
+            <li>trusts involved in the entity</li>
+            <li>beneficiaries of a trust involved in the entity</li>
+        </ul>
+
+        <p class="govuk-body">You'll only need to do this if the information wasn't provided when the entity was registered, or in another update.</p>
+
+        <p class="govuk-body">The information must have been verified by a UK-regulated agent no more than 3 months before the date of the update statement.</p>
+
+        <p class="govuk-body">You do not need to tell us about managing officers from this period.</p>
+
+        <details class="govuk-details" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+                  <span class="govuk-details__summary-text">
+                    What information will I need to provide?
+                  </span>
+            </summary>
+            <div class="govuk-details__text">
+                <p class="govuk-body">Read the guidance on registering an overseas entity to find out <a href="https://www.gov.uk/guidance/register-an-overseas-entity#what-information-you-need-to-submit" class="govuk-link">what information you need to provide when adding beneficial owners, trusts and trust beneficiaries.</a></p>
+            </div>
+        </details>
+        <br>
+
+        <form method="post">
+            {% include "includes/csrf_token.html" %}
+            {{ govukRadios({
+                errorMessage: errors.required_information if errors,
+                classes: "govuk-radios",
+                idPrefix: "required_information",
+                name: "required_information",
+                fieldset: {
+                    legend: {
+                    text: "Can you provide all the required information about the pre-registration period?",
+                    isPageHeading: true,
+                    classes: "govuk-fieldset__legend--m"
+                    }
+                },
+                items: [
+                    {
+                        value: 1,
+                        text: "Yes",
+                        checked: required_information == 1,
+                        attributes: {
+                            "data-event-id": "yes-required_information"
+                        }
+                    },
+                    {
+                        value: 0,
+                        text: "No",
+                        checked: required_information == 0,
+                        attributes: {
+                            "data-event-id": "no-required_information"
+                        }
+                    }
+                ]
+            }) }}
+            {% include "includes/continue-button.html" %}
+        </form>
+    </div>
+</div>
+
+{% endblock %}

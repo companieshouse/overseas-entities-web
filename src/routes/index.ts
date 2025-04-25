@@ -103,6 +103,7 @@ import {
   updateManageTrustsTellUsAboutTheLegalEntity,
   relevantPeriodOwnedLandFilter,
   relevantPeriodInterrupt,
+  relevantPeriodRequiredInformation,
   relevantPeriodCombinedStatements,
   relevantPeriodReviewStatements,
 } from "../controllers";
@@ -584,6 +585,15 @@ router.route(config.RELEVANT_PERIOD_INTERRUPT_URL)
     navigation.hasOverseasEntity)
   .get(relevantPeriodInterrupt.get)
   .post(relevantPeriodInterrupt.post);
+
+router.route(config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_URL)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD),
+    authentication,
+    companyAuthentication,
+    navigation.hasOverseasEntity)
+  .get(relevantPeriodRequiredInformation.get)
+  .post(relevantPeriodRequiredInformation.post);
 
 router.route(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
   .all(

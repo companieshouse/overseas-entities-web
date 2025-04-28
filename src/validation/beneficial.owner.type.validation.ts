@@ -20,7 +20,7 @@ export const updateBeneficialOwnerAndManagingOfficerType = [
   body(BeneficialOwnerTypeRPKey)
     .custom((value, { req }) => {
       if (!value && !req.body[BeneficialOwnerTypeKey]) {
-        throw new Error(ErrorMessages.SELECT_THE_TYPE_OF_BENEFICIAL_OWNER_YOU_WANT_TO_ADD);
+        throw new Error(ErrorMessages.SELECT_THE_TYPE_OF_BENEFICIAL_OWNER_YOU_WANT_TO_ADD_RELEVANT_PERIOD);
       }
       return true;
     }),

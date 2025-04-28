@@ -24,13 +24,14 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_PAGE}`);
-
+    let redirectUrl: string;
     const required_information = req.body['required_information'];
     if (required_information === "1") {
-      return res.redirect(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
+      redirectUrl = config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL + config.RELEVANT_PERIOD_QUERY_PARAM;
     } else {
-      // 595 Redirect
+      redirectUrl = config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_PAGE + config.RELEVANT_PERIOD_QUERY_PARAM;
     }
+    return res.redirect(redirectUrl);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

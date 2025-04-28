@@ -345,7 +345,7 @@ describe("NAVIGATION utils", () => {
     expect(navigation).toEqual(config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
   });
 
-  test(`NAVIGATION returns ${config.config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL + config.RELEVANT_PERIOD_QUERY_PARAM} when calling previousPage on ${config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_URL} object`, async () => {
+  test(`NAVIGATION returns ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL + config.RELEVANT_PERIOD_QUERY_PARAM} when calling previousPage on ${config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_URL} object`, async () => {
     const mockRequest = { query: {} } as Request;
     const navigation = await NAVIGATION[config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_URL].previousPage(undefined, mockRequest);
     expect(navigation).toEqual(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL + config.RELEVANT_PERIOD_QUERY_PARAM);

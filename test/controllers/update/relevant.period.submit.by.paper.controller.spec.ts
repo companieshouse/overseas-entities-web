@@ -47,8 +47,8 @@ describe("Relevant period submit by paper controller", () => {
     jest.clearAllMocks();
   });
   describe("GET tests", () => {
-    test.skip(`renders the ${config.RELEVANT_PERIOD_SUBMIT_BY_PAPER_PAGE} page`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+    test(`renders the ${config.RELEVANT_PERIOD_SUBMIT_BY_PAPER_PAGE} page`, async () => {
+      mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
       const resp = await request(app).get(config.RELEVANT_PERIOD_SUBMIT_BY_PAPER_URL);
 
       expect(resp.status).toEqual(200);

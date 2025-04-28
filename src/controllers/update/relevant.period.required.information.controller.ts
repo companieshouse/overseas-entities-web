@@ -28,8 +28,6 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     const required_information = req.body['required_information'];
     if (required_information === "1") {
       redirectUrl = config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_PAGE + config.RELEVANT_PERIOD_QUERY_PARAM;
-    } else {
-      // 595 Redirect
     }
     return res.redirect(redirectUrl);
   } catch (error) {

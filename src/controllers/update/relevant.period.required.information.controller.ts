@@ -27,9 +27,9 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     let redirectUrl: string;
     const required_information = req.body['required_information'];
     if (required_information === "1") {
-      redirectUrl = config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL + config.RELEVANT_PERIOD_QUERY_PARAM;
-    } else {
       redirectUrl = config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_PAGE + config.RELEVANT_PERIOD_QUERY_PARAM;
+    } else {
+      redirectUrl = config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE + config.RELEVANT_PERIOD_QUERY_PARAM;
     }
     return res.redirect(redirectUrl);
   } catch (error) {

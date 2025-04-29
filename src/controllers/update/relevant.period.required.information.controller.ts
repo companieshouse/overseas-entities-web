@@ -24,12 +24,10 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_PAGE}`);
-    let redirectUrl: string;
+    let redirectUrl: string = '';
     const required_information = req.body['required_information'];
     if (required_information === "1") {
       redirectUrl = config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_PAGE + config.RELEVANT_PERIOD_QUERY_PARAM;
-    } else {
-      redirectUrl = "";
     }
     return res.redirect(redirectUrl);
   } catch (error) {

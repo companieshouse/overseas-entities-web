@@ -34,6 +34,7 @@ import { retrieveBoAndMoData } from "../../../src/utils/update/beneficial_owners
 import { ApplicationData } from "../../../src/model";
 
 const testOENumber = "OE123456";
+const testOENumberLowercase = "oe123456";
 const invalidOENUmberError = "OE number must be &quot;OE&quot; followed by 6 digits";
 const notFoundOENumberError = "Enter a correct Overseas Entity ID";
 
@@ -173,7 +174,7 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
 
       const resp = await request(app)
         .post(config.OVERSEAS_ENTITY_QUERY_URL)
-        .send({ entity_number: 'oe111129' });
+        .send({ entity_number: testOENumberLowercase });
       expect(resp.status).toEqual(302);
       expect(mockRetrieveBoAndMoData).toHaveBeenCalledTimes(1);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);

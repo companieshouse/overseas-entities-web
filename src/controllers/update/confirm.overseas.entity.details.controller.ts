@@ -7,6 +7,8 @@ import { Update } from "../../model/update.type.model";
 import { Session } from "@companieshouse/node-session-handler";
 import { isActiveFeature } from "../../utils/feature.flag";
 import { isRemoveJourney } from "../../utils/url";
+import { CompanyPersonsWithSignificantControlStatements } from "@companieshouse/api-sdk-node/dist/services/company-psc-statements/types";
+import { getCompanyPscStatements } from "../../service/persons.with.signficant.control.statement.service";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -46,14 +48,30 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const isRemove: boolean = await isRemoveJourney(req);
+    const appData: ApplicationData = await getApplicationData(req.session as Session);
 
     if (isRemove) {
       return res.redirect(`${config.OVERSEAS_ENTITY_PRESENTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
     }
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD)) {
+    // Let's use Connor's method to locate statements
+    // If any exist, we set the 'answered' boolean to true
+    if (appData.entity && appData.entity_number) {
+      const statements: CompanyPersonsWithSignificantControlStatements = await getCompanyPscStatements(req, appData.entity_number);
+      if (statements && statements.items.length > 0){
+        appData.entity.has_answered_relevant_period_question = true;
+      }
+    }
+
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD) && appData.entity && appData.entity.has_answered_relevant_period_question !== true) {
       return res.redirect(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
     }
+    // else if (appData.entity) {
+    //   // This else if just saves me from having to restart chs-dev
+    //   // If I call the page a second time, the entity value is set to false
+    //   appData.entity.has_answered_relevant_period_question = false;
+    // }
+    console.log(appData.entity?.has_answered_relevant_period_question);
     return res.redirect(config.UPDATE_FILING_DATE_URL);
   } catch (errors) {
     logger.errorRequest(req, errors);

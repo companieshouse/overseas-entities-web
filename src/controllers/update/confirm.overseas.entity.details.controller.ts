@@ -66,12 +66,6 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD) && appData.entity && appData.entity.has_answered_relevant_period_question !== true) {
       return res.redirect(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
     }
-    // else if (appData.entity) {
-    //   // This else if just saves me from having to restart chs-dev
-    //   // If I call the page a second time, the entity value is set to false
-    //   appData.entity.has_answered_relevant_period_question = false;
-    // }
-    console.log(appData.entity?.has_answered_relevant_period_question);
     return res.redirect(config.UPDATE_FILING_DATE_URL);
   } catch (errors) {
     logger.errorRequest(req, errors);

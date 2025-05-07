@@ -287,6 +287,7 @@ export const RELEVANT_PERIOD = "The pre-registration period for <strong>Overseas
 export const RELEVANT_PERIOD_OWNED_LAND = "Was the overseas entity a registered owner of UK property or land during the pre-registration period?";
 export const RELEVANT_PERIOD_INTERRUPT_CARD_TITLE = "New information needed as part of this update statement";
 export const RELEVANT_PERIOD_REQUIRED_INFORMATION_TITLE = "You'll need to tell us about the pre-registration period";
+export const RELEVANT_PERIOD_SUBMIT_BY_PAPER_TITLE = "You'll need to file an update statement using the paper form";
 export const RELEVANT_PERIOD_COMBINED_STATEMENTS_TITLE = "Provide statements for the pre-registration period";
 export const RELEVANT_PERIOD_COMBINED_STATEMENTS_TEXT = "The overseas entity has reasonable cause to believe that during the pre-registration period:";
 export const RELEVANT_PERIOD_CHANGE_BO = "at least one person became or ceased to be a registrable beneficial owner";

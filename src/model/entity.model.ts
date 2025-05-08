@@ -32,4 +32,5 @@ export interface Entity {
     public_register_jurisdiction?: string;
     registration_number?: string;
     is_on_register_in_country_formed_in?: yesNoResponse;
+    has_answered_relevant_period_question?: boolean;
 }

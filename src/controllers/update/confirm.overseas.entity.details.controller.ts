@@ -54,8 +54,6 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       return res.redirect(`${config.OVERSEAS_ENTITY_PRESENTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
     }
 
-    // Let's use Connor's method to locate statements
-    // If any exist, we set the 'answered' boolean to true
     if (appData.entity && appData.entity_number) {
       const statements: CompanyPersonsWithSignificantControlStatements = await getCompanyPscStatements(req, appData.entity_number);
       if (statements && statements.items.length > 0){

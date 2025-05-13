@@ -34,6 +34,7 @@ import { retrieveBoAndMoData } from "../../../src/utils/update/beneficial_owners
 import { ApplicationData } from "../../../src/model";
 
 const testOENumber = "OE123456";
+const testOENumberLowercase = "oe123456";
 const invalidOENUmberError = "OE number must be &quot;OE&quot; followed by 6 digits";
 const notFoundOENumberError = "Enter a correct Overseas Entity ID";
 
@@ -93,7 +94,7 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
 
   describe("POST tests", () => {
 
-    const invalid_input_values = ['OE123', 'EO123456', 'OE123456789'];
+    const invalid_input_values = ['OE123', 'EO123456', 'OE123456789', 'eo123456'];
 
     test.each(invalid_input_values)(
       "given %p, renders OVERSEAS_ENTITY_QUERY_PAGE with validator failure", async (input_value) => {
@@ -166,6 +167,20 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
       expect(resp.header.location).toEqual(config.UPDATE_AN_OVERSEAS_ENTITY_URL + config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE);
     });
 
+    test('redirects to confirm page for valid oe number with lowercase oe in update journey', async () => {
+      mockGetApplicationData.mockReturnValue({});
+      mockGetCompanyProfile.mockReturnValueOnce(companyProfileQueryMock);
+      mockMapCompanyProfileToOverseasEntity.mockReturnValueOnce({});
+
+      const resp = await request(app)
+        .post(config.OVERSEAS_ENTITY_QUERY_URL)
+        .send({ entity_number: testOENumberLowercase });
+      expect(resp.status).toEqual(302);
+      expect(mockRetrieveBoAndMoData).toHaveBeenCalledTimes(1);
+      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+      expect(resp.header.location).toEqual(config.UPDATE_AN_OVERSEAS_ENTITY_URL + config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE);
+    });
+
     test('redirects to confirm page for valid oe number in remove journey', async () => {
       mockGetApplicationData.mockReturnValue({});
       mockGetCompanyProfile.mockReturnValueOnce(companyProfileQueryMock);
@@ -190,7 +205,7 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
 
-    const values_without_trim = [' OE123456', 'OE123456 ', ' OE123456 '];
+    const values_without_trim = [' OE123456', 'OE123456 ', ' OE123456 ', '  oe123456  '];
 
     test.each(values_without_trim)(
       "trims the whitespaces and allows user to continue", async (input_value) => {

@@ -1,4 +1,5 @@
 export const BeneficialOwnerTypeKey = "beneficial_owner_type";
+export const BeneficialOwnerTypeRPKey = "beneficial_owner_type_relevant_period";
 
 export enum BeneficialOwnerTypeChoice {
     individual = "individualOwner",

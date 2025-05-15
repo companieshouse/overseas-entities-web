@@ -21,6 +21,7 @@ import {
   RELEVANT_PERIOD_QUERY_PARAM,
   RELEVANT_PERIOD_OWNED_LAND_FILTER_URL,
 } from '../config';
+import { has_answered_relevant_period_question } from '../controllers/update/confirm.overseas.entity.details.controller';
 
 export const companyAuthentication = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -32,7 +33,7 @@ export const companyAuthentication = async (req: Request, res: Response, next: N
     const isRegistration = isRegistrationJourney(req);
     const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
     let entityNumber: string | undefined = appData?.[EntityNumberKey];
-    let returnURL = !isActiveFeature(FEATURE_FLAG_ENABLE_RELEVANT_PERIOD)
+    let returnURL = !isActiveFeature(FEATURE_FLAG_ENABLE_RELEVANT_PERIOD) || appData.entity && has_answered_relevant_period_question === true
       ? UPDATE_FILING_DATE_URL
       : RELEVANT_PERIOD_OWNED_LAND_FILTER_URL + RELEVANT_PERIOD_QUERY_PARAM;
 

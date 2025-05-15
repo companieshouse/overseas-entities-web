@@ -12,13 +12,20 @@ import { ApplicationData } from "../../model/application.model";
 import { getConfirmationStatementNextMadeUpToDateAsIsoString } from "../../service/company.profile.service";
 import { convertIsoDateToInputDate } from "../../utils/date";
 import { checkRelevantPeriod } from "../../utils/relevant.period";
+import { has_answered_relevant_period_question } from "./confirm.overseas.entity.details.controller";
+import { isActiveFeature } from "../../utils/feature.flag";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const appData = await getApplicationData(req.session);
-    const backLinkUrl = !checkRelevantPeriod(appData) ? config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL : config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL + config.RELEVANT_PERIOD_QUERY_PARAM;
+    let backLinkUrl: string ;
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD) && !has_answered_relevant_period_question) {
+      backLinkUrl = !checkRelevantPeriod(appData) ? config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL : config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL + config.RELEVANT_PERIOD_QUERY_PARAM;
+    } else {
+      backLinkUrl = config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE;
+    }
 
     return res.render(config.UPDATE_FILING_DATE_PAGE, {
       backLinkUrl,

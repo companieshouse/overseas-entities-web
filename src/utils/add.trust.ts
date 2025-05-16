@@ -166,13 +166,11 @@ const getPageTemplate = (isUpdate: boolean) => {
 };
 
 const getBackLinkUrl = (isUpdate: boolean, req: Request, appData: ApplicationData) => {
-  if (isUpdate) {
-    const trustId = getTrustArray(appData).length;
-    if (trustId > 0) {
-      return `${config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL}/${trustId}${config.TRUST_INVOLVED_URL}`;
-    } else {
-      return config.UPDATE_BENEFICIAL_OWNER_TYPE_URL;
-    }
+  const trustId = getTrustArray(appData).length;
+  if (isUpdate && trustId > 0) {
+    return `${config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL}/${trustId}${config.TRUST_INVOLVED_URL}`;
+  } else if (isUpdate) {
+    return config.UPDATE_BENEFICIAL_OWNER_TYPE_URL;
   } else {
     return isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
       ? getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req)

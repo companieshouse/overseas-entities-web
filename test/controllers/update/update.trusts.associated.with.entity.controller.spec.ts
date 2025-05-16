@@ -32,8 +32,8 @@ import {
 import {
   UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL,
   UPDATE_TRUSTS_TELL_US_ABOUT_IT_PAGE,
-  UPDATE_BENEFICIAL_OWNER_TYPE_URL,
   UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL,
+  UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL,
 } from '../../../src/config';
 
 import {
@@ -97,7 +97,7 @@ describe('Update - Trusts - Trusts associated with the overseas entity', () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain('Trusts associated with the overseas entity');
-      expect(resp.text).toContain(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(resp.text).toContain(UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       if (isAddTrustsOptionToBeShown) {

@@ -12,8 +12,8 @@ import { ApplicationData } from "../../model/application.model";
 import { getConfirmationStatementNextMadeUpToDateAsIsoString } from "../../service/company.profile.service";
 import { convertIsoDateToInputDate } from "../../utils/date";
 import { checkRelevantPeriod } from "../../utils/relevant.period";
-import { has_answered_relevant_period_question } from "./confirm.overseas.entity.details.controller";
 import { isActiveFeature } from "../../utils/feature.flag";
+import { relevantPeriodStatementsState } from "./confirm.overseas.entity.details.controller";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -21,7 +21,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     const appData = await getApplicationData(req.session);
     let backLinkUrl: string ;
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD) && !has_answered_relevant_period_question) {
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD) && relevantPeriodStatementsState.has_answered_relevant_period_question !== true) {
       backLinkUrl = !checkRelevantPeriod(appData) ? config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL : config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL + config.RELEVANT_PERIOD_QUERY_PARAM;
     } else {
       backLinkUrl = config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE;

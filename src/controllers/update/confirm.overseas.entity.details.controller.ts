@@ -10,7 +10,9 @@ import { CompanyPersonsWithSignificantControlStatements } from "@companieshouse/
 import { isActiveFeature } from "../../utils/feature.flag";
 import { getCompanyPscStatements } from "../../service/persons.with.signficant.control.statement.service";
 
-export let has_answered_relevant_period_question: boolean = false;
+export const relevantPeriodStatementsState = {
+  has_answered_relevant_period_question: false,
+};
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -59,12 +61,11 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     if (appData.entity && appData.entity_number) {
       const statements: CompanyPersonsWithSignificantControlStatements = await getCompanyPscStatements(req, appData.entity_number);
       if (statements?.items?.length > 0){
-        has_answered_relevant_period_question = true;
+        relevantPeriodStatementsState.has_answered_relevant_period_question = true;
       }
-    }
-
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD) && has_answered_relevant_period_question !== true) {
-      return res.redirect(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
+      if (isActiveFeature(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD) && relevantPeriodStatementsState.has_answered_relevant_period_question === false) {
+        return res.redirect(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
+      }
     }
     return res.redirect(config.UPDATE_FILING_DATE_URL);
   } catch (errors) {

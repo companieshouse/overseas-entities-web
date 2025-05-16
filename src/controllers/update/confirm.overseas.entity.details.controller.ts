@@ -60,7 +60,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     if (appData.entity && appData.entity_number) {
       const statements: CompanyPersonsWithSignificantControlStatements = await getCompanyPscStatements(req, appData.entity_number);
-      relevantPeriodStatementsState.has_answered_relevant_period_question = statements && statements?.items?.length > 0 ? true : false;
+      relevantPeriodStatementsState.has_answered_relevant_period_question = !!(statements && statements?.items?.length > 0);
 
       if (isActiveFeature(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD) && relevantPeriodStatementsState.has_answered_relevant_period_question === false) {
         return res.redirect(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL + config.RELEVANT_PERIOD_QUERY_PARAM);

@@ -45,6 +45,7 @@ import {
 } from "../../__mocks__/session.mock";
 import { UpdateKey } from "../../../src/model/update.type.model";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
+import { relevantPeriodStatementsState } from "../../../src/controllers/update/confirm.overseas.entity.details.controller";
 
 mockJourneyDetectionMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
@@ -145,6 +146,7 @@ describe("Confirm company data", () => {
 
     test.skip(`redirect to update-filing-date if no BOs`, async () => {
       mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW);
+      mockIsActiveFeature.mockReturnValue(false);
       const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL).send({});
 
       expect(resp.status).toEqual(302);
@@ -154,6 +156,7 @@ describe("Confirm company data", () => {
     test.skip(`redirect to update-filing-date if no BOs when FEATURE_FLAG_ENABLE_RELEVANT_PERIOD is active`, async () => {
       mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW);
       mockIsActiveFeature.mockReturnValueOnce(true);
+      relevantPeriodStatementsState.has_answered_relevant_period_question = false;
 
       const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL).send({});
 

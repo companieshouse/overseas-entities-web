@@ -52,7 +52,7 @@ const getPageProperties = async (
   // note: isUpdate covers both Update and Remove journeys, so when on Remove journey isUpdate will be true.
   return {
     templateName: getPageTemplate(isUpdate),
-    backLinkUrl: getBackLinkUrl(isUpdate, req),
+    backLinkUrl: getBackLinkUrl(isUpdate, req, appData),
     ...appData,
     pageData: {
       trustData: getTrustArray(appData),
@@ -165,9 +165,14 @@ const getPageTemplate = (isUpdate: boolean) => {
   }
 };
 
-const getBackLinkUrl = (isUpdate: boolean, req: Request) => {
+const getBackLinkUrl = (isUpdate: boolean, req: Request, appData: ApplicationData) => {
   if (isUpdate) {
-    return config.UPDATE_BENEFICIAL_OWNER_TYPE_URL;
+    const trustId = getTrustArray(appData).length;
+    if (trustId > 0) {
+      return `${config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL}/${trustId}${config.TRUST_INVOLVED_URL}`;
+    } else {
+      return config.UPDATE_BENEFICIAL_OWNER_TYPE_URL;
+    }
   } else {
     return isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
       ? getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req)

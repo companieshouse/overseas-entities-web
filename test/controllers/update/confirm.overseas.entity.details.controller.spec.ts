@@ -5,6 +5,7 @@ jest.mock('../../../src/utils/application.data');
 jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock("../../../src/utils/feature.flag" );
+jest.mock('../../../src/service/persons.with.signficant.control.statement.service');
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
 import mockJourneyDetectionMiddleware from "../../__mocks__/journey.detection.middleware.mock";
@@ -41,16 +42,19 @@ import {
   BENEFICIAL_OWNER_OTHER_NO_TRUSTEE_OBJECT_MOCK,
   UPDATE_OBJECT_MOCK,
   BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
-  BENEFICIAL_OWNER_OTHER_OBJECT_MOCK
+  BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
+  APPLICATION_DATA_UPDATE_BO_MOCK
 } from "../../__mocks__/session.mock";
 import { UpdateKey } from "../../../src/model/update.type.model";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
-import { relevantPeriodStatementsState } from "../../../src/controllers/update/confirm.overseas.entity.details.controller";
+import { getCompanyPscStatements } from "../../../src/service/persons.with.signficant.control.statement.service";
+import { MOCK_GET_COMPANY_PSC_STATEMENTS_RESOURCE_INDIVIDUAL } from "../../__mocks__/get.company.psc.statement.mock";
 
 mockJourneyDetectionMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue(false);
+const mockGetCompanyPscStatements = getCompanyPscStatements as jest.Mock;
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
@@ -144,7 +148,7 @@ describe("Confirm company data", () => {
       expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_QUERY_URL);
     });
 
-    test.skip(`redirect to update-filing-date if no BOs`, async () => {
+    test(`redirect to update-filing-date if no BOs`, async () => {
       mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW);
       mockIsActiveFeature.mockReturnValue(false);
       const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL).send({});
@@ -153,10 +157,9 @@ describe("Confirm company data", () => {
       expect(resp.header.location).toEqual(config.UPDATE_FILING_DATE_URL);
     });
 
-    test.skip(`redirect to update-filing-date if no BOs when FEATURE_FLAG_ENABLE_RELEVANT_PERIOD is active`, async () => {
+    test(`redirect to update-filing-date if no BOs when FEATURE_FLAG_ENABLE_RELEVANT_PERIOD is active`, async () => {
       mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW);
       mockIsActiveFeature.mockReturnValueOnce(true);
-      relevantPeriodStatementsState.has_answered_relevant_period_question = false;
 
       const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL).send({});
 
@@ -164,7 +167,7 @@ describe("Confirm company data", () => {
       expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
     });
 
-    test.skip.each([
+    test.each([
       ["BO Individual", "review_beneficial_owners_individual", BENEFICIAL_OWNER_INDIVIDUAL_NO_TRUSTEE_OBJECT_MOCK ],
       ["BO Corporate", "review_beneficial_owners_corporate", BENEFICIAL_OWNER_OTHER_NO_TRUSTEE_OBJECT_MOCK ]
     ])(`redirect to update-filing-date if %s but does not have nature of controls related to trusts`, async (_, key, mockObject) => {
@@ -221,7 +224,7 @@ describe("Confirm company data", () => {
     });
   });
 
-  test.skip.each([
+  test.each([
     ["BO Individual", "review_beneficial_owners_individual", BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK ],
     ["BO Corporate", "review_beneficial_owners_corporate", BENEFICIAL_OWNER_OTHER_OBJECT_MOCK ]
   ])(`redirect to update-filing-date if %s has trusts NOC`, async (_, key, mockObject) => {
@@ -257,5 +260,32 @@ describe("Confirm company data", () => {
 
     expect(resp.status).toEqual(302);
     expect(resp.header.location).toEqual(`${config.OVERSEAS_ENTITY_PRESENTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+  });
+
+  test(`should redirect to relevant period filer page if feature flag active and no statements`, async () => {
+    mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_BO_MOCK);
+    mockIsActiveFeature.mockReturnValueOnce(true);
+    mockGetCompanyPscStatements.mockReturnValue(undefined);
+
+    const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL).send({});
+
+    expect(resp.status).toEqual(302);
+    expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
+
+  });
+
+  test(`should redirect to update filing page  if psc statements exist`, async () => {
+    mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_BO_MOCK);
+    mockIsActiveFeature.mockReturnValueOnce(true);
+
+    const getPscStatements = { ...MOCK_GET_COMPANY_PSC_STATEMENTS_RESOURCE_INDIVIDUAL.items[0], total_results: "1" };
+    const statements = [getPscStatements];
+
+    mockGetCompanyPscStatements.mockReturnValue({ items: statements });
+
+    const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL).send({});
+
+    expect(resp.status).toEqual(302);
+    expect(resp.header.location).toEqual(config.UPDATE_FILING_DATE_URL);
   });
 });

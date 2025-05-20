@@ -4,7 +4,7 @@ import {
 } from "@companieshouse/api-sdk-node/dist/services/company-psc-statements";
 import { ANY_MESSAGE_ERROR } from "./text.mock";
 
-const NO_INDIVIDUAL_STATEMENT_MOCK = {
+const NO_PSC_INDIVIDUAL_OR_ENTITY_STATEMENT_MOCK = {
   "links": {
     "self": "/company/OE000001/persons-with-significant-control-statements/123"
   },
@@ -18,7 +18,7 @@ export const MOCK_GET_COMPANY_PSC_STATEMENTS_RESOURCE_INDIVIDUAL = {
   "active_count": '1',
   "ceased_count": '',
   "items": [
-    NO_INDIVIDUAL_STATEMENT_MOCK
+    NO_PSC_INDIVIDUAL_OR_ENTITY_STATEMENT_MOCK
   ],
   "items_per_page": '25',
   "links": {

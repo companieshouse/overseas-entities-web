@@ -162,4 +162,14 @@ describe('getDataForReview calls render for check your answers page', () => {
       }
     ));
   });
+
+  it('should not display statements on update-check-your-answers page if relevantPeriodStatements is true', async () => {
+    await getDataForReview(req as Request, res as Response, next as NextFunction, false);
+    expect(getDataForReview).toBeDefined();
+    expect(res.render).not.toHaveBeenCalledWith('update-check-your-answers', expect.objectContaining({
+      pageParams: expect.objectContaining({
+        "relevantPeriodStatements": true,
+      }),
+    }));
+  });
 });

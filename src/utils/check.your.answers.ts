@@ -16,6 +16,7 @@ import { fetchApplicationData } from "../utils/application.data";
 import { isRegistrationJourney, isRemoveJourney } from "./url";
 import { OverseasEntityKey, Transactionkey } from "../model/data.types.model";
 import { checkEntityRequiresTrusts, checkEntityReviewRequiresTrusts } from "./trusts";
+import { relevantPeriodStatementsState } from "../controllers/update/confirm.overseas.entity.details.controller";
 
 import {
   OVERSEAS_ENTITY_UPDATE_DETAILS_URL,
@@ -44,6 +45,7 @@ export const getDataForReview = async (req: Request, res: Response, next: NextFu
   const backLinkUrl = getBackLinkUrl(isNoChangeJourney, hasAnyBosWithTrusteeNocs, isRemove);
   const templateName = getTemplateName(isNoChangeJourney);
   const isRPStatementExists = checkRPStatementsExist(appData);
+  const relevantPeriodStatements: boolean = relevantPeriodStatementsState.has_answered_relevant_period_question;
 
   try {
 
@@ -91,7 +93,8 @@ export const getDataForReview = async (req: Request, res: Response, next: NextFu
         noChangeFlag: isNoChangeJourney,
         isTrustFeatureEnabled: isActiveFeature(FEATURE_FLAG_ENABLE_TRUSTS_WEB),
         hasAnyBosWithTrusteeNocs,
-        no_change: appData.update?.no_change ?? ""
+        no_change: appData.update?.no_change ?? "",
+        relevantPeriodStatements: relevantPeriodStatements,
       },
       FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC: isActiveFeature(FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)
     });

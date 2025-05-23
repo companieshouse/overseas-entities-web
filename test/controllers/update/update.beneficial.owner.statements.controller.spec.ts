@@ -172,14 +172,16 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
     });
 
     test("catch error when posting data", async () => {
+      const ERROR = new Error("Something went wrong");
       mockFetchApplicationData.mockImplementationOnce(() => { throw ERROR; });
+
       const resp = await request(app)
         .post(config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL)
         .send({ [BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK });
 
-      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
-      expect(resp.status).toEqual(500);
-      expect(mockSetApplicationData).not.toHaveBeenCalled();
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE); // Check for correct error message
+      expect(resp.status).toEqual(500); // Ensure server responds with 500 status
+      expect(mockSetApplicationData).not.toHaveBeenCalled(); // Ensure app state wasn't updated
     });
 
   });

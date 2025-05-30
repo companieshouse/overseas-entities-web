@@ -208,7 +208,7 @@ export const CONFIRM_AND_CONTINUE_BUTTON_TEXT = "Confirm and continue";
 export const UPDATE_OVERSEAS_ENTITY_TITLE = "Update overseas entity";
 export const OE_NUMBER_FIELD_POPULATED = "value=\"OE123456\"";
 export const OVERSEAS_ENTITY_UPDATE_TITLE = "Check the overseas entity details";
-export const BACK_LINK_FOR_UPDATE_FILING_DATE = "/update-an-overseas-entity/confirm-overseas-entity-details";
+export const BACK_LINK_FOR_UPDATE_FILING_DATE = "/update-an-overseas-entity/registered-owner-during-pre-registration-period";
 export const BACK_LINK_FOR_UPDATE_OE_CONFIRM = "/update-an-overseas-entity/overseas-entity-query";
 export const CHANGE_LINK_ENTITY_NAME = "/update-an-overseas-entity/entity#entity_name";
 export const CHANGE_LINK_ENTITY_PRINCIPAL_ADDRESS = "/update-an-overseas-entity/entity#principal_address_property_name_number";

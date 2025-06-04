@@ -11,14 +11,14 @@ import { FilingDateKey, FilingDateKeys } from '../../model/date.model';
 import { ApplicationData } from "../../model/application.model";
 import { getConfirmationStatementNextMadeUpToDateAsIsoString } from "../../service/company.profile.service";
 import { convertIsoDateToInputDate } from "../../utils/date";
-import { checkRelevantPeriod } from "../../utils/relevant.period";
+import { checkAnyRPStatementsActionWasTaken } from "../../utils/relevant.period";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const appData = await getApplicationData(req.session);
-    const backLinkUrl = !checkRelevantPeriod(appData) ? config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL : config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL + config.RELEVANT_PERIOD_QUERY_PARAM;
+    const backLinkUrl = !checkAnyRPStatementsActionWasTaken(appData) ? config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL : config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL + config.RELEVANT_PERIOD_QUERY_PARAM;
 
     return res.render(config.UPDATE_FILING_DATE_PAGE, {
       backLinkUrl,

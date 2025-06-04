@@ -94,10 +94,12 @@ describe("relevant period required information page tests", () => {
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_SUBMIT_BY_PAPER_URL);
     });
-    test("catch error when posting the page", async () => {
-      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-      const resp = await request(app)
-        .post(RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_URL);
+    test("catch error when validating the page", async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      const resp = await request(app).post(config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_URL);
+
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });

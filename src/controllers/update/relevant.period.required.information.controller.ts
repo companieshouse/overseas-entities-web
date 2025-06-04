@@ -4,6 +4,7 @@ import { logger } from "../../utils/logger";
 import * as config from "../../config";
 import { ApplicationData } from "../../model";
 import { getApplicationData } from "../../utils/application.data";
+import { RequiredInformation } from "../../model/update.type.model";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -21,12 +22,17 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
+export const post = async(req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_PAGE}`);
     let redirectUrl: string = '';
-    const required_information = req.body['required_information'];
-    if (required_information === "1") {
+    const appData: ApplicationData = await getApplicationData(req.session);
+    const requiredInformation = req.body[RequiredInformation];
+
+    if (appData.update) {
+      appData.update[RequiredInformation] = requiredInformation === "1";
+    }
+    if (requiredInformation === '1') {
       redirectUrl = config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE + config.RELEVANT_PERIOD_QUERY_PARAM;
     } else {
       redirectUrl = config.RELEVANT_PERIOD_SUBMIT_BY_PAPER_URL;

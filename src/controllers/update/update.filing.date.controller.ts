@@ -18,7 +18,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const appData = await getApplicationData(req.session);
-    const backLinkUrl = !checkRelevantPeriod(appData) ? config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL : config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL + config.RELEVANT_PERIOD_QUERY_PARAM;
+    const backLinkUrl = !checkRelevantPeriod(appData) ? config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL : config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL + config.RELEVANT_PERIOD_QUERY_PARAM;
 
     return res.render(config.UPDATE_FILING_DATE_PAGE, {
       backLinkUrl,

@@ -594,7 +594,7 @@ router.route(config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_URL)
     companyAuthentication,
     navigation.hasOverseasEntity)
   .get(relevantPeriodRequiredInformation.get)
-  .post(relevantPeriodRequiredInformation.post);
+  .post(...validator.relevantPeriodRequiredInformation, checkValidations, relevantPeriodRequiredInformation.post);
 
 router.route(config.RELEVANT_PERIOD_SUBMIT_BY_PAPER_URL)
   .all(

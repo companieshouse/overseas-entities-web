@@ -36,6 +36,8 @@ import { removeIsEntityRegisteredOwner } from "./update/remove.is.entity.registe
 import { removeConfirmStatement } from "./update/remove.confirm.statement.validation";
 import { relevantPeriodOwnedLandFilter } from "./relevant.period.owned.land.validation";
 import { relevantPeriodCombinedStatements } from "./relevant.period.combined.statements.validation";
+import { relevantPeriodRequiredInformation } from "./relevant.period.required.information.validation";
+
 export const validator = {
   soldLandFilter,
   secureRegisterFilter,
@@ -86,5 +88,6 @@ export const validator = {
   removeIsEntityRegisteredOwner,
   removeConfirmStatement,
   relevantPeriodOwnedLandFilter,
-  relevantPeriodCombinedStatements
+  relevantPeriodCombinedStatements,
+  relevantPeriodRequiredInformation
 };

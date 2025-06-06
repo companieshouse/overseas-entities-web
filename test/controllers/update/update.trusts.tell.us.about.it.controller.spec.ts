@@ -22,11 +22,11 @@ import { fetchApplicationData, getApplicationData } from '../../../src/utils/app
 
 import {
   TRUST_INVOLVED_URL,
-  UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL,
   UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL,
   UPDATE_TRUSTS_SUBMISSION_INTERRUPT_URL,
   UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL,
-  RELEVANT_PERIOD_QUERY_PARAM
+  RELEVANT_PERIOD_QUERY_PARAM,
+  UPDATE_BENEFICIAL_OWNER_TYPE_URL
 } from '../../../src/config';
 
 import {
@@ -82,7 +82,7 @@ describe('Update - Trusts - Tell us about the trust', () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_TELL_US_ABOUT_TRUST_HEADING);
       expect(resp.text).toContain(UPDATE_TELL_US_ABOUT_TRUST_QUESTION);
-      expect(resp.text).toContain(UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL);
+      expect(resp.text).toContain(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });

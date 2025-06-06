@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test, jest } from '@jest/globals';
-import { checkRelevantPeriod, checkRPStatementsExist } from '../../src/utils/relevant.period';
+import { checkRelevantPeriod, checkRPStatementsExist, checkAnyRPStatementsActionWasTaken } from '../../src/utils/relevant.period';
 import {
   APPLICATION_DATA_UPDATE_BO_MOCK,
   UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE,
@@ -14,6 +14,7 @@ const appData = {
 
 const mockCheckRelevantPeriod = checkRelevantPeriod as jest.Mock;
 const mockCheckRPStatementsExist = checkRPStatementsExist as jest.Mock;
+const mockCheckAnyRPStatementsActionWasTaken = checkAnyRPStatementsActionWasTaken as jest.Mock;
 
 describe('relevant period test suite', () => {
   describe('check relevant period', () => {
@@ -177,6 +178,101 @@ describe('relevant period test suite', () => {
       expect(appData.update).toHaveProperty("change_bo_relevant_period", null);
       expect(appData.update).toHaveProperty("trustee_involved_relevant_period", null);
       expect(appData.update).toHaveProperty("change_beneficiary_relevant_period", null);
+    });
+  });
+  describe('check Any RP statements action was taken', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+
+      appData.update = {
+        change_bo_relevant_period: undefined,
+        trustee_involved_relevant_period: undefined,
+        change_beneficiary_relevant_period: undefined
+      };
+    });
+
+    test('should return true if change_bo_relevant_period is "CHANGE_BO_RELEVANT_PERIOD"', () => {
+      appData.update = { change_bo_relevant_period: "CHANGE_BO_RELEVANT_PERIOD" };
+
+      expect(mockCheckAnyRPStatementsActionWasTaken(appData)).toBeTruthy();
+
+      expect(appData.update).toHaveProperty("change_bo_relevant_period", "CHANGE_BO_RELEVANT_PERIOD");
+    });
+
+    test('should return true if change_bo_relevant_period is "NO_CHANGE_BO_RELEVANT_PERIOD"', () => {
+      appData.update = { change_bo_relevant_period: "NO_CHANGE_BO_RELEVANT_PERIOD" };
+
+      expect(mockCheckAnyRPStatementsActionWasTaken(appData)).toBeTruthy();
+
+      expect(appData.update).toHaveProperty("change_bo_relevant_period", "NO_CHANGE_BO_RELEVANT_PERIOD");
+    });
+
+    test('should return true if trustee_involved_relevant_period is "TRUSTEE_INVOLVED_RELEVANT_PERIOD"', () => {
+      appData.update = { trustee_involved_relevant_period: "TRUSTEE_INVOLVED_RELEVANT_PERIOD" };
+
+      expect(mockCheckAnyRPStatementsActionWasTaken(appData)).toBeTruthy();
+
+      expect(appData.update).toHaveProperty("trustee_involved_relevant_period", "TRUSTEE_INVOLVED_RELEVANT_PERIOD");
+    });
+
+    test('should return true if trustee_involved_relevant_period is "NO_TRUSTEE_INVOLVED_RELEVANT_PERIOD"', () => {
+      appData.update = { trustee_involved_relevant_period: "NO_TRUSTEE_INVOLVED_RELEVANT_PERIOD" };
+
+      expect(mockCheckAnyRPStatementsActionWasTaken(appData)).toBeTruthy();
+
+      expect(appData.update).toHaveProperty("trustee_involved_relevant_period", "NO_TRUSTEE_INVOLVED_RELEVANT_PERIOD");
+    });
+
+    test('should return true if change_beneficiary_relevant_period is "CHANGE_BENEFICIARY_RELEVANT_PERIOD"', () => {
+      appData.update = { change_beneficiary_relevant_period: "CHANGE_BENEFICIARY_RELEVANT_PERIOD" };
+
+      expect(mockCheckAnyRPStatementsActionWasTaken(appData)).toBeTruthy();
+
+      expect(appData.update).toHaveProperty("change_beneficiary_relevant_period", "CHANGE_BENEFICIARY_RELEVANT_PERIOD");
+    });
+
+    test('should return true if change_beneficiary_relevant_period is "NO_CHANGE_BENEFICIARY_RELEVANT_PERIOD"', () => {
+      appData.update = { change_beneficiary_relevant_period: "NO_CHANGE_BENEFICIARY_RELEVANT_PERIOD" };
+
+      expect(mockCheckAnyRPStatementsActionWasTaken(appData)).toBeTruthy();
+
+      expect(appData.update).toHaveProperty("change_beneficiary_relevant_period", "NO_CHANGE_BENEFICIARY_RELEVANT_PERIOD");
+    });
+
+    test('should return false if all relevant periods are undefined', () => {
+      expect(mockCheckAnyRPStatementsActionWasTaken(appData)).toBeFalsy();
+
+      expect(appData.update).toHaveProperty("change_bo_relevant_period", undefined);
+      expect(appData.update).toHaveProperty("trustee_involved_relevant_period", undefined);
+      expect(appData.update).toHaveProperty("change_beneficiary_relevant_period", undefined);
+    });
+
+    test('should return false if all relevant periods are null', () => {
+      appData.update = {
+        change_bo_relevant_period: null,
+        trustee_involved_relevant_period: null,
+        change_beneficiary_relevant_period: null
+      };
+
+      expect(mockCheckAnyRPStatementsActionWasTaken(appData)).toBeFalsy();
+
+      expect(appData.update).toHaveProperty("change_bo_relevant_period", null);
+      expect(appData.update).toHaveProperty("trustee_involved_relevant_period", null);
+      expect(appData.update).toHaveProperty("change_beneficiary_relevant_period", null);
+    });
+
+    test('should return false if relevant periods contain invalid values', () => {
+      appData.update = {
+        change_bo_relevant_period: "INVALID_VALUE",
+        trustee_involved_relevant_period: "INVALID_VALUE",
+        change_beneficiary_relevant_period: "INVALID_VALUE"
+      };
+
+      expect(mockCheckAnyRPStatementsActionWasTaken(appData)).toBeFalsy();
+
+      expect(appData.update).toHaveProperty("change_bo_relevant_period", "INVALID_VALUE");
+      expect(appData.update).toHaveProperty("trustee_involved_relevant_period", "INVALID_VALUE");
+      expect(appData.update).toHaveProperty("change_beneficiary_relevant_period", "INVALID_VALUE");
     });
   });
 });

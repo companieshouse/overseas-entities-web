@@ -53,7 +53,6 @@
             {% include "includes/csrf_token.html" %}
             {{ govukRadios({
                 errorMessage: errors.required_information if errors,
-                classes: "govuk-radios",
                 idPrefix: "required_information",
                 name: "required_information",
                 fieldset: {
@@ -67,7 +66,7 @@
                     {
                         value: 1,
                         text: "Yes",
-                        checked: required_information == 1,
+                        checked: update.required_information == 1,
                         attributes: {
                             "data-event-id": "yes-required_information"
                         }
@@ -75,7 +74,7 @@
                     {
                         value: 0,
                         text: "No",
-                        checked: required_information == 0,
+                        checked: update.required_information == 0,
                         attributes: {
                             "data-event-id": "no-required_information"
                         }

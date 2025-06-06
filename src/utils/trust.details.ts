@@ -258,7 +258,7 @@ const getBackLinkUrl = (isUpdate: boolean, appData: ApplicationData, req: Reques
   if (isUpdate) {
     backLinkUrl = config.UPDATE_TRUSTS_SUBMISSION_INTERRUPT_URL;
     if (containsTrustData(getTrustArray(appData))) {
-      backLinkUrl = `${config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL}`;
+      backLinkUrl = `${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL}`;
     }
   } else {
     backLinkUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)

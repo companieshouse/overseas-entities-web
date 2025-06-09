@@ -34,6 +34,8 @@ export const post = async(req: Request, res: Response, next: NextFunction) => {
     }
     if (requiredInformation === '1') {
       redirectUrl = config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE + config.RELEVANT_PERIOD_QUERY_PARAM;
+    } else {
+      redirectUrl = config.RELEVANT_PERIOD_SUBMIT_BY_PAPER_URL;
     }
     return res.redirect(redirectUrl);
   } catch (error) {

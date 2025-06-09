@@ -12,6 +12,7 @@ export const RegistrableBeneficialOwnerKey = "registrable_beneficial_owner";
 export const NoChangeKey = "no_change";
 export const ReviewTrustKey = "review_trusts";
 export const OwnedLandKey = "owned_land_relevant_period";
+export const RequiredInformation = "required_information";
 
 export const UpdateKeys: string[] = [
   "date_of_creation",
@@ -27,7 +28,8 @@ export const UpdateKeys: string[] = [
   "review_managing_officers_corporate",
   "filing_date",
   "no_change",
-  "owned_land_relevant_period"
+  "owned_land_relevant_period",
+  "required_information"
 ];
 
 export interface Update {
@@ -49,5 +51,6 @@ export interface Update {
   owned_land_relevant_period?: boolean;
   trust_data_fetched?: boolean;
   review_trusts?: Trust[];
+  required_information?: boolean;
 }
 

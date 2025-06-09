@@ -51,7 +51,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     if (ownedLandKey === '1') {
-      redirectUrl = config.RELEVANT_PERIOD_INTERRUPT_URL + config.RELEVANT_PERIOD_QUERY_PARAM;
+      redirectUrl = config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_URL + config.RELEVANT_PERIOD_QUERY_PARAM;
     } else {
       if (appData.update) {
         appData.update[ChangeBoRelevantPeriodKey] = undefined;

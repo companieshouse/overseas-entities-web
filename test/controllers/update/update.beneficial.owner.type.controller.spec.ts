@@ -251,7 +251,13 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       mockGetApplicationData.mockReturnValueOnce(appData);
 
       const resp = await request(app)
-        .post(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+        .post(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL)
+        .send({
+          isBeneficialOwnerTypeVisible: "true", // Simulate visibility of the BeneficialOwnerTypeKey field
+          BeneficialOwnerTypeKey: null, // No selection made
+          BeneficialOwnerTypeRPKey: null // No selection made
+        });
+
       expect(resp.text).toContain(ErrorMessages.SELECT_THE_TYPE_OF_BENEFICIAL_OWNER_OR_MANAGING_OFFICER_YOU_WANT_TO_ADD);
     });
 
@@ -261,11 +267,17 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       mockGetApplicationData.mockReturnValueOnce(appData);
 
       const resp = await request(app)
-        .post(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
+        .post(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM)
+        .send({
+          isBeneficialOwnerTypeVisible: "true", // Simulate visibility of the BeneficialOwnerTypeKey field
+          isBeneficialOwnerTypeRPVisible: "true", // Simulate visibility of the BeneficialOwnerTypeRPKey field
+          BeneficialOwnerTypeKey: null, // No selection made
+          BeneficialOwnerTypeRPKey: null // No selection made
+        });
+
       expect(resp.text).toContain(ErrorMessages.SELECT_THE_TYPE_OF_BENEFICIAL_OWNER_OR_MANAGING_OFFICER_YOU_WANT_TO_ADD);
       expect(resp.text).toContain(ErrorMessages.SELECT_THE_TYPE_OF_BENEFICIAL_OWNER_YOU_WANT_TO_ADD_RELEVANT_PERIOD);
     });
-
   });
 
   describe("POST Submit tests", () => {

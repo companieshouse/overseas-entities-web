@@ -30,7 +30,7 @@ import { ErrorMessages } from "../../../src/validation/error.messages";
 import { getConfirmationStatementNextMadeUpToDateAsIsoString } from "../../../src/service/company.profile.service";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { hasOverseasEntity } from "../../../src/middleware/navigation/update/has.overseas.entity.middleware";
-import { checkRelevantPeriod } from "../../../src/utils/relevant.period";
+import { checkAnyRPStatementsActionWasTaken } from "../../../src/utils/relevant.period";
 import { FILING_DATE_REQ_BODY_MOCK } from '../../__mocks__/fields/date.mock';
 import { isRegistrationJourney } from "../../../src/utils/url";
 
@@ -106,7 +106,7 @@ mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Respons
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue(true);
 
-const mockCheckRelevantPeriod = checkRelevantPeriod as jest.Mock;
+const mockCheckRelevantPeriodActionTaken = checkAnyRPStatementsActionWasTaken as jest.Mock;
 
 const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
 mockIsRegistrationJourney.mockReturnValue(false);
@@ -125,7 +125,7 @@ describe("Update Filing Date controller", () => {
 
   describe("GET tests", () => {
     test('renders the update-filing-date page when FEATURE_FLAG_ENABLE_RELEVANT_PERIOD is not active,', async () => {
-      mockCheckRelevantPeriod.mockReturnValueOnce(false);
+      mockCheckRelevantPeriodActionTaken.mockReturnValueOnce(false);
       const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
 
       expect(resp.status).toEqual(200);
@@ -137,8 +137,16 @@ describe("Update Filing Date controller", () => {
       expect(resp.text).toContain('href="test"');
     });
 
+    test('renders the review-statements-for-the-pre-registration-period page when any action has been taken for relevant period is active,', async () => {
+      mockCheckRelevantPeriodActionTaken.mockReturnValueOnce(true);
+      const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain("/update-an-overseas-entity/review-statements-for-the-pre-registration-period?relevant-period=true");
+    });
+
     test('renders the update-filing-date page when FEATURE_FLAG_ENABLE_RELEVANT_PERIOD is active,', async () => {
-      mockCheckRelevantPeriod.mockReturnValueOnce(true);
+      mockCheckRelevantPeriodActionTaken.mockReturnValueOnce(true);
       const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
 
       expect(resp.status).toEqual(200);
@@ -148,7 +156,7 @@ describe("Update Filing Date controller", () => {
     test('renders the update-filing-date page with no update session data', async () => {
       const mockData = { ...UPDATE_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS, entity_number: 'OE111129' };
       mockGetApplicationData.mockReturnValueOnce(mockData);
-      mockCheckRelevantPeriod.mockReturnValueOnce(false);
+      mockCheckRelevantPeriodActionTaken.mockReturnValueOnce(false);
 
       const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
 
@@ -164,7 +172,7 @@ describe("Update Filing Date controller", () => {
     test('renders the update-filing-date page with update session data', async () => {
       const mockData = { ...APPLICATION_DATA_MOCK };
       mockGetApplicationData.mockReturnValueOnce(mockData);
-      mockCheckRelevantPeriod.mockReturnValueOnce(false);
+      mockCheckRelevantPeriodActionTaken.mockReturnValueOnce(false);
 
       const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
 
@@ -180,7 +188,7 @@ describe("Update Filing Date controller", () => {
     test('does not fetch private overseas entity data to app data if already exists', async () => {
       const mockData = { ...APPLICATION_DATA_MOCK };
       mockGetApplicationData.mockReturnValueOnce(mockData);
-      mockCheckRelevantPeriod.mockReturnValueOnce(false);
+      mockCheckRelevantPeriodActionTaken.mockReturnValueOnce(false);
 
       const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
 

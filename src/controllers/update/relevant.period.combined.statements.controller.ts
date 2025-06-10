@@ -25,7 +25,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = await getApplicationData(req.session);
 
     return res.render(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE, {
-      backLinkUrl: config.RELEVANT_PERIOD_INTERRUPT_PAGE + config.RELEVANT_PERIOD_QUERY_PARAM,
+      backLinkUrl: config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_PAGE + config.RELEVANT_PERIOD_QUERY_PARAM,
       templateName: config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE,
       ...appData,
     });

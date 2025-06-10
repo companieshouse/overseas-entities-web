@@ -5,6 +5,7 @@ import { isRegistrationJourney, isRemoveJourney } from '../../src/utils/url';
 import { checkEntityReviewRequiresTrusts } from '../../src/utils/trusts';
 import { checkRPStatementsExist } from '../../src/utils/relevant.period';
 import { Session } from "@companieshouse/node-session-handler";
+import { relevantPeriodStatementsState } from '../../src/controllers/update/confirm.overseas.entity.details.controller';
 
 jest.mock('../../src/utils/application.data', () => ({ fetchApplicationData: jest.fn() }));
 jest.mock('../../src/utils/logger');
@@ -59,7 +60,8 @@ describe('getDataForReview calls render for check your answers page', () => {
           "isRegistration": false,
           "isTrustFeatureEnabled": false,
           "noChangeFlag": false,
-          "no_change": false },
+          "no_change": false,
+          "relevantPeriodStatements": false },
         "roleTypes": { "BENEFICIARY": "Beneficiary",
           "GRANTOR": "Grantor",
           "HISTORICAL_BENEFICIAL_OWNER": "Historical_Beneficial_Owner",
@@ -88,7 +90,8 @@ describe('getDataForReview calls render for check your answers page', () => {
           "isRegistration": false,
           "isTrustFeatureEnabled": false,
           "noChangeFlag": false,
-          "no_change": true },
+          "no_change": true,
+          "relevantPeriodStatements": false },
         "roleTypes": { "BENEFICIARY": "Beneficiary",
           "GRANTOR": "Grantor",
           "HISTORICAL_BENEFICIAL_OWNER": "Historical_Beneficial_Owner",
@@ -118,7 +121,8 @@ describe('getDataForReview calls render for check your answers page', () => {
           "isRegistration": false,
           "isTrustFeatureEnabled": false,
           "noChangeFlag": false,
-          "no_change": '' },
+          "no_change": '',
+          "relevantPeriodStatements": false },
         "roleTypes": { "BENEFICIARY": "Beneficiary",
           "GRANTOR": "Grantor",
           "HISTORICAL_BENEFICIAL_OWNER": "Historical_Beneficial_Owner",
@@ -147,7 +151,8 @@ describe('getDataForReview calls render for check your answers page', () => {
           "isRegistration": false,
           "isTrustFeatureEnabled": false,
           "noChangeFlag": false,
-          "no_change": '' },
+          "no_change": '',
+          "relevantPeriodStatements": false },
         "roleTypes": { "BENEFICIARY": "Beneficiary",
           "GRANTOR": "Grantor",
           "HISTORICAL_BENEFICIAL_OWNER": "Historical_Beneficial_Owner",
@@ -158,4 +163,48 @@ describe('getDataForReview calls render for check your answers page', () => {
       }
     ));
   });
+
+  it('should not display statements on update-check-your-answers page if relevantPeriodStatements is true', async () => {
+    await getDataForReview(req as Request, res as Response, next as NextFunction, false);
+    expect(getDataForReview).toBeDefined();
+    expect(res.render).not.toHaveBeenCalledWith('update-check-your-answers', expect.objectContaining({
+      pageParams: expect.objectContaining({
+        "relevantPeriodStatements": true,
+      }),
+    }));
+  });
+
+  it('should render the page with relevantPeriodstatements set to true', async () => {
+    (isRemoveJourney as jest.Mock).mockResolvedValue(false);
+    (checkRPStatementsExist as jest.Mock).mockReturnValue(true);
+    // Mock the boolean value
+    relevantPeriodStatementsState.has_answered_relevant_period_question = true ;
+    const mockAppData = { update: null };
+    (fetchApplicationData as jest.Mock).mockResolvedValue(mockAppData);
+    await getDataForReview(req as Request, res as Response, next as NextFunction, false);
+    expect(getDataForReview).toBeDefined();
+    expect(res.render).toHaveBeenCalledWith('update-check-your-answers', expect.objectContaining(
+      { "FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC": false,
+        "backLinkUrl": "/update-an-overseas-entity/update-registrable-beneficial-owner",
+        "changeLinkUrl": "/update-an-overseas-entity/entity",
+        "overseasEntityHeading": "Overseas entity details",
+        "pageParams": { "hasAnyBosWithTrusteeNocs": false,
+          "isRPStatementExists": true,
+          "isRegistration": false,
+          "isTrustFeatureEnabled": false,
+          "noChangeFlag": false,
+          "no_change": '',
+          "relevantPeriodStatements": true },
+        "roleTypes": { "BENEFICIARY": "Beneficiary",
+          "GRANTOR": "Grantor",
+          "HISTORICAL_BENEFICIAL_OWNER": "Historical_Beneficial_Owner",
+          "INTERESTED_PERSON": "Interested_Person",
+          "SETTLOR": "Settlor" },
+        "templateName": "update-check-your-answers",
+        "whoIsCompletingChangeLink": "/update-an-overseas-entity/who-is-making-update"
+      }
+    ));
+  });
+
 });
+

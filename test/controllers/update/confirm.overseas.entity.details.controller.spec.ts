@@ -48,7 +48,7 @@ import {
 import { UpdateKey } from "../../../src/model/update.type.model";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { getCompanyPscStatements } from "../../../src/service/persons.with.signficant.control.statement.service";
-import { MOCK_GET_COMPANY_PSC_STATEMENTS_RESOURCE_INDIVIDUAL } from "../../__mocks__/get.company.psc.statement.mock";
+import { relevantPeriodPscStatements } from "../../../src/utils/relevant.period";
 
 mockJourneyDetectionMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
@@ -150,7 +150,6 @@ describe("Confirm company data", () => {
 
     test(`redirect to update-filing-date if no BOs`, async () => {
       mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW);
-      mockIsActiveFeature.mockReturnValue(false);
       const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL).send({});
 
       expect(resp.status).toEqual(302);
@@ -262,10 +261,12 @@ describe("Confirm company data", () => {
     expect(resp.header.location).toEqual(`${config.OVERSEAS_ENTITY_PRESENTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
   });
 
-  test(`should redirect to relevant period filer page if feature flag active and no statements`, async () => {
+  test(`should redirect to relevant period filer page if feature flag active and no relevantPeriodStatements`, async () => {
     mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_BO_MOCK);
     mockIsActiveFeature.mockReturnValueOnce(true);
-    mockGetCompanyPscStatements.mockReturnValue(undefined);
+    const mockStatement = {
+      statement: 'no-individual-or-entity-with-signficant-control' };
+    mockGetCompanyPscStatements.mockReturnValue(mockStatement);
 
     const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL).send({});
 
@@ -274,18 +275,18 @@ describe("Confirm company data", () => {
 
   });
 
-  test(`should redirect to update filing page  if psc statements exist`, async () => {
+  test(`should redirect to update filing page  if relevant Period psc statements exist`, async () => {
     mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_BO_MOCK);
     mockIsActiveFeature.mockReturnValueOnce(true);
-
-    const getPscStatements = { ...MOCK_GET_COMPANY_PSC_STATEMENTS_RESOURCE_INDIVIDUAL.items[0], total_results: "1" };
-    const statements = [getPscStatements];
-
-    mockGetCompanyPscStatements.mockReturnValue({ items: statements });
-
+    const mockStatement = [...relevantPeriodPscStatements][0];
+    mockGetCompanyPscStatements.mockReturnValue(true);
+    mockGetCompanyPscStatements.mockReturnValue({
+      items: [{ statement: mockStatement }]
+    });
     const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL).send({});
 
     expect(resp.status).toEqual(302);
     expect(resp.header.location).toEqual(config.UPDATE_FILING_DATE_URL);
   });
 });
+

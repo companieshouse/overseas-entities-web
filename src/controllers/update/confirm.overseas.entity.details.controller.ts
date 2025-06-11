@@ -9,6 +9,7 @@ import { isRemoveJourney } from "../../utils/url";
 import { CompanyPersonsWithSignificantControlStatements } from "@companieshouse/api-sdk-node/dist/services/company-psc-statements/types";
 import { isActiveFeature } from "../../utils/feature.flag";
 import { getCompanyPscStatements } from "../../service/persons.with.signficant.control.statement.service";
+import { relevantPeriodPscStatements } from "../../utils/relevant.period";
 
 export const relevantPeriodStatementsState = {
   has_answered_relevant_period_question: false,
@@ -60,7 +61,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     if (appData.entity && appData.entity_number) {
       const statements: CompanyPersonsWithSignificantControlStatements = await getCompanyPscStatements(req, appData.entity_number);
-      relevantPeriodStatementsState.has_answered_relevant_period_question = statements?.items?.length > 0;
+      relevantPeriodStatementsState.has_answered_relevant_period_question = statements?.items?.length > 0 && relevantPeriodPscStatements.has(statements.items?.[0].statement);
 
       if (isActiveFeature(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD) && !relevantPeriodStatementsState.has_answered_relevant_period_question) {
         return res.redirect(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL + config.RELEVANT_PERIOD_QUERY_PARAM);

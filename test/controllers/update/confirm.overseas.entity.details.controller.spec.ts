@@ -48,7 +48,6 @@ import {
 import { UpdateKey } from "../../../src/model/update.type.model";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { getCompanyPscStatements } from "../../../src/service/persons.with.signficant.control.statement.service";
-import { relevantPeriodPscStatements } from "../../../src/utils/relevant.period";
 
 mockJourneyDetectionMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
@@ -275,18 +274,18 @@ describe("Confirm company data", () => {
 
   });
 
-  test(`should redirect to update filing page  if relevant Period psc statements exist`, async () => {
+  test(`should redirect to update filing page if any relevant Period psc statements exist`, async () => {
     mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_BO_MOCK);
     mockIsActiveFeature.mockReturnValueOnce(true);
-    const mockStatement = [...relevantPeriodPscStatements][0];
-    mockGetCompanyPscStatements.mockReturnValue(true);
-    mockGetCompanyPscStatements.mockReturnValue({
-      items: [{ statement: mockStatement }]
-    });
+    const mockStatements = [ { statement: 'change-beneficiary-relevant-period' },
+      { statement: 'all-beneficial-owners-identified' } ];
+    mockGetCompanyPscStatements.mockReturnValue({ items: mockStatements });
+
     const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL).send({});
 
     expect(resp.status).toEqual(302);
     expect(resp.header.location).toEqual(config.UPDATE_FILING_DATE_URL);
   });
+
 });
 

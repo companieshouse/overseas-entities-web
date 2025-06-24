@@ -237,7 +237,7 @@ export enum ErrorMessages {
   SELECT_REMOVE_DO_YOU_WANT_TO_MAKE_OE_CHANGE = "Select yes if you need to make any changes to this overseas entity before it is removed",
   SELECT_TO_CONFIRM_REMOVE_STATEMENT = "Select the removal statement",
   SELECT_RELEVANT_OWNED_LAND_FILTER = "Select yes if the overseas entity was the registered owner of UK land during the pre-registration period.",
-  SELECT_RELEVANT_PERIOD_REQUIRED_INFORMATION = "Select yes if all the required information about pre-registration period is provided",
+  SELECT_RELEVANT_PERIOD_REQUIRED_INFORMATION = "Tell us if you can provide all the required information about the pre-registration period",
 
   // MAX Lengths
   MAX_FIRST_NAME_LENGTH = "First name must be 50 characters or less",

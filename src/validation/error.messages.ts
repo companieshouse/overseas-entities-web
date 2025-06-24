@@ -238,6 +238,7 @@ export enum ErrorMessages {
   SELECT_TO_CONFIRM_REMOVE_STATEMENT = "Select the removal statement",
   SELECT_RELEVANT_OWNED_LAND_FILTER = "Select yes if the overseas entity was the registered owner of UK land during the pre-registration period.",
   SELECT_RELEVANT_PERIOD_REQUIRED_INFORMATION = "Select yes if all the required information about pre-registration period is provided",
+  SELECT_RELEVANT_PERIOD_PROVIDE_INORMATION = "Tell us if you want to provide pre-registration information in this update statement",
 
   // MAX Lengths
   MAX_FIRST_NAME_LENGTH = "First name must be 50 characters or less",

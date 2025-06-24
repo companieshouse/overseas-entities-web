@@ -37,6 +37,7 @@ import { removeConfirmStatement } from "./update/remove.confirm.statement.valida
 import { relevantPeriodOwnedLandFilter } from "./relevant.period.owned.land.validation";
 import { relevantPeriodCombinedStatements } from "./relevant.period.combined.statements.validation";
 import { relevantPeriodRequiredInformation } from "./relevant.period.required.information.validation";
+import { relevantPeriodProvideInfoNowOrLater } from "./relevant.period.provide.information.now.or.later.validation";
 
 export const validator = {
   soldLandFilter,
@@ -89,5 +90,6 @@ export const validator = {
   removeConfirmStatement,
   relevantPeriodOwnedLandFilter,
   relevantPeriodCombinedStatements,
-  relevantPeriodRequiredInformation
+  relevantPeriodRequiredInformation,
+  relevantPeriodProvideInfoNowOrLater
 };

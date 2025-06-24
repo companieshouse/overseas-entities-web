@@ -4,16 +4,16 @@ import { logger } from "../../utils/logger";
 import * as config from "../../config";
 import { ApplicationData } from "../../model";
 import { getApplicationData } from "../../utils/application.data";
-import { RequiredInformation } from "../../model/update.type.model";
+import { ProvideInformation } from "../../model/update.type.model";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `GET ${config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_PAGE}`);
+    logger.debugRequest(req, `GET ${config.RELEVANT_PERIOD_DO_YOU_WANT_TO_PROVIDE_PRE_REG_INFO_NOW_PAGE}`);
     const appData: ApplicationData = await getApplicationData(req.session);
 
-    return res.render(config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_PAGE, {
-      backLinkUrl: config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL + config.RELEVANT_PERIOD_QUERY_PARAM,
-      templateName: config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_PAGE,
+    return res.render(config.RELEVANT_PERIOD_DO_YOU_WANT_TO_PROVIDE_PRE_REG_INFO_NOW_PAGE, {
+      backLinkUrl: config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_PAGE + config.RELEVANT_PERIOD_QUERY_PARAM,
+      templateName: config.RELEVANT_PERIOD_DO_YOU_WANT_TO_PROVIDE_PRE_REG_INFO_NOW_PAGE,
       ...appData,
     });
   } catch (error) {
@@ -24,16 +24,16 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
 export const post = async(req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `POST ${config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_PAGE}`);
+    logger.debugRequest(req, `POST ${config.RELEVANT_PERIOD_DO_YOU_WANT_TO_PROVIDE_PRE_REG_INFO_NOW_PAGE}`);
     let redirectUrl: string = '';
     const appData: ApplicationData = await getApplicationData(req.session);
-    const requiredInformation = req.body[RequiredInformation];
+    const provideInformation = req.body[ProvideInformation];
 
     if (appData.update) {
-      appData.update[RequiredInformation] = requiredInformation === "1";
+      appData.update[ProvideInformation] = provideInformation === "1";
     }
-    if (requiredInformation === '1') {
-      redirectUrl = config.RELEVANT_PERIOD_DO_YOU_WANT_TO_PROVIDE_PRE_REG_INFO_NOW_PAGE + config.RELEVANT_PERIOD_QUERY_PARAM;
+    if (provideInformation === '1') {
+      redirectUrl = config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE + config.RELEVANT_PERIOD_QUERY_PARAM;
     } else {
       redirectUrl = config.RELEVANT_PERIOD_SUBMIT_BY_PAPER_URL;
     }

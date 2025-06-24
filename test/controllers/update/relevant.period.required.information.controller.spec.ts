@@ -84,7 +84,7 @@ describe("relevant period required information page tests", () => {
         .send({ 'required_information': "1" });
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE + config.RELEVANT_PERIOD_QUERY_PARAM);
+      expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_DO_YOU_WANT_TO_PROVIDE_PRE_REG_INFO_NOW_PAGE + config.RELEVANT_PERIOD_QUERY_PARAM);
     });
     test(`renders the ${config.RELEVANT_PERIOD_SUBMIT_BY_PAPER_URL} page when no is selected`, async () => {
       const resp = await request(app)

@@ -107,6 +107,7 @@ import {
   relevantPeriodSubmitByPaper,
   relevantPeriodCombinedStatements,
   relevantPeriodReviewStatements,
+  relevantPeriodSubmitYearByPaper
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -603,6 +604,14 @@ router.route(config.RELEVANT_PERIOD_SUBMIT_BY_PAPER_URL)
     companyAuthentication,
     navigation.hasOverseasEntity)
   .get(relevantPeriodSubmitByPaper.get);
+
+router.route(config.RELEVANT_PERIOD_SUBMIT_YEAR_BY_PAPER_URL)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD),
+    authentication,
+    companyAuthentication,
+    navigation.hasOverseasEntity)
+  .get(relevantPeriodSubmitYearByPaper.get);
 
 router.route(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL)
   .all(

@@ -307,6 +307,7 @@ export const RELEVANT_SECURE_REGISTER_CHANGE_LINK = "/update-an-overseas-entity/
 export const RELEVANT_SECURE_FILTER_PAGE_HEADING = "Do any beneficial owners or managing officers have personal information protected at Companies House?";
 export const RELEVANT_PERIOD_OWNED_LAND_CHANGE_LINK = "/update-an-overseas-entity/registered-owner-during-pre-registration-period";
 export const IMPORTANT_BANNER_TEXT = "You need to provide some information about the overseas entity from the pre-registration period.";
+export const RELEVANT_PERIOD_SUBMIT_YEAR_BY_PAPER_TITLE = "You'll need to file this year's update statement using the paper form";
 
 // Remove journey
 export const REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE = "Has the overseas entity disposed of all relevant property or land in the UK?";

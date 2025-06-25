@@ -102,7 +102,6 @@ export * as relevantPeriodRequiredInformation from './update/relevant.period.req
 export * as relevantPeriodSubmitByPaper from './update/relevant.period.submit.by.paper.controller';
 export * as relevantPeriodCombinedStatements from './update/relevant.period.combined.statements.controller';
 export * as relevantPeriodReviewStatements from './update/relevant.period.review.statments.controller';
-export * as relevantPeriodSubmitYearByPaper from './update/relevant.period.submit.year.by.paper.controller';
 
 // REMOVE controllers
 export * as removeSoldAllLandFilter from './update/remove.sold.all.land.filter.controller';

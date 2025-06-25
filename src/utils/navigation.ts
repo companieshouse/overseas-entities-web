@@ -126,11 +126,6 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_URL,
     nextPage: []
   },
-  [config.RELEVANT_PERIOD_SUBMIT_YEAR_BY_PAPER_URL]: {
-    currentPage: config.RELEVANT_PERIOD_SUBMIT_YEAR_BY_PAPER_PAGE,
-    previousPage: () => "",
-    nextPage: []
-  },
   [config.RELEVANT_PERIOD_INTERRUPT_URL]: {
     currentPage: config.RELEVANT_PERIOD_INTERRUPT_PAGE,
     previousPage: () => "",

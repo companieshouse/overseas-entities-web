@@ -1,6 +1,8 @@
 {% extends "update-layout.html" %}
 
-{% set title = "You'll need to file an update statement using the paper form" %}
+{% if not title %}
+  {% set title = "You'll need to file an update statement using the paper form" %}
+{% endif %}
 
 {% block pageTitle %}
   {% include "includes/update-page-title.html" %}

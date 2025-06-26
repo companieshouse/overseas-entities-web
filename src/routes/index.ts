@@ -104,7 +104,7 @@ import {
   relevantPeriodOwnedLandFilter,
   relevantPeriodInterrupt,
   relevantPeriodRequiredInformation,
-  relevantPeriodProvideInfoNowOrLater,
+  relevantPeriodProvideInformation,
   relevantPeriodSubmitByPaper,
   relevantPeriodCombinedStatements,
   relevantPeriodReviewStatements,
@@ -594,8 +594,8 @@ router.route(config.RELEVANT_PERIOD_PROVIDE_INFORMATION_NOW_OR_LATER_URL)
     authentication,
     companyAuthentication,
     navigation.hasOverseasEntity)
-  .get(relevantPeriodProvideInfoNowOrLater.get)
-  .post(...validator.relevantPeriodProvideInformation, checkValidations, relevantPeriodProvideInfoNowOrLater.post);
+  .get(relevantPeriodProvideInformation.get)
+  .post(...validator.relevantPeriodProvideInformation, checkValidations, relevantPeriodProvideInformation.post);
 
 router.route(config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_URL)
   .all(

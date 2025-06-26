@@ -33,7 +33,7 @@ export const post = async(req: Request, res: Response, next: NextFunction) => {
       appData.update[RequiredInformation] = requiredInformation === "1";
     }
     if (requiredInformation === '1') {
-      redirectUrl = config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE + config.RELEVANT_PERIOD_QUERY_PARAM;
+      redirectUrl = config.RELEVANT_PERIOD_DO_YOU_WANT_TO_PROVIDE_PRE_REG_INFO_NOW_PAGE + config.RELEVANT_PERIOD_QUERY_PARAM;
     } else {
       redirectUrl = config.RELEVANT_PERIOD_SUBMIT_BY_PAPER_URL;
     }

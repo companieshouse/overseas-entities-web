@@ -18,7 +18,7 @@ import app from "../../../src/app";
 import {
   ANY_MESSAGE_ERROR,
   SERVICE_UNAVAILABLE,
-  RELEVANT_PERIOD_REQUIRED_INFORMATION_TITLE,
+  RELEVANT_PERIOD_PROVIDE_INOFMATION_NOW_OR_LATER_TITLE,
   RELEVANT_PERIOD
 } from "../../__mocks__/text.mock";
 import { APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock";
@@ -28,7 +28,7 @@ import { companyAuthentication } from "../../../src/middleware/company.authentic
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
-import { RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_URL } from "../../../src/config";
+import { RELEVANT_PERIOD_PROVIDE_INFORMATION_NOW_OR_LATER_URL } from "../../../src/config";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockHasUpdatePresenter = hasUpdatePresenter as jest.Mock;
@@ -56,12 +56,12 @@ describe("relevant period required information page tests", () => {
     jest.clearAllMocks();
   });
   describe("GET tests", () => {
-    test(`renders the ${config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_PAGE} page`, async () => {
+    test(`renders the ${config.RELEVANT_PERIOD_PROVIDE_INFORMATION_NOW_OR_LATER_URL} page`, async () => {
       mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
-      const resp = await request(app).get(config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_URL);
+      const resp = await request(app).get(config.RELEVANT_PERIOD_PROVIDE_INFORMATION_NOW_OR_LATER_URL);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(RELEVANT_PERIOD_REQUIRED_INFORMATION_TITLE);
+      expect(resp.text).toContain(RELEVANT_PERIOD_PROVIDE_INOFMATION_NOW_OR_LATER_TITLE);
       expect(resp.text).toContain(RELEVANT_PERIOD);
       expect(resp.text).toContain("1");
       expect(resp.text).toContain("January");
@@ -70,7 +70,7 @@ describe("relevant period required information page tests", () => {
 
     test("catch error when rendering the page", async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-      const resp = await request(app).get(RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_URL);
+      const resp = await request(app).get(RELEVANT_PERIOD_PROVIDE_INFORMATION_NOW_OR_LATER_URL);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
@@ -78,18 +78,18 @@ describe("relevant period required information page tests", () => {
   });
 
   describe("POST tests", () => {
-    test(`renders the ${config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL + config.RELEVANT_PERIOD_QUERY_PARAM} page when yes is selected`, async () => {
+    test(`renders the ${config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL} page when yes is selected`, async () => {
       const resp = await request(app)
-        .post(config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_URL + config.RELEVANT_PERIOD_QUERY_PARAM)
-        .send({ 'required_information': "1" });
+        .post(config.RELEVANT_PERIOD_PROVIDE_INFORMATION_NOW_OR_LATER_URL + config.RELEVANT_PERIOD_QUERY_PARAM)
+        .send({ 'provide_information': "1" });
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_DO_YOU_WANT_TO_PROVIDE_PRE_REG_INFO_NOW_PAGE + config.RELEVANT_PERIOD_QUERY_PARAM);
+      expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE + config.RELEVANT_PERIOD_QUERY_PARAM);
     });
-    test(`renders the ${config.RELEVANT_PERIOD_SUBMIT_BY_PAPER_URL} page when no is selected`, async () => {
+    test(`redirects to ${config.RELEVANT_PERIOD_SUBMIT_BY_PAPER_URL} when 'No' is selected`, async () => {
       const resp = await request(app)
-        .post(config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_URL + config.RELEVANT_PERIOD_QUERY_PARAM)
-        .send({ 'required_information': "0" });
+        .post(config.RELEVANT_PERIOD_PROVIDE_INFORMATION_NOW_OR_LATER_URL + config.RELEVANT_PERIOD_QUERY_PARAM)
+        .send({ 'provide_information': "0" });
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_SUBMIT_BY_PAPER_URL);
@@ -98,10 +98,19 @@ describe("relevant period required information page tests", () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-      const resp = await request(app).post(config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_URL);
+      const resp = await request(app).post(config.RELEVANT_PERIOD_PROVIDE_INFORMATION_NOW_OR_LATER_URL);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+    test("returns validation error when no option is selected", async () => {
+      const resp = await request(app)
+        .post(config.RELEVANT_PERIOD_PROVIDE_INFORMATION_NOW_OR_LATER_URL + config.RELEVANT_PERIOD_QUERY_PARAM)
+        .send({}); // No 'provide_information' field sent
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(RELEVANT_PERIOD_PROVIDE_INOFMATION_NOW_OR_LATER_TITLE);
+      expect(resp.text).toContain("Tell us if you want to provide pre-registration information in this update statement");
     });
   });
 });

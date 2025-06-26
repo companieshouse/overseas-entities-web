@@ -13,6 +13,7 @@ export const NoChangeKey = "no_change";
 export const ReviewTrustKey = "review_trusts";
 export const OwnedLandKey = "owned_land_relevant_period";
 export const RequiredInformation = "required_information";
+export const ProvideInformation = "provide_information";
 
 export const UpdateKeys: string[] = [
   "date_of_creation",
@@ -29,7 +30,8 @@ export const UpdateKeys: string[] = [
   "filing_date",
   "no_change",
   "owned_land_relevant_period",
-  "required_information"
+  "required_information",
+  "provide_information"
 ];
 
 export interface Update {
@@ -52,5 +54,6 @@ export interface Update {
   trust_data_fetched?: boolean;
   review_trusts?: Trust[];
   required_information?: boolean;
+  provide_information?: boolean;
 }
 

@@ -289,6 +289,7 @@ export const RELEVANT_PERIOD_INTERRUPT_CARD_TITLE = "New information needed as p
 export const RELEVANT_PERIOD_REQUIRED_INFORMATION_TITLE = "You'll need to tell us about the pre-registration period";
 export const RELEVANT_PERIOD_SUBMIT_BY_PAPER_TITLE = "You'll need to file an update statement using the paper form";
 export const RELEVANT_PERIOD_COMBINED_STATEMENTS_TITLE = "Provide statements for the pre-registration period";
+export const RELEVANT_PERIOD_PROVIDE_INOFMATION_NOW_OR_LATER_TITLE = "Do you want to provide the pre-registration information in this update statement?";
 export const RELEVANT_PERIOD_COMBINED_STATEMENTS_TEXT = "The overseas entity has reasonable cause to believe that during the pre-registration period:";
 export const RELEVANT_PERIOD_CHANGE_BO = "at least one person became or ceased to be a registrable beneficial owner";
 export const RELEVANT_PERIOD_NO_CHANGE_BO = "anyone became or ceased to be a registrable beneficial owner";

@@ -1,0 +1,60 @@
+{% extends "update-layout.html" %}
+
+{% set title = "Do you want to provide the pre-registration information in this update statement?" %}
+
+{% block pageTitle %}
+  {% include "includes/update-page-title.html" %}
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        {% include "includes/list/errors.html" %}
+        {% include "includes/page-templates/important-banner.html" %}
+
+        <span class="govuk-caption-l">{{ entity_name }} - {{ entity_number }}</span>
+
+        <h1 class="govuk-heading-xl">Do you want to provide the pre-registration information in this update statement?</h1>
+
+        <form method="post">
+            {% include "includes/csrf_token.html" %}
+            {{ govukRadios({
+                errorMessage: errors.provide_information if errors,
+                idPrefix: "provide_information",
+                name: "provide_information",
+                fieldset: {
+                    legend: {
+                    isPageHeading: true,
+                    classes: "govuk-fieldset__legend--m"
+                    }
+                },
+                items: [
+                    {
+                        value: 1,
+                        text: "Yes, this update statement",
+                        checked: update.provide_information == 1,
+                        attributes: {
+                            "data-event-id": "yes-provide_information"
+                        }
+                    },
+                    {
+                        value: 0,
+                        text: "No, the next update statement",
+                        checked: update.provide_information == 0,
+                        attributes: {
+                            "data-event-id": "no-provide_information"
+                        }
+                    }
+                ]
+            }) }}
+            {% include "includes/continue-button.html" %}
+        </form>
+    </div>
+</div>
+
+{% endblock %}

@@ -78,13 +78,21 @@ describe("relevant period required information page tests", () => {
   });
 
   describe("POST tests", () => {
-    test(`renders the ${config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL + config.RELEVANT_PERIOD_QUERY_PARAM} page when yes is selected`, async () => {
+    test(`renders the ${config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL} page when yes is selected`, async () => {
       const resp = await request(app)
         .post(config.RELEVANT_PERIOD_PROVIDE_INFORMATION_NOW_OR_LATER_URL + config.RELEVANT_PERIOD_QUERY_PARAM)
         .send({ 'provide_information': "1" });
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE + config.RELEVANT_PERIOD_QUERY_PARAM);
+    });
+    test(`redirects to ${config.RELEVANT_PERIOD_SUBMIT_BY_PAPER_URL} when 'No' is selected`, async () => {
+      const resp = await request(app)
+        .post(config.RELEVANT_PERIOD_PROVIDE_INFORMATION_NOW_OR_LATER_URL + config.RELEVANT_PERIOD_QUERY_PARAM)
+        .send({ 'provide_information': "0" });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_SUBMIT_BY_PAPER_URL);
     });
     test("catch error when validating the page", async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);

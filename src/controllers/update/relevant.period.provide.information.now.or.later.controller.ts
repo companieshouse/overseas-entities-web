@@ -26,10 +26,9 @@ export const post = async(req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.RELEVANT_PERIOD_DO_YOU_WANT_TO_PROVIDE_PRE_REG_INFO_NOW_PAGE}`);
 
-    const provideInformation = req.body[ProvideInformation];
-    const isProvidingInformationNow = provideInformation === "1";
     const appData: ApplicationData = await getApplicationData(req.session);
 
+    const isProvidingInformationNow = req.body[ProvideInformation] === "1";
     if (appData.update) {
       appData.update[ProvideInformation] = isProvidingInformationNow;
     }

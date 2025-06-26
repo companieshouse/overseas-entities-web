@@ -18,11 +18,24 @@
 {{ govukButton({
   text: "Print this page",
   classes: "govuk-button--secondary",
-  href: "javascript: window.print()",
   attributes: {
-      "id": "print-button",
-      "data-event-id": "print-button"
+    id: "print-button",
+    "data-event-id": "print-button",
+    type: "button"
   }
 }) }}
 
-<p class="govuk-body govuk-!-font-size-20 check-your-answers-javascript-disabled-text-style">To print this page, select print from your browser menu.</p>
+<p class="govuk-body govuk-!-font-size-20 check-your-answers-javascript-disabled-text-style">
+  To print this page, select print from your browser menu.
+</p>
+
+<script nonce={{ cspNonce | dump | safe }}>
+  document.addEventListener('DOMContentLoaded', function () {
+    var printButton = document.getElementById('print-button');
+    if (printButton) {
+      printButton.addEventListener('click', function () {
+        window.print();
+      });
+    }
+  });
+</script>

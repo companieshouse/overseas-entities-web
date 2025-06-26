@@ -25,21 +25,23 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 export const post = async(req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.RELEVANT_PERIOD_DO_YOU_WANT_TO_PROVIDE_PRE_REG_INFO_NOW_PAGE}`);
-    let redirectUrl: string = '';
-    const appData: ApplicationData = await getApplicationData(req.session);
+
     const provideInformation = req.body[ProvideInformation];
+    const isProvidingInformationNow = provideInformation === "1";
+    const appData: ApplicationData = await getApplicationData(req.session);
 
     if (appData.update) {
-      appData.update[ProvideInformation] = provideInformation === "1";
+      appData.update[ProvideInformation] = isProvidingInformationNow;
     }
-    if (provideInformation === '1') {
-      redirectUrl = config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE + config.RELEVANT_PERIOD_QUERY_PARAM;
-    } else {
-      redirectUrl = config.RELEVANT_PERIOD_SUBMIT_BY_PAPER_URL;
-    }
+
+    const redirectUrl = isProvidingInformationNow
+      ? config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE + config.RELEVANT_PERIOD_QUERY_PARAM
+      : config.RELEVANT_PERIOD_SUBMIT_BY_PAPER_URL;
+
     return res.redirect(redirectUrl);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);
   }
 };
+

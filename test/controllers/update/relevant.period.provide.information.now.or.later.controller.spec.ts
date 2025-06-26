@@ -95,5 +95,14 @@ describe("relevant period required information page tests", () => {
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
+    test("returns validation error when no option is selected", async () => {
+      const resp = await request(app)
+        .post(config.RELEVANT_PERIOD_PROVIDE_INFORMATION_NOW_OR_LATER_URL + config.RELEVANT_PERIOD_QUERY_PARAM)
+        .send({}); // No 'provide_information' field sent
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(RELEVANT_PERIOD_PROVIDE_INOFMATION_NOW_OR_LATER_TITLE);
+      expect(resp.text).toContain("Tell us if you want to provide pre-registration information in this update statement");
+    });
   });
 });

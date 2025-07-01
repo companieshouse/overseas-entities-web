@@ -41,15 +41,27 @@
             }) }}
 
 
-            {% set myHtmlVariable = "
-            <p class=\"govuk-body\">The pre-registration period is different for every overseas entity. It's between 28 February 2022 and either:</p>
-            <ul class=\"govuk-list govuk-list--bullet\">
-            <li>the end of the transition period (31 January 2023), or</li>
-            <li>the entity's registration date, if it registered before 31 January 2023</li>
+        {% set myHtmlVariable %}
+            <p class="govuk-body">
+                The pre-registration period is different for every overseas entity. It's between 28 February 2022 and either:
+            </p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>the end of the transition period (31 January 2023), or</li>
+                <li>the entity's registration date, if it registered before 31 January 2023</li>
             </ul>
-            <p class=\"govuk-body\">If the overseas entity was the registered owner of UK property or land during this period, you may need to provide additional information as part of this filing.</p>
-            <p class=\"govuk-body\">This is a legal requirement so we can understand who was involved in the entities that owned UK property or land from the date the Economic Crime and Transparency Bill came into force (28 February 2022).</p>
-            <p class=\"govuk-body\"><a class=\"govuk-link\" href=\"#\" data-event-id=\"info-required-clicked\">Find out more about what information you may need to provide.</a></p>" %}
+            <p class="govuk-body">
+                If the overseas entity was the registered owner of UK property or land during this period, you may need to provide additional information as part of this filing.
+            </p>
+            <p class="govuk-body">
+                This is a legal requirement so we can understand who was involved in the entities that owned UK property or land from the date the Economic Crime and Transparency Bill came into force (28 February 2022).
+            </p>
+            <p class="govuk-body">
+                <a class="govuk-link" href="https://example.com/your-new-link" data-event-id="info-required-clicked">
+                File an overseas entity update statement - GOV.UK
+                </a>
+            </p>
+        {% endset %}
+
 
             {{ govukDetails({
             summaryText: "What does 'pre-registration period' mean?",

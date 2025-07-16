@@ -1,0 +1,31 @@
+{% if journey == "update" and update.owned_land_relevant_period == 1 %}
+<script nonce={{ cspNonce | dump | safe }}>
+  document.addEventListener("DOMContentLoaded", function () {
+    const hostname = window.location.hostname;
+
+    const isCiDev = hostname.includes("cidev");
+
+    if (!isCiDev) return;
+
+    if (typeof _paq === "undefined") {
+      console.warn("Matomo tracking (_paq) is not available.");
+      return;
+    }
+
+    const submitButton = document.getElementById("submit");
+    if (submitButton) {
+      submitButton.addEventListener("click", function () {
+        const selected = document.querySelector('input[name="relevant-period-required-information"]:checked');
+        if (!selected) return;
+
+        const value = selected.value;
+        if (value === "1") {
+          _paq.push(["trackGoal", 55]); // User selected YES
+        } else if (value === "0") {
+          _paq.push(["trackGoal", 118]); // User selected NO
+        }
+      });
+    }
+  });
+</script>
+{% endif %}

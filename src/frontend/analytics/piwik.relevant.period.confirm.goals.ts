@@ -10,10 +10,6 @@ export function trackRelevantPeriodGoal(
   value: string,
   paq: MatomoPaq | undefined = (window as any).paq
 ): void {
-  if (typeof paq === "undefined") {
-    console.warn("Matomo tracking (_paq) is not available.");
-    return;
-  }
 
   if (value === "1") {
     paq.push(["trackGoal", 55]); // User selected YES

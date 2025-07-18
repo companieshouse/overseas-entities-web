@@ -1,4 +1,5 @@
-{% if journey == "update" and update.owned_land_relevant_period == 1 %}
-  <script src="{% static '' %}" nonce="{{ cspNonce }}"></script>
-{% endif %}
-
+<script type="module">
+  import("/src/frontend/analytics/piwik.relevant.period.confirm.goals.ts")
+    .then(({ setupRelevantPeriodTracking }) => setupRelevantPeriodTracking())
+    .catch(console.error);
+</script>

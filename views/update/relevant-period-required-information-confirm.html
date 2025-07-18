@@ -87,3 +87,8 @@
 </div>
 
 {% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  {% include "includes/piwik-relevant-period-goals.html" %}
+{% endblock %}

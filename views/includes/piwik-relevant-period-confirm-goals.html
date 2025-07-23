@@ -1,5 +1,29 @@
 <script type="module">
-  import("/src/frontend/analytics/piwik.relevant.period.confirm.goals.ts")
-    .then(({ setupRelevantPeriodTracking }) => setupRelevantPeriodTracking())
-    .catch(console.error);
+  import { trackRelevantPeriodGoal, isCiDevEnvironment } from "/src/frontend/analytics/piwik.relevant.period.confirm.goals.ts";
+
+  function setupRelevantPeriodTracking() {
+    document.addEventListener("DOMContentLoaded", () => {
+      if (!isCiDevEnvironment(window.location.hostname)) {
+        return;
+      }
+
+      const submitButton = document.getElementById("submit");
+      if (!submitButton) {
+        return;
+      }
+
+      submitButton.addEventListener("click", () => {
+        const selected = document.querySelector(
+          'input[name="relevant-period-required-information"]:checked'
+        );
+        if (!selected) {
+          return;
+        }
+
+        trackRelevantPeriodGoal(selected.value);
+      });
+    });
+  }
+
+  setupRelevantPeriodTracking();
 </script>

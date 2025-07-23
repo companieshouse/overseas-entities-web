@@ -2,7 +2,7 @@ import {
   isCiDevEnvironment,
   trackRelevantPeriodGoal,
   MatomoPaq,
-} from "../../../src/frontend/analytics/piwik.relevant.period.confirm.goals.ts";
+} from "../../../src/frontend/analytics/piwik.relevant.period.confirm.goals";
 
 describe("isCiDevEnvironment", () => {
   it("returns true when hostname includes 'cidev'", () => {
@@ -31,3 +31,4 @@ describe("trackRelevantPeriodGoal", () => {
     expect(mockPaq.push).toHaveBeenCalledWith(["trackGoal", 118]);
   });
 });
+

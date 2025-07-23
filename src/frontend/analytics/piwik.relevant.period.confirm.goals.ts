@@ -17,27 +17,3 @@ export function trackRelevantPeriodGoal(
     paq.push(["trackGoal", 118]); // User selected NO
   }
 }
-
-export function setupRelevantPeriodTracking(): void {
-  document.addEventListener("DOMContentLoaded", () => {
-    if (!isCiDevEnvironment(window.location.hostname)) {
-      return;
-    }
-
-    const submitButton = document.getElementById("submit");
-    if (!submitButton) {
-      return;
-    }
-
-    submitButton.addEventListener("click", () => {
-      const selected = document.querySelector<HTMLInputElement>(
-        'input[name="relevant-period-required-information"]:checked'
-      );
-      if (!selected) {
-        return;
-      }
-
-      trackRelevantPeriodGoal(selected.value);
-    });
-  });
-}

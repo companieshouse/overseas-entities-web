@@ -1,8 +1,10 @@
 {
-    "exec": "ts-node ./src/bin/www.ts",
-    "ext": "ts,html",
-    "watch": [
-        "./src",
-        "./views"
-    ]
+  "exec": "node --require ts-node/register --inspect=0.0.0.0:9229 ./src/bin/nodemon-entry.ts",
+  "ext": "ts,html",
+  "watch": ["./src","./views"],
+  "ignore": [],
+  "events": {
+    "restart": "echo '🔄 '  Nodemon Restarting...",
+    "crash": "echo '💥 '  Nodemon Crashed!"
+  }
 }

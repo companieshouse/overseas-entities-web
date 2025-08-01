@@ -24,13 +24,13 @@
 {% block head %}
 
   <!--[if !IE 8]><!-->
-  <link type="text/css" media="all" href="{{CDN_HOST}}/stylesheets/govuk-frontend/v4.10.0/govuk-frontend-4.10.0.min.css" rel="stylesheet"/>
+  <link type="text/css" media="all" href="{{CDN_HOST}}/stylesheets/govuk-frontend/v4.10.1/govuk-frontend-4.10.1.min.css" rel="stylesheet"/>
   <link type="text/css" media="all" href="{{CDN_HOST}}/stylesheets/services/overseas-entities/application.css" rel="stylesheet"/>
   {% include "includes/styles.html" %}
   <!--<![endif]-->
 
-  <link href="{{CDN_HOST}}/images/govuk-frontend/v4.10.0/rebrand/favicon.ico" rel="SHORTCUT ICON"/>
-  <link href="{{CDN_HOST}}/images/govuk-frontend/v4.10.0/rebrand/favicon.ico" type="image/x-icon" rel="icon"/>
+  <link href="{{CDN_HOST}}/images/govuk-frontend/v4.10.1/rebrand/favicon.ico" rel="SHORTCUT ICON"/>
+  <link href="{{CDN_HOST}}/images/govuk-frontend/v4.10.1/rebrand/favicon.ico" type="image/x-icon" rel="icon"/>
 
   <script src="https://code.jquery.com/jquery-3.6.0.js"
           integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
@@ -100,7 +100,7 @@
 {% endblock %}
 
 {% block bodyEnd %}
-  <script src="{{ CDN_HOST }}/javascripts/govuk-frontend/v4.10.0/govuk-frontend-4.10.0.min.js" ></script>
+  <script src="{{ CDN_HOST }}/javascripts/govuk-frontend/v4.10.1/govuk-frontend-4.10.1.min.js" ></script>
   <script nonce={{cspNonce | dump | safe}} >window.GOVUKFrontend.initAll()</script>
   {% include "includes/piwik-scripts.html" %}
 {% endblock %}

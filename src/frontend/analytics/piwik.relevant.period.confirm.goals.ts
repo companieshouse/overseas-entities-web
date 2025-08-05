@@ -8,7 +8,8 @@ export type MatomoPaq = {
 
 export function trackRelevantPeriodGoal(
   value: string,
-  paq: MatomoPaq | undefined = (window as any).paq
+  // eslint-disable-next-line no-underscore-dangle
+  paq: MatomoPaq | undefined = (window as any)._paq
 ): void {
 
   if (value === "1") {

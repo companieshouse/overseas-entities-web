@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 export function isCiDevEnvironment(hostname: string): boolean {
   return hostname.includes("cidev");
 }
@@ -8,7 +9,7 @@ export type MatomoPaq = {
 
 export function trackRelevantPeriodGoal(
   value: string,
-  paq: MatomoPaq | undefined = (window as any).paq
+  paq: MatomoPaq | undefined = (window as any)._paq
 ): void {
 
   if (value === "1") {

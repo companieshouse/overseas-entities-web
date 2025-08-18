@@ -1,29 +1,33 @@
-<script type="module">
-  import { trackRelevantPeriodGoal, isCiDevEnvironment } from "../../../../../../../../src/frontend/analytics/piwik.relevant.period.confirm.goals.ts";
+<script nonce={{ cspNonce | dump | safe }}>
+  document.addEventListener("DOMContentLoaded", function () {
+    if (!window.location.href.includes("cidev")) {
+      return; // Don't run tracking logic unless in "cidev" environment
+    }
+    
+    var submitBtn = document.getElementById("submit");
 
-  function setupRelevantPeriodTracking() {
-    document.addEventListener("DOMContentLoaded", () => {
-      if (!isCiDevEnvironment(window.location.hostname)) {
-        return;
+    if (!submitBtn) {
+      console.warn("Submit button not found.");
+      return;
+    }
+
+    submitBtn.addEventListener("click", function (event) {
+      var selected = document.querySelector('input[name="required_information"]:checked');
+      if (!selected) {
+        return; 
       }
 
-      const submitButton = document.getElementById("submit");
-      if (!submitButton) {
-        return;
-      }
+      event.preventDefault();
 
-      submitButton.addEventListener("click", () => {
-        const selected = document.querySelector(
-          'input[name="required_information"]:checked'
-        );
-        if (!selected) {
-          return;
+      if (window._paq) {
+        if (selected.value === "1") {
+          _paq.push(["trackGoal", 55]);
+        } else if (selected.value === "0") {
+          _paq.push(["trackGoal", 118]);
         }
+      }
 
-        trackRelevantPeriodGoal(selected.value);
-      });
-    });
-  }
-
-  setupRelevantPeriodTracking();
+      submitBtn.click();
+    }, { once: true }); 
+  });
 </script>

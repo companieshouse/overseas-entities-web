@@ -81,14 +81,9 @@
                     }
                 ]
             }) }}
-            {% include "includes/continue-button.html" %}
+            {% include "includes/piwik-pre-reg-goals-button.html" %}
         </form>
     </div>
 </div>
 
-{% endblock %}
-
-{% block scripts %}
-  {{ super() }}
-  {% include "includes/piwik-relevant-period-confirm-goals.html" %}
 {% endblock %}

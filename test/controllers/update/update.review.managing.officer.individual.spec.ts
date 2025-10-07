@@ -30,6 +30,7 @@ import {
   UPDATE_REVIEW_MANAGING_OFFICER_MOCK_STILL_MO,
   RESIDENTIAL_ADDRESS_MOCK,
   UPDATE_MANAGING_OFFICER_HAVE_DAY_OF_BIRTH_MOCK,
+  SERVICE_ADDRESS_MOCK,
 } from "../../__mocks__/session.mock";
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
 import { ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE, UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_HEADING } from '../../__mocks__/text.mock';
@@ -105,6 +106,26 @@ describe('Test review managing officer', () => {
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+
+    test(`render the ${config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_PAGE} page`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_EMPTY_BO_MOCK,
+      });
+      mockMapDataObjectToFields.mockReturnValueOnce(SERVICE_ADDRESS_MOCK);
+      const resp = await request(app).get(UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_WITH_PARAM_URL_TEST);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
+      expect(resp.text).toContain("addressLine1");
+    });
+
+    test('service address not displayed when no address returned', async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_EMPTY_BO_MOCK,
+      });
+      const resp = await request(app).get(UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_WITH_PARAM_URL_TEST);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).not.toContain("addressLine1");
     });
   });
 

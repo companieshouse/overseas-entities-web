@@ -12,7 +12,7 @@ import { AddressKeys, InputDate } from "../../model/data.types.model";
 import { setOfficerData } from "../../utils/managing.officer.individual";
 import { HaveDayOfBirthKey, ResignedOnKey } from "../../model/date.model";
 import { addResignedDateToTemplateOptions } from "../../utils/update/ceased_date_util";
-import { UsualResidentialAddressKey, UsualResidentialAddressKeys } from "../../model/address.model";
+import { ServiceAddressKey, ServiceAddressKeys, UsualResidentialAddressKey, UsualResidentialAddressKeys } from "../../model/address.model";
 import { checkRelevantPeriod } from "../../utils/relevant.period";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
@@ -21,18 +21,20 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const appData = await getApplicationData(req.session);
     const index = req.query.index;
 
-    let dataToReview = {}, residentialAddress = {};
+    let dataToReview = {}, residentialAddress = {}, serviceAddress = {};
 
     if (appData?.managing_officers_individual){
       dataToReview = appData?.managing_officers_individual[Number(index)];
       residentialAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[UsualResidentialAddressKey], UsualResidentialAddressKeys, AddressKeys) : {};
+      serviceAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
     }
 
     const templateOptions = {
       backLinkUrl: UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
       templateName: UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_PAGE,
       ...dataToReview,
-      ...residentialAddress
+      ...residentialAddress,
+      ...serviceAddress
     };
 
     if (ResignedOnKey in dataToReview) {

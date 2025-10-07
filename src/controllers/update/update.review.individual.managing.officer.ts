@@ -25,8 +25,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     if (appData?.managing_officers_individual){
       dataToReview = appData?.managing_officers_individual[Number(index)];
-      residentialAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[UsualResidentialAddressKey], UsualResidentialAddressKeys, AddressKeys) : {};
       serviceAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
+      residentialAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[UsualResidentialAddressKey], UsualResidentialAddressKeys, AddressKeys) : {};
     }
 
     const templateOptions = {

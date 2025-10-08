@@ -24,10 +24,11 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     let dataToReview = {}, residentialAddress = {}, serviceAddress = {};
 
     if (appData?.managing_officers_individual){
-      dataToReview = appData?.managing_officers_individual[Number(index)];
-      serviceAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
-      residentialAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[UsualResidentialAddressKey], UsualResidentialAddressKeys, AddressKeys) : {};
+      dataToReview = appData?.managing_officers_individual[Number(index)] || {} ;
     }
+
+    serviceAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
+    residentialAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[UsualResidentialAddressKey], UsualResidentialAddressKeys, AddressKeys) : {};
 
     const templateOptions = {
       backLinkUrl: UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,

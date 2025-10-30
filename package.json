@@ -14,10 +14,10 @@
     "sonarqube": "branch=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD); if [[ $branch == \"HEAD\" ]]; then echo $branch && npm run sonarqube-base-branch; else echo $branch && npm run sonarqube-pull-request; fi;",
     "test": "jest",
     "coverage": "jest --coverage --forceExit --passWithNoTests",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "chs-dev": "nodemon --legacy-watch"
   },
   "engines": {
-    "npm": "^10",
     "node": ">=20.0.0"
   },
   "repository": {
@@ -36,7 +36,7 @@
     "cookie-parser": "^1.4.6",
     "express": "^4.17.3",
     "express-validator": "^6.14.0",
-    "govuk-frontend": "^4.6.0",
+    "govuk-frontend": "^4.10.1",
     "helmet": "^7.1.0",
     "ioredis": "^4.28.5",
     "luxon": "^2.4.0",

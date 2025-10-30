@@ -1,9 +1,12 @@
+import { mapDataObjectToFields } from "../../utils/application.data";
 import { REVIEW_OWNER_INDEX_PARAM, UPDATE_AN_OVERSEAS_ENTITY_URL, UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_PAGE, UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_PAGE } from "../../config";
 import { ApplicationData } from "../../model";
 import { ManagingOfficerCorporateKey } from "../../model/managing.officer.corporate.model";
 import { ManagingOfficerKey } from "../../model/managing.officer.model";
 import { Update } from "../../model/update.type.model";
 import { reviewAllOwnwers } from "./review.beneficial.owner";
+import { ServiceAddressKey, ServiceAddressKeys, UsualResidentialAddressKey, UsualResidentialAddressKeys } from "../../model/address.model";
+import { AddressKeys } from "../../model/data.types.model";
 
 const AllMoTypes = {
   moIndividualOfficerReview: "review_managing_officers_individual",
@@ -64,3 +67,14 @@ export const checkAndReviewManagingOfficers = (appData: ApplicationData): string
 
   return "";
 };
+
+export function fetchIndividualMOAddress(appData: any, index: number) {
+  let dataToReview = {}, residentialAddress = {}, serviceAddress = {};
+
+  if (appData?.managing_officers_individual){
+    dataToReview = appData?.managing_officers_individual[Number(index)];
+    residentialAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[UsualResidentialAddressKey], UsualResidentialAddressKeys, AddressKeys) : {};
+    serviceAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
+  }
+  return { dataToReview, residentialAddress, serviceAddress };
+}

@@ -123,8 +123,8 @@ NB: All variables under the headings below are based on the contents of the vari
 
 ### Terraform Config variables
 
-Key             |  Description                
-----------------|--------------------------- 
+Key             |  Description
+----------------|---------------------------
 aws_bucket | The bucket used to store the current terraform state files
 remote_state_bucket | Alternative bucket used to store the remote state files from ch-service-terraform
 state_prefix | The bucket prefix used with the remote_state_bucket files
@@ -132,25 +132,25 @@ deploy_to | Bucket namespace used with remote_state_bucket and state_prefix
 
 ### Environment
 
-Key             |  Description               
-----------------|--------------------------- 
-environment | The environment name, defined in environment's vars 
-aws_region | The AWS region for deployment 
+Key             |  Description
+----------------|---------------------------
+environment | The environment name, defined in environment's vars
+aws_region | The AWS region for deployment
 aws_profile | The AWS profile to use for deployment
 kms_alias |
 
 ### Docker container variables
 
-Key             |  Description               
+Key             |  Description
 ----------------|---------------------------
-docker_registry | The FQDN of the Docker registry 
+docker_registry | The FQDN of the Docker registry
 
 ### Service performance and scaling configs
 
 Key             |  Description               | Example Value
 ----------------|--------------------------- |-------------------------
 desired_task_count | The desired ECS task count for this service | 1
-required_cpus | The required cpu resource for this service. 1024 here is 1 vCPU | 128 
+required_cpus | The required cpu resource for this service. 1024 here is 1 vCPU | 128
 required_memory | The required memory for this service | 256
 
 ### Service environment variable configs (in addition to the common config variables)
@@ -158,7 +158,6 @@ required_memory | The required memory for this service | 256
 Key             |  Description               | Example Value
 ----------------|--------------------------- |-------------------------
 overseas_entities_web_version | The version of the overseas entities web container to run. | 1.0
-account_local_url | Used in place of ACCOUNT_URL | `https://account.cidev.aws.chdev.org`
 cache_pool_size | Size of cache pool | 8
 default_session_expiration | Lifetime of sessions | 3600
 redirect_uri | Redirect users to homepage when trying to access other pages directly | `/`

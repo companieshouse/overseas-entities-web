@@ -1,6 +1,6 @@
 import { UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL, UPDATE_BENEFICIAL_OWNER_TYPE_URL, UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_PAGE, RELEVANT_PERIOD_QUERY_PARAM } from "../../config";
 import { NextFunction, Request, Response } from "express";
-import { getApplicationData, mapDataObjectToFields, removeFromApplicationData, setApplicationData } from "../../utils/application.data";
+import { getApplicationData, removeFromApplicationData, setApplicationData } from "../../utils/application.data";
 import { logger } from "../../utils/logger";
 import { ManagingOfficerKey } from "../../model/managing.officer.model";
 import { setReviewedDateOfBirth } from "./update.review.beneficial.owner.individual";
@@ -8,31 +8,27 @@ import { Session } from "@companieshouse/node-session-handler";
 import { ApplicationDataType } from "../../model";
 import { v4 as uuidv4 } from "uuid";
 import { saveAndContinue } from "../../utils/save.and.continue";
-import { AddressKeys, InputDate } from "../../model/data.types.model";
+import { InputDate } from "../../model/data.types.model";
 import { setOfficerData } from "../../utils/managing.officer.individual";
 import { HaveDayOfBirthKey, ResignedOnKey } from "../../model/date.model";
 import { addResignedDateToTemplateOptions } from "../../utils/update/ceased_date_util";
-import { UsualResidentialAddressKey, UsualResidentialAddressKeys } from "../../model/address.model";
 import { checkRelevantPeriod } from "../../utils/relevant.period";
+import { fetchIndividualMOAddress } from "../../utils/update/review.managing.officer";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const appData = await getApplicationData(req.session);
-    const index = req.query.index;
+    const index = Number(req.query.index);
 
-    let dataToReview = {}, residentialAddress = {};
-
-    if (appData?.managing_officers_individual){
-      dataToReview = appData?.managing_officers_individual[Number(index)];
-      residentialAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[UsualResidentialAddressKey], UsualResidentialAddressKeys, AddressKeys) : {};
-    }
+    const { dataToReview, residentialAddress, serviceAddress } = fetchIndividualMOAddress(appData, index);
 
     const templateOptions = {
       backLinkUrl: UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
       templateName: UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_PAGE,
       ...dataToReview,
-      ...residentialAddress
+      ...residentialAddress,
+      ...serviceAddress
     };
 
     if (ResignedOnKey in dataToReview) {

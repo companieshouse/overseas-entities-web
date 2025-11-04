@@ -260,8 +260,10 @@ export const mapIndividualBOPrivateData = (boPrivateData: BeneficialOwnerPrivate
 
 export const mapCorporateOrGovernmentBOPrivateData = (boPrivateData: BeneficialOwnerPrivateData[], beneficialOwner: BeneficialOwnerOther | BeneficialOwnerGov) => {
   for (const boData of boPrivateData) {
+    console.log("HASHHH_ID" + boData.hashedId + "CH_REERENCEEE" + beneficialOwner.ch_reference );
     if (boData.hashedId === beneficialOwner.ch_reference) {
       beneficialOwner.principal_address = mapBOMOAddress(boData.principalAddress);
+      console.log("ENDDDDDD" );
     }
   }
 };

@@ -262,7 +262,12 @@ export const mapCorporateOrGovernmentBOPrivateData = (boPrivateData: BeneficialO
   for (const boData of boPrivateData) {
     logger.info(`HASHHH_ID=${boData.hashedId} , CH_REERENCEEE=${beneficialOwner.ch_reference}`);
     if (boData.hashedId === beneficialOwner.ch_reference) {
+      logger.info(`DATA PASSED INTO mapBOMOAddress ---- boData.principalAddress=${boData.principalAddress}`);
       beneficialOwner.principal_address = mapBOMOAddress(boData.principalAddress);
+      logger.info(`principal_address property_name_number=${beneficialOwner.principal_address?.property_name_number}`);
+      logger.info(`principal_address addressline1=${beneficialOwner.principal_address?.line_1}`);
+      logger.info(`principal_address addressline2=${beneficialOwner.principal_address?.line_2}`);
+      logger.info(`principal_address country=${beneficialOwner.principal_address?.country}`);
       logger.info(`END OF mapCorporateOrGovernmentBOPrivateData`);
     }
   }

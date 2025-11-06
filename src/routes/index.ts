@@ -522,6 +522,11 @@ router.route(config.SECURE_UPDATE_FILTER_URL)
   .get(secureUpdateFilter.get)
   .post(...validator.secureRegisterFilter, checkValidations, secureUpdateFilter.post);
 
+router.route(config.SECURE_UPDATE_FILTER_WITH_PARAMS_URL)
+  .all(authentication)
+  .get(secureUpdateFilter.get)
+  .post(...validator.secureRegisterFilter, checkValidations, secureUpdateFilter.post);
+
 router.route(config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL)
   .all(
     authentication,
@@ -544,6 +549,10 @@ router.route(config.UPDATE_USE_PAPER_URL)
   .all(authentication)
   .get(updateUsePaper.get);
 
+router.route(config.UPDATE_USE_PAPER_WITH_PARAMS_URL)
+  .all(authentication)
+  .get(updateUsePaper.get);
+
 router.route(config.UPDATE_INTERRUPT_CARD_URL)
   .all(authentication)
   .get(updateInterruptCard.get)
@@ -551,8 +560,13 @@ router.route(config.UPDATE_INTERRUPT_CARD_URL)
 
 router.get(config.UPDATE_CONFIRMATION_URL, authentication, companyAuthentication, navigation.hasBOsOrMOsUpdate, updateConfirmation.get);
 
+router.get(config.UPDATE_CONFIRMATION_WITH_PARAMS_URL, authentication, companyAuthentication, navigation.hasBOsOrMOsUpdate, updateConfirmation.get);
+
 router.get(config.OVERSEAS_ENTITY_QUERY_URL, authentication, overseasEntityQuery.get);
 router.post(config.OVERSEAS_ENTITY_QUERY_URL, authentication, ...validator.overseasEntityQuery, checkValidations, overseasEntityQuery.post);
+
+router.get(config.OVERSEAS_ENTITY_QUERY_WITH_PARAMS_URL, authentication, overseasEntityQuery.get);
+router.post(config.OVERSEAS_ENTITY_QUERY_WITH_PARAMS_URL, authentication, ...validator.overseasEntityQuery, checkValidations, overseasEntityQuery.post);
 
 router.route(config.UPDATE_SIGN_OUT_URL)
   .get(updateSignOut.get)
@@ -562,6 +576,14 @@ router.route(config.UPDATE_SUB_PATH_SIGN_OUT_URL)
   .post(...validator.signOut, checkValidations, updateSignOut.post);
 
 router.route(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL)
+  .all(
+    authentication,
+    navigation.hasOverseasEntity
+  )
+  .get(confirmOverseasEntityDetails.get)
+  .post(confirmOverseasEntityDetails.post);
+
+router.route(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL)
   .all(
     authentication,
     navigation.hasOverseasEntity
@@ -631,6 +653,15 @@ router.route(config.OVERSEAS_ENTITY_PRESENTER_URL)
   .get(overseasEntityPresenter.get)
   .post(...validator.presenter, checkValidations, overseasEntityPresenter.post);
 
+router.route(config.OVERSEAS_ENTITY_PRESENTER_WITH_PARAMS_URL)
+  .all(
+    authentication,
+    companyAuthentication,
+    navigation.hasOverseasEntityNumber
+  )
+  .get(overseasEntityPresenter.get)
+  .post(...validator.presenter, checkValidations, overseasEntityPresenter.post);
+
 router.route(config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL)
   .all(
     authentication,
@@ -653,7 +684,25 @@ router.route(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL)
   .get(overseasEntityUpdateDetails.get)
   .post(...validator.entity, ...validator.overseasName, checkValidations, overseasEntityUpdateDetails.post);
 
+router.route(config.OVERSEAS_ENTITY_UPDATE_DETAILS_WITH_PARAMS_URL)
+  .all(
+    authentication,
+    companyAuthentication,
+    navigation.hasOverseasEntityNumber
+  )
+  .get(overseasEntityUpdateDetails.get)
+  .post(...validator.entity, ...validator.overseasName, checkValidations, overseasEntityUpdateDetails.post);
+
 router.route(config.WHO_IS_MAKING_UPDATE_URL)
+  .all(
+    authentication,
+    companyAuthentication,
+    navigation.hasUpdatePresenter
+  )
+  .get(whoIsMakingUpdate.get)
+  .post(...validator.whoIsMakingUpdate, checkValidations, whoIsMakingUpdate.post);
+
+router.route(config.WHO_IS_MAKING_UPDATE_WITH_PARAMS_WITH_PARAMS_URL)
   .all(
     authentication,
     companyAuthentication,
@@ -671,7 +720,25 @@ router.route(config.UPDATE_DUE_DILIGENCE_URL)
   .get(updateDueDiligence.get)
   .post(...validator.dueDiligence, checkValidations, updateDueDiligence.post);
 
+router.route(config.UPDATE_DUE_DILIGENCE_WITH_PARAMS_URL)
+  .all(
+    authentication,
+    companyAuthentication,
+    navigation.hasWhoIsMakingUpdate
+  )
+  .get(updateDueDiligence.get)
+  .post(...validator.dueDiligence, checkValidations, updateDueDiligence.post);
+
 router.route(config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL)
+  .all(
+    authentication,
+    companyAuthentication,
+    navigation.hasWhoIsMakingUpdate
+  )
+  .get(updateDueDiligenceOverseasEntity.get)
+  .post(...validator.overseasEntityDueDiligence, checkValidations, updateDueDiligenceOverseasEntity.post);
+
+router.route(config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_WITH_PARAMS_URL)
   .all(
     authentication,
     companyAuthentication,
@@ -690,6 +757,15 @@ router.route(config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL)
   .post(updateReviewOverseasEntityInformation.post);
 
 router.route(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL)
+  .all(
+    authentication,
+    companyAuthentication,
+    navigation.hasUpdatePresenter
+  )
+  .get(updateBeneficialOwnerBoMoReview.get)
+  .post(updateBeneficialOwnerBoMoReview.post);
+
+router.route(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_WITH_PARAMS_URL)
   .all(
     authentication,
     companyAuthentication,
@@ -717,6 +793,8 @@ router.route(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL)
   .post(...validator.updateBeneficialOwnerAndManagingOfficerType, updateBeneficialOwnerType.post);
 
 router.post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL, authentication, navigation.hasUpdatePresenter, updateBeneficialOwnerType.postSubmit);
+
+router.post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_WITH_PARAMS_URL, authentication, navigation.hasUpdatePresenter, updateBeneficialOwnerType.postSubmit);
 
 router.route(config.UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL)
   .all(
@@ -993,7 +1071,25 @@ router.route(config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
   .get(updateBeneficialOwnerIndividual.get)
   .post(...validator.updateBeneficialOwnerIndividual, checkValidations, updateBeneficialOwnerIndividual.post);
 
+router.route(config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL)
+  .all(
+    authentication,
+    companyAuthentication,
+    navigation.hasUpdatePresenter
+  )
+  .get(updateBeneficialOwnerIndividual.get)
+  .post(...validator.updateBeneficialOwnerIndividual, checkValidations, updateBeneficialOwnerIndividual.post);
+
 router.route(config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + config.ID)
+  .all(
+    authentication,
+    companyAuthentication,
+    navigation.hasUpdatePresenter
+  )
+  .get(updateBeneficialOwnerIndividual.getById)
+  .post(...validator.updateBeneficialOwnerIndividual, checkValidations, updateBeneficialOwnerIndividual.update);
+
+router.route(config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL + config.ID)
   .all(
     authentication,
     companyAuthentication,
@@ -1079,6 +1175,15 @@ router.route(config.UPDATE_CONFIRM_TO_REMOVE_URL + config.ROUTE_PARAM_BO_MO_TYPE
   .post(...validator.confirmToRemove, checkValidations, confirmToRemove.post);
 
 router.route(config.UPDATE_FILING_DATE_URL)
+  .all(
+    authentication,
+    companyAuthentication,
+    navigation.hasOverseasEntity
+  )
+  .get(updateFilingDate.get)
+  .post(...validator.updateFilingDate, checkValidations, updateFilingDate.post);
+
+router.route(config.UPDATE_FILING_DATE_WITH_PARAMS_URL)
   .all(
     authentication,
     companyAuthentication,

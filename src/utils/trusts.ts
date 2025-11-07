@@ -221,6 +221,7 @@ const getIndividualTrusteesFromTrust = (
       individuals.push(individual as IndividualTrustee);
     }));
   }
+  individuals = individuals.filter(boindividual => boindividual.forename && boindividual.surname);
   return individuals;
 };
 

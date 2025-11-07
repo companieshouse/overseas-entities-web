@@ -20,11 +20,13 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     const appData = await getApplicationData(req.session);
     const trustInReview = getTrustInReview(appData);
-    const individuals = trustInReview?.INDIVIDUALS;
+    let individuals = trustInReview?.INDIVIDUALS;
 
     if (!individuals) {
       throw new Error('Failed to render Manage Trusts Review individuals page. No individuals in session');
     }
+    // filter individuals to only include those with both firstname and surname
+    individuals = individuals.filter(boindividual => boindividual?.forename?.trim() && boindividual?.surname?.trim());
 
     return res.render(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_PAGE, {
       templateName: UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_PAGE,
@@ -51,6 +53,13 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     setTrusteesAsReviewed(appData, TrusteeType.INDIVIDUAL);
 
+    if (appData?.trusts?.length) {
+      appData.trusts.forEach(trust => {
+        if (trust.INDIVIDUALS?.length) {
+          trust.INDIVIDUALS = trust.INDIVIDUALS.filter(ind => ind.forename);
+        }
+      });
+    }
     setExtraData(req.session, appData);
     await saveAndContinue(req, req.session as Session);
 

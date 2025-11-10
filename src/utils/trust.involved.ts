@@ -167,12 +167,14 @@ export const postTrustInvolvedPage = async (
         const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
         moveTrustOutOfReview(appData);
 
+        const filterTrustIndividuals = (trust: any) => {
+          if (trust.INDIVIDUALS?.length) {
+            trust.INDIVIDUALS = trust.INDIVIDUALS.filter((individual: any) => individual.forename);
+          }
+        };
+
         if (appData?.trusts?.length) {
-          appData.trusts.forEach(trust => {
-            if (trust.INDIVIDUALS?.length) {
-              trust.INDIVIDUALS = trust.INDIVIDUALS.filter(ind => ind.forename);
-            }
-          });
+          appData.trusts.forEach(filterTrustIndividuals);
         }
         setExtraData(req.session, appData);
         if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {

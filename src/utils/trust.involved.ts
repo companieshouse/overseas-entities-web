@@ -167,14 +167,24 @@ export const postTrustInvolvedPage = async (
         const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
         moveTrustOutOfReview(appData);
 
-        const filterTrustIndividuals = (trust: any) => {
-          if (trust.INDIVIDUALS?.length) {
-            trust.INDIVIDUALS = trust.INDIVIDUALS.filter((individual: any) => individual.forename);
+        const filterIndividualsInTrust = (trust: any) => {
+          if (!trust.INDIVIDUALS?.length) {
+            return; // Early exit if there are no individuals
           }
-        };
 
-        if (appData?.trusts?.length) {
-          appData.trusts.forEach(filterTrustIndividuals);
+          trust.INDIVIDUALS = trust.INDIVIDUALS.filter(
+            (individual: any) => Boolean(individual.forename) // Only keep individuals with a forename
+          );
+        };
+        const filterTrustIndividuals = (trusts: any[] | undefined) => {
+          if (!trusts?.length) {
+            return; // Early exit if no trusts are available
+          }
+
+          trusts.forEach(filterIndividualsInTrust);
+        };
+        if (appData?.trusts) {
+          filterTrustIndividuals(appData.trusts);
         }
         setExtraData(req.session, appData);
         if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {

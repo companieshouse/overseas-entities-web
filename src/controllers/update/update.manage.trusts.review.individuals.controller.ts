@@ -52,14 +52,6 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const appData = await getApplicationData(req.session);
 
     setTrusteesAsReviewed(appData, TrusteeType.INDIVIDUAL);
-
-    if (appData?.trusts?.length) {
-      appData.trusts.forEach(trust => {
-        if (trust.INDIVIDUALS?.length) {
-          trust.INDIVIDUALS = trust.INDIVIDUALS.filter(ind => ind.forename);
-        }
-      });
-    }
     setExtraData(req.session, appData);
     await saveAndContinue(req, req.session as Session);
 

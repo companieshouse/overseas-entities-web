@@ -471,7 +471,6 @@ describe('Trust Utils method tests', () => {
 
       const result = getIndividualTrustee(appData, test_trust_id, trusteeId);
       expect(result).toEqual(individualTrustee1);
-      // expect(result.id).toEqual(trusteeId);
     });
 
     test("test getIndividualTrusteeFromTrust with application data with no trusteeId", () => {

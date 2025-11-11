@@ -639,5 +639,32 @@ describe('Trust Involved controller', () => {
 
       expect(mockRes.redirect).toBeCalledWith(`${TRUST_ENTRY_URL + ADD_TRUST_URL}`);
     });
+
+    test(`keeps all valid individuals and ignore dummy associated parties`, async () => {
+
+      const individualTrustee1 = { forename: "TestOne" } as IndividualTrustee;
+      const individualTrustee2 = { forename: "TestTwo" } as IndividualTrustee;
+      const individualTrustee3 = { forename: "testThree", surname: "TestSurname" } as IndividualTrustee;
+      const individualTrustee4 = { surname: "OE001022A1" } as IndividualTrustee;
+
+      const mockAppData: ApplicationData = {
+        [TrustKey]: [{
+          'INDIVIDUALS': [ individualTrustee1, individualTrustee2, individualTrustee3, individualTrustee4 ] as TrustIndividual[],
+        }]
+      } as ApplicationData;
+
+      (fetchApplicationData as jest.Mock).mockResolvedValue(mockAppData);
+      mockReq.body = {
+        noMoreToAdd: 'noMoreToAdd',
+      };
+      mockIsActiveFeature.mockReturnValue(false);
+      await post(mockReq, mockRes, mockNext);
+      await postTrustInvolvedPage(mockReq, mockRes, mockNext, true, true);
+
+      expect(mockAppData.trusts?.[0].INDIVIDUALS).toEqual([individualTrustee1, individualTrustee2, individualTrustee3]);
+      expect(mockAppData.trusts?.[0].INDIVIDUALS).not.toEqual([individualTrustee4]);
+
+      expect(mockRes.redirect).toBeCalledWith(`${TRUST_ENTRY_URL + ADD_TRUST_URL}`);
+    });
   });
 });

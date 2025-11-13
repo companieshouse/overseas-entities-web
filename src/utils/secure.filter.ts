@@ -1,13 +1,22 @@
 import { NextFunction, Request, Response } from "express";
 import { ApplicationData } from "../model";
-import { IsSecureRegisterKey, OverseasEntityKey, Transactionkey } from "../model/data.types.model";
-import { fetchApplicationData, setExtraData } from "./application.data";
 import { logger } from "./logger";
-import { getUrlWithTransactionIdAndSubmissionId, isRemoveJourney, isRegistrationJourney } from "../utils/url";
 import * as config from "../config";
 import { isActiveFeature } from "./feature.flag";
-import { updateOverseasEntity } from "../service/overseas.entities.service";
+
 import { Session } from "@companieshouse/node-session-handler";
+import { postTransaction } from "../service/transaction.service";
+
+import { IsSecureRegisterKey, OverseasEntityKey, Transactionkey } from "../model/data.types.model";
+import { fetchApplicationData, getApplicationData, setExtraData } from "./application.data";
+import { createOverseasEntity, updateOverseasEntity } from "../service/overseas.entities.service";
+
+import {
+  getUrlWithTransactionIdAndSubmissionId,
+  isRemoveJourney,
+  isRegistrationJourney,
+  isUpdateJourney
+} from "../utils/url";
 
 export const getFilterPage = async (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string): Promise<void> => {
 
@@ -15,9 +24,9 @@ export const getFilterPage = async (req: Request, res: Response, next: NextFunct
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const isRegistration = isRegistrationJourney(req);
+    // const isRegistration = isRegistrationJourney(req);
     const isRemove = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+    const appData: ApplicationData = await getApplicationData(req, true);
 
     if (isRemove) {
       return res.render(templateName, {
@@ -53,6 +62,7 @@ export const postFilterPage = async (
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const isRegistration: boolean = isRegistrationJourney(req);
+    const isUpdate: boolean = await isUpdateJourney(req);
     const isRemove: boolean = await isRemoveJourney(req);
     const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
 
@@ -70,14 +80,25 @@ export const postFilterPage = async (
     }
 
     if (isSecureRegister === "0") {
+
       nextPageUrl = isSecureRegisterNoUrl;
-      if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {
+
+      if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && !isRemove) {
+
+        if (isUpdate && !appData[Transactionkey]) {
+          const transactionID = await postTransaction(req, session);
+          appData[Transactionkey] = transactionID;
+          appData[OverseasEntityKey] = await createOverseasEntity(req, session, transactionID);
+        }
+
         if (appData[Transactionkey] && appData[OverseasEntityKey]) {
           await updateOverseasEntity(req, session, appData);
         } else {
           throw new Error("Error: is_secure_register filter cannot be updated - transaction_id or overseas_entity_id is missing");
         }
+
         nextPageUrl = getUrlWithTransactionIdAndSubmissionId(isSecureRegisterNoUrl, appData[Transactionkey] as string, appData[OverseasEntityKey] as string);
+
       }
     }
 

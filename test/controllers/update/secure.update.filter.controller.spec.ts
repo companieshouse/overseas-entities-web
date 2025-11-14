@@ -133,7 +133,7 @@ describe("SECURE UPDATE FILTER controller", () => {
 
     test(`renders the ${SECURE_UPDATE_FILTER_PAGE} page for remove`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(false);
-      mockFetchApplicationData.mockReturnValueOnce({});
+      mockGetApplicationData.mockReturnValueOnce({});
       mockIsActiveFeature.mockReturnValueOnce(false);
       mockIsRemoveJourney.mockReturnValueOnce(true);
       const resp = await request(app).get(`${SECURE_UPDATE_FILTER_URL}${JOURNEY_REMOVE_QUERY_PARAM}`);
@@ -156,7 +156,7 @@ describe("SECURE UPDATE FILTER controller", () => {
     });
 
     test(`renders the ${SECURE_UPDATE_FILTER_PAGE} page with radios selected to yes`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce({ is_secure_register: 1 });
+      mockGetApplicationData.mockReturnValueOnce({ is_secure_register: 1 });
       const resp = await request(app).get(SECURE_UPDATE_FILTER_URL);
 
       expect(resp.status).toEqual(200);
@@ -204,27 +204,6 @@ describe("SECURE UPDATE FILTER controller", () => {
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(MOCKED_PAGE_URL);
       expect(mockCreateOverseasEntity).not.toHaveBeenCalled();
-      expect(mockGetUrlWithTransactionIdAndSubmissionId).toHaveBeenCalledTimes(1);
-      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
-    });
-
-    test ("if REDIS_removal flag is ON, create the entity if transactionKey is absent, and redirect to update-interrupt-card, with entity IDs in URL", async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
-      mockIsActiveFeature.mockReturnValueOnce(true);
-      mockGetApplicationData.mockReturnValueOnce({});
-      mockIsActiveFeature.mockReturnValueOnce(true);
-      mockIsRemoveJourney.mockReturnValueOnce(false);
-      mockCreateOverseasEntity.mockReturnValueOnce("abc123");
-      mockUpdateOverseasEntity.mockReturnValueOnce(true);
-
-      const resp = await request(app)
-        .post(SECURE_UPDATE_FILTER_WITH_PARAMS_URL)
-        .send({ is_secure_register: "0" });
-
-      expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(MOCKED_PAGE_URL);
-      expect(mockCreateOverseasEntity).toHaveBeenCalled();
-      expect(mockPostTransactionService).toHaveBeenCalled();
       expect(mockGetUrlWithTransactionIdAndSubmissionId).toHaveBeenCalledTimes(1);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });

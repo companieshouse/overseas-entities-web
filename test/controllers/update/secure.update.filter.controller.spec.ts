@@ -208,7 +208,7 @@ describe("SECURE UPDATE FILTER controller", () => {
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 
-    test.only ("if REDIS_removal flag is ON, create the entity if transactionKey is absent, and redirect to update-interrupt-card, with entity IDs in URL", async () => {
+    test ("if REDIS_removal flag is ON, create the entity if transactionKey is absent, and redirect to update-interrupt-card, with entity IDs in URL", async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
       mockIsActiveFeature.mockReturnValueOnce(true);
       mockGetApplicationData.mockReturnValueOnce({});

@@ -8,7 +8,7 @@ import { Session } from "@companieshouse/node-session-handler";
 import { postTransaction } from "../service/transaction.service";
 
 import { IsSecureRegisterKey, OverseasEntityKey, Transactionkey } from "../model/data.types.model";
-import { fetchApplicationData, getApplicationData, setExtraData } from "./application.data";
+import { getApplicationData, setExtraData } from "./application.data";
 import { createOverseasEntity, updateOverseasEntity } from "../service/overseas.entities.service";
 
 import {
@@ -24,7 +24,6 @@ export const getFilterPage = async (req: Request, res: Response, next: NextFunct
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    // const isRegistration = isRegistrationJourney(req);
     const isRemove = await isRemoveJourney(req);
     const appData: ApplicationData = await getApplicationData(req, true);
 
@@ -64,7 +63,7 @@ export const postFilterPage = async (
     const isRegistration: boolean = isRegistrationJourney(req);
     const isUpdate: boolean = await isUpdateJourney(req);
     const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+    const appData: ApplicationData = await getApplicationData(req, true);
 
     const isSecureRegister = (req.body[IsSecureRegisterKey]).toString();
     appData[IsSecureRegisterKey] = isSecureRegister;

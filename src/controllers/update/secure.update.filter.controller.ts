@@ -5,7 +5,7 @@ import { getFilterPage, postFilterPage } from "../../utils/secure.filter";
 import { isActiveFeature } from "../../utils/feature.flag";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
-  await getFilterPage(req, res, next, config.SECURE_UPDATE_FILTER_PAGE, config.UPDATE_LANDING_PAGE_URL);
+  await getFilterPage(req, res, next, config.SECURE_UPDATE_FILTER_PAGE, config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL);
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {

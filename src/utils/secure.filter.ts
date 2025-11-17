@@ -55,9 +55,7 @@ export const postFilterPage = async (
   isSecureRegisterYesUrl: string,
   isSecureRegisterNoUrl: string
 ): Promise<void> => {
-
   try {
-
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const isRegistration: boolean = isRegistrationJourney(req);
@@ -71,34 +69,20 @@ export const postFilterPage = async (
 
     let nextPageUrl: string = "";
 
+    const shouldUseRedisRemoval = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL);
+
     if (isSecureRegister === "1") {
-      nextPageUrl = isSecureRegisterYesUrl;
-      if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {
-        nextPageUrl = getUrlWithTransactionIdAndSubmissionId(isSecureRegisterYesUrl, appData[Transactionkey] as string, appData[OverseasEntityKey] as string);
-      }
-    }
-
-    if (isSecureRegister === "0") {
-
-      nextPageUrl = isSecureRegisterNoUrl;
-
-      if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && !isRemove) {
-
-        if (isUpdate && !appData[Transactionkey]) {
-          const transactionID = await postTransaction(req, session);
-          appData[Transactionkey] = transactionID;
-          appData[OverseasEntityKey] = await createOverseasEntity(req, session, transactionID);
-        }
-
-        if (appData[Transactionkey] && appData[OverseasEntityKey]) {
-          await updateOverseasEntity(req, session, appData);
-        } else {
-          throw new Error("Error: is_secure_register filter cannot be updated - transaction_id or overseas_entity_id is missing");
-        }
-
-        nextPageUrl = getUrlWithTransactionIdAndSubmissionId(isSecureRegisterNoUrl, appData[Transactionkey] as string, appData[OverseasEntityKey] as string);
-
-      }
+      nextPageUrl = getNextPageUrlForYes(isRegistration, shouldUseRedisRemoval, isSecureRegisterYesUrl, appData);
+    } else if (isSecureRegister === "0") {
+      nextPageUrl = await getNextPageUrlForNo(
+        isRemove,
+        isUpdate,
+        shouldUseRedisRemoval,
+        isSecureRegisterNoUrl,
+        req,
+        session,
+        appData
+      );
     }
 
     if (isRemove) {
@@ -113,3 +97,53 @@ export const postFilterPage = async (
     next(error);
   }
 };
+
+function getNextPageUrlForYes(
+  isRegistration: boolean,
+  shouldUseRedisRemoval: boolean,
+  isSecureRegisterYesUrl: string,
+  appData: ApplicationData
+): string {
+  if (shouldUseRedisRemoval && isRegistration) {
+    return getUrlWithTransactionIdAndSubmissionId(
+      isSecureRegisterYesUrl,
+      appData[Transactionkey] as string,
+      appData[OverseasEntityKey] as string
+    );
+  }
+  return isSecureRegisterYesUrl;
+}
+
+async function getNextPageUrlForNo(
+  isRemove: boolean,
+  isUpdate: boolean,
+  shouldUseRedisRemoval: boolean,
+  isSecureRegisterNoUrl: string,
+  req: Request,
+  session: Session,
+  appData: ApplicationData
+): Promise<string> {
+  let nextPageUrl = isSecureRegisterNoUrl;
+
+  if (shouldUseRedisRemoval && !isRemove) {
+    if (isUpdate && !appData[Transactionkey]) {
+      const transactionID = await postTransaction(req, session);
+      appData[Transactionkey] = transactionID;
+      appData[OverseasEntityKey] = await createOverseasEntity(req, session, transactionID);
+    }
+
+    if (appData[Transactionkey] && appData[OverseasEntityKey]) {
+      await updateOverseasEntity(req, session, appData);
+    } else {
+      throw new Error("Error: is_secure_register filter cannot be updated - transaction_id or overseas_entity_id is missing");
+    }
+
+    nextPageUrl = getUrlWithTransactionIdAndSubmissionId(
+      isSecureRegisterNoUrl,
+      appData[Transactionkey] as string,
+      appData[OverseasEntityKey] as string
+    );
+  }
+
+  return nextPageUrl;
+}

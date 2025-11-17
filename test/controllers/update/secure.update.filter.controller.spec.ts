@@ -116,8 +116,7 @@ describe("SECURE UPDATE FILTER controller", () => {
     });
 
     test(`renders the ${SECURE_UPDATE_FILTER_PAGE} page when REDIS_removal flag is set to ON`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
-      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockIsActiveFeature.mockReturnValue(true);
       mockGetApplicationData.mockReturnValueOnce({ });
 
       const resp = await request(app).get(SECURE_UPDATE_FILTER_WITH_PARAMS_URL);
@@ -189,10 +188,8 @@ describe("SECURE UPDATE FILTER controller", () => {
     });
 
     test ("if REDIS_removal flag is ON, update the entity when transactionKey and overseasEntityKey are present, and redirect to update-interrupt-card, with entity IDs in URL", async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
-      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockIsActiveFeature.mockReturnValue(true);
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
-      mockIsActiveFeature.mockReturnValueOnce(true);
       mockIsRemoveJourney.mockReturnValueOnce(false);
       mockUpdateOverseasEntity.mockReturnValueOnce(true);
       mockCreateOverseasEntity.mockReturnValueOnce(false);

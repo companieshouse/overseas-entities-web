@@ -140,8 +140,8 @@ async function getNextPageUrlForNo(
 
     nextPageUrl = getUrlWithTransactionIdAndSubmissionId(
       isSecureRegisterNoUrl,
-      appData[Transactionkey] as string,
-      appData[OverseasEntityKey] as string
+      appData[Transactionkey],
+      appData[OverseasEntityKey]
     );
   }
 

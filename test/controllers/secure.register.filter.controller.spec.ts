@@ -193,15 +193,16 @@ describe( "SECURE REGISTER FILTER controller", () => {
     });
 
     test(`renders the ${config.USE_PAPER_PAGE} page when yes is selected and REDIS_removal flag is set to ON`, async () => {
-      mockIsActiveFeature.mockReturnValue(true);
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
-      mockIsRemoveJourney.mockReturnValueOnce(false);
-      mockUpdateOverseasEntity.mockReturnValueOnce(true);
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockIsRemoveJourney.mockReturnValue(false);
+      mockUpdateOverseasEntity.mockReturnValue(true);
       const resp = await request(app)
         .post(config.SECURE_REGISTER_FILTER_URL)
         .send({ is_secure_register: "1" });
       expect(resp.status).toEqual(302);
-      // expect(resp.header.location).toEqual(config.USE_PAPER_WITH_PARAMS_URL);
+      expect(resp.header.location).toEqual(config.USE_PAPER_WITH_PARAMS_URL);
       expect(mockUpdateOverseasEntity).not.toHaveBeenCalled();
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });

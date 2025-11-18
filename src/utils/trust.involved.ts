@@ -166,6 +166,12 @@ export const postTrustInvolvedPage = async (
         const isRegistration = isRegistrationJourney(req);
         const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
         moveTrustOutOfReview(appData);
+
+        appData?.trusts?.forEach(trust => {
+          if (Array.isArray(trust.INDIVIDUALS)) {
+            trust.INDIVIDUALS = trust.INDIVIDUALS.filter(ind => ind.forename);
+          }
+        });
         setExtraData(req.session, appData);
         if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {
           await updateOverseasEntity(req, session, appData);

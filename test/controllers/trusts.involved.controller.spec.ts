@@ -67,6 +67,8 @@ import {
   TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE,
   UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_PAGE, LANDING_URL,
 } from '../../src/config';
+import { IndividualTrustee, TrustIndividual, TrustKey } from "../../src/model/trust.model";
+import { ApplicationData } from "../../src/model";
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
@@ -612,6 +614,57 @@ describe('Trust Involved controller', () => {
       expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
       expect(resp.text).toContain(ADD_TRUST_URL);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+    });
+
+    test(`filters out individuals without a forename or dummy associated parties`, async () => {
+
+      const individualTrustee1 = { surname: "dummySurname" } as IndividualTrustee;
+      const individualTrustee2 = { forename: "empty" } as IndividualTrustee;
+
+      const mockAppData: ApplicationData = {
+        [TrustKey]: [{
+          'INDIVIDUALS': [ individualTrustee1, individualTrustee2 ] as TrustIndividual[],
+        }]
+      } as ApplicationData;
+
+      (fetchApplicationData as jest.Mock).mockResolvedValue(mockAppData);
+      mockReq.body = {
+        noMoreToAdd: 'noMoreToAdd',
+      };
+      mockIsActiveFeature.mockReturnValue(false);
+      await post(mockReq, mockRes, mockNext);
+      await postTrustInvolvedPage(mockReq, mockRes, mockNext, true, true);
+
+      expect(mockAppData.trusts?.[0].INDIVIDUALS).toEqual([individualTrustee2]);
+
+      expect(mockRes.redirect).toBeCalledWith(`${TRUST_ENTRY_URL + ADD_TRUST_URL}`);
+    });
+
+    test(`keeps all valid individuals and ignore dummy associated parties`, async () => {
+
+      const individualTrustee1 = { forename: "TestOne" } as IndividualTrustee;
+      const individualTrustee2 = { forename: "TestTwo" } as IndividualTrustee;
+      const individualTrustee3 = { forename: "testThree", surname: "TestSurname" } as IndividualTrustee;
+      const individualTrustee4 = { surname: "OE001022A1" } as IndividualTrustee;
+
+      const mockAppData: ApplicationData = {
+        [TrustKey]: [{
+          'INDIVIDUALS': [ individualTrustee1, individualTrustee2, individualTrustee3, individualTrustee4 ] as TrustIndividual[],
+        }]
+      } as ApplicationData;
+
+      (fetchApplicationData as jest.Mock).mockResolvedValue(mockAppData);
+      mockReq.body = {
+        noMoreToAdd: 'noMoreToAdd',
+      };
+      mockIsActiveFeature.mockReturnValue(false);
+      await post(mockReq, mockRes, mockNext);
+      await postTrustInvolvedPage(mockReq, mockRes, mockNext, true, true);
+
+      expect(mockAppData.trusts?.[0].INDIVIDUALS).toEqual([individualTrustee1, individualTrustee2, individualTrustee3]);
+      expect(mockAppData.trusts?.[0].INDIVIDUALS).not.toEqual([individualTrustee4]);
+
+      expect(mockRes.redirect).toBeCalledWith(`${TRUST_ENTRY_URL + ADD_TRUST_URL}`);
     });
   });
 });

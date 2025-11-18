@@ -72,6 +72,11 @@ const individuals = [{
   surname: 'OLeary',
   id: 'tom-oleary-1',
   type: RoleWithinTrustType.SETTLOR,
+}, {
+  forename: null,
+  surname: 'Dummy',
+  id: 'dermott-jones-1',
+  type: RoleWithinTrustType.GRANTOR,
 }];
 
 const createTrusts = (inReview = true) => {
@@ -119,6 +124,42 @@ describe('Update - Manage Trusts - Review individuals', () => {
       expect(resp.text).toContain('Settlor');
       expect(resp.text).toContain('Change');
       expect(resp.text).toContain(`${UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL}/tom-oleary-1`);
+
+      expect(resp.text).toContain('Add an individual');
+      expect(resp.text).toContain('No more to add');
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+    });
+
+    test('filters out individual missing forename or surname', async () => {
+      const trusts = createTrusts();
+      const trustInReview = trusts[0];
+      const appData = { update: { review_trusts: trusts } };
+
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockGetApplicationData.mockReturnValueOnce(appData);
+      mockGetTrustInReview.mockReturnValueOnce(trustInReview);
+
+      const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL);
+
+      expect(resp.status).toEqual(200);
+
+      expect(mockGetTrustInReview).toHaveBeenCalledWith(appData);
+      expect(mockGetTrustInReview).toHaveBeenCalledTimes(1);
+
+      expect(resp.text).toContain("Review individuals");
+      expect(resp.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);
+
+      expect(resp.text).toContain('Dermott Jones');
+      expect(resp.text).toContain('Grantor');
+      expect(resp.text).toContain('Change');
+      expect(resp.text).toContain(`${UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL}/dermott-jones-1`);
+
+      expect(resp.text).toContain('Tom OLeary');
+      expect(resp.text).toContain('Settlor');
+      expect(resp.text).toContain('Change');
+      expect(resp.text).toContain(`${UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL}/tom-oleary-1`);
+
+      expect(resp.text).not.toContain('Dummy');
 
       expect(resp.text).toContain('Add an individual');
       expect(resp.text).toContain('No more to add');

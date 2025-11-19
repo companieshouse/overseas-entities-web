@@ -117,7 +117,7 @@ const getNextPageUrl = (appData: ApplicationData, fallbackUrl: string, isRemove:
     }
     return fallbackUrl;
   } catch (error) {
-    throw new Error(`Error generating nextPageUrl with transactionId and submissionId: ${error}`);
+    logger.error(`Error generating nextPageUrl with transactionId and submissionId: ${error}`);
     return fallbackUrl;
   }
 };

@@ -9,7 +9,7 @@ export const get = async (req: Request, res: Response) => {
   let applyWithPaperFormHeading: string = "You'll need to file an update using the paper form";
   const isRemove: boolean = await isRemoveJourney(req);
 
-  if (isRemove){
+  if (isRemove) {
     applyWithPaperFormHeading = "You'll need to submit this filing using the paper form";
     return res.render(config.USE_PAPER_PAGE, {
       journey: config.JourneyType.remove,

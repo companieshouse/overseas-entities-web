@@ -69,7 +69,7 @@ export const postFilterPage = async (
     let nextPageUrl: string = "";
 
     if (isSecureRegister === "1") {
-      nextPageUrl = getNextPageUrl(appData, isSecureRegisterYesUrl, isRemove, isRedisRemovalFlag);
+      nextPageUrl = isSecureRegisterYesUrl;
     }
 
     if (isSecureRegister === "0") {

@@ -6,7 +6,7 @@ import { WhoIsRegisteringType } from "../model/who.is.making.filing.model";
 import { isRegistrationJourney } from "../utils/url";
 import { deleteApplicationData, fetchApplicationData } from "../utils/application.data";
 import { Transactionkey } from "../model/data.types.model";
-import { CONFIRMATION_PAGE, PAYMENT_FEE } from "../config";
+import { CONFIRMATION_PAGE, OE01_PAYMENT_FEE } from "../config";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -26,7 +26,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       entityEmail: appData.entity?.email,
       userEmail: getLoggedInUserEmail(req.session),
       verificationCheckDays: 14,
-      paymentFee: PAYMENT_FEE,
+      paymentFee: OE01_PAYMENT_FEE,
       templateName: CONFIRMATION_PAGE
     });
   } catch (error: any) {

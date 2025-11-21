@@ -1,11 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import { logger } from "../../utils/logger";
 import * as config from "../../config";
-import { isActiveFeature } from "../../utils/feature.flag";
+import { logger } from "../../utils/logger";
 import {
-  isRemoveJourney,
-  getUrlWithTransactionIdAndSubmissionId,
-  getTransactionIdAndSubmissionIdFromOriginalUrl,
+  getBackLinkUrl,
+  isRemoveJourney
 } from "../../utils/url";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
@@ -23,8 +21,14 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       });
     }
 
+    const backLinkUrl = getBackLinkUrl({
+      req,
+      urlWithEntityIds: config.SECURE_UPDATE_FILTER_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.SECURE_UPDATE_FILTER_URL,
+    });
+
     return res.render(config.UPDATE_INTERRUPT_CARD_PAGE, {
-      backLinkUrl: getBackLinkUrl(req),
+      backLinkUrl,
       templateName: config.UPDATE_INTERRUPT_CARD_PAGE,
     });
   } catch (error) {
@@ -47,25 +51,5 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);
-  }
-};
-
-const getBackLinkUrl = (req: Request) => {
-
-  try {
-
-    const ids = getTransactionIdAndSubmissionIdFromOriginalUrl(req);
-
-    if (!isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) || (typeof ids === "undefined")) {
-      return config.SECURE_UPDATE_FILTER_URL;
-    }
-    return getUrlWithTransactionIdAndSubmissionId(
-      config.SECURE_UPDATE_FILTER_WITH_PARAMS_URL,
-      ids[config.ROUTE_PARAM_TRANSACTION_ID],
-      ids[config.ROUTE_PARAM_SUBMISSION_ID]
-    );
-  } catch (error) {
-    logger.errorRequest(req, error);
-    return config.SECURE_UPDATE_FILTER_URL;
   }
 };

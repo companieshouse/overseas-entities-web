@@ -2,6 +2,7 @@ import { expect, jest } from "@jest/globals";
 
 jest.mock('../../src/utils/application.data');
 jest.mock("../../src/utils/logger");
+jest.mock("../../src/utils/feature.flag");
 
 import { Request, request } from "express";
 import * as config from "../../src/config";
@@ -9,6 +10,7 @@ import * as urlUtils from "../../src/utils/url";
 import { getApplicationData } from '../../src/utils/application.data';
 import { APPLICATION_DATA_MOCK } from "../__mocks__/session.mock";
 import { createAndLogErrorRequest, logger } from "../../src/utils/logger";
+import { isActiveFeature } from "../../src/utils/feature.flag";
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockCreateAndLogErrorRequest = createAndLogErrorRequest as jest.Mock;
@@ -363,32 +365,51 @@ describe("Url utils tests", () => {
     });
   });
 
-  describe("getPreviousPageUrl tests", () => {
+  describe("getBackLinkUrl tests", () => {
+    const urlWithEntityIds = "/transaction/:transactionId/submission/:submissionId/entity";
+    const urlWithoutEntityIds = "/entity";
+    const transactionId = "tx123";
+    const submissionId = "sub456";
+    const mockIsActiveFeature = isActiveFeature as jest.Mock;
 
-    test("returns correct previous page from request headers", () => {
-      req["rawHeaders"] = ["Referer", `http://host-name${config.WHO_IS_MAKING_FILING_URL}`];
-
-      const previousPage = urlUtils.getPreviousPageUrl(req, config.REGISTER_AN_OVERSEAS_ENTITY_URL);
-
-      // Check that the "http://host-name" absolute URL prefix has been stripped off when setting the previousPage URL
-      expect(previousPage).toEqual(config.WHO_IS_MAKING_FILING_URL);
+    beforeEach(() => {
+      jest.spyOn(urlUtils, "getTransactionIdAndSubmissionIdFromOriginalUrl").mockImplementation(() => ({
+        transactionId,
+        submissionId
+      }));
+      jest.spyOn(urlUtils, "getUrlWithTransactionIdAndSubmissionId").mockImplementation((url, tId, sId) => {
+        return url.replace(":transactionId", tId).replace(":submissionId", sId);
+      });
+      jest.clearAllMocks();
     });
 
-    test("does not return a potentially malicious previous page URL", () => {
-      req["rawHeaders"] = ["Referer", `http://host-name/illegal-path`];
-
-      const previousPage = urlUtils.getPreviousPageUrl(req, config.REGISTER_AN_OVERSEAS_ENTITY_URL);
-
-      // Check that the "http://host-name/illegal-path" url is not returned
-      expect(previousPage).toBeUndefined();
+    test("returns url with entity ids when feature flag is enabled and ids are present", () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      const req = { originalUrl: "/transaction/tx123/submission/sub456", params: {}, query: {} } as unknown as Request;
+      const result = urlUtils.getBackLinkUrl({ req, urlWithEntityIds, urlWithoutEntityIds });
+      expect(result).toBe("/transaction/tx123/submission/sub456/entity");
     });
 
-    test("returns undefined if no url found in headers", () => {
-      req["rawHeaders"] = ["Referer", ""];
+    test("returns urlWithoutEntityIds when feature flag is disabled", () => {
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      const req = { originalUrl: "/transaction/tx123/submission/sub456", params: {}, query: {} } as unknown as Request;
+      const result = urlUtils.getBackLinkUrl({ req, urlWithEntityIds, urlWithoutEntityIds });
+      expect(result).toBe(urlWithoutEntityIds);
+    });
 
-      const previousPage = urlUtils.getPreviousPageUrl(req, config.REGISTER_AN_OVERSEAS_ENTITY_URL);
+    test("returns urlWithoutEntityIds when ids are undefined", () => {
+      jest.spyOn(urlUtils, "getTransactionIdAndSubmissionIdFromOriginalUrl").mockReturnValue(undefined);
+      const req = { originalUrl: "/no-ids-here", params: {}, query: {} } as unknown as Request;
+      const result = urlUtils.getBackLinkUrl({ req, urlWithEntityIds, urlWithoutEntityIds });
+      expect(result).toBe(urlWithoutEntityIds);
+    });
 
-      expect(previousPage).toBeUndefined();
+    test("returns urlWithoutEntityIds and logs error if exception is thrown", () => {
+      jest.spyOn(urlUtils, "getTransactionIdAndSubmissionIdFromOriginalUrl").mockImplementation(() => { throw new Error("fail"); });
+      const req = { originalUrl: "/fail", params: {}, query: {} } as unknown as Request;
+      const result = urlUtils.getBackLinkUrl({ req, urlWithEntityIds, urlWithoutEntityIds });
+      expect(result).toBe(urlWithoutEntityIds);
+      expect(logger.errorRequest).toHaveBeenCalled();
     });
   });
 });

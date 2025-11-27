@@ -1,10 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import * as config from "../../config";
 import { logger } from "../../utils/logger";
-import {
-  getBackLinkUrl,
-  isRemoveJourney
-} from "../../utils/url";
+import * as config from "../../config";
+import { isRemoveJourney } from "../../utils/url";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -21,14 +18,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       });
     }
 
-    const backLinkUrl = getBackLinkUrl({
-      req,
-      urlWithEntityIds: config.SECURE_UPDATE_FILTER_WITH_PARAMS_URL,
-      urlWithoutEntityIds: config.SECURE_UPDATE_FILTER_URL,
-    });
-
     return res.render(config.UPDATE_INTERRUPT_CARD_PAGE, {
-      backLinkUrl,
+      backLinkUrl: config.SECURE_UPDATE_FILTER_URL,
       templateName: config.UPDATE_INTERRUPT_CARD_PAGE,
     });
   } catch (error) {

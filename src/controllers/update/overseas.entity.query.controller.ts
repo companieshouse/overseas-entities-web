@@ -11,7 +11,7 @@ import { mapCompanyProfileToOverseasEntity } from "../../utils/update/company.pr
 import { mapInputDate } from "../../utils/update/mapper.utils";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { retrieveBoAndMoData } from "../../utils/update/beneficial_owners_managing_officers_data_fetch";
-import { getBackLinkUrl, isRemoveJourney } from "../../utils/url";
+import { isRemoveJourney } from "../../utils/url";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -29,14 +29,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       });
     }
 
-    const backLinkUrl = getBackLinkUrl({
-      req,
-      urlWithEntityIds: config.UPDATE_INTERRUPT_CARD_WITH_PARAMS_URL,
-      urlWithoutEntityIds: config.UPDATE_INTERRUPT_CARD_URL,
-    });
-
     return res.render(config.OVERSEAS_ENTITY_QUERY_PAGE, {
-      backLinkUrl,
+      backLinkUrl: config.UPDATE_INTERRUPT_CARD_URL,
       templateName: config.OVERSEAS_ENTITY_QUERY_PAGE,
       chsUrl: process.env.CHS_URL,
       [EntityNumberKey]: appData[EntityNumberKey]

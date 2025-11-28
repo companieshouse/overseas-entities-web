@@ -96,7 +96,7 @@ describe( "SECURE REGISTER FILTER controller", () => {
   describe("GET tests", () => {
 
     test(`renders the ${config.SECURE_REGISTER_FILTER_PAGE} page`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce({});
+      mockGetApplicationData.mockReturnValueOnce({});
       const resp = await request(app).get(SECURE_REGISTER_FILTER_URL);
 
       expect(resp.status).toEqual(200);
@@ -113,7 +113,7 @@ describe( "SECURE REGISTER FILTER controller", () => {
     test(`renders the ${config.SECURE_REGISTER_FILTER_PAGE} page and REDIS_removal flag is set to OFF`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(false);
       mockGetUrlWithParamsToPath.mockReturnValueOnce('/some-url');
-      mockFetchApplicationData.mockReturnValueOnce({});
+      mockGetApplicationData.mockReturnValueOnce({});
       mockIsRemoveJourney.mockReturnValue(false);
       const resp = await request(app).get(SECURE_REGISTER_FILTER_URL);
 
@@ -132,9 +132,9 @@ describe( "SECURE REGISTER FILTER controller", () => {
     });
 
     test(`renders the ${config.SECURE_REGISTER_FILTER_PAGE} page and REDIS_removal flag is set to ON`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockIsActiveFeature.mockReturnValue(true);
       mockGetUrlWithParamsToPath.mockReturnValueOnce('/some-url');
-      mockFetchApplicationData.mockReturnValueOnce({});
+      mockGetApplicationData.mockReturnValueOnce({});
       mockIsRemoveJourney.mockReturnValue(false);
       const resp = await request(app).get(SECURE_REGISTER_FILTER_WITH_PARAMS_URL);
 
@@ -162,7 +162,7 @@ describe( "SECURE REGISTER FILTER controller", () => {
     });
 
     test(`renders the ${config.SECURE_REGISTER_FILTER_PAGE} page with radios selected to yes`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce({ is_secure_register: 1 });
+      mockGetApplicationData.mockReturnValueOnce({ is_secure_register: 1 });
       const resp = await request(app).get(SECURE_REGISTER_FILTER_URL);
 
       expect(resp.status).toEqual(200);
@@ -194,10 +194,10 @@ describe( "SECURE REGISTER FILTER controller", () => {
 
     test(`renders the ${config.USE_PAPER_PAGE} page when yes is selected and REDIS_removal flag is set to ON`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
       mockIsActiveFeature.mockReturnValueOnce(true);
-      mockIsRemoveJourney.mockReturnValueOnce(false);
-      mockUpdateOverseasEntity.mockReturnValueOnce(true);
+      mockIsRemoveJourney.mockReturnValue(false);
+      mockUpdateOverseasEntity.mockReturnValue(true);
       const resp = await request(app)
         .post(config.SECURE_REGISTER_FILTER_URL)
         .send({ is_secure_register: "1" });
@@ -223,10 +223,8 @@ describe( "SECURE REGISTER FILTER controller", () => {
     });
 
     test(`renders the ${config.INTERRUPT_CARD_PAGE} page when no is selected and REDIS_removal flag is set to ON`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
-      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockIsActiveFeature.mockReturnValue(true);
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
-      mockIsActiveFeature.mockReturnValueOnce(true);
       mockIsRemoveJourney.mockReturnValueOnce(false);
       mockUpdateOverseasEntity.mockReturnValueOnce(true);
       mockGetUrlWithTransactionIdAndSubmissionId.mockReturnValueOnce(config.INTERRUPT_CARD_WITH_PARAMS_URL);

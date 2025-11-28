@@ -102,8 +102,8 @@ REMOVE_LANDING_PAGE_URL | Remove OE landing Page | `/update-an-overseas-entity/c
 LOG_LEVEL | LOG level | DEBUG
 OAUTH2_CLIENT_ID | OAUTH2 client ID | client ID
 OAUTH2_CLIENT_SECRET | OAUTH2 client secret | secret
-OE01_PAYMENT_FEE | Payment Fee | config value
-OE02_UPDATE_PAYMENT_FEE | Update Payment Fee | config value
+PAYMENT_FEE | Payment Fee | config value
+UPDATE_PAYMENT_FEE | Update Payment Fee | config value
 PIWIK_URL | Matomo URL | `https://matomo.platform.aws.chdev.org`
 PIWIK_SITE_ID | Matomo Site ID | 24
 PIWIK_START_GOAL_ID | Matomo Start goal ID | 3
@@ -183,4 +183,3 @@ redirect_uri | Redirect users to homepage when trying to access other pages dire
 ## License
 
 This code is open source software licensed under the [MIT License]("https://opensource.org/licenses/MIT").
-

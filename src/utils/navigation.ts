@@ -111,6 +111,11 @@ export const NAVIGATION: Navigation = {
     previousPage: async (appData: ApplicationData, req: Request) => getUpdateOrRemoveBackLink(req, config.OVERSEAS_ENTITY_QUERY_URL),
     nextPage: [config.UPDATE_FILING_DATE_PAGE, config.PRESENTER_URL, config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE + config.RELEVANT_PERIOD_QUERY_PARAM]
   },
+  [config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL]: {
+    currentPage: config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
+    previousPage: async (appData: ApplicationData, req: Request) => getUpdateOrRemoveBackLink(req, getUrlWithParamsToPath(config.OVERSEAS_ENTITY_QUERY_WITH_PARAMS_URL, req)),
+    nextPage: [config.UPDATE_FILING_DATE_PAGE, config.PRESENTER_URL, config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE + config.RELEVANT_PERIOD_QUERY_PARAM]
+  },
   [config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL]: {
     currentPage: config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE,
     previousPage: () => config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,

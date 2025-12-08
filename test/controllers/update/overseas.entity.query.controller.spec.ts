@@ -14,24 +14,28 @@ import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddlewa
 import * as config from "../../../src/config";
 import app from "../../../src/app";
 import request from "supertest";
-import { getApplicationData, setExtraData } from "../../../src/utils/application.data";
+
 import { beforeEach, jest, test, describe } from "@jest/globals";
+
 import { logger } from "../../../src/utils/logger";
 import { authentication } from "../../../src/middleware/authentication.middleware";
-import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { ErrorMessages } from "../../../src/validation/error.messages";
+import { NextFunction } from "express";
+import { getCompanyProfile } from "../../../src/service/company.profile.service";
+import { retrieveBoAndMoData } from "../../../src/utils/update/beneficial_owners_managing_officers_data_fetch";
+import { ApplicationData } from "../../../src/model";
+import { companyProfileQueryMock } from "../../__mocks__/update.entity.mocks";
+import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
+import { mapCompanyProfileToOverseasEntity } from "../../../src/utils/update/company.profile.mapper.to.overseas.entity";
+
+import { getApplicationData, setExtraData } from "../../../src/utils/application.data";
+
 import {
   ANY_MESSAGE_ERROR,
   PAGE_TITLE_ERROR,
   OVERSEAS_ENTITY_QUERY_PAGE_TITLE,
   SERVICE_UNAVAILABLE,
 } from "../../__mocks__/text.mock";
-import { NextFunction } from "express";
-import { getCompanyProfile } from "../../../src/service/company.profile.service";
-import { mapCompanyProfileToOverseasEntity } from "../../../src/utils/update/company.profile.mapper.to.overseas.entity";
-import { companyProfileQueryMock } from "../../__mocks__/update.entity.mocks";
-import { retrieveBoAndMoData } from "../../../src/utils/update/beneficial_owners_managing_officers_data_fetch";
-import { ApplicationData } from "../../../src/model";
 
 const testOENumber = "OE123456";
 const testOENumberLowercase = "oe123456";

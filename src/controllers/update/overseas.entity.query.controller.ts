@@ -11,12 +11,14 @@ import { mapCompanyProfileToOverseasEntity } from "../../utils/update/company.pr
 import { mapInputDate } from "../../utils/update/mapper.utils";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { retrieveBoAndMoData } from "../../utils/update/beneficial_owners_managing_officers_data_fetch";
-import { getBackLinkUrl, isRemoveJourney } from "../../utils/url";
+import { getBackLinkOrNextUrl, isRemoveJourney } from "../../utils/url";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
+
   try {
+
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const appData: ApplicationData = await getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req, true);
     const isRemove: boolean = await isRemoveJourney(req);
 
     if (isRemove) {
@@ -29,7 +31,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       });
     }
 
-    const backLinkUrl = getBackLinkUrl({
+    const backLinkUrl = getBackLinkOrNextUrl({
       req,
       urlWithEntityIds: config.UPDATE_INTERRUPT_CARD_WITH_PARAMS_URL,
       urlWithoutEntityIds: config.UPDATE_INTERRUPT_CARD_URL,
@@ -41,6 +43,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       chsUrl: process.env.CHS_URL,
       [EntityNumberKey]: appData[EntityNumberKey]
     });
+
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);
@@ -48,27 +51,35 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
+
   try {
+
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const entityNumber = req.body[EntityNumberKey];
     const companyProfile = await getCompanyProfile(req, entityNumber);
     const isRemove: boolean = await isRemoveJourney(req);
+    const appData: ApplicationData = await getApplicationData(req, true);
 
     if (!companyProfile) {
       return await renderGetPageWithError(req, res, entityNumber);
     }
 
-    const appData: ApplicationData = await getApplicationData(req.session);
     if (appData.entity_number !== entityNumber) {
       await addOeToApplicationData(req, appData, entityNumber, companyProfile);
     }
 
+    const nextPageUrl = getBackLinkOrNextUrl({
+      req,
+      urlWithEntityIds: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
+    });
+
     if (isRemove) {
-      return res.redirect(`${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+      return res.redirect(`${nextPageUrl}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
     }
 
-    return res.redirect(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
+    return res.redirect(nextPageUrl);
 
   } catch (error) {
     logger.errorRequest(req, error);

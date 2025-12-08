@@ -17,25 +17,26 @@ export interface TransactionIdAndSubmissionId {
   submissionId: string;
 }
 
-export const getBackLinkUrl = ({
+export const getBackLinkOrNextUrl = ({
   req,
   urlWithEntityIds,
   urlWithoutEntityIds,
 }: BackLinkUrlDependencies): string => {
+
   try {
+
     const ids = getTransactionIdAndSubmissionIdFromOriginalUrl(req);
 
-    if (
-      !isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) ||
-        typeof ids === "undefined"
-    ) {
+    if (!isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) || typeof ids === "undefined") {
       return urlWithoutEntityIds;
     }
+
     return getUrlWithTransactionIdAndSubmissionId(
       urlWithEntityIds,
       ids[config.ROUTE_PARAM_TRANSACTION_ID],
       ids[config.ROUTE_PARAM_SUBMISSION_ID]
     );
+
   } catch (error) {
     logger.errorRequest(req, error);
     return urlWithoutEntityIds;

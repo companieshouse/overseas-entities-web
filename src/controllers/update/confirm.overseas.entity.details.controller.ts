@@ -4,8 +4,7 @@ import { logger } from "../../utils/logger";
 import * as config from "../../config";
 import { getApplicationData } from "../../utils/application.data";
 import { Update } from "../../model/update.type.model";
-import { Session } from "@companieshouse/node-session-handler";
-import { isRemoveJourney } from "../../utils/url";
+import { getBackLinkOrNextUrl, isRemoveJourney } from "../../utils/url";
 import { CompanyPersonsWithSignificantControlStatements } from "@companieshouse/api-sdk-node/dist/services/company-psc-statements/types";
 import { isActiveFeature } from "../../utils/feature.flag";
 import { getCompanyPscStatements } from "../../service/persons.with.signficant.control.statement.service";
@@ -19,7 +18,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const appData: ApplicationData = await getApplicationData(req.session as Session);
+    const appData: ApplicationData = await getApplicationData(req, true);
     const update = appData.update as Update;
     const isRemove: boolean = await isRemoveJourney(req);
 
@@ -34,8 +33,14 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       });
     }
 
+    const backLinkUrl = getBackLinkOrNextUrl({
+      req,
+      urlWithEntityIds: config.OVERSEAS_ENTITY_QUERY_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.OVERSEAS_ENTITY_QUERY_URL,
+    });
+
     return res.render(config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE, {
-      backLinkUrl: config.OVERSEAS_ENTITY_QUERY_URL,
+      backLinkUrl,
       updateUrl: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
       templateName: config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
       ...appData,
@@ -53,7 +58,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await getApplicationData(req.session as Session);
+    const appData: ApplicationData = await getApplicationData(req, true);
 
     if (isRemove) {
       return res.redirect(`${config.OVERSEAS_ENTITY_PRESENTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
@@ -64,7 +69,12 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       relevantPeriodStatementsState.has_answered_relevant_period_question = statements?.items?.length > 0 && statements.items.some(item => relevantPeriodPscStatements.has(item.statement));
 
       if (isActiveFeature(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD) && !relevantPeriodStatementsState.has_answered_relevant_period_question) {
-        return res.redirect(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
+        const nextPageUrl = getBackLinkOrNextUrl({
+          req,
+          urlWithEntityIds: config.RELEVANT_PERIOD_OWNED_LAND_FILTER_WITH_PARAMS_URL,
+          urlWithoutEntityIds: config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL,
+        });
+        return res.redirect(nextPageUrl + config.RELEVANT_PERIOD_QUERY_PARAM);
       }
     }
     return res.redirect(config.UPDATE_FILING_DATE_URL);

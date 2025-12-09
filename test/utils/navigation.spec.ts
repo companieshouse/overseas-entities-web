@@ -24,10 +24,9 @@ const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockIsNoChangeJourney = isNoChangeJourney as jest.Mock;
 
-const mockRemoveRequest = { } as Request;
-mockRemoveRequest["query"] = {
-  "journey": "remove"
-};
+const mockRemoveRequest = {
+  query: { journey: "remove" }
+} as unknown as Request;
 
 const mockRequestWithParams = {
   params: {
@@ -35,7 +34,7 @@ const mockRequestWithParams = {
     submissionId: `:${config.ROUTE_PARAM_SUBMISSION_ID}`
   },
   query: {}
-} as any;
+} as unknown as Request;
 
 describe("NAVIGATION utils", () => {
 

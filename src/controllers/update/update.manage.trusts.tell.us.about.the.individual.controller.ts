@@ -24,6 +24,7 @@ import { IndividualTrusteesFormCommon } from '../../model/trust.page.model';
 import { ApplicationData } from 'model';
 import { checkTrustIndividualCeasedDate } from '../../validation/async';
 import { checkTrustIndividualBeneficialOwnerStillInvolved } from '../../validation/stillInvolved.validation';
+import { checkTrusteeInterestedDate } from '../../validation/fields/date.validation';
 
 const getPageProperties = (trust, formData, trustee: TrustIndividual, url: string, errors?: FormattedValidationErrors) => {
   return {
@@ -139,6 +140,6 @@ const getPagePropertiesRelevantPeriod = (relevant_period, trust, formData, trust
 const getValidationErrors = async (appData: ApplicationData, req: Request): Promise<ValidationError[]> => {
   const stillInvolvedErrors = checkTrustIndividualBeneficialOwnerStillInvolved(appData, req);
   const ceasedDateErrors = await checkTrustIndividualCeasedDate(appData, req);
-
-  return [...stillInvolvedErrors, ...ceasedDateErrors];
+  const interestedDateErrors = checkTrusteeInterestedDate(appData, req);
+  return [...stillInvolvedErrors, ...ceasedDateErrors, ...interestedDateErrors];
 };

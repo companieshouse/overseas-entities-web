@@ -77,7 +77,12 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         return res.redirect(nextPageUrl + config.RELEVANT_PERIOD_QUERY_PARAM);
       }
     }
-    return res.redirect(config.UPDATE_FILING_DATE_URL);
+    const nextPageUrl = getBackLinkOrNextUrl({
+      req,
+      urlWithEntityIds: config.UPDATE_FILING_DATE_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.UPDATE_FILING_DATE_URL,
+    });
+    return res.redirect(nextPageUrl);
   } catch (errors) {
     logger.errorRequest(req, errors);
     next(errors);

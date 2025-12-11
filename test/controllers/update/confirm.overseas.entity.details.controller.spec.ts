@@ -218,7 +218,7 @@ describe("Confirm company data", () => {
       expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_QUERY_URL);
     });
 
-    test(`redirect to update-filing-date if no BOs - removal flag off`, async () => {
+    test(`redirect to update-filing-date if no BOs - redis removal flag off`, async () => {
       mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW);
       mockIsActiveFeature.mockReturnValueOnce(false); // relevant period
       mockIsActiveFeature.mockReturnValueOnce(false); // Redis removal
@@ -228,17 +228,17 @@ describe("Confirm company data", () => {
       expect(resp.header.location).toEqual(config.UPDATE_FILING_DATE_URL);
     });
 
-    test(`redirect to update-filing-date if no BOs - removal flag on`, async () => {
+    test(`redirect to update-filing-date if no BOs - redis removal flag on`, async () => {
       mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW);
       mockIsActiveFeature.mockReturnValueOnce(false); // relevant period
       mockIsActiveFeature.mockReturnValueOnce(true); // Redis removal
       const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL).send({});
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.UPDATE_FILING_DATE_URL);
+      expect(resp.header.location).toEqual(config.UPDATE_FILING_DATE_WITH_PARAMS_URL);
     });
 
-    test(`redirect to update-filing-date if no BOs when FEATURE_FLAG_ENABLE_RELEVANT_PERIOD is active - removal flag off`, async () => {
+    test(`redirect to update-filing-date if no BOs when FEATURE_FLAG_ENABLE_RELEVANT_PERIOD is active - redis removal flag off`, async () => {
       mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW);
       mockIsActiveFeature.mockReturnValueOnce(true); // relevant period
       mockIsActiveFeature.mockReturnValueOnce(false); // Redis removal
@@ -249,7 +249,7 @@ describe("Confirm company data", () => {
       expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
     });
 
-    test(`redirect to update-filing-date if no BOs when FEATURE_FLAG_ENABLE_RELEVANT_PERIOD is active - removal flag on`, async () => {
+    test(`redirect to update-filing-date if no BOs when FEATURE_FLAG_ENABLE_RELEVANT_PERIOD is active - redis removal flag on`, async () => {
       mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW);
       mockIsActiveFeature.mockReturnValueOnce(true); // relevant period
       mockIsActiveFeature.mockReturnValueOnce(true); // Redis removal
@@ -263,7 +263,7 @@ describe("Confirm company data", () => {
     test.each([
       ["BO Individual", "review_beneficial_owners_individual", BENEFICIAL_OWNER_INDIVIDUAL_NO_TRUSTEE_OBJECT_MOCK ],
       ["BO Corporate", "review_beneficial_owners_corporate", BENEFICIAL_OWNER_OTHER_NO_TRUSTEE_OBJECT_MOCK ]
-    ])(`redirect to update-filing-date if %s but does not have nature of controls related to trusts`, async (_, key, mockObject) => {
+    ])(`redirect to update-filing-date if %s but does not have nature of controls related to trusts - redis removal flag off`, async (_, key, mockObject) => {
       let appData = {};
       appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
       appData[UpdateKey] = {
@@ -272,17 +272,39 @@ describe("Confirm company data", () => {
       };
 
       mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW);
+      mockIsActiveFeature.mockReturnValueOnce(false); // relevant period
+      mockIsActiveFeature.mockReturnValueOnce(false); // Redis removal
       const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL).send({});
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.UPDATE_FILING_DATE_URL);
     });
 
+    test.each([
+      ["BO Individual", "review_beneficial_owners_individual", BENEFICIAL_OWNER_INDIVIDUAL_NO_TRUSTEE_OBJECT_MOCK ],
+      ["BO Corporate", "review_beneficial_owners_corporate", BENEFICIAL_OWNER_OTHER_NO_TRUSTEE_OBJECT_MOCK ]
+    ])(`redirect to update-filing-date if %s but does not have nature of controls related to trusts - redis removal flag on`, async (_, key, mockObject) => {
+      let appData = {};
+      appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
+      appData[UpdateKey] = {
+        ...UPDATE_OBJECT_MOCK,
+        [key]: [ mockObject ]
+      };
+
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW);
+      mockIsActiveFeature.mockReturnValueOnce(false); // relevant period
+      mockIsActiveFeature.mockReturnValueOnce(true); // Redis removal
+      const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL).send({});
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.UPDATE_FILING_DATE_WITH_PARAMS_URL);
+    });
+
     test('catch error when posting to the page', async () => {
       mockGetApplicationData.mockReturnValueOnce(entityProfileModelMock);
 
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-      const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL).send({});
+      const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL).send({});
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
@@ -320,7 +342,7 @@ describe("Confirm company data", () => {
   test.each([
     ["BO Individual", "review_beneficial_owners_individual", BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK ],
     ["BO Corporate", "review_beneficial_owners_corporate", BENEFICIAL_OWNER_OTHER_OBJECT_MOCK ]
-  ])(`redirect to update-filing-date if %s has trusts NOC`, async (_, key, mockObject) => {
+  ])(`redirect to update-filing-date if %s has trusts NOC - redis removal flag off`, async (_, key, mockObject) => {
 
     let appData = {};
     appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
@@ -330,10 +352,33 @@ describe("Confirm company data", () => {
     };
 
     mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW);
+    mockIsActiveFeature.mockReturnValueOnce(false); // relevant period
+    mockIsActiveFeature.mockReturnValueOnce(false); // Redis removal
     const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL).send({});
 
     expect(resp.status).toEqual(302);
     expect(resp.header.location).toEqual(config.UPDATE_FILING_DATE_URL);
+  });
+
+  test.each([
+    ["BO Individual", "review_beneficial_owners_individual", BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK ],
+    ["BO Corporate", "review_beneficial_owners_corporate", BENEFICIAL_OWNER_OTHER_OBJECT_MOCK ]
+  ])(`redirect to update-filing-date if %s has trusts NOC - redis removal flag on`, async (_, key, mockObject) => {
+
+    let appData = {};
+    appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
+    appData[UpdateKey] = {
+      ...UPDATE_OBJECT_MOCK,
+      [key]: [ mockObject ]
+    };
+
+    mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW);
+    mockIsActiveFeature.mockReturnValueOnce(false); // relevant period
+    mockIsActiveFeature.mockReturnValueOnce(true); // Redis removal
+    const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL).send({});
+
+    expect(resp.status).toEqual(302);
+    expect(resp.header.location).toEqual(config.UPDATE_FILING_DATE_WITH_PARAMS_URL);
   });
 
   test.each([
@@ -355,12 +400,13 @@ describe("Confirm company data", () => {
     expect(resp.header.location).toEqual(`${config.OVERSEAS_ENTITY_PRESENTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
   });
 
-  test(`should redirect to relevant period filer page if feature flag active and no relevantPeriodStatements`, async () => {
+  test(`should redirect to relevant period filer page if feature flag active and no relevantPeriodStatements - redis removal flag off`, async () => {
     mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_BO_MOCK);
     mockIsActiveFeature.mockReturnValueOnce(true);
     const mockStatement = {
       statement: 'no-individual-or-entity-with-signficant-control' };
     mockGetCompanyPscStatements.mockReturnValue(mockStatement);
+    mockIsActiveFeature.mockReturnValueOnce(false); // Redis removal
 
     const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL).send({});
 
@@ -369,17 +415,47 @@ describe("Confirm company data", () => {
 
   });
 
-  test(`should redirect to update filing page if any relevant Period psc statements exist`, async () => {
+  test(`should redirect to relevant period filer page if feature flag active and no relevantPeriodStatements - redis removal flag on`, async () => {
+    mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_BO_MOCK);
+    mockIsActiveFeature.mockReturnValueOnce(true);
+    const mockStatement = {
+      statement: 'no-individual-or-entity-with-signficant-control' };
+    mockGetCompanyPscStatements.mockReturnValue(mockStatement);
+    mockIsActiveFeature.mockReturnValueOnce(true); // Redis removal
+
+    const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL).send({});
+
+    expect(resp.status).toEqual(302);
+    expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_WITH_PARAMS_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
+
+  });
+
+  test(`should redirect to update filing page if any relevant Period psc statements exist - redis removal flag off`, async () => {
     mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_BO_MOCK);
     mockIsActiveFeature.mockReturnValueOnce(true);
     const mockStatements = [ { statement: 'change-beneficiary-relevant-period' },
       { statement: 'all-beneficial-owners-identified' } ];
     mockGetCompanyPscStatements.mockReturnValue({ items: mockStatements });
+    mockIsActiveFeature.mockReturnValueOnce(false); // Redis removal
 
     const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL).send({});
 
     expect(resp.status).toEqual(302);
     expect(resp.header.location).toEqual(config.UPDATE_FILING_DATE_URL);
+  });
+
+  test(`should redirect to update filing page if any relevant Period psc statements exist - redis removal flag on`, async () => {
+    mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_BO_MOCK);
+    mockIsActiveFeature.mockReturnValueOnce(true);
+    const mockStatements = [ { statement: 'change-beneficiary-relevant-period' },
+      { statement: 'all-beneficial-owners-identified' } ];
+    mockGetCompanyPscStatements.mockReturnValue({ items: mockStatements });
+    mockIsActiveFeature.mockReturnValueOnce(true); // Redis removal
+
+    const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL).send({});
+
+    expect(resp.status).toEqual(302);
+    expect(resp.header.location).toEqual(config.UPDATE_FILING_DATE_WITH_PARAMS_URL);
   });
 
 });

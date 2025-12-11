@@ -752,7 +752,7 @@ describe("checkTrusteeInterestedDate", () => {
     req.body.dateOfBirthMonth = "1";
     req.body.dateOfBirthYear = "1990";
     const errors = checkTrusteeInterestedDate(appData, req);
-    expect(errors.some(e => e.msg === ErrorMessages.DATE_BEFORE_DATE_OF_BIRTH_INTERSTED_TRUSTEE)).toBe(true);
+    expect(errors.some(e => e.msg === ErrorMessages.DATE_BEFORE_DATE_OF_BIRTH_INTERESTED_TRUSTEE)).toBe(true);
   });
 
   test("should return empty array if trust not found", () => {

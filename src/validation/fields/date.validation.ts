@@ -591,7 +591,7 @@ export const checkTrusteeInterestedDate = (appData: ApplicationData, req: Reques
       req.body["dateOfBirthMonth"],
       req.body["dateOfBirthYear"]
     ],
-    ErrorMessages.DATE_BEFORE_DATE_OF_BIRTH_INTERSTED_TRUSTEE,
+    ErrorMessages.DATE_BEFORE_DATE_OF_BIRTH_INTERESTED_TRUSTEE,
     errors,
     'dateBecameIPDay'
   );

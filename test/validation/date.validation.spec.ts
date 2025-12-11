@@ -721,7 +721,7 @@ describe("checkTrusteeInterestedDate", () => {
     req.body.dateBecameIPMonth = "1";
     req.body.dateBecameIPYear = "1999";
     const errors = checkTrusteeInterestedDate(appData, req);
-    expect(errors.some(e => e.msg === ErrorMessages.DATE_BEFORE_TRUST_CREATION_DATE_INTERSTED_TRUSTEE)).toBe(true);
+    expect(errors.some(e => e.msg === ErrorMessages.DATE_BEFORE_TRUST_CREATION_DATE_INTERESTED_TRUSTEE)).toBe(true);
   });
 
   test("returns error if trust found in review_trusts and dateBecameIP is before creation date", () => {
@@ -741,7 +741,7 @@ describe("checkTrusteeInterestedDate", () => {
     req.body.dateBecameIPMonth = "1";
     req.body.dateBecameIPYear = "2000";
     const errors = checkTrusteeInterestedDate(appData, req);
-    expect(errors.some(e => e.msg === ErrorMessages.DATE_BEFORE_TRUST_CREATION_DATE_INTERSTED_TRUSTEE)).toBe(true);
+    expect(errors.some(e => e.msg === ErrorMessages.DATE_BEFORE_TRUST_CREATION_DATE_INTERESTED_TRUSTEE)).toBe(true);
   });
 
   test("should add error if dateBecameIP is before date of birth", () => {

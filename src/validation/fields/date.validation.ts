@@ -530,7 +530,7 @@ export function addDateValidationErrorIfInvalid (
   firstDate: [string, string, string],
   secondDate: [string, string, string],
   errorMsg: string,
-  errors: any[],
+  errors: ValidationError[],
   param: string
 ) {
   try {
@@ -574,7 +574,7 @@ export const checkTrusteeInterestedDate = (appData: ApplicationData, req: Reques
       trust.creation_date_month,
       trust.creation_date_year
     ],
-    ErrorMessages.DATE_BEFORE_TRUST_CREATION_DATE_INTERSTED_TRUSTEE,
+    ErrorMessages.DATE_BEFORE_TRUST_CREATION_DATE_INTERESTED_TRUSTEE,
     errors,
     'dateBecameIPDay'
   );

@@ -27,7 +27,11 @@ import { getConfirmationStatementNextMadeUpToDateAsIsoString } from "../../src/s
 import { isRegistrationJourney } from "../../src/utils/url";
 import { fetchApplicationData, getApplicationData } from '../../src/utils/application.data';
 
-import { NEXT_MADE_UP_TO_ISO_DATE, addNextMadeUpToDateToRequest } from "../../src/validation/fields/date.validation";
+import {
+  NEXT_MADE_UP_TO_ISO_DATE,
+  addNextMadeUpToDateToRequest,
+  checkTrusteeInterestedDate,
+} from "../../src/validation/fields/date.validation";
 
 import {
   dateValidations,
@@ -688,5 +692,95 @@ describe("addNextMadeUpToDateToRequest tests", () => {
     await addNextMadeUpToDateToRequest(mockReq, mockRes, mockNext);
     expect(mockErrorLogger.mock.calls[0][1]).toContain("addNextMadeUpToDateToRequest - Unable to find next made up to date for entity 123456");
     expect(mockNext).toBeCalledWith(expect.objectContaining({ 'message': ErrorMessages.UNABLE_TO_RETRIEVE_EXPECTED_DATE }));
+  });
+});
+
+describe("checkTrusteeInterestedDate", () => {
+  let appData: any;
+  let req: any;
+
+  beforeEach(() => {
+    appData = {
+      trusts: [
+        {
+          trust_id: "trust123",
+          creation_date_day: "1",
+          creation_date_month: "1",
+          creation_date_year: "2000"
+        }
+      ]
+    };
+    req = {
+      params: { trustId: "trust123" },
+      body: {}
+    };
+  });
+
+  test("should add error if dateBecameIP is before trust creation date", () => {
+    req.body.dateBecameIPDay = "1";
+    req.body.dateBecameIPMonth = "1";
+    req.body.dateBecameIPYear = "1999";
+    const errors = checkTrusteeInterestedDate(appData, req);
+    expect(errors.some(e => e.msg === ErrorMessages.DATE_BEFORE_TRUST_CREATION_DATE_INTERESTED_TRUSTEE)).toBe(true);
+  });
+
+  test("returns error if trust found in review_trusts and dateBecameIP is before creation date", () => {
+    appData.trusts = undefined;
+    appData.update = {
+      review_trusts: [
+        {
+          INDIVIDUALS: [{ id: "trusteeX" }],
+          creation_date_day: "15",
+          creation_date_month: "6",
+          creation_date_year: "2010"
+        }
+      ]
+    };
+    req.params.trusteeId = "trusteeX";
+    req.body.dateBecameIPDay = "1";
+    req.body.dateBecameIPMonth = "1";
+    req.body.dateBecameIPYear = "2000";
+    const errors = checkTrusteeInterestedDate(appData, req);
+    expect(errors.some(e => e.msg === ErrorMessages.DATE_BEFORE_TRUST_CREATION_DATE_INTERESTED_TRUSTEE)).toBe(true);
+  });
+
+  test("should add error if dateBecameIP is before date of birth", () => {
+    req.body.dateBecameIPDay = "1";
+    req.body.dateBecameIPMonth = "1";
+    req.body.dateBecameIPYear = "1980";
+    req.body.dateOfBirthDay = "1";
+    req.body.dateOfBirthMonth = "1";
+    req.body.dateOfBirthYear = "1990";
+    const errors = checkTrusteeInterestedDate(appData, req);
+    expect(errors.some(e => e.msg === ErrorMessages.DATE_BEFORE_DATE_OF_BIRTH_INTERESTED_TRUSTEE)).toBe(true);
+  });
+
+  test("should return empty array if trust not found", () => {
+    const errors = checkTrusteeInterestedDate({}, req);
+    expect(errors).toEqual([]);
+  });
+
+  test("should return empty array if trusts array is empty", () => {
+    const errors = checkTrusteeInterestedDate({ trusts: [] }, req);
+    expect(errors).toEqual([]);
+  });
+
+  test("should return empty array if trusts array is undefined", () => {
+    const errors = checkTrusteeInterestedDate({ trusts: undefined }, req);
+    expect(errors).toEqual([]);
+  });
+
+  test("should return empty array if trustId param does not match any trust", () => {
+    req.params.trustId = "nonexistent";
+    const errors = checkTrusteeInterestedDate(appData, req);
+    expect(errors).toEqual([]);
+  });
+
+  test("returns empty array if review_trusts does not match trusteeId", () => {
+    appData.trusts = undefined;
+    appData.update = { review_trusts: [{ INDIVIDUALS: [{ id: "otherId" }] }] };
+    req.params.trusteeId = "noMatch";
+    const errors = checkTrusteeInterestedDate(appData, req);
+    expect(errors).toEqual([]);
   });
 });

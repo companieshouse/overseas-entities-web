@@ -18,6 +18,8 @@ import { ValidationError, validationResult } from 'express-validator';
 import { fetchApplicationData, setExtraData } from './application.data';
 import { mapIndividualTrusteeToSession, mapIndividualTrusteeByIdFromSessionToPage } from './trust/individual.trustee.mapper';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
+import { checkTrusteeInterestedDate } from '../validation/fields/date.validation';
+
 import {
   getTrustByIdFromApp,
   saveTrustInApp,
@@ -216,5 +218,6 @@ const getUrl = (isUpdate: boolean) => {
 const getValidationErrors = async (appData: ApplicationData, req: Request): Promise<ValidationError[]> => {
   const stillInvolvedErrors = checkTrustIndividualBeneficialOwnerStillInvolved(appData, req);
   const ceasedDateErrors = await checkTrustIndividualCeasedDate(appData, req);
-  return [...stillInvolvedErrors, ...ceasedDateErrors];
+  const interestedDateErrors = checkTrusteeInterestedDate(appData, req);
+  return [...stillInvolvedErrors, ...ceasedDateErrors, ...interestedDateErrors];
 };

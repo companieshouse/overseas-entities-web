@@ -71,13 +71,29 @@ describe("Confirm company data", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetApplicationData.mockReset();
+    mockIsActiveFeature.mockReset();
   });
 
   describe("Get confirm overseas entity details", () => {
-    test(`renders the ${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL} page for the update journey`, async () => {
+    test(`renders the ${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL} page for the update journey - flag off`, async () => {
 
+      mockIsActiveFeature.mockReturnValue(false); // Redis removal
       mockGetApplicationData.mockReturnValueOnce(entityProfileModelMock).mockReturnValueOnce(entityProfileModelMock);
       const resp = await request(app).get(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BACK_LINK_FOR_UPDATE_OE_CONFIRM);
+      expect(resp.text).toContain(testEntityName);
+      expect(resp.text).toContain("January");
+      expect(resp.text).toContain(testEntityNumber);
+      expect(resp.text).toContain(testIncorporationCountry);
+      expect(resp.text).toContain(config.UPDATE_SERVICE_NAME);
+    });
+
+    test(`renders the ${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL} page for the update journey - flag on`, async () => {
+
+      mockIsActiveFeature.mockReturnValue(true); // Redis removal
+      mockGetApplicationData.mockReturnValueOnce(entityProfileModelMock).mockReturnValueOnce(entityProfileModelMock);
+      const resp = await request(app).get(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BACK_LINK_FOR_UPDATE_OE_CONFIRM);
       expect(resp.text).toContain(testEntityName);
@@ -100,8 +116,9 @@ describe("Confirm company data", () => {
       expect(resp.text).toContain(config.REMOVE_SERVICE_NAME);
     });
 
-    test(`redirects if no update data`, async () => {
+    test(`redirects if no update data - flag off`, async () => {
       mockGetApplicationData.mockReturnValueOnce(entityModelMock);
+      mockIsActiveFeature.mockReturnValue(false); // Redis removal
 
       const resp = await request(app).get(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
       expect(resp.statusCode).toEqual(302);
@@ -109,8 +126,19 @@ describe("Confirm company data", () => {
       expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_QUERY_URL);
     });
 
-    test(`redirects if no date of creation`, async () => {
+    test(`redirects if no update data - flag on`, async () => {
+      mockGetApplicationData.mockReturnValueOnce(entityModelMock);
+      mockIsActiveFeature.mockReturnValue(true); // Redis removal
+
+      const resp = await request(app).get(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL);
+      expect(resp.statusCode).toEqual(302);
+      expect(resp.redirect).toEqual(true);
+      expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_QUERY_URL);
+    });
+
+    test(`redirects if no date of creation - flag off`, async () => {
       mockGetApplicationData.mockReturnValueOnce(missingDateOfCreationMock);
+      mockIsActiveFeature.mockReturnValue(false); // Redis removal
 
       const resp = await request(app).get(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
       expect(resp.statusCode).toEqual(302);
@@ -118,8 +146,19 @@ describe("Confirm company data", () => {
       expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_QUERY_URL);
     });
 
-    test(`redirects if no entity data`, async () => {
+    test(`redirects if no date of creation - flag on`, async () => {
+      mockGetApplicationData.mockReturnValueOnce(missingDateOfCreationMock);
+      mockIsActiveFeature.mockReturnValue(true); // Redis removal
+
+      const resp = await request(app).get(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL);
+      expect(resp.statusCode).toEqual(302);
+      expect(resp.redirect).toEqual(true);
+      expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_QUERY_URL);
+    });
+
+    test(`redirects if no entity data - flag off`, async () => {
       mockGetApplicationData.mockReturnValueOnce(updateModelMock);
+      mockIsActiveFeature.mockReturnValue(false); // Redis removal
 
       const resp = await request(app).get(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
       expect(resp.statusCode).toEqual(302);
@@ -127,8 +166,29 @@ describe("Confirm company data", () => {
       expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_QUERY_URL);
     });
 
-    test('catch error when rendering the page', async () => {
+    test(`redirects if no entity data - flag on`, async () => {
+      mockGetApplicationData.mockReturnValueOnce(updateModelMock);
+      mockIsActiveFeature.mockReturnValue(true); // Redis removal
+
+      const resp = await request(app).get(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL);
+      expect(resp.statusCode).toEqual(302);
+      expect(resp.redirect).toEqual(true);
+      expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_QUERY_URL);
+    });
+
+    test('catch error when rendering the page - flag off', async () => {
       mockGetApplicationData.mockReturnValueOnce(entityProfileModelMock);
+      mockIsActiveFeature.mockReturnValue(false); // Redis removal
+
+      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      const resp = await request(app).get(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL);
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+
+    test('catch error when rendering the page - flag on', async () => {
+      mockGetApplicationData.mockReturnValueOnce(entityProfileModelMock);
+      mockIsActiveFeature.mockReturnValue(true); // Redis removal
 
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
@@ -138,8 +198,9 @@ describe("Confirm company data", () => {
   });
 
   describe("Post update confirm overseas entity details", () => {
-    test(`redirects to overseas-entity-query page if no entity`, async () => {
+    test(`redirects to overseas-entity-query page if no entity - flag off`, async () => {
       mockGetApplicationData.mockReturnValueOnce({});
+      mockIsActiveFeature.mockReturnValue(false); // Redis removal
 
       const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
       expect(resp.statusCode).toEqual(302);
@@ -147,22 +208,56 @@ describe("Confirm company data", () => {
       expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_QUERY_URL);
     });
 
-    test(`redirect to update-filing-date if no BOs`, async () => {
+    test(`redirects to overseas-entity-query page if no entity - flag on`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({});
+      mockIsActiveFeature.mockReturnValue(true); // Redis removal
+
+      const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL);
+      expect(resp.statusCode).toEqual(302);
+      expect(resp.redirect).toEqual(true);
+      expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_QUERY_URL);
+    });
+
+    test(`redirect to update-filing-date if no BOs - removal flag off`, async () => {
       mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW);
+      mockIsActiveFeature.mockReturnValueOnce(false); // relevant period
+      mockIsActiveFeature.mockReturnValueOnce(false); // Redis removal
       const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL).send({});
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.UPDATE_FILING_DATE_URL);
     });
 
-    test(`redirect to update-filing-date if no BOs when FEATURE_FLAG_ENABLE_RELEVANT_PERIOD is active`, async () => {
+    test(`redirect to update-filing-date if no BOs - removal flag on`, async () => {
       mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW);
-      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockIsActiveFeature.mockReturnValueOnce(false); // relevant period
+      mockIsActiveFeature.mockReturnValueOnce(true); // Redis removal
+      const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL).send({});
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.UPDATE_FILING_DATE_URL);
+    });
+
+    test(`redirect to update-filing-date if no BOs when FEATURE_FLAG_ENABLE_RELEVANT_PERIOD is active - removal flag off`, async () => {
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW);
+      mockIsActiveFeature.mockReturnValueOnce(true); // relevant period
+      mockIsActiveFeature.mockReturnValueOnce(false); // Redis removal
 
       const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL).send({});
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
+    });
+
+    test(`redirect to update-filing-date if no BOs when FEATURE_FLAG_ENABLE_RELEVANT_PERIOD is active - removal flag on`, async () => {
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW);
+      mockIsActiveFeature.mockReturnValueOnce(true); // relevant period
+      mockIsActiveFeature.mockReturnValueOnce(true); // Redis removal
+
+      const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL).send({});
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_WITH_PARAMS_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
     });
 
     test.each([

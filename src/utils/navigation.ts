@@ -4,9 +4,9 @@ import { Navigation } from "../model/navigation.model";
 import { ApplicationData } from "../model/application.model";
 import { WhoIsRegisteringType } from "../model/who.is.making.filing.model";
 import { isActiveFeature } from "./feature.flag";
-import { getUrlWithParamsToPath, isRemoveJourney } from "./url";
 import { Request } from "express";
 import { isNoChangeJourney } from "./update/no.change.journey";
+import { getBackLinkOrNextUrl, getUrlWithParamsToPath, isRemoveJourney } from "./url";
 
 export const getEntityBackLink = (data: ApplicationData, req: Request): string => {
   let backLinkUrl: string = data?.who_is_registering === WhoIsRegisteringType.AGENT ? config.DUE_DILIGENCE_URL : config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL;
@@ -47,7 +47,11 @@ export const getOverseasEntityPresenterBackLink = async (req: Request): Promise<
   if (isRemove) {
     return `${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`;
   } else {
-    return config.UPDATE_FILING_DATE_URL;
+    return getBackLinkOrNextUrl({
+      req,
+      urlWithEntityIds: config.UPDATE_FILING_DATE_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.UPDATE_FILING_DATE_URL
+    });
   }
 };
 
@@ -57,7 +61,11 @@ export const getUpdateReviewStatementBackLink = async (req: Request): Promise<st
   if (isRemove) {
     return config.REMOVE_CONFIRM_STATEMENT_URL;
   }
-  return config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL;
+  return getBackLinkOrNextUrl({
+    req,
+    urlWithEntityIds: config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_WITH_PARAMS_URL,
+    urlWithoutEntityIds: config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL
+  });
 };
 
 export const NAVIGATION: Navigation = {
@@ -76,9 +84,19 @@ export const NAVIGATION: Navigation = {
     previousPage: async (appData: ApplicationData, req: Request) => getSecureUpdateFilterBackLink(req),
     nextPage: [config.UPDATE_ANY_TRUSTS_INVOLVED_URL]
   },
+  [config.SECURE_UPDATE_FILTER_WITH_PARAMS_URL]: {
+    currentPage: config.SECURE_UPDATE_FILTER_PAGE,
+    previousPage: async (appData: ApplicationData, req: Request) => getSecureUpdateFilterBackLink(req),
+    nextPage: [config.UPDATE_ANY_TRUSTS_INVOLVED_URL]
+  },
   [config.UPDATE_INTERRUPT_CARD_URL]: {
     currentPage: config.UPDATE_INTERRUPT_CARD_PAGE,
     previousPage: () => config.UPDATE_ANY_TRUSTS_INVOLVED_URL,
+    nextPage: [config.OVERSEAS_ENTITY_QUERY_PAGE]
+  },
+  [config.UPDATE_INTERRUPT_CARD_WITH_PARAMS_URL]: {
+    currentPage: config.UPDATE_INTERRUPT_CARD_PAGE,
+    previousPage: () => config.UPDATE_ANY_TRUSTS_INVOLVED_WITH_PARAMS_URL,
     nextPage: [config.OVERSEAS_ENTITY_QUERY_PAGE]
   },
   [config.OVERSEAS_ENTITY_QUERY_URL]: {
@@ -86,12 +104,27 @@ export const NAVIGATION: Navigation = {
     previousPage: async (appData: ApplicationData, req: Request) => getUpdateOrRemoveBackLink(req, config.UPDATE_INTERRUPT_CARD_URL),
     nextPage: [config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE]
   },
+  [config.OVERSEAS_ENTITY_QUERY_WITH_PARAMS_URL]: {
+    currentPage: config.OVERSEAS_ENTITY_QUERY_PAGE,
+    previousPage: async (appData: ApplicationData, req: Request) => getUpdateOrRemoveBackLink(req, config.UPDATE_INTERRUPT_CARD_WITH_PARAMS_URL),
+    nextPage: [config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE]
+  },
   [config.UPDATE_FILING_DATE_URL]: {
     currentPage: config.UPDATE_FILING_DATE_PAGE,
     previousPage: () => config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
     nextPage: [config.UPDATE_PRESENTER_PAGE]
   },
+  [config.UPDATE_FILING_DATE_WITH_PARAMS_URL]: {
+    currentPage: config.UPDATE_FILING_DATE_PAGE,
+    previousPage: () => config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL,
+    nextPage: [config.UPDATE_PRESENTER_PAGE]
+  },
   [config.OVERSEAS_ENTITY_PRESENTER_URL]: {
+    currentPage: config.UPDATE_PRESENTER_PAGE,
+    previousPage: async (appData: ApplicationData, req: Request) => getOverseasEntityPresenterBackLink(req),
+    nextPage: [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE]
+  },
+  [config.OVERSEAS_ENTITY_PRESENTER_WITH_PARAMS_URL]: {
     currentPage: config.UPDATE_PRESENTER_PAGE,
     previousPage: async (appData: ApplicationData, req: Request) => getOverseasEntityPresenterBackLink(req),
     nextPage: [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE]
@@ -101,10 +134,20 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.OVERSEAS_ENTITY_PRESENTER_URL,
     nextPage: [config.WHO_IS_MAKING_UPDATE_URL, config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE]
   },
+  [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_WITH_PARAMS_URL]: {
+    currentPage: config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE,
+    previousPage: () => config.OVERSEAS_ENTITY_PRESENTER_WITH_PARAMS_URL,
+    nextPage: [config.WHO_IS_MAKING_UPDATE_WITH_PARAMS_URL, config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE]
+  },
   [config.UPDATE_REVIEW_STATEMENT_URL]: {
     currentPage: config.UPDATE_REVIEW_STATEMENT_PAGE,
     previousPage: async (appData: ApplicationData, req: Request) => getUpdateReviewStatementBackLink(req),
     nextPage: [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL, config.OVERSEAS_ENTITY_PAYMENT_WITH_TRANSACTION_URL]
+  },
+  [config.UPDATE_REVIEW_STATEMENT_WITH_PARAMS_URL]: {
+    currentPage: config.UPDATE_REVIEW_STATEMENT_PAGE,
+    previousPage: async (appData: ApplicationData, req: Request) => getUpdateReviewStatementBackLink(req),
+    nextPage: [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_WITH_PARAMS_URL, config.OVERSEAS_ENTITY_PAYMENT_WITH_TRANSACTION_URL]
   },
   [config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL]: {
     currentPage: config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
@@ -131,12 +174,27 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL + config.RELEVANT_PERIOD_QUERY_PARAM,
     nextPage: [config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE, config.RELEVANT_PERIOD_SUBMIT_BY_PAPER_PAGE]
   },
+  [config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_WITH_PARAMS_URL]: {
+    currentPage: config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_PAGE,
+    previousPage: () => config.RELEVANT_PERIOD_OWNED_LAND_FILTER_WITH_PARAMS_URL + config.RELEVANT_PERIOD_QUERY_PARAM,
+    nextPage: [config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE, config.RELEVANT_PERIOD_SUBMIT_BY_PAPER_PAGE]
+  },
   [config.RELEVANT_PERIOD_SUBMIT_BY_PAPER_URL]: {
     currentPage: config.RELEVANT_PERIOD_SUBMIT_BY_PAPER_PAGE,
     previousPage: () => config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_URL,
     nextPage: []
   },
+  [config.RELEVANT_PERIOD_SUBMIT_BY_PAPER_WITH_PARAMS_URL]: {
+    currentPage: config.RELEVANT_PERIOD_SUBMIT_BY_PAPER_PAGE,
+    previousPage: () => config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_WITH_PARAMS_URL,
+    nextPage: []
+  },
   [config.RELEVANT_PERIOD_INTERRUPT_URL]: {
+    currentPage: config.RELEVANT_PERIOD_INTERRUPT_PAGE,
+    previousPage: () => "",
+    nextPage: [config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE ]
+  },
+  [config.RELEVANT_PERIOD_INTERRUPT_WITH_PARAMS_URL]: {
     currentPage: config.RELEVANT_PERIOD_INTERRUPT_PAGE,
     previousPage: () => "",
     nextPage: [config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE ]
@@ -146,14 +204,29 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_URL + config.RELEVANT_PERIOD_QUERY_PARAM,
     nextPage: [config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL]
   },
+  [config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_WITH_PARAMS_URL]: {
+    currentPage: config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE,
+    previousPage: () => config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_WITH_PARAMS_URL + config.RELEVANT_PERIOD_QUERY_PARAM,
+    nextPage: [config.RELEVANT_PERIOD_REVIEW_STATEMENTS_WITH_PARAMS_URL]
+  },
   [config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL]: {
     currentPage: config.RELEVANT_PERIOD_REVIEW_STATEMENTS_PAGE,
     previousPage: () => config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL + config.RELEVANT_PERIOD_QUERY_PARAM,
     nextPage: [config.UPDATE_FILING_DATE_URL]
   },
+  [config.RELEVANT_PERIOD_REVIEW_STATEMENTS_WITH_PARAMS_URL]: {
+    currentPage: config.RELEVANT_PERIOD_REVIEW_STATEMENTS_PAGE,
+    previousPage: () => config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_WITH_PARAMS_URL + config.RELEVANT_PERIOD_QUERY_PARAM,
+    nextPage: [config.UPDATE_FILING_DATE_WITH_PARAMS_URL]
+  },
   [config.WHO_IS_MAKING_UPDATE_URL]: {
     currentPage: config.WHO_IS_MAKING_UPDATE_PAGE,
     previousPage: () => config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL,
+    nextPage: [config.UPDATE_DUE_DILIGENCE_PAGE, config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE]
+  },
+  [config.WHO_IS_MAKING_UPDATE_WITH_PARAMS_URL]: {
+    currentPage: config.WHO_IS_MAKING_UPDATE_PAGE,
+    previousPage: () => config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_WITH_PARAMS_URL,
     nextPage: [config.UPDATE_DUE_DILIGENCE_PAGE, config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE]
   },
   [config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL]: {
@@ -161,29 +234,59 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.WHO_IS_MAKING_UPDATE_PAGE,
     nextPage: [config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL]
   },
+  [config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_WITH_PARAMS_URL]: {
+    currentPage: config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE,
+    previousPage: () => config.WHO_IS_MAKING_UPDATE_PAGE,
+    nextPage: [config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_WITH_PARAMS_URL]
+  },
   [config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL]: {
     currentPage: config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE,
     previousPage: () => config.WHO_IS_MAKING_UPDATE_PAGE,
     nextPage: [config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL]
+  },
+  [config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_WITH_PARAMS_URL]: {
+    currentPage: config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE,
+    previousPage: () => config.WHO_IS_MAKING_UPDATE_PAGE,
+    nextPage: [config.OVERSEAS_ENTITY_UPDATE_DETAILS_WITH_PARAMS_URL]
   },
   [config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL]: {
     currentPage: config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE,
     previousPage: () => config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL,
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
   },
+  [config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_WITH_PARAMS_URL]: {
+    currentPage: config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE,
+    previousPage: () => config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_WITH_PARAMS_URL,
+    nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL]
+  },
   [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]: {
     currentPage: config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
     previousPage: () => config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
     nextPage: [config.UPDATE_CHECK_YOUR_ANSWERS_URL]
+  },
+  [config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL]: {
+    currentPage: config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
+    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_WITH_PARAMS_URL,
+    nextPage: [config.UPDATE_CHECK_YOUR_ANSWERS_WITH_PARAMS_URL]
   },
   [config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL]: {
     currentPage: config.ENTITY_PAGE,
     previousPage: () => config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL,
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL]
   },
+  [config.OVERSEAS_ENTITY_UPDATE_DETAILS_WITH_PARAMS_URL]: {
+    currentPage: config.ENTITY_PAGE,
+    previousPage: () => config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_WITH_PARAMS_URL,
+    nextPage: [config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL]
+  },
   [config.UPDATE_CHECK_YOUR_ANSWERS_URL]: {
     currentPage: config.UPDATE_CHECK_YOUR_ANSWERS_PAGE,
     previousPage: () => config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL,
+    nextPage: []
+  },
+  [config.UPDATE_CHECK_YOUR_ANSWERS_WITH_PARAMS_URL]: {
+    currentPage: config.UPDATE_CHECK_YOUR_ANSWERS_PAGE,
+    previousPage: () => config.OVERSEAS_ENTITY_UPDATE_DETAILS_WITH_PARAMS_URL,
     nextPage: []
   },
   [config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL]: {
@@ -191,9 +294,19 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE,
     nextPage: [config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL]
   },
+  [config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL]: {
+    currentPage: config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE,
+    previousPage: () => config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE,
+    nextPage: [config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_WITH_PARAMS_URL]
+  },
   [config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL]: {
     currentPage: config.BENEFICIAL_OWNER_STATEMENTS_PAGE,
     previousPage: () => config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL,
+    nextPage: [config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL]
+  },
+  [config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL]: {
+    currentPage: config.BENEFICIAL_OWNER_STATEMENTS_PAGE,
+    previousPage: () => config.OVERSEAS_ENTITY_UPDATE_DETAILS_WITH_PARAMS_URL,
     nextPage: [config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL]
   },
   [config.SECURE_REGISTER_FILTER_URL]: {

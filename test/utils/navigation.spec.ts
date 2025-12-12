@@ -78,8 +78,11 @@ describe("NAVIGATION utils", () => {
   });
 
   test(`getOverseasEntityPresenterBackLink returns the correct URL when not on the Remove journey`, async () => {
-    const mockRequest = { query: {} } as Request;
-    const backLink = await getOverseasEntityPresenterBackLink(mockRequest);
+    const mockRequest = {
+      originalUrl: "abc123",
+      query: {}
+    };
+    const backLink = await getOverseasEntityPresenterBackLink(mockRequest as any);
     expect(backLink).toEqual(config.UPDATE_FILING_DATE_URL);
   });
 

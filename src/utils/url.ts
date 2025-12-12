@@ -7,41 +7,16 @@ import { IsRemoveKey } from "../model/data.types.model";
 import { createAndLogErrorRequest, logger } from "./logger";
 import { isActiveFeature } from "./feature.flag";
 
-interface BackLinkUrlDependencies {
-  req: Request;
-  urlWithEntityIds: string;
-  urlWithoutEntityIds: string;
-}
 export interface TransactionIdAndSubmissionId {
   transactionId: string;
   submissionId: string;
 }
 
-export const getBackLinkOrNextUrl = ({
-  req,
-  urlWithEntityIds,
-  urlWithoutEntityIds,
-}: BackLinkUrlDependencies): string => {
-
-  try {
-
-    const ids = getTransactionIdAndSubmissionIdFromOriginalUrl(req);
-
-    if (!isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) || typeof ids === "undefined") {
-      return urlWithoutEntityIds;
-    }
-
-    return getUrlWithTransactionIdAndSubmissionId(
-      urlWithEntityIds,
-      ids[config.ROUTE_PARAM_TRANSACTION_ID],
-      ids[config.ROUTE_PARAM_SUBMISSION_ID]
-    );
-
-  } catch (error) {
-    logger.errorRequest(req, error);
-    return urlWithoutEntityIds;
-  }
-};
+interface BackLinkOrNextUrlDependencies {
+  req: Request;
+  urlWithEntityIds: string;
+  urlWithoutEntityIds: string;
+}
 
 export const getUrlWithTransactionIdAndSubmissionId = (url: string, transactionId: string, submissionId: string): string => {
   url = url
@@ -92,6 +67,32 @@ export const getTransactionIdAndSubmissionIdFromOriginalUrl = (req: Request): Tr
 
   } catch (e) {
     logger.errorRequest(req, `error extracting transactionId and submissionId from req.originalUrl: ${req.originalUrl} with error object: ${e}`);
+  }
+};
+
+export const getBackLinkOrNextUrl = ({
+  req,
+  urlWithEntityIds,
+  urlWithoutEntityIds,
+}: BackLinkOrNextUrlDependencies): string => {
+
+  try {
+
+    const ids = getTransactionIdAndSubmissionIdFromOriginalUrl(req);
+
+    if (!isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) || typeof ids === "undefined") {
+      return urlWithoutEntityIds;
+    }
+
+    return getUrlWithTransactionIdAndSubmissionId(
+      urlWithEntityIds,
+      ids[config.ROUTE_PARAM_TRANSACTION_ID],
+      ids[config.ROUTE_PARAM_SUBMISSION_ID]
+    );
+
+  } catch (error) {
+    logger.error(error);
+    return urlWithoutEntityIds;
   }
 };
 

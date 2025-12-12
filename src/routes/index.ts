@@ -798,7 +798,7 @@ router.route(config.WHO_IS_MAKING_UPDATE_URL)
   .get(whoIsMakingUpdate.get)
   .post(...validator.whoIsMakingUpdate, checkValidations, whoIsMakingUpdate.post);
 
-router.route(config.WHO_IS_MAKING_UPDATE_WITH_PARAMS_WITH_PARAMS_URL)
+router.route(config.WHO_IS_MAKING_UPDATE_WITH_PARAMS_URL)
   .all(
     authentication,
     companyAuthentication,

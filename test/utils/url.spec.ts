@@ -427,7 +427,7 @@ describe("Url utils tests", () => {
       const req = { originalUrl: "/fail", params: {}, query: {} } as unknown as Request;
       const result = urlUtils.getBackLinkOrNextUrl({ req, urlWithEntityIds, urlWithoutEntityIds });
       expect(result).toBe(urlWithoutEntityIds);
-      expect(logger.errorRequest).toHaveBeenCalled();
+      expect(logger.error).toHaveBeenCalled();
     });
   });
 });

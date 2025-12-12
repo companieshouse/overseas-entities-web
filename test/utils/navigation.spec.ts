@@ -24,17 +24,17 @@ const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockIsNoChangeJourney = isNoChangeJourney as jest.Mock;
 
-const mockRemoveRequest = { } as Request;
-mockRemoveRequest["query"] = {
-  "journey": "remove"
-};
+const mockRemoveRequest = {
+  query: { journey: "remove" }
+} as unknown as Request;
 
 const mockRequestWithParams = {
   params: {
     transactionId: `:${config.ROUTE_PARAM_TRANSACTION_ID}`,
     submissionId: `:${config.ROUTE_PARAM_SUBMISSION_ID}`
-  }
-} as any;
+  },
+  query: {}
+} as unknown as Request;
 
 describe("NAVIGATION utils", () => {
 
@@ -325,6 +325,11 @@ describe("NAVIGATION utils", () => {
     const mockRequest = { query: {} } as Request;
     const navigation = await NAVIGATION[config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL].previousPage(undefined, mockRequest);
     expect(navigation).toEqual(config.OVERSEAS_ENTITY_QUERY_URL);
+  });
+
+  test(`NAVIGATION returns ${config.OVERSEAS_ENTITY_QUERY_WITH_PARAMS_URL} when calling previousPage on ${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL} object`, async () => {
+    const navigation = await NAVIGATION[config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL].previousPage(mockGetApplicationData(), mockRequestWithParams);
+    expect(navigation).toEqual(config.OVERSEAS_ENTITY_QUERY_WITH_PARAMS_URL);
   });
 
   test(`NAVIGATION returns ${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL} when calling previousPage on ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL} object`, async () => {

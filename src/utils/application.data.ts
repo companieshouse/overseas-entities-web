@@ -2,7 +2,7 @@ import { Request } from "express";
 import { Session } from '@companieshouse/node-session-handler';
 import { BeneficialOwnerCorporate } from '@companieshouse/api-sdk-node/dist/services/overseas-entities';
 import { BeneficialOwnerOtherKey } from '../model/beneficial.owner.other.model';
-import { Remove } from 'model/remove.type.model';
+import { Remove } from '../model/remove.type.model';
 import { isActiveFeature } from "./feature.flag";
 import { isNoChangeJourney } from "./update/no.change.journey";
 import { isRegistrationJourney } from "./url";

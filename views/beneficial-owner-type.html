@@ -83,3 +83,13 @@ or (managing_officers_corporate and managing_officers_corporate.length > 0) %}
   
   {% include "includes/page-templates/beneficial-owner.html" %}
 {% endblock %}
+
+{% block bodyEnd %}
+{{ super() }}
+<script nonce={{ cspNonce | dump | safe }}>
+  history.pushState(null, null, window.location.href);
+  window.addEventListener('popstate', function(event) {
+      window.location.assign('{{ backLinkUrl }}');
+  });
+</script>
+{% endblock %}

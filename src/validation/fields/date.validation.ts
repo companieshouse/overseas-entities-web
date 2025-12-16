@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { DateTime } from "luxon";
-import { body } from "express-validator";
+import { body, ValidationError } from "express-validator";
 import { RoleWithinTrustType } from "../../model/role.within.trust.type.model";
 import { ApplicationData } from "../../model";
 import { fetchApplicationData } from "../../utils/application.data";
@@ -524,4 +524,77 @@ const getTrust = (appData: ApplicationData, trustId?: string): Trust | undefined
 
 const isEmpty = (obj) => {
   return Object.keys(obj).length === 0;
+};
+
+export function addDateValidationErrorIfInvalid (
+  firstDate: [string, string, string],
+  secondDate: [string, string, string],
+  errorMsg: string,
+  errors: ValidationError[],
+  param: string
+) {
+  try {
+    checkFirstDateOnOrAfterSecondDate(...firstDate, ...secondDate);
+  } catch {
+    errors.push({
+      value: '',
+      msg: errorMsg,
+      param,
+      location: 'body',
+    });
+  }
+}
+
+export const checkTrusteeInterestedDate = (appData: ApplicationData, req: Request): ValidationError[] => {
+  const errors: ValidationError[] = [];
+  // Find the trust based on the trust ID
+  let trust = appData?.trusts?.find(t => t.trust_id === req.params.trustId);
+
+  if (trust === undefined) {
+    // Get from update.review_trusts if they are existing trust/trustee
+    const reviewTrusts = appData?.update?.review_trusts;
+    if (Array.isArray(reviewTrusts)) {
+      trust = reviewTrusts.find(t => Array.isArray(t.INDIVIDUALS) && t.INDIVIDUALS.some(individual => individual.id === req.params.trusteeId));
+    }
+  }
+
+  if (!trust) {
+    return errors;
+  }
+
+  // Check if the date became interested person is before the trust creation date
+  addDateValidationErrorIfInvalid(
+    [
+      req.body["dateBecameIPDay"],
+      req.body["dateBecameIPMonth"],
+      req.body["dateBecameIPYear"]
+    ],
+    [
+      trust.creation_date_day,
+      trust.creation_date_month,
+      trust.creation_date_year
+    ],
+    ErrorMessages.DATE_BEFORE_TRUST_CREATION_DATE_INTERESTED_TRUSTEE,
+    errors,
+    'dateBecameIPDay'
+  );
+
+  // Check if the date became interested person is before the date of birth
+  addDateValidationErrorIfInvalid(
+    [
+      req.body["dateBecameIPDay"],
+      req.body["dateBecameIPMonth"],
+      req.body["dateBecameIPYear"]
+    ],
+    [
+      req.body["dateOfBirthDay"],
+      req.body["dateOfBirthMonth"],
+      req.body["dateOfBirthYear"]
+    ],
+    ErrorMessages.DATE_BEFORE_DATE_OF_BIRTH_INTERESTED_TRUSTEE,
+    errors,
+    'dateBecameIPDay'
+  );
+
+  return errors;
 };

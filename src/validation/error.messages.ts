@@ -196,6 +196,8 @@ export enum ErrorMessages {
   DATE_BEFORE_BIRTH_DATE_CEASED_TRUSTEE = "The date they ceased being involved in the trust must be on or after their date of birth",
   DATE_BEFORE_TRUST_CREATION_DATE_CEASED_TRUSTEE = "The date they ceased being involved in the trust must be on or after the date the trust was created",
   DATE_BEFORE_INTERESTED_PERSON_START_DATE_CEASED_TRUSTEE = "The date they ceased being involved in the trust must be on or after the date they became an interested person",
+  DATE_BEFORE_TRUST_CREATION_DATE_INTERESTED_TRUSTEE = "The date they became interested in the trust must be on or after the date the trust was created",
+  DATE_BEFORE_DATE_OF_BIRTH_INTERESTED_TRUSTEE = "The date they became interested in the trust must be on or after their date of birth",
 
   // No radio selected
   SELECT_IF_ENTITY_HAS_SOLD_LAND = "Select yes if the entity has disposed of UK property or land since 28 February 2022",

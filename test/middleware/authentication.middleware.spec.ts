@@ -1,4 +1,5 @@
 jest.mock("ioredis");
+jest.mock('../../src/utils/url');
 
 import { Request, Response } from 'express';
 import request from "supertest";
@@ -7,6 +8,7 @@ import app from "../../src/app";
 import { logger } from '../../src/utils/logger';
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { isActiveFeature } from "../../src/utils/feature.flag";
+import { getRedirectUrl } from "../../src/utils/url";
 
 import {
   getSessionRequestWithPermission,
@@ -43,6 +45,7 @@ const res = { locals: {}, redirect: jest.fn() as any } as Response;
 const next = jest.fn();
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
+const mockGetRedirectUrl = getRedirectUrl as jest.Mock;
 
 function setReadOnlyRequestProperty(req: Request, propertyName: string, propertyValue: string) {
   Object.defineProperties(req, {
@@ -58,6 +61,7 @@ describe('Authentication middleware', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockIsActiveFeature.mockReset();
+    mockGetRedirectUrl.mockReset();
     res.locals = {};
   });
 
@@ -79,6 +83,7 @@ describe('Authentication middleware', () => {
     const signinRedirectPath = `/signin?return_to=${SOLD_LAND_FILTER_URL}`;
     req.session = undefined;
     setReadOnlyRequestProperty(req, 'path', `${LANDING_URL}`);
+    mockGetRedirectUrl.mockReturnValueOnce(SOLD_LAND_FILTER_URL);
 
     authentication(req, res, next);
 
@@ -95,6 +100,7 @@ describe('Authentication middleware', () => {
     const signinRedirectPath = `/signin?return_to=${SECURE_UPDATE_FILTER_URL}`;
     req.session = undefined;
     setReadOnlyRequestProperty(req, 'path', `${UPDATE_LANDING_URL}`);
+    mockGetRedirectUrl.mockReturnValue(SECURE_UPDATE_FILTER_URL);
 
     authentication(req, res, next);
 
@@ -111,6 +117,7 @@ describe('Authentication middleware', () => {
     const signinRedirectPath = `/signin?return_to=${STARTING_NEW_URL}`;
     req.session = undefined;
     setReadOnlyRequestProperty(req, 'path', `${STARTING_NEW_URL}`);
+    mockGetRedirectUrl.mockReturnValue(STARTING_NEW_URL);
 
     authentication(req, res, next);
 
@@ -126,6 +133,7 @@ describe('Authentication middleware', () => {
     const signinRedirectPath = `/signin?return_to=${RESUME_SUBMISSION_URL}`;
     req.session = undefined;
     setReadOnlyRequestProperty(req, 'path', `${RESUME_SUBMISSION_URL}`);
+    mockGetRedirectUrl.mockReturnValue(RESUME_SUBMISSION_URL);
 
     authentication(req, res, next);
 
@@ -140,9 +148,14 @@ describe('Authentication middleware', () => {
   test('should catch the error and call next(err)', () => {
     const error = new Error(ANY_MESSAGE_ERROR);
     const resThrowsToBeCatched = { redirect: jest.fn(() => { throw error; }) } as any;
-    req.session = undefined;
+    const reqWithSession = {
+      ...req,
+      path: UPDATE_LANDING_URL,
+      session: undefined
+    } as Request;
+    mockGetRedirectUrl.mockReturnValue(STARTING_NEW_URL);
 
-    authentication(req, resThrowsToBeCatched, next);
+    authentication(reqWithSession, resThrowsToBeCatched, next);
 
     expect(next).toHaveBeenCalledTimes(1);
     expect(next).toHaveBeenCalledWith(error);
@@ -167,6 +180,8 @@ describe('Authentication middleware', () => {
     mockIsActiveFeature.mockReturnValueOnce(false); // SHOW_SERVICE_OFFLINE_PAGE
     mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
     mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+    mockGetRedirectUrl.mockReturnValue(SECURE_UPDATE_FILTER_URL);
+
     const resp = await request(app).get(SECURE_UPDATE_FILTER_URL);
 
     expect(resp.status).toEqual(302);

@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import * as config from "../../config";
 import { logger } from "../../utils/logger";
 import {
-  getBackLinkOrNextUrl,
+  getRedirectUrl,
   isRemoveJourney
 } from "../../utils/url";
 
@@ -21,7 +21,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       });
     }
 
-    const backLinkUrl = getBackLinkOrNextUrl({
+    const backLinkUrl = getRedirectUrl({
       req,
       urlWithEntityIds: config.SECURE_UPDATE_FILTER_WITH_PARAMS_URL,
       urlWithoutEntityIds: config.SECURE_UPDATE_FILTER_URL,

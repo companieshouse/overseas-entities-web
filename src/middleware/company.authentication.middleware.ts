@@ -8,18 +8,20 @@ import { getTransaction } from "../service/transaction.service";
 import { isActiveFeature } from "../utils/feature.flag";
 import { fetchApplicationData } from "../utils/application.data";
 import { relevantPeriodStatementsState } from '../controllers/update/confirm.overseas.entity.details.controller';
-import { isRegistrationJourney, isRemoveJourney } from "../utils/url";
+import { getRedirectUrl, isRegistrationJourney, isRemoveJourney } from "../utils/url";
 
 import {
   RESUME,
   CHS_URL,
   UPDATE_LANDING_URL,
   UPDATE_FILING_DATE_URL,
-  OVERSEAS_ENTITY_PRESENTER_URL,
   JOURNEY_REMOVE_QUERY_PARAM,
-  FEATURE_FLAG_ENABLE_RELEVANT_PERIOD,
   RELEVANT_PERIOD_QUERY_PARAM,
+  OVERSEAS_ENTITY_PRESENTER_URL,
+  UPDATE_FILING_DATE_WITH_PARAMS_URL,
+  FEATURE_FLAG_ENABLE_RELEVANT_PERIOD,
   RELEVANT_PERIOD_OWNED_LAND_FILTER_URL,
+  RELEVANT_PERIOD_OWNED_LAND_FILTER_WITH_PARAMS_URL
 } from '../config';
 
 export const companyAuthentication = async (req: Request, res: Response, next: NextFunction) => {
@@ -32,9 +34,22 @@ export const companyAuthentication = async (req: Request, res: Response, next: N
     const isRegistration = isRegistrationJourney(req);
     const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
     let entityNumber: string | undefined = appData?.[EntityNumberKey];
+
+    const updateFilingDateUrl = getRedirectUrl({
+      req,
+      urlWithEntityIds: UPDATE_FILING_DATE_WITH_PARAMS_URL,
+      urlWithoutEntityIds: UPDATE_FILING_DATE_URL,
+    });
+
+    const relevantPeriodOwnedLandFilterUrl = getRedirectUrl({
+      req,
+      urlWithEntityIds: RELEVANT_PERIOD_OWNED_LAND_FILTER_WITH_PARAMS_URL,
+      urlWithoutEntityIds: RELEVANT_PERIOD_OWNED_LAND_FILTER_URL,
+    });
+
     let returnURL = !isActiveFeature(FEATURE_FLAG_ENABLE_RELEVANT_PERIOD) || appData.entity && relevantPeriodStatementsState.has_answered_relevant_period_question
-      ? UPDATE_FILING_DATE_URL
-      : RELEVANT_PERIOD_OWNED_LAND_FILTER_URL + RELEVANT_PERIOD_QUERY_PARAM;
+      ? updateFilingDateUrl
+      : relevantPeriodOwnedLandFilterUrl + RELEVANT_PERIOD_QUERY_PARAM;
 
     if (isRemove) {
       logger.debugRequest(req, "Remove journey proceed directly to the presenter page");
@@ -64,6 +79,7 @@ export const companyAuthentication = async (req: Request, res: Response, next: N
 };
 
 async function processTransaction (req: Request): Promise<[string, string]> {
+
   const { transactionId } = req.params;
 
   if (transactionId) {
@@ -73,6 +89,7 @@ async function processTransaction (req: Request): Promise<[string, string]> {
     if (entityNumberTransaction === undefined) {
       throw new Error("No company number in transaction to resume");
     }
+
     return [entityNumberTransaction, req.originalUrl];
   }
 

@@ -42,7 +42,6 @@ export const updateOverseasEntity = async (req: Request, session: Session, data?
   const appData: ApplicationData = data ?? await fetchApplicationData(req, isRegistrationJourney(req));
   const transactionId = appData[Transactionkey] as string;
   const overseasEntityId = appData[OverseasEntityKey] as string;
-
   logger.infoRequest(req, `Calling 'putOverseasEntity' for transaction id '${transactionId}' and overseas entity id '${overseasEntityId}'`);
 
   const response = await makeApiCallWithRetry(

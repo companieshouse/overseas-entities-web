@@ -133,7 +133,7 @@ describe("Confirm company data", () => {
       const resp = await request(app).get(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL);
       expect(resp.statusCode).toEqual(302);
       expect(resp.redirect).toEqual(true);
-      expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_QUERY_URL);
+      expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_QUERY_WITH_PARAMS_URL);
     });
 
     test(`redirects if no date of creation - flag off`, async () => {
@@ -153,7 +153,7 @@ describe("Confirm company data", () => {
       const resp = await request(app).get(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL);
       expect(resp.statusCode).toEqual(302);
       expect(resp.redirect).toEqual(true);
-      expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_QUERY_URL);
+      expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_QUERY_WITH_PARAMS_URL);
     });
 
     test(`redirects if no entity data - flag off`, async () => {
@@ -173,7 +173,7 @@ describe("Confirm company data", () => {
       const resp = await request(app).get(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL);
       expect(resp.statusCode).toEqual(302);
       expect(resp.redirect).toEqual(true);
-      expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_QUERY_URL);
+      expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_QUERY_WITH_PARAMS_URL);
     });
 
     test('catch error when rendering the page - flag off', async () => {
@@ -215,7 +215,7 @@ describe("Confirm company data", () => {
       const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL);
       expect(resp.statusCode).toEqual(302);
       expect(resp.redirect).toEqual(true);
-      expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_QUERY_URL);
+      expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_QUERY_WITH_PARAMS_URL);
     });
 
     test(`redirect to update-filing-date if no BOs - redis removal flag off`, async () => {

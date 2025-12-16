@@ -12,7 +12,7 @@ export interface TransactionIdAndSubmissionId {
   submissionId: string;
 }
 
-interface BackLinkOrNextUrlDependencies {
+interface RedirectUrlDependencies {
   req: Request;
   urlWithEntityIds: string;
   urlWithoutEntityIds: string;
@@ -70,11 +70,11 @@ export const getTransactionIdAndSubmissionIdFromOriginalUrl = (req: Request): Tr
   }
 };
 
-export const getBackLinkOrNextUrl = ({
+export const getRedirectUrl = ({
   req,
   urlWithEntityIds,
   urlWithoutEntityIds,
-}: BackLinkOrNextUrlDependencies): string => {
+}: RedirectUrlDependencies): string => {
 
   try {
 

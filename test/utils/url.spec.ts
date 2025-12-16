@@ -404,28 +404,28 @@ describe("Url utils tests", () => {
     test("returns url with entity ids when feature flag is enabled and ids are present", () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
       const req = { originalUrl: "/transaction/tx123/submission/sub456", params: {}, query: {} } as unknown as Request;
-      const result = urlUtils.getBackLinkOrNextUrl({ req, urlWithEntityIds, urlWithoutEntityIds });
+      const result = urlUtils.getRedirectUrl({ req, urlWithEntityIds, urlWithoutEntityIds });
       expect(result).toBe("/transaction/tx123/submission/sub456/entity");
     });
 
     test("returns urlWithoutEntityIds when feature flag is disabled", () => {
       mockIsActiveFeature.mockReturnValueOnce(false);
       const req = { originalUrl: "/transaction/tx123/submission/sub456", params: {}, query: {} } as unknown as Request;
-      const result = urlUtils.getBackLinkOrNextUrl({ req, urlWithEntityIds, urlWithoutEntityIds });
+      const result = urlUtils.getRedirectUrl({ req, urlWithEntityIds, urlWithoutEntityIds });
       expect(result).toBe(urlWithoutEntityIds);
     });
 
     test("returns urlWithoutEntityIds when ids are undefined", () => {
       jest.spyOn(urlUtils, "getTransactionIdAndSubmissionIdFromOriginalUrl").mockReturnValue(undefined);
       const req = { originalUrl: "/no-ids-here", params: {}, query: {} } as unknown as Request;
-      const result = urlUtils.getBackLinkOrNextUrl({ req, urlWithEntityIds, urlWithoutEntityIds });
+      const result = urlUtils.getRedirectUrl({ req, urlWithEntityIds, urlWithoutEntityIds });
       expect(result).toBe(urlWithoutEntityIds);
     });
 
     test("returns urlWithoutEntityIds and logs error if exception is thrown", () => {
       jest.spyOn(urlUtils, "getTransactionIdAndSubmissionIdFromOriginalUrl").mockImplementation(() => { throw new Error("fail"); });
       const req = { originalUrl: "/fail", params: {}, query: {} } as unknown as Request;
-      const result = urlUtils.getBackLinkOrNextUrl({ req, urlWithEntityIds, urlWithoutEntityIds });
+      const result = urlUtils.getRedirectUrl({ req, urlWithEntityIds, urlWithoutEntityIds });
       expect(result).toBe(urlWithoutEntityIds);
       expect(logger.error).toHaveBeenCalled();
     });

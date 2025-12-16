@@ -1,32 +1,29 @@
 import { Request, Response, NextFunction } from 'express';
 import { logger } from '../utils/logger';
+import { getRedirectUrl } from "../utils/url";
+import { checkUserSignedIn, getLoggedInUserEmail } from "../utils/session";
 
 import {
-  checkUserSignedIn,
-  getLoggedInUserEmail
-} from "../utils/session";
-
-import {
-  JOURNEY_QUERY_PARAM,
   JourneyType,
-  JOURNEY_REMOVE_QUERY_PARAM,
-  UPDATE_LANDING_URL,
-  SOLD_LAND_FILTER_URL,
-  REGISTER_AN_OVERSEAS_ENTITY_URL,
   RESUME,
   STARTING_NEW_URL,
+  UPDATE_LANDING_URL,
+  JOURNEY_QUERY_PARAM,
+  SOLD_LAND_FILTER_URL,
+  JOURNEY_REMOVE_QUERY_PARAM,
   SECURE_UPDATE_FILTER_URL,
   UPDATE_AN_OVERSEAS_ENTITY_URL,
-  UPDATE_CONTINUE_WITH_SAVED_FILING_URL
+  REGISTER_AN_OVERSEAS_ENTITY_URL,
+  SOLD_LAND_FILTER_WITH_PARAMS_URL,
+  SECURE_UPDATE_FILTER_WITH_PARAMS_URL,
+  UPDATE_CONTINUE_WITH_SAVED_FILING_URL,
 } from '../config';
 
 export const authentication = (req: Request, res: Response, next: NextFunction): void => {
   try {
     if (!checkUserSignedIn(req.session)) {
       logger.infoRequest(req, 'User not authenticated, redirecting to sign in page, status_code=302');
-
       const returnToUrl = getReturnToUrl(req);
-
       return res.redirect(`/signin?return_to=${returnToUrl}`);
     }
     const userEmail = getLoggedInUserEmail(req.session);
@@ -35,7 +32,6 @@ export const authentication = (req: Request, res: Response, next: NextFunction):
     // is available within a single request-response cycle and visible in the template.
     res.locals.userEmail = userEmail;
     next();
-
   } catch (err) {
     logger.errorRequest(req, err);
     next(err);
@@ -43,7 +39,13 @@ export const authentication = (req: Request, res: Response, next: NextFunction):
 };
 
 function getReturnToUrl(req: Request) {
-  let returnToUrl = SOLD_LAND_FILTER_URL;
+
+  let returnToUrl = getRedirectUrl({
+    req,
+    urlWithEntityIds: SOLD_LAND_FILTER_WITH_PARAMS_URL,
+    urlWithoutEntityIds: SOLD_LAND_FILTER_URL,
+  });
+
   const path = req.path;
 
   if (path === STARTING_NEW_URL || path.endsWith(`/${RESUME}`) || path === UPDATE_CONTINUE_WITH_SAVED_FILING_URL) {
@@ -59,7 +61,11 @@ function getReturnToUrl(req: Request) {
       returnToUrl = encodeURIComponent(returnToUrl + JOURNEY_REMOVE_QUERY_PARAM);
     }
   } else if (path.startsWith(UPDATE_LANDING_URL)) {
-    returnToUrl = SECURE_UPDATE_FILTER_URL;
+    returnToUrl = getRedirectUrl({
+      req,
+      urlWithEntityIds: SECURE_UPDATE_FILTER_WITH_PARAMS_URL,
+      urlWithoutEntityIds: SECURE_UPDATE_FILTER_URL,
+    });
   }
 
   logger.debug("returnToUrl is " + returnToUrl);

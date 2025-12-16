@@ -5,7 +5,7 @@ import { yesNoResponse } from "../model/data.types.model";
 import { isNoChangeJourney } from "../utils/update/no.change.journey";
 import { RegistrableBeneficialOwnerKey } from "../model/update.type.model";
 
-import { isRegistrationJourney, isRemoveJourney } from "../utils/url";
+import { getRedirectUrl, isRegistrationJourney, isRemoveJourney } from "../utils/url";
 
 import {
   BeneficialOwnerStatementKey,
@@ -24,6 +24,9 @@ import {
   UPDATE_REVIEW_STATEMENT_URL,
   SECURE_UPDATE_FILTER_URL,
   REMOVE_CONFIRM_STATEMENT_URL,
+  UPDATE_REVIEW_STATEMENT_WITH_PARAMS_URL,
+  UPDATE_CHECK_YOUR_ANSWERS_WITH_PARAMS_URL,
+  SECURE_UPDATE_FILTER_WITH_PARAMS_URL,
 } from '../config';
 
 export const statementValidationErrorsGuard = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -41,8 +44,20 @@ export const statementValidationErrorsGuard = async (req: Request, res: Response
 
   const isRegistration = isRegistrationJourney(req);
   const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
-  const redirectUrl = isNoChangeJourney(appData) ? UPDATE_REVIEW_STATEMENT_URL : UPDATE_CHECK_YOUR_ANSWERS_URL;
 
+  const updateReviewStatementUrl = getRedirectUrl({
+    req,
+    urlWithEntityIds: UPDATE_REVIEW_STATEMENT_WITH_PARAMS_URL,
+    urlWithoutEntityIds: UPDATE_REVIEW_STATEMENT_URL,
+  });
+
+  const updateCheckYourAnswersUrl = getRedirectUrl({
+    req,
+    urlWithEntityIds: UPDATE_CHECK_YOUR_ANSWERS_WITH_PARAMS_URL,
+    urlWithoutEntityIds: UPDATE_CHECK_YOUR_ANSWERS_URL,
+  });
+
+  const redirectUrl = isNoChangeJourney(appData) ? updateReviewStatementUrl : updateCheckYourAnswersUrl;
   return res.redirect(redirectUrl);
 };
 
@@ -51,7 +66,11 @@ export const summaryPagesGuard = (req: Request, res: Response, next: NextFunctio
   if (!hasStatementErrors) {
     return next();
   }
-  return res.redirect(SECURE_UPDATE_FILTER_URL);
+  return res.redirect(getRedirectUrl({
+    req,
+    urlWithEntityIds: SECURE_UPDATE_FILTER_WITH_PARAMS_URL,
+    urlWithoutEntityIds: SECURE_UPDATE_FILTER_URL,
+  }));
 };
 
 export const validateStatements = async (req: Request, _: Response, next: NextFunction): Promise<void> => {

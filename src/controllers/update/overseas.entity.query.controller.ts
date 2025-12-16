@@ -1,17 +1,20 @@
 import { NextFunction, Request, Response } from "express";
 
+import { Session } from "@companieshouse/node-session-handler";
 import { logger } from "../../utils/logger";
 import * as config from "../../config";
-import { getApplicationData, setExtraData } from "../../utils/application.data";
 import { ApplicationData } from "../../model";
 import { resetEntityUpdate } from "../../utils/update/update.reset";
 import { EntityNumberKey } from "../../model/data.types.model";
 import { getCompanyProfile } from "../../service/company.profile.service";
+import { updateOverseasEntity } from "../../service/overseas.entities.service";
 import { mapCompanyProfileToOverseasEntity } from "../../utils/update/company.profile.mapper.to.overseas.entity";
 import { mapInputDate } from "../../utils/update/mapper.utils";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { retrieveBoAndMoData } from "../../utils/update/beneficial_owners_managing_officers_data_fetch";
-import { getBackLinkOrNextUrl, isRemoveJourney } from "../../utils/url";
+import { getRedirectUrl, isRemoveJourney } from "../../utils/url";
+import { getApplicationData, setExtraData } from "../../utils/application.data";
+import { isActiveFeature } from "../../utils/feature.flag";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -31,7 +34,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       });
     }
 
-    const backLinkUrl = getBackLinkOrNextUrl({
+    const backLinkUrl = getRedirectUrl({
       req,
       urlWithEntityIds: config.UPDATE_INTERRUPT_CARD_WITH_PARAMS_URL,
       urlWithoutEntityIds: config.UPDATE_INTERRUPT_CARD_URL,
@@ -66,10 +69,10 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     if (appData.entity_number !== entityNumber) {
-      await addOeToApplicationData(req, appData, entityNumber, companyProfile);
+      await addOeToApplicationData(req, appData, entityNumber, companyProfile, isRemove);
     }
 
-    const nextPageUrl = getBackLinkOrNextUrl({
+    const nextPageUrl = getRedirectUrl({
       req,
       urlWithEntityIds: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL,
       urlWithoutEntityIds: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
@@ -117,11 +120,17 @@ const renderGetPageWithError = async (req: Request, res: Response, entityNumber:
   });
 };
 
-const addOeToApplicationData = async (req: Request, appData: ApplicationData, entityNumber: any, companyProfile: CompanyProfile) => {
-  resetEntityUpdate(appData);
+const addOeToApplicationData = async (req: Request, appData: ApplicationData, entityNumber: any, companyProfile: CompanyProfile, isRemove) => {
+  const isRedisFlagEnabled = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL);
+  if (isRemove || !isRedisFlagEnabled) {
+    resetEntityUpdate(appData);
+  }
   reloadOE(appData, entityNumber, companyProfile);
   await retrieveBoAndMoData(req, appData);
   setExtraData(req.session, appData);
+  if (!isRemove && isRedisFlagEnabled) {
+    await updateOverseasEntity(req, req.session as Session, appData);
+  }
 };
 
 export const reloadOE = (appData: ApplicationData, entityNumber: string, companyProfile: CompanyProfile) => {

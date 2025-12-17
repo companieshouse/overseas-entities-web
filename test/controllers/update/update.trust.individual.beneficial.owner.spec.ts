@@ -202,7 +202,7 @@ describe('Update Trust Individual Beneficial Owner Controller', () => {
 
       expect(mapIndividualTrusteeToSession).toBeCalledTimes(1);
       expect(mapIndividualTrusteeToSession).toBeCalledWith(mockReq.body);
-      expect(getTrustByIdFromApp).toBeCalledTimes(1);
+      expect(getTrustByIdFromApp).toBeCalledTimes(2);
       expect(getTrustByIdFromApp).toBeCalledWith(mockAppData, trustId);
       expect(saveIndividualTrusteeInTrust).toBeCalledTimes(1);
       expect(saveIndividualTrusteeInTrust).toBeCalledWith(mockTrust, mockTrustee);

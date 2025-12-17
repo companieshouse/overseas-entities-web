@@ -547,16 +547,8 @@ export function addDateValidationErrorIfInvalid (
 
 export const checkTrusteeInterestedDate = (appData: ApplicationData, req: Request): ValidationError[] => {
   const errors: ValidationError[] = [];
-  // Find the trust based on the trust ID
-  let trust = appData?.trusts?.find(t => t.trust_id === req.params.trustId);
-
-  if (trust === undefined) {
-    // Get from update.review_trusts if they are existing trust/trustee
-    const reviewTrusts = appData?.update?.review_trusts;
-    if (Array.isArray(reviewTrusts)) {
-      trust = reviewTrusts.find(t => Array.isArray(t.INDIVIDUALS) && t.INDIVIDUALS.some(individual => individual.id === req.params.trusteeId));
-    }
-  }
+  // Find the trust using the shared helper, which handles lookup and fallbacks
+  const trust = getTrust(appData, req.params.trustId);
 
   if (!trust) {
     return errors;

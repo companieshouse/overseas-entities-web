@@ -85,10 +85,10 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     setExtraData(session, appData);
 
-    if (!isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
-      await saveAndContinue(req, session);
-    } else {
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       await updateOverseasEntity(req, session, appData);
+    } else {
+      await saveAndContinue(req, session);
     }
 
     return res.redirect(redirectUrl);

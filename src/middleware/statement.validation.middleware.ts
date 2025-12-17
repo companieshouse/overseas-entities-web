@@ -45,19 +45,16 @@ export const statementValidationErrorsGuard = async (req: Request, res: Response
   const isRegistration = isRegistrationJourney(req);
   const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
 
-  const updateReviewStatementUrl = getRedirectUrl({
-    req,
-    urlWithEntityIds: UPDATE_REVIEW_STATEMENT_WITH_PARAMS_URL,
-    urlWithoutEntityIds: UPDATE_REVIEW_STATEMENT_URL,
-  });
-
-  const updateCheckYourAnswersUrl = getRedirectUrl({
-    req,
-    urlWithEntityIds: UPDATE_CHECK_YOUR_ANSWERS_WITH_PARAMS_URL,
-    urlWithoutEntityIds: UPDATE_CHECK_YOUR_ANSWERS_URL,
-  });
-
-  const redirectUrl = isNoChangeJourney(appData) ? updateReviewStatementUrl : updateCheckYourAnswersUrl;
+  const redirectUrl = isNoChangeJourney(appData)
+    ? getRedirectUrl({
+      req,
+      urlWithEntityIds: UPDATE_REVIEW_STATEMENT_WITH_PARAMS_URL,
+      urlWithoutEntityIds: UPDATE_REVIEW_STATEMENT_URL,
+    }) : getRedirectUrl({
+      req,
+      urlWithEntityIds: UPDATE_CHECK_YOUR_ANSWERS_WITH_PARAMS_URL,
+      urlWithoutEntityIds: UPDATE_CHECK_YOUR_ANSWERS_URL,
+    });
   return res.redirect(redirectUrl);
 };
 

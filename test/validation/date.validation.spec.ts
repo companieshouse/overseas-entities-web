@@ -724,11 +724,12 @@ describe("checkTrusteeInterestedDate", () => {
     expect(errors.some(e => e.msg === ErrorMessages.DATE_BEFORE_TRUST_CREATION_DATE_INTERESTED_TRUSTEE)).toBe(true);
   });
 
-  test("returns error if trust found in review_trusts and dateBecameIP is before creation date", () => {
+  test("returns error if trust found in review_trusts by id and dateBecameIP is before creation date", () => {
     appData.trusts = undefined;
     appData.update = {
       review_trusts: [
         {
+          trust_id: "trust123",
           INDIVIDUALS: [{ id: "trusteeX" }],
           creation_date_day: "15",
           creation_date_month: "6",
@@ -737,6 +738,27 @@ describe("checkTrusteeInterestedDate", () => {
       ]
     };
     req.params.trusteeId = "trusteeX";
+    req.body.dateBecameIPDay = "1";
+    req.body.dateBecameIPMonth = "1";
+    req.body.dateBecameIPYear = "2000";
+    const errors = checkTrusteeInterestedDate(appData, req);
+    expect(errors.some(e => e.msg === ErrorMessages.DATE_BEFORE_TRUST_CREATION_DATE_INTERESTED_TRUSTEE)).toBe(true);
+  });
+
+  test("returns error if trust found in review_trusts by review_status and dateBecameIP is before creation date", () => {
+    appData.trusts = undefined;
+    appData.update = {
+      review_trusts: [
+        {
+          review_status: { in_review: true },
+          INDIVIDUALS: [{ id: "trusteeX" }],
+          creation_date_day: "15",
+          creation_date_month: "6",
+          creation_date_year: "2010"
+        }
+      ]
+    };
+    req.params.trustId = null;
     req.body.dateBecameIPDay = "1";
     req.body.dateBecameIPMonth = "1";
     req.body.dateBecameIPYear = "2000";

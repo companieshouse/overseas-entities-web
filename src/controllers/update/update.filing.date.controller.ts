@@ -1,31 +1,52 @@
 import { NextFunction, Request, Response } from "express";
 import { Session } from "@companieshouse/node-session-handler";
 
-import { createAndLogErrorRequest, logger } from "../../utils/logger";
 import * as config from "../../config";
-import { getApplicationData, setExtraData, mapFieldsToDataObject, mapDataObjectToFields } from "../../utils/application.data";
+import { createAndLogErrorRequest, logger } from "../../utils/logger";
 import { postTransaction } from "../../service/transaction.service";
-import { createOverseasEntity, updateOverseasEntity } from "../../service/overseas.entities.service";
-import { OverseasEntityKey, Transactionkey, InputDateKeys } from '../../model/data.types.model';
-import { FilingDateKey, FilingDateKeys } from '../../model/date.model';
 import { ApplicationData } from "../../model/application.model";
-import { getConfirmationStatementNextMadeUpToDateAsIsoString } from "../../service/company.profile.service";
 import { convertIsoDateToInputDate } from "../../utils/date";
 import { checkAnyRPStatementsActionWasTaken } from "../../utils/relevant.period";
 import { isActiveFeature } from "../../utils/feature.flag";
 import { relevantPeriodStatementsState } from "./confirm.overseas.entity.details.controller";
+import { getConfirmationStatementNextMadeUpToDateAsIsoString } from "../../service/company.profile.service";
+import { FilingDateKey, FilingDateKeys } from '../../model/date.model';
+import { getRedirectUrl, isUpdateJourney } from "../../utils/url";
+import { createOverseasEntity, updateOverseasEntity } from "../../service/overseas.entities.service";
+import { OverseasEntityKey, Transactionkey, InputDateKeys } from '../../model/data.types.model';
+
+import {
+  setExtraData,
+  mapFieldsToDataObject,
+  mapDataObjectToFields,
+  fetchApplicationData
+} from "../../utils/application.data";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const appData = await getApplicationData(req.session);
+  try {
+
+    logger.debugRequest(req, `${req.method} ${req.route.path}`);
+    const isUpdate: boolean = await isUpdateJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, isUpdate);
     let backLinkUrl: string ;
+
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD) && relevantPeriodStatementsState.has_answered_relevant_period_question !== true) {
-      backLinkUrl = !checkAnyRPStatementsActionWasTaken(appData) ? config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL : config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL + config.RELEVANT_PERIOD_QUERY_PARAM;
+      backLinkUrl = !checkAnyRPStatementsActionWasTaken(appData)
+        ? getRedirectUrl({
+          req,
+          urlWithEntityIds: config.RELEVANT_PERIOD_OWNED_LAND_FILTER_WITH_PARAMS_URL,
+          urlWithoutEntityIds: config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL,
+        })
+        : getRedirectUrl({
+          req,
+          urlWithEntityIds: config.RELEVANT_PERIOD_REVIEW_STATEMENTS_WITH_PARAMS_URL,
+          urlWithoutEntityIds: config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL,
+        }) + config.RELEVANT_PERIOD_QUERY_PARAM;
     } else {
       backLinkUrl = config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE;
     }
+
     return res.render(config.UPDATE_FILING_DATE_PAGE, {
       backLinkUrl,
       templateName: config.UPDATE_FILING_DATE_PAGE,
@@ -40,24 +61,32 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
+
   try {
+
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-
     const session = req.session as Session;
+    const isUpdate: boolean = await isUpdateJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, isUpdate);
 
-    const appData: ApplicationData = await getApplicationData(session);
     if (!appData[Transactionkey]) {
       const transactionID = await postTransaction(req, session);
       appData[Transactionkey] = transactionID;
       appData[OverseasEntityKey] = await createOverseasEntity(req, session, transactionID);
     }
+
     if (appData.update) {
       appData.update[FilingDateKey] = mapFieldsToDataObject(req.body, FilingDateKeys, InputDateKeys);
     }
-    setExtraData(req.session, appData);
-    await updateOverseasEntity(req, session);
 
-    return res.redirect(config.OVERSEAS_ENTITY_PRESENTER_URL);
+    setExtraData(req.session, appData);
+    await updateOverseasEntity(req, session, appData);
+
+    return res.redirect(getRedirectUrl({
+      req,
+      urlWithEntityIds: config.OVERSEAS_ENTITY_PRESENTER_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.OVERSEAS_ENTITY_PRESENTER_URL,
+    }));
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

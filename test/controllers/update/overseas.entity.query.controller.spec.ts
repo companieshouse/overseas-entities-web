@@ -28,7 +28,7 @@ import { companyProfileQueryMock } from "../../__mocks__/update.entity.mocks";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { mapCompanyProfileToOverseasEntity } from "../../../src/utils/update/company.profile.mapper.to.overseas.entity";
 
-import { getApplicationData, setExtraData } from "../../../src/utils/application.data";
+import { fetchApplicationData, getApplicationData, setExtraData } from "../../../src/utils/application.data";
 
 import {
   ANY_MESSAGE_ERROR,
@@ -46,6 +46,7 @@ mockJourneyDetectionMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 const mockSetExtraData = setExtraData as jest.Mock;
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -66,7 +67,8 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
   describe("GET tests", () => {
 
     test(`renders the ${config.OVERSEAS_ENTITY_QUERY_PAGE} page`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ });
+      mockGetApplicationData.mockReturnValueOnce({});
+      mockFetchApplicationData.mockReturnValueOnce({});
       const resp = await request(app).get(config.OVERSEAS_ENTITY_QUERY_URL);
 
       expect(resp.status).toEqual(200);
@@ -77,7 +79,8 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
     });
 
     test(`renders the ${config.OVERSEAS_ENTITY_QUERY_PAGE} page for the Remove journey`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ });
+      mockGetApplicationData.mockReturnValueOnce({});
+      mockFetchApplicationData.mockReturnValueOnce({});
       const resp = await request(app).get(`${config.OVERSEAS_ENTITY_QUERY_URL}?${config.JOURNEY_QUERY_PARAM}=remove`);
 
       expect(resp.status).toEqual(200);
@@ -159,6 +162,7 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
 
     test('redirects to confirm page for valid oe number in update journey', async () => {
       mockGetApplicationData.mockReturnValue({});
+      mockFetchApplicationData.mockReturnValue({});
       mockGetCompanyProfile.mockReturnValueOnce(companyProfileQueryMock);
       mockMapCompanyProfileToOverseasEntity.mockReturnValueOnce({});
 

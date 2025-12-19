@@ -13,16 +13,16 @@ import { mapInputDate } from "../../utils/update/mapper.utils";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { retrieveBoAndMoData } from "../../utils/update/beneficial_owners_managing_officers_data_fetch";
 import { getRedirectUrl, isRemoveJourney } from "../../utils/url";
-import { getApplicationData, setExtraData } from "../../utils/application.data";
 import { isActiveFeature } from "../../utils/feature.flag";
+import { fetchApplicationData, setExtraData } from "../../utils/application.data";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
 
   try {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const appData: ApplicationData = await getApplicationData(req, true);
     const isRemove: boolean = await isRemoveJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
 
     if (isRemove) {
       return res.render(config.OVERSEAS_ENTITY_QUERY_PAGE, {
@@ -62,7 +62,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const entityNumber = req.body[EntityNumberKey];
     const companyProfile = await getCompanyProfile(req, entityNumber);
     const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await getApplicationData(req, true);
+    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
 
     if (!companyProfile) {
       return await renderGetPageWithError(req, res, entityNumber);

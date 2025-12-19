@@ -110,6 +110,11 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
     nextPage: [config.UPDATE_PRESENTER_PAGE]
   },
+  [config.UPDATE_FILING_DATE_WITH_PARAMS_URL]: {
+    currentPage: config.UPDATE_FILING_DATE_PAGE,
+    previousPage: () => config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL,
+    nextPage: [config.UPDATE_PRESENTER_PAGE]
+  },
   [config.OVERSEAS_ENTITY_PRESENTER_URL]: {
     currentPage: config.UPDATE_PRESENTER_PAGE,
     previousPage: async (appData: ApplicationData, req: Request) => getOverseasEntityPresenterBackLink(req),

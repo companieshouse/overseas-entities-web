@@ -14,12 +14,13 @@ jest.mock('../../../src/utils/url');
 
 import request from "supertest";
 import { NextFunction } from "express";
+import { beforeEach, jest, describe } from "@jest/globals";
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
 import mockJourneyDetectionMiddleware from "../../__mocks__/journey.detection.middleware.mock";
 import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
-import app from "../../../src/app";
 
+import app from "../../../src/app";
 import * as config from "../../../src/config";
 import { createAndLogErrorRequest, logger } from "../../../src/utils/logger";
 import { authentication } from "../../../src/middleware/authentication.middleware";
@@ -32,10 +33,10 @@ import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { hasOverseasEntity } from "../../../src/middleware/navigation/update/has.overseas.entity.middleware";
 import { checkAnyRPStatementsActionWasTaken } from "../../../src/utils/relevant.period";
 import { FILING_DATE_REQ_BODY_MOCK } from '../../__mocks__/fields/date.mock';
-import { isRegistrationJourney } from "../../../src/utils/url";
 
 import { OverseasEntityKey, Transactionkey } from '../../../src/model/data.types.model';
 import { createOverseasEntity, updateOverseasEntity } from "../../../src/service/overseas.entities.service";
+import { isRegistrationJourney, isUpdateJourney, getRedirectUrl } from "../../../src/utils/url";
 
 import {
   fetchApplicationData,
@@ -45,20 +46,20 @@ import {
 } from "../../../src/utils/application.data";
 
 import {
-  APPLICATION_DATA_MOCK,
-  OVERSEAS_ENTITY_ID,
   TRANSACTION_ID,
+  OVERSEAS_ENTITY_ID,
+  APPLICATION_DATA_MOCK,
   UPDATE_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS
 } from '../../__mocks__/session.mock';
 
 import {
-  ANY_MESSAGE_ERROR,
-  BACK_LINK_FOR_UPDATE_FILING_DATE,
   ERROR_LIST,
-  FOUND_REDIRECT_TO,
+  ANY_MESSAGE_ERROR,
   PAGE_TITLE_ERROR,
-  SAVE_AND_CONTINUE_BUTTON_TEXT,
+  FOUND_REDIRECT_TO,
   SERVICE_UNAVAILABLE,
+  SAVE_AND_CONTINUE_BUTTON_TEXT,
+  BACK_LINK_FOR_UPDATE_FILING_DATE,
   UPDATE_DATE_OF_UPDATE_STATEMENT_TEXT,
 } from "../../__mocks__/text.mock";
 
@@ -111,6 +112,11 @@ const mockCheckRelevantPeriodActionTaken = checkAnyRPStatementsActionWasTaken as
 const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
 mockIsRegistrationJourney.mockReturnValue(false);
 
+const mockIsUpdateJourney = isUpdateJourney as jest.Mock;
+mockIsUpdateJourney.mockReturnValue(true);
+
+const mockGetRedirectUrl = getRedirectUrl as jest.Mock;
+
 const FILING_DATE_FORM_DATA = {
   "filing_date-day": "1",
   "filing_date-month": "4",
@@ -121,11 +127,15 @@ describe("Update Filing Date controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetRedirectUrl.mockReset();
   });
 
   describe("GET tests", () => {
+
     test('renders the update-filing-date page when FEATURE_FLAG_ENABLE_RELEVANT_PERIOD is not active,', async () => {
-      mockCheckRelevantPeriodActionTaken.mockReturnValueOnce(false);
+      mockCheckRelevantPeriodActionTaken.mockReturnValueOnce(true);
+      mockGetRedirectUrl.mockReturnValueOnce(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
+
       const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
 
       expect(resp.status).toEqual(200);
@@ -139,16 +149,16 @@ describe("Update Filing Date controller", () => {
 
     test('renders the review-statements-for-the-pre-registration-period page when any action has been taken for relevant period is active,', async () => {
       mockCheckRelevantPeriodActionTaken.mockReturnValueOnce(true);
+      mockGetRedirectUrl.mockReturnValueOnce(config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL + "?relevant-period=true");
       const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
-
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain("/update-an-overseas-entity/review-statements-for-the-pre-registration-period?relevant-period=true");
     });
 
     test('renders the update-filing-date page when FEATURE_FLAG_ENABLE_RELEVANT_PERIOD is active,', async () => {
       mockCheckRelevantPeriodActionTaken.mockReturnValueOnce(true);
+      mockGetRedirectUrl.mockReturnValueOnce(config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL + "?relevant-period=true");
       const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
-
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain("/update-an-overseas-entity/review-statements-for-the-pre-registration-period?relevant-period=true");
     });
@@ -156,6 +166,8 @@ describe("Update Filing Date controller", () => {
     test('renders the update-filing-date page with no update session data', async () => {
       const mockData = { ...UPDATE_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS, entity_number: 'OE111129' };
       mockGetApplicationData.mockReturnValueOnce(mockData);
+      mockFetchApplicationData.mockReturnValueOnce(mockData);
+      mockGetRedirectUrl.mockReturnValueOnce(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
       mockCheckRelevantPeriodActionTaken.mockReturnValueOnce(false);
 
       const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
@@ -172,6 +184,8 @@ describe("Update Filing Date controller", () => {
     test('renders the update-filing-date page with update session data', async () => {
       const mockData = { ...APPLICATION_DATA_MOCK };
       mockGetApplicationData.mockReturnValueOnce(mockData);
+      mockFetchApplicationData.mockReturnValueOnce(mockData);
+      mockGetRedirectUrl.mockReturnValueOnce(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
       mockCheckRelevantPeriodActionTaken.mockReturnValueOnce(false);
 
       const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
@@ -188,6 +202,8 @@ describe("Update Filing Date controller", () => {
     test('does not fetch private overseas entity data to app data if already exists', async () => {
       const mockData = { ...APPLICATION_DATA_MOCK };
       mockGetApplicationData.mockReturnValueOnce(mockData);
+      mockFetchApplicationData.mockReturnValueOnce(mockData);
+      mockGetRedirectUrl.mockReturnValueOnce(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
       mockCheckRelevantPeriodActionTaken.mockReturnValueOnce(false);
 
       const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
@@ -244,6 +260,7 @@ describe("Update Filing Date controller", () => {
       mockData.entity_number = undefined;
 
       mockGetApplicationData.mockReturnValueOnce(mockData);
+      mockFetchApplicationData.mockReturnValueOnce(mockData);
       mockCreateAndLogErrorRequest.mockReturnValueOnce(new Error("message"));
 
       const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
@@ -262,6 +279,7 @@ describe("Update Filing Date controller", () => {
   });
 
   describe("POST tests", () => {
+
     test(`redirects to ${config.OVERSEAS_ENTITY_PRESENTER_URL} page after a successful post from ${config.UPDATE_FILING_DATE_PAGE}`, async () => {
       const mockData = { ...APPLICATION_DATA_MOCK };
       mockGetApplicationData.mockReturnValueOnce(mockData);
@@ -300,6 +318,7 @@ describe("Update Filing Date controller", () => {
     test(`redirect to the ${config.OVERSEAS_ENTITY_PRESENTER_URL} page with transaction and overseas entity already created`, async () => {
       const mockData = { ...APPLICATION_DATA_MOCK };
       mockGetApplicationData.mockReturnValueOnce(mockData);
+      mockGetRedirectUrl.mockReturnValue(config.OVERSEAS_ENTITY_PRESENTER_URL);
       const resp = await request(app)
         .post(config.UPDATE_FILING_DATE_URL)
         .send({ ...FILING_DATE_REQ_BODY_MOCK });
@@ -315,6 +334,9 @@ describe("Update Filing Date controller", () => {
     test(`redirect to the ${config.OVERSEAS_ENTITY_PRESENTER_URL} page after a successful creation of transaction and overseas entity`, async () => {
       const mockData = { ...APPLICATION_DATA_MOCK, [Transactionkey]: "", [OverseasEntityKey]: "" };
       mockGetApplicationData.mockReturnValue(mockData);
+      mockFetchApplicationData.mockReturnValue(mockData);
+      mockGetRedirectUrl.mockReturnValue(config.OVERSEAS_ENTITY_PRESENTER_URL);
+
       const resp = await request(app)
         .post(config.UPDATE_FILING_DATE_URL)
         .send({ ...FILING_DATE_REQ_BODY_MOCK });

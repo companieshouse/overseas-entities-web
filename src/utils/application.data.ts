@@ -15,6 +15,13 @@ import { ManagingOfficerCorporate, ManagingOfficerCorporateKey } from '../model/
 import { ManagingOfficerIndividual, ManagingOfficerKey } from '../model/managing.officer.model';
 
 import {
+  ApplicationData,
+  APPLICATION_DATA_KEY,
+  ApplicationDataType,
+  ApplicationDataArrayType
+} from "../model";
+
+import {
   ID,
   BeneficialOwnerNoc,
   NonLegalFirmControlNoc,
@@ -40,18 +47,11 @@ import {
   ROUTE_PARAM_SUBMISSION_ID
 } from '../config';
 
-import {
-  ApplicationData,
-  APPLICATION_DATA_KEY,
-  ApplicationDataType,
-  ApplicationDataArrayType
-} from "../model";
-
 /**
  * @todo: remove this method after REDIS removal has been implemented for the Update/Remove journeys (ROE-2645)
  */
-export const fetchApplicationData = (req: Request, isRegistration: boolean, forceFetch: boolean = false): Promise<ApplicationData> => {
-  if (isRegistration) {
+export const fetchApplicationData = (req: Request, isRegistrationOrUpdate: boolean, forceFetch: boolean = false): Promise<ApplicationData> => {
+  if (isRegistrationOrUpdate) {
     return getApplicationData(req, forceFetch);
   } else {
     return getApplicationData(req.session);

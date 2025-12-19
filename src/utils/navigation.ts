@@ -4,9 +4,9 @@ import { Navigation } from "../model/navigation.model";
 import { ApplicationData } from "../model/application.model";
 import { WhoIsRegisteringType } from "../model/who.is.making.filing.model";
 import { isActiveFeature } from "./feature.flag";
-import { getUrlWithParamsToPath, isRemoveJourney } from "./url";
 import { Request } from "express";
 import { isNoChangeJourney } from "./update/no.change.journey";
+import { getRedirectUrl, getUrlWithParamsToPath, isRemoveJourney } from "./url";
 
 export const getEntityBackLink = (data: ApplicationData, req: Request): string => {
   let backLinkUrl: string = data?.who_is_registering === WhoIsRegisteringType.AGENT ? config.DUE_DILIGENCE_URL : config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL;
@@ -23,7 +23,6 @@ export const getSoldLandFilterBackLink = (): string => {
 
 export const getUpdateOrRemoveBackLink = async (req: Request, backLinkUrl: string): Promise<string> => {
   const isRemove: boolean = await isRemoveJourney(req);
-
   if (isRemove) {
     return `${backLinkUrl}${config.JOURNEY_REMOVE_QUERY_PARAM}`;
   } else {
@@ -33,7 +32,6 @@ export const getUpdateOrRemoveBackLink = async (req: Request, backLinkUrl: strin
 
 export const getSecureUpdateFilterBackLink = async (req: Request): Promise<string> => {
   const isRemove: boolean = await isRemoveJourney(req);
-
   if (isRemove) {
     return `${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`;
   } else {
@@ -43,21 +41,27 @@ export const getSecureUpdateFilterBackLink = async (req: Request): Promise<strin
 
 export const getOverseasEntityPresenterBackLink = async (req: Request): Promise<string> => {
   const isRemove: boolean = await isRemoveJourney(req);
-
   if (isRemove) {
     return `${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`;
   } else {
-    return config.UPDATE_FILING_DATE_URL;
+    return getRedirectUrl({
+      req,
+      urlWithEntityIds: config.UPDATE_FILING_DATE_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.UPDATE_FILING_DATE_URL
+    });
   }
 };
 
 export const getUpdateReviewStatementBackLink = async (req: Request): Promise<string> => {
   const isRemove: boolean = await isRemoveJourney(req);
-
   if (isRemove) {
     return config.REMOVE_CONFIRM_STATEMENT_URL;
   }
-  return config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL;
+  return getRedirectUrl({
+    req,
+    urlWithEntityIds: config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_WITH_PARAMS_URL,
+    urlWithoutEntityIds: config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL
+  });
 };
 
 export const NAVIGATION: Navigation = {
@@ -76,14 +80,29 @@ export const NAVIGATION: Navigation = {
     previousPage: async (appData: ApplicationData, req: Request) => getSecureUpdateFilterBackLink(req),
     nextPage: [config.UPDATE_ANY_TRUSTS_INVOLVED_URL]
   },
+  [config.SECURE_UPDATE_FILTER_WITH_PARAMS_URL]: {
+    currentPage: config.SECURE_UPDATE_FILTER_PAGE,
+    previousPage: async (appData: ApplicationData, req: Request) => getSecureUpdateFilterBackLink(req),
+    nextPage: [config.UPDATE_ANY_TRUSTS_INVOLVED_URL]
+  },
   [config.UPDATE_INTERRUPT_CARD_URL]: {
     currentPage: config.UPDATE_INTERRUPT_CARD_PAGE,
     previousPage: () => config.UPDATE_ANY_TRUSTS_INVOLVED_URL,
     nextPage: [config.OVERSEAS_ENTITY_QUERY_PAGE]
   },
+  [config.UPDATE_INTERRUPT_CARD_WITH_PARAMS_URL]: {
+    currentPage: config.UPDATE_INTERRUPT_CARD_PAGE,
+    previousPage: () => config.UPDATE_ANY_TRUSTS_INVOLVED_WITH_PARAMS_URL,
+    nextPage: [config.OVERSEAS_ENTITY_QUERY_PAGE]
+  },
   [config.OVERSEAS_ENTITY_QUERY_URL]: {
     currentPage: config.OVERSEAS_ENTITY_QUERY_PAGE,
     previousPage: async (appData: ApplicationData, req: Request) => getUpdateOrRemoveBackLink(req, config.UPDATE_INTERRUPT_CARD_URL),
+    nextPage: [config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE]
+  },
+  [config.OVERSEAS_ENTITY_QUERY_WITH_PARAMS_URL]: {
+    currentPage: config.OVERSEAS_ENTITY_QUERY_PAGE,
+    previousPage: async (appData: ApplicationData, req: Request) => getUpdateOrRemoveBackLink(req, config.UPDATE_INTERRUPT_CARD_WITH_PARAMS_URL),
     nextPage: [config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE]
   },
   [config.UPDATE_FILING_DATE_URL]: {
@@ -96,10 +115,20 @@ export const NAVIGATION: Navigation = {
     previousPage: async (appData: ApplicationData, req: Request) => getOverseasEntityPresenterBackLink(req),
     nextPage: [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE]
   },
+  [config.OVERSEAS_ENTITY_PRESENTER_WITH_PARAMS_URL]: {
+    currentPage: config.UPDATE_PRESENTER_PAGE,
+    previousPage: async (appData: ApplicationData, req: Request) => getOverseasEntityPresenterBackLink(req),
+    nextPage: [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE]
+  },
   [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL]: {
     currentPage: config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE,
     previousPage: () => config.OVERSEAS_ENTITY_PRESENTER_URL,
     nextPage: [config.WHO_IS_MAKING_UPDATE_URL, config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE]
+  },
+  [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_WITH_PARAMS_URL]: {
+    currentPage: config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE,
+    previousPage: () => config.OVERSEAS_ENTITY_PRESENTER_WITH_PARAMS_URL,
+    nextPage: [config.WHO_IS_MAKING_UPDATE_WITH_PARAMS_URL, config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE]
   },
   [config.UPDATE_REVIEW_STATEMENT_URL]: {
     currentPage: config.UPDATE_REVIEW_STATEMENT_PAGE,
@@ -561,10 +590,20 @@ export const NAVIGATION: Navigation = {
     previousPage: () => "",
     nextPage: []
   },
+  [config.UPDATE_SIGN_OUT_WITH_PARAMS_URL]: {
+    currentPage: config.UPDATE_SIGN_OUT_PAGE,
+    previousPage: () => "",
+    nextPage: []
+  },
   [config.UPDATE_ANY_TRUSTS_INVOLVED_URL]: {
     currentPage: config.UPDATE_ANY_TRUSTS_INVOLVED_PAGE,
     previousPage: () => config.SECURE_UPDATE_FILTER_URL,
     nextPage: [config.UPDATE_INTERRUPT_CARD_URL]
+  },
+  [config.UPDATE_ANY_TRUSTS_INVOLVED_WITH_PARAMS_URL]: {
+    currentPage: config.UPDATE_ANY_TRUSTS_INVOLVED_PAGE,
+    previousPage: () => config.SECURE_UPDATE_FILTER_WITH_PARAMS_URL,
+    nextPage: [config.UPDATE_INTERRUPT_CARD_WITH_PARAMS_URL]
   },
   [config.UPDATE_TRUSTS_SUBMIT_BY_PAPER_URL]: {
     currentPage: config.UPDATE_TRUSTS_SUBMIT_BY_PAPER_PAGE,

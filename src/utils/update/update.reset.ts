@@ -1,4 +1,3 @@
-
 import { ApplicationData } from "../../model/application.model";
 import { Update } from "../../model/update.type.model";
 

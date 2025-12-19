@@ -388,6 +388,11 @@ describe("NAVIGATION utils", () => {
     expect(navigation).toEqual(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
   });
 
+  test(`NAVIGATION returns ${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL} when calling previousPage on ${config.UPDATE_FILING_DATE_WITH_PARAMS_URL} object`, async () => {
+    const navigation = await NAVIGATION[config.UPDATE_FILING_DATE_WITH_PARAMS_URL].previousPage();
+    expect(navigation).toEqual(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL);
+  });
+
   test(`NAVIGATION returns ${config.UPDATE_FILING_DATE_URL} when calling previousPage on ${config.OVERSEAS_ENTITY_PRESENTER_URL} object`, async () => {
     mockIsRemoveJourney.mockReturnValueOnce(false);
     mockGetRedirectUrl.mockReturnValueOnce(config.UPDATE_FILING_DATE_URL);

@@ -3,13 +3,12 @@ import { ApplicationData } from "../model";
 import { logger } from "./logger";
 import * as config from "../config";
 import { isActiveFeature } from "./feature.flag";
-
 import { Session } from "@companieshouse/node-session-handler";
 import { postTransaction } from "../service/transaction.service";
 
-import { IsSecureRegisterKey, OverseasEntityKey, Transactionkey } from "../model/data.types.model";
-import { getApplicationData, setExtraData } from "./application.data";
+import { fetchApplicationData, setExtraData } from "./application.data";
 import { createOverseasEntity, updateOverseasEntity } from "../service/overseas.entities.service";
+import { IsSecureRegisterKey, OverseasEntityKey, Transactionkey } from "../model/data.types.model";
 
 import {
   getUrlWithTransactionIdAndSubmissionId,
@@ -24,7 +23,7 @@ export const getFilterPage = async (req: Request, res: Response, next: NextFunct
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const isRemove = await isRemoveJourney(req);
-    const appData: ApplicationData = await getApplicationData(req, true);
+    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
 
     if (isRemove) {
       return res.render(templateName, {
@@ -62,7 +61,7 @@ export const postFilterPage = async (
     const isRedisRemovalFlag = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL);
     const isUpdate: boolean = await isUpdateJourney(req);
     const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await getApplicationData(req, true);
+    const appData: ApplicationData = await fetchApplicationData(req, isUpdate);
     const isSecureRegister = (req.body[IsSecureRegisterKey]).toString();
     appData[IsSecureRegisterKey] = isSecureRegister;
 

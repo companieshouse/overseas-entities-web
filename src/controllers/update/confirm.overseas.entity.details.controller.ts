@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { ApplicationData } from "../../model";
 import { logger } from "../../utils/logger";
 import * as config from "../../config";
-import { getApplicationData } from "../../utils/application.data";
+import { fetchApplicationData } from "../../utils/application.data";
 import { Update } from "../../model/update.type.model";
 import { CompanyPersonsWithSignificantControlStatements } from "@companieshouse/api-sdk-node/dist/services/company-psc-statements/types";
 import { isActiveFeature } from "../../utils/feature.flag";
@@ -19,9 +19,9 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const appData: ApplicationData = await getApplicationData(req, true);
-    const update = appData.update as Update;
     const isRemove: boolean = await isRemoveJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    const update = appData.update as Update;
 
     if (isRemove) {
       return res.render(config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE, {
@@ -60,7 +60,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await getApplicationData(req, true);
+    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
     if (isRemove) {
       return res.redirect(`${config.OVERSEAS_ENTITY_PRESENTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
     }

@@ -8,9 +8,8 @@ import { OwnedLandKey } from "../../model/update.type.model";
 import { postTransaction } from "../../service/transaction.service";
 import { isActiveFeature } from "../../utils/feature.flag";
 import { saveAndContinue } from "../../utils/save.and.continue";
-import { getRedirectUrl } from "../../utils/url";
-
-import { getApplicationData, setExtraData } from "../../utils/application.data";
+import { getRedirectUrl, isUpdateJourney } from "../../utils/url";
+import { fetchApplicationData, setExtraData } from "../../utils/application.data";
 import { createOverseasEntity, updateOverseasEntity } from "../../service/overseas.entities.service";
 import { OverseasEntityKey, Transactionkey } from "../../model/data.types.model";
 
@@ -25,7 +24,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
 
     logger.debugRequest(req, `GET ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE}`);
-    const appData: ApplicationData = await getApplicationData(req.session);
+    const isUpdate: boolean = await isUpdateJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, isUpdate);
     const backLinkUrl = getRedirectUrl({
       req,
       urlWithEntityIds: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL,
@@ -51,7 +51,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `POST ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE}`);
     const session = req.session as Session;
     let redirectUrl: string;
-    const appData: ApplicationData = await getApplicationData(req, true);
+    const isUpdate: boolean = await isUpdateJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, isUpdate);
     const ownedLandKey = req.body[OwnedLandKey];
 
     if (!appData[Transactionkey]) {

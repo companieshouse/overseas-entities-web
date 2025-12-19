@@ -26,7 +26,7 @@ import { yesNoResponse } from "../../../src/model/data.types.model";
 import { UpdateKey } from "../../../src/model/update.type.model";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
 
-import { getApplicationData, setExtraData } from "../../../src/utils/application.data";
+import { fetchApplicationData, getApplicationData, setExtraData } from "../../../src/utils/application.data";
 import { createOverseasEntity, updateOverseasEntity } from "../../../src/service/overseas.entities.service";
 
 import {
@@ -69,6 +69,7 @@ mockIsActiveFeature.mockReturnValue(true);
 
 const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 const mockSetExtraData = setExtraData as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
@@ -76,12 +77,14 @@ describe("owned land filter page tests", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockFetchApplicationData.mockReset();
   });
 
   describe("GET tests", () => {
 
     test(`renders the ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE} page`, async () => {
       mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
+      mockFetchApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
       const resp = await request(app).get(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
 
       expect(resp.status).toEqual(200);
@@ -96,6 +99,7 @@ describe("owned land filter page tests", () => {
 
     test(`renders the ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE} page with radios selected to ${yesNoResponse.Yes}`, async () => {
       mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK, update: UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE });
+      mockFetchApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK, update: UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE });
       const resp = await request(app).get(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(RADIO_BUTTON_YES_SELECTED);
@@ -103,6 +107,7 @@ describe("owned land filter page tests", () => {
 
     test(`renders the ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE} page with radios selected to ${yesNoResponse.No}`, async () => {
       mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK, update: UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE });
+      mockFetchApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK, update: UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE });
       const resp = await request(app).get(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(RADIO_BUTTON_NO_SELECTED);
@@ -128,6 +133,7 @@ describe("owned land filter page tests", () => {
 
     test(`renders the ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE} page with banner when registration date is equal to 29 February 2022.`, async () => {
       mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK, [UpdateKey]: { date_of_creation: { day: "29", month: "02", year: "2022" } } });
+      mockFetchApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK, [UpdateKey]: { date_of_creation: { day: "29", month: "02", year: "2022" } } });
       const resp = await request(app).get(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toMatch(/29\s+February\s+2022/i);
@@ -143,6 +149,7 @@ describe("owned land filter page tests", () => {
 
     test(`renders the ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE} page page with banner when registration date is equal to 30 January 2023.`, async () => {
       mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK, [UpdateKey]: { date_of_creation: { day: "30", month: "01", year: "2023" } } });
+      mockFetchApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK, [UpdateKey]: { date_of_creation: { day: "30", month: "01", year: "2023" } } });
       const resp = await request(app).get(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toMatch(/30\s+January\s+2023/i);
@@ -160,6 +167,8 @@ describe("owned land filter page tests", () => {
   describe("POST tests", () => {
 
     test(`renders the ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL} page when yes is selected`, async () => {
+      mockFetchApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
+      mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
       const resp = await request(app)
         .post(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL + config.RELEVANT_PERIOD_QUERY_PARAM)
         .send({ owned_land_relevant_period: "1" });
@@ -169,6 +178,8 @@ describe("owned land filter page tests", () => {
     });
 
     test(`renders the ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL} page with error when no radios are selected`, async () => {
+      mockFetchApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
+      mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
       const resp = await request(app)
         .post(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL)
         .send({ owned_land_relevant_period: "" });
@@ -179,6 +190,8 @@ describe("owned land filter page tests", () => {
     });
 
     test(`redirect to the ${config.UPDATE_FILING_DATE_URL} page when negative invalid value found`, async () => {
+      mockFetchApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
+      mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
       const resp = await request(app)
         .post(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL)
         .send({ owned_land_relevant_period: "-1" });
@@ -200,6 +213,7 @@ describe("owned land filter page tests", () => {
     test(`renders the ${config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL} page when no is selected`, async () => {
       const appData = { ...APPLICATION_DATA_MOCK, [UpdateKey]: UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE };
       mockGetApplicationData.mockReturnValue(appData);
+      mockFetchApplicationData.mockReturnValue(appData);
       const resp = await request(app)
         .post(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL)
         .send({ owned_land_relevant_period: "0" });
@@ -217,6 +231,7 @@ describe("owned land filter page tests", () => {
     test(`renders the ${config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL} page when no is selected`, async () => {
       const appData = { ...APPLICATION_DATA_MOCK, [UpdateKey]: UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE };
       mockGetApplicationData.mockReturnValue(appData);
+      mockFetchApplicationData.mockReturnValue(appData);
       mockIsActiveFeature.mockReset();
       mockIsActiveFeature.mockReturnValueOnce(true);
       mockIsActiveFeature.mockReturnValueOnce(true);

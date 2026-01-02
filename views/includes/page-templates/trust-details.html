@@ -110,10 +110,10 @@
       {% for bo in pageData.beneficialOwners %}
         {% set boItems = (
           boItems.push({
-            id: "beneficialOwnersIds",
+            id:  bo.id ,
             value: bo.id,
             text: bo.name,
-            checked: true if bo.id in beneficialOwnersIds
+            checked: bo.id in beneficialOwnersIds
           }),
           boItems
           ) %}

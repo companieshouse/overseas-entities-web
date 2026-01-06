@@ -24,6 +24,9 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const appData = await getApplicationData(req.session);
     const index = req.query.index;
 
+    logger.info(`update.review.managing.officer.corporate.controller GET`);
+    logger.info(`appData = ${appData}`);
+
     let dataToReview = {}, principalAddress = {}, serviceAddress = {};
 
     if (appData?.managing_officers_corporate){
@@ -31,6 +34,10 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       principalAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};
       serviceAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
     }
+
+    logger.info(`dataToReview = ${dataToReview}`);
+    logger.info(`principalAddress = ${principalAddress}`);
+    logger.info(`serviceAddress = ${serviceAddress}`);
 
     const templateOptions = {
       backLinkUrl: UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
@@ -57,7 +64,12 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const moIndex = req.query.index;
     const appData = await getApplicationData(req.session);
 
+    logger.info(`update.review.managing.officer.corporate.controller POST`);
+    logger.info(`appData = ${appData}`);
+
     if (moIndex !== undefined && appData.managing_officers_corporate && appData.managing_officers_corporate[Number(moIndex)].id === req.body["id"]){
+
+      logger.info(`Inside moIndex loop`);
 
       const moId = appData.managing_officers_corporate[Number(moIndex)].id;
 
@@ -66,6 +78,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
       // Set officer data
       const data: ApplicationDataType = setOfficerData(req.body, moId);
+
+      logger.info(`data after setOfficerData call = ${data}`);
 
       // Save new Managing Officer
       const session = req.session as Session;

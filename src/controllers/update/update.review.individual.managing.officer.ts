@@ -21,14 +21,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const appData = await getApplicationData(req.session);
     const index = Number(req.query.index);
 
-    logger.info(`update.review.individial.managing.officer GET`);
-    logger.info(`appData = ${appData}`);
-
     const { dataToReview, residentialAddress, serviceAddress } = fetchIndividualMOAddress(appData, index);
-
-    logger.info(`dataToReview = ${dataToReview}`);
-    logger.info(`residentialAddress = ${residentialAddress}`);
-    logger.info(`serviceAddress = ${serviceAddress}`);
 
     const templateOptions = {
       backLinkUrl: UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
@@ -55,12 +48,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const moIndex = req.query.index;
     const appData = await getApplicationData(req.session);
 
-    logger.info(`update.review.individial.managing.officer POST`);
-    logger.info(`appData = ${appData}`);
-
     if (moIndex !== undefined && appData.managing_officers_individual && appData.managing_officers_individual[Number(moIndex)].id === req.body["id"]){
-
-      logger.info(`Inside moIndex loop`);
 
       const moId = appData.managing_officers_individual[Number(moIndex)].id;
       const dob = appData.managing_officers_individual[Number(moIndex)].date_of_birth as InputDate;
@@ -75,8 +63,6 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       if (haveDayOfBirth) {
         data[HaveDayOfBirthKey] = haveDayOfBirth;
       }
-
-      logger.info(`data after setOfficerData call = ${data}`);
 
       await setApplicationData(req.session, data, ManagingOfficerKey);
 

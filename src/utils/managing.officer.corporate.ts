@@ -222,7 +222,5 @@ export const setOfficerData = (reqBody: any, id: string): ApplicationDataType =>
   }
   data[ID] = id;
 
-  logger.info(`Inside setOfficerData data = ${data}`);
-
   return data;
 };

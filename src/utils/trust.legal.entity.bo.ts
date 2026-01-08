@@ -12,6 +12,7 @@ import { isActiveFeature } from './feature.flag';
 import { updateOverseasEntity } from "../service/overseas.entities.service";
 import { checkTrusteeLegalEntityCeasedDate } from '../validation/async';
 import { checkTrustLegalEntityBeneficialOwnerStillInvolved } from '../validation/stillInvolved.validation';
+import { checkInterestedPersonStartDate } from '../validation/fields/date.validation';
 
 import { fetchApplicationData, setExtraData } from './application.data';
 import { mapLegalEntityTrusteeByIdFromSessionToPage, mapLegalEntityToSession } from './trust/legal.entity.beneficial.owner.mapper';
@@ -202,5 +203,7 @@ export const setEntityNameInRelevantPeriodPageBanner = (pageProps: TrustLegalEnt
 const getValidationErrors = async (appData: ApplicationData, req: Request): Promise<ValidationError[]> => {
   const stillInvolvedErrors = checkTrustLegalEntityBeneficialOwnerStillInvolved(appData, req);
   const ceasedDateErrors = await checkTrusteeLegalEntityCeasedDate(appData, req);
-  return [...stillInvolvedErrors, ...ceasedDateErrors];
+  const interestedDateErrors = checkInterestedPersonStartDate(appData, req);
+
+  return [...stillInvolvedErrors, ...ceasedDateErrors, ...interestedDateErrors];
 };

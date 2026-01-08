@@ -31,6 +31,7 @@ import {
   NEXT_MADE_UP_TO_ISO_DATE,
   addNextMadeUpToDateToRequest,
   checkTrusteeInterestedDate,
+  checkInterestedPersonStartDate,
 } from "../../src/validation/fields/date.validation";
 
 import {
@@ -804,5 +805,75 @@ describe("checkTrusteeInterestedDate", () => {
     req.params.trusteeId = "noMatch";
     const errors = checkTrusteeInterestedDate(appData, req);
     expect(errors).toEqual([]);
+  });
+});
+
+describe("checkInterestedPersonStartDate", () => {
+  let appData: any;
+  let req: any;
+
+  beforeEach(() => {
+    appData = {
+      trusts: [
+        {
+          trust_id: "trustABC",
+          creation_date_day: "10",
+          creation_date_month: "5",
+          creation_date_year: "2015"
+        }
+      ]
+    };
+    req = {
+      params: { trustId: "trustABC" },
+      body: {}
+    };
+  });
+
+  test("should add error if interestedPersonStartDate is before trust creation date", () => {
+    req.body.interestedPersonStartDateDay = "1";
+    req.body.interestedPersonStartDateMonth = "1";
+    req.body.interestedPersonStartDateYear = "2010";
+    const errors = checkInterestedPersonStartDate(appData, req);
+    expect(errors.some(e => e.msg === ErrorMessages.DATE_BEFORE_TRUST_CREATION_DATE_INTERESTED_TRUSTEE)).toBe(true);
+  });
+
+  test("should not add error if interestedPersonStartDate is after trust creation date", () => {
+    req.body.interestedPersonStartDateDay = "11";
+    req.body.interestedPersonStartDateMonth = "5";
+    req.body.interestedPersonStartDateYear = "2015";
+    const errors = checkInterestedPersonStartDate(appData, req);
+    expect(errors.length).toBe(0);
+  });
+
+  test("should not add error if interestedPersonStartDate is same as trust creation date", () => {
+    req.body.interestedPersonStartDateDay = "10";
+    req.body.interestedPersonStartDateMonth = "5";
+    req.body.interestedPersonStartDateYear = "2015";
+    const errors = checkInterestedPersonStartDate(appData, req);
+    expect(errors.length).toBe(0);
+  });
+
+  test("should return empty array if trust not found", () => {
+    req.params.trustId = "notfound";
+    const errors = checkInterestedPersonStartDate(appData, req);
+    expect(errors.length).toBe(0);
+  });
+
+  test("should return empty array if trusts array is empty", () => {
+    appData.trusts = [];
+    const errors = checkInterestedPersonStartDate(appData, req);
+    expect(errors.length).toBe(0);
+  });
+
+  test("should return empty array if trusts array is undefined", () => {
+    appData.trusts = undefined;
+    const errors = checkInterestedPersonStartDate(appData, req);
+    expect(errors.length).toBe(0);
+  });
+
+  test("should return empty array if trustId param does not match any trust", () => {
+    req.params.trustId = "unknown";
+    const errors = checkInterestedPersonStartDate(appData, req);
+    expect(errors.length).toBe(0);
   });
 });

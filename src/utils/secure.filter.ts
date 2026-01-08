@@ -57,20 +57,24 @@ export const postFilterPage = async (
     const isRegistration: boolean = isRegistrationJourney(req);
     const isRemove: boolean = await isRemoveJourney(req);
     const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
-    const isSecureRegister = (req.body[IsSecureRegisterKey]).toString();
-    appData[IsSecureRegisterKey] = isSecureRegister;
+    const isSecureRegister = req.body[IsSecureRegisterKey]?.toString() === "1";
     const session = req.session as Session;
+
+    appData[IsSecureRegisterKey] = isSecureRegister ? "1" : "0";
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {
+      await updateOverseasEntity(req, session, appData);
+    }
 
     let nextPageUrl: string = "";
 
-    if (isSecureRegister === "1") {
+    if (isSecureRegister) {
       nextPageUrl = isSecureRegisterYesUrl;
       if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {
         nextPageUrl = getUrlWithTransactionIdAndSubmissionId(isSecureRegisterYesUrl, appData[Transactionkey] as string, appData[OverseasEntityKey] as string);
       }
     }
 
-    if (isSecureRegister === "0") {
+    if (!isSecureRegister) {
       nextPageUrl = isSecureRegisterNoUrl;
       if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {
         if (appData[Transactionkey] && appData[OverseasEntityKey]) {

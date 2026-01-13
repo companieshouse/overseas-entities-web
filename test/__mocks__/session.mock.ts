@@ -100,6 +100,22 @@ export const TRANSACTION_POST_PARAMS = {
   companyNumber: "OE111129",
   description: DESCRIPTION
 };
+
+export const TRANSACTION_PUT_PARAMS = {
+  reference: REFERENCE,
+  companyName: "overseasEntityName",
+  companyNumber: "OE111129",
+  description: DESCRIPTION,
+  id: TRANSACTION_ID
+};
+
+export const TRANSACTION_PUT_WITHOUT_ID_PARAMS = {
+  reference: REFERENCE,
+  companyName: "overseasEntityName",
+  companyNumber: "OE111129",
+  description: DESCRIPTION,
+  id: undefined
+};
 export const TRANSACTION_CLOSED_PARAMS = {
   id: TRANSACTION_ID,
   reference: `${REFERENCE}_${OVERSEAS_ENTITY_ID}`,
@@ -1970,6 +1986,28 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
   [updateType.UpdateKey]: UPDATE_OBJECT_MOCK
 };
 
+export const APPLICATION_DATA_WITHOUT_TRANSACTION_ID_MOCK: ApplicationData = {
+  [EntityNameKey]: OVERSEAS_NAME_MOCK,
+  [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,
+  [entityType.EntityKey]: ENTITY_OBJECT_MOCK,
+  [dueDiligenceType.DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK,
+  [beneficialOwnerStatementType.BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK,
+  [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [ BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK ],
+  [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: [ BENEFICIAL_OWNER_OTHER_OBJECT_MOCK ],
+  [beneficialOwnerGovType.BeneficialOwnerGovKey]: [ BENEFICIAL_OWNER_GOV_OBJECT_MOCK ],
+  [managingOfficerType.ManagingOfficerKey]: [ MANAGING_OFFICER_OBJECT_MOCK ],
+  [managingOfficerCorporateType.ManagingOfficerCorporateKey]: [ MANAGING_OFFICER_CORPORATE_OBJECT_MOCK ],
+  [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT,
+  [PaymentKey]: PAYMENT_OBJECT_MOCK,
+  [OverseasEntityKey]: OVERSEAS_ENTITY_ID,
+  [Transactionkey]: undefined,
+  [HasSoldLandKey]: hasSoldLandKey,
+  [IsSecureRegisterKey]: isSecureRegisterKey,
+  [TrustKey]: [TRUST],
+  [EntityNumberKey]: COMPANY_NUMBER,
+  [updateType.UpdateKey]: UPDATE_OBJECT_MOCK
+};
+
 export const APPLICATION_DATA_REMOVE_MOCK: ApplicationData = {
   [EntityNameKey]: OVERSEAS_NAME_MOCK,
   [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,
@@ -2457,7 +2495,7 @@ export const RESET_DATA_FOR_CHANGE_RESPONSE = {
 };
 
 export const RESET_DATA_FOR_NO_CHANGE_RESPONSE = {
-  [EntityNameKey]: "Test1",
+  [EntityNameKey]: "testEntity",
   [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,
   [OverseasEntityKey]: OVERSEAS_ENTITY_ID,
   [Transactionkey]: TRANSACTION_ID,
@@ -2477,7 +2515,7 @@ export const RESET_DATA_FOR_NO_CHANGE_RESPONSE = {
   [TrustKey]: undefined,
   [EntityKey]: {
     email: "",
-    incorporation_country: "",
+    incorporation_country: "Ireland",
     is_on_register_in_country_formed_in: 0,
     is_service_address_same_as_principal_address: 0,
     law_governed: undefined,

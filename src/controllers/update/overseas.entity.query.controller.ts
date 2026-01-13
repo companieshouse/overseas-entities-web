@@ -1,11 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-
 import { Session } from "@companieshouse/node-session-handler";
 import { logger } from "../../utils/logger";
 import * as config from "../../config";
 import { ApplicationData } from "../../model";
 import { resetEntityUpdate } from "../../utils/update/update.reset";
-import { EntityNumberKey } from "../../model/data.types.model";
+import { EntityNumberCookieKey, EntityNumberKey } from "../../model/data.types.model";
 import { getCompanyProfile } from "../../service/company.profile.service";
 import { updateOverseasEntity } from "../../service/overseas.entities.service";
 import { mapCompanyProfileToOverseasEntity } from "../../utils/update/company.profile.mapper.to.overseas.entity";
@@ -15,6 +14,7 @@ import { retrieveBoAndMoData } from "../../utils/update/beneficial_owners_managi
 import { getRedirectUrl, isRemoveJourney } from "../../utils/url";
 import { isActiveFeature } from "../../utils/feature.flag";
 import { fetchApplicationData, setExtraData } from "../../utils/application.data";
+import { updateTransaction } from "../../service/transaction.service";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -71,6 +71,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     if (appData.entity_number !== entityNumber) {
       await addOeToApplicationData(req, appData, entityNumber, companyProfile, isRemove);
     }
+
+    setEntityCookie(res, entityNumber);
 
     const nextPageUrl = getRedirectUrl({
       req,
@@ -129,6 +131,7 @@ const addOeToApplicationData = async (req: Request, appData: ApplicationData, en
   await retrieveBoAndMoData(req, appData);
   setExtraData(req.session, appData);
   if (!isRemove && isRedisFlagEnabled) {
+    await updateTransaction(req, req.session as Session, appData);
     await updateOverseasEntity(req, req.session as Session, appData);
   }
 };
@@ -141,3 +144,15 @@ export const reloadOE = (appData: ApplicationData, entityNumber: string, company
     appData.update.date_of_creation = mapInputDate(companyProfile.dateOfCreation);
   }
 };
+
+export const setEntityCookie = (res: Response, entityNumber: string) => {
+  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+    res.cookie(EntityNumberCookieKey, entityNumber, {
+      httpOnly: true,
+      domain: config.COOKIE_DOMAIN,
+      path: config.UPDATE_AN_OVERSEAS_ENTITY_URL,
+      secure: false
+    });
+  }
+};
+

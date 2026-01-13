@@ -25,28 +25,39 @@ import { authentication } from "../../../src/middleware/authentication.middlewar
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
+
 import { getApplicationData, setExtraData } from "../../../src/utils/application.data";
+
 import {
+  COMPANY_NUMBER,
+  OVERSEAS_NAME_MOCK,
   APPLICATION_DATA_MOCK,
   APPLICATION_DATA_REMOVE_MOCK,
-  APPLICATION_DATA_MOCK_WITHOUT_UPDATE,
-  COMPANY_NUMBER,
-  RESET_DATA_FOR_NO_CHANGE_RESPONSE,
-  OVERSEAS_NAME_MOCK,
   RESET_DATA_FOR_CHANGE_RESPONSE,
-  UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE,
+  RESET_DATA_FOR_NO_CHANGE_RESPONSE,
+  APPLICATION_DATA_MOCK_WITHOUT_UPDATE,
   UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE,
+  UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE,
 } from '../../__mocks__/session.mock';
-import { UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE, UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL, UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE, UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL, WHO_IS_MAKING_UPDATE_URL } from '../../../src/config';
+
+import {
+  WHO_IS_MAKING_UPDATE_URL,
+  UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL,
+  UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE,
+  UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL,
+  UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE,
+} from '../../../src/config';
+
 import {
   ANY_MESSAGE_ERROR,
+  SERVICE_UNAVAILABLE,
   RADIO_BUTTON_NO_SELECTED,
   RADIO_BUTTON_YES_SELECTED,
-  SERVICE_UNAVAILABLE,
-  UPDATE_DO_YOU_WANT_TO_CHANGE_OE_NO_TEXT,
+  REMOVE_DO_YOU_WANT_TO_CHANGE_OE_TITLE,
   UPDATE_DO_YOU_WANT_TO_CHANGE_OE_TITLE,
-  REMOVE_DO_YOU_WANT_TO_CHANGE_OE_TITLE
+  UPDATE_DO_YOU_WANT_TO_CHANGE_OE_NO_TEXT,
 } from '../../__mocks__/text.mock';
+
 import { logger } from '../../../src/utils/logger';
 import { ErrorMessages } from '../../../src/validation/error.messages';
 import { NoChangeKey } from '../../../src/model/update.type.model';

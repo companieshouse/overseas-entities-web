@@ -31,10 +31,10 @@ import { mapCompanyProfileToOverseasEntity } from "../../../src/utils/update/com
 import { fetchApplicationData, getApplicationData, setExtraData } from "../../../src/utils/application.data";
 
 import {
-  ANY_MESSAGE_ERROR,
   PAGE_TITLE_ERROR,
-  OVERSEAS_ENTITY_QUERY_PAGE_TITLE,
+  ANY_MESSAGE_ERROR,
   SERVICE_UNAVAILABLE,
+  OVERSEAS_ENTITY_QUERY_PAGE_TITLE,
 } from "../../__mocks__/text.mock";
 
 const testOENumber = "OE123456";

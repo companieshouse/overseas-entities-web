@@ -1,10 +1,4 @@
 import { DATE } from "./fields/date.mock";
-
-export const companyProfileQueryMock = {
-  companyName: "Test1",
-  companyNumber: "OE111129"
-};
-
 export const testDateOfCreation = DATE;
 export const testFilingDate = DATE;
 export const testEntityName = "testEntity";
@@ -57,5 +51,21 @@ export const updateModelMock = {
   update: {
     date_of_creation: testDateOfCreation,
     filing_date: testFilingDate
+  }
+};
+
+// export const companyProfileQueryMock = {
+//   companyName: "Test1",
+//   companyNumber: "OE111129"
+// };
+
+export const companyProfileQueryMock = {
+  companyName: testEntityName,
+  companyNumber: testEntityNumber,
+  dateOfCreation: "2000-01-01",
+  foreignCompanyDetails: {
+    originatingRegistry: {
+      country: testIncorporationCountry
+    }
   }
 };

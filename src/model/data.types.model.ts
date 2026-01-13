@@ -99,3 +99,6 @@ export const IsRemoveKey = "is_remove";
 export const IsListedAsPropertyOwnerKey = "is_listed_as_property_owner";
 export const HasSoldAllLandKey = "has_sold_all_land";
 export const IsNotProprietorOfLandKey = "is_not_proprietor_of_land";
+
+// Cookie names
+export const EntityNumberCookieKey = "roe_entity_number";

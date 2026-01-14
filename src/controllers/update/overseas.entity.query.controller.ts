@@ -151,7 +151,7 @@ export const setEntityCookie = (res: Response, entityNumber: string) => {
       httpOnly: true,
       domain: config.COOKIE_DOMAIN,
       path: config.UPDATE_AN_OVERSEAS_ENTITY_URL,
-      secure: false
+      secure: config.CHS_URL.includes("https://"),
     });
   }
 };

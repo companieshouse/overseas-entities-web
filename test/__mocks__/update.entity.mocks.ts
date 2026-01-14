@@ -54,11 +54,6 @@ export const updateModelMock = {
   }
 };
 
-// export const companyProfileQueryMock = {
-//   companyName: "Test1",
-//   companyNumber: "OE111129"
-// };
-
 export const companyProfileQueryMock = {
   companyName: testEntityName,
   companyNumber: testEntityNumber,

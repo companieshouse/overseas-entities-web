@@ -155,7 +155,7 @@ describe('Transaction Service test suite', () => {
       expect(mockCreateAndLogErrorRequest).toBeCalledWith(req, `'putTransaction' for company number '${COMPANY_NUMBER}' with name '${OVERSEAS_NAME_MOCK}' returned HTTP status code 500`);
     });
 
-    test(`Should throw an error when HTTP status code is 500`, async () => {
+    test(`Should throw an error when HTTP status code is 400`, async () => {
       mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockMakeApiCallWithRetry.mockReturnValueOnce({ httpStatusCode: 400 });
       await expect(updateTransaction(req, session)).rejects.toThrow(ERROR);

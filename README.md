@@ -34,10 +34,20 @@ Simplified view of the architecture and does not show all services, components a
 The only local development mode available, that includes account, redis and other important service/dependency is only possible through our development orchestrator service in [Docker CHS Development](https://github.com/companieshouse/docker-chs-development).
 
 1. Clone [Docker CHS Development](https://github.com/companieshouse/docker-chs-development) and follow the steps in the README.
-2. Run `./bin/chs-dev modules enable overseas-entities`
-3. Run `./bin/chs-dev development enable overseas-entities-web` (this will allow you to make changes in real time).
-4. Run docker using `chs-dev up` in the docker-chs-development directory.
-5. Open your browser and go to <http://chs.local/register-an-overseas-entity/starting-new> for the ROE Registration journey, <http://chs.local/update-an-overseas-entity/continue-with-saved-filing> for the ROE Update journey or <http://chs.local/update-an-overseas-entity/continue-with-saved-filing?journey=remove> for the ROE Remove journey (each of these is the first page that would be displayed, if navigating from the GOV UK external ROE guidance screens).
+2. Ensure you are logged into AWS SSO (`aws sso login`) and authenticate to both ECR registries:
+   ```sh
+   # ch-development ECR
+   aws ecr get-login-password --region eu-west-2 --profile development-eu-west-2 | \
+     docker login --username AWS --password-stdin 169942020521.dkr.ecr.eu-west-2.amazonaws.com
+
+   # ch-shared-services ECR (required for overseas-entities-api and other services)
+   aws ecr get-login-password --region eu-west-2 --profile shared-services-ecr-eu-west-2-ro | \
+     docker login --username AWS --password-stdin 416670754337.dkr.ecr.eu-west-2.amazonaws.com
+   ```
+3. Run `./bin/chs-dev modules enable overseas-entities`
+4. Run `./bin/chs-dev development enable overseas-entities-web` (this will allow you to make changes in real time).
+5. Run docker using `chs-dev up` in the docker-chs-development directory.
+6. Open your browser and go to <http://chs.local/register-an-overseas-entity/starting-new> for the ROE Registration journey, <http://chs.local/update-an-overseas-entity/continue-with-saved-filing> for the ROE Update journey or <http://chs.local/update-an-overseas-entity/continue-with-saved-filing?journey=remove> for the ROE Remove journey (each of these is the first page that would be displayed, if navigating from the GOV UK external ROE guidance screens).
 
 Environment variables used to configure this service in docker are located in the file `services/modules/overseas-entities/overseas-entities-web.docker-compose.yaml`
 

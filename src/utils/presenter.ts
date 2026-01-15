@@ -7,9 +7,9 @@ import { saveAndContinue } from "./save.and.continue";
 import { postTransaction } from "../service/transaction.service";
 import { createOverseasEntity } from "../service/overseas.entities.service";
 import { isActiveFeature } from "./feature.flag";
+import { isRemoveJourney } from "../utils/url";
 
 import { PresenterKey, PresenterKeys } from "../model/presenter.model";
-import { isRegistrationJourney, isRemoveJourney } from "../utils/url";
 import { IsRemoveKey, OverseasEntityKey, Transactionkey } from '../model/data.types.model';
 
 import {
@@ -33,8 +33,7 @@ export const getPresenterPage = async (
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const isRemove: boolean = await isRemoveJourney(req);
-    const isRegistration = isRegistrationJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
     const presenter = appData[PresenterKey];
 
     if (isRemove) {
@@ -71,7 +70,6 @@ export const postPresenterPage = async (
 
     const session = req.session as Session;
     const isRemove: boolean = await isRemoveJourney(req);
-    const isRegistration: boolean = isRegistrationJourney(req);
 
     if (isRemove) {
       const appData: ApplicationData = await getApplicationData(session);
@@ -86,7 +84,7 @@ export const postPresenterPage = async (
 
     const data = prepareData(req.body, PresenterKeys);
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && !isRemove) {
       await setApplicationData(req, data, PresenterKey);
     } else {
       await setApplicationData(session, data, PresenterKey);

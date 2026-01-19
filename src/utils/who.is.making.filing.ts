@@ -1,15 +1,14 @@
 import { NextFunction, Request, Response } from "express";
-
 import { logger } from "./logger";
 import { ApplicationData } from "../model";
-import { fetchApplicationData, setExtraData } from "./application.data";
-import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../model/who.is.making.filing.model";
 import { Session } from "@companieshouse/node-session-handler";
 import { isActiveFeature } from "./feature.flag";
 import * as config from "../config";
-import { OverseasEntityKey, Transactionkey } from "../model/data.types.model";
 import { updateOverseasEntity } from "../service/overseas.entities.service";
-import { isRegistrationJourney } from "./url";
+import { isRemoveJourney } from "./url";
+import { fetchApplicationData, setExtraData } from "./application.data";
+import { OverseasEntityKey, Transactionkey } from "../model/data.types.model";
+import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../model/who.is.making.filing.model";
 
 export const getWhoIsFiling = async (
   req: Request,
@@ -22,9 +21,8 @@ export const getWhoIsFiling = async (
   try {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-
-    const isRegistration = isRegistrationJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+    const isRemove: boolean = await isRemoveJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
 
     return res.render(templateName, {
       backLinkUrl,
@@ -49,11 +47,10 @@ export const postWhoIsFiling = async (
   try {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-
     const session = req.session as Session;
-    const isRegistration: boolean = isRegistrationJourney(req);
+    const isRemove: boolean = await isRemoveJourney(req);
     const whoIsRegistering = req.body[WhoIsRegisteringKey];
-    const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
     appData[WhoIsRegisteringKey] = whoIsRegistering;
 
     let nextPageUrl: string = "";
@@ -65,14 +62,13 @@ export const postWhoIsFiling = async (
       nextPageUrl = oeUrl;
     }
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && !isRemove) {
       if (appData[Transactionkey] && appData[OverseasEntityKey]) {
         await updateOverseasEntity(req, session, appData);
       } else {
         throw new Error("Error: who_is_registering filter page cannot be updated - transaction_id or overseas_entity_id is missing");
       }
     }
-
     setExtraData(session, appData);
     return res.redirect(nextPageUrl);
 

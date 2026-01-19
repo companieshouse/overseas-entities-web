@@ -88,9 +88,9 @@ export const post = async (req: Request, resp: Response, next: NextFunction) => 
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       await updateOverseasEntity(req, req.session as Session, appData);
     } else {
-      setExtraData(session, appData);
       await saveAndContinue(req, session);
     }
+    setExtraData(session, appData);
 
     return resp.redirect(redirectUrl);
 

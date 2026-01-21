@@ -495,6 +495,11 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.WHO_IS_MAKING_UPDATE_URL,
     nextPage: [config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL]
   },
+  [config.UPDATE_DUE_DILIGENCE_WITH_PARAMS_URL]: {
+    currentPage: config.UPDATE_DUE_DILIGENCE_PAGE,
+    previousPage: () => config.WHO_IS_MAKING_UPDATE_WITH_PARAMS_URL,
+    nextPage: [config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_WITH_PARAMS_URL]
+  },
   [config.UPDATE_BENEFICIAL_OWNER_GOV_URL]: {
     currentPage: config.UPDATE_BENEFICIAL_OWNER_GOV_PAGE,
     previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,

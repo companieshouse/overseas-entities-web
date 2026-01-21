@@ -39,7 +39,7 @@ export const getDueDiligence = async (
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const isRemove = isRemoveJourney(req);
+    const isRemove = await isRemoveJourney(req);
     const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
     const data = appData[OverseasEntityDueDiligenceKey];
     const identityAddress = (data?.[IdentityAddressKey]) ? mapDataObjectToFields(data[IdentityAddressKey], IdentityAddressKeys, AddressKeys) : {};

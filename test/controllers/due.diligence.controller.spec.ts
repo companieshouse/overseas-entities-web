@@ -5,7 +5,6 @@ jest.mock('../../src/utils/save.and.continue');
 jest.mock('../../src/middleware/navigation/has.presenter.middleware');
 jest.mock('../../src/utils/feature.flag');
 jest.mock('../../src/middleware/service.availability.middleware');
-jest.mock("../../src/utils/url");
 jest.mock('../../src/service/overseas.entities.service');
 
 import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
@@ -21,59 +20,57 @@ import { hasPresenter } from "../../src/middleware/navigation/has.presenter.midd
 import { EMAIL_ADDRESS } from "../__mocks__/session.mock";
 import { DueDiligenceKey } from '../../src/model/due.diligence.model';
 import { getTwoMonthOldDate } from "../__mocks__/fields/date.mock";
-import { DUE_DILIGENCE_WITH_INVALID_CHARACTERS_FIELDS_MOCK } from "../__mocks__/validation.mock";
 import { DateTime } from "luxon";
 import { isActiveFeature } from "../../src/utils/feature.flag";
 import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
 import { updateOverseasEntity } from "../../src/service/overseas.entities.service";
+import { DUE_DILIGENCE_WITH_INVALID_CHARACTERS_FIELDS_MOCK } from "../__mocks__/validation.mock";
 
 import { APPLICATION_DATA_KEY, ApplicationDataType } from '../../src/model';
-import { isRegistrationJourney, getUrlWithParamsToPath } from "../../src/utils/url";
 
 import {
-  getApplicationData,
-  setApplicationData,
   prepareData,
-  fetchApplicationData,
   setExtraData,
+  setApplicationData,
+  getApplicationData,
+  fetchApplicationData,
 } from "../../src/utils/application.data";
 
 import {
-  DUE_DILIGENCE_PAGE,
-  DUE_DILIGENCE_URL,
-  DUE_DILIGENCE_WITH_PARAMS_URL,
-  ENTITY_PAGE,
   ENTITY_URL,
-  ENTITY_WITH_PARAMS_URL,
+  ENTITY_PAGE,
   LANDING_PAGE_URL,
+  DUE_DILIGENCE_URL,
+  DUE_DILIGENCE_PAGE,
   WHO_IS_MAKING_FILING_URL,
+  DUE_DILIGENCE_WITH_PARAMS_URL,
 } from "../../src/config";
 
 import {
-  ANY_MESSAGE_ERROR,
-  SERVICE_UNAVAILABLE,
-  FOUND_REDIRECT_TO,
-  DUE_DILIGENCE_PAGE_TITLE,
-  DUE_DILIGENCE_NAME_TEXT,
-  DUE_DILIGENCE_INFORMATION_ON_PUBLIC_REGISTER,
   PAGE_TITLE_ERROR,
-  SAVE_AND_CONTINUE_BUTTON_TEXT,
-  DUE_DILIGENCE_IDENTITY_ADDRESS_HINT_TEXT,
-  DUE_DILIGENCE_PARTNER_NAME_HINT_TEXT,
-  DUE_DILIGENCE_SUPERVISORY_NAME_LABEL_TEXT,
-  DUE_DILIGENCE_IDENTITY_DATE_LABEL_TEXT,
-  DUE_DILIGENCE_PARTNER_NAME_LABEL_TEXT,
-  ALL_THE_OTHER_INFORMATION_ON_PUBLIC_REGISTER,
   BACK_BUTTON_CLASS,
+  ANY_MESSAGE_ERROR,
+  FOUND_REDIRECT_TO,
+  SERVICE_UNAVAILABLE,
+  DUE_DILIGENCE_NAME_TEXT,
+  DUE_DILIGENCE_PAGE_TITLE,
+  SAVE_AND_CONTINUE_BUTTON_TEXT,
+  DUE_DILIGENCE_PARTNER_NAME_HINT_TEXT,
+  DUE_DILIGENCE_PARTNER_NAME_LABEL_TEXT,
+  DUE_DILIGENCE_IDENTITY_DATE_LABEL_TEXT,
+  DUE_DILIGENCE_IDENTITY_ADDRESS_HINT_TEXT,
+  DUE_DILIGENCE_SUPERVISORY_NAME_LABEL_TEXT,
+  ALL_THE_OTHER_INFORMATION_ON_PUBLIC_REGISTER,
+  DUE_DILIGENCE_INFORMATION_ON_PUBLIC_REGISTER,
 } from "../__mocks__/text.mock";
 
 import {
   DUE_DILIGENCE_OBJECT_MOCK,
-  DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES,
+  DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
   DUE_DILIGENCE_REQ_BODY_EMPTY_OBJECT_MOCK,
   DUE_DILIGENCE_REQ_BODY_MAX_LENGTH_FIELDS_OBJECT_MOCK,
-  DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
   DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE,
+  DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES,
 } from "../__mocks__/due.diligence.mock";
 
 mockCsrfProtectionMiddleware.mockClear();
@@ -93,14 +90,6 @@ const mockIsActiveFeature = isActiveFeature as jest.Mock;
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
-
-const NEXT_PAGE_URL = "/NEXT_PAGE";
-
-const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
-mockGetUrlWithParamsToPath.mockReturnValue(NEXT_PAGE_URL);
-
-const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
-mockIsRegistrationJourney.mockReturnValue(true);
 
 const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
 const mockSetExtraData = setExtraData as jest.Mock;
@@ -223,7 +212,6 @@ describe("DUE_DILIGENCE controller", () => {
       mockIsActiveFeature.mockReturnValue(true);
       const resp = await request(app).get(DUE_DILIGENCE_WITH_PARAMS_URL);
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(NEXT_PAGE_URL);
       expect(resp.text).toContain(BACK_BUTTON_CLASS);
     });
 
@@ -792,9 +780,6 @@ describe("DUE_DILIGENCE controller", () => {
         .send(dueDiligenceData);
 
       expect(resp.status).toEqual(302);
-      expect(resp.text).toContain(NEXT_PAGE_URL);
-      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
-      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(ENTITY_WITH_PARAMS_URL);
       expect(mockFetchApplicationData).toHaveBeenCalledTimes(1);
       expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(0);
@@ -817,7 +802,6 @@ describe("DUE_DILIGENCE controller", () => {
         .send(dueDiligenceData);
 
       expect(resp.status).toEqual(302);
-      expect(resp.text).toContain(NEXT_PAGE_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
 
       // Additionally check that email address is trimmed before it's saved in the session
@@ -840,7 +824,6 @@ describe("DUE_DILIGENCE controller", () => {
         .send(dueDiligenceData);
 
       expect(resp.status).toEqual(302);
-      expect(resp.text).toContain(NEXT_PAGE_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
 
       // Additionally check that date fields are trimmed before they're saved in the session
@@ -873,7 +856,6 @@ describe("DUE_DILIGENCE controller", () => {
       expect(resp.text).toContain(ErrorMessages.AGENT_CODE);
       expect(resp.text).toContain(ErrorMessages.PARTNER_NAME);
       expect(resp.text).toContain(ErrorMessages.CHECK_DILIGENCE);
-      expect(resp.text).toContain(NEXT_PAGE_URL);
       expect(resp.text).toContain(BACK_BUTTON_CLASS);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });

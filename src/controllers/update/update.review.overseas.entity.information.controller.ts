@@ -2,22 +2,24 @@ import { NextFunction, Request, Response } from "express";
 import { logger } from "../../utils/logger";
 import * as config from "../../config";
 import { ApplicationData } from "model";
-import { getApplicationData } from "../../utils/application.data";
-import { Session } from "@companieshouse/node-session-handler";
+import { fetchApplicationData } from "../../utils/application.data";
 import { DueDiligenceKey } from "../../model/due.diligence.model";
+import { getRedirectUrl, isRemoveJourney } from "../../utils/url";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const session = req.session as Session;
-    const appData: ApplicationData = await getApplicationData(session);
+  try {
+
+    logger.debugRequest(req, `${req.method} ${req.route.path}`);
+    const isRemove = await isRemoveJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
 
     return res.render(config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE, {
       templateName: config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE,
-      backLinkUrl: getBackLinkUrl(appData),
+      backLinkUrl: getBackLinkUrl(req, appData),
       ...appData
     });
+
   } catch (errors) {
     logger.errorRequest(req, errors);
     next(errors);
@@ -34,15 +36,22 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const getBackLinkUrl = (appData: ApplicationData) => {
+const getBackLinkUrl = (req: Request, appData: ApplicationData) => {
   let backLinkUrl;
-
   const agentDueDiligence = appData[DueDiligenceKey] && Object.keys(appData[DueDiligenceKey]).length > 0;
 
   if (agentDueDiligence) {
-    backLinkUrl = config.UPDATE_DUE_DILIGENCE_URL;
+    backLinkUrl = getRedirectUrl({
+      req,
+      urlWithEntityIds: config.UPDATE_DUE_DILIGENCE_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.UPDATE_DUE_DILIGENCE_URL,
+    });
   } else {
-    backLinkUrl = config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL;
+    backLinkUrl = getRedirectUrl({
+      req,
+      urlWithEntityIds: config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL,
+    });
   }
 
   return backLinkUrl;

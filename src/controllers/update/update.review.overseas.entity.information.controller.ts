@@ -29,7 +29,12 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    return res.redirect(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
+    const redirectUrl = getRedirectUrl({
+      req,
+      urlWithEntityIds: config.OVERSEAS_ENTITY_UPDATE_DETAILS_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL,
+    });
+    return res.redirect(redirectUrl);
   } catch (errors) {
     logger.errorRequest(req, errors);
     next(errors);

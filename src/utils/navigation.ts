@@ -225,6 +225,11 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL,
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL]
   },
+  [config.OVERSEAS_ENTITY_UPDATE_DETAILS_WITH_PARAMS_URL]: {
+    currentPage: config.ENTITY_PAGE,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_WITH_PARAMS_URL, req),
+    nextPage: [config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL]
+  },
   [config.UPDATE_CHECK_YOUR_ANSWERS_URL]: {
     currentPage: config.UPDATE_CHECK_YOUR_ANSWERS_PAGE,
     previousPage: () => config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL,

@@ -1,33 +1,26 @@
 import { NextFunction, Request, Response } from "express";
-import { EntityKey } from "../model/entity.model";
 import { logger } from "../utils/logger";
 import * as config from "../config";
+import { EntityKey } from "../model/entity.model";
 import { mapRequestToEntityData } from "../utils/request.to.entity.mapper";
 import { getEntityBackLink } from "../utils/navigation";
 import { isActiveFeature } from "../utils/feature.flag";
 import { getUrlWithParamsToPath } from "../utils/url";
 
-import {
-  ApplicationData,
-  ApplicationDataType
-} from "../model";
+import { AddressKeys, EntityNameKey } from "../model/data.types.model";
+import { ApplicationData, ApplicationDataType } from "../model";
 
 import {
-  AddressKeys,
-  EntityNameKey
-} from "../model/data.types.model";
-
-import {
+  ServiceAddressKey,
+  ServiceAddressKeys,
   PrincipalAddressKey,
   PrincipalAddressKeys,
-  ServiceAddressKey,
-  ServiceAddressKeys
 } from "../model/address.model";
 
 import {
-  getApplicationData,
   setApplicationData,
-  mapDataObjectToFields
+  getApplicationData,
+  mapDataObjectToFields,
 } from "../utils/application.data";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {

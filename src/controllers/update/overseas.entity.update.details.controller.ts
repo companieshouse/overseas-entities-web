@@ -50,7 +50,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const serviceAddress = (entity && Object.keys(entity).length)
       ? mapDataObjectToFields(entity[ServiceAddressKey], ServiceAddressKeys, AddressKeys)
       : {};
-
+    console.log(">>>>appData3:", appData);
     return res.render(config.ENTITY_PAGE, {
       ...entity,
       ...principalAddress,

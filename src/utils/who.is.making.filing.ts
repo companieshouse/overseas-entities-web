@@ -58,6 +58,7 @@ export const postWhoIsFiling = async (
     if (whoIsRegistering === WhoIsRegisteringType.AGENT) {
       nextPageUrl = agentUrl;
     }
+
     if (whoIsRegistering === WhoIsRegisteringType.SOMEONE_ELSE) {
       nextPageUrl = oeUrl;
     }

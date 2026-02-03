@@ -1,8 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { Session } from "@companieshouse/node-session-handler";
-
 import * as config from "../../config";
-import { createAndLogErrorRequest, logger } from "../../utils/logger";
 import { postTransaction } from "../../service/transaction.service";
 import { ApplicationData } from "../../model/application.model";
 import { convertIsoDateToInputDate } from "../../utils/date";
@@ -10,16 +8,17 @@ import { checkAnyRPStatementsActionWasTaken } from "../../utils/relevant.period"
 import { isActiveFeature } from "../../utils/feature.flag";
 import { relevantPeriodStatementsState } from "./confirm.overseas.entity.details.controller";
 import { getConfirmationStatementNextMadeUpToDateAsIsoString } from "../../service/company.profile.service";
+import { createAndLogErrorRequest, logger } from "../../utils/logger";
 import { FilingDateKey, FilingDateKeys } from '../../model/date.model';
-import { getRedirectUrl, isUpdateJourney } from "../../utils/url";
+import { getRedirectUrl, isRemoveJourney } from "../../utils/url";
 import { createOverseasEntity, updateOverseasEntity } from "../../service/overseas.entities.service";
 import { OverseasEntityKey, Transactionkey, InputDateKeys } from '../../model/data.types.model';
 
 import {
   setExtraData,
+  fetchApplicationData,
   mapFieldsToDataObject,
   mapDataObjectToFields,
-  fetchApplicationData
 } from "../../utils/application.data";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
@@ -27,8 +26,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const isUpdate: boolean = await isUpdateJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, isUpdate);
+    const isRemove: boolean = await isRemoveJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
     let backLinkUrl: string ;
 
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD) && relevantPeriodStatementsState.has_answered_relevant_period_question !== true) {
@@ -48,11 +47,11 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     return res.render(config.UPDATE_FILING_DATE_PAGE, {
-      backLinkUrl,
-      templateName: config.UPDATE_FILING_DATE_PAGE,
-      chsUrl: config.CHS_URL,
       ...appData,
-      [FilingDateKey]: await getFilingDate(req, appData)
+      backLinkUrl,
+      chsUrl: config.CHS_URL,
+      [FilingDateKey]: await getFilingDate(req, appData),
+      templateName: config.UPDATE_FILING_DATE_PAGE,
     });
   } catch (error) {
     logger.errorRequest(req, error);
@@ -66,8 +65,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const session = req.session as Session;
-    const isUpdate: boolean = await isUpdateJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, isUpdate);
+    const isRemove: boolean = await isRemoveJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
 
     if (!appData[Transactionkey]) {
       const transactionID = await postTransaction(req, session);

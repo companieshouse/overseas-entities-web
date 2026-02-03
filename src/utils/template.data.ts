@@ -1,7 +1,7 @@
-import { isActiveFeature } from "./feature.flag";
-import * as config from "../config";
-import { getUrlWithParamsToPath } from "./url";
 import { Request } from "express";
+import * as config from "../config";
+import { isActiveFeature } from "./feature.flag";
+import { getUrlWithParamsToPath } from "./url";
 
 export const addActiveSubmissionBasePathToTemplateData = (templateData: Object, req: Request) => {
   if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {

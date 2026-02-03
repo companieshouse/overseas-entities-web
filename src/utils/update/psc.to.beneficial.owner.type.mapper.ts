@@ -1,11 +1,20 @@
 import { CompanyPersonWithSignificantControl } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
+import { BeneficialOwnerPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
+import { logger } from "../../utils/logger";
 import { BeneficialOwnerGov } from "../../model/beneficial.owner.gov.model";
 import { BeneficialOwnerIndividual } from "../../model/beneficial.owner.individual.model";
 import { BeneficialOwnerOther } from "../../model/beneficial.owner.other.model";
 import { NatureOfControlJurisdiction, NatureOfControlType, yesNoResponse } from "../../model/data.types.model";
-import { mapBOMOAddress, isSameAddress, mapDateOfBirth, mapSelfLink, mapInputDate, splitNationalities, mapBOIndividualName, lowerCaseAllWordsExceptFirstLetters } from "./mapper.utils";
-import { logger } from "../../utils/logger";
-import { BeneficialOwnerPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
+import {
+  mapSelfLink,
+  mapInputDate,
+  isSameAddress,
+  mapBOMOAddress,
+  mapDateOfBirth,
+  splitNationalities,
+  mapBOIndividualName,
+  lowerCaseAllWordsExceptFirstLetters
+} from "./mapper.utils";
 
 type BeneficialOwnerType = BeneficialOwnerIndividual | BeneficialOwnerOther | BeneficialOwnerGov;
 

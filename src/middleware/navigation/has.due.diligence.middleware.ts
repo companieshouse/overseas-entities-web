@@ -1,16 +1,15 @@
 import { Request, Response, NextFunction } from 'express';
-
 import { logger } from '../../utils/logger';
-import { fetchApplicationData } from "../../utils/application.data";
 import { ApplicationData } from 'model';
-import { isRegistrationJourney } from "../../utils/url";
-import { checkDueDiligenceDetailsEntered, NavigationErrorMessage } from './check.condition';
+import { isRemoveJourney } from "../../utils/url";
+import { fetchApplicationData } from "../../utils/application.data";
 import { SOLD_LAND_FILTER_URL } from '../../config';
+import { checkDueDiligenceDetailsEntered, NavigationErrorMessage } from './check.condition';
 
 export const hasDueDiligence = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const isRegistration = isRegistrationJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+    const isRemove = await isRemoveJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
     if (!checkDueDiligenceDetailsEntered(appData)) {
       logger.infoRequest(req, NavigationErrorMessage);
       return res.redirect(SOLD_LAND_FILTER_URL);

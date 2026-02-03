@@ -1,15 +1,19 @@
+import { ApplicationData } from "../../model";
+import { Update } from "model/update.type.model";
+import { getRedirectUrl } from "../url";
 import { BeneficialOwnerOtherKey } from "../../model/beneficial.owner.other.model";
+
 import { BeneficialOwnerGov, BeneficialOwnerGovKey } from "../../model/beneficial.owner.gov.model";
+import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
+
 import {
   REVIEW_OWNER_INDEX_PARAM,
   UPDATE_AN_OVERSEAS_ENTITY_URL,
   UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE,
-  UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
   UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_PAGE,
+  UPDATE_AN_OVERSEAS_ENTITY_WITH_PARAMS_URL,
+  UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
 } from "../../config";
-import { ApplicationData } from "../../model";
-import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
-import { Update } from "model/update.type.model";
 
 const AllBoTypes = {
   boiReview: "review_beneficial_owners_individual",
@@ -20,17 +24,9 @@ const AllBoTypes = {
   boGov: BeneficialOwnerGovKey
 };
 
-const beneficialOwnerIndividualReviewRedirectUrl = `${UPDATE_AN_OVERSEAS_ENTITY_URL
-        + UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE
-        + REVIEW_OWNER_INDEX_PARAM}`;
-
-const beneficialOwnerOtherReviewRedirectUrl = `${UPDATE_AN_OVERSEAS_ENTITY_URL
-        + UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_PAGE
-        + REVIEW_OWNER_INDEX_PARAM}`;
-
-const beneficialOwnerGovReviewRedirectUrl = `${UPDATE_AN_OVERSEAS_ENTITY_URL
-        + UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE
-        + REVIEW_OWNER_INDEX_PARAM}`;
+let beneficialOwnerIndividualReviewRedirectUrl = "";
+let beneficialOwnerOtherReviewRedirectUrl = "";
+let beneficialOwnerGovReviewRedirectUrl = "";
 
 // these checks are to determine whether the BO has been fully submitted
 // by checking for appData submitted with form and not present after PSC fetch
@@ -41,6 +37,20 @@ const checkBoIndividualValidation = (boi: BeneficialOwnerIndividual): boolean =>
 const checkBoValidation = (bo: BeneficialOwnerGov): boolean => {
   const principalAddress = bo.principal_address || {};
   return Object.keys(principalAddress).length ? true : false;
+};
+
+const setBeneficialOwnerReviewRedirectUrls = (req: any) => {
+  console.log('>>>>Setting beneficial owner review redirect URLs');
+  console.log(req.path);
+  console.log(req.originalUrl);
+  const baseUrl = getRedirectUrl({
+    req,
+    urlWithEntityIds: UPDATE_AN_OVERSEAS_ENTITY_WITH_PARAMS_URL,
+    urlWithoutEntityIds: UPDATE_AN_OVERSEAS_ENTITY_URL,
+  });
+  beneficialOwnerIndividualReviewRedirectUrl = `${baseUrl + UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE + REVIEW_OWNER_INDEX_PARAM}`;
+  beneficialOwnerOtherReviewRedirectUrl = `${baseUrl + UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_PAGE + REVIEW_OWNER_INDEX_PARAM}`;
+  beneficialOwnerGovReviewRedirectUrl = `${baseUrl + UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE + REVIEW_OWNER_INDEX_PARAM}`;
 };
 
 const checkForBackButtonBo = (appData: ApplicationData, boType: string, boRedirectUrl: string) => {
@@ -56,44 +66,43 @@ const checkForBackButtonBo = (appData: ApplicationData, boType: string, boRedire
   }
 };
 
-export const checkAndReviewBeneficialOwner = (appData: ApplicationData): string => {
+export const checkAndReviewBeneficialOwner = (req: Request, appData: ApplicationData): string => {
+
   let redirectUrl = "";
+  setBeneficialOwnerReviewRedirectUrls(req);
   const update_review = appData.update as Update;
 
-  if (AllBoTypes.boiReview in update_review){
+  if (AllBoTypes.boiReview in update_review) {
     const boiFromBackButton = checkForBackButtonBo(appData, AllBoTypes.boIndividual, beneficialOwnerIndividualReviewRedirectUrl);
     if (boiFromBackButton) {
       redirectUrl = boiFromBackButton;
       return redirectUrl;
     }
-
-    if (appData.update?.review_beneficial_owners_individual?.length){
+    if (appData.update?.review_beneficial_owners_individual?.length) {
       redirectUrl = reviewAllOwnwers(appData, AllBoTypes.boiReview, AllBoTypes.boIndividual, beneficialOwnerIndividualReviewRedirectUrl) as string;
       return redirectUrl;
     }
   }
 
-  if (AllBoTypes.booReview in update_review){
+  if (AllBoTypes.booReview in update_review) {
     const booFromBackButton = checkForBackButtonBo(appData, AllBoTypes.boOther, beneficialOwnerOtherReviewRedirectUrl);
     if (booFromBackButton) {
       redirectUrl = booFromBackButton;
       return redirectUrl;
     }
-
-    if (appData.update?.review_beneficial_owners_corporate?.length){
+    if (appData.update?.review_beneficial_owners_corporate?.length) {
       redirectUrl = reviewAllOwnwers(appData, AllBoTypes.booReview, AllBoTypes.boOther, beneficialOwnerOtherReviewRedirectUrl) as string;
       return redirectUrl;
     }
   }
 
-  if (AllBoTypes.boGovReview in update_review){
+  if (AllBoTypes.boGovReview in update_review) {
     const bogFromBackButton = checkForBackButtonBo(appData, AllBoTypes.boGov, beneficialOwnerGovReviewRedirectUrl);
     if (bogFromBackButton) {
       redirectUrl = bogFromBackButton;
       return redirectUrl;
     }
-
-    if (appData.update?.review_beneficial_owners_government_or_public_authority?.length){
+    if (appData.update?.review_beneficial_owners_government_or_public_authority?.length) {
       redirectUrl = reviewAllOwnwers(appData, AllBoTypes.boGovReview, AllBoTypes.boGov, beneficialOwnerGovReviewRedirectUrl) as string;
       return redirectUrl;
     }
@@ -105,12 +114,11 @@ export const reviewAllOwnwers = (appData: ApplicationData, ownerReviewType: stri
   let redirectUrl = "";
   const ownerLength: number = appData[ownerType]?.length || 0;
 
-  if (ownerLength >= 0){
+  if (ownerLength >= 0) {
     const boOrmo = appData?.update?.[ownerReviewType]?.pop() as typeof ownerType;
-    if (!boOrmo){
+    if (!boOrmo) {
       return redirectUrl;
     }
-
     let index = 0;
     if (!appData[ownerType]) {
       appData[ownerType] = [boOrmo];

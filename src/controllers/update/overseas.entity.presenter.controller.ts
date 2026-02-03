@@ -1,8 +1,7 @@
-import * as config from "../../config";
 import { NextFunction, Request, Response } from "express";
-import { getPresenterPage, postPresenterPage } from "../../utils/presenter";
+import * as config from "../../config";
 import { getRedirectUrl } from "../../utils/url";
-
+import { getPresenterPage, postPresenterPage } from "../../utils/presenter";
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   const backLinkUrl = getRedirectUrl({
     req,

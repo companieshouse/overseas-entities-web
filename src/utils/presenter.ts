@@ -38,17 +38,17 @@ export const getPresenterPage = async (
 
     if (isRemove) {
       return res.render(templateName, {
+        ...presenter,
         templateName,
         journey: config.JourneyType.remove,
         backLinkUrl: `${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`,
-        ...presenter
       });
     }
 
     return res.render(templateName, {
+      ...presenter,
       backLinkUrl,
       templateName,
-      ...presenter
     });
 
   } catch (error) {

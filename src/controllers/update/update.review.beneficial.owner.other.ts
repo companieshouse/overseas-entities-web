@@ -25,6 +25,7 @@ import {
 import { AddressKeys, EntityNumberKey } from "../../model/data.types.model";
 import { checkRelevantPeriod } from "../../utils/relevant.period";
 import { isActiveFeature } from "../../utils/feature.flag";
+import { checkAndReviewBeneficialOwner } from "../../utils/update/review.beneficial.owner";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -33,7 +34,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const index = req.query.index;
 
     let dataToReview = {}, principalAddress = {}, serviceAddress = {};
-
+    checkAndReviewBeneficialOwner(req as any, appData);
     if (appData?.beneficial_owners_corporate){
       dataToReview = appData?.beneficial_owners_corporate[Number(index)];
       principalAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};

@@ -2,8 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import { logger } from "../../utils/logger";
 import * as config from "../../config";
 import { ApplicationData } from "model";
-import { fetchApplicationData } from "../../utils/application.data";
 import { DueDiligenceKey } from "../../model/due.diligence.model";
+import { fetchApplicationData } from "../../utils/application.data";
 import { getRedirectUrl, isRemoveJourney } from "../../utils/url";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
@@ -15,9 +15,9 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
 
     return res.render(config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE, {
-      templateName: config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE,
+      ...appData,
       backLinkUrl: getBackLinkUrl(req, appData),
-      ...appData
+      templateName: config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE,
     });
 
   } catch (errors) {

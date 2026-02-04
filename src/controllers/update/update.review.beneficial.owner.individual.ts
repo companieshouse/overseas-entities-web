@@ -3,7 +3,6 @@ import { Session } from "@companieshouse/node-session-handler";
 import { v4 as uuidv4 } from "uuid";
 
 import { logger } from "../../utils/logger";
-import { ApplicationDataType } from "../../model";
 import { saveAndContinue } from "../../utils/save.and.continue";
 import { isActiveFeature } from "../../utils/feature.flag";
 import { checkRelevantPeriod } from "../../utils/relevant.period";
@@ -11,6 +10,7 @@ import { setBeneficialOwnerData } from "../../utils/beneficial.owner.individual"
 import { addCeasedDateToTemplateOptions } from "../../utils/update/ceased_date_util";
 import { checkAndReviewBeneficialOwner } from "../../utils/update/review.beneficial.owner";
 
+import { ApplicationData, ApplicationDataType } from "../../model";
 import { getRedirectUrl, isRemoveJourney } from "../../utils/url";
 import { CeasedDateKey, HaveDayOfBirthKey } from "../../model/date.model";
 import { AddressKeys, EntityNumberKey, InputDate } from "../../model/data.types.model";
@@ -96,16 +96,12 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const boiIndex = req.query.index;
     const isRemove: boolean = await isRemoveJourney(req);
-    const appData = await fetchApplicationData(req, !isRemove);
+    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    const boiIndex = req.query.index;
+    const requestIndex = req.body["id"];
 
-    if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && (
-      !boiIndex ||
-        !appData?.beneficial_owners_individual ||
-        !appData.beneficial_owners_individual[Number(boiIndex)]?.id ||
-        appData.beneficial_owners_individual[Number(boiIndex)].id !== req.body["id"])
-    ) {
+    if (isBoReviewable(appData, boiIndex, requestIndex)) {
       checkAndReviewBeneficialOwner(req as any, appData);
     }
 
@@ -157,6 +153,18 @@ export const setReviewedDateOfBirth = (req: Request, dob: InputDate) => {
   req.body["date_of_birth-day"] = padWithZero(dob?.day, 2, "0");
   req.body["date_of_birth-month"] = padWithZero(dob?.month, 2, "0");
   req.body["date_of_birth-year"] = padWithZero(dob?.year, 2, "0");
+};
+
+export const isBoReviewable = (appData: ApplicationData, boiIndex: any, requestIndex: string | undefined): boolean => {
+  if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && (
+    !boiIndex ||
+    !appData?.beneficial_owners_individual ||
+    !appData?.beneficial_owners_individual[Number(boiIndex)]?.id ||
+    appData.beneficial_owners_individual[Number(boiIndex)].id !== requestIndex)
+  ) {
+    return true;
+  }
+  return false;
 };
 
 export const padWithZero = (input: string, maxLength: number, fillString: string): string => {

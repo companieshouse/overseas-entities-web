@@ -50,11 +50,11 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     });
 
     return res.render(config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE, {
+      ...appData,
       backLinkUrl,
+      registrationDate: update.date_of_creation,
       updateUrl: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
       templateName: config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
-      ...appData,
-      registrationDate: update.date_of_creation
     });
 
   } catch (errors) {

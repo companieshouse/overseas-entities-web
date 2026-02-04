@@ -1,40 +1,40 @@
 import { NextFunction, Request, Response } from "express";
-import { v4 as uuidv4 } from "uuid";
 import { Session } from "@companieshouse/node-session-handler";
+import { v4 as uuidv4 } from "uuid";
 import { logger } from "../utils/logger";
 import * as config from "../config";
 import { addCeasedDateToTemplateOptions } from "../utils/update/ceased_date_util";
 import { saveAndContinue } from "../utils/save.and.continue";
 import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
 import { isActiveFeature } from "./feature.flag";
-import { isRegistrationJourney } from "./url";
+import { isRemoveJourney } from "./url";
 
 import { ApplicationDataType, ApplicationData } from "../model";
 
 import {
+  prepareData,
+  setApplicationData,
+  setBoNocDataAsArrays,
   fetchApplicationData,
-  getFromApplicationData,
   mapDataObjectToFields,
   mapFieldsToDataObject,
-  prepareData,
+  getFromApplicationData,
   removeFromApplicationData,
-  setApplicationData,
-  setBoNocDataAsArrays
 } from "../utils/application.data";
 
 import {
   BeneficialOwnerIndividual,
   BeneficialOwnerIndividualKey,
-  BeneficialOwnerIndividualKeys
+  BeneficialOwnerIndividualKeys,
 } from "../model/beneficial.owner.individual.model";
 
 import {
-  AddressKeys,
-  EntityNumberKey,
-  HasSameResidentialAddressKey,
   ID,
+  AddressKeys,
   InputDateKeys,
+  EntityNumberKey,
   IsOnSanctionsListKey,
+  HasSameResidentialAddressKey,
 } from "../model/data.types.model";
 
 import {
@@ -45,13 +45,13 @@ import {
 } from "../model/address.model";
 
 import {
+  StartDateKey,
+  StartDateKeys,
   CeasedDateKey,
   CeasedDateKeys,
   DateOfBirthKey,
   DateOfBirthKeys,
   HaveDayOfBirthKey,
-  StartDateKey,
-  StartDateKeys
 } from "../model/date.model";
 
 export const getBeneficialOwnerIndividual = async (
@@ -62,14 +62,13 @@ export const getBeneficialOwnerIndividual = async (
 ): Promise<void> => {
 
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
-
-  const isRegistration = isRegistrationJourney(req);
-  const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+  const isRemove: boolean = await isRemoveJourney(req);
+  const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
 
   return res.render(templateName, {
+    ...appData,
     backLinkUrl,
     templateName,
-    ...appData,
     relevant_period: req.query["relevant-period"] === "true",
     FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC: isActiveFeature(config.FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)
   });
@@ -87,8 +86,8 @@ export const getBeneficialOwnerIndividualById = async (
 
     logger.debugRequest(req, `GET BY ID ${req.route.path}`);
 
-    const isRegistration = isRegistrationJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+    const isRemove: boolean = await isRemoveJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
     const id = req.params[ID];
     const data = await getFromApplicationData(req, BeneficialOwnerIndividualKey, id, true);
     const usualResidentialAddress = (data) ? mapDataObjectToFields(data[UsualResidentialAddressKey], UsualResidentialAddressKeys, AddressKeys) : {};
@@ -97,19 +96,19 @@ export const getBeneficialOwnerIndividualById = async (
     const startDate = (data) ? mapDataObjectToFields(data[StartDateKey], StartDateKeys, InputDateKeys) : {};
 
     const templateOptions = {
-      backLinkUrl,
-      templateName: `${templateName}/${id}`,
-      id,
       ...data,
       ...usualResidentialAddress,
       ...serviceAddress,
+      id,
+      backLinkUrl,
       [DateOfBirthKey]: dobDate,
       [StartDateKey]: startDate,
       entity_name: appData.entity_name,
+      templateName: `${templateName}/${id}`,
       FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC: isActiveFeature(config.FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)
     };
 
-    if (isRegistration) {
+    if (!isRemove) {
       addActiveSubmissionBasePathToTemplateData(templateOptions, req);
     }
     if (EntityNumberKey in appData && appData[EntityNumberKey]) {
@@ -130,12 +129,12 @@ export const postBeneficialOwnerIndividual = async (req: Request, res: Response,
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const isRegistration = isRegistrationJourney(req);
+    const isRemove: boolean = await isRemoveJourney(req);
     const session = req.session as Session;
     const data: ApplicationDataType = setBeneficialOwnerData(req.body, uuidv4());
     data[HaveDayOfBirthKey] = true;
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && !isRemove) {
       await setApplicationData(req, data, BeneficialOwnerIndividualKey);
     } else {
       await setApplicationData(session, data, BeneficialOwnerIndividualKey);
@@ -156,7 +155,7 @@ export const updateBeneficialOwnerIndividual = async (req: Request, res: Respons
 
     logger.debugRequest(req, `UPDATE ${req.route.path}`);
 
-    const isRegistration = isRegistrationJourney(req);
+    const isRemove: boolean = await isRemoveJourney(req);
     const session = req.session as Session;
     const id = req.params[ID];
     const boData: BeneficialOwnerIndividual = await getFromApplicationData(req, BeneficialOwnerIndividualKey, id, true);
@@ -168,7 +167,7 @@ export const updateBeneficialOwnerIndividual = async (req: Request, res: Respons
       (data as BeneficialOwnerIndividual).trust_ids = [...trustIds];
     }
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && !isRemove) {
       await setApplicationData(req, data, BeneficialOwnerIndividualKey);
     } else {
       await setApplicationData(session, data, BeneficialOwnerIndividualKey);
@@ -188,15 +187,16 @@ export const removeBeneficialOwnerIndividual = async (req: Request, res: Respons
   try {
 
     logger.debugRequest(req, `REMOVE ${req.route.path}`);
-    const isRegistration = isRegistrationJourney(req);
+    const isRemove: boolean = await isRemoveJourney(req);
     const session = req.session as Session;
     await removeFromApplicationData(req, BeneficialOwnerIndividualKey, req.params[ID]);
 
-    if (!isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) || !isRegistration) {
+    if (!isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) || isRemove) {
       await saveAndContinue(req, session);
     }
 
     return res.redirect(nextPage);
+
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);
@@ -205,7 +205,6 @@ export const removeBeneficialOwnerIndividual = async (req: Request, res: Respons
 
 export const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDataType => {
   const data: ApplicationDataType = prepareData(reqBody, BeneficialOwnerIndividualKeys);
-
   data[UsualResidentialAddressKey] = mapFieldsToDataObject(reqBody, UsualResidentialAddressKeys, AddressKeys);
   data[HasSameResidentialAddressKey] = (data[HasSameResidentialAddressKey]) ? +data[HasSameResidentialAddressKey] : '';
   data[ServiceAddressKey] = (!data[HasSameResidentialAddressKey])
@@ -218,7 +217,6 @@ export const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDat
   setBoNocDataAsArrays(data);
 
   data[IsOnSanctionsListKey] = (data[IsOnSanctionsListKey]) ? +data[IsOnSanctionsListKey] : '';
-
   data[ID] = id;
 
   return data;

@@ -1,22 +1,21 @@
 import { NextFunction, Request, Response } from "express";
-
+import { Session } from "@companieshouse/node-session-handler";
 import { logger } from "../../utils/logger";
 import * as config from "../../config";
-import { Session } from "@companieshouse/node-session-handler";
 import { ApplicationData } from "../../model";
 import { OwnedLandKey } from "../../model/update.type.model";
 import { postTransaction } from "../../service/transaction.service";
 import { isActiveFeature } from "../../utils/feature.flag";
 import { saveAndContinue } from "../../utils/save.and.continue";
-import { getRedirectUrl, isUpdateJourney } from "../../utils/url";
 import { fetchApplicationData, setExtraData } from "../../utils/application.data";
 import { createOverseasEntity, updateOverseasEntity } from "../../service/overseas.entities.service";
 import { OverseasEntityKey, Transactionkey } from "../../model/data.types.model";
+import { getRedirectUrl, isRemoveJourney } from "../../utils/url";
 
 import {
-  ChangeBeneficiaryRelevantPeriodKey,
   ChangeBoRelevantPeriodKey,
-  TrusteeInvolvedRelevantPeriodKey
+  TrusteeInvolvedRelevantPeriodKey,
+  ChangeBeneficiaryRelevantPeriodKey,
 } from "../../model/relevant.period.statment.model";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
@@ -24,8 +23,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
 
     logger.debugRequest(req, `GET ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE}`);
-    const isUpdate: boolean = await isUpdateJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, isUpdate);
+    const isRemove: boolean = await isRemoveJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
     const backLinkUrl = getRedirectUrl({
       req,
       urlWithEntityIds: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL,
@@ -33,9 +32,9 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     });
 
     return res.render(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE, {
+      ...appData,
       backLinkUrl,
       templateName: config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE,
-      ...appData,
     });
 
   } catch (error) {
@@ -51,8 +50,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `POST ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_PAGE}`);
     const session = req.session as Session;
     let redirectUrl: string;
-    const isUpdate: boolean = await isUpdateJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, isUpdate);
+    const isRemove: boolean = await isRemoveJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
     const ownedLandKey = req.body[OwnedLandKey];
 
     if (!appData[Transactionkey]) {

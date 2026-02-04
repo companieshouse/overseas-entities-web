@@ -4,17 +4,17 @@ import { logger } from "../../utils/logger";
 import * as config from "../../config";
 import { ApplicationData } from "../../model";
 import { resetEntityUpdate } from "../../utils/update/update.reset";
-import { EntityNumberCookieKey, EntityNumberKey } from "../../model/data.types.model";
 import { getCompanyProfile } from "../../service/company.profile.service";
 import { updateOverseasEntity } from "../../service/overseas.entities.service";
 import { mapCompanyProfileToOverseasEntity } from "../../utils/update/company.profile.mapper.to.overseas.entity";
 import { mapInputDate } from "../../utils/update/mapper.utils";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { retrieveBoAndMoData } from "../../utils/update/beneficial_owners_managing_officers_data_fetch";
-import { getRedirectUrl, isRemoveJourney } from "../../utils/url";
 import { isActiveFeature } from "../../utils/feature.flag";
-import { fetchApplicationData, setExtraData } from "../../utils/application.data";
 import { updateTransaction } from "../../service/transaction.service";
+import { getRedirectUrl, isRemoveJourney } from "../../utils/url";
+import { fetchApplicationData, setExtraData } from "../../utils/application.data";
+import { EntityNumberCookieKey, EntityNumberKey } from "../../model/data.types.model";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
 

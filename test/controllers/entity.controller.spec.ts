@@ -20,70 +20,70 @@ import { EntityKey } from '../../src/model/entity.model';
 import { hasDueDiligence } from "../../src/middleware/navigation/has.due.diligence.middleware";
 import { isActiveFeature } from "../../src/utils/feature.flag";
 import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
-import { getUrlWithParamsToPath, isRegistrationJourney } from "../../src/utils/url";
+import { getUrlWithParamsToPath } from "../../src/utils/url";
 
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from '../../src/model/who.is.making.filing.model';
 import { MAX_20, MAX_50, MAX_80 } from "../__mocks__/max.length.mock";
 
 import {
+  prepareData,
+  setApplicationData,
   getApplicationData,
   fetchApplicationData,
-  setApplicationData,
-  prepareData
 } from "../../src/utils/application.data";
 
 import {
-  BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL,
-  DUE_DILIGENCE_URL,
-  ENTITY_PAGE,
   ENTITY_URL,
-  ENTITY_WITH_PARAMS_URL,
+  ENTITY_PAGE,
   LANDING_PAGE_URL,
-  OVERSEAS_ENTITY_DUE_DILIGENCE_URL
+  DUE_DILIGENCE_URL,
+  ENTITY_WITH_PARAMS_URL,
+  OVERSEAS_ENTITY_DUE_DILIGENCE_URL,
+  BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL,
 } from "../../src/config";
 
 import {
   EMAIL_ADDRESS,
+  OVERSEAS_NAME_MOCK,
+  ENTITY_OBJECT_MOCK,
   APPLICATION_DATA_MOCK,
+  ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS,
   REGISTER_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS,
   ENTITY_BODY_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES,
-  ENTITY_OBJECT_MOCK,
-  ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS,
-  OVERSEAS_NAME_MOCK,
 } from "../__mocks__/session.mock";
 
 import {
-  BENEFICIAL_OWNER_STATEMENTS_PAGE_REDIRECT,
+  PAGE_TITLE_ERROR,
   ENTITY_PAGE_TITLE,
   ANY_MESSAGE_ERROR,
   SERVICE_UNAVAILABLE,
-  PAGE_TITLE_ERROR,
+  JURISDICTION_FIELD_LABEL,
+  REGISTRATION_NUMBER_LABEL,
+  PUBLIC_REGISTER_NAME_LABEL,
+  SAVE_AND_CONTINUE_BUTTON_TEXT,
+  ENTITY_PUBLIC_REGISTER_HINT_TEXT,
+  EMAIL_ADDRESS_USE_AUTH_CODE_TEXT,
+  PUBLIC_REGISTER_JURISDICTION_LABEL,
   INCORPORATION_COUNTRY_OPTION_SELECTED,
   UNITED_KINGDOM_COUNTRY_OPTION_SELECTED,
-  SAVE_AND_CONTINUE_BUTTON_TEXT,
-  PUBLIC_REGISTER_NAME_LABEL,
-  PUBLIC_REGISTER_JURISDICTION_LABEL,
-  REGISTRATION_NUMBER_LABEL,
-  JURISDICTION_FIELD_LABEL,
-  ENTITY_PUBLIC_REGISTER_HINT_TEXT,
   INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER,
-  OVERSEAS_ENTITY_NO_EMAIL_SHOWN_INFORMATION_ON_PUBLIC_REGISTER,
+  BENEFICIAL_OWNER_STATEMENTS_PAGE_REDIRECT,
   SHOW_OTHER_INFORMATION_ON_PUBLIC_REGISTER,
-  EMAIL_ADDRESS_USE_AUTH_CODE_TEXT,
+  OVERSEAS_ENTITY_NO_EMAIL_SHOWN_INFORMATION_ON_PUBLIC_REGISTER,
 } from "../__mocks__/text.mock";
 
 import {
   EntityNameKey,
-  HasSamePrincipalAddressKey,
-  IsOnRegisterInCountryFormedInKey,
-  PublicRegisterJurisdictionKey,
+  RegistrationNumberKey,
   PublicRegisterNameKey,
-  RegistrationNumberKey
+  HasSamePrincipalAddressKey,
+  PublicRegisterJurisdictionKey,
+  IsOnRegisterInCountryFormedInKey,
 } from '../../src/model/data.types.model';
 
 import {
+  ENTITY_WITH_MAX_LENGTH_FIELDS_MOCK,
   REGISTER_ENTITY_WITH_INVALID_CHARACTERS_FIELDS_MOCK,
-  ENTITY_WITH_MAX_LENGTH_FIELDS_MOCK
 } from '../__mocks__/validation.mock';
 
 mockCsrfProtectionMiddleware.mockClear();
@@ -110,9 +110,6 @@ mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Respons
 const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
 mockGetUrlWithParamsToPath.mockReturnValue(NEXT_PAGE_URL);
 
-const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
-mockIsRegistrationJourney.mockReturnValue(true);
-
 const appData = { [EntityNameKey]: OVERSEAS_NAME_MOCK };
 
 describe("ENTITY controller", () => {
@@ -127,7 +124,7 @@ describe("ENTITY controller", () => {
   describe("GET tests", () => {
 
     test(`renders the ${ENTITY_PAGE} page with ${DUE_DILIGENCE_URL} back link`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ [EntityKey]: null, [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT });
+      mockFetchApplicationData.mockReturnValueOnce({ [EntityKey]: null, [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT });
       const resp = await request(app).get(ENTITY_URL);
 
       expect(resp.status).toEqual(200);
@@ -144,7 +141,7 @@ describe("ENTITY controller", () => {
     });
 
     test(`renders the ${ENTITY_PAGE} page with ${OVERSEAS_ENTITY_DUE_DILIGENCE_URL} back link`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ [EntityKey]: null, [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE });
+      mockFetchApplicationData.mockReturnValueOnce({ [EntityKey]: null, [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE });
       const resp = await request(app).get(ENTITY_URL);
 
       expect(resp.status).toEqual(200);
@@ -158,7 +155,7 @@ describe("ENTITY controller", () => {
     });
 
     test(`renders the ${ENTITY_PAGE} page with public register jurisdiction field`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ [EntityKey]: null, [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE });
+      mockFetchApplicationData.mockReturnValueOnce({ [EntityKey]: null, [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE });
       const resp = await request(app).get(ENTITY_URL);
 
       expect(resp.status).toEqual(200);
@@ -170,7 +167,7 @@ describe("ENTITY controller", () => {
     });
 
     test("renders the entity page on GET method with session data populated", async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(ENTITY_URL);
 
       expect(resp.status).toEqual(200);
@@ -183,7 +180,7 @@ describe("ENTITY controller", () => {
     });
 
     test("renders the entity page on GET method with Taiwan as country field", async () => {
-      mockGetApplicationData.mockReturnValueOnce({
+      mockFetchApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
         [EntityKey]: {
           ...APPLICATION_DATA_MOCK[EntityKey],
@@ -192,7 +189,6 @@ describe("ENTITY controller", () => {
         }
       });
       const resp = await request(app).get(ENTITY_URL);
-
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ENTITY_PAGE_TITLE);
       expect(resp.text).toContain(INCORPORATION_COUNTRY_OPTION_SELECTED);
@@ -202,7 +198,7 @@ describe("ENTITY controller", () => {
     });
 
     test("renders the entity page on GET method without United Kingdom on incorporation country", async () => {
-      mockGetApplicationData.mockReturnValueOnce({
+      mockFetchApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
         [EntityKey]: {
           ...APPLICATION_DATA_MOCK[EntityKey],
@@ -210,7 +206,6 @@ describe("ENTITY controller", () => {
         }
       });
       const resp = await request(app).get(ENTITY_URL);
-
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ENTITY_PAGE_TITLE);
       expect(resp.text).not.toContain(UNITED_KINGDOM_COUNTRY_OPTION_SELECTED);
@@ -219,7 +214,7 @@ describe("ENTITY controller", () => {
     });
 
     test("renders the entity page on GET method with the three public register fields", async () => {
-      mockGetApplicationData.mockReturnValueOnce({
+      mockFetchApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
         [EntityKey]: {
           ...APPLICATION_DATA_MOCK[EntityKey],
@@ -227,7 +222,6 @@ describe("ENTITY controller", () => {
         }
       });
       const resp = await request(app).get(ENTITY_URL);
-
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ENTITY_PAGE_TITLE);
       expect(resp.text).toContain(PUBLIC_REGISTER_NAME_LABEL);
@@ -238,9 +232,8 @@ describe("ENTITY controller", () => {
     });
 
     test("catch error when renders the entity page on GET method", async () => {
-      mockGetApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockFetchApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(ENTITY_URL);
-
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
@@ -249,7 +242,7 @@ describe("ENTITY controller", () => {
   describe("GET with url params tests", () => {
 
     test(`renders the ${ENTITY_PAGE} page with ${DUE_DILIGENCE_URL} back link`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ [EntityKey]: null, [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT });
+      mockFetchApplicationData.mockReturnValueOnce({ [EntityKey]: null, [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT });
       const resp = await request(app).get(ENTITY_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(200);
@@ -266,7 +259,7 @@ describe("ENTITY controller", () => {
     });
 
     test(`renders the ${ENTITY_PAGE} page with ${OVERSEAS_ENTITY_DUE_DILIGENCE_URL} back link`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ [EntityKey]: null, [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE });
+      mockFetchApplicationData.mockReturnValueOnce({ [EntityKey]: null, [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE });
       const resp = await request(app).get(ENTITY_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(200);
@@ -280,7 +273,7 @@ describe("ENTITY controller", () => {
     });
 
     test(`renders the ${ENTITY_PAGE} page with public register jurisdiction field`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ [EntityKey]: null, [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE });
+      mockFetchApplicationData.mockReturnValueOnce({ [EntityKey]: null, [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE });
       const resp = await request(app).get(ENTITY_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(200);
@@ -292,7 +285,7 @@ describe("ENTITY controller", () => {
     });
 
     test("renders the entity page on GET method with session data populated", async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(ENTITY_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(200);
@@ -305,7 +298,7 @@ describe("ENTITY controller", () => {
     });
 
     test("renders the entity page on GET method with Taiwan as country field", async () => {
-      mockGetApplicationData.mockReturnValueOnce({
+      mockFetchApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
         [EntityKey]: {
           ...APPLICATION_DATA_MOCK[EntityKey],
@@ -314,7 +307,6 @@ describe("ENTITY controller", () => {
         }
       });
       const resp = await request(app).get(ENTITY_WITH_PARAMS_URL);
-
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ENTITY_PAGE_TITLE);
       expect(resp.text).toContain(INCORPORATION_COUNTRY_OPTION_SELECTED);
@@ -324,7 +316,7 @@ describe("ENTITY controller", () => {
     });
 
     test("renders the entity page on GET method without United Kingdom on incorporation country", async () => {
-      mockGetApplicationData.mockReturnValueOnce({
+      mockFetchApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
         [EntityKey]: {
           ...APPLICATION_DATA_MOCK[EntityKey],
@@ -341,7 +333,7 @@ describe("ENTITY controller", () => {
     });
 
     test("renders the entity page on GET method with the three public register fields", async () => {
-      mockGetApplicationData.mockReturnValueOnce({
+      mockFetchApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
         [EntityKey]: {
           ...APPLICATION_DATA_MOCK[EntityKey],
@@ -360,7 +352,7 @@ describe("ENTITY controller", () => {
     });
 
     test("catch error when renders the entity page on GET method", async () => {
-      mockGetApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockFetchApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(ENTITY_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(500);

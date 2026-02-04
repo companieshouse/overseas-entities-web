@@ -42,10 +42,10 @@ export const get = async (req: Request, resp: Response, next: NextFunction) => {
     }
 
     return resp.render(config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE, {
-      backLinkUrl,
-      templateName: config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE,
-      [NoChangeKey]: appData.update?.no_change,
       ...appData,
+      backLinkUrl,
+      [NoChangeKey]: appData?.update?.no_change,
+      templateName: config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE,
     });
 
   } catch (error) {

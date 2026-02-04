@@ -1,13 +1,7 @@
 import { NextFunction, Request, Response } from "express";
+import { Session } from "@companieshouse/node-session-handler";
 import { logger } from "../../utils/logger";
 import * as config from "../../config";
-import {
-  BeneficialOwnerTypeChoice,
-  BeneficialOwnerTypeKey,
-  ManagingOfficerTypeChoice
-} from "../../model/beneficial.owner.type.model";
-
-import { getApplicationData, setExtraData } from "../../utils/application.data";
 import { ApplicationData } from "../../model";
 import { BeneficialOwnerGovKey } from "../../model/beneficial.owner.gov.model";
 import { BeneficialOwnerOtherKey } from "../../model/beneficial.owner.other.model";
@@ -16,13 +10,26 @@ import { checkAndReviewBeneficialOwner } from "../../utils/update/review.benefic
 import { checkAndReviewManagingOfficers } from "../../utils/update/review.managing.officer";
 import { ManagingOfficerCorporateKey } from "../../model/managing.officer.corporate.model";
 import { ManagingOfficerKey } from "../../model/managing.officer.model";
-import { hasTrustsToReview, moveReviewableTrustsIntoReview, resetReviewStatusOnAllTrustsToBeReviewed } from "../../utils/update/review_trusts";
-import { checkEntityRequiresTrusts, getTrustLandingUrl } from "../../utils/trusts";
 import { retrieveTrustData } from "../../utils/update/trust.model.fetch";
 import { saveAndContinue } from "../../utils/save.and.continue";
-import { Session } from "@companieshouse/node-session-handler";
 import { validationResult } from "express-validator/src/validation-result";
+
+import { getRedirectUrl, isRemoveJourney } from "../../utils/url";
+import { checkEntityRequiresTrusts, getTrustLandingUrl } from "../../utils/trusts";
 import { FormattedValidationErrors, formatValidationError } from "../../middleware/validation.middleware";
+import { fetchApplicationData, setExtraData } from "../../utils/application.data";
+
+import {
+  hasTrustsToReview,
+  moveReviewableTrustsIntoReview,
+  resetReviewStatusOnAllTrustsToBeReviewed
+} from "../../utils/update/review_trusts";
+
+import {
+  BeneficialOwnerTypeKey,
+  BeneficialOwnerTypeChoice,
+  ManagingOfficerTypeChoice,
+} from "../../model/beneficial.owner.type.model";
 
 type BeneficialOwnerTypePageProperties = {
   backLinkUrl: string;
@@ -32,11 +39,10 @@ type BeneficialOwnerTypePageProperties = {
   hasNewlyAddedBosMos: boolean;
 };
 
-const getPageProperties = async (
-  req: Request,
-  errors?: FormattedValidationErrors,
-): Promise<BeneficialOwnerTypePageProperties> => {
-  const appData: ApplicationData = await getApplicationData(req.session);
+const getPageProperties = async (req: Request, errors?: FormattedValidationErrors,): Promise<BeneficialOwnerTypePageProperties> => {
+
+  const isRemove: boolean = await isRemoveJourney(req);
+  const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
 
   const allBosMos = [
     ...(appData[BeneficialOwnerIndividualKey] ?? []),
@@ -50,33 +56,40 @@ const getPageProperties = async (
   const hasExistingBosMos = allBosMos.find(boMo => boMo.ch_reference) !== undefined;
 
   return {
-    backLinkUrl: config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
-    templateName: config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
-    hasNewlyAddedBosMos,
-    hasExistingBosMos,
     ...appData,
-    errors
+    hasExistingBosMos,
+    hasNewlyAddedBosMos,
+    errors,
+    templateName: config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
+    backLinkUrl: getRedirectUrl({
+      req,
+      urlWithEntityIds: config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
+    }),
   };
 };
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const appData: ApplicationData = await getApplicationData(req.session);
 
-    const checkIsRedirect = checkAndReviewBeneficialOwner(appData);
+  try {
+
+    logger.debugRequest(req, `${req.method} ${req.route.path}`);
+    const isRemove: boolean = await isRemoveJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    const checkIsRedirect = checkAndReviewBeneficialOwner(req as any, appData);
+
     if (checkIsRedirect && checkIsRedirect !== "") {
       return res.redirect(checkIsRedirect);
     }
+    const checkMoRedirect = checkAndReviewManagingOfficers(req as any, appData);
 
-    const checkMoRedirect = checkAndReviewManagingOfficers(appData);
-    if (checkMoRedirect){
+    if (checkMoRedirect) {
       return res.redirect(checkMoRedirect);
     }
-
     const pageProps = await getPageProperties(req);
 
     return res.render(pageProps.templateName, pageProps);
+
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);
@@ -85,23 +98,21 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
 export const post = async (req: Request, res: Response) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
-
-  //  check on errors
   const errorList = validationResult(req);
-
   if (!errorList.isEmpty()) {
     const pageProps = await getPageProperties(req, formatValidationError(errorList.array()));
-
     return res.render(pageProps.templateName, pageProps);
   }
-  return res.redirect(getNextPage(req.body[BeneficialOwnerTypeKey]));
+  return res.redirect(getNextPage(req));
 };
 
 export const postSubmit = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const appData: ApplicationData = await getApplicationData(req.session);
+  try {
+
+    logger.debugRequest(req, `${req.method} ${req.route.path}`);
+    const isRemove: boolean = await isRemoveJourney(req);
+    const appData = await fetchApplicationData(req, !isRemove);
 
     if (!appData.update?.trust_data_fetched) {
       const session = req.session as Session;
@@ -117,14 +128,22 @@ export const postSubmit = async (req: Request, res: Response, next: NextFunction
     resetReviewStatusOnAllTrustsToBeReviewed(appData);
 
     if (hasTrustsToReview(appData)) {
-      return res.redirect(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
+      return res.redirect(getRedirectUrl({
+        req,
+        urlWithEntityIds: config.UPDATE_MANAGE_TRUSTS_INTERRUPT_WITH_PARAMS_URL,
+        urlWithoutEntityIds: config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL,
+      }));
     }
 
     if (checkEntityRequiresTrusts(appData)) {
       return res.redirect(getTrustLandingUrl(appData));
     }
 
-    return res.redirect(config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL);
+    return res.redirect(getRedirectUrl({
+      req,
+      urlWithEntityIds: config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL,
+    }));
 
   } catch (error) {
     logger.errorRequest(req, error);
@@ -132,23 +151,56 @@ export const postSubmit = async (req: Request, res: Response, next: NextFunction
   }
 };
 
-const getNextPage = (beneficialOwnerTypeChoices: BeneficialOwnerTypeChoice | ManagingOfficerTypeChoice): string => {
-  switch (beneficialOwnerTypeChoices) {
+const getNextPage = (req: Request): string => {
+  switch (req.body[BeneficialOwnerTypeKey]) {
       case BeneficialOwnerTypeChoice.government:
-        return config.UPDATE_BENEFICIAL_OWNER_GOV_URL;
+        return getRedirectUrl({
+          req,
+          urlWithEntityIds: config.UPDATE_BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL,
+          urlWithoutEntityIds: config.UPDATE_BENEFICIAL_OWNER_GOV_URL,
+        });
       case BeneficialOwnerTypeChoice.otherLegal:
-        return config.UPDATE_BENEFICIAL_OWNER_OTHER_URL;
+        return getRedirectUrl({
+          req,
+          urlWithEntityIds: config.UPDATE_BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL,
+          urlWithoutEntityIds: config.UPDATE_BENEFICIAL_OWNER_OTHER_URL,
+        });
       case ManagingOfficerTypeChoice.corporate:
-        return config.UPDATE_MANAGING_OFFICER_CORPORATE_URL;
+        return getRedirectUrl({
+          req,
+          urlWithEntityIds: config.UPDATE_MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL,
+          urlWithoutEntityIds: config.UPDATE_MANAGING_OFFICER_CORPORATE_URL,
+        });
       case ManagingOfficerTypeChoice.individual:
-        return config.UPDATE_MANAGING_OFFICER_URL;
+        return getRedirectUrl({
+          req,
+          urlWithEntityIds: config.UPDATE_MANAGING_OFFICER_WITH_PARAMS_URL,
+          urlWithoutEntityIds: config.UPDATE_MANAGING_OFFICER_URL,
+        });
       case BeneficialOwnerTypeChoice.relevantPeriodIndividual:
-        return config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + config.RELEVANT_PERIOD_QUERY_PARAM;
+        return getRedirectUrl({
+          req,
+          urlWithEntityIds: config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL,
+          urlWithoutEntityIds: config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL,
+        }) + config.RELEVANT_PERIOD_QUERY_PARAM;
       case BeneficialOwnerTypeChoice.relevantPeriodOtherLegal:
-        return config.UPDATE_BENEFICIAL_OWNER_OTHER_URL + config.RELEVANT_PERIOD_QUERY_PARAM;
+        return getRedirectUrl({
+          req,
+          urlWithEntityIds: config.UPDATE_BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL,
+          urlWithoutEntityIds: config.UPDATE_BENEFICIAL_OWNER_OTHER_URL,
+        }) + config.RELEVANT_PERIOD_QUERY_PARAM;
       case BeneficialOwnerTypeChoice.relevantPeriodGovernment:
-        return config.UPDATE_BENEFICIAL_OWNER_GOV_URL + config.RELEVANT_PERIOD_QUERY_PARAM;
+        return getRedirectUrl({
+          req,
+          urlWithEntityIds: config.UPDATE_BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL,
+          urlWithoutEntityIds: config.UPDATE_BENEFICIAL_OWNER_GOV_URL,
+        }) + config.RELEVANT_PERIOD_QUERY_PARAM;
       default:
-        return config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL;
+        return getRedirectUrl({
+          req,
+          urlWithEntityIds: config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL,
+          urlWithoutEntityIds: config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL,
+        });
   }
 };
+

@@ -131,14 +131,22 @@ describe("Overseas entity do you want to change your OE controller", () => {
     });
 
     test(`renders the ${UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE} page with radio button selected as Yes, I need to make changes`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce({ [NoChangeKey]: "1" });
+      mockFetchApplicationData.mockReturnValueOnce({
+        update: {
+          [NoChangeKey]: "1"
+        }
+      });
       const resp = await request(app).get(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(RADIO_BUTTON_YES_SELECTED);
     });
 
     test(`renders the ${UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE} page with radio button selected as No, I do not need to make changes`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce({ [NoChangeKey]: "0" });
+      mockFetchApplicationData.mockReturnValueOnce({
+        update: {
+          [NoChangeKey]: "0"
+        }
+      });
       const resp = await request(app).get(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(RADIO_BUTTON_NO_SELECTED);
@@ -152,7 +160,11 @@ describe("Overseas entity do you want to change your OE controller", () => {
     });
 
     test(`renders the ${UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE} page with radios selected to No`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce({ [NoChangeKey]: "0" });
+      mockFetchApplicationData.mockReturnValueOnce({
+        update: {
+          [NoChangeKey]: "0"
+        }
+      });
       const resp = await request(app).get(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(RADIO_BUTTON_NO_SELECTED);

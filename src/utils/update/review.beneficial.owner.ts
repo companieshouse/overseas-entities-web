@@ -40,9 +40,6 @@ const checkBoValidation = (bo: BeneficialOwnerGov): boolean => {
 };
 
 const setBeneficialOwnerReviewRedirectUrls = (req: any) => {
-  console.log('>>>>Setting beneficial owner review redirect URLs');
-  console.log(req.path);
-  console.log(req.originalUrl);
   const baseUrl = getRedirectUrl({
     req,
     urlWithEntityIds: UPDATE_AN_OVERSEAS_ENTITY_WITH_PARAMS_URL,

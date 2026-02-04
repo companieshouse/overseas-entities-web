@@ -37,9 +37,6 @@ const checkMoResignedOnSubmitted = (managingOfficer): boolean => {
 };
 
 const setManagingOfficerReviewRedirectUrls = (req: any) => {
-  console.log('>>>>Setting managing officer review redirect URLs');
-  console.log(req.path);
-  console.log(req.originalUrl);
   const baseUrl = getRedirectUrl({
     req,
     urlWithEntityIds: UPDATE_AN_OVERSEAS_ENTITY_WITH_PARAMS_URL,

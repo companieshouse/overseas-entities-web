@@ -15,42 +15,53 @@ import { NextFunction, Request, Response } from "express";
 import { expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
 import * as config from "../../../src/config";
+
 import app from "../../../src/app";
-import {
-  ANY_MESSAGE_ERROR,
-  BO_NOC_HEADING,
-  FIRM_CONTROL_NOC_HEADING,
-  FIRM_NOC_HEADING,
-  OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING,
-  OWNER_OF_LAND_PERSON_NOC_HEADING,
-  SERVICE_UNAVAILABLE,
-  TRUST_CONTROL_NOC_HEADING,
-  TRUSTS_NOC_HEADING,
-  UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_HEADING,
-} from "../../__mocks__/text.mock";
-import { authentication } from "../../../src/middleware/authentication.middleware";
-import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
-import { getApplicationData, mapDataObjectToFields, prepareData } from "../../../src/utils/application.data";
-import {
-  APPLICATION_DATA_MOCK,
-  REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA,
-  REQ_BODY_BENEFICIAL_OWNER_INDIVIDUAL_EMPTY,
-  UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL_TEST,
-  REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_PARTIAL,
-  SERVICE_ADDRESS_MOCK,
-  RESIDENTIAL_ADDRESS_MOCK,
-  UPDATE_BENEFICIAL_OWNER_HAVE_DAY_OF_BIRTH_OBJECT_MOCK,
-  REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_HAVE_DAY_OF_BIRTH
-} from "../../__mocks__/session.mock";
+
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
 import { ErrorMessages } from "../../../src/validation/error.messages";
-import { ApplicationData, beneficialOwnerIndividualType } from "../../../src/model";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
+
+import { authentication } from "../../../src/middleware/authentication.middleware";
+import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
+import { ApplicationData, beneficialOwnerIndividualType } from "../../../src/model";
 import { NatureOfControlJurisdiction, NatureOfControlType } from "../../../src/model/data.types.model";
+
+import {
+  prepareData,
+  fetchApplicationData,
+  mapDataObjectToFields,
+} from "../../../src/utils/application.data";
+
+import {
+  BO_NOC_HEADING,
+  FIRM_NOC_HEADING,
+  ANY_MESSAGE_ERROR,
+  TRUSTS_NOC_HEADING,
+  SERVICE_UNAVAILABLE,
+  FIRM_CONTROL_NOC_HEADING,
+  TRUST_CONTROL_NOC_HEADING,
+  OWNER_OF_LAND_PERSON_NOC_HEADING,
+  OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING,
+  UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_HEADING,
+} from "../../__mocks__/text.mock";
+
+import {
+  SERVICE_ADDRESS_MOCK,
+  APPLICATION_DATA_MOCK,
+  RESIDENTIAL_ADDRESS_MOCK,
+  REQ_BODY_BENEFICIAL_OWNER_INDIVIDUAL_EMPTY,
+  UPDATE_BENEFICIAL_OWNER_HAVE_DAY_OF_BIRTH_OBJECT_MOCK,
+  REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_PARTIAL,
+  UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL_TEST,
+  REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA,
+  REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_HAVE_DAY_OF_BIRTH,
+} from "../../__mocks__/session.mock";
 
 mockJourneyDetectionMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
+
 const mockHasUpdatePresenter = hasUpdatePresenter as jest.Mock;
 mockHasUpdatePresenter.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
@@ -63,11 +74,9 @@ mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, ne
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
-const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
-
 const mockMapDataObjectToFields = mapDataObjectToFields as jest.Mock;
-
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 
 describe(`Update review beneficial owner individual controller`, () => {
@@ -78,8 +87,9 @@ describe(`Update review beneficial owner individual controller`, () => {
   });
 
   describe("GET tests", () => {
+
     test(`render the review-beneficial-owner-individual page`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+      mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
       mockMapDataObjectToFields.mockReturnValueOnce(SERVICE_ADDRESS_MOCK);
       mockMapDataObjectToFields.mockReturnValueOnce(RESIDENTIAL_ADDRESS_MOCK);
 
@@ -98,11 +108,10 @@ describe(`Update review beneficial owner individual controller`, () => {
     });
 
     test(`render the review-beneficial-owner-individual page when FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is active`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+      mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
       mockMapDataObjectToFields.mockReturnValueOnce(SERVICE_ADDRESS_MOCK);
       mockMapDataObjectToFields.mockReturnValueOnce(RESIDENTIAL_ADDRESS_MOCK);
-
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
 
       const resp = await request(app).get(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL_TEST);
       expect(resp.status).toEqual(200);
@@ -119,9 +128,8 @@ describe(`Update review beneficial owner individual controller`, () => {
     });
 
     test("return empty object when no address in data to review", async () => {
-      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+      mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
       mockMapDataObjectToFields.mockReturnValueOnce(SERVICE_ADDRESS_MOCK);
-
       const resp = await request(app).get(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL_TEST);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_HEADING);
@@ -130,10 +138,9 @@ describe(`Update review beneficial owner individual controller`, () => {
     });
 
     test("catch error when rendering the page", async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
-      mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockFetchApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL);
-
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
@@ -142,11 +149,10 @@ describe(`Update review beneficial owner individual controller`, () => {
   describe("POST tests", () => {
 
     test(`error if index param is undefined and no redirection to ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE}`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({
+      mockFetchApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK
       });
       mockPrepareData.mockImplementationOnce( () => REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA );
-
       const resp = await request(app)
         .post(config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL)
         .send(REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA);
@@ -155,7 +161,7 @@ describe(`Update review beneficial owner individual controller`, () => {
     });
 
     test(`redirect to beneficial owner type page ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} on successful submission`, async () => {
-      mockGetApplicationData.mockReturnValue({
+      mockFetchApplicationData.mockReturnValue({
         ...APPLICATION_DATA_MOCK
       });
       mockPrepareData.mockImplementationOnce( () => REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA );
@@ -171,7 +177,7 @@ describe(`Update review beneficial owner individual controller`, () => {
       const appData: ApplicationData = {
         [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [UPDATE_BENEFICIAL_OWNER_HAVE_DAY_OF_BIRTH_OBJECT_MOCK]
       };
-      mockGetApplicationData.mockReturnValue(appData);
+      mockFetchApplicationData.mockReturnValue(appData);
       mockPrepareData.mockImplementationOnce( () => REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_HAVE_DAY_OF_BIRTH );
 
       const resp = await request(app)
@@ -187,7 +193,7 @@ describe(`Update review beneficial owner individual controller`, () => {
     test(`verify that have_day_of_birth is not set following post method if not set in app data`, async () => {
       const appData = { ...APPLICATION_DATA_MOCK };
 
-      mockGetApplicationData.mockReturnValue(appData);
+      mockFetchApplicationData.mockReturnValue(appData);
       mockPrepareData.mockImplementationOnce( () => REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA );
 
       const resp = await request(app)
@@ -245,7 +251,7 @@ describe(`Update review beneficial owner individual controller`, () => {
       ["Owner of land person Noc", null, null, null, null, [NatureOfControlJurisdiction.ENGLAND_AND_WALES], null],
       ["Owner of land other entitiy Noc", null, null, null, null, null, [NatureOfControlJurisdiction.ENGLAND_AND_WALES]],
     ])(`no validation error occurs when submitting NOC %s when FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is ON`, async (_desc, boNoc, trusteeNoc, trustControlNoc, nonLegalFirmControlNoc, landPersonNoc, landOtherEntityNoc) => {
-      mockGetApplicationData.mockReturnValue({
+      mockFetchApplicationData.mockReturnValue({
         ...APPLICATION_DATA_MOCK
       });
       mockPrepareData.mockImplementationOnce( () => { return { ...REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA }; });

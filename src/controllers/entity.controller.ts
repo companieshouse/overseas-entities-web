@@ -31,9 +31,6 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     const isRemove: boolean = await isRemoveJourney(req);
     const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
-    const appData2: ApplicationData = await fetchApplicationData(req, isRemove);
-    console.log(">>>>appData1:", appData);
-    console.log(">>>>appData2:", appData2);
     const entity = appData[EntityKey];
     const principalAddress = (entity && Object.keys(entity).length)
       ? mapDataObjectToFields(entity[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys)

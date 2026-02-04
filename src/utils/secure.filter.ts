@@ -11,9 +11,9 @@ import { createOverseasEntity, updateOverseasEntity } from "../service/overseas.
 import { IsSecureRegisterKey, OverseasEntityKey, Transactionkey } from "../model/data.types.model";
 
 import {
-  getUrlWithTransactionIdAndSubmissionId,
   isRemoveJourney,
-  isUpdateJourney
+  isUpdateJourney,
+  getUrlWithTransactionIdAndSubmissionId,
 } from "../utils/url";
 
 export const getFilterPage = async (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string): Promise<void> => {
@@ -21,7 +21,6 @@ export const getFilterPage = async (req: Request, res: Response, next: NextFunct
   try {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-
     const isRemove = await isRemoveJourney(req);
     const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
 
@@ -57,7 +56,6 @@ export const postFilterPage = async (
   try {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-
     const isRedisRemovalFlag = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL);
     const isUpdate: boolean = await isUpdateJourney(req);
     const isRemove: boolean = await isRemoveJourney(req);

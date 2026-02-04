@@ -44,7 +44,7 @@ export const get = async (req: Request, resp: Response, next: NextFunction) => {
     return resp.render(config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE, {
       ...appData,
       backLinkUrl,
-      [NoChangeKey]: appData.update?.no_change,
+      [NoChangeKey]: appData?.update?.no_change,
       templateName: config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE,
     });
 

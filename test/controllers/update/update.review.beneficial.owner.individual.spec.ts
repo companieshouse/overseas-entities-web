@@ -138,7 +138,6 @@ describe(`Update review beneficial owner individual controller`, () => {
     });
 
     test("catch error when rendering the page", async () => {
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockFetchApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL);
       expect(resp.status).toEqual(500);

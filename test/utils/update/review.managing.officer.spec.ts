@@ -1,4 +1,6 @@
+import * as config from "../../../src/config";
 import { checkAndReviewManagingOfficers } from "../../../src/utils/update/review.managing.officer";
+
 import {
   APPLICATION_DATA_UNSUBMITTED_UPDATE_REVIEW_MO,
   APPLICATION_DATA_MOCK_WITH_OWNER_UPDATE_REVIEW_DATA,
@@ -7,7 +9,7 @@ import {
 } from "../../__mocks__/session.mock";
 
 const req: any = {
-  originalUrl: "/update-an-overseas-entity/update-beneficial-owner-bo-mo-review"
+  originalUrl: config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL
 };
 
 describe('Test review managing officers', () => {

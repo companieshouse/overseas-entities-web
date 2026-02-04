@@ -1,5 +1,6 @@
-
+import * as config from "../../../src/config";
 import { checkAndReviewBeneficialOwner } from "../../../src/utils/update/review.beneficial.owner";
+
 import {
   APPLICATION_DATA_MOCK_N0_BOI,
   REQ_BODY_BENEFICIAL_OWNER_GOV_EMPTY,
@@ -12,7 +13,7 @@ import {
 } from "../../__mocks__/session.mock";
 
 const req: any = {
-  originalUrl: "/update-an-overseas-entity/update-beneficial-owner-bo-mo-review"
+  originalUrl: config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL
 };
 
 describe(`Test review beneficial Owners`, () => {

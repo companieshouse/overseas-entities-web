@@ -146,7 +146,7 @@ export const checkTrustValidations = async (req: Request, res: Response, next: N
     if (!errorList.isEmpty()) {
       const errors = formatValidationError(errorList.array());
       const routePath = req.route.path;
-      const isRemove = isRemoveJourney(req);
+      const isRemove = await isRemoveJourney(req);
       const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
 
       return res.render(NAVIGATION[routePath].currentPage, {

@@ -1,7 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-
 import { getBeneficialOwnerStatements, postBeneficialOwnerStatements } from "../../utils/beneficial.owner.statements";
-
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   await getBeneficialOwnerStatements(req, res, next, false);
 };

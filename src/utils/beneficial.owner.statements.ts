@@ -4,18 +4,18 @@ import * as config from "../config";
 import { logger } from "../utils/logger";
 import { ApplicationData } from "../model";
 import { saveAndContinue } from "../utils/save.and.continue";
-import { getUrlWithParamsToPath } from "../utils/url";
 import { isActiveFeature } from "./feature.flag";
 
+import { getRedirectUrl, isRemoveJourney } from "../utils/url";
 import { EntityNameKey, EntityNumberKey } from "../model/data.types.model";
 import { containsTrustData, getTrustArray } from "./trusts";
 import { BeneficialOwnersStatementType, BeneficialOwnerStatementKey } from "../model/beneficial.owner.statement.model";
 
 import {
+  setApplicationData,
+  fetchApplicationData,
   checkBOsDetailsEntered,
   checkMOsDetailsEntered,
-  fetchApplicationData,
-  setApplicationData,
 } from "../utils/application.data";
 
 export const getBeneficialOwnerStatements = async (
@@ -33,7 +33,8 @@ export const getBeneficialOwnerStatements = async (
     let backLinkUrl: string;
     let noChangeFlag: boolean = false;
     let templateName: string;
-    const appData: ApplicationData = await fetchApplicationData(req, registrationFlag);
+    const isRemove: boolean = await isRemoveJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
 
     if (noChangeBackLink) {
       backLinkUrl = noChangeBackLink;
@@ -61,17 +62,32 @@ export const getBeneficialOwnerStatements = async (
 };
 
 const getChangeBackLinkUrl = (registrationFlag: boolean, appData: ApplicationData, req: Request) => {
-  let backLinkUrl: string = config.ENTITY_URL;
+
+  let backLinkUrl: string;
+
   if (registrationFlag) {
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
-      backLinkUrl = getUrlWithParamsToPath(config.ENTITY_WITH_PARAMS_URL, req);
-    }
+    backLinkUrl = getRedirectUrl({
+      req,
+      urlWithEntityIds: config.ENTITY_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.ENTITY_URL,
+    });
   } else {
     const containsTrusts = containsTrustData(getTrustArray(appData));
-    const noTrustsUrl = config.UPDATE_BENEFICIAL_OWNER_TYPE_URL;
-    backLinkUrl = containsTrusts ? config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL : noTrustsUrl;
+    const noTrustsUrl = getRedirectUrl({
+      req,
+      urlWithEntityIds: config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,
+    });
+    const trustsUrl = getRedirectUrl({
+      req,
+      urlWithEntityIds: config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL,
+    });
+    backLinkUrl = containsTrusts ? trustsUrl : noTrustsUrl;
   }
+
   return backLinkUrl;
+
 };
 
 export const postBeneficialOwnerStatements = async (
@@ -88,8 +104,9 @@ export const postBeneficialOwnerStatements = async (
 
     const session = req.session as Session;
     const boStatement = req.body[BeneficialOwnerStatementKey];
-    const appData: ApplicationData = await fetchApplicationData(req, registrationFlag);
-    const redirectUrl = getRedirectUrl(req, registrationFlag, noChangeRedirectUrl);
+    const isRemove: boolean = await isRemoveJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    const redirectUrl = getRedirectUrlLocal(req, registrationFlag, noChangeRedirectUrl);
 
     if (registrationFlag &&
       appData[BeneficialOwnerStatementKey] &&
@@ -100,7 +117,7 @@ export const postBeneficialOwnerStatements = async (
 
     appData[BeneficialOwnerStatementKey] = boStatement;
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && registrationFlag) {
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && !isRemove) {
       await setApplicationData(req, boStatement, BeneficialOwnerStatementKey);
     } else {
       await setApplicationData(session, boStatement, BeneficialOwnerStatementKey);
@@ -115,25 +132,34 @@ export const postBeneficialOwnerStatements = async (
   }
 };
 
-const getRedirectUrl = (req: Request, registrationFlag: boolean, noChangeRedirectUrl?: string) => {
+const getRedirectUrlLocal = (req: Request, registrationFlag: boolean, noChangeRedirectUrl?: string) => {
+
   let redirectUrl: string;
+
   if (noChangeRedirectUrl) {
     redirectUrl = noChangeRedirectUrl;
   } else if (registrationFlag) {
-    redirectUrl = config.BENEFICIAL_OWNER_TYPE_URL;
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
-      redirectUrl = getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req);
-    }
+    redirectUrl = getRedirectUrl({
+      req,
+      urlWithEntityIds: config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.BENEFICIAL_OWNER_TYPE_URL,
+    });
   } else {
-    redirectUrl = config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL;
+    redirectUrl = getRedirectUrl({
+      req,
+      urlWithEntityIds: config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL,
+    });
   }
+
   return redirectUrl;
+
 };
 
 const getWarningRedirectUrl = (req: Request) => {
-  let warningRedirectUrl = config.BENEFICIAL_OWNER_DELETE_WARNING_URL;
-  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
-    warningRedirectUrl = getUrlWithParamsToPath(config.BENEFICIAL_OWNER_DELETE_WARNING_WITH_PARAMS_URL, req);
-  }
-  return warningRedirectUrl;
+  return getRedirectUrl({
+    req,
+    urlWithEntityIds: config.BENEFICIAL_OWNER_DELETE_WARNING_WITH_PARAMS_URL,
+    urlWithoutEntityIds: config.BENEFICIAL_OWNER_DELETE_WARNING_URL,
+  });
 };

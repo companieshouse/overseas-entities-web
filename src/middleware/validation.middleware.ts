@@ -10,35 +10,31 @@ import { ApplicationData } from "../model/application.model";
 
 import { EntityNameKey, EntityNumberKey, ID } from "../model/data.types.model";
 import { fetchApplicationData, prepareData } from "../utils/application.data";
+import { getUrlWithParamsToPath, isRemoveJourney } from "../utils/url";
 
 import {
-  getUrlWithParamsToPath,
-  isRegistrationJourney,
-  isRemoveJourney,
-} from "../utils/url";
-
-import {
-  beneficialOwnersTypeSubmission,
   checkNoChangeReviewStatement,
+  beneficialOwnersTypeSubmission,
   checkNoChangeStatementSubmission,
+  filingPeriodStartDateValidations,
   filingPeriodCeasedDateValidations,
   filingPeriodResignedDateValidations,
-  filingPeriodStartDateValidations,
 } from "../validation/async/validation-middleware";
 
 import {
-  DateOfBirthKey,
   StartDateKey,
-  DateOfBirthKeys,
   StartDateKeys,
-  IdentityDateKey,
-  IdentityDateKeys,
   CeasedDateKey,
-  CeasedDateKeys,
   FilingDateKey,
   FilingDateKeys,
+  CeasedDateKeys,
+  DateOfBirthKey,
+  DateOfBirthKeys,
+  IdentityDateKey,
+  IdentityDateKeys,
+  ResignedOnDateKey,
   ResignedOnDateKeys,
-  ResignedOnDateKey
+
 } from "../model/date.model";
 
 export const checkValidations = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -69,8 +65,8 @@ export const checkValidations = async (req: Request, res: Response, next: NextFu
       // when changing BO or MO data after failing validation. If not present, undefined will be passed in, which is fine as those pages
       // that don't use id will just ignore it.
       const id = req.params[ID];
-      const isRegistration = isRegistrationJourney(req);
-      const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+      const isRemove: boolean = await isRemoveJourney(req);
+      const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
       let entityName = req.body[EntityNameKey];
 
       if (req.body[EntityNameKey] === undefined) {
@@ -82,7 +78,6 @@ export const checkValidations = async (req: Request, res: Response, next: NextFu
       // The journey property may already be part of the page form data/body so get it from there and override it if we are on a remove journey
       // Then when we pass it back into the template, make sure it is below/after the req.body fields so it overrides the req.body value
       let journey = req.body["journey"];
-      const isRemove: boolean = await isRemoveJourney(req);
 
       if (isRemove) {
         journey = config.JourneyType.remove;
@@ -151,8 +146,8 @@ export const checkTrustValidations = async (req: Request, res: Response, next: N
     if (!errorList.isEmpty()) {
       const errors = formatValidationError(errorList.array());
       const routePath = req.route.path;
-      const isRegistration = isRegistrationJourney(req);
-      const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+      const isRemove = await isRemoveJourney(req);
+      const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
 
       return res.render(NAVIGATION[routePath].currentPage, {
         backLinkUrl: await NAVIGATION[routePath].previousPage(appData),

@@ -65,9 +65,6 @@ const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
-// const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
-// mockGetUrlWithParamsToPath.mockReturnValue(NEXT_PAGE_URL);
-
 const redirectUrl = `${config.BENEFICIAL_OWNER_DELETE_WARNING_URL}?${BeneficialOwnerStatementKey}=`;
 const redirectWithParmsUrl = `${config.BENEFICIAL_OWNER_DELETE_WARNING_WITH_PARAMS_URL}?${BeneficialOwnerStatementKey}=`;
 

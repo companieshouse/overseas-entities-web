@@ -73,17 +73,19 @@ const getChangeBackLinkUrl = (registrationFlag: boolean, appData: ApplicationDat
     });
   } else {
     const containsTrusts = containsTrustData(getTrustArray(appData));
-    const noTrustsUrl = getRedirectUrl({
-      req,
-      urlWithEntityIds: config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
-      urlWithoutEntityIds: config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,
-    });
-    const trustsUrl = getRedirectUrl({
-      req,
-      urlWithEntityIds: config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_WITH_PARAMS_URL,
-      urlWithoutEntityIds: config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL,
-    });
-    backLinkUrl = containsTrusts ? trustsUrl : noTrustsUrl;
+    if (containsTrusts) {
+      backLinkUrl = getRedirectUrl({
+        req,
+        urlWithEntityIds: config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_WITH_PARAMS_URL,
+        urlWithoutEntityIds: config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL,
+      });
+    } else {
+      backLinkUrl = getRedirectUrl({
+        req,
+        urlWithEntityIds: config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
+        urlWithoutEntityIds: config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,
+      });
+    }
   }
 
   return backLinkUrl;

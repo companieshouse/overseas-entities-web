@@ -178,7 +178,6 @@ describe("Update registrable beneficial owner controller tests", () => {
     });
 
     test(`redirects to the update-statement-validation-errors page when on the remove journey`, async () => {
-      // mockIsRemoveJourney.mockReturnValueOnce(true);
       mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
       mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
 

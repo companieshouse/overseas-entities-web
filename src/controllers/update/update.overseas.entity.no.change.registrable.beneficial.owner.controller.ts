@@ -6,5 +6,5 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
-  await postRegistrableBeneficialOwner(req, res, next, true);
+  await postRegistrableBeneficialOwner(req, res, next);
 };

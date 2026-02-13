@@ -296,7 +296,6 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
 
       expect(mockIsActiveFeature).toHaveBeenCalledTimes(2);
       expect(resp.status).toEqual(302);
-      console.log(resp.header.location) ;
       expect(resp.header.location).toEqual(`${redirectWithParmsUrl}${boStatement}`);
     });
 

@@ -1,7 +1,12 @@
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { yesNoResponse } from "../../model/data.types.model";
 import { Entity } from "../../model/entity.model";
-import { isSameAddress, lowerCaseAllWordsExceptFirstLetters, mapAddress, splitOriginatingRegistryName } from "../../utils/update/mapper.utils";
+import {
+  mapAddress,
+  isSameAddress,
+  splitOriginatingRegistryName,
+  lowerCaseAllWordsExceptFirstLetters,
+} from "../../utils/update/mapper.utils";
 
 export const mapCompanyProfileToOverseasEntity = (cp: CompanyProfile): Entity => {
   const serviceAddress = mapAddress(cp.serviceAddress);

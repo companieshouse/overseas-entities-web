@@ -1,19 +1,38 @@
-import { ApplicationData } from "../../model";
-import {
-  getTrustData,
-  getIndividualTrustees,
-  getCorporateTrustees,
-  getTrustLinks
-} from "../../service/trust.data.service";
-import { logger } from "../../utils/logger";
-import { CorporateTrusteeData, IndividualTrusteeData, TrustData, TrustLinkData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities/types";
 import { Request } from "express";
-import { Trust, TrustCorporate, TrustHistoricalBeneficialOwner, TrustIndividual, InterestedIndividualPersonTrustee } from "../../model/trust.model";
-import { lowerCaseAllWordsExceptFirstLetters, mapInputDate, splitNationalities } from "./mapper.utils";
+import { logger } from "../../utils/logger";
+import { ApplicationData } from "../../model";
 import { RoleWithinTrustType } from "../../model/role.within.trust.type.model";
 import { yesNoResponse } from "../../model/data.types.model";
 import { BeneficialOwnerIndividual } from "../../model/beneficial.owner.individual.model";
 import { BeneficialOwnerOther } from "../../model/beneficial.owner.other.model";
+
+import {
+  mapInputDate,
+  splitNationalities,
+  lowerCaseAllWordsExceptFirstLetters,
+} from "./mapper.utils";
+
+import {
+  getTrustData,
+  getTrustLinks,
+  getCorporateTrustees,
+  getIndividualTrustees,
+} from "../../service/trust.data.service";
+
+import {
+  TrustData,
+  TrustLinkData,
+  CorporateTrusteeData,
+  IndividualTrusteeData,
+} from "@companieshouse/api-sdk-node/dist/services/overseas-entities/types";
+
+import {
+  Trust,
+  TrustCorporate,
+  TrustIndividual,
+  TrustHistoricalBeneficialOwner,
+  InterestedIndividualPersonTrustee,
+} from "../../model/trust.model";
 
 export const retrieveTrustData = async (req: Request, appData: ApplicationData) => {
   if (!hasFetchedTrustData(appData)) {
@@ -57,11 +76,8 @@ const retrieveTrusts = async (req: Request, appData: ApplicationData) => {
       logger.debug("Skipping ceased trust " + trustData.hashedTrustId);
       continue;
     }
-
     logger.debug("Loaded trust " + trustData.hashedTrustId);
-
     const trust = mapTrustData(trustData, appData);
-
     if (trust.ch_reference !== undefined && trust.ch_reference !== "") {
       await fetchAndMapIndivdualTrustees(req, transactionId, overseasEntityId, trust);
       await fetchAndMapCorporateTrustees(req, transactionId, overseasEntityId, trust);
@@ -71,9 +87,7 @@ const retrieveTrusts = async (req: Request, appData: ApplicationData) => {
 
 export const mapTrustData = (trustData: TrustData, appData: ApplicationData) => {
   const dateOfBirth = mapInputDate(trustData.creationDate);
-
   let stillInvolved = trustData.trustStillInvolvedInOverseasEntityIndicator === "1" ? "Yes" : "No";
-
   // If 'trustStillInvolvedInOverseasEntityIndicator' isn't set (could be null or undefined), need to set an empty string
   if (trustData.trustStillInvolvedInOverseasEntityIndicator === null || trustData.trustStillInvolvedInOverseasEntityIndicator === undefined) {
     stillInvolved = "";
@@ -151,13 +165,11 @@ export const mapIndividualTrusteeData = (trustee: IndividualTrusteeData, trust: 
     nationality: lowerCaseAllWordsExceptFirstLetters(nationalities[0]),
     second_nationality: nationalities.length > 1 ? lowerCaseAllWordsExceptFirstLetters(nationalities[1]) : undefined,
     type: trusteeRoleType,
-
     ura_address_premises: "",
     ura_address_line_1: "",
     ura_address_locality: "",
     ura_address_country: "",
     ura_address_postal_code: "",
-
     is_service_address_same_as_usual_residential_address: yesNoResponse.No
   };
 
@@ -181,6 +193,7 @@ export const mapIndividualTrusteeData = (trustee: IndividualTrusteeData, trust: 
 };
 
 const mapHistoricalIndividualTrusteeData = (trustee: IndividualTrusteeData, trust: Trust) => {
+
   const ceasedDate = mapInputDate(trustee.ceasedDate);
   const appointmentDate = mapInputDate(trustee.appointmentDate);
 
@@ -249,14 +262,12 @@ export const mapCorporateTrusteeData = (trustee: CorporateTrusteeData, trust: Tr
     identification_place_registered: trustee.registerLocation ?? "",
     identification_registration_number: trustee.registrationNumber ?? "",
     identification_country_registration: trustee.country ?? "",
-
     ro_address_premises: "",
     ro_address_line_1: "",
     ro_address_locality: "",
     ro_address_region: "",
     ro_address_country: "",
     ro_address_postal_code: "",
-
     is_service_address_same_as_principal_address: yesNoResponse.No
   };
 

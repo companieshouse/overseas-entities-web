@@ -17,18 +17,18 @@ import request from "supertest";
 
 import app from "../../../src/app";
 
+import * as config from "../../../src/config";
+import { TrustKey } from "../../../src/model/trust.model";
+import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { ErrorMessages } from '../../../src/validation/error.messages';
 import { authentication } from "../../../src/middleware/authentication.middleware";
+import { hasOverseasEntity } from "../../../src/middleware/navigation/update/has.overseas.entity.middleware";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
-import { hasOverseasEntity } from "../../../src/middleware/navigation/update/has.overseas.entity.middleware";
-import * as config from "../../../src/config";
-import { isActiveFeature } from "../../../src/utils/feature.flag";
-import { TrustKey } from "../../../src/model/trust.model";
 
 import {
+  setApplicationData,
   fetchApplicationData,
-  setApplicationData
 } from "../../../src/utils/application.data";
 
 import {
@@ -42,20 +42,22 @@ import {
 } from "../../../src/config";
 
 import {
+  ERROR,
   APPLICATION_DATA_MOCK,
   BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK,
-  ERROR
 } from '../../__mocks__/session.mock';
 
 import {
   PAGE_TITLE_ERROR,
-  BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING,
   SERVICE_UNAVAILABLE,
-  SAVE_AND_CONTINUE_BUTTON_TEXT
+  SAVE_AND_CONTINUE_BUTTON_TEXT,
+  BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING,
 } from "../../__mocks__/text.mock";
 
 mockJourneyDetectionMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
+
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
 
 const mockHasOverseasEntity = hasOverseasEntity as jest.Mock;
 mockHasOverseasEntity.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
@@ -71,8 +73,6 @@ mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Respons
 
 const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
-
-const mockIsActiveFeature = isActiveFeature as jest.Mock;
 
 describe("BENEFICIAL OWNER STATEMENTS controller", () => {
 
@@ -183,6 +183,5 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
       expect(resp.status).toEqual(500); // Ensure server responds with 500 status
       expect(mockSetApplicationData).not.toHaveBeenCalled(); // Ensure app state wasn't updated
     });
-
   });
 });

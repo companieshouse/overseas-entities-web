@@ -56,7 +56,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     if (appData?.beneficial_owners_individual) {
-      dataToReview = appData?.beneficial_owners_individual[Number(index)];
+      dataToReview = appData?.beneficial_owners_individual[Number(index)] ?? dataToReview;
       serviceAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
       usual_residential_address = (dataToReview) ? mapDataObjectToFields(dataToReview[UsualResidentialAddressKey], UsualResidentialAddressKeys, AddressKeys) : {};
     }
@@ -105,7 +105,11 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       checkAndReviewBeneficialOwner(req as any, appData);
     }
 
-    if (boiIndex !== undefined && appData.beneficial_owners_individual && appData.beneficial_owners_individual[Number(boiIndex)].id === req.body["id"]) {
+    if (boiIndex !== undefined &&
+        appData.beneficial_owners_individual &&
+        appData.beneficial_owners_individual[Number(boiIndex)].id === req.body["id"]
+    ) {
+
       const boData: BeneficialOwnerIndividual = appData.beneficial_owners_individual[Number(boiIndex)];
       const boId = boData.id;
       const dob = boData.date_of_birth as InputDate;

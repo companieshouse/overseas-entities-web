@@ -56,8 +56,9 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     if (appData?.beneficial_owners_government_or_public_authority) {
       dataToReview = appData?.beneficial_owners_government_or_public_authority[Number(index)] ?? dataToReview;
-      principalAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};
-      serviceAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
+      const isDataToReview = Object.keys(dataToReview).length;
+      principalAddress = isDataToReview ? mapDataObjectToFields(dataToReview[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : principalAddress;
+      serviceAddress = isDataToReview ? mapDataObjectToFields(dataToReview[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : serviceAddress;
     }
 
     const backLinkUrl = getRedirectUrl({
@@ -93,19 +94,19 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const isRemove: boolean = await isRemoveJourney(req);
     const appData = await fetchApplicationData(req, !isRemove);
     const boiIndex = req.query.index;
-    const requestIndex = req.body["id"];
+    const requestId = req.body["id"];
 
-    if (isBoReviewable(appData, boiIndex, requestIndex)) {
+    if (isBoReviewable(appData, boiIndex, requestId)) {
       checkAndReviewBeneficialOwner(req as any, appData);
     }
 
     if (boiIndex !== undefined &&
         appData.beneficial_owners_government_or_public_authority &&
-        appData.beneficial_owners_government_or_public_authority[Number(boiIndex)].id === requestIndex
+        appData.beneficial_owners_government_or_public_authority[Number(boiIndex)].id === requestId
     ) {
 
       const boId = appData.beneficial_owners_government_or_public_authority[Number(boiIndex)].id;
-      await removeFromApplicationData(req, BeneficialOwnerGovKey, boId);
+      await removeFromApplicationData(req, BeneficialOwnerGovKey, boId, appData);
       const session = req.session as Session;
       const data: ApplicationDataType = setBeneficialOwnerData(req.body, uuidv4());
 
@@ -117,30 +118,28 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       }
     }
 
+    const boTypeRedirectUrl = getRedirectUrl({
+      req,
+      urlWithEntityIds: UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
+      urlWithoutEntityIds: UPDATE_BENEFICIAL_OWNER_TYPE_URL,
+    });
+
     if (checkRelevantPeriod(appData)) {
-      return res.redirect(getRedirectUrl({
-        req,
-        urlWithEntityIds: UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
-        urlWithoutEntityIds: UPDATE_BENEFICIAL_OWNER_TYPE_URL,
-      }) + RELEVANT_PERIOD_QUERY_PARAM);
+      return res.redirect(boTypeRedirectUrl + RELEVANT_PERIOD_QUERY_PARAM);
     } else {
-      return res.redirect(getRedirectUrl({
-        req,
-        urlWithEntityIds: UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
-        urlWithoutEntityIds: UPDATE_BENEFICIAL_OWNER_TYPE_URL,
-      }));
+      return res.redirect(boTypeRedirectUrl);
     }
   } catch (error) {
     next(error);
   }
 };
 
-export const isBoReviewable = (appData: ApplicationData, boiIndex: any, requestIndex: string | undefined): boolean => {
+export const isBoReviewable = (appData: ApplicationData, boiIndex: any, requestId: string | undefined): boolean => {
   if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && (
     !boiIndex ||
       !appData?.beneficial_owners_government_or_public_authority ||
       !appData?.beneficial_owners_government_or_public_authority[Number(boiIndex)]?.id ||
-      appData?.beneficial_owners_government_or_public_authority[Number(boiIndex)]?.id !== requestIndex)
+      appData?.beneficial_owners_government_or_public_authority[Number(boiIndex)]?.id !== requestId)
   ) {
     return true;
   }

@@ -1,10 +1,9 @@
 import { body } from "express-validator";
-
 import { ErrorMessages } from "./error.messages";
 import { VALID_CHARACTERS } from "./regex/regex.validation";
-import { principal_address_validations, principal_service_address_validations } from "./fields/address.validation";
 import { public_register_validations } from "./fields/public-register.validation";
 import { nature_of_control_validations } from "./fields/nature-of-control.validation";
+import { principal_address_validations, principal_service_address_validations } from "./fields/address.validation";
 import {
   start_date_validations,
   ceased_date_validations
@@ -37,28 +36,20 @@ export const beneficialOwnerOther = [
     .not().isEmpty().withMessage(ErrorMessages.SELECT_IF_BENEFICIAL_OWNER_OTHER_REGISTER_IN_COUNTRY_FORMED_IN),
 
   ...public_register_validations,
-
   ...start_date_validations,
-
   ...nature_of_control_validations,
 
   body("is_on_sanctions_list").not().isEmpty().withMessage(ErrorMessages.SELECT_IF_ON_SANCTIONS_LIST)
 ];
 
 export const updateBeneficialOwnerOther = [
-
   ...beneficialOwnerOther,
-
   body("is_still_bo").not().isEmpty().withMessage(ErrorMessages.SELECT_IF_STILL_BENEFICIAL_OWNER),
-
   ...ceased_date_validations
 ];
 
 export const updateReviewBeneficialOwnerOther = [
-
   ...beneficialOwnerOther,
-
   body("is_still_bo").not().isEmpty().withMessage(ErrorMessages.SELECT_IF_STILL_BENEFICIAL_OWNER),
-
   ...ceased_date_validations
 ];

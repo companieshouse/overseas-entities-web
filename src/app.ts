@@ -2,31 +2,25 @@ import express from "express";
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import Redis from 'ioredis';
-import * as nunjucks from "nunjucks";
-import { CsrfProtectionMiddleware } from "@companieshouse/web-security-node";
 import * as path from "path";
-import {
-  SessionStore,
-  SessionMiddleware,
-} from '@companieshouse/node-session-handler';
+import * as nunjucks from "nunjucks";
 import { v4 as uuidv4 } from 'uuid';
-import { prepareCSPConfig } from "./middleware/content.security.policy.middleware";
 import nocache from "nocache";
-import * as config from "./config";
+
+import { CsrfProtectionMiddleware } from "@companieshouse/web-security-node";
+import { SessionStore, SessionMiddleware } from '@companieshouse/node-session-handler';
+
 import { logger } from "./utils/logger";
+import * as config from "./config";
 import router from "./routes";
 import errorHandler from "./controllers/error.controller";
 import { countryFilter } from "./utils/country.filter";
 import { ErrorMessages } from "./validation/error.messages";
 import { isActiveFeature } from "./utils/feature.flag";
-import {
-  getTransactionIdAndSubmissionIdFromOriginalUrl,
-  getUrlWithTransactionIdAndSubmissionId
-} from "./utils/url";
-import {
-  createChangeLinkConfig,
-  createSummaryListLink,
-} from "./utils/change.link";
+import { prepareCSPConfig } from "./middleware/content.security.policy.middleware";
+
+import { getTransactionIdAndSubmissionIdFromOriginalUrl, getUrlWithTransactionIdAndSubmissionId } from "./utils/url";
+import { createChangeLinkConfig, createSummaryListLink } from "./utils/change.link";
 
 const app = express();
 

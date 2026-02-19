@@ -113,7 +113,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       if (trustIds.length > 0) {
         (data as BeneficialOwnerOther).trust_ids = [...trustIds];
       }
-      console.log(isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL));
+
       if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
         await setApplicationData(req, data, BeneficialOwnerOtherKey);
       } else {

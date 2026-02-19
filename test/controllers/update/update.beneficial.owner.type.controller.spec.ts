@@ -16,30 +16,29 @@ jest.mock('../../../src/utils/relevant.period');
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
 import mockJourneyDetectionMiddleware from "../../__mocks__/journey.detection.middleware.mock";
-
 import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import { describe, expect, test, beforeEach, jest } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
 
 import app from "../../../src/app";
+
 import * as config from "../../../src/config";
+import { ErrorMessages } from "../../../src/validation/error.messages";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
-import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
-
-import { ManagingOfficerKey } from '../../../src/model/managing.officer.model';
-import { BeneficialOwnerIndividualKey } from '../../../src/model/beneficial.owner.individual.model';
-import { ManagingOfficerCorporateKey } from '../../../src/model/managing.officer.corporate.model';
-import { BeneficialOwnerGovKey } from '../../../src/model/beneficial.owner.gov.model';
-import { BeneficialOwnerOtherKey } from '../../../src/model/beneficial.owner.other.model';
-import { UpdateKey } from '../../../src/model/update.type.model';
 import { isActiveFeature } from '../../../src/utils/feature.flag';
 import { retrieveTrustData } from "../../../src/utils/update/trust.model.fetch";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
+import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
+import { UpdateKey } from '../../../src/model/update.type.model';
+import { ManagingOfficerKey } from '../../../src/model/managing.officer.model';
+import { BeneficialOwnerGovKey } from '../../../src/model/beneficial.owner.gov.model';
+import { BeneficialOwnerOtherKey } from '../../../src/model/beneficial.owner.other.model';
+import { BeneficialOwnerIndividualKey } from '../../../src/model/beneficial.owner.individual.model';
+import { ManagingOfficerCorporateKey } from '../../../src/model/managing.officer.corporate.model';
 import { RELEVANT_PERIOD_QUERY_PARAM } from "../../../src/config";
-import { ErrorMessages } from "../../../src/validation/error.messages";
 
 import { checkEntityRequiresTrusts, getTrustLandingUrl } from '../../../src/utils/trusts';
 import { BeneficialOwnersStatementType, BeneficialOwnerStatementKey } from '../../../src/model/beneficial.owner.statement.model';
@@ -106,13 +105,11 @@ const mockHasTrustsToReview = hasTrustsToReview as jest.Mock;
 const mockGetTrustLandingUrl = getTrustLandingUrl as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockFetchApplicationData = fetchApplicationData as jest.Mock;
-
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockRetrieveTrustData = retrieveTrustData as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 const mockSetExtraData = setExtraData as jest.Mock;
 const mockMoveReviewableTrustsIntoReview = moveReviewableTrustsIntoReview as jest.Mock;
-
 const mockResetReviewStatusOnAllTrustsToBeReviewed = resetReviewStatusOnAllTrustsToBeReviewed as jest.Mock;
 
 describe("BENEFICIAL OWNER TYPE controller", () => {
@@ -395,11 +392,10 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
     test('redirects to add trusts if update trusts flag is on, and trusts are required', async () => {
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
-      const mockLandingUrl = 'update/mock-get-trust-landing-url';
       mockFetchApplicationData.mockReturnValueOnce(appData);
-      mockIsActiveFeature
-        .mockReturnValueOnce(true);
+      mockIsActiveFeature.mockReturnValueOnce(true);
       mockCheckEntityRequiresTrusts.mockReturnValueOnce(true);
+      const mockLandingUrl = 'update/mock-get-trust-landing-url';
       mockGetTrustLandingUrl.mockReturnValueOnce(mockLandingUrl);
 
       const resp = await request(app).post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL);

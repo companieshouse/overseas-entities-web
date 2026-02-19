@@ -31,12 +31,21 @@ import {
   ManagingOfficerTypeChoice,
 } from "../../model/beneficial.owner.type.model";
 
+type ReviewBaseUrls = {
+  beneficialOwnerIndividual: string;
+  beneficialOwnerGov: string;
+  beneficialOwnerOther: string;
+  managingOfficerIndividual: string;
+  managingOfficerCorporate: string;
+};
+
 type BeneficialOwnerTypePageProperties = {
   backLinkUrl: string;
   templateName: string;
   errors?: FormattedValidationErrors;
   hasExistingBosMos: boolean;
   hasNewlyAddedBosMos: boolean;
+  reviewUrls?: ReviewBaseUrls;
 };
 
 const getPageProperties = async (req: Request, errors?: FormattedValidationErrors,): Promise<BeneficialOwnerTypePageProperties> => {
@@ -60,6 +69,7 @@ const getPageProperties = async (req: Request, errors?: FormattedValidationError
     hasExistingBosMos,
     hasNewlyAddedBosMos,
     errors,
+    reviewUrls: getReviewBaseUrls(req),
     templateName: config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
     backLinkUrl: getRedirectUrl({
       req,
@@ -204,3 +214,32 @@ const getNextPage = (req: Request): string => {
   }
 };
 
+const getReviewBaseUrls = (req: Request): ReviewBaseUrls => {
+  return {
+    beneficialOwnerIndividual: getRedirectUrl({
+      req,
+      urlWithEntityIds: config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL,
+    }),
+    beneficialOwnerGov: getRedirectUrl({
+      req,
+      urlWithEntityIds: config.UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_URL,
+    }),
+    beneficialOwnerOther: getRedirectUrl({
+      req,
+      urlWithEntityIds: config.UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_URL,
+    }),
+    managingOfficerIndividual: getRedirectUrl({
+      req,
+      urlWithEntityIds: config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_URL,
+    }),
+    managingOfficerCorporate: getRedirectUrl({
+      req,
+      urlWithEntityIds: config.UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_URL,
+    }),
+  };
+};

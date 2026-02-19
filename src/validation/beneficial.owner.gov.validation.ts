@@ -1,15 +1,19 @@
 import { body } from "express-validator";
-
+import { isActiveFeature } from "../utils/feature.flag";
 import { ErrorMessages } from "./error.messages";
-import { principal_address_validations, principal_service_address_validations } from "./fields/address.validation";
 import { VALID_CHARACTERS } from "./regex/regex.validation";
 import { checkAtLeastOneFieldHasValue } from "./custom.validation";
+import { FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC } from "../config";
+
 import {
   start_date_validations,
-  ceased_date_validations
+  ceased_date_validations,
 } from "./fields/date.validation";
-import { isActiveFeature } from "../utils/feature.flag";
-import { FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC } from "../config";
+
+import {
+  principal_address_validations,
+  principal_service_address_validations,
+} from "./fields/address.validation";
 
 export const beneficial_owner_gov_name_validation = [
   body("name")
@@ -62,52 +66,31 @@ export const is_on_sanctions_list_validation = [
 
 export const beneficialOwnerGov = [
   ...beneficial_owner_gov_name_validation,
-
   ...principal_address_validations(),
-
   ...is_service_address_same_as_principal_address_validation,
-
   ...principal_service_address_validations,
-
   ...legal_form_validation,
-
   ...law_governed_validation,
-
   ...nature_of_control_validation,
-
   ...is_on_sanctions_list_validation,
-
   ...start_date_validations,
 ];
 
 export const updateBeneficialOwnerGov = [
-
   ...beneficialOwnerGov,
-
   body("is_still_bo").not().isEmpty().withMessage(ErrorMessages.SELECT_IF_STILL_BENEFICIAL_OWNER),
-
   ...ceased_date_validations
 ];
 
 export const updateReviewBeneficialOwnerGovValidator = [
-
   ...beneficial_owner_gov_name_validation,
-
   ...principal_address_validations(),
-
   ...is_service_address_same_as_principal_address_validation,
-
   ...principal_service_address_validations,
-
   ...legal_form_validation,
-
   ...law_governed_validation,
-
   ...nature_of_control_validation,
-
   ...is_on_sanctions_list_validation,
-
   body("is_still_bo").not().isEmpty().withMessage(ErrorMessages.SELECT_IF_STILL_BENEFICIAL_OWNER),
-
   ...ceased_date_validations
 ];

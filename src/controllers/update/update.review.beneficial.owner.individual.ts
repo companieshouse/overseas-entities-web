@@ -57,8 +57,9 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     if (appData?.beneficial_owners_individual) {
       dataToReview = appData?.beneficial_owners_individual[Number(index)] ?? dataToReview;
-      serviceAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
-      usual_residential_address = (dataToReview) ? mapDataObjectToFields(dataToReview[UsualResidentialAddressKey], UsualResidentialAddressKeys, AddressKeys) : {};
+      const isDataToReview = Object.keys(dataToReview).length;
+      serviceAddress = isDataToReview ? mapDataObjectToFields(dataToReview[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : serviceAddress;
+      usual_residential_address = isDataToReview ? mapDataObjectToFields(dataToReview[UsualResidentialAddressKey], UsualResidentialAddressKeys, AddressKeys) : usual_residential_address;
     }
 
     const backLinkUrl = getRedirectUrl({
@@ -99,15 +100,15 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const isRemove: boolean = await isRemoveJourney(req);
     const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
     const boiIndex = req.query.index;
-    const requestIndex = req.body["id"];
+    const requestId = req.body["id"];
 
-    if (isBoReviewable(appData, boiIndex, requestIndex)) {
+    if (isBoReviewable(appData, boiIndex, requestId)) {
       checkAndReviewBeneficialOwner(req as any, appData);
     }
 
     if (boiIndex !== undefined &&
         appData.beneficial_owners_individual &&
-        appData.beneficial_owners_individual[Number(boiIndex)].id === req.body["id"]
+        appData.beneficial_owners_individual[Number(boiIndex)].id === requestId
     ) {
 
       const boData: BeneficialOwnerIndividual = appData.beneficial_owners_individual[Number(boiIndex)];
@@ -136,17 +137,17 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       }
     }
 
-    const baseRedirectUrl = getRedirectUrl({
+    const boTypeRedirectUrl = getRedirectUrl({
       req,
       urlWithEntityIds: UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
       urlWithoutEntityIds: UPDATE_BENEFICIAL_OWNER_TYPE_URL,
     });
 
     if (checkRelevantPeriod(appData)) {
-      return res.redirect(baseRedirectUrl + RELEVANT_PERIOD_QUERY_PARAM);
+      return res.redirect(boTypeRedirectUrl + RELEVANT_PERIOD_QUERY_PARAM);
     }
 
-    return res.redirect(baseRedirectUrl);
+    return res.redirect(boTypeRedirectUrl);
 
   } catch (error) {
     next(error);
@@ -159,12 +160,12 @@ export const setReviewedDateOfBirth = (req: Request, dob: InputDate) => {
   req.body["date_of_birth-year"] = padWithZero(dob?.year, 2, "0");
 };
 
-export const isBoReviewable = (appData: ApplicationData, boiIndex: any, requestIndex: string | undefined): boolean => {
+export const isBoReviewable = (appData: ApplicationData, boiIndex: any, requestId: string | undefined): boolean => {
   if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && (
     !boiIndex ||
     !appData?.beneficial_owners_individual ||
     !appData?.beneficial_owners_individual[Number(boiIndex)]?.id ||
-    appData.beneficial_owners_individual[Number(boiIndex)].id !== requestIndex)
+    appData.beneficial_owners_individual[Number(boiIndex)].id !== requestId)
   ) {
     return true;
   }

@@ -6,7 +6,6 @@ export const confirmToRemove = [
     if (value === undefined) {
       throw new Error("Are you sure you want to remove " + req.body['boMoName'] + "?");
     }
-
     return true;
   })
 ];

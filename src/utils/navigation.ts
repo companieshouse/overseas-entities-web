@@ -1,10 +1,10 @@
 /* eslint-disable require-await */
+import { Request } from "express";
 import * as config from "../config";
 import { Navigation } from "../model/navigation.model";
 import { ApplicationData } from "../model/application.model";
 import { WhoIsRegisteringType } from "../model/who.is.making.filing.model";
 import { isActiveFeature } from "./feature.flag";
-import { Request } from "express";
 import { isNoChangeJourney } from "./update/no.change.journey";
 import { getRedirectUrl, getUrlWithParamsToPath, isRemoveJourney } from "./url";
 
@@ -535,6 +535,11 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
   },
+  [config.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL]: {
+    currentPage: config.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE,
+    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_WITH_PARAMS_URL,
+    nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL]
+  },
   [config.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL_WITH_PARAM_URL]: {
     currentPage: config.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE,
     previousPage: () => config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
@@ -569,6 +574,11 @@ export const NAVIGATION: Navigation = {
     currentPage: config.UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_PAGE,
     previousPage: () => config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
+  },
+  [config.UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL]: {
+    currentPage: config.UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_PAGE,
+    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_WITH_PARAMS_URL,
+    nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL]
   },
   [config.UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_URL_WITH_PARAM_URL]: {
     currentPage: config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,

@@ -90,41 +90,38 @@ export const checkValidations = async (req: Request, res: Response, next: NextFu
         // This is for the REDIS removal work, all BO / MO pages need the activeSubmissionBasePath passed into the template
         // and we also need to pass the feature flag as true so the template constructs the correct urls.
         return res.render(NAVIGATION[routePath].currentPage, {
-          backLinkUrl: await NAVIGATION[routePath].previousPage(appData, req),
-          templateName: NAVIGATION[routePath].currentPage,
           id,
-          entityName,
-          entityNumber,
           ...appData,
           ...req.body,
           ...dates,
-          journey,
-          relevant_period: relevantPeriod,
           errors,
+          journey,
+          entityName,
+          entityNumber,
+          relevant_period: relevantPeriod,
+          pageParams: { noChangeFlag },
           FEATURE_FLAG_ENABLE_REDIS_REMOVAL: true,
+          backLinkUrl: await NAVIGATION[routePath].previousPage(appData, req),
+          templateName: NAVIGATION[routePath].currentPage,
           activeSubmissionBasePath: getUrlWithParamsToPath(config.ACTIVE_SUBMISSION_BASE_PATH, req),
-          pageParams: {
-            noChangeFlag
-          },
           FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
         });
       }
 
       return res.render(NAVIGATION[routePath].currentPage, {
-        backLinkUrl: await NAVIGATION[routePath].previousPage(appData, req),
-        templateName: NAVIGATION[routePath].currentPage,
+
         id,
-        entityName,
-        entityNumber,
         ...appData,
         ...req.body,
         ...dates,
-        journey,
-        relevant_period: relevantPeriod,
         errors,
-        pageParams: {
-          noChangeFlag
-        },
+        journey,
+        entityName,
+        entityNumber,
+        pageParams: { noChangeFlag },
+        relevant_period: relevantPeriod,
+        backLinkUrl: await NAVIGATION[routePath].previousPage(appData, req),
+        templateName: NAVIGATION[routePath].currentPage,
         FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
       });
     }
@@ -144,19 +141,20 @@ export const checkTrustValidations = async (req: Request, res: Response, next: N
     const errorList = validationResult(req);
 
     if (!errorList.isEmpty()) {
+
       const errors = formatValidationError(errorList.array());
       const routePath = req.route.path;
       const isRemove = await isRemoveJourney(req);
       const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
 
       return res.render(NAVIGATION[routePath].currentPage, {
-        backLinkUrl: await NAVIGATION[routePath].previousPage(appData),
-        templateName: NAVIGATION[routePath].currentPage,
         ...req.body,
+        errors,
+        trusts_input: req.body.trusts?.toString(),
+        templateName: NAVIGATION[routePath].currentPage,
         beneficialOwners: getBeneficialOwnerList(appData),
         relevant_period: req.query["relevant-period"] === "true",
-        trusts_input: req.body.trusts?.toString(),
-        errors
+        backLinkUrl: await NAVIGATION[routePath].previousPage(appData),
       });
     }
 

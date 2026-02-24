@@ -3,21 +3,21 @@ import { Session } from "@companieshouse/node-session-handler";
 import { logger } from "../../utils/logger";
 import * as config from "../../config";
 import { ApplicationData } from "../../model";
+import { saveAndContinue } from "../../utils/save.and.continue";
+import { validationResult } from "express-validator/src/validation-result";
+import { retrieveTrustData } from "../../utils/update/trust.model.fetch";
+import { ManagingOfficerKey } from "../../model/managing.officer.model";
 import { BeneficialOwnerGovKey } from "../../model/beneficial.owner.gov.model";
 import { BeneficialOwnerOtherKey } from "../../model/beneficial.owner.other.model";
+import { ManagingOfficerCorporateKey } from "../../model/managing.officer.corporate.model";
 import { BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
 import { checkAndReviewBeneficialOwner } from "../../utils/update/review.beneficial.owner";
 import { checkAndReviewManagingOfficers } from "../../utils/update/review.managing.officer";
-import { ManagingOfficerCorporateKey } from "../../model/managing.officer.corporate.model";
-import { ManagingOfficerKey } from "../../model/managing.officer.model";
-import { retrieveTrustData } from "../../utils/update/trust.model.fetch";
-import { saveAndContinue } from "../../utils/save.and.continue";
-import { validationResult } from "express-validator/src/validation-result";
 
 import { getRedirectUrl, isRemoveJourney } from "../../utils/url";
+import { fetchApplicationData, setExtraData } from "../../utils/application.data";
 import { checkEntityRequiresTrusts, getTrustLandingUrl } from "../../utils/trusts";
 import { FormattedValidationErrors, formatValidationError } from "../../middleware/validation.middleware";
-import { fetchApplicationData, setExtraData } from "../../utils/application.data";
 
 import {
   hasTrustsToReview,

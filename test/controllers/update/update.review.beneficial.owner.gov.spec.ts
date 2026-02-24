@@ -206,7 +206,7 @@ describe(`Update review beneficial owner Gov`, () => {
       mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockPrepareData.mockImplementationOnce(() => UPDATE_REVIEW_BENEFICIAL_OWNER_MOCK_DATA);
       const resp = await request(app)
-        .post(config.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL_WITH_PARAM_URL)
+        .post(config.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_WITH_INDEX_URL)
         .send(UPDATE_REVIEW_BENEFICIAL_OWNER_MOCK_DATA);
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);

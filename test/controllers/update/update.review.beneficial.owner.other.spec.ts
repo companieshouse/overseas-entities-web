@@ -15,10 +15,10 @@ import request from "supertest";
 
 import app from "../../../src/app";
 
+import { logger } from "../../../src/utils/logger";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
-import { logger } from "../../../src/utils/logger";
 import { ErrorMessages } from "../../../src/validation/error.messages";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import { isActiveFeature } from "../../../src/utils/feature.flag";

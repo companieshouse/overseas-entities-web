@@ -23,10 +23,10 @@ import {
 } from "../../model/address.model";
 
 const AllMoTypes = {
+  moIndividual: ManagingOfficerKey,
+  moCorporate: ManagingOfficerCorporateKey,
   moIndividualOfficerReview: "review_managing_officers_individual",
   moCorporateOfficerReview: "review_managing_officers_corporate",
-  moIndividual: ManagingOfficerKey,
-  moCorporate: ManagingOfficerCorporateKey
 };
 
 let managingOfficerIndividualReviewRedirectUrl = "";
@@ -90,10 +90,11 @@ export const checkAndReviewManagingOfficers = (req: Request, appData: Applicatio
 export function fetchIndividualMOAddress(appData: any, index: number) {
   let dataToReview = {}, residentialAddress = {}, serviceAddress = {};
   if (appData?.managing_officers_individual) {
-    dataToReview = appData?.managing_officers_individual[Number(index)] ?? dataToReview;
-    const isDataToReview = Object.keys(dataToReview).length;
-    residentialAddress = isDataToReview ? mapDataObjectToFields(dataToReview[UsualResidentialAddressKey], UsualResidentialAddressKeys, AddressKeys) : residentialAddress;
-    serviceAddress = isDataToReview ? mapDataObjectToFields(dataToReview[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : serviceAddress;
+    dataToReview = appData?.managing_officers_individual[Number(index)];
+    if (dataToReview) {
+      residentialAddress = mapDataObjectToFields(dataToReview[UsualResidentialAddressKey], UsualResidentialAddressKeys, AddressKeys);
+      serviceAddress = mapDataObjectToFields(dataToReview[ServiceAddressKey], ServiceAddressKeys, AddressKeys);
+    }
   }
   return { dataToReview, residentialAddress, serviceAddress };
 }

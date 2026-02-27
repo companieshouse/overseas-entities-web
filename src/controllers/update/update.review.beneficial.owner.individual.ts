@@ -56,10 +56,11 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     if (appData?.beneficial_owners_individual) {
-      dataToReview = appData?.beneficial_owners_individual[Number(index)] ?? dataToReview;
-      const isDataToReview = Object.keys(dataToReview).length;
-      serviceAddress = isDataToReview ? mapDataObjectToFields(dataToReview[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : serviceAddress;
-      usual_residential_address = isDataToReview ? mapDataObjectToFields(dataToReview[UsualResidentialAddressKey], UsualResidentialAddressKeys, AddressKeys) : usual_residential_address;
+      dataToReview = appData.beneficial_owners_individual[Number(index)];
+      if (dataToReview) {
+        serviceAddress = mapDataObjectToFields(dataToReview[ServiceAddressKey], ServiceAddressKeys, AddressKeys);
+        usual_residential_address = mapDataObjectToFields(dataToReview[UsualResidentialAddressKey], UsualResidentialAddressKeys, AddressKeys);
+      }
     }
 
     const backLinkUrl = getRedirectUrl({
@@ -107,7 +108,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     if (boiIndex !== undefined &&
-        appData.beneficial_owners_individual &&
+        appData?.beneficial_owners_individual &&
         appData.beneficial_owners_individual[Number(boiIndex)].id === requestId
     ) {
 

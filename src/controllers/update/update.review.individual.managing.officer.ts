@@ -87,7 +87,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     if (moIndex !== undefined &&
-        appData.managing_officers_individual &&
+        appData?.managing_officers_individual &&
         appData.managing_officers_individual[Number(moIndex)].id === requestId
     ) {
 

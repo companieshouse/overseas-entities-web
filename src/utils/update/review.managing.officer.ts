@@ -90,7 +90,7 @@ export const checkAndReviewManagingOfficers = (req: Request, appData: Applicatio
 export function fetchIndividualMOAddress(appData: any, index: number) {
   let dataToReview = {}, residentialAddress = {}, serviceAddress = {};
   if (appData?.managing_officers_individual) {
-    dataToReview = appData?.managing_officers_individual[Number(index)];
+    dataToReview = appData.managing_officers_individual[Number(index)];
     if (dataToReview) {
       residentialAddress = mapDataObjectToFields(dataToReview[UsualResidentialAddressKey], UsualResidentialAddressKeys, AddressKeys);
       serviceAddress = mapDataObjectToFields(dataToReview[ServiceAddressKey], ServiceAddressKeys, AddressKeys);

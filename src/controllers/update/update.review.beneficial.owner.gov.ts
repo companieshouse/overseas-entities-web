@@ -55,7 +55,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     if (appData?.beneficial_owners_government_or_public_authority) {
-      dataToReview = appData?.beneficial_owners_government_or_public_authority[Number(index)];
+      dataToReview = appData.beneficial_owners_government_or_public_authority[Number(index)];
       if (dataToReview) {
         principalAddress = mapDataObjectToFields(dataToReview[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys);
         serviceAddress = mapDataObjectToFields(dataToReview[ServiceAddressKey], ServiceAddressKeys, AddressKeys);

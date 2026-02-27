@@ -1,43 +1,73 @@
-import {
-  UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
-  UPDATE_BENEFICIAL_OWNER_TYPE_URL,
-  UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_PAGE,
-  RELEVANT_PERIOD_QUERY_PARAM
-} from "../../config";
 import { NextFunction, Request, Response } from "express";
-import { getApplicationData, mapDataObjectToFields, removeFromApplicationData, setApplicationData } from "../../utils/application.data";
-import { logger } from "../../utils/logger";
 import { Session } from "@companieshouse/node-session-handler";
-import { ApplicationDataType } from "../../model";
-import { saveAndContinue } from "../../utils/save.and.continue";
+import { logger } from "../../utils/logger";
 import { AddressKeys } from "../../model/data.types.model";
-import { setOfficerData } from "../../utils/managing.officer.corporate";
 import { ResignedOnKey } from "../../model/date.model";
-import { addResignedDateToTemplateOptions } from "../../utils/update/ceased_date_util";
-import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAddressKeys } from "../../model/address.model";
-import { ManagingOfficerCorporateKey } from "../../model/managing.officer.corporate.model";
+import { setOfficerData } from "../../utils/managing.officer.corporate";
+import { isActiveFeature } from "../../utils/feature.flag";
+import { saveAndContinue } from "../../utils/save.and.continue";
 import { checkRelevantPeriod } from "../../utils/relevant.period";
+import { ManagingOfficerCorporateKey } from "../../model/managing.officer.corporate.model";
+import { checkAndReviewManagingOfficers } from "../../utils/update/review.managing.officer";
+import { addResignedDateToTemplateOptions } from "../../utils/update/ceased_date_util";
+import { getRedirectUrl, isRemoveJourney } from "../../utils/url";
+import { ApplicationData, ApplicationDataType } from "../../model";
+
+import {
+  setApplicationData,
+  fetchApplicationData,
+  mapDataObjectToFields,
+  removeFromApplicationData,
+} from "../../utils/application.data";
+
+import {
+  ServiceAddressKey,
+  ServiceAddressKeys,
+  PrincipalAddressKey,
+  PrincipalAddressKeys,
+} from "../../model/address.model";
+
+import {
+  RELEVANT_PERIOD_QUERY_PARAM,
+  UPDATE_BENEFICIAL_OWNER_TYPE_URL,
+  FEATURE_FLAG_ENABLE_REDIS_REMOVAL,
+  UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
+  UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
+  UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_PAGE,
+  UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_WITH_PARAMS_URL,
+} from "../../config";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
+
   try {
+
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const appData = await getApplicationData(req.session);
+    const isRemove: boolean = await isRemoveJourney(req);
+    const appData = await fetchApplicationData(req, !isRemove);
     const index = req.query.index;
-
     let dataToReview = {}, principalAddress = {}, serviceAddress = {};
+    if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+      checkAndReviewManagingOfficers(req as any, appData);
+    }
 
-    if (appData?.managing_officers_corporate){
+    if (appData?.managing_officers_corporate) {
       dataToReview = appData?.managing_officers_corporate[Number(index)];
-      principalAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};
-      serviceAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
+      if (dataToReview) {
+        principalAddress = mapDataObjectToFields(dataToReview[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys);
+        serviceAddress = mapDataObjectToFields(dataToReview[ServiceAddressKey], ServiceAddressKeys, AddressKeys);
+      }
     }
 
     const templateOptions = {
-      backLinkUrl: UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
-      templateName: UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_PAGE,
       ...dataToReview,
       ...principalAddress,
-      ...serviceAddress
+      ...serviceAddress,
+      templateName: UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_PAGE,
+      backLinkUrl: getRedirectUrl({
+        req,
+        urlWithEntityIds: UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_WITH_PARAMS_URL,
+        urlWithoutEntityIds: UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
+      }),
     };
 
     if (ResignedOnKey in dataToReview) {
@@ -45,41 +75,69 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     } else {
       return res.render(templateOptions.templateName, templateOptions);
     }
-  } catch (error){
+  } catch (error) {
     logger.errorRequest(req, error);
     next(error);
   }
 };
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
+
   try {
+
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const moIndex = req.query.index;
-    const appData = await getApplicationData(req.session);
+    const requestId = req.body["id"];
+    const isRemove: boolean = await isRemoveJourney(req);
+    const appData = await fetchApplicationData(req, !isRemove);
 
-    if (moIndex !== undefined && appData.managing_officers_corporate && appData.managing_officers_corporate[Number(moIndex)].id === req.body["id"]){
+    if (isMoReviewable(appData, moIndex, requestId)) {
+      checkAndReviewManagingOfficers(req as any, appData);
+    }
+
+    if (moIndex !== undefined &&
+        appData?.managing_officers_corporate &&
+        appData.managing_officers_corporate[Number(moIndex)].id === requestId
+    ) {
 
       const moId = appData.managing_officers_corporate[Number(moIndex)].id;
-
-      // Remove old Managing Officer
-      await removeFromApplicationData(req, ManagingOfficerCorporateKey, moId);
-
-      // Set officer data
+      await removeFromApplicationData(req, ManagingOfficerCorporateKey, moId, appData);
       const data: ApplicationDataType = setOfficerData(req.body, moId);
-
-      // Save new Managing Officer
       const session = req.session as Session;
-      await setApplicationData(session, data, ManagingOfficerCorporateKey);
 
-      await saveAndContinue(req, session);
+      if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+        await setApplicationData(req, data, ManagingOfficerCorporateKey);
+      } else {
+        await setApplicationData(session, data, ManagingOfficerCorporateKey);
+        await saveAndContinue(req, session);
+      }
     }
+
+    const boRedirectUrl = getRedirectUrl({
+      req,
+      urlWithEntityIds: UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
+      urlWithoutEntityIds: UPDATE_BENEFICIAL_OWNER_TYPE_URL,
+    });
+
     if (checkRelevantPeriod(appData)) {
-      return res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
+      return res.redirect(boRedirectUrl + RELEVANT_PERIOD_QUERY_PARAM);
     } else {
-      return res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      return res.redirect(boRedirectUrl);
     }
-  } catch (error){
+  } catch (error) {
     logger.errorRequest(req, error);
     next(error);
   }
+};
+
+export const isMoReviewable = (appData: ApplicationData, moIndex: any, requestId: string | undefined): boolean => {
+  if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL) &&
+      (!moIndex ||
+      !appData?.managing_officers_corporate ||
+      !appData?.managing_officers_corporate[Number(moIndex)]?.id ||
+      appData.managing_officers_corporate[Number(moIndex)].id !== requestId)
+  ) {
+    return true;
+  }
+  return false;
 };

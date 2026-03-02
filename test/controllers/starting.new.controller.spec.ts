@@ -39,6 +39,7 @@ describe("Starting new controller", () => {
       expect(resp.text).toContain(STARTING_NEW_PAGE_TITLE);
       expect(resp.text).toContain(config.LANDING_PAGE_URL);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(config.CONTACT_US_URL);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
     });
   });

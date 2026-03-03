@@ -4,8 +4,10 @@ import { logger } from "../../utils/logger";
 import * as config from "../../config";
 import { ApplicationData } from "../../model";
 import { saveAndContinue } from "../../utils/save.and.continue";
+import { isActiveFeature } from "../../utils/feature.flag";
 import { validationResult } from "express-validator/src/validation-result";
 import { retrieveTrustData } from "../../utils/update/trust.model.fetch";
+import { updateOverseasEntity } from "../../service/overseas.entities.service";
 import { ManagingOfficerKey } from "../../model/managing.officer.model";
 import { BeneficialOwnerGovKey } from "../../model/beneficial.owner.gov.model";
 import { BeneficialOwnerOtherKey } from "../../model/beneficial.owner.other.model";
@@ -39,13 +41,19 @@ type ReviewBaseUrls = {
   managingOfficerCorporate: string;
 };
 
+type BoMoBaseUrls = {
+  confirmRemove: string;
+} & ReviewBaseUrls;
+
 type BeneficialOwnerTypePageProperties = {
   backLinkUrl: string;
   templateName: string;
   errors?: FormattedValidationErrors;
   hasExistingBosMos: boolean;
   hasNewlyAddedBosMos: boolean;
-  reviewUrls?: ReviewBaseUrls;
+  reviewUrls: ReviewBaseUrls;
+  boMoUrls: BoMoBaseUrls;
+  boTypeSubmitUrl: string;
 };
 
 const getPageProperties = async (req: Request, errors?: FormattedValidationErrors,): Promise<BeneficialOwnerTypePageProperties> => {
@@ -64,18 +72,28 @@ const getPageProperties = async (req: Request, errors?: FormattedValidationError
   const hasNewlyAddedBosMos = allBosMos.find(boMo => !boMo.ch_reference) !== undefined;
   const hasExistingBosMos = allBosMos.find(boMo => boMo.ch_reference) !== undefined;
 
+  const boTypeSubmitUrl = getRedirectUrl({
+    req,
+    urlWithEntityIds: config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_WITH_PARAMS_URL,
+    urlWithoutEntityIds: config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL,
+  });
+
+  const backLinkUrl = getRedirectUrl({
+    req,
+    urlWithEntityIds: config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_WITH_PARAMS_URL,
+    urlWithoutEntityIds: config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
+  });
+
   return {
     ...appData,
     hasExistingBosMos,
     hasNewlyAddedBosMos,
     errors,
+    backLinkUrl,
+    boTypeSubmitUrl,
+    boMoUrls: getBoMoBaseUrls(req),
     reviewUrls: getReviewBaseUrls(req),
     templateName: config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
-    backLinkUrl: getRedirectUrl({
-      req,
-      urlWithEntityIds: config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_WITH_PARAMS_URL,
-      urlWithoutEntityIds: config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
-    }),
   };
 };
 
@@ -127,8 +145,12 @@ export const postSubmit = async (req: Request, res: Response, next: NextFunction
     if (!appData.update?.trust_data_fetched) {
       const session = req.session as Session;
       await retrieveTrustData(req, appData);
+      if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && !isRemove) {
+        await updateOverseasEntity(req, req.session as Session, appData);
+      } else {
+        await saveAndContinue(req, session);
+      }
       setExtraData(req.session, appData);
-      await saveAndContinue(req, session);
     }
 
     // Move any trusts that have been reviewed back into review so user can review data again if
@@ -146,7 +168,7 @@ export const postSubmit = async (req: Request, res: Response, next: NextFunction
     }
 
     if (checkEntityRequiresTrusts(appData)) {
-      return res.redirect(getTrustLandingUrl(appData));
+      return res.redirect(getTrustLandingUrl(appData, req));
     }
 
     return res.redirect(getRedirectUrl({
@@ -162,56 +184,70 @@ export const postSubmit = async (req: Request, res: Response, next: NextFunction
 };
 
 const getNextPage = (req: Request): string => {
+
+  const boMoBaseUrls = getBoMoBaseUrls(req);
+
   switch (req.body[BeneficialOwnerTypeKey]) {
+
       case BeneficialOwnerTypeChoice.government:
-        return getRedirectUrl({
-          req,
-          urlWithEntityIds: config.UPDATE_BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL,
-          urlWithoutEntityIds: config.UPDATE_BENEFICIAL_OWNER_GOV_URL,
-        });
+        return boMoBaseUrls.beneficialOwnerGov;
+
       case BeneficialOwnerTypeChoice.otherLegal:
-        return getRedirectUrl({
-          req,
-          urlWithEntityIds: config.UPDATE_BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL,
-          urlWithoutEntityIds: config.UPDATE_BENEFICIAL_OWNER_OTHER_URL,
-        });
+        return boMoBaseUrls.beneficialOwnerOther;
+
       case ManagingOfficerTypeChoice.corporate:
-        return getRedirectUrl({
-          req,
-          urlWithEntityIds: config.UPDATE_MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL,
-          urlWithoutEntityIds: config.UPDATE_MANAGING_OFFICER_CORPORATE_URL,
-        });
+        return boMoBaseUrls.managingOfficerCorporate;
+
       case ManagingOfficerTypeChoice.individual:
-        return getRedirectUrl({
-          req,
-          urlWithEntityIds: config.UPDATE_MANAGING_OFFICER_WITH_PARAMS_URL,
-          urlWithoutEntityIds: config.UPDATE_MANAGING_OFFICER_URL,
-        });
+        return boMoBaseUrls.managingOfficerIndividual;
+
       case BeneficialOwnerTypeChoice.relevantPeriodIndividual:
-        return getRedirectUrl({
-          req,
-          urlWithEntityIds: config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL,
-          urlWithoutEntityIds: config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL,
-        }) + config.RELEVANT_PERIOD_QUERY_PARAM;
+        return boMoBaseUrls.beneficialOwnerIndividual + config.RELEVANT_PERIOD_QUERY_PARAM;
+
       case BeneficialOwnerTypeChoice.relevantPeriodOtherLegal:
-        return getRedirectUrl({
-          req,
-          urlWithEntityIds: config.UPDATE_BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL,
-          urlWithoutEntityIds: config.UPDATE_BENEFICIAL_OWNER_OTHER_URL,
-        }) + config.RELEVANT_PERIOD_QUERY_PARAM;
+        return boMoBaseUrls.beneficialOwnerOther + config.RELEVANT_PERIOD_QUERY_PARAM;
+
       case BeneficialOwnerTypeChoice.relevantPeriodGovernment:
-        return getRedirectUrl({
-          req,
-          urlWithEntityIds: config.UPDATE_BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL,
-          urlWithoutEntityIds: config.UPDATE_BENEFICIAL_OWNER_GOV_URL,
-        }) + config.RELEVANT_PERIOD_QUERY_PARAM;
+        return boMoBaseUrls.beneficialOwnerGov + config.RELEVANT_PERIOD_QUERY_PARAM;
+
       default:
-        return getRedirectUrl({
-          req,
-          urlWithEntityIds: config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL,
-          urlWithoutEntityIds: config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL,
-        });
+        return boMoBaseUrls.beneficialOwnerIndividual;
   }
+};
+
+const getBoMoBaseUrls = (req: Request): BoMoBaseUrls => {
+  return {
+    beneficialOwnerIndividual: getRedirectUrl({
+      req,
+      urlWithEntityIds: config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL,
+    }),
+    beneficialOwnerGov: getRedirectUrl({
+      req,
+      urlWithEntityIds: config.UPDATE_BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.UPDATE_BENEFICIAL_OWNER_GOV_URL,
+    }),
+    beneficialOwnerOther: getRedirectUrl({
+      req,
+      urlWithEntityIds: config.UPDATE_BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.UPDATE_BENEFICIAL_OWNER_OTHER_URL,
+    }),
+    managingOfficerCorporate: getRedirectUrl({
+      req,
+      urlWithEntityIds: config.UPDATE_MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.UPDATE_MANAGING_OFFICER_CORPORATE_URL,
+    }),
+    managingOfficerIndividual: getRedirectUrl({
+      req,
+      urlWithEntityIds: config.UPDATE_MANAGING_OFFICER_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.UPDATE_MANAGING_OFFICER_URL,
+    }),
+    confirmRemove: getRedirectUrl({
+      req,
+      urlWithEntityIds: config.UPDATE_CONFIRM_TO_REMOVE_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.UPDATE_CONFIRM_TO_REMOVE_URL,
+    }),
+  };
 };
 
 const getReviewBaseUrls = (req: Request): ReviewBaseUrls => {

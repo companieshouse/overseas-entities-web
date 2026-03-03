@@ -40,7 +40,7 @@ import {
   UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL,
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
   UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
-  RELEVANT_PERIOD_QUERY_PARAM
+  RELEVANT_PERIOD_QUERY_PARAM, UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL
 } from "../../../src/config";
 
 import {
@@ -158,12 +158,11 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
     });
 
-    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page when FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is active`, async () => {
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page when FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is active and REDIS_flag is TRUE`, async () => {
       mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
+      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC & FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
-
-      const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL);
+      const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(config.UPDATE_LANDING_PAGE_URL);

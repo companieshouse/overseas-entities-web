@@ -13,6 +13,7 @@ jest.mock('../../../src/utils/update/review_trusts');
 jest.mock('../../../src/utils/update/trust.model.fetch');
 jest.mock('../../../src/utils/save.and.continue');
 jest.mock('../../../src/utils/relevant.period');
+jest.mock('../../../src/service/overseas.entities.service');
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
 import mockJourneyDetectionMiddleware from "../../__mocks__/journey.detection.middleware.mock";
@@ -29,6 +30,7 @@ import { authentication } from "../../../src/middleware/authentication.middlewar
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
 import { isActiveFeature } from '../../../src/utils/feature.flag';
+import { updateOverseasEntity } from "../../../src/service/overseas.entities.service";
 import { retrieveTrustData } from "../../../src/utils/update/trust.model.fetch";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
@@ -99,6 +101,9 @@ mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Respons
 
 const mockHasUpdatePresenterMiddleware = hasUpdatePresenter as jest.Mock;
 mockHasUpdatePresenterMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
+
+const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
+mockUpdateOverseasEntity.mockReturnValue(true);
 
 const mockCheckEntityRequiresTrusts = checkEntityRequiresTrusts as jest.Mock;
 const mockHasTrustsToReview = hasTrustsToReview as jest.Mock;
@@ -287,8 +292,8 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
   describe("POST Submit tests", () => {
 
-    test('redirects to manage trusts interrupt', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
+    test('redirects to manage trusts interrupt when REDIS_flag is set to FALSE', async () => {
+      mockIsActiveFeature.mockReturnValue(false);
       mockRetrieveTrustData.mockReturnValueOnce(Promise.resolve());
       mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
       mockSetExtraData.mockReturnValueOnce(null);
@@ -300,12 +305,49 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(mockRetrieveTrustData).toHaveBeenCalled();
       expect(mockHasTrustsToReview).toHaveBeenCalled();
       expect(mockSaveAndContinue).toHaveBeenCalled();
+      expect(mockUpdateOverseasEntity).not.toHaveBeenCalled();
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toContain(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
     });
 
-    test('redirects to manage trusts interrupt if update in app data', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
+    test('redirects to manage trusts interrupt when REDIS_flag is set to TRUE', async () => {
+      mockIsActiveFeature.mockReturnValue(true);
+      mockRetrieveTrustData.mockReturnValueOnce(Promise.resolve());
+      mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
+      mockSetExtraData.mockReturnValueOnce(null);
+      mockFetchApplicationData.mockReturnValueOnce({});
+      mockHasTrustsToReview.mockReturnValueOnce(true);
+
+      const resp = await request(app).post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_WITH_PARAMS_URL);
+
+      expect(mockRetrieveTrustData).toHaveBeenCalled();
+      expect(mockHasTrustsToReview).toHaveBeenCalled();
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toContain(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_WITH_PARAMS_URL);
+    });
+
+    test('redirects to manage trusts interrupt if update in app data and REDIS_flag is set to TRUE', async () => {
+      mockIsActiveFeature.mockReturnValue(true);
+      mockRetrieveTrustData.mockReturnValueOnce(Promise.resolve());
+      mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
+      mockSetExtraData.mockReturnValueOnce(null);
+      mockFetchApplicationData.mockReturnValueOnce({ update: {} });
+      mockHasTrustsToReview.mockReturnValueOnce(true);
+
+      const resp = await request(app).post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_WITH_PARAMS_URL);
+
+      expect(mockRetrieveTrustData).toHaveBeenCalled();
+      expect(mockHasTrustsToReview).toHaveBeenCalled();
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toContain(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_WITH_PARAMS_URL);
+    });
+
+    test('redirects to manage trusts interrupt if update in app data and REDIS_flag is set to FALSE', async () => {
+      mockIsActiveFeature.mockReturnValue(false);
       mockRetrieveTrustData.mockReturnValueOnce(Promise.resolve());
       mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
       mockSetExtraData.mockReturnValueOnce(null);
@@ -317,6 +359,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(mockRetrieveTrustData).toHaveBeenCalled();
       expect(mockHasTrustsToReview).toHaveBeenCalled();
       expect(mockSaveAndContinue).toHaveBeenCalled();
+      expect(mockUpdateOverseasEntity).not.toHaveBeenCalled();
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toContain(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
     });
@@ -333,30 +376,31 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
       expect(mockRetrieveTrustData).toHaveBeenCalled();
       expect(mockSetExtraData).toHaveBeenCalled();
-      expect(mockSaveAndContinue).toHaveBeenCalled();
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
       expect(mockHasTrustsToReview).toHaveBeenCalled();
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toContain(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
     });
 
     test('moves reviewable trusts into review and redirects to manage trusts interrupt if update trust flag off and cease trusts flag on', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
+      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS  & FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockRetrieveTrustData.mockReturnValueOnce(Promise.resolve());
       mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
       mockSetExtraData.mockReturnValueOnce(null);
       mockFetchApplicationData.mockReturnValueOnce({ update: { trust_data_fetched: false } });
       mockHasTrustsToReview.mockReturnValueOnce(true);
 
-      const resp = await request(app).post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
+      const resp = await request(app).post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_WITH_PARAMS_URL);
 
       expect(mockRetrieveTrustData).toHaveBeenCalled();
       expect(mockSetExtraData).toHaveBeenCalled();
-      expect(mockSaveAndContinue).toHaveBeenCalled();
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockUpdateOverseasEntity).toHaveBeenCalled();
       expect(mockHasTrustsToReview).toHaveBeenCalled();
       expect(mockMoveReviewableTrustsIntoReview).toHaveBeenCalled();
       expect(mockResetReviewStatusOnAllTrustsToBeReviewed).toHaveBeenCalled();
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toContain(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
+      expect(resp.header.location).toContain(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_WITH_PARAMS_URL);
     });
 
     test('redirects to beneficial owner statements page if no trusts to review', async () => {

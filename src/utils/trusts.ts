@@ -58,9 +58,9 @@ const checkEntityReviewRequiresTrusts = (appData: ApplicationData | undefined): 
  * @param appData Application Data
  * @returns string URL to go to when starting the trust journey
  */
-const getTrustLandingUrl = (appData: ApplicationData, req: Request): string => { //  TODO MAKE REQ MANDATORY
+const getTrustLandingUrl = (appData: ApplicationData, req: Request): string => {
   if (containsTrustData(getTrustArray(appData))) {
-    // Once naviation changes are agreed the following will change
+    // Once navigation changes are agreed the following will change
     if (appData.entity_number) {
       return getRedirectUrl({
         req,

@@ -19,83 +19,83 @@ import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddlewa
 
 import app from "../../../src/app";
 
-import { authentication } from "../../../src/middleware/authentication.middleware";
-import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
-import { ErrorMessages } from '../../../src/validation/error.messages';
-import { ServiceAddressKey, ServiceAddressKeys } from "../../../src/model/address.model";
-import { ApplicationDataType } from '../../../src/model';
-import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
 import * as config from "../../../src/config";
-
-import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
-import { checkRelevantPeriod } from "../../../src/utils/relevant.period";
+import { ErrorMessages } from '../../../src/validation/error.messages';
+import { authentication } from "../../../src/middleware/authentication.middleware";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
+import { ApplicationDataType } from '../../../src/model';
+import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
+import { checkRelevantPeriod } from "../../../src/utils/relevant.period";
+import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
+import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
 
+import { ServiceAddressKey, ServiceAddressKeys } from "../../../src/model/address.model";
 import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from '../../../src/model/beneficial.owner.individual.model';
 import { AddressKeys, NatureOfControlJurisdiction, NatureOfControlType } from '../../../src/model/data.types.model';
 
 import {
-  UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
-  UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL,
+  prepareData,
+  setApplicationData,
+  fetchApplicationData,
+  mapFieldsToDataObject,
+  getFromApplicationData,
+  removeFromApplicationData,
+} from '../../../src/utils/application.data';
+
+import {
+  RELEVANT_PERIOD_QUERY_PARAM,
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
   UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
-  RELEVANT_PERIOD_QUERY_PARAM, UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL
+  UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL,
+  UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
+  UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL,
 } from "../../../src/config";
 
 import {
-  ANY_MESSAGE_ERROR,
-  BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING,
   ERROR_LIST,
-  PAGE_TITLE_ERROR,
-  SERVICE_UNAVAILABLE,
-  SECOND_NATIONALITY,
-  SECOND_NATIONALITY_HINT,
-  INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER,
-  NOT_SHOW_BENEFICIAL_OWNER_INFORMATION_ON_PUBLIC_REGISTER,
-  ALL_THE_OTHER_INFORMATION_ON_PUBLIC_REGISTER,
-  UPDATE_BENEFICIAL_OWNER_TYPE_PAGE_REDIRECT,
-  TRUSTS_NOC_HEADING,
-  RELEVANT_PERIOD,
-  RELEVANT_PERIOD_INDIVIDUAL_INFORMATION,
-  SAVE_AND_CONTINUE_BUTTON_TEXT,
   BO_NOC_HEADING,
+  RELEVANT_PERIOD,
   FIRM_NOC_HEADING,
+  PAGE_TITLE_ERROR,
+  ANY_MESSAGE_ERROR,
+  SECOND_NATIONALITY,
+  TRUSTS_NOC_HEADING,
+  SERVICE_UNAVAILABLE,
+  SECOND_NATIONALITY_HINT,
   FIRM_CONTROL_NOC_HEADING,
   TRUST_CONTROL_NOC_HEADING,
+  SAVE_AND_CONTINUE_BUTTON_TEXT,
   OWNER_OF_LAND_PERSON_NOC_HEADING,
   OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING,
+  RELEVANT_PERIOD_INDIVIDUAL_INFORMATION,
+  INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER,
+  BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING,
+  UPDATE_BENEFICIAL_OWNER_TYPE_PAGE_REDIRECT,
+  ALL_THE_OTHER_INFORMATION_ON_PUBLIC_REGISTER,
+  NOT_SHOW_BENEFICIAL_OWNER_INFORMATION_ON_PUBLIC_REGISTER,
 } from '../../__mocks__/text.mock';
 
 import {
-  APPLICATION_DATA_UPDATE_BO_MOCK,
-  BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
-  BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO,
-  BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES,
-  BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_RADIO_BUTTONS,
-  BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_DATE_OF_BIRTH,
-  BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_START_DATE,
   BO_IND_ID,
   BO_IND_ID_URL,
+  APPLICATION_DATA_UPDATE_BO_MOCK,
+  BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
   REQ_BODY_BENEFICIAL_OWNER_INDIVIDUAL_EMPTY,
-  UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_MOCK_FOR_CEASE_VALIDATION,
   UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK,
+  UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_MOCK_FOR_CEASE_VALIDATION,
+  BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO,
+  BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES,
+  BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_START_DATE,
+  BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_DATE_OF_BIRTH,
+  BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_RADIO_BUTTONS,
 } from '../../__mocks__/session.mock';
 
 import {
   BENEFICIAL_OWNER_INDIVIDUAL_WITH_INVALID_CHARS_MOCK,
+  BENEFICIAL_OWNER_INDIVIDUAL_WITH_MAX_LENGTH_FIELDS_MOCK,
   BENEFICIAL_OWNER_INDIVIDUAL_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK,
-  BENEFICIAL_OWNER_INDIVIDUAL_WITH_MAX_LENGTH_FIELDS_MOCK
 } from '../../__mocks__/validation.mock';
-
-import {
-  getFromApplicationData,
-  mapFieldsToDataObject,
-  prepareData,
-  removeFromApplicationData,
-  setApplicationData,
-  fetchApplicationData
-} from '../../../src/utils/application.data';
 
 mockJourneyDetectionMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();

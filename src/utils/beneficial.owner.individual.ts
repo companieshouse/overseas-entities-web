@@ -3,12 +3,11 @@ import { Session } from "@companieshouse/node-session-handler";
 import { v4 as uuidv4 } from "uuid";
 import { logger } from "../utils/logger";
 import * as config from "../config";
-import { addCeasedDateToTemplateOptions } from "../utils/update/ceased_date_util";
 import { saveAndContinue } from "../utils/save.and.continue";
-import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
 import { isActiveFeature } from "./feature.flag";
 import { isRemoveJourney } from "./url";
-
+import { addCeasedDateToTemplateOptions } from "../utils/update/ceased_date_util";
+import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
 import { ApplicationDataType, ApplicationData } from "../model";
 
 import {
@@ -90,10 +89,10 @@ export const getBeneficialOwnerIndividualById = async (
     const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
     const id = req.params[ID];
     const data = await getFromApplicationData(req, BeneficialOwnerIndividualKey, id, true);
-    const usualResidentialAddress = (data) ? mapDataObjectToFields(data[UsualResidentialAddressKey], UsualResidentialAddressKeys, AddressKeys) : {};
-    const serviceAddress = (data) ? mapDataObjectToFields(data[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
-    const dobDate = (data) ? mapDataObjectToFields(data[DateOfBirthKey], DateOfBirthKeys, InputDateKeys) : {};
-    const startDate = (data) ? mapDataObjectToFields(data[StartDateKey], StartDateKeys, InputDateKeys) : {};
+    const usualResidentialAddress = data ? mapDataObjectToFields(data[UsualResidentialAddressKey], UsualResidentialAddressKeys, AddressKeys) : {};
+    const serviceAddress = data ? mapDataObjectToFields(data[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
+    const dobDate = data ? mapDataObjectToFields(data[DateOfBirthKey], DateOfBirthKeys, InputDateKeys) : {};
+    const startDate = data ? mapDataObjectToFields(data[StartDateKey], StartDateKeys, InputDateKeys) : {};
 
     const templateOptions = {
       ...data,
@@ -156,12 +155,13 @@ export const updateBeneficialOwnerIndividual = async (req: Request, res: Respons
     logger.debugRequest(req, `UPDATE ${req.route.path}`);
 
     const isRemove: boolean = await isRemoveJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
     const session = req.session as Session;
     const id = req.params[ID];
     const boData: BeneficialOwnerIndividual = await getFromApplicationData(req, BeneficialOwnerIndividualKey, id, true);
     const trustIds: string[] = boData?.trust_ids?.length ? [...boData.trust_ids] : [];
-    await removeFromApplicationData(req, BeneficialOwnerIndividualKey, id); // remove old Beneficial Owner
-    const data: ApplicationDataType = setBeneficialOwnerData(req.body, id); // set Beneficial Owner data
+    await removeFromApplicationData(req, BeneficialOwnerIndividualKey, id, appData);
+    const data: ApplicationDataType = setBeneficialOwnerData(req.body, id);
 
     if (trustIds.length > 0) {
       (data as BeneficialOwnerIndividual).trust_ids = [...trustIds];
@@ -188,8 +188,9 @@ export const removeBeneficialOwnerIndividual = async (req: Request, res: Respons
 
     logger.debugRequest(req, `REMOVE ${req.route.path}`);
     const isRemove: boolean = await isRemoveJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
     const session = req.session as Session;
-    await removeFromApplicationData(req, BeneficialOwnerIndividualKey, req.params[ID]);
+    await removeFromApplicationData(req, BeneficialOwnerIndividualKey, req.params[ID], appData);
 
     if (!isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) || isRemove) {
       await saveAndContinue(req, session);
@@ -206,10 +207,8 @@ export const removeBeneficialOwnerIndividual = async (req: Request, res: Respons
 export const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDataType => {
   const data: ApplicationDataType = prepareData(reqBody, BeneficialOwnerIndividualKeys);
   data[UsualResidentialAddressKey] = mapFieldsToDataObject(reqBody, UsualResidentialAddressKeys, AddressKeys);
-  data[HasSameResidentialAddressKey] = (data[HasSameResidentialAddressKey]) ? +data[HasSameResidentialAddressKey] : '';
-  data[ServiceAddressKey] = (!data[HasSameResidentialAddressKey])
-    ? mapFieldsToDataObject(reqBody, ServiceAddressKeys, AddressKeys)
-    : {};
+  data[HasSameResidentialAddressKey] = data[HasSameResidentialAddressKey] ? +data[HasSameResidentialAddressKey] : '';
+  data[ServiceAddressKey] = !data[HasSameResidentialAddressKey] ? mapFieldsToDataObject(reqBody, ServiceAddressKeys, AddressKeys) : {};
   data[DateOfBirthKey] = mapFieldsToDataObject(reqBody, DateOfBirthKeys, InputDateKeys);
   data[StartDateKey] = mapFieldsToDataObject(reqBody, StartDateKeys, InputDateKeys);
   data[CeasedDateKey] = reqBody["is_still_bo"] === '0' ? mapFieldsToDataObject(reqBody, CeasedDateKeys, InputDateKeys) : {};

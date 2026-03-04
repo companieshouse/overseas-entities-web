@@ -5,7 +5,7 @@ import { RoleWithinTrustType } from "../model/role.within.trust.type.model";
 import { ApplicationData } from "../model";
 import { yesNoResponse } from "../model/data.types.model";
 import { isActiveFeature } from "./feature.flag";
-import { getUrlWithParamsToPath } from "./url";
+import { getRedirectUrl, getUrlWithParamsToPath } from "./url";
 
 import { ReviewTrustKey, UpdateKey } from "../model/update.type.model";
 import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from "../model/beneficial.owner.individual.model";
@@ -58,11 +58,15 @@ const checkEntityReviewRequiresTrusts = (appData: ApplicationData | undefined): 
  * @param appData Application Data
  * @returns string URL to go to when starting the trust journey
  */
-const getTrustLandingUrl = (appData: ApplicationData, req?: Request): string => { //  TODO MAKE REQ MANDATORY
+const getTrustLandingUrl = (appData: ApplicationData, req: Request): string => {
   if (containsTrustData(getTrustArray(appData))) {
-    // Once naviation changes are agreed the following will change
+    // Once navigation changes are agreed the following will change
     if (appData.entity_number) {
-      return config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL;
+      return getRedirectUrl({
+        req,
+        urlWithEntityIds: config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_WITH_PARAMS_URL,
+        urlWithoutEntityIds: config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL,
+      });
     } else {
       let nextPageUrl = `${config.TRUST_ENTRY_URL}${config.ADD_TRUST_URL}`;
       if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && req){
@@ -72,7 +76,11 @@ const getTrustLandingUrl = (appData: ApplicationData, req?: Request): string => 
     }
   }
   if (appData.entity_number) {
-    return config.UPDATE_TRUSTS_SUBMISSION_INTERRUPT_URL;
+    return getRedirectUrl({
+      req,
+      urlWithEntityIds: config.UPDATE_TRUSTS_SUBMISSION_INTERRUPT_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.UPDATE_TRUSTS_SUBMISSION_INTERRUPT_URL,
+    });
   } else {
     let nextPageUrl = `${config.TRUST_DETAILS_URL}${config.TRUST_INTERRUPT_URL}`;
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && req){
@@ -391,6 +399,7 @@ const mapTrustApiReturnModelToWebModel = (appData: ApplicationData) => {
 };
 
 const mapTrustees = (trust: Trust) => {
+
   trust.CORPORATES = (trust?.CORPORATES || []).map(corporateTrustee => {
 
     const apiData: any = corporateTrustee;

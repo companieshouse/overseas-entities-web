@@ -3,47 +3,48 @@ import { v4 as uuidv4 } from "uuid";
 import { Session } from "@companieshouse/node-session-handler";
 import * as config from "../config";
 import { logger } from "../utils/logger";
-import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
 import { isActiveFeature } from "./feature.flag";
-import { addCeasedDateToTemplateOptions } from "../utils/update/ceased_date_util";
 import { saveAndContinue } from "../utils/save.and.continue";
-import { isRegistrationJourney } from "./url";
+import { isRemoveJourney } from "./url";
+import { addCeasedDateToTemplateOptions } from "../utils/update/ceased_date_util";
+import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
 
 import { ApplicationData, ApplicationDataType } from "../model";
 import { BeneficialOwnerGovKey, BeneficialOwnerGovKeys } from "../model/beneficial.owner.gov.model";
 
 import {
-  fetchApplicationData,
-  getFromApplicationData,
-  mapDataObjectToFields,
-  mapFieldsToDataObject,
-  prepareData,
-  removeFromApplicationData,
-  setApplicationData,
-  setBoNocDataAsArrays
-} from "../utils/application.data";
+  StartDateKey,
+  StartDateKeys,
+  CeasedDateKey,
+  CeasedDateKeys,
+} from "../model/date.model";
 
 import {
-  AddressKeys,
-  EntityNumberKey,
-  HasSamePrincipalAddressKey,
-  ID,
-  InputDateKeys,
-  IsOnSanctionsListKey
-} from "../model/data.types.model";
-
-import { PrincipalAddressKey,
-  PrincipalAddressKeys,
   ServiceAddressKey,
   ServiceAddressKeys,
+  PrincipalAddressKey,
+  PrincipalAddressKeys,
 } from "../model/address.model";
 
 import {
-  CeasedDateKey,
-  CeasedDateKeys,
-  StartDateKey,
-  StartDateKeys
-} from "../model/date.model";
+  ID,
+  AddressKeys,
+  InputDateKeys,
+  EntityNumberKey,
+  IsOnSanctionsListKey,
+  HasSamePrincipalAddressKey,
+} from "../model/data.types.model";
+
+import {
+  prepareData,
+  setApplicationData,
+  setBoNocDataAsArrays,
+  fetchApplicationData,
+  mapDataObjectToFields,
+  mapFieldsToDataObject,
+  getFromApplicationData,
+  removeFromApplicationData,
+} from "../utils/application.data";
 
 export const getBeneficialOwnerGov = async (
   req: Request,
@@ -56,14 +57,13 @@ export const getBeneficialOwnerGov = async (
   try {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-
-    const isRegistration = isRegistrationJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+    const isRemove: boolean = await isRemoveJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
 
     res.render(templateName, {
+      ...appData,
       backLinkUrl,
       templateName,
-      ...appData,
       relevant_period: req.query["relevant-period"] === "true",
       FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC: isActiveFeature(config.FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)
     });
@@ -86,27 +86,27 @@ export const getBeneficialOwnerGovById = async (
 
     logger.debugRequest(req, `GET BY ID ${req.route.path}`);
 
-    const isRegistration = isRegistrationJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+    const isRemove: boolean = await isRemoveJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
     const id = req.params[ID];
     const data = await getFromApplicationData(req, BeneficialOwnerGovKey, id, true);
-    const principalAddress = (data) ? mapDataObjectToFields(data[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};
-    const serviceAddress = (data) ? mapDataObjectToFields(data[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
-    const startDate = (data) ? mapDataObjectToFields(data[StartDateKey], StartDateKeys, InputDateKeys) : {};
+    const principalAddress = data ? mapDataObjectToFields(data[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};
+    const serviceAddress = data ? mapDataObjectToFields(data[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
+    const startDate = data ? mapDataObjectToFields(data[StartDateKey], StartDateKeys, InputDateKeys) : {};
 
     const templateOptions = {
-      backLinkUrl,
-      templateName: `${templateName}/${id}`,
       id,
       ...data,
       ...principalAddress,
       ...serviceAddress,
+      backLinkUrl,
       [StartDateKey]: startDate,
+      templateName: `${templateName}/${id}`,
       entity_name: appData.entity_name,
       FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC: isActiveFeature(config.FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)
     };
 
-    if (isRegistration) {
+    if (!isRemove) {
       addActiveSubmissionBasePathToTemplateData(templateOptions, req);
     }
 
@@ -127,12 +127,11 @@ export const postBeneficialOwnerGov = async (req: Request, res: Response, next: 
   try {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-
-    const isRegistration = isRegistrationJourney(req);
+    const isRemove: boolean = await isRemoveJourney(req);
     const data: ApplicationDataType = setBeneficialOwnerData(req.body, uuidv4());
     const session = req.session as Session;
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && !isRemove) {
       await setApplicationData(req, data, BeneficialOwnerGovKey);
     } else {
       await setApplicationData(session, data, BeneficialOwnerGovKey);
@@ -153,13 +152,13 @@ export const updateBeneficialOwnerGov = async (req: Request, res: Response, next
 
     logger.debugRequest(req, `UPDATE ${req.route.path}`);
 
-    const isRegistration = isRegistrationJourney(req);
+    const isRemove: boolean = await isRemoveJourney(req);
     const id = req.params[ID];
-    await removeFromApplicationData(req, BeneficialOwnerGovKey, id); // remove old beneficial owner
-    const data: ApplicationDataType = setBeneficialOwnerData(req.body, id); // set beneficial owner data
+    await removeFromApplicationData(req, BeneficialOwnerGovKey, id);
+    const data: ApplicationDataType = setBeneficialOwnerData(req.body, id);
     const session = req.session as Session;
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && !isRemove) {
       await setApplicationData(req, data, BeneficialOwnerGovKey);
     } else {
       await setApplicationData(session, data, BeneficialOwnerGovKey);
@@ -175,12 +174,15 @@ export const updateBeneficialOwnerGov = async (req: Request, res: Response, next
 };
 
 export const removeBeneficialOwnerGov = async (req: Request, res: Response, next: NextFunction, nextPage: string): Promise<void> => {
-  try {
-    logger.debugRequest(req, `REMOVE ${req.route.path}`);
-    const isRegistration = isRegistrationJourney(req);
-    await removeFromApplicationData(req, BeneficialOwnerGovKey, req.params[ID]);
 
-    if (!isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) || !isRegistration) {
+  try {
+
+    logger.debugRequest(req, `REMOVE ${req.route.path}`);
+    const isRemove: boolean = await isRemoveJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    await removeFromApplicationData(req, BeneficialOwnerGovKey, req.params[ID], appData);
+
+    if (!isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) || isRemove) {
       await saveAndContinue(req, req.session as Session);
     }
     return res.redirect(nextPage);
@@ -192,20 +194,18 @@ export const removeBeneficialOwnerGov = async (req: Request, res: Response, next
 };
 
 export const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDataType => {
+
   const data: ApplicationDataType = prepareData(reqBody, BeneficialOwnerGovKeys);
 
   data[PrincipalAddressKey] = mapFieldsToDataObject(reqBody, PrincipalAddressKeys, AddressKeys);
-  data[HasSamePrincipalAddressKey] = (data[HasSamePrincipalAddressKey]) ? +data[HasSamePrincipalAddressKey] : '';
-  data[ServiceAddressKey] = (!data[HasSamePrincipalAddressKey])
-    ? mapFieldsToDataObject(reqBody, ServiceAddressKeys, AddressKeys)
-    : {};
+  data[HasSamePrincipalAddressKey] = data[HasSamePrincipalAddressKey] ? +data[HasSamePrincipalAddressKey] : '';
+  data[ServiceAddressKey] = !data[HasSamePrincipalAddressKey] ? mapFieldsToDataObject(reqBody, ServiceAddressKeys, AddressKeys) : {};
   data[StartDateKey] = mapFieldsToDataObject(reqBody, StartDateKeys, InputDateKeys);
   data[CeasedDateKey] = reqBody["is_still_bo"] === '0' ? mapFieldsToDataObject(reqBody, CeasedDateKeys, InputDateKeys) : {};
 
   setBoNocDataAsArrays(data);
 
-  data[IsOnSanctionsListKey] = (data[IsOnSanctionsListKey]) ? +data[IsOnSanctionsListKey] : '';
-
+  data[IsOnSanctionsListKey] = data[IsOnSanctionsListKey] ? +data[IsOnSanctionsListKey] : '';
   data[ID] = id;
 
   return data;

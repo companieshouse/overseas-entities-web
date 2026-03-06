@@ -15,87 +15,93 @@ import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddlewa
 
 import app from "../../../src/app";
 
-import { authentication } from "../../../src/middleware/authentication.middleware";
-import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import * as config from "../../../src/config";
-import { ApplicationDataType } from "../../../src/model";
 import { ErrorMessages } from "../../../src/validation/error.messages";
-import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
-import { saveAndContinue } from "../../../src/utils/save.and.continue";
-import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
+import { authentication } from "../../../src/middleware/authentication.middleware";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
+import { saveAndContinue } from "../../../src/utils/save.and.continue";
+import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
+import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
+import { ApplicationDataType } from "../../../src/model";
+import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
 
-import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../../../src/model/beneficial.owner.other.model";
 import { ServiceAddressKey, ServiceAddressKeys } from "../../../src/model/address.model";
+import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../../../src/model/beneficial.owner.other.model";
 
 import {
-  UPDATE_BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS,
-  BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
-  BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO,
-  BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES,
-  BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO,
-  BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES,
-  BENEFICIAL_OWNER_OTHER_RADIO_BUTTONS_ONLY,
-  BENEFICIAL_OWNER_OTHER_REQ_BODY_MOCK_WITH_MISSING_SERVICE_ADDRESS,
-  BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE,
   BO_OTHER_ID,
   BO_OTHER_ID_URL,
-  REQ_BODY_BENEFICIAL_OWNER_OTHER_EMPTY,
-  UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO,
-  UPDATE_BENEFICIAL_OWNER_OTHER_MOCK_FOR_CEASE_VALIDATION,
   APPLICATION_DATA_UPDATE_BO_MOCK,
+  BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
+  REQ_BODY_BENEFICIAL_OWNER_OTHER_EMPTY,
   UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
+  BENEFICIAL_OWNER_OTHER_RADIO_BUTTONS_ONLY,
+  UPDATE_BENEFICIAL_OWNER_OTHER_MOCK_FOR_CEASE_VALIDATION,
+  BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO,
+  BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE,
+  BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES,
+  UPDATE_BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS,
+  BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO,
+  BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES,
+  BENEFICIAL_OWNER_OTHER_REQ_BODY_MOCK_WITH_MISSING_SERVICE_ADDRESS,
+  UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO,
 } from "../../__mocks__/session.mock";
 
 import {
-  getFromApplicationData, mapFieldsToDataObject,
   prepareData,
-  removeFromApplicationData,
   setApplicationData,
   getApplicationData,
   fetchApplicationData,
+  mapFieldsToDataObject,
+  getFromApplicationData,
+  removeFromApplicationData,
 } from "../../../src/utils/application.data";
 
 import {
-  RELEVANT_PERIOD_QUERY_PARAM,
-  UPDATE_BENEFICIAL_OWNER_OTHER_PAGE,
-  UPDATE_BENEFICIAL_OWNER_OTHER_URL,
-  UPDATE_BENEFICIAL_OWNER_TYPE_URL
-} from "../../../src/config";
-
-import {
-  BENEFICIAL_OWNER_OTHER_PAGE_HEADING,
-  BO_NOC_HEADING,
-  ERROR_LIST,
-  FIRM_CONTROL_NOC_HEADING,
-  FIRM_NOC_HEADING,
-  INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER,
-  JURISDICTION_FIELD_LABEL,
-  MESSAGE_ERROR,
-  OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING,
-  OWNER_OF_LAND_PERSON_NOC_HEADING,
-  PAGE_TITLE_ERROR,
-  PUBLIC_REGISTER_HINT_TEXT,
-  RELEVANT_PERIOD,
-  RELEVANT_PERIOD_OTHER_LEGAL_ENTITY_INFORMATION,
-  SAVE_AND_CONTINUE_BUTTON_TEXT,
-  SERVICE_UNAVAILABLE,
-  SHOW_INFORMATION_ON_PUBLIC_REGISTER,
-  TRUST_CONTROL_NOC_HEADING,
-  TRUSTS_NOC_HEADING,
-} from "../../__mocks__/text.mock";
-
-import {
   AddressKeys,
+  yesNoResponse,
+  NatureOfControlType,
   IsOnSanctionsListKey,
-  NatureOfControlType, PublicRegisterNameKey, RegistrationNumberKey,
-  yesNoResponse
+  PublicRegisterNameKey,
+  RegistrationNumberKey,
 } from "../../../src/model/data.types.model";
 
 import {
+  RELEVANT_PERIOD_QUERY_PARAM,
+  UPDATE_BENEFICIAL_OWNER_TYPE_URL,
+  UPDATE_BENEFICIAL_OWNER_OTHER_URL,
+  UPDATE_BENEFICIAL_OWNER_OTHER_PAGE,
+  UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
+  UPDATE_BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL,
+} from "../../../src/config";
+
+import {
+  ERROR_LIST,
+  MESSAGE_ERROR,
+  BO_NOC_HEADING,
+  RELEVANT_PERIOD,
+  FIRM_NOC_HEADING,
+  PAGE_TITLE_ERROR,
+  TRUSTS_NOC_HEADING,
+  SERVICE_UNAVAILABLE,
+  JURISDICTION_FIELD_LABEL,
+  FIRM_CONTROL_NOC_HEADING,
+  TRUST_CONTROL_NOC_HEADING,
+  PUBLIC_REGISTER_HINT_TEXT,
+  SAVE_AND_CONTINUE_BUTTON_TEXT,
+  OWNER_OF_LAND_PERSON_NOC_HEADING,
+  BENEFICIAL_OWNER_OTHER_PAGE_HEADING,
+  SHOW_INFORMATION_ON_PUBLIC_REGISTER,
+  OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING,
+  INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER,
+  RELEVANT_PERIOD_OTHER_LEGAL_ENTITY_INFORMATION,
+} from "../../__mocks__/text.mock";
+
+import {
   BENEFICIAL_OWNER_OTHER_WITH_INVALID_CHARS_MOCK,
+  BENEFICIAL_OWNER_OTHER_WITH_MAX_LENGTH_FIELDS_MOCK,
   BENEFICIAL_OWNER_OTHER_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK,
-  BENEFICIAL_OWNER_OTHER_WITH_MAX_LENGTH_FIELDS_MOCK
+
 } from '../../__mocks__/validation.mock';
 
 mockCsrfProtectionMiddleware.mockClear();
@@ -111,16 +117,18 @@ mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Respo
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
+const mockGetApplicationData = getApplicationData as jest.Mock;
+mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
+
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+mockFetchApplicationData.mockReturnValue({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
+
 const mockGetFromApplicationData = getFromApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
 const mockRemoveFromApplicationData = removeFromApplicationData as unknown as jest.Mock;
 const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
-const mockGetApplicationData = getApplicationData as jest.Mock;
-mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
-const mockFetchApplicationData = fetchApplicationData as jest.Mock;
-mockFetchApplicationData.mockReturnValue({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 
 const DUMMY_DATA_OBJECT = { dummy: "data" };
@@ -132,6 +140,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
     mockSetApplicationData.mockReset();
     mockMapFieldsToDataObject.mockReset();
     mockMapFieldsToDataObject.mockReturnValue(DUMMY_DATA_OBJECT);
+    mockIsActiveFeature.mockReset();
   });
 
   describe("GET tests", () => {
@@ -248,9 +257,10 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
 
   describe("POST tests", () => {
 
-    test(`Sets session data and renders the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
+    test(`Sets session data and renders the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page when the REDIS_flag is set to OFF`, async () => {
       const beneficialOwnerOtherMock = { ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK, [IsOnSanctionsListKey]: "0" };
       mockPrepareData.mockReturnValueOnce(beneficialOwnerOtherMock);
+      mockIsActiveFeature.mockReturnValue(false);
       const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL)
         .send(UPDATE_BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
@@ -269,6 +279,30 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(BeneficialOwnerOtherKey);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test(`Sets application data and renders the ${UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL} page when the REDIS_flag is set to ON`, async () => {
+      const beneficialOwnerOtherMock = { ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK, [IsOnSanctionsListKey]: "0" };
+      mockPrepareData.mockReturnValueOnce(beneficialOwnerOtherMock);
+      mockIsActiveFeature.mockReturnValue(true);
+      const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL)
+        .send(UPDATE_BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS);
+
+      expect(resp.status).toEqual(302);
+      const beneficialOwnerOther = mockSetApplicationData.mock.calls[0][1];
+      expect(beneficialOwnerOther.name).toEqual("TestCorporation");
+      expect(beneficialOwnerOther.legal_form).toEqual("TheLegalForm");
+      expect(beneficialOwnerOther.law_governed).toEqual("TheLaw");
+      expect(beneficialOwnerOther.public_register_name).toEqual("ThisRegister");
+      expect(beneficialOwnerOther.registration_number).toEqual("123456789");
+      expect(beneficialOwnerOther.is_on_register_in_country_formed_in).toEqual(yesNoResponse.Yes);
+      expect(beneficialOwnerOther.beneficial_owner_nature_of_control_types).toEqual([NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS]);
+      expect(beneficialOwnerOther.trustees_nature_of_control_types).toEqual([NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS]);
+      expect(beneficialOwnerOther.non_legal_firm_members_nature_of_control_types).toEqual([NatureOfControlType.OVER_25_PERCENT_OF_SHARES]);
+      expect(beneficialOwnerOther[IsOnSanctionsListKey]).toEqual(yesNoResponse.No);
+      expect(mockSetApplicationData.mock.calls[0][2]).toEqual(BeneficialOwnerOtherKey);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`Sets session data and renders the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page when start date contains spaces`, async () => {
@@ -874,6 +908,30 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
   });
 
   describe("UPDATE tests", () => {
+
+    test(`Redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page when REDIS_flag is set to ON`, async () => {
+      mockGetFromApplicationData.mockReturnValueOnce(UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK);
+      mockPrepareData.mockReturnValueOnce({ ...UPDATE_BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS });
+      mockIsActiveFeature.mockReturnValue(false);
+      const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL)
+        .send(UPDATE_BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test(`Redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page when REDIS_flag is set to OFF`, async () => {
+      mockGetFromApplicationData.mockReturnValueOnce(UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK);
+      mockPrepareData.mockReturnValueOnce({ ...UPDATE_BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS });
+      mockIsActiveFeature.mockReturnValue(true);
+      const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL + BO_OTHER_ID_URL)
+        .send(UPDATE_BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+    });
 
     test(`Redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
       mockGetFromApplicationData.mockReturnValueOnce(UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK);

@@ -17,76 +17,81 @@ import request from "supertest";
 // import remove journey middleware mock before app to prevent real function being used instead of mock
 import mockJourneyDetectionMiddleware from "../../__mocks__/journey.detection.middleware.mock";
 import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
+
 import app from "../../../src/app";
+
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { logger } from "../../../src/utils/logger";
 import { AddressKeys } from '../../../src/model/data.types.model';
 import { ApplicationDataType } from '../../../src/model';
 import { ErrorMessages } from "../../../src/validation/error.messages";
-import { BeneficialOwnerGov, BeneficialOwnerGovKey } from "../../../src/model/beneficial.owner.gov.model";
-import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
-import { saveAndContinue } from "../../../src/utils/save.and.continue";
-import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
-import { checkRelevantPeriod } from "../../../src/utils/relevant.period";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
+import { saveAndContinue } from "../../../src/utils/save.and.continue";
+import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
+import { checkRelevantPeriod } from "../../../src/utils/relevant.period";
+import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 
+import { BeneficialOwnerGov, BeneficialOwnerGovKey } from "../../../src/model/beneficial.owner.gov.model";
 import { ServiceAddressKey, ServiceAddressKeys } from "../../../src/model/address.model";
 
 import {
-  UPDATE_BENEFICIAL_OWNER_GOV_PAGE,
-  UPDATE_BENEFICIAL_OWNER_GOV_URL,
-  UPDATE_BENEFICIAL_OWNER_TYPE_URL,
-  UPDATE_LANDING_PAGE_URL,
-  RELEVANT_PERIOD_QUERY_PARAM,
-} from "../../../src/config";
-
-import {
-  getFromApplicationData,
-  mapFieldsToDataObject,
   prepareData,
-  removeFromApplicationData,
   setApplicationData,
-  getApplicationData, fetchApplicationData
+  getApplicationData,
+  fetchApplicationData,
+  mapFieldsToDataObject,
+  getFromApplicationData,
+  removeFromApplicationData,
 } from '../../../src/utils/application.data';
 
 import {
-  ANY_MESSAGE_ERROR,
-  BENEFICIAL_OWNER_GOV_PAGE_HEADING,
+  UPDATE_LANDING_PAGE_URL,
+  RELEVANT_PERIOD_QUERY_PARAM,
+  UPDATE_BENEFICIAL_OWNER_GOV_URL,
+  UPDATE_BENEFICIAL_OWNER_TYPE_URL,
+  UPDATE_BENEFICIAL_OWNER_GOV_PAGE,
+  UPDATE_BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL,
+  UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
+} from "../../../src/config";
+
+import {
   ERROR_LIST,
-  INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER,
   MESSAGE_ERROR,
-  PAGE_TITLE_ERROR,
-  SERVICE_UNAVAILABLE,
-  SHOW_INFORMATION_ON_PUBLIC_REGISTER,
-  TRUSTS_NOC_HEADING,
-  RELEVANT_PERIOD,
-  RELEVANT_PERIOD_INFORMATION,
-  SAVE_AND_CONTINUE_BUTTON_TEXT,
   BO_NOC_HEADING,
+  RELEVANT_PERIOD,
   FIRM_NOC_HEADING,
+  PAGE_TITLE_ERROR,
+  ANY_MESSAGE_ERROR,
+  TRUSTS_NOC_HEADING,
+  SERVICE_UNAVAILABLE,
   FIRM_CONTROL_NOC_HEADING,
   TRUST_CONTROL_NOC_HEADING,
+  RELEVANT_PERIOD_INFORMATION,
+  SAVE_AND_CONTINUE_BUTTON_TEXT,
   OWNER_OF_LAND_PERSON_NOC_HEADING,
+  BENEFICIAL_OWNER_GOV_PAGE_HEADING,
+  SHOW_INFORMATION_ON_PUBLIC_REGISTER,
   OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING,
+  INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER,
 } from "../../__mocks__/text.mock";
 
 import {
+  BO_GOV_ID,
+  BO_GOV_ID_URL,
+  APPLICATION_DATA_UPDATE_BO_MOCK,
+  BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
+  REQ_BODY_BENEFICIAL_OWNER_GOV_EMPTY,
+  UPDATE_BENEFICIAL_OWNER_GOV_MOCK_FOR_CEASE_VALIDATION,
+  REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_START_DATE_VALIDATION,
   BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO,
   BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES,
   UPDATE_BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS,
-  BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
-  REQ_BODY_BENEFICIAL_OWNER_GOV_EMPTY,
-  BO_GOV_ID,
-  BO_GOV_ID_URL,
-  REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_START_DATE_VALIDATION,
-  UPDATE_BENEFICIAL_OWNER_GOV_MOCK_FOR_CEASE_VALIDATION,
-  APPLICATION_DATA_UPDATE_BO_MOCK,
 } from "../../__mocks__/session.mock";
 
 import {
+  BENEFICIAL_OWNER_GOV_WITH_MAX_LENGTH_FIELDS_MOCK,
   BENEFICIAL_OWNER_GOV_WITH_INVALID_CHARACTERS_FIELDS_MOCK,
-  BENEFICIAL_OWNER_GOV_WITH_MAX_LENGTH_FIELDS_MOCK
 } from "../../__mocks__/validation.mock";
 
 mockJourneyDetectionMiddleware.mockClear();
@@ -122,6 +127,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
     jest.clearAllMocks();
     mockMapFieldsToDataObject.mockReset();
     mockMapFieldsToDataObject.mockReturnValue(DUMMY_DATA_OBJECT);
+    mockIsActiveFeature.mockReset();
   });
 
   describe("GET tests", () => {
@@ -243,7 +249,8 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
 
   describe("POST tests", () => {
 
-    test(`redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
+    test(`redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page when REDIS_removal falg is set to OFF`, async () => {
+      mockIsActiveFeature.mockReturnValue(false);
       mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_GOV_OBJECT_MOCK);
       mockCheckRelevantPeriod.mockReturnValueOnce(true);
       const resp = await request(app)
@@ -253,6 +260,19 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test(`redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page when REDIS_removal falg is set to ON`, async () => {
+      mockIsActiveFeature.mockReturnValue(true);
+      mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_GOV_OBJECT_MOCK);
+      mockCheckRelevantPeriod.mockReturnValueOnce(true);
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL)
+        .send(UPDATE_BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL + RELEVANT_PERIOD_QUERY_PARAM);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test("catch error when posting data", async () => {
@@ -762,7 +782,8 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
 
   describe("UPDATE tests", () => {
 
-    test(`redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
+    test(`redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page when the REDIS_flag is set to OFF`, async () => {
+      mockIsActiveFeature.mockReturnValue(false);
       mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_GOV_OBJECT_MOCK);
       mockCheckRelevantPeriod.mockReturnValueOnce(true);
       const resp = await request(app)
@@ -772,6 +793,19 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test(`redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page when the REDIS_flag is set to ON`, async () => {
+      mockIsActiveFeature.mockReturnValue(true);
+      mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_GOV_OBJECT_MOCK);
+      mockCheckRelevantPeriod.mockReturnValueOnce(true);
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL + BO_GOV_ID_URL)
+        .send(UPDATE_BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL + RELEVANT_PERIOD_QUERY_PARAM);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test("catch error when updating data", async () => {

@@ -7,7 +7,6 @@ jest.mock('../../../src/utils/application.data');
 jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/utils/save.and.continue');
 jest.mock("../../../src/utils/feature.flag");
-jest.mock("../../../src/utils/url");
 
 import { NextFunction, Request, Response } from "express";
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
@@ -20,80 +19,83 @@ import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddlewa
 import app from "../../../src/app";
 
 import { logger } from "../../../src/utils/logger";
-import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
-import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
-import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { ErrorMessages } from "../../../src/validation/error.messages";
 import { authentication } from "../../../src/middleware/authentication.middleware";
-import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
-import { isRegistrationJourney } from "../../../src/utils/url";
+import { isActiveFeature } from "../../../src/utils/feature.flag";
+import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
+import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
+import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 
-import { ApplicationDataType, managingOfficerCorporateType } from "../../../src/model";
 import { ServiceAddressKey, ServiceAddressKeys } from "../../../src/model/address.model";
+import { ApplicationDataType, managingOfficerCorporateType } from "../../../src/model";
 import { ManagingOfficerCorporate, ManagingOfficerCorporateKey } from '../../../src/model/managing.officer.corporate.model';
 
 import {
   AddressKeys,
-  HasSamePrincipalAddressKey,
-  IsOnRegisterInCountryFormedInKey,
+  IsRemoveKey,
   PublicRegisterNameKey,
   RegistrationNumberKey,
+  HasSamePrincipalAddressKey,
+  IsOnRegisterInCountryFormedInKey,
 } from "../../../src/model/data.types.model";
 
 import {
-  UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
-  UPDATE_BENEFICIAL_OWNER_TYPE_URL,
   UPDATE_LANDING_PAGE_URL,
-  UPDATE_MANAGING_OFFICER_CORPORATE_PAGE,
+  UPDATE_BENEFICIAL_OWNER_TYPE_URL,
+  UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
   UPDATE_MANAGING_OFFICER_CORPORATE_URL,
-  REMOVE
+  UPDATE_MANAGING_OFFICER_CORPORATE_PAGE,
+  UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
+  REMOVE, UPDATE_MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL,
+
 } from "../../../src/config";
 
 import {
-  INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER,
-  MANAGING_OFFICER_CORPORATE_PAGE_TITLE,
   MESSAGE_ERROR,
-  ANY_MESSAGE_ERROR,
   PAGE_TITLE_ERROR,
+  ANY_MESSAGE_ERROR,
   SERVICE_UNAVAILABLE,
-  SHOW_OTHER_INFORMATION_IN_SECTION_ON_PUBLIC_REGISTER,
-  NOT_SHOW_NAME_OR_EMAIL_ON_PUBLIC_REGISTER,
   SAVE_AND_CONTINUE_BUTTON_TEXT,
+  MANAGING_OFFICER_CORPORATE_PAGE_TITLE,
+  INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER,
+  NOT_SHOW_NAME_OR_EMAIL_ON_PUBLIC_REGISTER,
+  SHOW_OTHER_INFORMATION_IN_SECTION_ON_PUBLIC_REGISTER,
 } from "../../__mocks__/text.mock";
 
 import {
-  UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
-  MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO,
-  MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES,
-  MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO,
-  MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES,
-  REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_ACTIVE,
-  REQ_BODY_MANAGING_OFFICER_CORPORATE_OBJECT_EMPTY,
-  RR_CARRIAGE_RETURN,
+  MO_CORP_ID,
+  MO_IND_ID_URL,
   EMAIL_ADDRESS,
   MO_CORP_ID_URL,
-  MO_CORP_ID,
-  APPLICATION_DATA_CH_REF_UPDATE_MOCK,
-  MO_IND_ID_URL,
+  RR_CARRIAGE_RETURN,
   APPLICATION_DATA_MOCK,
+  APPLICATION_DATA_CH_REF_UPDATE_MOCK,
+  UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
+  REQ_BODY_MANAGING_OFFICER_CORPORATE_OBJECT_EMPTY,
+  REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_ACTIVE,
+  REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_INACTIVE,
+  MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO,
+  MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES,
+  MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO,
+  MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES,
   UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES,
-  REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_INACTIVE
 } from "../../__mocks__/session.mock";
 
 import {
   MANAGING_OFFICER_CORPORATE_WITH_INVALID_CHARS_MOCK,
+  MANAGING_OFFICER_CORPORATE_WITH_MAX_LENGTH_FIELDS_MOCK,
   MANAGING_OFFICER_CORPORATE_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK,
-  MANAGING_OFFICER_CORPORATE_WITH_MAX_LENGTH_FIELDS_MOCK
 } from "../../__mocks__/validation.mock";
 
 import {
-  getFromApplicationData,
-  mapFieldsToDataObject,
   prepareData,
-  removeFromApplicationData,
+  getApplicationData,
   setApplicationData,
   fetchApplicationData,
+  mapFieldsToDataObject,
+  getFromApplicationData,
+  removeFromApplicationData,
 } from "../../../src/utils/application.data";
 
 mockJourneyDetectionMiddleware.mockClear();
@@ -118,12 +120,9 @@ const mockRemoveFromApplicationData = removeFromApplicationData as jest.Mock;
 const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+const mockGetApplicationData = getApplicationData as jest.Mock;
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
-mockIsActiveFeature.mockReturnValue(true);
-
-const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
-mockIsRegistrationJourney.mockReturnValue(false);
 
 const DUMMY_DATA_OBJECT = { dummy: "data" };
 
@@ -134,6 +133,7 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
     mockSetApplicationData.mockReset();
     mockMapFieldsToDataObject.mockReset();
     mockMapFieldsToDataObject.mockReturnValue(DUMMY_DATA_OBJECT);
+    mockIsActiveFeature.mockReset();
   });
 
   describe("GET tests", () => {
@@ -577,7 +577,9 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
 
   describe("REMOVE tests", () => {
 
-    test(`redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
+    test(`redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page when the REDIS_flag is set to OFF`, async () => {
+      mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
+      mockIsActiveFeature.mockReturnValue(false);
       mockPrepareData.mockReturnValueOnce(UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
       const resp = await request(app).get(UPDATE_MANAGING_OFFICER_CORPORATE_URL + REMOVE + MO_CORP_ID_URL);
 
@@ -586,10 +588,24 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
+    test(`redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page when the REDIS_flag is set to ON`, async () => {
+      const appData = {
+        ...APPLICATION_DATA_MOCK,
+        [IsRemoveKey]: false,
+      };
+      mockFetchApplicationData.mockReturnValue(appData);
+      mockGetApplicationData.mockReturnValue(appData);
+      mockIsActiveFeature.mockReturnValue(true);
+      mockPrepareData.mockReturnValueOnce(UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
+      const resp = await request(app).get(UPDATE_MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL + REMOVE + MO_CORP_ID_URL);
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+    });
+
     test("catch error when removing data", async () => {
       mockLoggerDebugRequest.mockImplementationOnce(() => { throw new Error(MESSAGE_ERROR); });
       const resp = await request(app).get(UPDATE_MANAGING_OFFICER_CORPORATE_URL + REMOVE + MO_CORP_ID_URL);
-
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
@@ -597,7 +613,6 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
 
     test(`removes the object from session`, async () => {
       const resp = await request(app).get(UPDATE_MANAGING_OFFICER_CORPORATE_URL + REMOVE + MO_CORP_ID_URL);
-
       expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(ManagingOfficerCorporateKey);
       expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(MO_CORP_ID);
       expect(resp.status).toEqual(302);

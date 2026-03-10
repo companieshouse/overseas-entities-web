@@ -7,7 +7,6 @@ jest.mock('../../../src/utils/application.data');
 jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/utils/save.and.continue');
 jest.mock("../../../src/utils/feature.flag");
-jest.mock("../../../src/utils/url");
 
 import { NextFunction, Request, Response } from "express";
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
@@ -20,82 +19,83 @@ import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddlewa
 import app from "../../../src/app";
 
 import { logger } from "../../../src/utils/logger";
-import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
-import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
-import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { ErrorMessages } from "../../../src/validation/error.messages";
 import { authentication } from "../../../src/middleware/authentication.middleware";
-import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
-import { isRegistrationJourney, getRedirectUrl } from "../../../src/utils/url";
+import { isActiveFeature } from "../../../src/utils/feature.flag";
+import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
+import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
+import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 
-import { ApplicationDataType, managingOfficerCorporateType } from "../../../src/model";
 import { ServiceAddressKey, ServiceAddressKeys } from "../../../src/model/address.model";
+import { ApplicationDataType, managingOfficerCorporateType } from "../../../src/model";
 import { ManagingOfficerCorporate, ManagingOfficerCorporateKey } from '../../../src/model/managing.officer.corporate.model';
 
 import {
   AddressKeys,
-  HasSamePrincipalAddressKey,
-  IsOnRegisterInCountryFormedInKey,
+  IsRemoveKey,
   PublicRegisterNameKey,
   RegistrationNumberKey,
+  HasSamePrincipalAddressKey,
+  IsOnRegisterInCountryFormedInKey,
 } from "../../../src/model/data.types.model";
 
 import {
-  UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
-  UPDATE_BENEFICIAL_OWNER_TYPE_URL,
   UPDATE_LANDING_PAGE_URL,
-  UPDATE_MANAGING_OFFICER_CORPORATE_PAGE,
+  UPDATE_BENEFICIAL_OWNER_TYPE_URL,
+  UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
   UPDATE_MANAGING_OFFICER_CORPORATE_URL,
+  UPDATE_MANAGING_OFFICER_CORPORATE_PAGE,
   UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
-  REMOVE,
-  UPDATE_MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL
+  REMOVE, UPDATE_MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL,
+
 } from "../../../src/config";
 
 import {
-  INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER,
-  MANAGING_OFFICER_CORPORATE_PAGE_TITLE,
   MESSAGE_ERROR,
-  ANY_MESSAGE_ERROR,
   PAGE_TITLE_ERROR,
+  ANY_MESSAGE_ERROR,
   SERVICE_UNAVAILABLE,
-  SHOW_OTHER_INFORMATION_IN_SECTION_ON_PUBLIC_REGISTER,
-  NOT_SHOW_NAME_OR_EMAIL_ON_PUBLIC_REGISTER,
   SAVE_AND_CONTINUE_BUTTON_TEXT,
+  MANAGING_OFFICER_CORPORATE_PAGE_TITLE,
+  INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER,
+  NOT_SHOW_NAME_OR_EMAIL_ON_PUBLIC_REGISTER,
+  SHOW_OTHER_INFORMATION_IN_SECTION_ON_PUBLIC_REGISTER,
 } from "../../__mocks__/text.mock";
 
 import {
-  UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
-  MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO,
-  MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES,
-  MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO,
-  MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES,
-  REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_ACTIVE,
-  REQ_BODY_MANAGING_OFFICER_CORPORATE_OBJECT_EMPTY,
-  RR_CARRIAGE_RETURN,
+  MO_CORP_ID,
+  MO_IND_ID_URL,
   EMAIL_ADDRESS,
   MO_CORP_ID_URL,
-  MO_CORP_ID,
-  APPLICATION_DATA_CH_REF_UPDATE_MOCK,
-  MO_IND_ID_URL,
+  RR_CARRIAGE_RETURN,
   APPLICATION_DATA_MOCK,
+  APPLICATION_DATA_CH_REF_UPDATE_MOCK,
+  UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
+  REQ_BODY_MANAGING_OFFICER_CORPORATE_OBJECT_EMPTY,
+  REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_ACTIVE,
+  REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_INACTIVE,
+  MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO,
+  MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES,
+  MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO,
+  MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES,
   UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES,
-  REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_INACTIVE
 } from "../../__mocks__/session.mock";
 
 import {
   MANAGING_OFFICER_CORPORATE_WITH_INVALID_CHARS_MOCK,
+  MANAGING_OFFICER_CORPORATE_WITH_MAX_LENGTH_FIELDS_MOCK,
   MANAGING_OFFICER_CORPORATE_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK,
-  MANAGING_OFFICER_CORPORATE_WITH_MAX_LENGTH_FIELDS_MOCK
 } from "../../__mocks__/validation.mock";
 
 import {
-  getFromApplicationData,
-  mapFieldsToDataObject,
   prepareData,
-  removeFromApplicationData,
+  getApplicationData,
   setApplicationData,
   fetchApplicationData,
+  mapFieldsToDataObject,
+  getFromApplicationData,
+  removeFromApplicationData,
 } from "../../../src/utils/application.data";
 
 mockJourneyDetectionMiddleware.mockClear();
@@ -120,15 +120,9 @@ const mockRemoveFromApplicationData = removeFromApplicationData as jest.Mock;
 const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+const mockGetApplicationData = getApplicationData as jest.Mock;
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
-mockIsActiveFeature.mockReturnValue(false);
-
-const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
-mockIsRegistrationJourney.mockReturnValue(false);
-
-const mockGetRedirectUrl = getRedirectUrl as jest.Mock;
-mockGetRedirectUrl.mockReturnValue(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
 
 const DUMMY_DATA_OBJECT = { dummy: "data" };
 
@@ -140,7 +134,6 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
     mockMapFieldsToDataObject.mockReset();
     mockMapFieldsToDataObject.mockReturnValue(DUMMY_DATA_OBJECT);
     mockIsActiveFeature.mockReset();
-    mockGetRedirectUrl.mockReset();
   });
 
   describe("GET tests", () => {
@@ -170,10 +163,8 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
 
   describe("POST tests", () => {
 
-    test(`sets session data and renders the ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page for active MO when the REDIS_flag is set to OFF`, async () => {
+    test(`sets session data and renders the ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page for active MO`, async () => {
       mockPrepareData.mockImplementationOnce(() => UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
-      mockIsActiveFeature.mockReturnValue(false);
-      mockGetRedirectUrl.mockReturnValue(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
 
       const resp = await request(app)
         .post(UPDATE_MANAGING_OFFICER_CORPORATE_URL)
@@ -195,34 +186,8 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
-    test(`sets session data and renders the ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page for active MO when the REDIS_flag is set to ON`, async () => {
+    test(`sets session data and renders the ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page for inactive MO`, async () => {
       mockPrepareData.mockImplementationOnce(() => UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
-      mockIsActiveFeature.mockReturnValue(true);
-      mockGetRedirectUrl.mockReturnValue(UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
-
-      const resp = await request(app)
-        .post(UPDATE_MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL)
-        .send(REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_ACTIVE);
-
-      const managingOfficerCorporate = mockSetApplicationData.mock.calls[0][1];
-
-      expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
-      expect(managingOfficerCorporate).toEqual(UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
-      expect(managingOfficerCorporate.name).toEqual("Joe Bloggs Ltd");
-      expect(managingOfficerCorporate.legal_form).toEqual("legalForm");
-      expect(managingOfficerCorporate.law_governed).toEqual("LegAuth");
-      expect(managingOfficerCorporate.registration_number).toEqual("123456789");
-      expect(managingOfficerCorporate.role_and_responsibilities).toEqual("role and responsibilities text");
-      expect(managingOfficerCorporate.contact_full_name).toEqual("Joe Bloggs");
-      expect(managingOfficerCorporate.contact_email).toEqual("jbloggs@bloggs.co.ru");
-      expect(mockSetApplicationData.mock.calls[0][2]).toEqual(managingOfficerCorporateType.ManagingOfficerCorporateKey);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
-    });
-
-    test(`sets session data and renders the ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page for inactive MO when the REDIS_flag is set to OFF`, async () => {
-      mockPrepareData.mockImplementationOnce(() => UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);mockIsActiveFeature.mockReturnValue(false);
-      mockGetRedirectUrl.mockReturnValue(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
 
       const resp = await request(app)
         .post(UPDATE_MANAGING_OFFICER_CORPORATE_URL)
@@ -246,37 +211,8 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
-    test(`sets session data and renders the ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page for inactive MO when the REDIS_flag is set to ON`, async () => {
-      mockPrepareData.mockImplementationOnce(() => UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
-      mockIsActiveFeature.mockReturnValue(true);
-      mockGetRedirectUrl.mockReturnValue(UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
-
-      const resp = await request(app)
-        .post(UPDATE_MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL)
-        .send(REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_INACTIVE);
-
-      const managingOfficerCorporate = mockSetApplicationData.mock.calls[0][1];
-
-      expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
-      expect(managingOfficerCorporate).toEqual(UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
-      expect(managingOfficerCorporate.name).toEqual("Joe Bloggs Ltd");
-      expect(managingOfficerCorporate.legal_form).toEqual("legalForm");
-      expect(managingOfficerCorporate.law_governed).toEqual("LegAuth");
-      expect(managingOfficerCorporate.registration_number).toEqual("123456789");
-      expect(managingOfficerCorporate.role_and_responsibilities).toEqual("role and responsibilities text");
-      expect(managingOfficerCorporate.contact_full_name).toEqual("Joe Bloggs");
-      expect(managingOfficerCorporate.contact_email).toEqual("jbloggs@bloggs.co.ru");
-      expect(managingOfficerCorporate.start_date).toEqual(DUMMY_DATA_OBJECT);
-      expect(managingOfficerCorporate.resigned_on).toEqual(DUMMY_DATA_OBJECT);
-      expect(mockSetApplicationData.mock.calls[0][2]).toEqual(managingOfficerCorporateType.ManagingOfficerCorporateKey);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
-    });
-
-    test(`POST only radio buttons choices and redirect to ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page when the REDIS_flag is set to OFF`, async () => {
+    test(`POST only radio buttons choices and redirect to ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
       mockPrepareData.mockImplementationOnce(() => { return { [IsOnRegisterInCountryFormedInKey]: 0, [HasSamePrincipalAddressKey]: 0 }; });
-      mockIsActiveFeature.mockReturnValue(false);
-      mockGetRedirectUrl.mockReturnValue(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
 
       const resp = await request(app)
         .post(UPDATE_MANAGING_OFFICER_CORPORATE_URL)
@@ -285,20 +221,6 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
-    });
-
-    test(`POST only radio buttons choices and redirect to ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page when redis flag is on`, async () => {
-      mockPrepareData.mockImplementationOnce(() => { return { [IsOnRegisterInCountryFormedInKey]: 0, [HasSamePrincipalAddressKey]: 0 }; });
-      mockIsActiveFeature.mockReturnValue(true);
-      mockGetRedirectUrl.mockReturnValue(UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
-
-      const resp = await request(app)
-        .post(UPDATE_MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL)
-        .send(REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_ACTIVE);
-
-      expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test("Test email is valid with long email address", async () => {
@@ -529,10 +451,8 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
       expect(data[RegistrationNumberKey]).toEqual("");
     });
 
-    test(`renders the next page ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} and no errors are reported if email has leading and trailing spaces when the REDIS_flag is set to OFF`, async () => {
+    test(`renders the next page ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} and no errors are reported if email has leading and trailing spaces`, async () => {
       mockPrepareData.mockReturnValueOnce(UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
-      mockIsActiveFeature.mockReturnValue(false);
-      mockGetRedirectUrl.mockReturnValue(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
 
       const resp = await request(app)
         .post(UPDATE_MANAGING_OFFICER_CORPORATE_URL)
@@ -540,23 +460,6 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
-
-      // Additionally check that email address is trimmed before it's saved in the session
-      const data: ApplicationDataType = mockPrepareData.mock.calls[0][0];
-      expect(data["contact_email"]).toEqual(EMAIL_ADDRESS);
-    });
-
-    test(`renders the next page ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} and no errors are reported if email has leading and trailing spaces when the REDIS_flag is set to ON `, async () => {
-      mockPrepareData.mockReturnValueOnce(UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
-      mockIsActiveFeature.mockReturnValue(true);
-      mockGetRedirectUrl.mockReturnValue(UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
-
-      const resp = await request(app)
-        .post(UPDATE_MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL)
-        .send(UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES);
-
-      expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
 
       // Additionally check that email address is trimmed before it's saved in the session
       const data: ApplicationDataType = mockPrepareData.mock.calls[0][0];
@@ -589,10 +492,8 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
 
   describe("UPDATE tests", () => {
 
-    test(`redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page when the REDIS_flag is set to OFF`, async () => {
+    test(`redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
       mockPrepareData.mockReturnValueOnce(UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
-      mockIsActiveFeature.mockReturnValue(false);
-      mockGetRedirectUrl.mockReturnValue(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       const resp = await request(app)
         .post(UPDATE_MANAGING_OFFICER_CORPORATE_URL + MO_CORP_ID_URL)
         .send(REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_ACTIVE);
@@ -600,19 +501,6 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
-    });
-
-    test(`redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page when the REDIS_flag is set to ON`, async () => {
-      mockPrepareData.mockReturnValueOnce(UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
-      mockIsActiveFeature.mockReturnValue(true);
-      mockGetRedirectUrl.mockReturnValue(UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
-      const resp = await request(app)
-        .post(UPDATE_MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL + MO_CORP_ID_URL)
-        .send(REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_ACTIVE);
-
-      expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test("catch error when updating data", async () => {
@@ -626,11 +514,9 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-    test(`replaces existing object on submit when the REDIS_flag is set to OFF`, async () => {
+    test(`replaces existing object on submit`, async () => {
       const newMoData: ManagingOfficerCorporate = { id: MO_CORP_ID, name: "new name", role_and_responsibilities: "role and responsibilities text", contact_email: "test@test.com", contact_full_name: "full name" };
       mockPrepareData.mockReturnValueOnce(newMoData);
-      mockIsActiveFeature.mockReturnValue(false);
-      mockGetRedirectUrl.mockReturnValue(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       const resp = await request(app)
         .post(UPDATE_MANAGING_OFFICER_CORPORATE_URL + MO_CORP_ID_URL)
         .send(REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_ACTIVE);
@@ -642,24 +528,6 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
-    });
-
-    test(`replaces existing object on submit when the REDIS_flag is set to ON`, async () => {
-      const newMoData: ManagingOfficerCorporate = { id: MO_CORP_ID, name: "new name", role_and_responsibilities: "role and responsibilities text", contact_email: "test@test.com", contact_full_name: "full name" };
-      mockPrepareData.mockReturnValueOnce(newMoData);
-      mockIsActiveFeature.mockReturnValue(true);
-      mockGetRedirectUrl.mockReturnValue(UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
-      const resp = await request(app)
-        .post(UPDATE_MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL + MO_CORP_ID_URL)
-        .send(REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_ACTIVE);
-
-      expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(ManagingOfficerCorporateKey);
-      expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(MO_CORP_ID);
-      expect(mockSetApplicationData.mock.calls[0][1].id).toEqual(MO_CORP_ID);
-      expect(mockSetApplicationData.mock.calls[0][2]).toEqual(ManagingOfficerCorporateKey);
-      expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`Service address from the ${UPDATE_MANAGING_OFFICER_CORPORATE_URL} is present when same address is set to no`, async () => {
@@ -710,9 +578,9 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
   describe("REMOVE tests", () => {
 
     test(`redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page when the REDIS_flag is set to OFF`, async () => {
-      mockPrepareData.mockReturnValueOnce(UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
+      mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
       mockIsActiveFeature.mockReturnValue(false);
-      mockGetRedirectUrl.mockReturnValue(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      mockPrepareData.mockReturnValueOnce(UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
       const resp = await request(app).get(UPDATE_MANAGING_OFFICER_CORPORATE_URL + REMOVE + MO_CORP_ID_URL);
 
       expect(resp.status).toEqual(302);
@@ -721,11 +589,15 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
     });
 
     test(`redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page when the REDIS_flag is set to ON`, async () => {
-      mockPrepareData.mockReturnValueOnce(UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
+      const appData = {
+        ...APPLICATION_DATA_MOCK,
+        [IsRemoveKey]: false,
+      };
+      mockFetchApplicationData.mockReturnValue(appData);
+      mockGetApplicationData.mockReturnValue(appData);
       mockIsActiveFeature.mockReturnValue(true);
-      mockGetRedirectUrl.mockReturnValue(UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
+      mockPrepareData.mockReturnValueOnce(UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
       const resp = await request(app).get(UPDATE_MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL + REMOVE + MO_CORP_ID_URL);
-
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
@@ -734,34 +606,18 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
     test("catch error when removing data", async () => {
       mockLoggerDebugRequest.mockImplementationOnce(() => { throw new Error(MESSAGE_ERROR); });
       const resp = await request(app).get(UPDATE_MANAGING_OFFICER_CORPORATE_URL + REMOVE + MO_CORP_ID_URL);
-
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-    test(`removes the object from session when the REDIS_flag is set to OFF`, async () => {
-      mockIsActiveFeature.mockReturnValue(false);
-      mockGetRedirectUrl.mockReturnValue(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+    test(`removes the object from session`, async () => {
       const resp = await request(app).get(UPDATE_MANAGING_OFFICER_CORPORATE_URL + REMOVE + MO_CORP_ID_URL);
-
       expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(ManagingOfficerCorporateKey);
       expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(MO_CORP_ID);
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
-    });
-
-    test(`removes the object from session when the REDIS_flag is set to ON`, async () => {
-      mockIsActiveFeature.mockReturnValue(true);
-      mockGetRedirectUrl.mockReturnValue(UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
-      const resp = await request(app).get(UPDATE_MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL + REMOVE + MO_CORP_ID_URL);
-
-      expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(ManagingOfficerCorporateKey);
-      expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(MO_CORP_ID);
-      expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
   });
 

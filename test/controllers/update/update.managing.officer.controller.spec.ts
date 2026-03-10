@@ -6,6 +6,7 @@ jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
 jest.mock('../../../src/utils/application.data');
 jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/utils/save.and.continue');
+jest.mock("../../../src/utils/feature.flag");
 
 import { DateTime } from "luxon";
 import { NextFunction, Request, Response } from "express";
@@ -19,84 +20,87 @@ import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddlewa
 import app from "../../../src/app";
 
 import { logger } from "../../../src/utils/logger";
-import { authentication } from "../../../src/middleware/authentication.middleware";
-import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
-import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import { ErrorMessages } from '../../../src/validation/error.messages';
+import { authentication } from "../../../src/middleware/authentication.middleware";
+import { saveAndContinue } from "../../../src/utils/save.and.continue";
+import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
+import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
 
 import { ServiceAddressKey, ServiceAddressKeys } from "../../../src/model/address.model";
 import { ApplicationDataType, managingOfficerType } from '../../../src/model';
 
 import {
-  UPDATE_BENEFICIAL_OWNER_TYPE_URL,
-  UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
-  UPDATE_LANDING_PAGE_URL,
-  UPDATE_MANAGING_OFFICER_PAGE,
-  UPDATE_MANAGING_OFFICER_URL,
-  REMOVE
-} from "../../../src/config";
-
-import {
-  fetchApplicationData,
-  getFromApplicationData,
-  mapFieldsToDataObject,
-  prepareData,
-  removeFromApplicationData,
-  setApplicationData
-} from '../../../src/utils/application.data';
-
-import {
-  MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_FORMER_NAMES_NO,
-  MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_FORMER_NAMES_YES,
-  MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO,
-  MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES,
-  MANAGING_OFFICER_OBJECT_MOCK,
-  REQ_BODY_MANAGING_OFFICER_FOR_DATE_VALIDATION,
-  REQ_BODY_UPDATE_MANAGING_OFFICER_ACTIVE,
-  REQ_BODY_MANAGING_OFFICER_OBJECT_EMPTY,
-  RR_CARRIAGE_RETURN,
-  MO_IND_ID,
-  MO_IND_ID_URL,
-  APPLICATION_DATA_CH_REF_UPDATE_MOCK,
-  APPLICATION_DATA_MOCK,
-  REQ_BODY_UPDATE_MANAGING_OFFICER_INACTIVE
-} from "../../__mocks__/session.mock";
-
-import {
-  ALL_THE_OTHER_INFORMATION_ON_PUBLIC_REGISTER,
-  ANY_MESSAGE_ERROR,
-  ERROR_LIST,
-  INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER,
-  MANAGING_OFFICER,
-  UPDATE_MANAGING_OFFICER_PAGE_TITLE,
-  NOT_SHOW_MANAGING_OFFICER_INFORMATION_ON_PUBLIC_REGISTER,
-  PAGE_TITLE_ERROR,
-  SECOND_NATIONALITY,
-  SECOND_NATIONALITY_HINT,
-  SERVICE_UNAVAILABLE,
-  MANAGING_OFFICER_PAGE_HEADING,
-  SAVE_AND_CONTINUE_BUTTON_TEXT
-} from '../../__mocks__/text.mock';
+  FormerNamesKey,
+  ManagingOfficerKey,
+  ManagingOfficerIndividual,
+} from '../../../src/model/managing.officer.model';
 
 import {
   AddressKeys,
   HasFormerNames,
-  HasSameResidentialAddressKey
+  HasSameResidentialAddressKey,
 } from '../../../src/model/data.types.model';
 
 import {
-  MANAGING_OFFICER_INDIVIDUAL_WITH_INVALID_CHARS_MOCK,
-  MANAGING_OFFICER_INDIVIDUAL_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK,
-  MANAGING_OFFICER_INDIVIDUAL_WITH_MAX_LENGTH_FIELDS_MOCK
-} from '../../__mocks__/validation.mock';
+  REMOVE,
+  UPDATE_LANDING_PAGE_URL,
+  UPDATE_MANAGING_OFFICER_URL,
+  UPDATE_MANAGING_OFFICER_PAGE,
+  UPDATE_BENEFICIAL_OWNER_TYPE_URL,
+  UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
+  UPDATE_MANAGING_OFFICER_WITH_PARAMS_URL,
+  UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
+} from "../../../src/config";
 
 import {
-  FormerNamesKey,
-  ManagingOfficerIndividual,
-  ManagingOfficerKey
-} from '../../../src/model/managing.officer.model';
+  prepareData,
+  setApplicationData,
+  fetchApplicationData,
+  mapFieldsToDataObject,
+  getFromApplicationData,
+  removeFromApplicationData,
+} from '../../../src/utils/application.data';
+
+import {
+  ERROR_LIST,
+  PAGE_TITLE_ERROR,
+  MANAGING_OFFICER,
+  ANY_MESSAGE_ERROR,
+  SECOND_NATIONALITY,
+  SERVICE_UNAVAILABLE,
+  SECOND_NATIONALITY_HINT,
+  MANAGING_OFFICER_PAGE_HEADING,
+  SAVE_AND_CONTINUE_BUTTON_TEXT,
+  UPDATE_MANAGING_OFFICER_PAGE_TITLE,
+  INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER,
+  ALL_THE_OTHER_INFORMATION_ON_PUBLIC_REGISTER,
+  NOT_SHOW_MANAGING_OFFICER_INFORMATION_ON_PUBLIC_REGISTER,
+} from '../../__mocks__/text.mock';
+
+import {
+  MO_IND_ID,
+  MO_IND_ID_URL,
+  RR_CARRIAGE_RETURN,
+  APPLICATION_DATA_MOCK,
+  MANAGING_OFFICER_OBJECT_MOCK,
+  APPLICATION_DATA_CH_REF_UPDATE_MOCK,
+  REQ_BODY_MANAGING_OFFICER_OBJECT_EMPTY,
+  REQ_BODY_UPDATE_MANAGING_OFFICER_ACTIVE,
+  REQ_BODY_UPDATE_MANAGING_OFFICER_INACTIVE,
+  REQ_BODY_MANAGING_OFFICER_FOR_DATE_VALIDATION,
+  MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_FORMER_NAMES_NO,
+  MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_FORMER_NAMES_YES,
+  MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO,
+  MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES,
+} from "../../__mocks__/session.mock";
+
+import {
+  MANAGING_OFFICER_INDIVIDUAL_WITH_INVALID_CHARS_MOCK,
+  MANAGING_OFFICER_INDIVIDUAL_WITH_MAX_LENGTH_FIELDS_MOCK,
+  MANAGING_OFFICER_INDIVIDUAL_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK,
+} from '../../__mocks__/validation.mock';
 
 mockJourneyDetectionMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
@@ -120,6 +124,7 @@ const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 const mockRemoveFromApplicationData = removeFromApplicationData as jest.Mock;
 const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
 
 const DUMMY_DATA_OBJECT = { dummy: "data" };
 
@@ -130,13 +135,32 @@ describe("UPDATE MANAGING OFFICER controller", () => {
     mockSetApplicationData.mockReset();
     mockMapFieldsToDataObject.mockReset();
     mockMapFieldsToDataObject.mockReturnValue(DUMMY_DATA_OBJECT);
+    mockIsActiveFeature.mockReset();
   });
 
   describe("GET tests", () => {
 
-    test(`renders the ${UPDATE_MANAGING_OFFICER_PAGE} page`, async () => {
+    test(`renders the ${UPDATE_MANAGING_OFFICER_PAGE} page when the REDIS_flag is set to OFF`, async () => {
+      mockIsActiveFeature.mockReturnValue(false);
       mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(UPDATE_MANAGING_OFFICER_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_LANDING_PAGE_URL);
+      expect(resp.text).toContain(UPDATE_MANAGING_OFFICER_PAGE_TITLE);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContain(SECOND_NATIONALITY);
+      expect(resp.text).toContain(SECOND_NATIONALITY_HINT);
+      expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
+      expect(resp.text).toContain(ALL_THE_OTHER_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(resp.text).toContain(NOT_SHOW_MANAGING_OFFICER_INFORMATION_ON_PUBLIC_REGISTER);
+    });
+
+    test(`renders the ${UPDATE_MANAGING_OFFICER_PAGE} page when the REDIS_flag is set to ON`, async () => {
+      mockIsActiveFeature.mockReturnValue(true);
+      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      const resp = await request(app).get(UPDATE_MANAGING_OFFICER_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_LANDING_PAGE_URL);
@@ -762,7 +786,8 @@ describe("UPDATE MANAGING OFFICER controller", () => {
 
   describe("UPDATE tests", () => {
 
-    test(`redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
+    test(`redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page when the REDIS_flag is set to OFF`, async () => {
+      mockIsActiveFeature.mockReturnValue(false);
       mockPrepareData.mockReturnValueOnce(MANAGING_OFFICER_OBJECT_MOCK);
       const resp = await request(app)
         .post(UPDATE_MANAGING_OFFICER_URL + MO_IND_ID_URL)
@@ -771,6 +796,18 @@ describe("UPDATE MANAGING OFFICER controller", () => {
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test(`redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page when the REDIS_flag is set to ON`, async () => {
+      mockIsActiveFeature.mockReturnValue(true);
+      mockPrepareData.mockReturnValueOnce(MANAGING_OFFICER_OBJECT_MOCK);
+      const resp = await request(app)
+        .post(UPDATE_MANAGING_OFFICER_WITH_PARAMS_URL + MO_IND_ID_URL)
+        .send(REQ_BODY_UPDATE_MANAGING_OFFICER_ACTIVE);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test("catch error when updating data", async () => {
@@ -859,12 +896,23 @@ describe("UPDATE MANAGING OFFICER controller", () => {
 
   describe("REMOVE tests", () => {
 
-    test(`redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
+    test(`redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page when the REDIS_flag is set to OFF`, async () => {
+      mockIsActiveFeature.mockReturnValue(false);
       mockPrepareData.mockReturnValueOnce(MANAGING_OFFICER_OBJECT_MOCK);
       const resp = await request(app).get(UPDATE_MANAGING_OFFICER_URL + REMOVE + MO_IND_ID_URL);
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test(`redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page when the REDIS_flag is set to ON`, async () => {
+      mockIsActiveFeature.mockReturnValue(true);
+      mockPrepareData.mockReturnValueOnce(MANAGING_OFFICER_OBJECT_MOCK);
+      const resp = await request(app).get(UPDATE_MANAGING_OFFICER_WITH_PARAMS_URL + REMOVE + MO_IND_ID_URL);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 

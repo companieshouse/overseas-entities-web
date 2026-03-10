@@ -3,41 +3,41 @@ import { v4 as uuidv4 } from 'uuid';
 import { Session } from "@companieshouse/node-session-handler";
 import { logger } from "../utils/logger";
 import * as config from "../config";
+import { isActiveFeature } from "./feature.flag";
 import { saveAndContinue } from "../utils/save.and.continue";
+import { isRemoveJourney } from "./url";
 import { addResignedDateToTemplateOptions } from "./update/ceased_date_util";
 import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
-import { isRegistrationJourney } from "./url";
-import { isActiveFeature } from "./feature.flag";
 
 import { ApplicationData, ApplicationDataType } from "../model";
 
 import {
-  getFromApplicationData,
-  mapDataObjectToFields,
-  mapFieldsToDataObject,
   prepareData,
   setApplicationData,
-  removeFromApplicationData,
   fetchApplicationData,
+  mapDataObjectToFields,
+  mapFieldsToDataObject,
+  getFromApplicationData,
+  removeFromApplicationData,
 } from "../utils/application.data";
 
 import {
+  ID,
   AddressKeys,
+  InputDateKeys,
   EntityNumberKey,
   HasFormerNames,
   HasSameResidentialAddressKey,
-  ID,
-  InputDateKeys
 } from "../model/data.types.model";
 
 import {
+  StartDateKey,
+  StartDateKeys,
   DateOfBirthKey,
   DateOfBirthKeys,
   HaveDayOfBirthKey,
   ResignedOnDateKey,
   ResignedOnDateKeys,
-  StartDateKey,
-  StartDateKeys
 } from "../model/date.model";
 
 import {
@@ -49,9 +49,9 @@ import {
 
 import {
   FormerNamesKey,
-  ManagingOfficerIndividual,
   ManagingOfficerKey,
-  ManagingOfficerKeys
+  ManagingOfficerKeys,
+  ManagingOfficerIndividual,
 } from "../model/managing.officer.model";
 
 const isNewlyAddedMO = (officerData: ManagingOfficerIndividual) => !officerData.ch_reference;
@@ -59,9 +59,8 @@ const isNewlyAddedMO = (officerData: ManagingOfficerIndividual) => !officerData.
 export const getManagingOfficer = async (req: Request, res: Response, backLinkUrl: string, templateName: string) => {
 
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
-
-  const isRegistration = isRegistrationJourney(req);
-  const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+  const isRemove: boolean = await isRemoveJourney(req);
+  const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
 
   return res.render(templateName, {
     backLinkUrl,
@@ -83,8 +82,8 @@ export const getManagingOfficerById = async (
 
     logger.debugRequest(req, `${req.method} BY ID ${templateName}`);
 
-    const isRegistration = isRegistrationJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+    const isRemove: boolean = await isRemoveJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
     const id = req.params[ID];
     const officerData = await getFromApplicationData(req, ManagingOfficerKey, id, true);
     const newlyAddedMO = isNewlyAddedMO(officerData);
@@ -94,12 +93,12 @@ export const getManagingOfficerById = async (
     const dobDate = officerData ? mapDataObjectToFields(officerData[DateOfBirthKey], DateOfBirthKeys, InputDateKeys) : {};
 
     let templateOptions = {
-      backLinkUrl,
-      templateName: `${templateName}/${id}`,
       id,
       ...officerData,
       ...usualResidentialAddress,
       ...serviceAddress,
+      backLinkUrl,
+      templateName: `${templateName}/${id}`,
       [DateOfBirthKey]: dobDate,
     };
 
@@ -107,7 +106,7 @@ export const getManagingOfficerById = async (
       const startDate = officerData ? mapDataObjectToFields(officerData[StartDateKey], StartDateKeys, InputDateKeys) : {};
       templateOptions[StartDateKey] = startDate;
     }
-    if (isRegistration) {
+    if (!isRemove) {
       addActiveSubmissionBasePathToTemplateData(templateOptions, req);
     }
     if (inUpdateJourney) {
@@ -127,13 +126,12 @@ export const postManagingOfficer = async (req: Request, res: Response, next: Nex
   try {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-
-    const isRegistration = isRegistrationJourney(req);
+    const isRemove: boolean = await isRemoveJourney(req);
+    const session = req.session as Session;
     const officerData: ApplicationDataType = setOfficerData(req.body, uuidv4());
     officerData[HaveDayOfBirthKey] = true;
-    const session = req.session as Session;
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && !isRemove) {
       await setApplicationData(req, officerData, ManagingOfficerKey);
     } else {
       await setApplicationData(session, officerData, ManagingOfficerKey);
@@ -153,13 +151,13 @@ export const updateManagingOfficer = async (req: Request, res: Response, next: N
   try {
 
     logger.debugRequest(req, `UPDATE ${req.route.path}`);
-
-    const isRegistration = isRegistrationJourney(req);
-    await removeFromApplicationData(req, ManagingOfficerKey, req.params[ID]);
+    const isRemove: boolean = await isRemoveJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    await removeFromApplicationData(req, ManagingOfficerKey, req.params[ID], appData);
     const officerData: ApplicationDataType = setOfficerData(req.body, req.params[ID]);
     const session = req.session as Session;
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && !isRemove) {
       await setApplicationData(req, officerData, ManagingOfficerKey);
     } else {
       await setApplicationData(session, officerData, ManagingOfficerKey);
@@ -179,12 +177,11 @@ export const removeManagingOfficer = async (req: Request, res: Response, next: N
   try {
 
     logger.debugRequest(req, `REMOVE ${req.route.path}`);
-
-    const isRegistration = isRegistrationJourney(req);
+    const isRemove: boolean = await isRemoveJourney(req);
     const session = req.session as Session;
     await removeFromApplicationData(req, ManagingOfficerKey, req.params.id);
 
-    if (!isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) || !isRegistration) {
+    if (!isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) || isRemove) {
       await saveAndContinue(req, session);
     }
 
@@ -200,11 +197,9 @@ export const setOfficerData = (reqBody: any, id: string): ApplicationDataType =>
   const data: ApplicationDataType = prepareData(reqBody, ManagingOfficerKeys);
   data[UsualResidentialAddressKey] = mapFieldsToDataObject(reqBody, UsualResidentialAddressKeys, AddressKeys);
   data[DateOfBirthKey] = mapFieldsToDataObject(reqBody, DateOfBirthKeys, InputDateKeys);
-  data[HasSameResidentialAddressKey] = (data[HasSameResidentialAddressKey]) ? +data[HasSameResidentialAddressKey] : '';
-  data[ServiceAddressKey] = (!data[HasSameResidentialAddressKey])
-    ? mapFieldsToDataObject(reqBody, ServiceAddressKeys, AddressKeys)
-    : {};
-  data[HasFormerNames] = (data[HasFormerNames]) ? +data[HasFormerNames] : '';
+  data[HasSameResidentialAddressKey] = data[HasSameResidentialAddressKey] ? +data[HasSameResidentialAddressKey] : '';
+  data[ServiceAddressKey] = !data[HasSameResidentialAddressKey] ? mapFieldsToDataObject(reqBody, ServiceAddressKeys, AddressKeys) : {};
+  data[HasFormerNames] = data[HasFormerNames] ? +data[HasFormerNames] : '';
 
   if (!data[HasFormerNames]) {
     data[FormerNamesKey] = "";

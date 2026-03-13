@@ -5,6 +5,7 @@ jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/save.and.continue');
+jest.mock('../../../src/service/overseas.entities.service');
 
 import { NextFunction } from 'express';
 import { beforeEach, jest, test, describe } from '@jest/globals';
@@ -15,37 +16,41 @@ import app from '../../../src/app';
 
 import { authentication } from '../../../src/middleware/authentication.middleware';
 import { companyAuthentication } from '../../../src/middleware/company.authentication.middleware';
-import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
 import { isActiveFeature } from '../../../src/utils/feature.flag';
 import { saveAndContinue } from '../../../src/utils/save.and.continue';
+import { updateOverseasEntity } from "../../../src/service/overseas.entities.service";
+import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
 import { fetchApplicationData, getApplicationData } from '../../../src/utils/application.data';
 
 import {
   TRUST_INVOLVED_URL,
-  UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL,
-  UPDATE_TRUSTS_SUBMISSION_INTERRUPT_URL,
-  UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL,
   RELEVANT_PERIOD_QUERY_PARAM,
-  UPDATE_BENEFICIAL_OWNER_TYPE_URL
+  UPDATE_BENEFICIAL_OWNER_TYPE_URL,
+  UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL,
+  UPDATE_TRUSTS_SUBMISSION_INTERRUPT_URL,
+  UPDATE_TRUSTS_TELL_US_ABOUT_IT_WITH_PARAMS_URL,
+  UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL,
+  UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_WITH_PARAMS_URL,
 } from '../../../src/config';
 
 import {
-  APPLICATION_DATA_UPDATE_NO_TRUSTS_MOCK,
+  OVERSEAS_ENTITY_ID,
   APPLICATION_DATA_MOCK,
+  TRUST_RELEVANT_PERIOD,
+  APPLICATION_DATA_UPDATE_NO_TRUSTS_MOCK,
   APPLICATION_DATA_UPDATE_NO_BO_TRUSTEES_MOCK,
-  TRUST_RELEVANT_PERIOD
 } from '../../__mocks__/session.mock';
 
 import {
+  ERROR_LIST,
+  RELEVANT_PERIOD,
   PAGE_TITLE_ERROR,
+  TRUST_CEASED_DATE_TEXT,
+  TRUST_ENTER_CEASED_DATE,
+  SAVE_AND_CONTINUE_BUTTON_TEXT,
   UPDATE_TELL_US_ABOUT_TRUST_HEADING,
   UPDATE_TELL_US_ABOUT_TRUST_QUESTION,
-  ERROR_LIST,
-  TRUST_CEASED_DATE_TEXT,
   TRUST_NOT_ASSOCIATED_WITH_BENEFICIAL_OWNER_TEXT,
-  TRUST_ENTER_CEASED_DATE,
-  RELEVANT_PERIOD,
-  SAVE_AND_CONTINUE_BUTTON_TEXT
 } from '../../__mocks__/text.mock';
 
 mockCsrfProtectionMiddleware.mockClear();
@@ -63,15 +68,18 @@ mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Respo
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
-const mockIsActiveFeature = isActiveFeature as jest.Mock;
-mockIsActiveFeature.mockReturnValue(true);
+const mockOverseasEntity = updateOverseasEntity as jest.Mock;
+mockOverseasEntity.mockReturnValue(OVERSEAS_ENTITY_ID);
 
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
 describe('Update - Trusts - Tell us about the trust', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockIsActiveFeature.mockReset();
+    mockFetchApplicationData.mockReset();
   });
 
   describe('GET tests', () => {
@@ -134,6 +142,16 @@ describe('Update - Trusts - Tell us about the trust', () => {
     test('when feature flag is on and no data posted, re-render page with validation error', async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
       mockFetchApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
+      const resp = await request(app).post(UPDATE_TRUSTS_TELL_US_ABOUT_IT_WITH_PARAMS_URL).send({});
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ERROR_LIST);
+      expect(resp.text).toContain(UPDATE_TELL_US_ABOUT_TRUST_HEADING);
+      expect(resp.text).toContain(UPDATE_TELL_US_ABOUT_TRUST_QUESTION);
+    });
+
+    test('when feature flag is off and no data posted, re-render page with validation error', async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockFetchApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
       const resp = await request(app).post(UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL).send({});
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ERROR_LIST);
@@ -152,7 +170,25 @@ describe('Update - Trusts - Tell us about the trust', () => {
     });
 
     test('when feature flag is on and posting valid data, redirect to update-trusts-individuals-or-entities-involved page', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockIsActiveFeature.mockReturnValue(true);
+      mockFetchApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
+      const resp = await request(app).post(UPDATE_TRUSTS_TELL_US_ABOUT_IT_WITH_PARAMS_URL).send({
+        name: 'Trust name',
+        createdDateDay: '8',
+        createdDateMonth: '7',
+        createdDateYear: '2023',
+        beneficialOwnersIds: '45e4283c-6b05-42da-ac9d-1f7bf9fe9c85',
+        stillInvolved: '1',
+        hasAllInfo: '0',
+        trustId: ''
+      });
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_WITH_PARAMS_URL + "/2" + TRUST_INVOLVED_URL);
+    });
+
+    test('when feature flag is off and posting valid data, redirect to update-trusts-individuals-or-entities-involved page', async () => {
+      mockIsActiveFeature.mockReturnValue(false);
       mockFetchApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
       const resp = await request(app).post(UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL).send({
         name: 'Trust name',
@@ -166,11 +202,28 @@ describe('Update - Trusts - Tell us about the trust', () => {
       });
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + "/2" + TRUST_INVOLVED_URL);
+      expect(resp.header.location).toEqual(UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + "/3" + TRUST_INVOLVED_URL);
     });
 
     test('when feature flag is on, relevant query param is set, and posting valid data, redirect to update-trusts-individuals-or-entities-involved page with relevant query param', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockIsActiveFeature.mockReturnValue(true);
+      mockFetchApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
+      const resp = await request(app).post(UPDATE_TRUSTS_TELL_US_ABOUT_IT_WITH_PARAMS_URL + RELEVANT_PERIOD_QUERY_PARAM).send({
+        name: 'Trust name',
+        createdDateDay: '8',
+        createdDateMonth: '7',
+        createdDateYear: '2023',
+        beneficialOwnersIds: '45e4283c-6b05-42da-ac9d-1f7bf9fe9c85',
+        stillInvolved: '1',
+        hasAllInfo: '0',
+        trustId: ''
+      });
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_WITH_PARAMS_URL + "/4" + TRUST_INVOLVED_URL + RELEVANT_PERIOD_QUERY_PARAM);
+    });
+    test('when feature flag is off, relevant query param is set, and posting valid data, redirect to update-trusts-individuals-or-entities-involved page with relevant query param', async () => {
+      mockIsActiveFeature.mockReturnValue(false);
       mockFetchApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
       const resp = await request(app).post(UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL + RELEVANT_PERIOD_QUERY_PARAM).send({
         name: 'Trust name',
@@ -184,7 +237,7 @@ describe('Update - Trusts - Tell us about the trust', () => {
       });
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + "/3" + TRUST_INVOLVED_URL + RELEVANT_PERIOD_QUERY_PARAM);
+      expect(resp.header.location).toEqual(UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + "/5" + TRUST_INVOLVED_URL + RELEVANT_PERIOD_QUERY_PARAM);
     });
   });
 });

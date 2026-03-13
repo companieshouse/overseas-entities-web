@@ -1,23 +1,19 @@
 import { Request } from 'express';
 import { ValidationError } from 'express-validator';
-
-import { ApplicationData } from 'model';
 import * as config from '../config';
-import { hasNoBoAssignableToTrust } from '../utils/trusts';
 import { ErrorMessages } from './error.messages';
+import { ApplicationData } from 'model';
 import isAllowedUrls from './async/isAllowedUrls';
+import { hasNoBoAssignableToTrust } from '../utils/trusts';
 
 export const checkTrustStillInvolved = (appData: ApplicationData, req): ValidationError[] => {
   const allowedUrls = [
     [config.TRUST_DETAILS_URL],
     [config.REGISTER_AN_OVERSEAS_ENTITY_URL, config.TRUSTS_URL],
     [config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL],
-
     [config.UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL]
   ];
-
   const allowed: boolean = isAllowedUrls(allowedUrls, req);
-
   const errors: ValidationError[] = [];
 
   if (!allowed) {
@@ -34,7 +30,6 @@ export const checkTrustStillInvolved = (appData: ApplicationData, req): Validati
       location: 'body',
     });
   }
-
   return errors;
 };
 
@@ -44,9 +39,7 @@ export const checkTrustLegalEntityBeneficialOwnerStillInvolved = (appData: Appli
     [config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL],
     [config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL, config.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL + config.TRUSTEE_ID + '?']
   ];
-
   const allowed: boolean = isAllowedUrls(allowedUrls, req);
-
   const errors: ValidationError[] = [];
 
   if (!allowed) {
@@ -71,9 +64,7 @@ export const checkTrustIndividualBeneficialOwnerStillInvolved = (appData: Applic
     [config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL],
     [config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL, config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL]
   ];
-
   const allowed: boolean = isAllowedUrls(allowedUrls, req);
-
   const errors: ValidationError[] = [];
 
   if (!allowed) {
@@ -88,6 +79,5 @@ export const checkTrustIndividualBeneficialOwnerStillInvolved = (appData: Applic
       location: 'body',
     });
   }
-
   return errors;
 };

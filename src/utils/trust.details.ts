@@ -117,8 +117,6 @@ export const getTrustDetails = async (
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const isRemove: boolean = await isRemoveJourney(req);
-    console.log('>>>isRemove');
-    console.log(isRemove);
     const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
     let trustId;
 
@@ -137,15 +135,12 @@ export const getTrustDetails = async (
     } else {
       pageProps = await getPageProperties(req, formData, isUpdate, isReview);
     }
-    console.log('>>>isRemove2');
+
     return res.render(pageProps.template, pageProps);
 
   } catch (error) {
-    console.log('>>>isRemove3');
     logger.errorRequest(req, error);
-    console.log('>>>isRemove4');
     next(error);
-    console.log('>>>isRemove5');
   }
 };
 

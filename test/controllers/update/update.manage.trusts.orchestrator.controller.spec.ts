@@ -7,7 +7,6 @@ jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/middleware/navigation/update/has.beneficial.owners.or.managing.officers.update.middleware');
 jest.mock('../../../src/middleware/navigation/update/is.in.change.journey.middleware');
 jest.mock('../../../src/utils/save.and.continue');
-jest.mock("../../../src/utils/url");
 
 import { NextFunction } from 'express';
 import request from 'supertest';
@@ -27,7 +26,6 @@ import { UpdateKey } from '../../../src/model/update.type.model';
 import { TrusteeType } from '../../../src/model/trustee.type.model';
 import { yesNoResponse } from '../../../src/model/data.types.model';
 import { RoleWithinTrustType } from '../../../src/model/role.within.trust.type.model';
-import { isRegistrationJourney } from "../../../src/utils/url";
 import { hasBOsOrMOsUpdate } from '../../../src/middleware/navigation/update/has.beneficial.owners.or.managing.officers.update.middleware';
 
 import { getApplicationData, fetchApplicationData, setExtraData } from '../../../src/utils/application.data';
@@ -40,16 +38,23 @@ import {
 import {
   SECURE_UPDATE_FILTER_URL,
   UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL,
+  UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_WITH_PARAMS_URL,
   UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_CHANGE_HANDLER_URL,
   UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL,
+  UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_WITH_PARAMS_URL,
   UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL,
+  UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_WITH_PARAMS_URL,
   UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL,
+  UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_WITH_PARAMS_URL,
   UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL,
+  UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_WITH_PARAMS_URL,
   UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL,
+  UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_WITH_PARAMS_URL,
   UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL,
   UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL,
   UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL,
   UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL,
+  UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_WITH_PARAMS_URL,
 } from '../../../src/config';
 
 mockCsrfProtectionMiddleware.mockClear();
@@ -69,15 +74,11 @@ const mockIsInChangeJourney = isInChangeJourney as jest.Mock;
 mockIsInChangeJourney.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
-mockIsActiveFeature.mockReturnValue(true);
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 const mockSetExtraData = setExtraData as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
-
-const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
-mockIsRegistrationJourney.mockReturnValue(false);
 
 const createAppData = ({ reviewTrusts }): ApplicationData => ({
   update: {
@@ -92,8 +93,10 @@ const createChangeAppData = ({ reviewTrusts, trusts }): ApplicationData => ({
   },
 } as ApplicationData);
 
-const get = async () => (await request(app).get(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL));
-const post = async () => (await request(app).post(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL));
+const getRedisOn = async () => (await request(app).get(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_WITH_PARAMS_URL));
+const postRedisOn = async () => (await request(app).post(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_WITH_PARAMS_URL));
+const getRedisOff = async () => (await request(app).get(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL));
+const postRedisOff = async () => (await request(app).post(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL));
 
 describe('Update - Manage Trusts - Orchestrator', () => {
 
@@ -107,9 +110,10 @@ describe('Update - Manage Trusts - Orchestrator', () => {
   });
 
   test.each([
-    ['GET', get],
-    ['POST', post],
-  ])('%s - when no trusts to review, redirects to Trusts associated with the OE page', async (_, handler) => {
+    ['GET', getRedisOff],
+    ['POST', postRedisOff],
+  ])('%s - when no trusts to review, redirects to Trusts associated with the OE page when redis if off', async (_, handler) => {
+    mockIsActiveFeature.mockReturnValue(false);
     const appData: ApplicationData = createAppData({ reviewTrusts: [] });
     mockGetApplicationData.mockReturnValue(appData);
     mockFetchApplicationData.mockReturnValue(appData);
@@ -121,9 +125,25 @@ describe('Update - Manage Trusts - Orchestrator', () => {
   });
 
   test.each([
-    ['GET', get],
-    ['POST', post],
-  ])('%s - when a trust to review, and none in review, redirects to Review the trust page, and sets up trust for review', async (_, handler) => {
+    ['GET', getRedisOn],
+    ['POST', postRedisOn],
+  ])('%s - when no trusts to review, redirects to Trusts associated with the OE page when redis is on', async (_, handler) => {
+    mockIsActiveFeature.mockReturnValue(true);
+    const appData: ApplicationData = createAppData({ reviewTrusts: [] });
+    mockGetApplicationData.mockReturnValue(appData);
+    mockFetchApplicationData.mockReturnValue(appData);
+
+    const resp = await handler();
+
+    expect(resp.status).toBe(302);
+    expect(resp.header.location).toEqual(UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_WITH_PARAMS_URL);
+  });
+
+  test.each([
+    ['GET', getRedisOff],
+    ['POST', postRedisOff],
+  ])('%s - when a trust to review, and none in review, redirects to Review the trust page, and sets up trust for review when redis is off', async (_, handler) => {
+    mockIsActiveFeature.mockReturnValue(false);
     const appData: ApplicationData = createAppData({ reviewTrusts: [{ trust_name: 'Trust 1' }] });
     mockGetApplicationData.mockReturnValue(appData);
     mockFetchApplicationData.mockReturnValue(appData);
@@ -144,9 +164,33 @@ describe('Update - Manage Trusts - Orchestrator', () => {
   });
 
   test.each([
-    ['GET', get],
-    ['POST', post],
-  ])('%s - when a trust is in review, with no trustees, and has reviewed trust details, redirects to manage trusts individuals and entities involved page', async (_, handler) => {
+    ['GET', getRedisOn],
+    ['POST', postRedisOn],
+  ])('%s - when a trust to review, and none in review, redirects to Review the trust page, and sets up trust for review when redis is on', async (_, handler) => {
+    mockIsActiveFeature.mockReturnValue(true);
+    const appData: ApplicationData = createAppData({ reviewTrusts: [{ trust_name: 'Trust 1' }] });
+    mockGetApplicationData.mockReturnValue(appData);
+    mockFetchApplicationData.mockReturnValue(appData);
+
+    const resp = await handler();
+
+    expect(resp.status).toBe(302);
+    expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_WITH_PARAMS_URL);
+    expect((appData.update?.review_trusts ?? [])[0].review_status).toEqual({
+      in_review: true,
+      reviewed_trust_details: false,
+      reviewed_former_bos: false,
+      reviewed_individuals: false,
+      reviewed_legal_entities: false,
+    });
+    expect(mockSetExtraData).not.toHaveBeenCalled();
+    expect(mockSaveAndContinue).not.toHaveBeenCalled();
+  });
+
+  test.each([
+    ['GET', getRedisOff],
+    ['POST', postRedisOff],
+  ])('%s - when a trust is in review, with no trustees, and has reviewed trust details, redirects to manage trusts individuals and entities involved page when redis is off', async (_, handler) => {
     const appData: ApplicationData = createAppData({
       reviewTrusts: [{
         HISTORICAL_BO: [],
@@ -161,6 +205,7 @@ describe('Update - Manage Trusts - Orchestrator', () => {
         },
       }],
     });
+    mockIsActiveFeature.mockReturnValue(false);
     mockGetApplicationData.mockReturnValue(appData);
     mockFetchApplicationData.mockReturnValue(appData);
 
@@ -173,9 +218,39 @@ describe('Update - Manage Trusts - Orchestrator', () => {
   });
 
   test.each([
-    ['GET', get],
-    ['POST', post],
-  ])('%s - when a trust is in review, with trustees, and has reviewed trust details, redirects to review former bo page if no trustees reviewed', async (_, handler) => {
+    ['GET', getRedisOn],
+    ['POST', postRedisOn],
+  ])('%s - when a trust is in review, with no trustees, and has reviewed trust details, redirects to manage trusts individuals and entities involved page when redis is on', async (_, handler) => {
+    const appData: ApplicationData = createAppData({
+      reviewTrusts: [{
+        HISTORICAL_BO: [],
+        INDIVIDUALS: [],
+        CORPORATES: [],
+        review_status: {
+          in_review: true,
+          reviewed_trust_details: true,
+          reviewed_former_bos: false,
+          reviewed_individuals: false,
+          reviewed_legal_entities: false,
+        },
+      }],
+    });
+    mockIsActiveFeature.mockReturnValue(true);
+    mockGetApplicationData.mockReturnValue(appData);
+    mockFetchApplicationData.mockReturnValue(appData);
+
+    const resp = await handler();
+
+    expect(resp.status).toBe(302);
+    expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_WITH_PARAMS_URL);
+    expect(mockSetExtraData).not.toHaveBeenCalled();
+    expect(mockSaveAndContinue).not.toHaveBeenCalled();
+  });
+
+  test.each([
+    ['GET', getRedisOff],
+    ['POST', postRedisOff],
+  ])('%s - when a trust is in review, with trustees, and has reviewed trust details, redirects to review former bo page if no trustees reviewed when redis is off', async (_, handler) => {
     const appData: ApplicationData = createAppData({
       reviewTrusts: [{
         HISTORICAL_BO: [{}],
@@ -190,6 +265,7 @@ describe('Update - Manage Trusts - Orchestrator', () => {
         },
       }],
     });
+    mockIsActiveFeature.mockReturnValue(false);
     mockGetApplicationData.mockReturnValue(appData);
     mockFetchApplicationData.mockReturnValue(appData);
 
@@ -202,9 +278,39 @@ describe('Update - Manage Trusts - Orchestrator', () => {
   });
 
   test.each([
-    ['GET', get],
-    ['POST', post],
-  ])('%s - when a trust is in review, with trustees, redirects to review individuals page if reviewed former bos', async (_, handler) => {
+    ['GET', getRedisOn],
+    ['POST', postRedisOn],
+  ])('%s - when a trust is in review, with trustees, and has reviewed trust details, redirects to review former bo page if no trustees reviewed when redis is on', async (_, handler) => {
+    const appData: ApplicationData = createAppData({
+      reviewTrusts: [{
+        HISTORICAL_BO: [{}],
+        INDIVIDUALS: [{}],
+        CORPORATES: [{}],
+        review_status: {
+          in_review: true,
+          reviewed_trust_details: true,
+          reviewed_former_bos: false,
+          reviewed_individuals: false,
+          reviewed_legal_entities: false,
+        },
+      }],
+    });
+    mockIsActiveFeature.mockReturnValue(true);
+    mockGetApplicationData.mockReturnValue(appData);
+    mockFetchApplicationData.mockReturnValue(appData);
+
+    const resp = await handler();
+
+    expect(resp.status).toBe(302);
+    expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_WITH_PARAMS_URL);
+    expect(mockSetExtraData).not.toHaveBeenCalled();
+    expect(mockSaveAndContinue).not.toHaveBeenCalled();
+  });
+
+  test.each([
+    ['GET', getRedisOff],
+    ['POST', postRedisOff],
+  ])('%s - when a trust is in review, with trustees, redirects to review individuals page if reviewed former bos when redis is off', async (_, handler) => {
     const appData: ApplicationData = createAppData({
       reviewTrusts: [{
         HISTORICAL_BO: [{}],
@@ -219,6 +325,7 @@ describe('Update - Manage Trusts - Orchestrator', () => {
         },
       }],
     });
+    mockIsActiveFeature.mockReturnValue(false);
     mockGetApplicationData.mockReturnValue(appData);
     mockFetchApplicationData.mockReturnValue(appData);
 
@@ -231,9 +338,39 @@ describe('Update - Manage Trusts - Orchestrator', () => {
   });
 
   test.each([
-    ['GET', get],
-    ['POST', post],
-  ])('%s - when a trust is in review, with trustees, redirects to review legal entities page if reviewed formerbos and individuals', async (_, handler) => {
+    ['GET', getRedisOn],
+    ['POST', postRedisOn],
+  ])('%s - when a trust is in review, with trustees, redirects to review individuals page if reviewed former bos when redis is on', async (_, handler) => {
+    const appData: ApplicationData = createAppData({
+      reviewTrusts: [{
+        HISTORICAL_BO: [{}],
+        INDIVIDUALS: [{}],
+        CORPORATES: [{}],
+        review_status: {
+          in_review: true,
+          reviewed_trust_details: true,
+          reviewed_former_bos: true,
+          reviewed_individuals: false,
+          reviewed_legal_entities: false,
+        },
+      }],
+    });
+    mockIsActiveFeature.mockReturnValue(true);
+    mockGetApplicationData.mockReturnValue(appData);
+    mockFetchApplicationData.mockReturnValue(appData);
+
+    const resp = await handler();
+
+    expect(resp.status).toBe(302);
+    expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_WITH_PARAMS_URL);
+    expect(mockSetExtraData).not.toHaveBeenCalled();
+    expect(mockSaveAndContinue).not.toHaveBeenCalled();
+  });
+
+  test.each([
+    ['GET', getRedisOff],
+    ['POST', postRedisOff],
+  ])('%s - when a trust is in review, with trustees, redirects to review legal entities page if reviewed formerbos and individuals when redis is off', async (_, handler) => {
     const appData: ApplicationData = createAppData({
       reviewTrusts: [{
         HISTORICAL_BO: [{}],
@@ -248,6 +385,7 @@ describe('Update - Manage Trusts - Orchestrator', () => {
         },
       }],
     });
+    mockIsActiveFeature.mockReturnValue(false);
     mockGetApplicationData.mockReturnValue(appData);
     mockFetchApplicationData.mockReturnValue(appData);
 
@@ -260,9 +398,39 @@ describe('Update - Manage Trusts - Orchestrator', () => {
   });
 
   test.each([
-    ['GET', get],
-    ['POST', post],
-  ])('%s - when a trust is in review, with trustees, redirects to individuals and entities involved page if reviewed all trustees', async (_, handler) => {
+    ['GET', getRedisOn],
+    ['POST', postRedisOn],
+  ])('%s - when a trust is in review, with trustees, redirects to review legal entities page if reviewed formerbos and individuals when redis is on', async (_, handler) => {
+    const appData: ApplicationData = createAppData({
+      reviewTrusts: [{
+        HISTORICAL_BO: [{}],
+        INDIVIDUALS: [{}],
+        CORPORATES: [{}],
+        review_status: {
+          in_review: true,
+          reviewed_trust_details: true,
+          reviewed_former_bos: true,
+          reviewed_individuals: true,
+          reviewed_legal_entities: false,
+        },
+      }],
+    });
+    mockIsActiveFeature.mockReturnValue(true);
+    mockGetApplicationData.mockReturnValue(appData);
+    mockFetchApplicationData.mockReturnValue(appData);
+
+    const resp = await handler();
+
+    expect(resp.status).toBe(302);
+    expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_WITH_PARAMS_URL);
+    expect(mockSetExtraData).not.toHaveBeenCalled();
+    expect(mockSaveAndContinue).not.toHaveBeenCalled();
+  });
+
+  test.each([
+    ['GET', getRedisOff],
+    ['POST', postRedisOff],
+  ])('%s - when a trust is in review, with trustees, redirects to individuals and entities involved page if reviewed all trustees when redis is off', async (_, handler) => {
     const appData: ApplicationData = createAppData({
       reviewTrusts: [{
         HISTORICAL_BO: [{}],
@@ -277,6 +445,7 @@ describe('Update - Manage Trusts - Orchestrator', () => {
         },
       }],
     });
+    mockIsActiveFeature.mockReturnValue(false);
     mockGetApplicationData.mockReturnValue(appData);
     mockFetchApplicationData.mockReturnValue(appData);
 
@@ -289,9 +458,39 @@ describe('Update - Manage Trusts - Orchestrator', () => {
   });
 
   test.each([
-    ['GET', get],
-    ['POST', post],
-  ])('%s - when a trust is in review, with no former bos and no trustees reviewed, redirects to review individuals page', async (_, handler) => {
+    ['GET', getRedisOn],
+    ['POST', postRedisOn],
+  ])('%s - when a trust is in review, with trustees, redirects to individuals and entities involved page if reviewed all trustees when redis is on', async (_, handler) => {
+    const appData: ApplicationData = createAppData({
+      reviewTrusts: [{
+        HISTORICAL_BO: [{}],
+        INDIVIDUALS: [{}],
+        CORPORATES: [{}],
+        review_status: {
+          in_review: true,
+          reviewed_trust_details: true,
+          reviewed_former_bos: true,
+          reviewed_individuals: true,
+          reviewed_legal_entities: true,
+        },
+      }],
+    });
+    mockIsActiveFeature.mockReturnValue(true);
+    mockGetApplicationData.mockReturnValue(appData);
+    mockFetchApplicationData.mockReturnValue(appData);
+
+    const resp = await handler();
+
+    expect(resp.status).toBe(302);
+    expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_WITH_PARAMS_URL);
+    expect(mockSetExtraData).not.toHaveBeenCalled();
+    expect(mockSaveAndContinue).not.toHaveBeenCalled();
+  });
+
+  test.each([
+    ['GET', getRedisOff],
+    ['POST', postRedisOff],
+  ])('%s - when a trust is in review, with no former bos and no trustees reviewed, redirects to review individuals page when redis is off', async (_, handler) => {
     const appData: ApplicationData = createAppData({
       reviewTrusts: [{
         HISTORICAL_BO: [],
@@ -306,6 +505,7 @@ describe('Update - Manage Trusts - Orchestrator', () => {
         },
       }],
     });
+    mockIsActiveFeature.mockReturnValue(false);
     mockGetApplicationData.mockReturnValue(appData);
     mockFetchApplicationData.mockReturnValue(appData);
 
@@ -318,9 +518,39 @@ describe('Update - Manage Trusts - Orchestrator', () => {
   });
 
   test.each([
-    ['GET', get],
-    ['POST', post],
-  ])('%s - when a trust is in review, with no former bos or individuals and no trustees reviewed, redirects to review legal entities page', async (_, handler) => {
+    ['GET', getRedisOn],
+    ['POST', postRedisOn],
+  ])('%s - when a trust is in review, with no former bos and no trustees reviewed, redirects to review individuals page when redis is on', async (_, handler) => {
+    const appData: ApplicationData = createAppData({
+      reviewTrusts: [{
+        HISTORICAL_BO: [],
+        INDIVIDUALS: [{}],
+        CORPORATES: [{}],
+        review_status: {
+          in_review: true,
+          reviewed_trust_details: true,
+          reviewed_former_bos: false,
+          reviewed_individuals: false,
+          reviewed_legal_entities: false,
+        },
+      }],
+    });
+    mockIsActiveFeature.mockReturnValue(true);
+    mockGetApplicationData.mockReturnValue(appData);
+    mockFetchApplicationData.mockReturnValue(appData);
+
+    const resp = await handler();
+
+    expect(resp.status).toBe(302);
+    expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_WITH_PARAMS_URL);
+    expect(mockSetExtraData).not.toHaveBeenCalled();
+    expect(mockSaveAndContinue).not.toHaveBeenCalled();
+  });
+
+  test.each([
+    ['GET', getRedisOff],
+    ['POST', postRedisOff],
+  ])('%s - when a trust is in review, with no former bos or individuals and no trustees reviewed, redirects to review legal entities page when redis is off', async (_, handler) => {
     const appData: ApplicationData = createAppData({
       reviewTrusts: [{
         HISTORICAL_BO: [],
@@ -335,6 +565,7 @@ describe('Update - Manage Trusts - Orchestrator', () => {
         },
       }],
     });
+    mockIsActiveFeature.mockReturnValue(false);
     mockGetApplicationData.mockReturnValue(appData);
     mockFetchApplicationData.mockReturnValue(appData);
 
@@ -347,9 +578,39 @@ describe('Update - Manage Trusts - Orchestrator', () => {
   });
 
   test.each([
-    ['GET', get],
-    ['POST', post],
-  ])('%s - when a trust is in review, with former bos and no individuals and former bos reviewed, redirects to review legal entities page', async (_, handler) => {
+    ['GET', getRedisOn],
+    ['POST', postRedisOn],
+  ])('%s - when a trust is in review, with no former bos or individuals and no trustees reviewed, redirects to review legal entities page when redis is on', async (_, handler) => {
+    const appData: ApplicationData = createAppData({
+      reviewTrusts: [{
+        HISTORICAL_BO: [],
+        INDIVIDUALS: [],
+        CORPORATES: [{}],
+        review_status: {
+          in_review: true,
+          reviewed_trust_details: true,
+          reviewed_former_bos: false,
+          reviewed_individuals: false,
+          reviewed_legal_entities: false,
+        },
+      }],
+    });
+    mockIsActiveFeature.mockReturnValue(true);
+    mockGetApplicationData.mockReturnValue(appData);
+    mockFetchApplicationData.mockReturnValue(appData);
+
+    const resp = await handler();
+
+    expect(resp.status).toBe(302);
+    expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_WITH_PARAMS_URL);
+    expect(mockSetExtraData).not.toHaveBeenCalled();
+    expect(mockSaveAndContinue).not.toHaveBeenCalled();
+  });
+
+  test.each([
+    ['GET', getRedisOff],
+    ['POST', postRedisOff],
+  ])('%s - when a trust is in review, with former bos and no individuals and former bos reviewed, redirects to review legal entities page when redis is off', async (_, handler) => {
     const appData: ApplicationData = createAppData({
       reviewTrusts: [{
         HISTORICAL_BO: [{}],
@@ -364,6 +625,7 @@ describe('Update - Manage Trusts - Orchestrator', () => {
         },
       }],
     });
+    mockIsActiveFeature.mockReturnValue(false);
     mockGetApplicationData.mockReturnValue(appData);
     mockFetchApplicationData.mockReturnValue(appData);
 
@@ -376,9 +638,39 @@ describe('Update - Manage Trusts - Orchestrator', () => {
   });
 
   test.each([
-    ['GET', get],
-    ['POST', post],
-  ])('%s - when a trust is in review, with former bos and individuals reviewed and no legal entities to review, redirects to individuals and entities involved page', async (_, handler) => {
+    ['GET', getRedisOn],
+    ['POST', postRedisOn],
+  ])('%s - when a trust is in review, with former bos and no individuals and former bos reviewed, redirects to review legal entities page when redis is on', async (_, handler) => {
+    const appData: ApplicationData = createAppData({
+      reviewTrusts: [{
+        HISTORICAL_BO: [{}],
+        INDIVIDUALS: [],
+        CORPORATES: [{}],
+        review_status: {
+          in_review: true,
+          reviewed_trust_details: true,
+          reviewed_former_bos: true,
+          reviewed_individuals: false,
+          reviewed_legal_entities: false,
+        },
+      }],
+    });
+    mockIsActiveFeature.mockReturnValue(true);
+    mockGetApplicationData.mockReturnValue(appData);
+    mockFetchApplicationData.mockReturnValue(appData);
+
+    const resp = await handler();
+
+    expect(resp.status).toBe(302);
+    expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_WITH_PARAMS_URL);
+    expect(mockSetExtraData).not.toHaveBeenCalled();
+    expect(mockSaveAndContinue).not.toHaveBeenCalled();
+  });
+
+  test.each([
+    ['GET', getRedisOff],
+    ['POST', postRedisOff],
+  ])('%s - when a trust is in review, with former bos and individuals reviewed and no legal entities to review, redirects to individuals and entities involved page when redis is off', async (_, handler) => {
     const appData: ApplicationData = createAppData({
       reviewTrusts: [{
         HISTORICAL_BO: [{}],
@@ -393,6 +685,7 @@ describe('Update - Manage Trusts - Orchestrator', () => {
         },
       }],
     });
+    mockIsActiveFeature.mockReturnValue(false);
     mockGetApplicationData.mockReturnValue(appData);
     mockFetchApplicationData.mockReturnValue(appData);
 
@@ -403,13 +696,43 @@ describe('Update - Manage Trusts - Orchestrator', () => {
     expect(mockSetExtraData).not.toHaveBeenCalled();
     expect(mockSaveAndContinue).not.toHaveBeenCalled();
   });
+
+  test.each([
+    ['GET', getRedisOn],
+    ['POST', postRedisOn],
+  ])('%s - when a trust is in review, with former bos and individuals reviewed and no legal entities to review, redirects to individuals and entities involved page when redis is on', async (_, handler) => {
+    const appData: ApplicationData = createAppData({
+      reviewTrusts: [{
+        HISTORICAL_BO: [{}],
+        INDIVIDUALS: [{}],
+        CORPORATES: [],
+        review_status: {
+          in_review: true,
+          reviewed_trust_details: true,
+          reviewed_former_bos: true,
+          reviewed_individuals: true,
+          reviewed_legal_entities: false,
+        },
+      }],
+    });
+    mockIsActiveFeature.mockReturnValue(true);
+    mockGetApplicationData.mockReturnValue(appData);
+    mockFetchApplicationData.mockReturnValue(appData);
+
+    const resp = await handler();
+
+    expect(resp.status).toBe(302);
+    expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_WITH_PARAMS_URL);
+    expect(mockSetExtraData).not.toHaveBeenCalled();
+    expect(mockSaveAndContinue).not.toHaveBeenCalled();
+  });
 });
 
 describe('Update - Mange Trusts - Orchestrator - Change Handler', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockIsActiveFeature.mockReturnValue(true);
+    mockIsActiveFeature.mockReturnValue(false);
   });
 
   test('passing TrustId puts trust back into review and redirects to the update-manage-trusts-review-the-trust page', async () => {

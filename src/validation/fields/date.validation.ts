@@ -590,3 +590,32 @@ export const checkTrusteeInterestedDate = (appData: ApplicationData, req: Reques
 
   return errors;
 };
+
+export const checkInterestedPersonStartDate = (appData: ApplicationData, req: Request): ValidationError[] => {
+  const errors: ValidationError[] = [];
+  // Find the trust using the shared helper, which handles lookup and fallbacks
+  const trust = getTrust(appData, req.params.trustId);
+
+  if (!trust) {
+    return errors;
+  }
+
+  // Check if the interested person start date is before the trust creation date
+  addDateValidationErrorIfInvalid(
+    [
+      req.body["interestedPersonStartDateDay"],
+      req.body["interestedPersonStartDateMonth"],
+      req.body["interestedPersonStartDateYear"]
+    ],
+    [
+      trust.creation_date_day,
+      trust.creation_date_month,
+      trust.creation_date_year
+    ],
+    ErrorMessages.DATE_BEFORE_TRUST_CREATION_DATE_INTERESTED_TRUSTEE,
+    errors,
+    'interestedPersonStartDateDay'
+  );
+
+  return errors;
+};

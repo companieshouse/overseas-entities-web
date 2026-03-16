@@ -7,6 +7,7 @@ jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/middleware/navigation/update/has.beneficial.owners.or.managing.officers.update.middleware');
 jest.mock('../../../src/middleware/navigation/update/is.in.change.journey.middleware');
 jest.mock('../../../src/utils/save.and.continue');
+jest.mock('../../../src/service/overseas.entities.service');
 
 import { NextFunction } from 'express';
 import request from 'supertest';
@@ -27,6 +28,7 @@ import { TrusteeType } from '../../../src/model/trustee.type.model';
 import { yesNoResponse } from '../../../src/model/data.types.model';
 import { RoleWithinTrustType } from '../../../src/model/role.within.trust.type.model';
 import { hasBOsOrMOsUpdate } from '../../../src/middleware/navigation/update/has.beneficial.owners.or.managing.officers.update.middleware';
+import { updateOverseasEntity } from "../../../src/service/overseas.entities.service";
 
 import { getApplicationData, fetchApplicationData, setExtraData } from '../../../src/utils/application.data';
 
@@ -79,6 +81,7 @@ const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 const mockSetExtraData = setExtraData as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
+const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
 
 const createAppData = ({ reviewTrusts }): ApplicationData => ({
   update: {
@@ -171,6 +174,7 @@ describe('Update - Manage Trusts - Orchestrator', () => {
     const appData: ApplicationData = createAppData({ reviewTrusts: [{ trust_name: 'Trust 1' }] });
     mockGetApplicationData.mockReturnValue(appData);
     mockFetchApplicationData.mockReturnValue(appData);
+    mockUpdateOverseasEntity.mockImplementation(() => Promise.resolve());
 
     const resp = await handler();
 
@@ -183,8 +187,9 @@ describe('Update - Manage Trusts - Orchestrator', () => {
       reviewed_individuals: false,
       reviewed_legal_entities: false,
     });
-    expect(mockSetExtraData).not.toHaveBeenCalled();
+    expect(mockSetExtraData).toHaveBeenCalled();
     expect(mockSaveAndContinue).not.toHaveBeenCalled();
+    expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
   });
 
   test.each([

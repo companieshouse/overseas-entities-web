@@ -3,62 +3,104 @@ import { Session } from "@companieshouse/node-session-handler";
 
 import { logger } from '../../utils/logger';
 import {
+  FEATURE_FLAG_ENABLE_REDIS_REMOVAL,
   ROUTE_PARAM_TRUSTEE_ID,
   ROUTE_PARAM_TRUSTEE_TYPE,
   ROUTE_PARAM_TRUST_ID,
   UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL,
+  UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_WITH_PARAMS_URL,
   UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL,
   UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL,
+  UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_WITH_PARAMS_URL,
   UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL,
+  UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_WITH_PARAMS_URL,
   UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL,
+  UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_WITH_PARAMS_URL,
   UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL,
+  UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_WITH_PARAMS_URL,
   UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL,
   UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL,
   UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL,
   UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL,
+  UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_WITH_PARAMS_URL,
 } from '../../config';
 import { ApplicationData } from '../../model';
 import { Trust } from '../../model/trust.model';
-import { getApplicationData, setExtraData } from '../../utils/application.data';
+import { fetchApplicationData, getApplicationData, setExtraData } from '../../utils/application.data';
 import { saveAndContinue } from '../../utils/save.and.continue';
 import { getTrustInReview, putNextTrustInReview, putTrustInChangeScenario } from '../../utils/update/review_trusts';
 import { TrusteeType } from '../../model/trustee.type.model';
 import { safeRedirect } from '../../utils/http.ext';
+import { getRedirectUrl, isRemoveJourney } from '../../utils/url';
+import { isActiveFeature } from '../../utils/feature.flag';
+import { updateOverseasEntity } from '../../service/overseas.entities.service';
 
 export const handler = async (req: Request, res: Response, next: NextFunction) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
   try {
-    const appData = await getApplicationData(req.session);
+    const isRemove: boolean = await isRemoveJourney(req);
+    const appData = await fetchApplicationData(req, !isRemove);
     let trustInReview = getTrustInReview(appData);
 
     if (!trustInReview) {
       trustInReview = putNextTrustInReview(appData);
 
       if (!trustInReview) {
-        return res.redirect(UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL);
+        const redirectUrl = getRedirectUrlFor(
+          req,
+          UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_WITH_PARAMS_URL,
+          UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL
+        );
+        return res.redirect(redirectUrl);
       }
 
-      await saveAppData(req, appData);
+      await saveAppData(req, appData, isRemove);
+
     }
 
     if (shouldGoToReviewTheTrust(trustInReview)) {
-      return res.redirect(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);
+      const redirectUrl = getRedirectUrlFor(
+        req,
+        UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_WITH_PARAMS_URL,
+        UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL
+      );
+      return res.redirect(redirectUrl);
     }
 
     if (shouldGoToReviewFormerBOs(trustInReview)) {
-      return res.redirect(UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL);
+      const redirectUrl = getRedirectUrlFor(
+        req,
+        UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_WITH_PARAMS_URL,
+        UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL
+      );
+      return res.redirect(redirectUrl);
     }
 
     if (shouldGoToReviewIndividuals(trustInReview)) {
-      return res.redirect(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL);
+      const redirectUrl = getRedirectUrlFor(
+        req,
+        UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_WITH_PARAMS_URL,
+        UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL
+      );
+      return res.redirect(redirectUrl);
     }
 
     if (shouldGoToReviewLegalEntities(trustInReview)) {
-      return res.redirect(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
+      const redirectUrl = getRedirectUrlFor(
+        req,
+        UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_WITH_PARAMS_URL,
+        UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL
+      );
+      return res.redirect(redirectUrl);
     }
 
-    return res.redirect(UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL);
+    const redirectUrl = getRedirectUrlFor(
+      req,
+      UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_WITH_PARAMS_URL,
+      UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL
+    );
+    return res.redirect(redirectUrl);
   } catch (error) {
     next(error);
     return;
@@ -129,7 +171,17 @@ const shouldGoToReviewLegalEntities = (trustInReview: Trust) => {
   return hasLegalEntities && !hasReviewedLegalEntities;
 };
 
-const saveAppData = async (req: Request, appData: ApplicationData) => {
+const saveAppData = async (req: Request, appData: ApplicationData, isRemove: boolean = false) => {
   setExtraData(req.session, appData);
-  await saveAndContinue(req, req.session as Session);
+  if (!isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL) || isRemove) {
+    await saveAndContinue(req, req.session as Session);
+  } else {
+    await updateOverseasEntity(req, req.session as Session, appData);
+  }
 };
+
+const getRedirectUrlFor = (
+  req: Request,
+  urlWithEntityIds: string,
+  urlWithoutEntityIds: string
+) => getRedirectUrl({ req, urlWithEntityIds, urlWithoutEntityIds });

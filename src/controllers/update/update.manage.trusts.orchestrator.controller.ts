@@ -172,8 +172,8 @@ const shouldGoToReviewLegalEntities = (trustInReview: Trust) => {
 };
 
 const saveAppData = async (req: Request, appData: ApplicationData, isRemove: boolean = false) => {
+  setExtraData(req.session, appData);
   if (!isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL) || isRemove) {
-    setExtraData(req.session, appData);
     await saveAndContinue(req, req.session as Session);
   } else {
     await updateOverseasEntity(req, req.session as Session, appData);

@@ -33,6 +33,7 @@ import { TrusteeType } from '../../model/trustee.type.model';
 import { safeRedirect } from '../../utils/http.ext';
 import { getRedirectUrl, isRemoveJourney } from '../../utils/url';
 import { isActiveFeature } from '../../utils/feature.flag';
+import { updateOverseasEntity } from '../../service/overseas.entities.service';
 
 export const handler = async (req: Request, res: Response, next: NextFunction) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
@@ -174,6 +175,8 @@ const saveAppData = async (req: Request, appData: ApplicationData, isRemove: boo
   if (!isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL) || isRemove) {
     setExtraData(req.session, appData);
     await saveAndContinue(req, req.session as Session);
+  } else {
+    await updateOverseasEntity(req, req.session as Session, appData);
   }
 };
 

@@ -1,3 +1,5 @@
+import { jest } from "@jest/globals";
+
 jest.mock('ioredis');
 jest.mock('../../../src/utils/feature.flag' );
 jest.mock('../../../src/utils/application.data');
@@ -6,6 +8,7 @@ jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/update/review_trusts');
+jest.mock('../../../src/service/overseas.entities.service');
 
 import { DateTime } from 'luxon';
 import { NextFunction } from 'express';
@@ -14,49 +17,53 @@ import request from 'supertest';
 import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import app from '../../../src/app';
 
-import { UpdateKey } from '../../../src/model/update.type.model';
 import { Trust } from '../../../src/model/trust.model';
-import { ApplicationData } from '../../../src/model/application.model';
+import { UpdateKey } from '../../../src/model/update.type.model';
 import { authentication } from '../../../src/middleware/authentication.middleware';
-import { companyAuthentication } from '../../../src/middleware/company.authentication.middleware';
-import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
 import { isActiveFeature } from '../../../src/utils/feature.flag';
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import { ErrorMessages } from "../../../src/validation/error.messages";
+import { ApplicationData } from '../../../src/model/application.model';
+import { updateOverseasEntity } from "../../../src/service/overseas.entities.service";
+import { companyAuthentication } from '../../../src/middleware/company.authentication.middleware';
+import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
 
 import { getApplicationData, fetchApplicationData } from '../../../src/utils/application.data';
 import { beneficialOwnerIndividualType, beneficialOwnerOtherType } from '../../../src/model';
 
 import {
-  getReviewTrustById,
   hasTrustsToReview,
+  getReviewTrustById,
   updateTrustInReviewList
 } from '../../../src/utils/update/review_trusts';
+
+import {
+  TRUST,
+  OVERSEAS_ENTITY_ID,
+  APPLICATION_DATA_MOCK,
+  BENEFICIAL_OWNER_OTHER_NO_TRUSTEE_OBJECT_MOCK,
+  BENEFICIAL_OWNER_INDIVIDUAL_NO_TRUSTEE_OBJECT_MOCK,
+} from '../../__mocks__/session.mock';
 
 import {
   SECURE_UPDATE_FILTER_URL,
   UPDATE_MANAGE_TRUSTS_INTERRUPT_URL,
   UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL,
-  UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL
+  UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL,
+  UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_WITH_PARAMS_URL,
+  UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_WITH_PARAMS_URL,
 } from '../../../src/config';
 
 import {
-  APPLICATION_DATA_MOCK,
-  BENEFICIAL_OWNER_INDIVIDUAL_NO_TRUSTEE_OBJECT_MOCK,
-  BENEFICIAL_OWNER_OTHER_NO_TRUSTEE_OBJECT_MOCK,
-  TRUST
-} from '../../__mocks__/session.mock';
-
-import {
-  PAGE_TITLE_ERROR,
   ERROR_LIST,
-  UPDATE_REVIEW_THE_TRUST,
+  PAGE_TITLE_ERROR,
   ANY_MESSAGE_ERROR,
   SERVICE_UNAVAILABLE,
-  TRUST_NOT_ASSOCIATED_WITH_BENEFICIAL_OWNER_TEXT,
   TRUST_CEASED_DATE_TEXT,
+  UPDATE_REVIEW_THE_TRUST,
   TRUST_SELECT_TRUSTEES_TEXT,
-  SAVE_AND_CONTINUE_BUTTON_TEXT
+  SAVE_AND_CONTINUE_BUTTON_TEXT,
+  TRUST_NOT_ASSOCIATED_WITH_BENEFICIAL_OWNER_TEXT,
 } from '../../__mocks__/text.mock';
 
 const mockTrust = {
@@ -94,10 +101,11 @@ const appDataWithNoTrustNocBOs = {
 } as ApplicationData;
 
 mockCsrfProtectionMiddleware.mockClear();
+const mockUpdateTrustInReviewList = updateTrustInReviewList as jest.Mock;
+const mockSaveAndContinue = saveAndContinue as jest.Mock;
+
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockFetchApplicationData = fetchApplicationData as jest.Mock;
-
-const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -116,7 +124,8 @@ mockHasTrustsToReview.mockReturnValue(true);
 const mockGetReviewTrustById = getReviewTrustById as jest.Mock;
 mockGetReviewTrustById.mockReturnValue(mockTrust);
 
-const mockUpdateTrustInReviewList = updateTrustInReviewList as jest.Mock;
+const mockOverseasEntity = updateOverseasEntity as jest.Mock;
+mockOverseasEntity.mockReturnValue(OVERSEAS_ENTITY_ID);
 
 describe('Update - Manage Trusts - Review the trust', () => {
 
@@ -287,9 +296,9 @@ describe('Update - Manage Trusts - Review the trust', () => {
     ];
 
     test('when update manage trusts feature flag is on, redirect to review former bo page', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockIsActiveFeature.mockReturnValue(true);
 
-      const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL)
+      const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_WITH_PARAMS_URL)
         .send({
           name: 'Updated Trust name',
           beneficialOwnersIds: ['45e4283c-6b05-42da-ac9d-1f7bf9fe9c85'],
@@ -301,7 +310,7 @@ describe('Update - Manage Trusts - Review the trust', () => {
       expect(resp.status).toEqual(302);
       expect(mockGetReviewTrustById).toHaveBeenCalled();
       expect(mockUpdateTrustInReviewList).toHaveBeenCalled();
-      expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
+      expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_WITH_PARAMS_URL);
     });
 
     test('when valid ceased date is posted, and no associated BOs, it should be added to the trust data', async () => {

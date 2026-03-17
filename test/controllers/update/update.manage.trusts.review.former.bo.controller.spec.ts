@@ -12,20 +12,34 @@ import request from 'supertest';
 import { NextFunction } from 'express';
 
 import app from '../../../src/app';
-import { SECURE_UPDATE_FILTER_URL, UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL, UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL, UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL, UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL } from '../../../src/config';
-import { authentication } from '../../../src/middleware/authentication.middleware';
-import { companyAuthentication } from '../../../src/middleware/company.authentication.middleware';
-import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
-import { checkBOsDetailsEntered, getApplicationData } from '../../../src/utils/application.data';
-import { isActiveFeature } from '../../../src/utils/feature.flag';
 
+import { authentication } from '../../../src/middleware/authentication.middleware';
 import { TRUST } from '../../__mocks__/session.mock';
-import { ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE, UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_TABLE_HEADING, UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_TITLE } from '../../__mocks__/text.mock';
 import { UpdateKey } from '../../../src/model/update.type.model';
-import { Trust, TrustHistoricalBeneficialOwner } from '../../../src/model/trust.model';
+import { isActiveFeature } from '../../../src/utils/feature.flag';
 import { yesNoResponse } from '../../../src/model/data.types.model';
 import { ApplicationData } from '../../../src/model';
 import { saveAndContinue } from '../../../src/utils/save.and.continue';
+import { companyAuthentication } from '../../../src/middleware/company.authentication.middleware';
+import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
+
+import { Trust, TrustHistoricalBeneficialOwner } from '../../../src/model/trust.model';
+import { checkBOsDetailsEntered, getApplicationData } from '../../../src/utils/application.data';
+
+import {
+  ANY_MESSAGE_ERROR,
+  SERVICE_UNAVAILABLE,
+  UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_TITLE,
+  UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_TABLE_HEADING,
+} from '../../__mocks__/text.mock';
+
+import {
+  SECURE_UPDATE_FILTER_URL,
+  UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL,
+  UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL,
+  UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL,
+  UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL
+} from '../../../src/config';
 
 const appDataWithReviewTrust = {
   [UpdateKey]: {
@@ -73,6 +87,8 @@ const appDataWithReviewTrust = {
 } as ApplicationData;
 
 mockCsrfProtectionMiddleware.mockClear();
+const mockSaveAndContinue = saveAndContinue as jest.Mock;
+
 const mockGetApplicationData = getApplicationData as jest.Mock;
 mockGetApplicationData.mockReturnValue(appDataWithReviewTrust);
 
@@ -91,14 +107,13 @@ mockCheckBOsDetailsEntered.mockReturnValue(true);
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue(true);
 
-const mockSaveAndContinue = saveAndContinue as jest.Mock;
-
 describe('Update - Manage Trusts - Review former beneficial owners', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   describe('GET tests', () => {
+
     test('when feature flag is on, page is returned', async () => {
       mockIsActiveFeature.mockReturnValue(true);
 
@@ -163,6 +178,7 @@ describe('Update - Manage Trusts - Review former beneficial owners', () => {
   });
 
   describe('POST tests', () => {
+
     test('when feature flag is on, and clicking to add new former BO, redirects to update-manage-trusts-tell-us-about-the-former-bo', async () => {
       mockIsActiveFeature.mockReturnValue(true);
       mockGetApplicationData.mockReturnValue(appDataWithReviewTrust);

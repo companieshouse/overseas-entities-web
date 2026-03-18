@@ -1,9 +1,6 @@
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/middleware/navigation/has.beneficial.owners.or.managing.officers.middleware');
-jest.mock('../../src/middleware/is.feature.enabled.middleware', () => ({
-  isFeatureEnabled: () => (_, __, next: NextFunction) => next(),
-}));
 jest.mock("../../src/utils/application.data");
 jest.mock("../../src/middleware/navigation/is.secure.register.middleware");
 jest.mock("../../src/service/transaction.service");
@@ -12,8 +9,10 @@ jest.mock("../../src/utils/trust/details.mapper");
 jest.mock("../../src/utils/trust/beneficial.owner.mapper");
 jest.mock("../../src/utils/trusts");
 jest.mock("../../src/utils/feature.flag");
-jest.mock("../../src/utils/url");
 jest.mock("../../src/utils/save.and.continue");
+jest.mock('../../src/middleware/is.feature.enabled.middleware', () => ({
+  isFeatureEnabled: () => (_, __, next: NextFunction) => next(),
+}));
 
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
@@ -25,60 +24,61 @@ import { Session } from '@companieshouse/node-session-handler';
 import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
 import app from "../../src/app";
 
-import { authentication } from "../../src/middleware/authentication.middleware";
 import { hasBOsOrMOs } from '../../src/middleware/navigation/has.beneficial.owners.or.managing.officers.middleware';
-import { TRUST_DETAILS_TEXTS } from '../../src/utils/trust.details';
-import { BeneficialOwnerIndividualKey } from '../../src/model/beneficial.owner.individual.model';
-import { BeneficialOwnerOtherKey } from '../../src/model/beneficial.owner.other.model';
 import { ErrorMessages } from "../../src/validation/error.messages";
-import { isActiveFeature } from "../../src/utils/feature.flag";
-import { APPLICATION_DATA_MOCK } from '../__mocks__/session.mock';
+import { authentication } from "../../src/middleware/authentication.middleware";
 import { saveAndContinue } from "../../src/utils/save.and.continue";
+import { isActiveFeature } from "../../src/utils/feature.flag";
+import { TRUST_DETAILS_TEXTS } from '../../src/utils/trust.details';
+import { APPLICATION_DATA_MOCK } from '../__mocks__/session.mock';
+import { BeneficialOwnerOtherKey } from '../../src/model/beneficial.owner.other.model';
+import { BeneficialOwnerIndividualKey } from '../../src/model/beneficial.owner.individual.model';
 
 import { get, post } from '../../src/controllers/trust.details.controller';
 import { Trust, TrustKey } from '../../src/model/trust.model';
-import { isRegistrationJourney, getUrlWithParamsToPath } from "../../src/utils/url";
 
 import {
-  fetchApplicationData,
+  mapBoOtherToPage,
+  mapBoIndividualToPage,
+} from '../../src/utils/trust/beneficial.owner.mapper';
+
+import {
+  setExtraData,
   getApplicationData,
-  setExtraData
+  fetchApplicationData,
 } from '../../src/utils/application.data';
 
 import {
-  TRUST_DETAILS_PAGE,
-  TRUST_DETAILS_URL,
-  TRUST_ENTRY_URL,
-  TRUST_ENTRY_WITH_PARAMS_URL,
-  TRUST_INVOLVED_URL
-} from '../../src/config';
+  generateTrustId,
+  mapDetailToPage,
+  mapDetailToSession,
+  mapBeneficialOwnerToSession,
+} from '../../src/utils/trust/details.mapper';
 
 import {
-  ANY_MESSAGE_ERROR,
+  saveTrustInApp,
+  getTrustByIdFromApp,
+  hasNoBoAssignableToTrust,
+  getBoOtherAssignableToTrust,
+  getBoIndividualAssignableToTrust,
+} from '../../src/utils/trusts';
+
+import {
   PAGE_TITLE_ERROR,
+  ANY_MESSAGE_ERROR,
   TRUST_CEASED_DATE_TEXT,
   TRUST_NOT_ASSOCIATED_WITH_BENEFICIAL_OWNER_TEXT
 } from "../__mocks__/text.mock";
 
 import {
-  generateTrustId,
-  mapBeneficialOwnerToSession,
-  mapDetailToPage,
-  mapDetailToSession,
-} from '../../src/utils/trust/details.mapper';
-
-import {
-  mapBoIndividualToPage,
-  mapBoOtherToPage,
-} from '../../src/utils/trust/beneficial.owner.mapper';
-
-import {
-  getBoIndividualAssignableToTrust,
-  getBoOtherAssignableToTrust,
-  saveTrustInApp,
-  getTrustByIdFromApp,
-  hasNoBoAssignableToTrust,
-} from '../../src/utils/trusts';
+  TRUSTS_URL,
+  TRUST_ENTRY_URL,
+  TRUST_DETAILS_URL,
+  TRUST_INVOLVED_URL,
+  TRUST_DETAILS_PAGE,
+  TRUST_ENTRY_WITH_PARAMS_URL,
+  REGISTER_AN_OVERSEAS_ENTITY_URL,
+} from '../../src/config';
 
 mockCsrfProtectionMiddleware.mockClear();
 
@@ -86,13 +86,7 @@ const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue(false);
 
 // Note that this dummy URL starts with '/register-an-overseas-entity' in order to not cause a security violation in certain tests
-const NEXT_PAGE_URL = TRUST_ENTRY_WITH_PARAMS_URL + "/NEXT_PAGE";
-
-const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
-mockGetUrlWithParamsToPath.mockReturnValue(NEXT_PAGE_URL);
-
-const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
-mockIsRegistrationJourney.mockReturnValue(true);
+const DUMMY_URL = "/register-an-overseas-entity/transaction/abc123/submission/xyz456/trusts";
 
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
@@ -100,13 +94,9 @@ describe('Trust Details controller', () => {
 
   const mockNext = jest.fn();
   const mockSetExtraData = setExtraData as jest.Mock;
-
   const mockGetApplicationData = getApplicationData as jest.Mock;
   mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
-
   const mockFetchApplicationData = fetchApplicationData as jest.Mock;
-  mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
-
   const pageUrl = TRUST_DETAILS_URL;
   const pageWithParamsUrl = TRUST_ENTRY_WITH_PARAMS_URL;
 
@@ -141,6 +131,7 @@ describe('Trust Details controller', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockIsActiveFeature.mockReset();
+    mockFetchApplicationData.mockReset();
 
     mockAppData = {
       [TrustKey]: [
@@ -164,12 +155,10 @@ describe('Trust Details controller', () => {
 
   describe('GET tests', () => {
 
-    test('catch error when renders the page', () => {
+    test('catch error when renders the page', async () => {
       const error = new Error(ANY_MESSAGE_ERROR);
-
       mockFetchApplicationData.mockImplementationOnce(() => { throw error; });
-
-      get(mockReq, mockRes, mockNext);
+      await get(mockReq, mockRes, mockNext);
       expect(mockNext).toBeCalledTimes(1);
       expect(mockNext).toBeCalledWith(error);
     });
@@ -225,9 +214,7 @@ describe('Trust Details controller', () => {
     test("catch error when post data from page", async () => {
       const error = new Error(ANY_MESSAGE_ERROR);
       mockFetchApplicationData.mockImplementationOnce(() => { throw error; });
-
       await post(mockReq, mockRes, mockNext);
-
       expect(mockNext).toBeCalledTimes(1);
       expect(mockNext).toBeCalledWith(error);
     });
@@ -243,7 +230,7 @@ describe('Trust Details controller', () => {
       };
 
       mockIsActiveFeature.mockReturnValue(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-      mockFetchApplicationData.mockReturnValueOnce(mockAppData);
+      mockFetchApplicationData.mockReturnValue(mockAppData);
       mockSaveAndContinue.mockReturnValue(true);
 
       const expectTrustResult = { dummyMapKey: "MAP-TO-SESSION-RESULT", };
@@ -348,7 +335,7 @@ describe('Trust Details controller', () => {
       );
       expect(mockNext).not.toBeCalled();
       expect(mockRes.redirect).toBeCalledTimes(1);
-      expect(mockRes.redirect).toBeCalledWith(NEXT_PAGE_URL);
+      expect(mockRes.redirect).toBeCalledWith(`${REGISTER_AN_OVERSEAS_ENTITY_URL}${TRUSTS_URL}/dummyId${TRUST_INVOLVED_URL}`);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
@@ -456,6 +443,8 @@ describe('Trust Details controller', () => {
       const expectBo = ["dummyBo"];
       (mapBeneficialOwnerToSession as jest.Mock).mockReturnValue(expectBo);
 
+      mockReq.originalUrl = DUMMY_URL;
+
       await post(mockReq, mockRes, mockNext);
 
       expect(generateTrustId as jest.Mock).toBeCalledTimes(1);
@@ -487,7 +476,7 @@ describe('Trust Details controller', () => {
       );
       expect(mockNext).not.toBeCalled();
       expect(mockRes.redirect).toBeCalledTimes(1);
-      expect(mockRes.redirect).toBeCalledWith(NEXT_PAGE_URL);
+      expect(mockRes.redirect).toBeCalledWith(`${DUMMY_URL}/dummyId${TRUST_INVOLVED_URL}`);
     });
 
     test("update existing trust in session", async () => {
@@ -502,6 +491,8 @@ describe('Trust Details controller', () => {
       (saveTrustInApp as jest.Mock).mockReturnValue(mockAppData);
       (getTrustByIdFromApp as jest.Mock).mockReturnValue(mockTrust2Data);
       (mapBeneficialOwnerToSession as jest.Mock).mockReturnValue([]);
+
+      mockReq.originalUrl = DUMMY_URL;
 
       await post(mockReq, mockRes, mockNext);
 
@@ -522,11 +513,7 @@ describe('Trust Details controller', () => {
       );
       expect(mockNext).not.toBeCalled();
       expect(mockRes.redirect).toBeCalledTimes(1);
-      expect(mockRes.redirect).toBeCalledWith(NEXT_PAGE_URL);
-      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
-      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(
-        `${TRUST_ENTRY_WITH_PARAMS_URL}/${mockTrust2Data.trust_id}${TRUST_INVOLVED_URL}`
-      );
+      expect(mockRes.redirect).toBeCalledWith(`${DUMMY_URL}/802${TRUST_INVOLVED_URL}`);
     });
 
     test("no selection to add trust with url params - render with errors", async () => {

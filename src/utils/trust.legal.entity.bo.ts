@@ -1,30 +1,30 @@
 import { NextFunction, Request, Response } from 'express';
 import { Session } from '@companieshouse/node-session-handler';
 
-import { logger } from './logger';
 import * as config from '../config';
-import { safeRedirect } from './http.ext';
 import * as CommonTrustDataMapper from './trust/common.trust.data.mapper';
-import { RoleWithinTrustType } from '../model/role.within.trust.type.model';
+import { logger } from './logger';
+import { safeRedirect } from './http.ext';
 import { ApplicationData } from '../model';
 import { saveAndContinue } from './save.and.continue';
 import { isActiveFeature } from './feature.flag';
+import { RoleWithinTrustType } from '../model/role.within.trust.type.model';
 import { updateOverseasEntity } from "../service/overseas.entities.service";
 import { checkTrusteeLegalEntityCeasedDate } from '../validation/async';
 import { checkTrustLegalEntityBeneficialOwnerStillInvolved } from '../validation/stillInvolved.validation';
 
+import { getRedirectUrl, isRemoveJourney } from './url';
+import { mapTrustApiToWebWhenFlagsAreSet } from "../utils/trust/api.to.web.mapper";
+import { ValidationError, validationResult } from 'express-validator';
 import { fetchApplicationData, setExtraData } from './application.data';
-import { mapLegalEntityTrusteeByIdFromSessionToPage, mapLegalEntityToSession } from './trust/legal.entity.beneficial.owner.mapper';
 import { CommonTrustData, TrustLegalEntityForm } from '../model/trust.page.model';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
-import { ValidationError, validationResult } from 'express-validator';
-import { getUrlWithParamsToPath, isRegistrationJourney } from './url';
-import { mapTrustApiToWebWhenFlagsAreSet } from "../utils/trust/api.to.web.mapper";
+import { mapLegalEntityTrusteeByIdFromSessionToPage, mapLegalEntityToSession } from './trust/legal.entity.beneficial.owner.mapper';
 
 import {
+  saveTrustInApp,
   getTrustByIdFromApp,
   saveLegalEntityBoInTrust,
-  saveTrustInApp
 } from './trusts';
 
 export const LEGAL_ENTITY_BO_TEXTS = {
@@ -57,14 +57,18 @@ const getPageProperties = async (
   errors?: FormattedValidationErrors,
 ): Promise<TrustLegalEntityBeneficialOwnerPageProperties> => {
 
-  const isRegistration = isRegistrationJourney(req);
-  const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+  const isRemove: boolean = await isRemoveJourney(req);
+  const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
   const { templateName, template } = getPageTemplate(isUpdate, req.url);
 
   return {
-    backLinkUrl: getTrustInvolvedUrl(isUpdate, trustId, req),
-    templateName,
+    errors,
+    formData,
     template,
+    isUpdate,
+    templateName,
+    url: getUrl(isUpdate),
+    backLinkUrl: getTrustInvolvedUrl(isUpdate, trustId, req),
     pageParams: {
       title: LEGAL_ENTITY_BO_TEXTS.title,
     },
@@ -72,10 +76,6 @@ const getPageProperties = async (
       trustData: CommonTrustDataMapper.mapCommonTrustDataToPage(appData, trustId, false),
       roleWithinTrustType: RoleWithinTrustType
     },
-    formData,
-    errors,
-    url: getUrl(isUpdate),
-    isUpdate
   };
 };
 
@@ -95,9 +95,9 @@ export const getTrustLegalEntityBo = async (req: Request, res: Response, next: N
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const isRegistration = isRegistrationJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
-    mapTrustApiToWebWhenFlagsAreSet(appData, isRegistration);
+    const isRemove: boolean = await isRemoveJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    mapTrustApiToWebWhenFlagsAreSet(appData, !isRemove);
     const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
     const trusteeId = req.params[config.ROUTE_PARAM_TRUSTEE_ID];
     const isRelevantPeriod = req.query ? req.query["relevant-period"] === "true" : false;
@@ -128,8 +128,8 @@ export const postTrustLegalEntityBo = async (req: Request, res: Response, next: 
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const isRegistration = isRegistrationJourney(req);
-    let appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+    const isRemove: boolean = await isRemoveJourney(req);
+    let appData: ApplicationData = await fetchApplicationData(req, !isRemove);
     const session = req.session as Session;
     const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
     const legalEntityBoData = mapLegalEntityToSession(req.body);
@@ -154,7 +154,7 @@ export const postTrustLegalEntityBo = async (req: Request, res: Response, next: 
     appData = saveTrustInApp(appData, updatedTrust);
     setExtraData(session, appData);
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && !isRemove) {
       await updateOverseasEntity(req, session, appData);
     } else {
       await saveAndContinue(req, session);
@@ -170,13 +170,17 @@ export const postTrustLegalEntityBo = async (req: Request, res: Response, next: 
 
 const getTrustInvolvedUrl = (isUpdate: boolean, trustId: string, req: Request) => {
   if (isUpdate) {
-    return `${config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL}/${trustId}${config.TRUST_INVOLVED_URL}`;
+    return getRedirectUrl({
+      req,
+      urlWithEntityIds: config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL,
+    }) + `/${trustId}${config.TRUST_INVOLVED_URL}`;
   } else {
-    let entryUrl = `${config.TRUST_ENTRY_URL}`;
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
-      entryUrl = getUrlWithParamsToPath(config.TRUST_ENTRY_WITH_PARAMS_URL, req);
-    }
-    return entryUrl + `/${trustId}${config.TRUST_INVOLVED_URL}`;
+    return getRedirectUrl({
+      req,
+      urlWithEntityIds: config.TRUST_ENTRY_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.TRUST_ENTRY_URL,
+    }) + `/${trustId}${config.TRUST_INVOLVED_URL}`;
   }
 };
 
@@ -191,14 +195,12 @@ const getUrl = (isUpdate: boolean) => (
 );
 
 export const setEntityNameInRelevantPeriodPageBanner = (pageProps: TrustLegalEntityBeneficialOwnerPageProperties, entityName: string | undefined) => {
-  // name the entity for the page template
   if (pageProps && pageProps.pageData && entityName !== undefined) {
     pageProps.pageData.entity_name = entityName;
   }
   return pageProps;
 };
 
-// Get validation errors that depend on an asynchronous request
 const getValidationErrors = async (appData: ApplicationData, req: Request): Promise<ValidationError[]> => {
   const stillInvolvedErrors = checkTrustLegalEntityBeneficialOwnerStillInvolved(appData, req);
   const ceasedDateErrors = await checkTrusteeLegalEntityCeasedDate(appData, req);

@@ -4,24 +4,24 @@ import { ApplicationData } from '../../model/application.model';
 import { TrustKey } from '../../model/trust.model';
 import { NavigationErrorMessage } from './check.condition';
 import { TrusteeType } from '../../model/trustee.type.model';
-import { isRegistrationJourney } from "../../utils/url";
+import { isRemoveJourney } from "../../utils/url";
 
 import { createAndLogErrorRequest, logger } from '../../utils/logger';
 import { containsTrustData, getTrustArray } from '../../utils/trusts';
 
 import {
   SOLD_LAND_FILTER_URL,
-  SECURE_UPDATE_FILTER_URL,
   ROUTE_PARAM_TRUST_ID,
   ROUTE_PARAM_TRUSTEE_ID,
-  ROUTE_PARAM_TRUSTEE_TYPE
+  SECURE_UPDATE_FILTER_URL,
+  ROUTE_PARAM_TRUSTEE_TYPE,
 } from '../../config';
 
 const hasTrustWithId = async (req: Request, res: Response, next: NextFunction, url: string): Promise<void> => {
   try {
     const trustId = req.params[ROUTE_PARAM_TRUST_ID];
-    const isRegistration = isRegistrationJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+    const isRemove: boolean = await isRemoveJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
     const isTrustPresent = appData[TrustKey]?.some(
       (trust) => trust.trust_id === trustId,
     );
@@ -42,8 +42,8 @@ const hasTrusteeWithId = async (req: Request, res: Response, next: NextFunction,
     const trustId = req.params[ROUTE_PARAM_TRUST_ID];
     const trusteeId = req.params[ROUTE_PARAM_TRUSTEE_ID];
     const trusteeType = req.params[ROUTE_PARAM_TRUSTEE_TYPE];
-    const isRegistration = isRegistrationJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+    const isRemove: boolean = await isRemoveJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
     const isTrustPresent = appData[TrustKey]?.some(
       (trust) => trust.trust_id === trustId,
     );
@@ -85,8 +85,8 @@ const hasTrusteeWithId = async (req: Request, res: Response, next: NextFunction,
 
 const hasTrustData = async (req: Request, res: Response, next: NextFunction, url: string): Promise<void> => {
   try {
-    const isRegistration = isRegistrationJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+    const isRemove: boolean = await isRemoveJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
     if (containsTrustData(getTrustArray(appData))) {
       return next();
     }

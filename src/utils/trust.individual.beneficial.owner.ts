@@ -1,28 +1,29 @@
 import { NextFunction, Request, Response } from 'express';
 import { Session } from '@companieshouse/node-session-handler';
-import { logger } from './logger';
 import * as config from '../config';
 import * as CommonTrustDataMapper from './trust/common.trust.data.mapper';
-import { RoleWithinTrustType } from '../model/role.within.trust.type.model';
 import * as PageModel from '../model/trust.page.model';
-import { ApplicationData } from '../model';
+import { logger } from './logger';
 import { safeRedirect } from './http.ext';
 import { saveAndContinue } from './save.and.continue';
-import { updateOverseasEntity } from "../service/overseas.entities.service";
 import { isActiveFeature } from './feature.flag';
+import { ApplicationData } from '../model';
+import { RoleWithinTrustType } from '../model/role.within.trust.type.model';
+import { updateOverseasEntity } from "../service/overseas.entities.service";
+import { checkTrusteeInterestedDate } from '../validation/fields/date.validation';
 import { checkTrustIndividualCeasedDate } from '../validation/async';
-import { checkTrustIndividualBeneficialOwnerStillInvolved } from '../validation/stillInvolved.validation';
-import { getUrlWithParamsToPath, isRegistrationJourney } from './url';
 import { mapTrustApiToWebWhenFlagsAreSet } from "../utils/trust/api.to.web.mapper";
+import { checkTrustIndividualBeneficialOwnerStillInvolved } from '../validation/stillInvolved.validation';
+
+import { getRedirectUrl, isRemoveJourney } from './url';
 import { ValidationError, validationResult } from 'express-validator';
 import { fetchApplicationData, setExtraData } from './application.data';
-import { mapIndividualTrusteeToSession, mapIndividualTrusteeByIdFromSessionToPage } from './trust/individual.trustee.mapper';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
-import { checkTrusteeInterestedDate } from '../validation/fields/date.validation';
+import { mapIndividualTrusteeToSession, mapIndividualTrusteeByIdFromSessionToPage } from './trust/individual.trustee.mapper';
 
 import {
-  getTrustByIdFromApp,
   saveTrustInApp,
+  getTrustByIdFromApp,
   saveIndividualTrusteeInTrust,
 } from './trusts';
 
@@ -57,14 +58,18 @@ const getPageProperties = async (
   errors?: FormattedValidationErrors,
 ): Promise<TrustIndividualBeneificalOwnerPageProperties> => {
 
-  const isRegistration = isRegistrationJourney(req);
-  const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+  const isRemove: boolean = await isRemoveJourney(req);
+  const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
   const { templateName, template } = getPageTemplate(isUpdate, req.url);
 
   return {
-    backLinkUrl: getTrustInvolvedUrl(isUpdate, trustId, req),
-    templateName,
+    errors,
+    isUpdate,
+    formData,
     template,
+    templateName,
+    url: getUrl(isUpdate),
+    backLinkUrl: getTrustInvolvedUrl(isUpdate, trustId, req),
     pageParams: {
       title: INDIVIDUAL_BO_TEXTS.title,
     },
@@ -72,14 +77,18 @@ const getPageProperties = async (
       trustData: CommonTrustDataMapper.mapCommonTrustDataToPage(appData, trustId, false),
       roleWithinTrustType: RoleWithinTrustType
     },
-    formData,
-    errors,
-    url: getUrl(isUpdate),
-    isUpdate
   };
 };
 
-const getPagePropertiesRelevantPeriod = async (isRelevantPeriod, req, trustId, isUpdate, formData, entityName, errors?: FormattedValidationErrors): Promise<TrustIndividualBeneificalOwnerPageProperties> => {
+const getPagePropertiesRelevantPeriod = async (
+  isRelevantPeriod,
+  req,
+  trustId,
+  isUpdate,
+  formData,
+  entityName,
+  errors?: FormattedValidationErrors
+): Promise<TrustIndividualBeneificalOwnerPageProperties> => {
   const pageProps = await getPageProperties(req, trustId, isUpdate, formData, errors);
   pageProps.formData.relevant_period = isRelevantPeriod;
   pageProps.pageData.entity_name = entityName;
@@ -94,9 +103,9 @@ export const getTrustIndividualBo = async (req: Request, res: Response, next: Ne
 
     const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
     const trusteeId = req.params[config.ROUTE_PARAM_TRUSTEE_ID];
-    const isRegistration = isRegistrationJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
-    mapTrustApiToWebWhenFlagsAreSet(appData, isRegistration);
+    const isRemove: boolean = await isRemoveJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    mapTrustApiToWebWhenFlagsAreSet(appData, !isRemove);
     const isRelevantPeriod = req.query['relevant-period'];
     const formData: PageModel.IndividualTrusteesFormCommon = mapIndividualTrusteeByIdFromSessionToPage(
       appData,
@@ -133,15 +142,14 @@ export const postTrustIndividualBo = async (req: Request, res: Response, next: N
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const session = req.session as Session;
-    const isRegistration = isRegistrationJourney(req);
-    let appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+    const isRemove: boolean = await isRemoveJourney(req);
+    let appData: ApplicationData = await fetchApplicationData(req, !isRemove);
     const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
     const individualTrusteeData = mapIndividualTrusteeToSession(req.body);
     const errorList = validationResult(req);
     const errors = await getValidationErrors(appData, req);
     const formData: PageModel.IndividualTrusteesFormCommon = req.body as PageModel.IndividualTrusteesFormCommon;
 
-    // if errors are present, rerender the page
     if (!errorList.isEmpty() || errors.length > 0) {
       const errorListArray = !errorList.isEmpty() ? errorList.array() : [];
       const pageProps = await getPageProperties(
@@ -172,7 +180,7 @@ export const postTrustIndividualBo = async (req: Request, res: Response, next: N
     appData = saveTrustInApp(appData, trustUpdate);
     setExtraData(session, appData);
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && !isRemove) {
       await updateOverseasEntity(req, session, appData);
     } else {
       await saveAndContinue(req, session);
@@ -188,21 +196,31 @@ export const postTrustIndividualBo = async (req: Request, res: Response, next: N
 
 const getPageTemplate = (isUpdate: boolean, url: string) => {
   if (isUpdate) {
-    return { template: config.UPDATE_TRUSTS_INDIVIDUAL_BENEFICIAL_OWNER_PAGE, templateName: url.replace(config.UPDATE_AN_OVERSEAS_ENTITY_URL, "") };
+    return {
+      template: config.UPDATE_TRUSTS_INDIVIDUAL_BENEFICIAL_OWNER_PAGE,
+      templateName: url.replace(config.UPDATE_AN_OVERSEAS_ENTITY_URL, "")
+    };
   } else {
-    return { template: config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE, templateName: config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE };
+    return {
+      template: config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE,
+      templateName: config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE
+    };
   }
 };
 
 const getTrustInvolvedUrl = (isUpdate: boolean, trustId: string, req: Request) => {
   if (isUpdate) {
-    return `${config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL}/${trustId}${config.TRUST_INVOLVED_URL}`;
+    return getRedirectUrl({
+      req,
+      urlWithEntityIds: config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL,
+    }) + `/${trustId}${config.TRUST_INVOLVED_URL}`;
   } else {
-    let entryUrl = `${config.TRUST_ENTRY_URL}`;
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
-      entryUrl = getUrlWithParamsToPath(config.TRUST_ENTRY_WITH_PARAMS_URL, req);
-    }
-    return entryUrl + `/${trustId}${config.TRUST_INVOLVED_URL}`;
+    return getRedirectUrl({
+      req,
+      urlWithEntityIds: config.TRUST_ENTRY_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.TRUST_ENTRY_URL,
+    }) + `/${trustId}${config.TRUST_INVOLVED_URL}`;
   }
 };
 
@@ -214,7 +232,6 @@ const getUrl = (isUpdate: boolean) => {
   }
 };
 
-// Get validation errors that depend on an asynchronous request
 const getValidationErrors = async (appData: ApplicationData, req: Request): Promise<ValidationError[]> => {
   const stillInvolvedErrors = checkTrustIndividualBeneficialOwnerStillInvolved(appData, req);
   const ceasedDateErrors = await checkTrustIndividualCeasedDate(appData, req);

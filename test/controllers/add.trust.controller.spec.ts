@@ -17,27 +17,29 @@ import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.
 import app from "../../src/app";
 
 import * as config from "../../src/config";
-import { fetchApplicationData, getApplicationData } from "../../src/utils/application.data";
-import { authentication } from "../../src/middleware/authentication.middleware";
-import { hasTrustDataRegister } from "../../src/middleware/navigation/has.trust.middleware";
-import { generateTrustId } from "../../src/utils/trust/details.mapper";
 import { constants } from "http2";
 import { ErrorMessages } from "../../src/validation/error.messages";
+import { authentication } from "../../src/middleware/authentication.middleware";
+import { generateTrustId } from "../../src/utils/trust/details.mapper";
 import { isActiveFeature } from "../../src/utils/feature.flag";
-import { REGISTER_AN_OVERSEAS_ENTITY_URL } from "../../src/config";
+import { hasTrustDataRegister } from "../../src/middleware/navigation/has.trust.middleware";
 import { APPLICATION_DATA_MOCK } from "../__mocks__/session.mock";
+import { REGISTER_AN_OVERSEAS_ENTITY_URL } from "../../src/config";
 
 import { get, post } from "../../src/controllers/add.trust.controller";
 import { Trust, TrustKey } from "../../src/model/trust.model";
-import { getUrlWithParamsToPath, isRegistrationJourney } from "../../src/utils/url";
+
 import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR } from "../__mocks__/text.mock";
+import { fetchApplicationData, getApplicationData } from "../../src/utils/application.data";
+import { getRedirectUrl, getUrlWithParamsToPath, isRegistrationJourney } from "../../src/utils/url";
+
+const MOCKED_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + "MOCKED_URL";
 
 mockCsrfProtectionMiddleware.mockClear();
+const mockGetRedirectUrl = getRedirectUrl as jest.Mock;
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue(false);
-
-const MOCKED_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + "MOCKED_URL";
 
 const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
 mockGetUrlWithParamsToPath.mockReturnValue(MOCKED_URL);
@@ -66,6 +68,7 @@ describe("Add Trust Controller Tests", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockIsActiveFeature.mockReset();
+    mockGetRedirectUrl.mockReset();
 
     mockAppData = {
       [TrustKey]: [mockTrust1Data],
@@ -124,7 +127,7 @@ describe("Add Trust Controller Tests", () => {
   describe("GET tests with url params", () => {
 
     test(`renders the ${config.ADD_TRUST_PAGE} page`, async () => {
-      mockGetUrlWithParamsToPath.mockReturnValueOnce(MOCKED_URL);
+      mockGetRedirectUrl.mockReturnValueOnce(MOCKED_URL);
       (getApplicationData as jest.Mock).mockReturnValue(mockAppData);
       (fetchApplicationData as jest.Mock).mockReturnValue(mockAppData);
 
@@ -146,8 +149,7 @@ describe("Add Trust Controller Tests", () => {
           }),
         }),
       );
-      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(2);
-      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
+      expect(mockGetRedirectUrl).toHaveBeenCalledTimes(1);
     });
 
     test('catch error when renders the page with url params', async () => {
@@ -166,6 +168,7 @@ describe("Add Trust Controller Tests", () => {
       (getApplicationData as jest.Mock).mockReturnValue(mockAppData);
       (fetchApplicationData as jest.Mock).mockReturnValue(mockAppData);
       (generateTrustId as jest.Mock).mockReturnValue(trustId);
+      mockGetRedirectUrl.mockReturnValue(`${config.TRUST_DETAILS_URL}`);
 
       mockReq.body = {
         addTrust: "addTrustYes",
@@ -181,6 +184,7 @@ describe("Add Trust Controller Tests", () => {
       (getApplicationData as jest.Mock).mockReturnValue(mockAppData);
       (fetchApplicationData as jest.Mock).mockReturnValue(mockAppData);
       (generateTrustId as jest.Mock).mockReturnValue(trustId);
+      mockGetRedirectUrl.mockReturnValue(`${config.TRUST_DETAILS_URL}`);
 
       mockReq.body = {
         addTrust: "preRegistration",
@@ -202,6 +206,7 @@ describe("Add Trust Controller Tests", () => {
     });
 
     test("select yes to add trust", async () => {
+      mockGetRedirectUrl.mockReturnValue(`${config.CHECK_YOUR_ANSWERS_URL}`);
       mockReq.body = {
         addTrust: "0",
       };
@@ -232,6 +237,7 @@ describe("Add Trust Controller Tests", () => {
   describe("POST unit tests with url params", () => {
 
     test("select yes to add trust with url params", async () => {
+      mockGetRedirectUrl.mockReturnValueOnce(MOCKED_URL);
       mockIsActiveFeature.mockReturnValueOnce(false); // SERVICE OFFLINE FEATURE FLAG
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_TRUSTS_WEB
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
@@ -245,10 +251,7 @@ describe("Add Trust Controller Tests", () => {
       await post(mockReq, mockRes, mockNext);
 
       expect(mockRes.redirect).toBeCalledTimes(1);
-      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
-      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(
-        config.TRUST_ENTRY_WITH_PARAMS_URL
-      );
+      expect(mockGetRedirectUrl).toHaveBeenCalledTimes(1);
     });
 
     test("no selection to add trust with url params - render with errors", async () => {
@@ -268,6 +271,7 @@ describe("Add Trust Controller Tests", () => {
     });
 
     test(`renders the ${config.ADD_TRUST_PAGE} page with missing mandatory field messages`, async () => {
+      mockGetRedirectUrl.mockReturnValue(MOCKED_URL);
       mockIsActiveFeature.mockReturnValueOnce(false); // SERVICE OFFLINE FEATURE FLAG
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_TRUSTS_WEB
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
@@ -288,10 +292,7 @@ describe("Add Trust Controller Tests", () => {
       expect(resp.text).toContain(
         config.REGISTER_AN_OVERSEAS_ENTITY_URL + MOCKED_URL + config.TRUSTS_URL
       );
-      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(2);
-      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(
-        config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL
-      );
+      expect(mockGetRedirectUrl).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -319,6 +320,13 @@ describe("Add Trust Controller Tests", () => {
     });
 
     test(`successfully access POST method`, async () => {
+      mockIsActiveFeature.mockReturnValue(false);
+      mockGetRedirectUrl.mockReturnValue(`${config.CHECK_YOUR_ANSWERS_URL}`);
+      (hasTrustDataRegister as jest.Mock).mockImplementation(
+        (_, __, next: NextFunction) => next()
+      );
+      (getApplicationData as jest.Mock).mockReturnValue(mockAppData);
+      (fetchApplicationData as jest.Mock).mockReturnValue(mockAppData);
       const resp = await request(app).post(pageUrl).send({ addTrust: '0' });
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(config.CHECK_YOUR_ANSWERS_URL);

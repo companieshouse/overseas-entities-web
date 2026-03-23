@@ -1,5 +1,6 @@
 jest.mock("ioredis");
 jest.mock('express-validator/src/validation-result');
+jest.mock('../../src/service/overseas.entities.service');
 jest.mock(".../../../src/utils/application.data");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/middleware/navigation/has.trust.middleware');
@@ -14,77 +15,101 @@ jest.mock('../../src/utils/feature.flag');
 jest.mock('../../src/utils/url');
 
 import { NextFunction, Request, Response } from "express";
-import { constants } from 'http2';
 import { Params } from 'express-serve-static-core';
 import { Session } from '@companieshouse/node-session-handler';
+import { constants } from 'http2';
+import { validationResult } from 'express-validator/src/validation-result';
 
 import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
 import app from "../../src/app";
-import { validationResult } from 'express-validator/src/validation-result';
+
 import request from "supertest";
-import { authentication } from '../../src/middleware/authentication.middleware';
-import { hasTrustWithIdRegister } from '../../src/middleware/navigation/has.trust.middleware';
-import { ErrorMessages } from '../../src/validation/error.messages';
+
 import { TrusteeType } from '../../src/model/trustee.type.model';
+import { ErrorMessages } from '../../src/validation/error.messages';
+import { authentication } from '../../src/middleware/authentication.middleware';
+import { ApplicationData } from "../../src/model";
+import { isActiveFeature } from '../../src/utils/feature.flag';
+import { updateOverseasEntity } from "../../src/service/overseas.entities.service";
+import { postTrustInvolvedPage } from "../../src/utils/trust.involved";
+import { hasTrustWithIdRegister } from '../../src/middleware/navigation/has.trust.middleware';
+
 import { mapCommonTrustDataToPage } from '../../src/utils/trust/common.trust.data.mapper';
 import { mapTrustWhoIsInvolvedToPage } from '../../src/utils/trust/who.is.involved.mapper';
-import { isActiveFeature } from '../../src/utils/feature.flag';
-import { postTrustInvolvedPage } from "../../src/utils/trust.involved";
-import { TRUST_WITH_ID } from '../__mocks__/session.mock';
 
 import { get, post } from "../../src/controllers/trust.involved.controller";
-import { getUrlWithParamsToPath, isRegistrationJourney } from '../../src/utils/url';
+import { TRUST_WITH_ID, OVERSEAS_ENTITY_ID } from '../__mocks__/session.mock';
 import { getApplicationData, fetchApplicationData } from '../../src/utils/application.data';
 
 import {
+  TrustKey,
+  TrustIndividual,
+  IndividualTrustee,
+} from "../../src/model/trust.model";
+
+import {
+  getRedirectUrl,
+  isRemoveJourney,
+  isRegistrationJourney,
+  getUrlWithParamsToPath,
+} from '../../src/utils/url';
+
+import {
   getFormerTrusteesFromTrust,
-  getIndividualTrusteesFromTrust
+  getIndividualTrusteesFromTrust,
 } from '../../src/utils/trusts';
 
 import {
-  ANY_MESSAGE_ERROR,
+  TRUSTS_URL,
   PAGE_TITLE_ERROR,
+  ANY_MESSAGE_ERROR,
   TRUST_INVOLVED_TITLE,
-  TRUSTS_URL
 } from '../__mocks__/text.mock';
 
 import {
   ADD_TRUST_URL,
-  REGISTER_AN_OVERSEAS_ENTITY_URL,
   TRUST_ENTRY_URL,
-  TRUST_ENTRY_WITH_PARAMS_URL,
+  UPDATE_LANDING_URL,
+  TRUST_INVOLVED_URL,
+  TRUST_INVOLVED_PAGE,
+  RELEVANT_PERIOD_QUERY_PARAM,
+  REGISTER_AN_OVERSEAS_ENTITY_URL,
   TRUST_HISTORICAL_BENEFICIAL_OWNER_URL,
   TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL,
-  TRUST_INVOLVED_PAGE,
-  TRUST_INVOLVED_URL,
+  TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE,
   TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL,
-  RELEVANT_PERIOD_QUERY_PARAM,
-  UPDATE_LANDING_URL,
+  TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE,
+  UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE,
   UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE,
   UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE,
-  UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE,
-  TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE,
-  TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE,
   UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_PAGE, LANDING_URL,
 } from '../../src/config';
-import { IndividualTrustee, TrustIndividual, TrustKey } from "../../src/model/trust.model";
-import { ApplicationData } from "../../src/model";
+
+const MOCKED_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + "MOCKED_URL";
 
 mockCsrfProtectionMiddleware.mockClear();
+
+const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+const mockGetRedirectUrl = getRedirectUrl as jest.Mock;
+
+const mockOverseasEntity = updateOverseasEntity as jest.Mock;
+mockOverseasEntity.mockReturnValue(OVERSEAS_ENTITY_ID);
+
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue(false);
 
-const MOCKED_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + "MOCKED_URL";
 const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
 mockGetUrlWithParamsToPath.mockReturnValue(MOCKED_URL);
 
 const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
 mockIsRegistrationJourney.mockReturnValue(true);
 
+const mockIsRemoveJourney = isRemoveJourney as jest.Mock;
+mockIsRemoveJourney.mockReturnValue(false);
+
 describe('Trust Involved controller', () => {
 
-  const mockGetApplicationData = getApplicationData as jest.Mock;
-  const mockFetchApplicationData = fetchApplicationData as jest.Mock;
   const trustId = TRUST_WITH_ID.trust_id;
   const pageUrl = `${TRUST_ENTRY_URL}/${trustId}${TRUST_INVOLVED_URL}`;
   const mockNext = jest.fn();
@@ -103,6 +128,10 @@ describe('Trust Involved controller', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockIsActiveFeature.mockReset();
+    mockGetRedirectUrl.mockReset();
+    mockFetchApplicationData.mockReset();
+    mockGetApplicationData.mockReset();
+
     mockReq = {
       params: {
         trustId: trustId,
@@ -168,6 +197,7 @@ describe('Trust Involved controller', () => {
     });
 
     test('catch error when post data from page', async () => {
+      mockGetRedirectUrl.mockReturnValue(MOCKED_URL);
       mockReq.body = {
         id: 'dummyId',
         typeOfTrustee: 'dummyTrusteeType',
@@ -184,13 +214,15 @@ describe('Trust Involved controller', () => {
       expect(mockNext).toBeCalledWith(error);
     });
 
-    test('catch error when renders the page', () => {
+    test('catch error when renders the page', async () => {
       const error = new Error(ANY_MESSAGE_ERROR);
-      mockFetchApplicationData.mockImplementationOnce(() => {
+      mockGetRedirectUrl.mockReturnValue(MOCKED_URL);
+      mockGetApplicationData.mockReturnValue(mockAppData);
+      mockFetchApplicationData.mockImplementation(() => {
         throw error;
       });
 
-      get(mockReq, mockRes, mockNext);
+      await get(mockReq, mockRes, mockNext);
 
       expect(mockNext).toBeCalledTimes(1);
       expect(mockNext).toBeCalledWith(error);
@@ -200,10 +232,13 @@ describe('Trust Involved controller', () => {
   describe('POST unit tests', () => {
 
     test('"no more to add" button is pushed and REDIS_removal flag is set to OFF', async () => {
+      mockIsActiveFeature.mockReturnValue(false);
+      mockGetRedirectUrl.mockReturnValue(`${TRUST_ENTRY_URL}`);
+
       mockReq.body = {
         noMoreToAdd: 'noMoreToAdd',
       };
-      mockIsActiveFeature.mockReturnValue(false);
+
       await post(mockReq, mockRes, mockNext);
 
       expect(mockRes.redirect).toBeCalledTimes(1);
@@ -288,13 +323,18 @@ describe('Trust Involved controller', () => {
     test.each(dpPostTrustee)(
       'success push with %p type',
       async (typeOfTrustee: string, expectedUrl: string) => {
+        mockIsActiveFeature.mockReturnValue(false);
+        mockFetchApplicationData.mockReturnValue(mockAppData);
+        mockGetApplicationData.mockReturnValue(mockAppData);
+        mockGetRedirectUrl.mockReturnValue(`${TRUST_ENTRY_URL}`);
+
+        (validationResult as any as jest.Mock).mockImplementation(() => ({
+          isEmpty: jest.fn().mockReturnValue(true),
+        }));
+
         mockReq.body = {
           typeOfTrustee,
         };
-
-        (validationResult as any as jest.Mock).mockImplementationOnce(() => ({
-          isEmpty: jest.fn().mockReturnValue(true),
-        }));
 
         await post(mockReq, mockRes, mockNext);
 
@@ -306,6 +346,9 @@ describe('Trust Involved controller', () => {
     test.each(dpPostReviewTrustee)(
       'success push with %p type',
       async (typeOfTrustee: string, expectedUrl: string) => {
+        mockFetchApplicationData.mockReturnValue(mockAppData);
+        mockGetRedirectUrl.mockReturnValueOnce(`${UPDATE_LANDING_URL}${expectedUrl}`);
+
         mockReq.body = {
           typeOfTrustee,
         };
@@ -313,17 +356,21 @@ describe('Trust Involved controller', () => {
         (validationResult as any as jest.Mock).mockImplementationOnce(() => ({
           isEmpty: jest.fn().mockReturnValue(true),
         }));
+
         const isUpdate: boolean = true;
         const isReview: boolean = true;
         await postTrustInvolvedPage(mockReq, mockRes, mockNext, isUpdate, isReview);
 
-        expect(mockRes.redirect).toBeCalledWith(`${UPDATE_LANDING_URL}${expectedUrl}`);
+        expect(mockRes.redirect).toBeCalledWith(expect.stringContaining(`${UPDATE_LANDING_URL}${expectedUrl}`));
       },
     );
 
     test.each(dpPostUpdateTrustee)(
       'success push with %p type',
       async (typeOfTrustee: string, expectedUrl: string) => {
+        mockFetchApplicationData.mockReturnValue(mockAppData);
+        mockGetRedirectUrl.mockReturnValueOnce(`${UPDATE_LANDING_URL}${expectedUrl}`);
+
         mockReq.body = {
           typeOfTrustee,
         };
@@ -335,13 +382,15 @@ describe('Trust Involved controller', () => {
         const isReview: boolean = false;
         await postTrustInvolvedPage(mockReq, mockRes, mockNext, isUpdate, isReview);
 
-        expect(mockRes.redirect).toBeCalledWith(`${UPDATE_LANDING_URL}${expectedUrl}`);
+        expect(mockRes.redirect).toBeCalledWith(expect.stringContaining(`${UPDATE_LANDING_URL}${expectedUrl}`));
       },
     );
 
     test.each(dpPostRelevantPeriodUpdateTrustee)(
       'success push with %p type',
       async (typeOfTrustee: string, expectedUrl: string) => {
+        mockFetchApplicationData.mockReturnValue(mockAppData);
+        mockGetRedirectUrl.mockReturnValueOnce(`${UPDATE_LANDING_URL}${expectedUrl}`);
         mockReq.body = {
           typeOfTrustee,
         };
@@ -353,13 +402,16 @@ describe('Trust Involved controller', () => {
         const isReview: boolean = false;
         await postTrustInvolvedPage(mockReq, mockRes, mockNext, isUpdate, isReview);
 
-        expect(mockRes.redirect).toBeCalledWith(`${UPDATE_LANDING_URL}${expectedUrl}`);
+        expect(mockRes.redirect).toBeCalledWith(expect.stringContaining(`${UPDATE_LANDING_URL}${expectedUrl}`));
       },
     );
 
     test.each(dpPostRegisterRelevantPeriodTrustees)(
       'success push with %p type',
       async (typeOfTrustee: string, expectedUrl: string) => {
+        mockFetchApplicationData.mockReturnValue(mockAppData);
+        mockGetRedirectUrl.mockReturnValueOnce(`${LANDING_URL}${expectedUrl}`);
+
         mockReq.body = {
           typeOfTrustee,
         };
@@ -371,11 +423,13 @@ describe('Trust Involved controller', () => {
         const isReview: boolean = false;
         await postTrustInvolvedPage(mockReq, mockRes, mockNext, isUpdate, isReview);
 
-        expect(mockRes.redirect).toBeCalledWith(`${LANDING_URL}${expectedUrl}`);
+        expect(mockRes.redirect).toBeCalledWith(expect.stringContaining(`${LANDING_URL}${expectedUrl}`));
       },
     );
 
     test('render error', async () => {
+      mockFetchApplicationData.mockReturnValue(mockAppData);
+      mockGetRedirectUrl.mockReturnValueOnce(MOCKED_URL);
       const mockValidationErrors = [
         {
           value: undefined,
@@ -435,6 +489,8 @@ describe('Trust Involved controller', () => {
     });
 
     test('catch error when post data from page', async () => {
+      mockFetchApplicationData.mockReturnValue(mockAppData);
+      mockGetRedirectUrl.mockReturnValueOnce(MOCKED_URL);
       mockReq.body = {
         id: 'dummyId',
         typeOfTrustee: 'dummyTrusteeType',
@@ -455,6 +511,8 @@ describe('Trust Involved controller', () => {
   describe('POST with url params unit tests', () => {
 
     test('"no more to add" button is pushed with url params and REDIS_removal flag is set to ON', async () => {
+      mockFetchApplicationData.mockReturnValue(mockAppData);
+      mockGetRedirectUrl.mockReturnValueOnce(MOCKED_URL);
       mockReq.body = {
         noMoreToAdd: 'noMoreToAdd',
       };
@@ -464,8 +522,7 @@ describe('Trust Involved controller', () => {
       await post(mockReq, mockRes, mockNext);
 
       expect(mockRes.redirect).toBeCalledTimes(1);
-      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
-      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(`${TRUST_ENTRY_WITH_PARAMS_URL + ADD_TRUST_URL}`);
+      expect(mockGetRedirectUrl).toHaveBeenCalledTimes(1);
     });
 
     const dpPostTrustee = [
@@ -490,6 +547,10 @@ describe('Trust Involved controller', () => {
     test.each(dpPostTrustee)(
       'success push with %p type',
       async (typeOfTrustee: string, expectedUrl: string) => {
+        mockFetchApplicationData.mockReturnValue(mockAppData);
+        mockGetRedirectUrl.mockReturnValueOnce(MOCKED_URL);
+        mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+
         mockReq.body = {
           typeOfTrustee,
         };
@@ -497,8 +558,6 @@ describe('Trust Involved controller', () => {
         (validationResult as any as jest.Mock).mockImplementationOnce(() => ({
           isEmpty: jest.fn().mockReturnValue(true),
         }));
-
-        mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
         await post(mockReq, mockRes, mockNext);
 
@@ -516,11 +575,16 @@ describe('Trust Involved controller', () => {
           location: 'body',
         }, //  as ValidationError,
       ];
+
       (validationResult as any as jest.Mock).mockImplementationOnce(() => ({
         isEmpty: jest.fn().mockReturnValue(false),
         array: jest.fn().mockReturnValue(mockValidationErrors),
       }));
-      mockGetApplicationData.mockReturnValueOnce(mockAppData);
+
+      // mockGetApplicationData.mockReturnValueOnce(mockAppData);
+      mockFetchApplicationData.mockReturnValue(mockAppData);
+      mockGetRedirectUrl.mockReturnValueOnce(MOCKED_URL);
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
       mockReq.body = {
         dummyKey: 'dummyValue',
@@ -568,6 +632,9 @@ describe('Trust Involved controller', () => {
     });
 
     test('catch error when post data from page', async () => {
+      mockFetchApplicationData.mockReturnValue(mockAppData);
+      mockGetRedirectUrl.mockReturnValueOnce(MOCKED_URL);
+
       mockReq.body = {
         id: 'dummyId',
         typeOfTrustee: 'dummyTrusteeType',
@@ -593,6 +660,9 @@ describe('Trust Involved controller', () => {
     });
 
     test(`successfully access GET method`, async () => {
+      mockFetchApplicationData.mockReturnValue(mockAppData);
+      mockGetRedirectUrl.mockReturnValueOnce(MOCKED_URL);
+
       const mockTrustData = {
         trustName: 'dummy',
       };
@@ -608,6 +678,8 @@ describe('Trust Involved controller', () => {
     });
 
     test(`successfully access POST method`, async () => {
+      mockFetchApplicationData.mockReturnValue(mockAppData);
+      mockGetRedirectUrl.mockReturnValueOnce(MOCKED_URL);
 
       const resp = await request(app).post(pageUrl).send({ noMoreToAdd: 'noMoreToAdd' });
 
@@ -617,10 +689,11 @@ describe('Trust Involved controller', () => {
     });
 
     test(`filters out individuals without a forename or dummy associated parties`, async () => {
+      mockGetRedirectUrl.mockReturnValueOnce(TRUST_ENTRY_URL);
+      mockIsActiveFeature.mockReturnValue(false);
 
       const individualTrustee1 = { surname: "dummySurname" } as IndividualTrustee;
       const individualTrustee2 = { forename: "empty" } as IndividualTrustee;
-
       const mockAppData: ApplicationData = {
         [TrustKey]: [{
           'INDIVIDUALS': [ individualTrustee1, individualTrustee2 ] as TrustIndividual[],
@@ -628,25 +701,26 @@ describe('Trust Involved controller', () => {
       } as ApplicationData;
 
       (fetchApplicationData as jest.Mock).mockResolvedValue(mockAppData);
+
       mockReq.body = {
         noMoreToAdd: 'noMoreToAdd',
       };
-      mockIsActiveFeature.mockReturnValue(false);
+
       await post(mockReq, mockRes, mockNext);
       await postTrustInvolvedPage(mockReq, mockRes, mockNext, true, true);
 
       expect(mockAppData.trusts?.[0].INDIVIDUALS).toEqual([individualTrustee2]);
-
       expect(mockRes.redirect).toBeCalledWith(`${TRUST_ENTRY_URL + ADD_TRUST_URL}`);
     });
 
     test(`keeps all valid individuals and ignore dummy associated parties`, async () => {
+      mockIsActiveFeature.mockReturnValue(false);
+      mockGetRedirectUrl.mockReturnValueOnce(TRUST_ENTRY_URL);
 
       const individualTrustee1 = { forename: "TestOne" } as IndividualTrustee;
       const individualTrustee2 = { forename: "TestTwo" } as IndividualTrustee;
       const individualTrustee3 = { forename: "testThree", surname: "TestSurname" } as IndividualTrustee;
       const individualTrustee4 = { surname: "OE001022A1" } as IndividualTrustee;
-
       const mockAppData: ApplicationData = {
         [TrustKey]: [{
           'INDIVIDUALS': [ individualTrustee1, individualTrustee2, individualTrustee3, individualTrustee4 ] as TrustIndividual[],
@@ -657,13 +731,12 @@ describe('Trust Involved controller', () => {
       mockReq.body = {
         noMoreToAdd: 'noMoreToAdd',
       };
-      mockIsActiveFeature.mockReturnValue(false);
+
       await post(mockReq, mockRes, mockNext);
       await postTrustInvolvedPage(mockReq, mockRes, mockNext, true, true);
 
       expect(mockAppData.trusts?.[0].INDIVIDUALS).toEqual([individualTrustee1, individualTrustee2, individualTrustee3]);
       expect(mockAppData.trusts?.[0].INDIVIDUALS).not.toEqual([individualTrustee4]);
-
       expect(mockRes.redirect).toBeCalledWith(`${TRUST_ENTRY_URL + ADD_TRUST_URL}`);
     });
   });

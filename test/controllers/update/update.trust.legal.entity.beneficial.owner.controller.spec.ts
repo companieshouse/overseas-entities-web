@@ -15,47 +15,63 @@ jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock("../../../src/utils/url");
 
 import { NextFunction, Request, Response } from "express";
-import { constants } from "http2";
 import { Params } from "express-serve-static-core";
+import { constants } from "http2";
 import request from "supertest";
-import { validationResult } from 'express-validator/src/validation-result';
 import { Session } from "@companieshouse/node-session-handler";
+import { validationResult } from 'express-validator/src/validation-result';
 
 import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import app from "../../../src/app";
 
 import { authentication } from "../../../src/middleware/authentication.middleware";
-import { hasTrustWithIdUpdate } from "../../../src/middleware/navigation/has.trust.middleware";
-import { mapCommonTrustDataToPage } from "../../../src/utils/trust/common.trust.data.mapper";
-import { RoleWithinTrustType } from "../../../src/model/role.within.trust.type.model";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
-import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
-import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
-import { isRegistrationJourney } from "../../../src/utils/url";
+import { hasTrustWithIdUpdate } from "../../../src/middleware/navigation/has.trust.middleware";
+import { RoleWithinTrustType } from "../../../src/model/role.within.trust.type.model";
+import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
+import { APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock";
 import { LEGAL_ENTITY_BO_TEXTS } from "../../../src/utils/trust.legal.entity.bo";
+import { mapCommonTrustDataToPage } from "../../../src/utils/trust/common.trust.data.mapper";
+import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 
 import { get, post, } from "../../../src/controllers/update/update.trusts.legal.entity.beneficial.owner.controller";
-import { fetchApplicationData, getApplicationData, setExtraData, } from "../../../src/utils/application.data";
-import { Trust, TrustCorporate, TrustKey } from "../../../src/model/trust.model";
 
 import {
+  getRedirectUrl,
+  isRemoveJourney,
+  isRegistrationJourney,
+} from "../../../src/utils/url";
+
+import {
+  Trust,
+  TrustKey,
+  TrustCorporate,
+} from "../../../src/model/trust.model";
+
+import {
+  setExtraData,
+  getApplicationData,
+  fetchApplicationData,
+} from "../../../src/utils/application.data";
+
+import {
+  PAGE_TITLE_ERROR,
   ANY_MESSAGE_ERROR,
   IMPORTANT_BANNER_TEXT,
-  PAGE_TITLE_ERROR,
-  TRUSTEE_STILL_INVOLVED_TEXT
+  TRUSTEE_STILL_INVOLVED_TEXT,
 } from "../../__mocks__/text.mock";
 
 import {
-  TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL,
   TRUST_INVOLVED_URL,
+  TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL,
   UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL,
 } from "../../../src/config";
 
 import {
+  saveTrustInApp,
   getTrustByIdFromApp,
   saveLegalEntityBoInTrust,
-  saveTrustInApp,
 } from "../../../src/utils/trusts";
 
 import {
@@ -65,8 +81,9 @@ import {
 
 mockCsrfProtectionMiddleware.mockClear();
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
-const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockGetRedirectUrl = getRedirectUrl as jest.Mock;
 
 const mockAuthentication = (authentication as jest.Mock);
 mockAuthentication.mockImplementation((_, __, next: NextFunction) => next());
@@ -85,6 +102,9 @@ mockServiceAvailabilityMiddleware.mockImplementation((_, __, next: NextFunction)
 
 const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
 mockIsRegistrationJourney.mockReturnValue(false);
+
+const mockIsRemoveJourney = isRemoveJourney as jest.Mock;
+mockIsRemoveJourney.mockReturnValue(false);
 
 describe('Trust Legal Entity Beneficial Owner Controller', () => {
 
@@ -119,7 +139,9 @@ describe('Trust Legal Entity Beneficial Owner Controller', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockFetchApplicationData.mockReset();
+    mockGetApplicationData.mockReset();
     mockIsActiveFeature.mockReturnValue(true);
+    mockGetRedirectUrl.mockReset();
 
     mockAppData = {
       [TrustKey]: [
@@ -253,6 +275,7 @@ describe('Trust Legal Entity Beneficial Owner Controller', () => {
       (mapCommonTrustDataToPage as jest.Mock).mockReturnValue({ trustName: 'dummyName' });
       (mapLegalEntityTrusteeByIdFromSessionToPage as jest.Mock).mockReturnValue({});
       mockGetApplicationData.mockReturnValue(mockAppData);
+      mockFetchApplicationData.mockReturnValue(mockAppData);
 
       const resp = await request(app).get(pageUrl + "?relevant-period=true").send({ relevant_period: true });
 
@@ -267,7 +290,12 @@ describe('Trust Legal Entity Beneficial Owner Controller', () => {
     });
 
     test('successfully access POST method', async () => {
+      mockIsActiveFeature.mockReturnValue(false);
+      mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
+      mockGetRedirectUrl.mockReturnValue(`${UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL}`);
+
       const resp = await request(app).post(pageUrl).send({});
+
       expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
       expect(resp.header.location).toEqual(
         `${UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL}/${trustId}${TRUST_INVOLVED_URL}`

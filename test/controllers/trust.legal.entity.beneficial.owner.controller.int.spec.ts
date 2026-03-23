@@ -3,38 +3,56 @@ jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/middleware/navigation/has.trust.middleware');
 jest.mock('../../src/utils/application.data');
 jest.mock('../../src/utils/save.and.continue');
-jest.mock('../../src/middleware/is.feature.enabled.middleware', () => ({
-  isFeatureEnabled: () => (_, __, next: NextFunction) => next(),
-}));
 jest.mock('../../src/utils/trusts');
 jest.mock('../../src/utils/feature.flag');
 jest.mock('../../src/middleware/service.availability.middleware');
 jest.mock('../../src/utils/url');
+jest.mock('../../src/middleware/is.feature.enabled.middleware', () => ({
+  isFeatureEnabled: () => (_, __, next: NextFunction) => next(),
+}));
 
-import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
 import { NextFunction } from "express";
-import app from "../../src/app";
-import { TRUST_ENTRY_URL, TRUST_ENTRY_WITH_PARAMS_URL, TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE, TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL, TRUST_INVOLVED_URL } from "../../src/config";
-import { authentication } from "../../src/middleware/authentication.middleware";
-import { hasTrustWithIdRegister } from "../../src/middleware/navigation/has.trust.middleware";
-import { Trust } from "../../src/model/trust.model";
-import { saveAndContinue } from "../../src/utils/save.and.continue";
-import { getTrustByIdFromApp } from "../../src/utils/trusts";
-import { TRUST_WITH_ID } from "../__mocks__/session.mock";
 import request from "supertest";
 import { constants } from "http2";
-import { ErrorMessages } from "../../src/validation/error.messages";
-import { TrustLegalEntityForm } from "../../src/model/trust.page.model";
-import { RoleWithinTrustType } from "../../src/model/role.within.trust.type.model";
+import { jest } from "@jest/globals";
 
+import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
+
+import app from "../../src/app";
+import { authentication } from "../../src/middleware/authentication.middleware";
+import { Trust } from "../../src/model/trust.model";
+import { ErrorMessages } from "../../src/validation/error.messages";
+import { saveAndContinue } from "../../src/utils/save.and.continue";
 import { isActiveFeature } from '../../src/utils/feature.flag';
+import { RoleWithinTrustType } from "../../src/model/role.within.trust.type.model";
+import { getTrustByIdFromApp } from "../../src/utils/trusts";
+import { fetchApplicationData } from '../../src/utils/application.data';
+import { TrustLegalEntityForm } from "../../src/model/trust.page.model";
+import { hasTrustWithIdRegister } from "../../src/middleware/navigation/has.trust.middleware";
 import { serviceAvailabilityMiddleware } from '../../src/middleware/service.availability.middleware';
-import { getUrlWithParamsToPath } from '../../src/utils/url';
+import { getRedirectUrl, getUrlWithParamsToPath } from '../../src/utils/url';
+
+import {
+  TRUST_WITH_ID,
+  APPLICATION_DATA_MOCK,
+} from "../__mocks__/session.mock";
+
+import {
+  TRUST_ENTRY_URL,
+  TRUST_INVOLVED_URL,
+  TRUST_ENTRY_WITH_PARAMS_URL,
+  TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL,
+  TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE,
+} from "../../src/config";
+
+const MOCKED_URL = "MOCKED_URL";
 
 mockCsrfProtectionMiddleware.mockClear();
-const MOCKED_URL = "MOCKED_URL";
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+const mockGetRedirectUrl = getRedirectUrl as jest.Mock;
+
 const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
 mockGetUrlWithParamsToPath.mockImplementation(() => MOCKED_URL);
 
@@ -53,21 +71,18 @@ describe("Legal entity beneficial owner integration tests", () => {
     jest.clearAllMocks();
     (authentication as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
     (hasTrustWithIdRegister as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
+    mockFetchApplicationData.mockReset();
+    mockGetRedirectUrl.mockReset();
   });
 
   describe("POST tests", () => {
 
     test(`renders the ${TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE} page with missing mandatory field messages`, async () => {
-
-      // Arrange
       const mockTrust = <Trust>{};
       (getTrustByIdFromApp as jest.Mock).mockReturnValue(mockTrust);
-
-      // Act
       const resp = await request(app).post(pageUrl).send(legalEntityWithMissingFields);
       const decodedHTML = decodeHTML(resp.text);
 
-      // Assert
       expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
       expect(decodedHTML).toContain(ErrorMessages.LEGAL_ENTITY_BO_NAME);
@@ -86,7 +101,6 @@ describe("Legal entity beneficial owner integration tests", () => {
     });
 
     test(`renders the ${TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE} page with errors for service address field and interested person date fields`, async () => {
-      // Arrange
       const mockTrust = <Trust>{};
       (getTrustByIdFromApp as jest.Mock).mockReturnValue(mockTrust);
       legalEntityWithMissingFields.legalEntityName = 'The Sherlock Holmes Museum';
@@ -103,11 +117,9 @@ describe("Legal entity beneficial owner integration tests", () => {
       legalEntityWithMissingFields.public_register_name = "Alpha and Omega, the beginning and the end";
       legalEntityWithMissingFields.public_register_jurisdiction = "Wakanda";
 
-      // Act
       const resp = await request(app).post(pageUrl).send(legalEntityWithMissingFields);
       const decodedHTML = decodeHTML(resp.text);
 
-      // Assert
       expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
       expect(decodedHTML).not.toContain(ErrorMessages.LEGAL_ENTITY_BO_NAME);
@@ -131,43 +143,36 @@ describe("Legal entity beneficial owner integration tests", () => {
     });
 
     test(`renders the ${TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE} page with errors if public register name and public register jurisdiction add up to over 160`, async () => {
-      // Arrange
       const mockTrust = <Trust>{};
       (getTrustByIdFromApp as jest.Mock).mockReturnValue(mockTrust);
       legalEntityWithMissingFields.is_on_register_in_country_formed_in = '1';
       legalEntityWithMissingFields.public_register_name = "o1U2bHyHD4D7NqERnvhfq8Edd0FEJkretjmoYvNjEZxPs7BDvG4n5udaMaAzcTJhSkby1qWtt6c30A5yXwfVsXe0tEPNae4OF19x";
       legalEntityWithMissingFields.public_register_jurisdiction = "o1U2bHyHD4D7NqERnvhfq8Edd0FEJkretjmoYvNjEZxPs7BDvG4n5udaMaAzcTJhSkby1qWtt6c30A5yXwfVsXe0tEPNae4OF19x";
 
-      // Act
       const resp = await request(app).post(pageUrl).send(legalEntityWithMissingFields);
       const decodedHTML = decodeHTML(resp.text);
 
-      // Assert
       expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
       expect(decodedHTML).toContain(ErrorMessages.NAME_REGISTRATION_JURISDICTION_LEGAL_ENTITY_BO);
     });
 
     test(`renders the ${TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE} page without errors if public register name and public register jurisdiction add up to less than 160`, async () => {
-      // Arrange
       const mockTrust = <Trust>{};
       (getTrustByIdFromApp as jest.Mock).mockReturnValue(mockTrust);
       legalEntityWithMissingFields.is_on_register_in_country_formed_in = '1';
       legalEntityWithMissingFields.public_register_name = "Deliverer";
       legalEntityWithMissingFields.public_register_jurisdiction = "Alpha and Omega, the beginning and the end";
 
-      // Act
       const resp = await request(app).post(pageUrl).send(legalEntityWithMissingFields);
       const decodedHTML = decodeHTML(resp.text);
 
-      // Assert
       expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
       expect(decodedHTML).not.toContain(ErrorMessages.NAME_REGISTRATION_JURISDICTION_LEGAL_ENTITY_BO);
     });
 
     test(`renders the ${TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE} page without errors interested person date`, async () => {
-    // Arrange
       const mockTrust = <Trust>{};
       (getTrustByIdFromApp as jest.Mock).mockReturnValue(mockTrust);
       legalEntityWithMissingFields.roleWithinTrust = RoleWithinTrustType.INTERESTED_PERSON;
@@ -175,11 +180,9 @@ describe("Legal entity beneficial owner integration tests", () => {
       legalEntityWithMissingFields.interestedPersonStartDateMonth = "8";
       legalEntityWithMissingFields.interestedPersonStartDateYear = "2012";
 
-      // Act
       const resp = await request(app).post(pageUrl).send(legalEntityWithMissingFields);
       const decodedHTML = decodeHTML(resp.text);
 
-      // Assert
       expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
       expect(decodedHTML).not.toContain(ErrorMessages.ENTER_DATE_INTERESTED_PERSON_LEGAL_ENTITY_BO);
@@ -192,20 +195,17 @@ describe("Legal entity beneficial owner integration tests", () => {
 
     test(`renders the ${TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE} page with missing mandatory field messages`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
+      mockGetRedirectUrl.mockReturnValue(MOCKED_URL);
 
-      // Arrange
       const mockTrust = <Trust>{};
       (getTrustByIdFromApp as jest.Mock).mockReturnValue(mockTrust);
-
-      // Act
       const resp = await request(app).post(pageWithParamsUrl).send(legalEntityWithMissingFields);
       const decodedHTML = decodeHTML(resp.text);
 
-      // Assert
       expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
-      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
-      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(TRUST_ENTRY_WITH_PARAMS_URL);
+      expect(mockGetRedirectUrl).toHaveBeenCalledTimes(1);
       expect(resp.text).toContain(MOCKED_URL + `/${trustId}${TRUST_INVOLVED_URL}`); // back link
       expect(decodedHTML).toContain(ErrorMessages.LEGAL_ENTITY_BO_NAME);
       expect(decodedHTML).toContain(ErrorMessages.LEGAL_ENTITY_BO_ROLE);
@@ -223,7 +223,6 @@ describe("Legal entity beneficial owner integration tests", () => {
     });
 
     test(`renders the ${TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE} page with errors for service address field and interested person date fields`, async () => {
-      // Arrange
       const mockTrust = <Trust>{};
       (getTrustByIdFromApp as jest.Mock).mockReturnValue(mockTrust);
       legalEntityWithMissingFields.legalEntityName = 'The Sherlock Holmes Museum';
@@ -240,11 +239,9 @@ describe("Legal entity beneficial owner integration tests", () => {
       legalEntityWithMissingFields.public_register_name = "Alpha and Omega, the beginning and the end";
       legalEntityWithMissingFields.public_register_jurisdiction = "Wakanda";
 
-      // Act
       const resp = await request(app).post(pageWithParamsUrl).send(legalEntityWithMissingFields);
       const decodedHTML = decodeHTML(resp.text);
 
-      // Assert
       expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
       expect(decodedHTML).not.toContain(ErrorMessages.LEGAL_ENTITY_BO_NAME);
@@ -268,8 +265,9 @@ describe("Legal entity beneficial owner integration tests", () => {
     });
 
     test(`renders the ${TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE} page with errors if public register name and public register jurisdiction add up to over 160`, async () => {
-      // Arrange
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
+      mockGetRedirectUrl.mockReturnValue(MOCKED_URL);
 
       const mockTrust = <Trust>{};
       (getTrustByIdFromApp as jest.Mock).mockReturnValue(mockTrust);
@@ -277,38 +275,31 @@ describe("Legal entity beneficial owner integration tests", () => {
       legalEntityWithMissingFields.public_register_name = "o1U2bHyHD4D7NqERnvhfq8Edd0FEJkretjmoYvNjEZxPs7BDvG4n5udaMaAzcTJhSkby1qWtt6c30A5yXwfVsXe0tEPNae4OF19x";
       legalEntityWithMissingFields.public_register_jurisdiction = "o1U2bHyHD4D7NqERnvhfq8Edd0FEJkretjmoYvNjEZxPs7BDvG4n5udaMaAzcTJhSkby1qWtt6c30A5yXwfVsXe0tEPNae4OF19x";
 
-      // Act
       const resp = await request(app).post(pageWithParamsUrl).send(legalEntityWithMissingFields);
       const decodedHTML = decodeHTML(resp.text);
 
-      // Assert
       expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
-      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
-      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(TRUST_ENTRY_WITH_PARAMS_URL);
+      expect(mockGetRedirectUrl).toHaveBeenCalledTimes(1);
       expect(decodedHTML).toContain(ErrorMessages.NAME_REGISTRATION_JURISDICTION_LEGAL_ENTITY_BO);
     });
 
     test(`renders the ${TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE} page without errors if public register name and public register jurisdiction add up to less than 160`, async () => {
-      // Arrange
       const mockTrust = <Trust>{};
       (getTrustByIdFromApp as jest.Mock).mockReturnValue(mockTrust);
       legalEntityWithMissingFields.is_on_register_in_country_formed_in = '1';
       legalEntityWithMissingFields.public_register_name = "Deliverer";
       legalEntityWithMissingFields.public_register_jurisdiction = "Alpha and Omega, the beginning and the end";
 
-      // Act
       const resp = await request(app).post(pageWithParamsUrl).send(legalEntityWithMissingFields);
       const decodedHTML = decodeHTML(resp.text);
 
-      // Assert
       expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
       expect(decodedHTML).not.toContain(ErrorMessages.NAME_REGISTRATION_JURISDICTION_LEGAL_ENTITY_BO);
     });
 
     test(`renders the ${TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE} page without errors interested person date`, async () => {
-      // Arrange
       const mockTrust = <Trust>{};
       (getTrustByIdFromApp as jest.Mock).mockReturnValue(mockTrust);
       legalEntityWithMissingFields.roleWithinTrust = RoleWithinTrustType.INTERESTED_PERSON;
@@ -316,11 +307,9 @@ describe("Legal entity beneficial owner integration tests", () => {
       legalEntityWithMissingFields.interestedPersonStartDateMonth = "8";
       legalEntityWithMissingFields.interestedPersonStartDateYear = "2012";
 
-      // Act
       const resp = await request(app).post(pageWithParamsUrl).send(legalEntityWithMissingFields);
       const decodedHTML = decodeHTML(resp.text);
 
-      // Assert
       expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
       expect(decodedHTML).not.toContain(ErrorMessages.ENTER_DATE_INTERESTED_PERSON_LEGAL_ENTITY_BO);

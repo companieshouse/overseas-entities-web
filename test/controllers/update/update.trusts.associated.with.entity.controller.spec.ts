@@ -4,21 +4,18 @@ jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
-jest.mock("../../../src/utils/url");
 
 import request from 'supertest';
 import { NextFunction } from 'express';
 
 import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import app from '../../../src/app';
-
 import { authentication } from '../../../src/middleware/authentication.middleware';
 import { companyAuthentication } from '../../../src/middleware/company.authentication.middleware';
 import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
 import { isActiveFeature } from '../../../src/utils/feature.flag';
 import { stringCount } from '../../utils/test.utils';
 import { ADD_TRUST_TEXTS } from "../../../src/utils/add.trust";
-import { isRegistrationJourney } from "../../../src/utils/url";
 
 import { fetchApplicationData, getApplicationData } from '../../../src/utils/application.data';
 import { Trust, TrustKey } from '../../../src/model/trust.model';
@@ -30,17 +27,17 @@ import {
 } from "../../../src/model";
 
 import {
-  UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL,
   UPDATE_TRUSTS_TELL_US_ABOUT_IT_PAGE,
   UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL,
   UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL,
+  UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL,
 } from '../../../src/config';
 
 import {
   PAGE_TITLE_ERROR,
-  UPDATE_TRUSTS_ASSOCIATED_ADDED_HEADING,
+  SAVE_AND_CONTINUE_BUTTON_TEXT,
   UPDATE_MANAGE_TRUSTS_REVIEWED_HEADING,
-  SAVE_AND_CONTINUE_BUTTON_TEXT
+  UPDATE_TRUSTS_ASSOCIATED_ADDED_HEADING,
 } from '../../__mocks__/text.mock';
 
 mockCsrfProtectionMiddleware.mockClear();
@@ -58,9 +55,6 @@ mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Respons
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue(true);
-
-const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
-mockIsRegistrationJourney.mockReturnValue(false);
 
 describe('Update - Trusts - Trusts associated with the overseas entity', () => {
 

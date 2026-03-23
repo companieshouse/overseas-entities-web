@@ -5,6 +5,7 @@ jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/save.and.continue');
+jest.mock('../../../src/service/overseas.entities.service');
 
 import { NextFunction } from 'express';
 import request from 'supertest';
@@ -13,12 +14,13 @@ import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddlewa
 import app from '../../../src/app';
 
 import { UpdateKey } from "../../../src/model/update.type.model";
+import { ErrorMessages } from '../../../src/validation/error.messages';
 import { authentication } from '../../../src/middleware/authentication.middleware';
-import { companyAuthentication } from '../../../src/middleware/company.authentication.middleware';
-import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
 import { isActiveFeature } from '../../../src/utils/feature.flag';
 import { saveAndContinue } from '../../../src/utils/save.and.continue';
-import { ErrorMessages } from '../../../src/validation/error.messages';
+import { updateOverseasEntity } from "../../../src/service/overseas.entities.service";
+import { companyAuthentication } from '../../../src/middleware/company.authentication.middleware';
+import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
 
 import { getApplicationData, fetchApplicationData } from '../../../src/utils/application.data';
 
@@ -28,12 +30,14 @@ import {
 } from '../../__mocks__/text.mock';
 
 import {
-  UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL,
-  UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL,
   UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL,
+  UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_WITH_PARAMS_URL,
+  UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL,
+  UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_WITH_PARAMS_URL,
 } from '../../../src/config';
 
 import {
+  OVERSEAS_ENTITY_ID,
   APPLICATION_DATA_MOCK,
   UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE,
 } from '../../__mocks__/session.mock';
@@ -54,15 +58,17 @@ mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Respo
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
-const mockIsActiveFeature = isActiveFeature as jest.Mock;
-mockIsActiveFeature.mockReturnValue(true);
+const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
+mockUpdateOverseasEntity.mockReturnValue(OVERSEAS_ENTITY_ID);
 
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
 describe('Update - Manage Trusts - Individuals or entities involved', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockIsActiveFeature.mockReset();
   });
 
   describe('GET tests', () => {
@@ -99,18 +105,21 @@ describe('Update - Manage Trusts - Individuals or entities involved', () => {
 
     test('when feature flag is on, redirect to orchestrator', async () => {
       mockIsActiveFeature.mockReturnValue(true);
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
+      mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
 
-      const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL).send({ noMoreToAdd: 'noMoreToAdd' });
+      const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_WITH_PARAMS_URL).send({ noMoreToAdd: 'noMoreToAdd' });
 
       expect(resp.status).toEqual(302);
-      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
-      expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
+      expect(updateOverseasEntity).toHaveBeenCalledTimes(1);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_WITH_PARAMS_URL);
     });
 
     test("trigger validation when no radio button selected", async () => {
       mockIsActiveFeature.mockReturnValue(true);
 
-      const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL);
+      const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ErrorMessages.TRUST_INVOLVED_INVALID);

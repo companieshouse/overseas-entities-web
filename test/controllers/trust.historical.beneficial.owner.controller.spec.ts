@@ -23,45 +23,67 @@ import { Session } from '@companieshouse/node-session-handler';
 
 import mockCsrfProtectionMiddleware from "../__mocks__/csrfProtectionMiddleware.mock";
 import app from "../../src/app";
-
-import { HISTORICAL_BO_TEXTS } from '../../src/utils/trust.former.bo';
-import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR } from '../__mocks__/text.mock';
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { authentication } from '../../src/middleware/authentication.middleware';
-import { hasTrustWithIdRegister } from '../../src/middleware/navigation/has.trust.middleware';
-import { mapBeneficialOwnerToSession } from '../../src/utils/trust/historical.beneficial.owner.mapper';
-import { mapCommonTrustDataToPage } from '../../src/utils/trust/common.trust.data.mapper';
 import { isActiveFeature } from '../../src/utils/feature.flag';
-import { getUrlWithParamsToPath, isRegistrationJourney } from '../../src/utils/url';
-import { serviceAvailabilityMiddleware } from '../../src/middleware/service.availability.middleware';
-import { updateOverseasEntity } from "../../src/service/overseas.entities.service";
+import { HISTORICAL_BO_TEXTS } from '../../src/utils/trust.former.bo';
 import { APPLICATION_DATA_MOCK } from "../__mocks__/session.mock";
+import { updateOverseasEntity } from "../../src/service/overseas.entities.service";
+import { hasTrustWithIdRegister } from '../../src/middleware/navigation/has.trust.middleware';
+import { mapCommonTrustDataToPage } from '../../src/utils/trust/common.trust.data.mapper';
+import { mapBeneficialOwnerToSession } from '../../src/utils/trust/historical.beneficial.owner.mapper';
+import { serviceAvailabilityMiddleware } from '../../src/middleware/service.availability.middleware';
 
 import { get, post } from "../../src/controllers/trust.historical.beneficial.owner.controller";
-import { Trust, TrustHistoricalBeneficialOwner, TrustKey } from '../../src/model/trust.model';
-import { getApplicationData, fetchApplicationData, setExtraData } from '../../src/utils/application.data';
-import { getTrustByIdFromApp, saveHistoricalBoInTrust, saveTrustInApp } from '../../src/utils/trusts';
+import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR } from '../__mocks__/text.mock';
 import { getTrustInReview, hasTrustsToReview } from '../../src/utils/update/review_trusts';
 
 import {
+  setExtraData,
+  getApplicationData,
+  fetchApplicationData,
+} from '../../src/utils/application.data';
+
+import {
+  getRedirectUrl,
+  isRemoveJourney,
+  isRegistrationJourney,
+} from '../../src/utils/url';
+
+import {
+  saveTrustInApp,
+  getTrustByIdFromApp,
+  saveHistoricalBoInTrust,
+} from '../../src/utils/trusts';
+
+import {
+  Trust,
+  TrustKey,
+  TrustHistoricalBeneficialOwner,
+} from '../../src/model/trust.model';
+
+import {
   TRUST_ENTRY_URL,
+  TRUST_INVOLVED_URL,
   TRUST_ENTRY_WITH_PARAMS_URL,
   TRUST_HISTORICAL_BENEFICIAL_OWNER_URL,
-  TRUST_INVOLVED_URL
 } from '../../src/config';
 
 mockCsrfProtectionMiddleware.mockClear();
+const mockGetRedirectUrl = getRedirectUrl as jest.Mock;
+const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
+
 const MOCKED_URL = TRUST_ENTRY_WITH_PARAMS_URL + "MOCKED_URL";
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
-const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
-const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
-
 const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
 mockIsRegistrationJourney.mockReturnValue(true);
+
+const mockIsRemoveJourney = isRemoveJourney as jest.Mock;
+mockIsRemoveJourney.mockReturnValue(false);
 
 describe('Trust Historical Beneficial Owner Controller', () => {
 
@@ -110,7 +132,7 @@ describe('Trust Historical Beneficial Owner Controller', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-
+    mockGetRedirectUrl.mockReset();
     mockAppData = {
       [TrustKey]: [
         mockTrust1Data,
@@ -133,10 +155,10 @@ describe('Trust Historical Beneficial Owner Controller', () => {
 
   describe('GET unit tests', () => {
 
-    test('catch error when renders the page', () => {
+    test('catch error when renders the page', async () => {
       const error = new Error(ANY_MESSAGE_ERROR);
       mockFetchApplicationData.mockImplementationOnce(() => { throw error; });
-      get(mockReq, mockRes, mockNext);
+      await get(mockReq, mockRes, mockNext);
       expect(mockNext).toBeCalledTimes(1);
       expect(mockNext).toBeCalledWith(error);
     });
@@ -348,15 +370,13 @@ describe('Trust Historical Beneficial Owner Controller', () => {
 
     test('successfully access POST method', async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-      mockGetUrlWithParamsToPath.mockReturnValueOnce(MOCKED_URL);
+      mockGetRedirectUrl.mockReturnValue(MOCKED_URL);
       const resp = await request(app).post(pageWithParamsUrl).send({});
       expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
       expect(resp.text).toContain(HISTORICAL_BO_TEXTS.title);
       expect(resp.text).toContain(PAGE_TITLE_ERROR);
       expect(authentication).toBeCalledTimes(1);
       expect(hasTrustWithIdRegister).toBeCalledTimes(1);
-      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
-      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(TRUST_ENTRY_WITH_PARAMS_URL);
       expect(resp.text).toContain(MOCKED_URL + `/${trustId}${TRUST_INVOLVED_URL}`); // back link
     });
 
@@ -391,7 +411,7 @@ describe('Trust Historical Beneficial Owner Controller', () => {
     test('does not validate BO end date if unable_to_provide_all_trust_info_flag is true and endDate is empty', async () => {
       // Given
       mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-      mockGetUrlWithParamsToPath.mockReturnValueOnce(MOCKED_URL);
+      mockGetRedirectUrl.mockReturnValue(MOCKED_URL);
       const historicalBORequest = { ...mockHistBORequest };
       historicalBORequest.endDateDay = "";
       historicalBORequest.endDateMonth = "";
@@ -408,14 +428,13 @@ describe('Trust Historical Beneficial Owner Controller', () => {
       expect(getTrustInReview).toBeCalledTimes(1);
       expect(authentication).toBeCalledTimes(1);
       expect(hasTrustWithIdRegister).toBeCalledTimes(1);
-      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
-      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(TRUST_ENTRY_WITH_PARAMS_URL);
+      expect(mockGetRedirectUrl).toHaveBeenCalledTimes(1);
     });
 
     test('does validate BO end date if unable_to_provide_all_trust_info_flag is false', async () => {
       // Given
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-      mockGetUrlWithParamsToPath.mockReturnValueOnce(MOCKED_URL);
+      mockGetRedirectUrl.mockReturnValue(MOCKED_URL);
       const historicalBORequest = { ...mockHistBORequest };
       historicalBORequest.endDateDay = "";
       historicalBORequest.endDateMonth = "";

@@ -7,7 +7,6 @@ import { hasNoBoAssignableToTrust } from "../utils/trusts";
 import { ApplicationData } from "../model";
 import { checkRelevantPeriod } from "../utils/relevant.period";
 import { isActiveFeature } from "../utils/feature.flag";
-import { FEATURE_FLAG_ENABLE_RELEVANT_PERIOD } from "../config";
 import isAllowedUrls from "./async/isAllowedUrls";
 
 export const isAddTrustToBeValidated = (appData: ApplicationData, req: Request): ValidationError[] => {
@@ -15,7 +14,8 @@ export const isAddTrustToBeValidated = (appData: ApplicationData, req: Request):
   const allowedUrls = [
     [config.REGISTER_AN_OVERSEAS_ENTITY_URL, config.TRUSTS_URL, config.ADD_TRUST_URL],
     [config.REGISTER_AN_OVERSEAS_ENTITY_WITH_PARAMS_URL, config.TRUSTS_URL, config.ADD_TRUST_URL],
-    [config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL]
+    [config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL],
+    [config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_WITH_PARAMS_URL],
   ];
 
   const allowed: boolean = isAllowedUrls(allowedUrls, req);
@@ -40,7 +40,7 @@ export const isAddTrustToBeValidated = (appData: ApplicationData, req: Request):
   }
 
   const isRelevantPeriod = checkRelevantPeriod(appData);
-  const isRelevantPeriodFeatureEnabled = isActiveFeature(FEATURE_FLAG_ENABLE_RELEVANT_PERIOD);
+  const isRelevantPeriodFeatureEnabled = isActiveFeature(config.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD);
 
   if (isRelevantPeriodFeatureEnabled && isRelevantPeriod) {
     if (!req.body["addTrust"]) {

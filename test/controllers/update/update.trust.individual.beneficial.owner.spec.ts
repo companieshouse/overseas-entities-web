@@ -12,7 +12,7 @@ jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/relevant.period');
-jest.mock("../../../src/utils/url");
+jest.mock('../../../src/utils/url');
 
 import { NextFunction, Request, Response } from "express";
 import { Params } from 'express-serve-static-core';

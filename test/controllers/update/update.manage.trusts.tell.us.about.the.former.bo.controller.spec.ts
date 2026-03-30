@@ -5,7 +5,7 @@ jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/save.and.continue');
-jest.mock('../../../src/utils/url');
+jest.mock('../../../src/service/overseas.entities.service');
 
 import { NextFunction } from 'express';
 import request from 'supertest';
@@ -22,35 +22,34 @@ import { yesNoResponse } from '../../../src/model/data.types.model';
 import { ApplicationData } from '../../../src/model';
 import { saveAndContinue } from '../../../src/utils/save.and.continue';
 import { isActiveFeature } from '../../../src/utils/feature.flag';
-import { TRUST } from '../../__mocks__/session.mock';
 import { UpdateKey } from '../../../src/model/update.type.model';
-import { isRegistrationJourney } from "../../../src/utils/url";
+import { updateOverseasEntity } from "../../../src/service/overseas.entities.service";
 
+import { TRUST, OVERSEAS_ENTITY_ID } from "../../__mocks__/session.mock";
 import { Trust, TrustHistoricalBeneficialOwner } from '../../../src/model/trust.model';
 
 import {
-  checkBOsDetailsEntered, fetchApplicationData,
+  setExtraData,
   getApplicationData,
-  setExtraData
+  fetchApplicationData,
+  checkBOsDetailsEntered,
 } from '../../../src/utils/application.data';
 
 import {
   PAGE_TITLE_ERROR,
-  UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_FORMER_BO_TITLE,
   ANY_MESSAGE_ERROR,
-  SERVICE_UNAVAILABLE
+  SERVICE_UNAVAILABLE,
+  UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_FORMER_BO_TITLE,
 } from '../../__mocks__/text.mock';
 
 import {
   SECURE_UPDATE_FILTER_URL,
   UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL,
   UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL,
-  UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL
+  UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_WITH_PARAMS_URL,
+  UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL,
+  UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_WITH_PARAMS_URL
 } from '../../../src/config';
-
-mockCsrfProtectionMiddleware.mockClear();
-const mockGetApplicationData = getApplicationData as jest.Mock;
-const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 
 const mockApplicationData: ApplicationData = {
   [UpdateKey]: {
@@ -98,6 +97,11 @@ const mockApplicationData: ApplicationData = {
 };
 
 mockJourneyDetectionMiddleware.mockClear();
+mockCsrfProtectionMiddleware.mockClear();
+
+const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
@@ -114,10 +118,8 @@ mockCheckBOsDetailsEntered.mockReturnValue(true);
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue(true);
 
-const mockSaveAndContinue = saveAndContinue as jest.Mock;
-
-const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
-mockIsRegistrationJourney.mockReturnValue(false);
+const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
+mockUpdateOverseasEntity.mockReturnValue(OVERSEAS_ENTITY_ID);
 
 describe('Update - Manage Trusts - Review former beneficial owners', () => {
 
@@ -126,6 +128,8 @@ describe('Update - Manage Trusts - Review former beneficial owners', () => {
     // This performs a deep copy of the mock application data object, to ensure that the HISTORICAL_BO list is
     // created new each time and doesn't grow
     const clonedMockApplicationData = JSON.parse(JSON.stringify(mockApplicationData));
+    mockFetchApplicationData.mockReset();
+    mockGetApplicationData.mockReset();
     mockGetApplicationData.mockReturnValue(clonedMockApplicationData);
     mockFetchApplicationData.mockReturnValue(clonedMockApplicationData);
   });
@@ -211,14 +215,15 @@ describe('Update - Manage Trusts - Review former beneficial owners', () => {
       });
 
       expect(resp.status).toEqual(302);
-      expect(mockSaveAndContinue).toHaveBeenCalled();
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
       expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
     });
 
     test('when feature flag is on, and adding new individual former BO, redirects to update-manage-trusts-orchestrator', async () => {
       mockIsActiveFeature.mockReturnValue(true);
 
-      const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL).send({
+      const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_WITH_PARAMS_URL).send({
         type: 'individual',
         firstName: 'Individual',
         lastName: 'BO',
@@ -232,8 +237,9 @@ describe('Update - Manage Trusts - Review former beneficial owners', () => {
       });
 
       expect(resp.status).toEqual(302);
-      expect(mockSaveAndContinue).toHaveBeenCalled();
-      expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
+      expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_WITH_PARAMS_URL);
     });
 
     test('when feature flag is on, update existing former BO, redirects to update-manage-trusts-orchestrator', async () => {
@@ -253,7 +259,8 @@ describe('Update - Manage Trusts - Review former beneficial owners', () => {
       });
 
       expect(resp.status).toEqual(302);
-      expect(mockSaveAndContinue).toHaveBeenCalled();
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
       expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
     });
 
@@ -290,7 +297,8 @@ describe('Update - Manage Trusts - Review former beneficial owners', () => {
       });
 
       expect(resp.status).toEqual(302);
-      expect(mockSaveAndContinue).toHaveBeenCalled();
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
       expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
 
       // Additionally check that date fields are trimmed before they're saved in the session

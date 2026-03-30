@@ -4,6 +4,7 @@ jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
+jest.mock('../../../src/middleware/navigation/update/is.in.change.journey.middleware');
 jest.mock('../../../src/utils/save.and.continue');
 
 import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
@@ -20,11 +21,17 @@ import { isActiveFeature } from '../../../src/utils/feature.flag';
 import { yesNoResponse } from '../../../src/model/data.types.model';
 import { ApplicationData } from '../../../src/model';
 import { saveAndContinue } from '../../../src/utils/save.and.continue';
+import { isInChangeJourney } from '../../../src/middleware/navigation/update/is.in.change.journey.middleware';
 import { companyAuthentication } from '../../../src/middleware/company.authentication.middleware';
 import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
 
 import { Trust, TrustHistoricalBeneficialOwner } from '../../../src/model/trust.model';
-import { checkBOsDetailsEntered, getApplicationData } from '../../../src/utils/application.data';
+
+import {
+  getApplicationData,
+  fetchApplicationData,
+  checkBOsDetailsEntered,
+} from '../../../src/utils/application.data';
 
 import {
   ANY_MESSAGE_ERROR,
@@ -89,6 +96,12 @@ const appDataWithReviewTrust = {
 mockCsrfProtectionMiddleware.mockClear();
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
+const mockIsInChangeJourney = isInChangeJourney as jest.Mock;
+mockIsInChangeJourney.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
+
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+mockFetchApplicationData.mockReturnValue(appDataWithReviewTrust);
+
 const mockGetApplicationData = getApplicationData as jest.Mock;
 mockGetApplicationData.mockReturnValue(appDataWithReviewTrust);
 
@@ -108,6 +121,7 @@ const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue(true);
 
 describe('Update - Manage Trusts - Review former beneficial owners', () => {
+
   beforeEach(() => {
     jest.clearAllMocks();
   });

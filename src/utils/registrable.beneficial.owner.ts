@@ -1,15 +1,15 @@
 import { NextFunction, Request, Response } from "express";
 import { Session } from "@companieshouse/node-session-handler";
-import { logger } from "../utils/logger";
 import * as config from "../config";
+import { logger } from "../utils/logger";
 import { ApplicationData } from "../model/application.model";
+import { isActiveFeature } from "./feature.flag";
 import { yesNoResponse } from "../model/data.types.model";
 import { saveAndContinue } from "./save.and.continue";
+import { updateOverseasEntity } from "../service/overseas.entities.service";
 import { RegistrableBeneficialOwnerKey } from "../model/update.type.model";
 import { getRedirectUrl, isRemoveJourney } from "../utils/url";
 import { fetchApplicationData, setExtraData } from "../utils/application.data";
-import { isActiveFeature } from "./feature.flag";
-import { updateOverseasEntity } from "../service/overseas.entities.service";
 
 export const getRegistrableBeneficialOwner = async (req: Request, res: Response, next: NextFunction, noChangeFlag?: boolean): Promise<void> => {
 

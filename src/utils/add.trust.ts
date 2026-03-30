@@ -1,17 +1,16 @@
 import { NextFunction, Request, Response } from 'express';
-import { logger } from './logger';
 import * as config from '../config';
-import { generateTrustId } from './trust/details.mapper';
-import { Trust } from '../model/trust.model';
 import * as PageModel from '../model/trust.page.model';
-import { isActiveFeature } from './feature.flag';
-import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
-import { getUrlWithParamsToPath, isRegistrationJourney } from './url';
-import { checkRelevantPeriod } from './relevant.period';
+import { logger } from './logger';
+import { Trust } from '../model/trust.model';
+import { generateTrustId } from './trust/details.mapper';
 import { ApplicationData } from 'model';
-import { isAddTrustToBeValidated } from '../validation/add.trust.validation';
+import { checkRelevantPeriod } from './relevant.period';
 import { fetchApplicationData } from './application.data';
+import { isAddTrustToBeValidated } from '../validation/add.trust.validation';
+import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
 
+import { getRedirectUrl, isRemoveJourney } from './url';
 import { ValidationError, validationResult } from 'express-validator';
 import { getTrustArray, hasNoBoAssignableToTrust } from './trusts';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
@@ -46,27 +45,27 @@ const getPageProperties = async (
   errors?: FormattedValidationErrors,
 ): Promise<TrustInvolvedPageProperties> => {
 
-  const isRegistration = isRegistrationJourney(req);
-  const appData = await fetchApplicationData(req, isRegistration);
+  const isRemove: boolean = await isRemoveJourney(req);
+  const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
 
   // note: isUpdate covers both Update and Remove journeys, so when on Remove journey isUpdate will be true.
   return {
+    ...appData,
+    errors,
+    isUpdate,
+    formData,
+    url: getUrl(isUpdate),
     templateName: getPageTemplate(isUpdate),
     backLinkUrl: getBackLinkUrl(isUpdate, req, appData),
-    ...appData,
+    pageParams: {
+      title: ADD_TRUST_TEXTS.title,
+      subtitle: ADD_TRUST_TEXTS.subtitle,
+    },
     pageData: {
       trustData: getTrustArray(appData),
       isRelevantPeriod: isUpdate ? checkRelevantPeriod(appData) : false,
       isAddTrustQuestionToBeShown: !isUpdate || !hasNoBoAssignableToTrust(appData)
     },
-    pageParams: {
-      title: ADD_TRUST_TEXTS.title,
-      subtitle: ADD_TRUST_TEXTS.subtitle,
-    },
-    isUpdate,
-    formData,
-    errors,
-    url: getUrl(isUpdate),
   };
 };
 
@@ -100,8 +99,8 @@ export const postTrusts = async (
 
     logger.debugRequest(req, `POST ${getPageTemplate(isUpdate)}`);
 
-    const isRegistration = isRegistrationJourney(req);
-    const appData = await fetchApplicationData(req, isRegistration);
+    const isRemove: boolean = await isRemoveJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
     const addNewTrust = req.body["addTrust"];
     const formData: PageModel.AddTrust = req.body as PageModel.AddTrust;
     const errorList = validationResult(req);
@@ -140,20 +139,27 @@ const newTrustPage = (isUpdate: boolean, req: Request) => {
   if (isUpdate) {
     return config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_PAGE;
   } else {
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
-      return getUrlWithParamsToPath(config.TRUST_ENTRY_WITH_PARAMS_URL, req);
-    }
-    return config.TRUST_DETAILS_URL;
+    return getRedirectUrl({
+      req,
+      urlWithEntityIds: config.TRUST_ENTRY_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.TRUST_ENTRY_URL,
+    });
   }
 };
 
 const nextPage = (isUpdate: boolean, req: Request) => {
   if (isUpdate) {
-    return config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL;
+    return getRedirectUrl({
+      req,
+      urlWithEntityIds: config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL,
+    });
   } else {
-    return isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
-      ? getUrlWithParamsToPath(config.CHECK_YOUR_ANSWERS_WITH_PARAMS_URL, req)
-      : config.CHECK_YOUR_ANSWERS_URL;
+    return getRedirectUrl({
+      req,
+      urlWithEntityIds: config.CHECK_YOUR_ANSWERS_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.CHECK_YOUR_ANSWERS_URL,
+    });
   }
 };
 
@@ -168,13 +174,23 @@ const getPageTemplate = (isUpdate: boolean) => {
 const getBackLinkUrl = (isUpdate: boolean, req: Request, appData: ApplicationData) => {
   const trustId = getTrustArray(appData).length;
   if (isUpdate && trustId > 0) {
-    return `${config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL}/${trustId}${config.TRUST_INVOLVED_URL}`;
+    return getRedirectUrl({
+      req,
+      urlWithEntityIds: config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL,
+    }) + `/${trustId}${config.TRUST_INVOLVED_URL}`;
   } else if (isUpdate) {
-    return config.UPDATE_BENEFICIAL_OWNER_TYPE_URL;
+    return getRedirectUrl({
+      req,
+      urlWithEntityIds: config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,
+    });
   } else {
-    return isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
-      ? getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req)
-      : config.BENEFICIAL_OWNER_TYPE_URL;
+    return getRedirectUrl({
+      req,
+      urlWithEntityIds: config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.BENEFICIAL_OWNER_TYPE_URL,
+    });
   }
 };
 
@@ -186,7 +202,6 @@ const getUrl = (isUpdate: boolean) => {
   }
 };
 
-// Get validation errors that depend on an asynchronous request
 const getValidationErrors = (appData: ApplicationData, req: Request): ValidationError[] => {
   const filingPeriodTrustStartDateErrors = isAddTrustToBeValidated(appData, req);
   return [...filingPeriodTrustStartDateErrors];

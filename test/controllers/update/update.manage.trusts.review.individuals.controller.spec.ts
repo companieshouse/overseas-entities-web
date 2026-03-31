@@ -11,27 +11,27 @@ jest.mock('../../../src/middleware/navigation/update/manage.trusts.middleware');
 jest.mock('../../../src/middleware/navigation/update/has.beneficial.owners.or.managing.officers.update.middleware');
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
-import mockJourneyDetectionMiddleware from "../../__mocks__/journey.detection.middleware.mock";
-import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
-import { beforeEach, jest, test, describe } from '@jest/globals';
-import request from 'supertest';
+import { beforeEach, describe, jest, test } from '@jest/globals';
 import { NextFunction } from 'express';
+import request from 'supertest';
+import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
+import mockJourneyDetectionMiddleware from "../../__mocks__/journey.detection.middleware.mock";
 
 import app from '../../../src/app';
-import { UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL, UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL, UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL, UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL } from '../../../src/config';
+import { UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL, UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL, UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_WITH_PARAMS_URL, UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL, UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_WITH_PARAMS_URL, UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL } from '../../../src/config';
 import { authentication } from '../../../src/middleware/authentication.middleware';
 import { companyAuthentication } from '../../../src/middleware/company.authentication.middleware';
-import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
-import { isInChangeJourney } from '../../../src/middleware/navigation/update/is.in.change.journey.middleware';
 import { hasBOsOrMOsUpdate } from '../../../src/middleware/navigation/update/has.beneficial.owners.or.managing.officers.update.middleware';
+import { isInChangeJourney } from '../../../src/middleware/navigation/update/is.in.change.journey.middleware';
 import { manageTrustsReviewIndividualsGuard } from '../../../src/middleware/navigation/update/manage.trusts.middleware';
-import { getApplicationData, setExtraData } from '../../../src/utils/application.data';
-import { getTrustInReview, setTrusteesAsReviewed } from '../../../src/utils/update/review_trusts';
-import { isActiveFeature } from '../../../src/utils/feature.flag';
+import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
 import { RoleWithinTrustType } from '../../../src/model/role.within.trust.type.model';
-import { PAGE_TITLE_ERROR } from '../../__mocks__/text.mock';
 import { TrusteeType } from '../../../src/model/trustee.type.model';
+import { getApplicationData, setExtraData } from '../../../src/utils/application.data';
+import { isActiveFeature } from '../../../src/utils/feature.flag';
 import { saveAndContinue } from '../../../src/utils/save.and.continue';
+import { getTrustInReview, setTrusteesAsReviewed } from '../../../src/utils/update/review_trusts';
+import { PAGE_TITLE_ERROR } from '../../__mocks__/text.mock';
 
 mockJourneyDetectionMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
@@ -105,7 +105,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
       mockGetApplicationData.mockReturnValueOnce(appData);
       mockGetTrustInReview.mockReturnValueOnce(trustInReview);
 
-      const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL);
+      const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(200);
 
@@ -113,7 +113,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
       expect(mockGetTrustInReview).toHaveBeenCalledTimes(1);
 
       expect(resp.text).toContain("Review individuals");
-      expect(resp.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);
+      expect(resp.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_WITH_PARAMS_URL);
 
       expect(resp.text).toContain('Dermott Jones');
       expect(resp.text).toContain('Grantor');

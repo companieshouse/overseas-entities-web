@@ -8,6 +8,7 @@ jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/middleware/navigation/update/is.in.change.journey.middleware');
 jest.mock('../../../src/middleware/navigation/update/manage.trusts.middleware');
+jest.mock('../../../src/service/overseas.entities.service');
 jest.mock('../../../src/middleware/navigation/update/has.beneficial.owners.or.managing.officers.update.middleware');
 
 import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
@@ -16,29 +17,55 @@ import request from 'supertest';
 import { NextFunction } from 'express';
 
 import app from '../../../src/app';
-import {
-  UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL,
-  UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL,
-  UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL,
-  RELEVANT_PERIOD_QUERY_PARAM
-} from '../../../src/config';
+
+import { TrusteeType } from '../../../src/model/trustee.type.model';
+import { yesNoResponse } from '../../../src/model/data.types.model';
+import { ErrorMessages } from "../../../src/validation/error.messages";
 import { authentication } from '../../../src/middleware/authentication.middleware';
-import { companyAuthentication } from '../../../src/middleware/company.authentication.middleware';
-import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
+import { isActiveFeature } from '../../../src/utils/feature.flag';
+import { saveAndContinue } from '../../../src/utils/save.and.continue';
 import { isInChangeJourney } from '../../../src/middleware/navigation/update/is.in.change.journey.middleware';
 import { hasBOsOrMOsUpdate } from '../../../src/middleware/navigation/update/has.beneficial.owners.or.managing.officers.update.middleware';
-import { manageTrustsTellUsAboutIndividualsGuard } from '../../../src/middleware/navigation/update/manage.trusts.middleware';
-import { getApplicationData, setExtraData } from '../../../src/utils/application.data';
-import { getTrustInReview, getTrustee, getTrusteeIndex } from '../../../src/utils/update/review_trusts';
-import { isActiveFeature } from '../../../src/utils/feature.flag';
-import { PAGE_TITLE_ERROR, SAVE_AND_CONTINUE_BUTTON_TEXT, ERROR_LIST, RELEVANT_PERIOD, UPDATE_TELL_US_ABOUT_THE_INDIVIDUAL_BENEFICIARY_HEADING, UPDATE_WHAT_IS_THEIR_FIRST_NAME, UPDATE_ARE_THEY_STILL_INVOLVED_IN_THE_TRUST } from '../../__mocks__/text.mock';
-import { TrusteeType } from '../../../src/model/trustee.type.model';
-import { saveAndContinue } from '../../../src/utils/save.and.continue';
-import { yesNoResponse } from '../../../src/model/data.types.model';
+import { OVERSEAS_ENTITY_ID } from "../../__mocks__/session.mock";
 import { RoleWithinTrustType } from '../../../src/model/role.within.trust.type.model';
-import { ErrorMessages } from "../../../src/validation/error.messages";
+import { updateOverseasEntity } from "../../../src/service/overseas.entities.service";
+import { companyAuthentication } from '../../../src/middleware/company.authentication.middleware';
+import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
+import { manageTrustsTellUsAboutIndividualsGuard } from '../../../src/middleware/navigation/update/manage.trusts.middleware';
+
+import { fetchApplicationData, setExtraData } from '../../../src/utils/application.data';
+
+import {
+  getTrustee,
+  getTrusteeIndex,
+  getTrustInReview,
+} from '../../../src/utils/update/review_trusts';
+
+import {
+  RELEVANT_PERIOD_QUERY_PARAM,
+  UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL,
+  UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL, UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_WITH_PARAMS_URL,
+  UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL,
+  UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_WITH_PARAMS_URL,
+} from '../../../src/config';
+
+import {
+  PAGE_TITLE_ERROR,
+  ERROR_LIST, RELEVANT_PERIOD,
+  SAVE_AND_CONTINUE_BUTTON_TEXT,
+  UPDATE_WHAT_IS_THEIR_FIRST_NAME,
+  UPDATE_ARE_THEY_STILL_INVOLVED_IN_THE_TRUST,
+  UPDATE_TELL_US_ABOUT_THE_INDIVIDUAL_BENEFICIARY_HEADING,
+} from '../../__mocks__/text.mock';
 
 mockCsrfProtectionMiddleware.mockClear();
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+const mockGetTrustInReview = getTrustInReview as jest.Mock;
+const mockGetTrustee = getTrustee as jest.Mock;
+const mockGetTrusteeIndex = getTrusteeIndex as jest.Mock;
+const mockSetExtraData = setExtraData as jest.Mock;
+const mockSaveAndContinue = saveAndContinue as jest.Mock;
+
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
@@ -60,18 +87,16 @@ mockManageTrustsTellUsAboutIndividualsGuard.mockImplementation((req: Request, re
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue(true);
 
-const mockGetApplicationData = getApplicationData as jest.Mock;
-const mockGetTrustInReview = getTrustInReview as jest.Mock;
-const mockGetTrustee = getTrustee as jest.Mock;
-const mockGetTrusteeIndex = getTrusteeIndex as jest.Mock;
-const mockSetExtraData = setExtraData as jest.Mock;
-const mockSaveAndContinue = saveAndContinue as jest.Mock;
+const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
+mockUpdateOverseasEntity.mockReturnValue(OVERSEAS_ENTITY_ID);
 
 let DEFAULT_FORM_SUBMISSION;
 
 describe('Update - Manage Trusts - Review individuals', () => {
+
   beforeEach(() => {
     jest.clearAllMocks();
+    mockFetchApplicationData.mockReset();
 
     DEFAULT_FORM_SUBMISSION = {
       trusteeId: 'trustee-id-2',
@@ -113,27 +138,49 @@ describe('Update - Manage Trusts - Review individuals', () => {
   });
 
   describe('GET tests', () => {
-    test('when no trustee to display, still renders the page', async () => {
+
+    test('when no trustee to display, still renders the page and REDIS_flag is OFF', async () => {
       const appData = { entity_number: 'OE988669', entity_name: 'Tell us about the individual OE 1' };
       const trustInReview = { trust_id: 'trust-in-review-1', trust_name: 'Veggie Trust', review_status: { in_review: true } };
 
-      mockGetApplicationData.mockReturnValue(appData);
+      mockIsActiveFeature.mockReturnValue(false);
+      mockFetchApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
       mockGetTrustee.mockReturnValue(undefined);
 
       const resp = await request(app).get(`${UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL}/trustee-individual-1`);
 
       expect(resp.status).toEqual(200);
-
       expect(mockGetTrustInReview).toHaveBeenCalledWith(appData);
       expect(mockGetTrustInReview).toHaveBeenCalledTimes(1);
       expect(mockGetTrustee).toHaveBeenCalledWith(trustInReview, 'trustee-individual-1', TrusteeType.INDIVIDUAL);
       expect(mockGetTrustee).toHaveBeenCalledTimes(1);
-
       expect(resp.text).toContain('Veggie Trust');
       expect(resp.text).toContain('Tell us about the individual');
       expect(resp.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+    });
 
+    test('when no trustee to display, still renders the page and REDIS_flag is ON', async () => {
+      const appData = { entity_number: 'OE988669', entity_name: 'Tell us about the individual OE 1' };
+      const trustInReview = { trust_id: 'trust-in-review-1', trust_name: 'Veggie Trust', review_status: { in_review: true } };
+
+      mockIsActiveFeature.mockReturnValue(true);
+      mockFetchApplicationData.mockReturnValue(appData);
+      mockGetTrustInReview.mockReturnValue(trustInReview);
+      mockGetTrustee.mockReturnValue(undefined);
+
+      const resp = await request(app).get(`${UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_WITH_PARAMS_URL}/trustee-individual-1`);
+
+      expect(resp.status).toEqual(200);
+      expect(mockGetTrustInReview).toHaveBeenCalledWith(appData);
+      expect(mockGetTrustInReview).toHaveBeenCalledTimes(1);
+      expect(mockGetTrustee).toHaveBeenCalledWith(trustInReview, 'trustee-individual-1', TrusteeType.INDIVIDUAL);
+      expect(mockGetTrustee).toHaveBeenCalledTimes(1);
+      expect(resp.text).toContain('Veggie Trust');
+      expect(resp.text).toContain('Tell us about the individual');
+      expect(resp.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_WITH_PARAMS_URL);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
@@ -181,18 +228,17 @@ describe('Update - Manage Trusts - Review individuals', () => {
         ceased_date_year: "2022"
       };
 
-      mockGetApplicationData.mockReturnValue(appData);
+      mockFetchApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
       mockGetTrustee.mockReturnValue(trustee);
 
       const resp = await request(app).get(`${UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL}/trustee-individual-2`);
-      expect(resp.status).toEqual(200);
 
+      expect(resp.status).toEqual(200);
       expect(mockGetTrustInReview).toHaveBeenCalledWith(appData);
       expect(mockGetTrustInReview).toHaveBeenCalledTimes(1);
       expect(mockGetTrustee).toHaveBeenCalledWith(trustInReview, 'trustee-individual-2', TrusteeType.INDIVIDUAL);
       expect(mockGetTrustee).toHaveBeenCalledTimes(1);
-
       expect(resp.text).toContain('Veggie Trust');
       expect(resp.text).toContain('Tell us about the individual');
       expect(resp.text).toContain('Jack');
@@ -205,11 +251,8 @@ describe('Update - Manage Trusts - Review individuals', () => {
       expect(resp.text).toContain('name="ceasedDateDay" type="text" value="22"');
       expect(resp.text).toContain('name="ceasedDateMonth" type="text" value="03"');
       expect(resp.text).toContain('name="ceasedDateYear" type="text" value="2022"');
-
       expect(resp.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL);
-
       expect(resp.text).not.toContain('id="dateOfBirthDay"');
-
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
@@ -218,7 +261,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
       const appData = { entity_number: 'OE999999', entity_name: 'Overseas Entity Name' };
       const trustInReview = { trust_id: 'trust-in-review-1', trust_name: 'Overseas Entity Name', review_status: { in_review: true } };
       mockIsActiveFeature.mockReturnValue(true);
-      mockGetApplicationData.mockReturnValue(appData);
+      mockFetchApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
       const resp = await request(app).get(`${UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL}${RELEVANT_PERIOD_QUERY_PARAM}`);
       expect(resp.status).toEqual(200);
@@ -238,7 +281,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
         relevant_period: true
       };
       mockIsActiveFeature.mockReturnValue(true);
-      mockGetApplicationData.mockReturnValue(appData);
+      mockFetchApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
       mockGetTrustee.mockReturnValue(trustee);
       const resp = await request(app).get(`${UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL}`);
@@ -253,6 +296,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
   });
 
   describe('POST tests', () => {
+
     test('when a valid trust submission is provided, and the trust id is of an existing trust, the trust is updated in the model', async () => {
       const formSubmission = {
         ...DEFAULT_FORM_SUBMISSION
@@ -342,7 +386,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
       };
 
       mockIsActiveFeature.mockReturnValue(true);
-      mockGetApplicationData.mockReturnValue(appData);
+      mockFetchApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
       mockGetTrusteeIndex.mockReturnValue(0);
 
@@ -354,11 +398,10 @@ describe('Update - Manage Trusts - Review individuals', () => {
 
       expect(resp.status).toBe(302);
       expect(resp.header.location).toBe(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
-
       expect(appData.update.review_trusts[0].INDIVIDUALS[0]).toEqual(expectedTrustee);
-
       expect(mockSetExtraData).toHaveBeenCalled();
-      expect(mockSaveAndContinue).toHaveBeenCalled();
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
     });
 
     test('when a valid trust submission is provided, and the trust id is not an existing trust, the trust is added to the model', async () => {
@@ -460,7 +503,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
       };
 
       mockIsActiveFeature.mockReturnValue(true);
-      mockGetApplicationData.mockReturnValue(appData);
+      mockFetchApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
       mockGetTrusteeIndex.mockReturnValue(-1);
 
@@ -472,12 +515,11 @@ describe('Update - Manage Trusts - Review individuals', () => {
 
       expect(resp.status).toBe(302);
       expect(resp.header.location).toBe(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
-
       expect(appData.update.review_trusts[0].INDIVIDUALS[0]).toEqual(existingTrustee);
       expect(appData.update.review_trusts[0].INDIVIDUALS[1]).toEqual(expectedTrustee);
-
       expect(mockSetExtraData).toHaveBeenCalled();
-      expect(mockSaveAndContinue).toHaveBeenCalled();
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
     });
 
     test('when validation fails, page is re-rendered', async () => {
@@ -547,7 +589,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
       };
 
       mockIsActiveFeature.mockReturnValue(true);
-      mockGetApplicationData.mockReturnValue(appData);
+      mockFetchApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
       mockGetTrustee.mockReturnValue(existingTrustee);
 
@@ -561,7 +603,6 @@ describe('Update - Manage Trusts - Review individuals', () => {
       expect(resp.text).toContain(ERROR_LIST);
       expect(resp.text).toContain('Tell us about the individual');
       expect(resp.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL);
-
       expect(mockSetExtraData).not.toHaveBeenCalled();
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
@@ -680,7 +721,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
       };
 
       mockIsActiveFeature.mockReturnValue(true);
-      mockGetApplicationData.mockReturnValue(appData);
+      mockFetchApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
 
       const resp = await request(app)
@@ -694,7 +735,6 @@ describe('Update - Manage Trusts - Review individuals', () => {
       expect(resp.text).toContain('Tell us about the individual');
       expect(resp.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL);
       expect(resp.text).toContain(errorMessage);
-
       expect(mockSetExtraData).not.toHaveBeenCalled();
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });

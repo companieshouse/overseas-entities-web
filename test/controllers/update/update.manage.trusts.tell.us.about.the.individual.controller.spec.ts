@@ -44,8 +44,9 @@ import {
 import {
   RELEVANT_PERIOD_QUERY_PARAM,
   UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL,
-  UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL,
+  UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL, UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_WITH_PARAMS_URL,
   UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL,
+  UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_WITH_PARAMS_URL,
 } from '../../../src/config';
 
 import {
@@ -138,10 +139,11 @@ describe('Update - Manage Trusts - Review individuals', () => {
 
   describe('GET tests', () => {
 
-    test('when no trustee to display, still renders the page', async () => {
+    test('when no trustee to display, still renders the page and REDIS_flag is OFF', async () => {
       const appData = { entity_number: 'OE988669', entity_name: 'Tell us about the individual OE 1' };
       const trustInReview = { trust_id: 'trust-in-review-1', trust_name: 'Veggie Trust', review_status: { in_review: true } };
 
+      mockIsActiveFeature.mockReturnValue(false);
       mockFetchApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
       mockGetTrustee.mockReturnValue(undefined);
@@ -156,6 +158,29 @@ describe('Update - Manage Trusts - Review individuals', () => {
       expect(resp.text).toContain('Veggie Trust');
       expect(resp.text).toContain('Tell us about the individual');
       expect(resp.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+    });
+
+    test('when no trustee to display, still renders the page and REDIS_flag is ON', async () => {
+      const appData = { entity_number: 'OE988669', entity_name: 'Tell us about the individual OE 1' };
+      const trustInReview = { trust_id: 'trust-in-review-1', trust_name: 'Veggie Trust', review_status: { in_review: true } };
+
+      mockIsActiveFeature.mockReturnValue(true);
+      mockFetchApplicationData.mockReturnValue(appData);
+      mockGetTrustInReview.mockReturnValue(trustInReview);
+      mockGetTrustee.mockReturnValue(undefined);
+
+      const resp = await request(app).get(`${UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_WITH_PARAMS_URL}/trustee-individual-1`);
+
+      expect(resp.status).toEqual(200);
+      expect(mockGetTrustInReview).toHaveBeenCalledWith(appData);
+      expect(mockGetTrustInReview).toHaveBeenCalledTimes(1);
+      expect(mockGetTrustee).toHaveBeenCalledWith(trustInReview, 'trustee-individual-1', TrusteeType.INDIVIDUAL);
+      expect(mockGetTrustee).toHaveBeenCalledTimes(1);
+      expect(resp.text).toContain('Veggie Trust');
+      expect(resp.text).toContain('Tell us about the individual');
+      expect(resp.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_WITH_PARAMS_URL);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });

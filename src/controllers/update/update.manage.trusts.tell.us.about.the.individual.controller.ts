@@ -48,7 +48,7 @@ const getPageProperties = (trust, formData, trustee: TrustIndividual, req: Reque
     errors,
     formData,
     isUpdate: true,
-    uneditableDOB: trustee?.ch_references ? true : false,
+    uneditableDOB: !!trustee?.ch_references,
     backLinkUrl: getBackLink(req, trust.review_status.reviewed_individuals),
     templateName: req.url ? req.url.replace(UPDATE_AN_OVERSEAS_ENTITY_URL, "") : UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE,
     pageParams: {

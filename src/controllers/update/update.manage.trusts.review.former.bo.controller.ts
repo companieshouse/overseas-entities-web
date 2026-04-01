@@ -35,11 +35,11 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const appData = await fetchApplicationData(req, !isRemove);
     const trust = getTrustInReview(appData) as Trust;
 
-    const backLinkUrl = getRedirectUrlFor(
+    const backLinkUrl = getRedirectUrl({
       req,
-      UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_WITH_PARAMS_URL,
-      UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL
-    );
+      urlWithEntityIds: UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_WITH_PARAMS_URL,
+      urlWithoutEntityIds: UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL
+    });
 
     return res.render(UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_PAGE, {
       templateName: UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_PAGE,
@@ -56,11 +56,11 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     if (req.body.addFormerBo) {
-      const redirectUrl = getRedirectUrlFor(
+      const redirectUrl = getRedirectUrl({
         req,
-        UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_WITH_PARAMS_URL,
-        UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL
-      );
+        urlWithEntityIds: UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_WITH_PARAMS_URL,
+        urlWithoutEntityIds: UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL
+      });
       return res.redirect(redirectUrl);
     }
 
@@ -75,20 +75,14 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       await saveAndContinue(req, req.session as Session);
     }
 
-    const redirectUrl = getRedirectUrlFor(
+    const redirectUrl = getRedirectUrl({
       req,
-      UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_WITH_PARAMS_URL,
-      UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL
-    );
+      urlWithEntityIds: UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_WITH_PARAMS_URL,
+      urlWithoutEntityIds: UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL
+    });
 
     return res.redirect(redirectUrl);
   } catch (error) {
     next(error);
   }
 };
-
-const getRedirectUrlFor = (
-  req: Request,
-  urlWithEntityIds: string,
-  urlWithoutEntityIds: string
-) => getRedirectUrl({ req, urlWithEntityIds, urlWithoutEntityIds });

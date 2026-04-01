@@ -33,11 +33,11 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     // filter individuals to only include those with both firstname and surname
     individuals = individuals.filter(boindividual => boindividual?.forename?.trim() && boindividual?.surname?.trim());
 
-    const backLinkUrl = getRedirectUrlFor(
+    const backLinkUrl = getRedirectUrl({
       req,
-      UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_WITH_PARAMS_URL,
-      UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL
-    );
+      urlWithEntityIds: UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_WITH_PARAMS_URL,
+      urlWithoutEntityIds: UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL
+    });
 
     return res.render(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_PAGE, {
       templateName: UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_PAGE,
@@ -71,9 +71,3 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     next(error);
   }
 };
-
-const getRedirectUrlFor = (
-  req: Request,
-  urlWithEntityIds: string,
-  urlWithoutEntityIds: string
-) => getRedirectUrl({ req, urlWithEntityIds, urlWithoutEntityIds });

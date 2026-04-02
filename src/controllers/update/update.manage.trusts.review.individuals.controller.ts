@@ -1,18 +1,23 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Request, Response } from "express";
 
-import { Session } from '@companieshouse/node-session-handler';
+import { Session } from "@companieshouse/node-session-handler";
 
 import {
   UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL,
   UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_PAGE,
   UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL,
+  UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_WITH_PARAMS_URL,
   UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL,
-} from '../../config';
-import { logger } from '../../utils/logger';
-import { getApplicationData, setExtraData } from '../../utils/application.data';
-import { saveAndContinue } from '../../utils/save.and.continue';
-import { getTrustInReview, setTrusteesAsReviewed } from '../../utils/update/review_trusts';
-import { TrusteeType } from '../../model/trustee.type.model';
+} from "../../config";
+import { logger } from "../../utils/logger";
+import { getApplicationData, setExtraData } from "../../utils/application.data";
+import { saveAndContinue } from "../../utils/save.and.continue";
+import {
+  getTrustInReview,
+  setTrusteesAsReviewed,
+} from "../../utils/update/review_trusts";
+import { TrusteeType } from "../../model/trustee.type.model";
+import { getRedirectUrl } from "../../utils/url";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -28,9 +33,15 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     // filter individuals to only include those with both firstname and surname
     individuals = individuals.filter(boindividual => boindividual?.forename?.trim() && boindividual?.surname?.trim());
 
+    const backLinkUrl = getRedirectUrl({
+      req,
+      urlWithEntityIds: UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_WITH_PARAMS_URL,
+      urlWithoutEntityIds: UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL
+    });
+
     return res.render(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_PAGE, {
       templateName: UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_PAGE,
-      backLinkUrl: UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL,
+      backLinkUrl,
       pageData: {
         trustName: trustInReview?.trust_name ?? '',
         individuals,

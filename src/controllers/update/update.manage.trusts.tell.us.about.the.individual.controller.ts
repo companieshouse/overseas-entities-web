@@ -41,6 +41,7 @@ import {
   UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_WITH_PARAMS_URL,
   UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL,
   UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_WITH_PARAMS_URL,
+  UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_WITH_PARAMS_URL,
 } from '../../config';
 
 const getPageProperties = (trust, formData, trustee: TrustIndividual, req: Request, errors?: FormattedValidationErrors) => {
@@ -138,7 +139,13 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     }
     setExtraData(req.session, appData);
 
-    return res.redirect(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
+    const redirectUrl = getRedirectUrl({
+      req,
+      urlWithEntityIds: UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_WITH_PARAMS_URL,
+      urlWithoutEntityIds: UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL,
+    });
+
+    return res.redirect(redirectUrl);
 
   } catch (error) {
     next(error);

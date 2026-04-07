@@ -3,27 +3,33 @@ import { NextFunction, Request, Response } from "express";
 import { Session } from "@companieshouse/node-session-handler";
 
 import {
+  FEATURE_FLAG_ENABLE_REDIS_REMOVAL,
   UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL,
+  UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_WITH_PARAMS_URL,
   UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_PAGE,
   UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL,
   UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_WITH_PARAMS_URL,
   UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL,
+  UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_WITH_PARAMS_URL,
 } from "../../config";
 import { logger } from "../../utils/logger";
-import { getApplicationData, setExtraData } from "../../utils/application.data";
+import { fetchApplicationData, setExtraData } from "../../utils/application.data";
 import { saveAndContinue } from "../../utils/save.and.continue";
 import {
   getTrustInReview,
   setTrusteesAsReviewed,
 } from "../../utils/update/review_trusts";
 import { TrusteeType } from "../../model/trustee.type.model";
-import { getRedirectUrl } from "../../utils/url";
+import { getRedirectUrl, isRemoveJourney } from "../../utils/url";
+import { isActiveFeature } from "../../utils/feature.flag";
+import { updateOverseasEntity } from "../../service/overseas.entities.service";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const appData = await getApplicationData(req.session);
+    const isRemove: boolean = await isRemoveJourney(req);
+    const appData = await fetchApplicationData(req, !isRemove);
     const trustInReview = getTrustInReview(appData);
     let individuals = trustInReview?.INDIVIDUALS;
 
@@ -41,6 +47,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     return res.render(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_PAGE, {
       templateName: UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_PAGE,
+      baseChangeUrl: getBaseChangeUrls(req),
       backLinkUrl,
       pageData: {
         trustName: trustInReview?.trust_name ?? '',
@@ -55,19 +62,44 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-
     if (req.body.addIndividual) {
-      return res.redirect(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL);
+      const redirectUrl = getRedirectUrl({
+        req,
+        urlWithEntityIds: UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_WITH_PARAMS_URL,
+        urlWithoutEntityIds: UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL
+      });
+      return res.redirect(redirectUrl);
     }
 
-    const appData = await getApplicationData(req.session);
+    const isRemove: boolean = await isRemoveJourney(req);
+    const appData = await fetchApplicationData(req, !isRemove);
 
     setTrusteesAsReviewed(appData, TrusteeType.INDIVIDUAL);
     setExtraData(req.session, appData);
-    await saveAndContinue(req, req.session as Session);
 
-    return res.redirect(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
+    if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && !isRemove) {
+      await updateOverseasEntity(req, req.session as Session, appData);
+    } else {
+      await saveAndContinue(req, req.session as Session);
+    }
+
+    const redirectUrl = getRedirectUrl({
+      req,
+      urlWithEntityIds: UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_WITH_PARAMS_URL,
+      urlWithoutEntityIds: UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL
+    });
+
+    return res.redirect(redirectUrl);
   } catch (error) {
     next(error);
   }
 };
+
+const getBaseChangeUrls = (req: Request) => {
+  return getRedirectUrl({
+    req,
+    urlWithEntityIds: UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_WITH_PARAMS_URL,
+    urlWithoutEntityIds: UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL,
+  });
+};
+

@@ -47,7 +47,11 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     return res.render(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_PAGE, {
       templateName: UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_PAGE,
-      baseChangeUrl: getBaseChangeUrls(req),
+      baseChangeUrl: getRedirectUrl({
+        req,
+        urlWithEntityIds: UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_WITH_PARAMS_URL,
+        urlWithoutEntityIds: UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL,
+      }),
       backLinkUrl,
       pageData: {
         trustName: trustInReview?.trust_name ?? '',
@@ -93,13 +97,5 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   } catch (error) {
     next(error);
   }
-};
-
-const getBaseChangeUrls = (req: Request) => {
-  return getRedirectUrl({
-    req,
-    urlWithEntityIds: UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_WITH_PARAMS_URL,
-    urlWithoutEntityIds: UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL,
-  });
 };
 

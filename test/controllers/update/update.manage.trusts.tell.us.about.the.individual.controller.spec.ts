@@ -43,7 +43,7 @@ import {
 
 import {
   RELEVANT_PERIOD_QUERY_PARAM,
-  UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL,
+  UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_WITH_PARAMS_URL,
   UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL, UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_WITH_PARAMS_URL,
   UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL,
   UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_WITH_PARAMS_URL,
@@ -391,13 +391,13 @@ describe('Update - Manage Trusts - Review individuals', () => {
       mockGetTrusteeIndex.mockReturnValue(0);
 
       const resp = await request(app)
-        .post(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL)
+        .post(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_WITH_PARAMS_URL)
         .send({
           ...formSubmission,
         });
 
       expect(resp.status).toBe(302);
-      expect(resp.header.location).toBe(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
+      expect(resp.header.location).toBe(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_WITH_PARAMS_URL);
       expect(appData.update.review_trusts[0].INDIVIDUALS[0]).toEqual(expectedTrustee);
       expect(mockSetExtraData).toHaveBeenCalled();
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
@@ -508,13 +508,13 @@ describe('Update - Manage Trusts - Review individuals', () => {
       mockGetTrusteeIndex.mockReturnValue(-1);
 
       const resp = await request(app)
-        .post(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL)
+        .post(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_WITH_PARAMS_URL)
         .send({
           ...formSubmission,
         });
 
       expect(resp.status).toBe(302);
-      expect(resp.header.location).toBe(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
+      expect(resp.header.location).toBe(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_WITH_PARAMS_URL);
       expect(appData.update.review_trusts[0].INDIVIDUALS[0]).toEqual(existingTrustee);
       expect(appData.update.review_trusts[0].INDIVIDUALS[1]).toEqual(expectedTrustee);
       expect(mockSetExtraData).toHaveBeenCalled();

@@ -11,7 +11,7 @@ jest.mock('../../../src/middleware/navigation/update/manage.trusts.middleware');
 jest.mock('../../../src/middleware/navigation/update/has.beneficial.owners.or.managing.officers.update.middleware');
 jest.mock("../../../src/middleware/navigation/update/has.presenter.middleware");
 jest.mock("../../../src/middleware/navigation/has.trust.middleware");
-jest.mock("../../../src/utils/url");
+jest.mock('../../../src/service/overseas.entities.service');
 
 import { NextFunction } from 'express';
 import request from 'supertest';
@@ -19,54 +19,59 @@ import request from 'supertest';
 import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import app from '../../../src/app';
 
-import { authentication } from '../../../src/middleware/authentication.middleware';
-import { companyAuthentication } from '../../../src/middleware/company.authentication.middleware';
-import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
-import { isActiveFeature } from '../../../src/utils/feature.flag';
-import { isRegistrationJourney } from "../../../src/utils/url";
+import * as trusts from "../../../src/utils/trusts";
 import { yesNoResponse } from '../../../src/model/data.types.model';
-import { RoleWithinTrustType } from '../../../src/model/role.within.trust.type.model';
-import { manageTrustsTellUsAboutLegalEntitiesGuard } from '../../../src/middleware/navigation/update/manage.trusts.middleware';
+import { authentication } from '../../../src/middleware/authentication.middleware';
+import { isActiveFeature } from '../../../src/utils/feature.flag';
+import { updateOverseasEntity } from "../../../src/service/overseas.entities.service";
+import { companyAuthentication } from '../../../src/middleware/company.authentication.middleware';
+
+import { TrusteeType } from '../../../src/model/trustee.type.model';
+import { ErrorMessages } from "../../../src/validation/error.messages";
+import { saveAndContinue } from '../../../src/utils/save.and.continue';
 import { hasBOsOrMOsUpdate } from '../../../src/middleware/navigation/update/has.beneficial.owners.or.managing.officers.update.middleware';
 import { isInChangeJourney } from '../../../src/middleware/navigation/update/is.in.change.journey.middleware';
-import { TrusteeType } from '../../../src/model/trustee.type.model';
-import { saveAndContinue } from '../../../src/utils/save.and.continue';
-import { ErrorMessages } from "../../../src/validation/error.messages";
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
+import { RoleWithinTrustType } from '../../../src/model/role.within.trust.type.model';
 import { hasTrustWithIdUpdate } from "../../../src/middleware/navigation/has.trust.middleware";
-import * as trusts from "../../../src/utils/trusts";
+import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
+import { manageTrustsTellUsAboutLegalEntitiesGuard } from '../../../src/middleware/navigation/update/manage.trusts.middleware';
 
-import { getApplicationData, fetchApplicationData, setExtraData } from '../../../src/utils/application.data';
 import { Trust, TrustCorporate } from '../../../src/model/trust.model';
 import { getTrustInReview, getTrustee, getTrusteeIndex } from '../../../src/utils/update/review_trusts';
+import { getApplicationData, fetchApplicationData, setExtraData } from '../../../src/utils/application.data';
 
 import {
+  TRUST_WITH_ID,
+  OVERSEAS_ENTITY_ID,
   APPLICATION_DATA_MOCK,
   TRUST_RELEVANT_PERIOD,
-  TRUST_WITH_ID
 } from '../../__mocks__/session.mock';
 
 import {
-  ANY_MESSAGE_ERROR,
-  PAGE_NOT_FOUND_TEXT,
-  PAGE_TITLE_ERROR,
-  SERVICE_UNAVAILABLE,
-  UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_TITLE,
   ERROR_LIST,
   RELEVANT_PERIOD,
-  SAVE_AND_CONTINUE_BUTTON_TEXT
+  PAGE_TITLE_ERROR,
+  ANY_MESSAGE_ERROR,
+  PAGE_NOT_FOUND_TEXT,
+  SERVICE_UNAVAILABLE,
+  SAVE_AND_CONTINUE_BUTTON_TEXT,
+  UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_TITLE,
 } from '../../__mocks__/text.mock';
 
 import {
-  UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL,
-  UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL,
-  UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL,
+  RELEVANT_PERIOD_QUERY_PARAM,
   UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL,
   TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL,
-  RELEVANT_PERIOD_QUERY_PARAM
+  UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL,
+  UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL,
+  UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL,
+  UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_WITH_PARAMS_URL,
+  UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_WITH_PARAMS_URL,
 } from '../../../src/config';
 
 mockCsrfProtectionMiddleware.mockClear();
+
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
@@ -85,23 +90,23 @@ mockManageTrustsTellUsAboutLegalEntitiesGuard.mockImplementation((req: Request, 
 const mockIsInChangeJourney = isInChangeJourney as jest.Mock;
 mockIsInChangeJourney.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
-const mockIsActiveFeature = isActiveFeature as jest.Mock;
-mockIsActiveFeature.mockReturnValue(true);
-
-const mockGetTrustInReview = getTrustInReview as jest.Mock;
-const mockGetTrusteeIndex = getTrusteeIndex as jest.Mock;
-const mockGetTrustee = getTrustee as jest.Mock;
-const mockSetExtraData = setExtraData as jest.Mock;
-const mockSaveAndContinue = saveAndContinue as jest.Mock;
-
 const mockHasUpdatePresenter = hasUpdatePresenter as jest.Mock;
 mockHasUpdatePresenter.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockHasTrustWithIdUpdate = hasTrustWithIdUpdate as jest.Mock;
 mockHasTrustWithIdUpdate.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
-const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
-mockIsRegistrationJourney.mockReturnValue(false);
+const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
+mockUpdateOverseasEntity.mockReturnValue(OVERSEAS_ENTITY_ID);
+
+const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
+const mockGetTrustInReview = getTrustInReview as jest.Mock;
+const mockGetTrusteeIndex = getTrusteeIndex as jest.Mock;
+const mockGetTrustee = getTrustee as jest.Mock;
+const mockSetExtraData = setExtraData as jest.Mock;
+const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
 const trustId = TRUST_WITH_ID.trust_id;
 
@@ -171,9 +176,6 @@ const ROLE_WITHIN_TRUST_QUESTION_TEXT = "What is its role within the trust?";
 const IMPORTANT_BANNER_TEXT = "You need to provide some information about the overseas entity from the pre-registration period.";
 const CORRECT_AS_AT_DATE_INVOLVEMENT_CEASED_INSET_TEXT = "The information you enter for this pre-registration beneficiary must be correct as at the date they ceased to be involved in the trust.";
 
-const mockGetApplicationData = getApplicationData as jest.Mock;
-const mockFetchApplicationData = fetchApplicationData as jest.Mock;
-
 describe('Update - Manage Trusts - Review legal entities', () => {
 
   beforeEach(() => {
@@ -185,11 +187,11 @@ describe('Update - Manage Trusts - Review legal entities', () => {
 
   describe('GET tests', () => {
 
-    test('when feature flag is on, page is returned for adding new legal entity', async () => {
+    test('when feature flag is off, page is returned for adding new legal entity', async () => {
       const appData = { entity_number: 'OE123456', entity_name: 'Test OE' };
       const trustInReview = { trust_id: '1199', trust_name: 'Trust 1', review_status: { in_review: true } };
 
-      mockIsActiveFeature.mockReturnValue(true);
+      mockIsActiveFeature.mockReturnValue(false);
       mockGetApplicationData.mockReturnValue(appData);
       mockFetchApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
@@ -200,6 +202,28 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       expect(response.status).toEqual(200);
       expect(response.text).toContain(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_TITLE);
       expect(response.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
+      expect(mockGetTrustInReview).toHaveBeenCalledWith(appData);
+      expect(mockGetTrustInReview).toHaveBeenCalledTimes(1);
+      expect(mockGetTrustee).toHaveBeenCalledTimes(1);
+      expect(response.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(response.text).not.toContain(PAGE_TITLE_ERROR);
+    });
+
+    test('when feature flag is on, page is returned for adding new legal entity', async () => {
+      const appData = { entity_number: 'OE123456', entity_name: 'Test OE' };
+      const trustInReview = { trust_id: '1199', trust_name: 'Trust 1', review_status: { in_review: true } };
+
+      mockIsActiveFeature.mockReturnValue(true);
+      mockGetApplicationData.mockReturnValue(appData);
+      mockFetchApplicationData.mockReturnValue(appData);
+      mockGetTrustInReview.mockReturnValue(trustInReview);
+      mockGetTrustee.mockReturnValue(undefined);
+
+      const response = await request(app).get(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_WITH_PARAMS_URL);
+
+      expect(response.status).toEqual(200);
+      expect(response.text).toContain(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_TITLE);
+      expect(response.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_WITH_PARAMS_URL);
       expect(mockGetTrustInReview).toHaveBeenCalledWith(appData);
       expect(mockGetTrustInReview).toHaveBeenCalledTimes(1);
       expect(mockGetTrustee).toHaveBeenCalledTimes(1);
@@ -400,7 +424,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
     });
 
     test("catch error when rendering the page", async () => {
-      mockGetApplicationData.mockImplementation(() => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockIsActiveFeature.mockReturnValue(false);
       mockFetchApplicationData.mockImplementation(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const response = await request(app).get(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL);
       expect(response.status).toEqual(500);
@@ -540,7 +564,8 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       expect(resp.header.location).toBe(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
       expect(appData.update.review_trusts[0].CORPORATES[0]).toEqual(expectedTrustee);
       expect(mockSetExtraData).toHaveBeenCalled();
-      expect(mockSaveAndContinue).toHaveBeenCalled();
+      expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test('when a valid trust submission is provided, and the trust id is not an existing trust, the trust is added to the model', async () => {
@@ -645,7 +670,8 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       expect(appData.update.review_trusts[0].CORPORATES[0]).toEqual(existingTrustee);
       expect(appData.update.review_trusts[0].CORPORATES[1]).toEqual(expectedTrustee);
       expect(mockSetExtraData).toHaveBeenCalled();
-      expect(mockSaveAndContinue).toHaveBeenCalled();
+      expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test('should return a validation error if ceased date is before trust creation date', async () => {

@@ -17,28 +17,30 @@ import request from 'supertest';
 import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 
 import app from '../../../src/app';
+
+import { TRUST } from '../../__mocks__/session.mock';
+import { authentication } from '../../../src/middleware/authentication.middleware';
+import { TrustCorporate } from '../../../src/model/trust.model';
+import { ApplicationData } from '../../../src/model';
+import { isActiveFeature } from '../../../src/utils/feature.flag';
+import { saveAndContinue } from '../../../src/utils/save.and.continue';
+import { getTrustInReview } from '../../../src/utils/update/review_trusts';
+import { isInChangeJourney } from '../../../src/middleware/navigation/update/is.in.change.journey.middleware';
+import { hasBOsOrMOsUpdate } from '../../../src/middleware/navigation/update/has.beneficial.owners.or.managing.officers.update.middleware';
+import { RoleWithinTrustType } from '../../../src/model/role.within.trust.type.model';
+import { updateOverseasEntity } from '../../../src/service/overseas.entities.service';
+import { companyAuthentication } from '../../../src/middleware/company.authentication.middleware';
+import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
+
+import { Trust, yesNoResponse } from '@companieshouse/api-sdk-node/dist/services/overseas-entities';
+import { fetchApplicationData, setExtraData } from '../../../src/utils/application.data';
+import { manageTrustsReviewLegalEntitiesGuard } from '../../../src/middleware/navigation/update/manage.trusts.middleware';
+
 import {
   UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_WITH_PARAMS_URL,
   UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_WITH_PARAMS_URL,
-  UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_WITH_PARAMS_URL
+  UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_WITH_PARAMS_URL,
 } from '../../../src/config';
-import { authentication } from '../../../src/middleware/authentication.middleware';
-import { companyAuthentication } from '../../../src/middleware/company.authentication.middleware';
-import { isInChangeJourney } from '../../../src/middleware/navigation/update/is.in.change.journey.middleware';
-import { manageTrustsReviewLegalEntitiesGuard } from '../../../src/middleware/navigation/update/manage.trusts.middleware';
-import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
-import { fetchApplicationData, setExtraData } from '../../../src/utils/application.data';
-import { isActiveFeature } from '../../../src/utils/feature.flag';
-
-import { Trust, yesNoResponse } from '@companieshouse/api-sdk-node/dist/services/overseas-entities';
-import { hasBOsOrMOsUpdate } from '../../../src/middleware/navigation/update/has.beneficial.owners.or.managing.officers.update.middleware';
-import { ApplicationData } from '../../../src/model';
-import { RoleWithinTrustType } from '../../../src/model/role.within.trust.type.model';
-import { TrustCorporate } from '../../../src/model/trust.model';
-import { saveAndContinue } from '../../../src/utils/save.and.continue';
-import { getTrustInReview } from '../../../src/utils/update/review_trusts';
-import { TRUST } from '../../__mocks__/session.mock';
-import { updateOverseasEntity } from '../../../src/service/overseas.entities.service';
 
 const defaultLegalEntities = [{
   id: "123",
@@ -101,8 +103,7 @@ const defaultLegalEntities = [{
   sa_address_postal_code: ""
 } as TrustCorporate];
 
-const getReviewTrust = (corporates) => (
-{
+const getReviewTrust = corporates => ({
   ...TRUST,
   trust_id: "1",
   CORPORATES: corporates,
@@ -115,10 +116,13 @@ const getReviewTrust = (corporates) => (
 } as Trust);
 
 const getAppDataWithReviewTrust = (corporates) => ({
-  update: { review_trusts: [getReviewTrust(corporates)] },
+  update: {
+    review_trusts: [getReviewTrust(corporates)]
+  },
 } as ApplicationData);
 
 mockCsrfProtectionMiddleware.mockClear();
+
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
@@ -147,11 +151,13 @@ const mockGetTrustInReview = getTrustInReview as jest.Mock;
 const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 
 describe('Update - Manage Trusts - Review legal entities', () => {
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   describe('GET tests', () => {
+
     test('when feature flag is on, page is returned', async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
       mockFetchApplicationData.mockReturnValueOnce(getAppDataWithReviewTrust(defaultLegalEntities));
@@ -161,15 +167,12 @@ describe('Update - Manage Trusts - Review legal entities', () => {
 
       expect(response.status).toEqual(200);
       expect(response.text).toContain("Review legal entities");
-
       expect(response.text).toContain("Abigail Pruitt");
       expect(response.text).toContain("Beneficiary");
       expect(response.text).toContain(`${UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_WITH_PARAMS_URL}/123`);
-
       expect(response.text).toContain("Peter Smyth");
       expect(response.text).toContain("Grantor");
       expect(response.text).toContain(`${UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_WITH_PARAMS_URL}/456`);
-
       expect(response.text).toContain('Add a legal entity');
       expect(response.text).toContain('No more to add');
     });
@@ -212,6 +215,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
         ...defaultLegalEntities[0],
         still_involved: "Yes"
       }];
+
       mockFetchApplicationData.mockReturnValueOnce(getAppDataWithReviewTrust(legalEntities));
       mockGetTrustInReview.mockReturnValueOnce(getReviewTrust(legalEntities));
 
@@ -239,6 +243,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
   });
 
   describe('POST tests', () => {
+
     test('when add button clicked, redirect to add legal entity page with no id param', async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
       mockFetchApplicationData.mockReturnValueOnce(getAppDataWithReviewTrust(defaultLegalEntities));
@@ -249,7 +254,6 @@ describe('Update - Manage Trusts - Review legal entities', () => {
 
       expect(response.status).toEqual(302);
       expect(response.header.location).toEqual(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_WITH_PARAMS_URL);
-
       expect(mockSetExtraData).not.toHaveBeenCalled();
     });
 
@@ -263,7 +267,6 @@ describe('Update - Manage Trusts - Review legal entities', () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_WITH_PARAMS_URL);
-
       expect(mockSetExtraData).toHaveBeenCalled();
       expect(mockUpdateOverseasEntity).toHaveBeenCalled();
       expect(mockSaveAndContinue).not.toHaveBeenCalled();

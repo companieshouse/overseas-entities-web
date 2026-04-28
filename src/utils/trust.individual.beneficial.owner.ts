@@ -113,6 +113,7 @@ export const getTrustIndividualBo = async (req: Request, res: Response, next: Ne
       trusteeId
     );
     const pageProps = await getPageProperties(req, trustId, isUpdate, formData);
+
     if (!isRelevantPeriod) {
       if (appData) {
         pageProps.pageData.entity_name = appData.entity_name;

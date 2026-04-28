@@ -62,20 +62,7 @@ export const checkTrustIndividualCeasedDate = async (appData: ApplicationData, r
 };
 
 export const checkTrusteeLegalEntityCeasedDate = async (appData: ApplicationData, req: Request): Promise<ValidationError[]> => {
-  const allowedUrls = [
-    [config.REGISTER_AN_OVERSEAS_ENTITY_URL, config.TRUSTS_URL, config.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL],
-    [config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL],
-    [config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL, config.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL]
-  ];
-
-  const allowed: boolean = isAllowedUrls(allowedUrls, req);
-
   const errors: ValidationError[] = [];
-
-  if (!allowed) {
-    return errors;
-  }
-
   try {
     const condition = req.body["stillInvolved"] === "0" ||
       req.body["ceasedDateDay"] ||

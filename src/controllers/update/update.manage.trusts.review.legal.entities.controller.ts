@@ -31,7 +31,6 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const appData = await fetchApplicationData(req, !isRemove);
     const trustInReview = getTrustInReview(appData);
     const legalEntities = trustInReview?.CORPORATES;
-
     if (!legalEntities || legalEntities.length === 0) {
       throw new Error('Failed to render Manage Trusts Review legal entities page. No legal entities in session');
     }

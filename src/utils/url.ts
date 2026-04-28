@@ -1,11 +1,11 @@
-import * as config from "../config";
 import { Request } from "express";
+import { Session } from "@companieshouse/node-session-handler";
+import * as config from "../config";
 import { ApplicationData } from "../model";
 import { getApplicationData } from "./application.data";
-import { Session } from "@companieshouse/node-session-handler";
 import { IsRemoveKey } from "../model/data.types.model";
-import { createAndLogErrorRequest, logger } from "./logger";
 import { isActiveFeature } from "./feature.flag";
+import { createAndLogErrorRequest, logger } from "./logger";
 
 export interface TransactionIdAndSubmissionId {
   transactionId: string;

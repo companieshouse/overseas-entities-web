@@ -177,7 +177,6 @@ export const postTrustDetails = async (req: Request, res: Response, next: NextFu
     const session = req.session as Session;
     const isRemove: boolean = await isRemoveJourney(req);
     let appData: ApplicationData = await fetchApplicationData(req, !isRemove);
-
     const errorList = validationResult(req);
     const errors = getValidationErrors(appData, req);
     const formData: PageModel.TrustDetailsForm = req.body as PageModel.TrustDetailsForm;

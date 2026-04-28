@@ -18,7 +18,7 @@ export const mapIndividualTrusteeToSession = (
 ): Trust.IndividualTrustee => {
   let stillInvolved: string | null = (formData.stillInvolved === "1") ? "Yes" : "No";
 
-  // If a boolean value isn't receieved from the web form (it could be null or undefined, e.g. if question not displayed), need to set null
+  // If a boolean value isn't received from the web form (it could be null or undefined, e.g. if question not displayed), need to set null
   if (!formData.stillInvolved) {
     stillInvolved = null;
   }

@@ -56,6 +56,7 @@ describe("NAVIGATION utils", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetUrlWithParamsToPath.mockReset();
+    mockIsRemoveJourney.mockReset();
   });
 
   test(`getEntityBackLink returns ${config.DUE_DILIGENCE_URL} when ${WhoIsRegisteringType.AGENT} selected`, () => {
@@ -352,6 +353,7 @@ describe("NAVIGATION utils", () => {
   });
 
   test(`NAVIGATION returns ${config.SECURE_UPDATE_FILTER_WITH_PARAMS_URL} when calling previousPage on ${config.UPDATE_ANY_TRUSTS_INVOLVED_WITH_PARAMS_URL} object`, async () => {
+    mockGetUrlWithParamsToPath.mockReturnValueOnce(config.SECURE_UPDATE_FILTER_WITH_PARAMS_URL);
     const navigation = await NAVIGATION[config.UPDATE_ANY_TRUSTS_INVOLVED_WITH_PARAMS_URL].previousPage(mockGetApplicationData(), mockRequestWithParams);
     expect(navigation).toEqual(config.SECURE_UPDATE_FILTER_WITH_PARAMS_URL);
   });
@@ -389,6 +391,7 @@ describe("NAVIGATION utils", () => {
   });
 
   test(`NAVIGATION returns ${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL} when calling previousPage on ${config.UPDATE_FILING_DATE_WITH_PARAMS_URL} object`, async () => {
+    mockGetUrlWithParamsToPath.mockReturnValueOnce(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL);
     const navigation = await NAVIGATION[config.UPDATE_FILING_DATE_WITH_PARAMS_URL].previousPage();
     expect(navigation).toEqual(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL);
   });
@@ -464,12 +467,13 @@ describe("NAVIGATION utils", () => {
 
   test(`NAVIGATION returns ${config.UPDATE_INTERRUPT_CARD_WITH_PARAMS_URL} when calling previousPage on ${config.OVERSEAS_ENTITY_QUERY_WITH_PARAMS_URL} object`, async () => {
     mockIsRemoveJourney.mockReturnValueOnce(false);
+    mockGetUrlWithParamsToPath.mockReturnValueOnce(config.UPDATE_INTERRUPT_CARD_WITH_PARAMS_URL);
     const navigation = await NAVIGATION[config.OVERSEAS_ENTITY_QUERY_WITH_PARAMS_URL].previousPage(undefined, mockRequestWithoutParams);
     expect(navigation).toEqual(config.UPDATE_INTERRUPT_CARD_WITH_PARAMS_URL);
   });
 
   test(`NAVIGATION returns ${config.UPDATE_INTERRUPT_CARD_URL} with 'journey' param set when calling previousPage on ${config.OVERSEAS_ENTITY_QUERY_URL} object for Remove journey`, async () => {
-    mockIsRemoveJourney.mockReturnValueOnce(true);
+    mockIsRemoveJourney.mockReturnValue(true);
     const navigation = await NAVIGATION[config.OVERSEAS_ENTITY_QUERY_URL].previousPage(undefined, mockRemoveRequest);
     expect(navigation).toEqual(`${config.UPDATE_INTERRUPT_CARD_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
   });

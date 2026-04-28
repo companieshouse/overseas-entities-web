@@ -1,24 +1,25 @@
 import { Request } from "express";
 import { v4 as uuidv4 } from "uuid";
+
 import * as config from "../config";
 import { RoleWithinTrustType } from "../model/role.within.trust.type.model";
 import { ApplicationData } from "../model";
 import { yesNoResponse } from "../model/data.types.model";
 import { isActiveFeature } from "./feature.flag";
-import { getRedirectUrl, getUrlWithParamsToPath } from "./url";
 
+import { getRedirectUrl, getUrlWithParamsToPath } from "./url";
 import { ReviewTrustKey, UpdateKey } from "../model/update.type.model";
-import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from "../model/beneficial.owner.individual.model";
 import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../model/beneficial.owner.other.model";
+import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from "../model/beneficial.owner.individual.model";
 
 import {
-  BeneficialOwnerItem,
   Trust,
-  TrustBeneficialOwner,
-  TrustHistoricalBeneficialOwner,
-  IndividualTrustee,
   TrustKey,
   TrustCorporate,
+  IndividualTrustee,
+  BeneficialOwnerItem,
+  TrustBeneficialOwner,
+  TrustHistoricalBeneficialOwner,
 } from "../model/trust.model";
 
 /**
@@ -156,7 +157,7 @@ const getReviewTrustArray = (appData: ApplicationData): Trust[] => {
  */
 const saveTrustInApp = (appData: ApplicationData, trustToSave: Trust): ApplicationData => {
   const trusts: Trust[] = appData[TrustKey] ?? [];
-  //  get index of trust in trusts array, if exists
+  // get index of trust in trusts array, if exists
   const trustIndex: number = trusts.findIndex((trust: Trust) => trust.trust_id === trustToSave.trust_id);
   if (trustIndex >= 0) {
     trusts[trustIndex] = trustToSave; //  update existing trust in array
@@ -270,7 +271,6 @@ const getFormerTrustee = (
   isReview?: boolean,
 ): TrustHistoricalBeneficialOwner => {
   const formerTrustees = getFormerTrusteesFromTrust(appData, trustId, isReview);
-
   if (formerTrustees.length === 0 || trusteeId === undefined) {
     return {} as TrustHistoricalBeneficialOwner;
   }
@@ -301,7 +301,6 @@ const saveHistoricalBoInTrust = (
   boData: TrustHistoricalBeneficialOwner,
 ): Trust => {
   const bos = trust.HISTORICAL_BO?.filter((bo: TrustHistoricalBeneficialOwner) => bo.id !== boData.id);
-
   trust.HISTORICAL_BO = [
     ...(bos ?? []),
     boData,
@@ -333,7 +332,6 @@ const getLegalEntityTrustee = (
   isReview?: boolean
 ): TrustCorporate => {
   const legalEntityTrustees = getLegalEntityBosInTrust(appData, trustId, isReview);
-
   if (legalEntityTrustees.length === 0 || trusteeId === undefined) {
     return {} as TrustCorporate;
   }
@@ -345,7 +343,6 @@ const saveLegalEntityBoInTrust = (
   legalEntityData: TrustCorporate,
 ): Trust => {
   const legalEntities = trust.CORPORATES?.filter((legalEntity: TrustCorporate) => legalEntity.id !== legalEntityData.id);
-
   trust.CORPORATES = [
     ...(legalEntities ?? []),
     legalEntityData,
@@ -382,7 +379,6 @@ const saveIndividualTrusteeInTrust = (trust: Trust, trusteeData: IndividualTrust
  * @returns void
  */
 const mapTrustApiReturnModelToWebModel = (appData: ApplicationData) => {
-
   const trusts = getTrustArray(appData);
   if (containsTrustData(trusts)) {
     for (const trust of trusts ?? []) {
@@ -435,7 +431,11 @@ const mapTrustees = (trust: Trust) => {
       identification_country_registration: apiData?.identification_country_registration,
       identification_registration_number: apiData?.identification_registration_number,
       is_service_address_same_as_principal_address: apiData.is_service_address_same_as_principal_address,
-      is_on_register_in_country_formed_in: apiData?.is_on_register_in_country_formed_in
+      is_on_register_in_country_formed_in: apiData?.is_on_register_in_country_formed_in,
+      still_involved: apiData?.still_involved,
+      ceased_date_day: apiData?.ceased_date_day,
+      ceased_date_month: apiData?.ceased_date_month,
+      ceased_date_year: apiData?.ceased_date_year,
     };
   });
 
@@ -476,6 +476,10 @@ const mapTrustees = (trust: Trust) => {
       date_became_interested_person_day: apiData?.date_became_interested_person_day,
       date_became_interested_person_month: apiData?.date_became_interested_person_month,
       date_became_interested_person_year: apiData?.date_became_interested_person_year,
+      still_involved: apiData?.still_involved,
+      ceased_date_day: apiData?.ceased_date_day,
+      ceased_date_month: apiData?.ceased_date_month,
+      ceased_date_year: apiData?.ceased_date_year,
     };
   });
 

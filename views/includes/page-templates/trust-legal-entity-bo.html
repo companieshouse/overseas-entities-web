@@ -52,6 +52,7 @@
     {% include "includes/inputs/text-input.html" %}
 
     {% if not formData.relevant_period %}
+      {% set rolewithinTrust = formData.roleWithinTrust.toUpperCase() if formData.roleWithinTrust else false %}
       {% set fieldParam = {
         name: 'roleWithinTrust',
         label: 'What is its role within the trust?',
@@ -61,28 +62,28 @@
           {
             value: pageData.roleWithinTrustType.BENEFICIARY,
             text: "Beneficiary",
-            checked: formData.roleWithinTrust == pageData.roleWithinTrustType.BENEFICIARY,
+            checked: rolewithinTrust === pageData.roleWithinTrustType.BENEFICIARY.toUpperCase(),
             attributes: {
               "data-event-id": "beneficiaries-type-radio-option"
             }
           }, {
             value: pageData.roleWithinTrustType.SETTLOR,
             text: "Settlor",
-            checked: formData.roleWithinTrust == pageData.roleWithinTrustType.SETTLOR,
+            checked: rolewithinTrust === pageData.roleWithinTrustType.SETTLOR.toUpperCase(),
             attributes: {
               "data-event-id": "settlors-type-radio-option"
             }
           }, {
             value: pageData.roleWithinTrustType.GRANTOR,
             text: "Grantor",
-            checked: formData.roleWithinTrust == pageData.roleWithinTrustType.GRANTOR,
+            checked: rolewithinTrust === pageData.roleWithinTrustType.GRANTOR.toUpperCase(),
             attributes: {
               "data-event-id": "grantors-type-radio-option"
             }
           }, {
             value: pageData.roleWithinTrustType.INTERESTED_PERSON,
             text: "Interested Person",
-            checked: formData.roleWithinTrust == pageData.roleWithinTrustType.INTERESTED_PERSON,
+            checked: rolewithinTrust === pageData.roleWithinTrustType.INTERESTED_PERSON.toUpperCase(),
             attributes: {
               "data-event-id": "interested-persons-type-radio-option"
             },

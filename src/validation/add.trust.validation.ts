@@ -7,25 +7,9 @@ import { hasNoBoAssignableToTrust } from "../utils/trusts";
 import { ApplicationData } from "../model";
 import { checkRelevantPeriod } from "../utils/relevant.period";
 import { isActiveFeature } from "../utils/feature.flag";
-import isAllowedUrls from "./async/isAllowedUrls";
 
 export const isAddTrustToBeValidated = (appData: ApplicationData, req: Request): ValidationError[] => {
-
-  const allowedUrls = [
-    [config.REGISTER_AN_OVERSEAS_ENTITY_URL, config.TRUSTS_URL, config.ADD_TRUST_URL],
-    [config.REGISTER_AN_OVERSEAS_ENTITY_WITH_PARAMS_URL, config.TRUSTS_URL, config.ADD_TRUST_URL],
-    [config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL],
-    [config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_WITH_PARAMS_URL],
-  ];
-
-  const allowed: boolean = isAllowedUrls(allowedUrls, req);
-
   const errors: ValidationError[] = [];
-
-  if (!allowed) {
-    return errors;
-  }
-
   const isUpdateOrRemoveJourney: boolean = !!appData.entity_number;
 
   if (!isUpdateOrRemoveJourney || !hasNoBoAssignableToTrust(appData)) {

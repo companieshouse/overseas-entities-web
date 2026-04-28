@@ -12,6 +12,8 @@ jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/utils/feature.flag');
 jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
+jest.mock('../../../src/service/overseas.entities.service');
+jest.mock('../../../src/utils/save.and.continue');
 jest.mock("../../../src/utils/url");
 
 import { NextFunction, Request, Response } from "express";
@@ -26,16 +28,18 @@ import app from "../../../src/app";
 
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
-import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
-import { hasTrustWithIdUpdate } from "../../../src/middleware/navigation/has.trust.middleware";
+import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import { RoleWithinTrustType } from "../../../src/model/role.within.trust.type.model";
+import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
+import { updateOverseasEntity } from "../../../src/service/overseas.entities.service";
+import { hasTrustWithIdUpdate } from "../../../src/middleware/navigation/has.trust.middleware";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
-import { APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock";
 import { LEGAL_ENTITY_BO_TEXTS } from "../../../src/utils/trust.legal.entity.bo";
 import { mapCommonTrustDataToPage } from "../../../src/utils/trust/common.trust.data.mapper";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 
 import { get, post, } from "../../../src/controllers/update/update.trusts.legal.entity.beneficial.owner.controller";
+import { APPLICATION_DATA_MOCK, OVERSEAS_ENTITY_ID } from "../../__mocks__/session.mock";
 
 import {
   getRedirectUrl,
@@ -105,6 +109,12 @@ mockIsRegistrationJourney.mockReturnValue(false);
 
 const mockIsRemoveJourney = isRemoveJourney as jest.Mock;
 mockIsRemoveJourney.mockReturnValue(false);
+
+const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
+mockUpdateOverseasEntity.mockReturnValue(OVERSEAS_ENTITY_ID);
+
+const mockSaveAndContinue = saveAndContinue as jest.Mock;
+mockSaveAndContinue.mockReturnValue(true);
 
 describe('Trust Legal Entity Beneficial Owner Controller', () => {
 
@@ -211,19 +221,17 @@ describe('Trust Legal Entity Beneficial Owner Controller', () => {
 
   describe('POST unit tests', () => {
 
-    test('Save', async () => {
+    test('Save when REDIS_flag is set to OFF', async () => {
       const mockBoData = {} as TrustCorporate;
-      (mapLegalEntityToSession as jest.Mock).mockReturnValue(mockBoData);
-
-      mockFetchApplicationData.mockReturnValue(mockAppData);
-
       const mockUpdatedTrust = {} as Trust;
-      (saveLegalEntityBoInTrust as jest.Mock).mockReturnValue(mockBoData);
-
-      const mockTrust = {} as Trust;
-      (getTrustByIdFromApp as jest.Mock).mockReturnValue(mockTrust);
-
       const mockUpdatedAppData = {} as Trust;
+      const mockTrust = {} as Trust;
+
+      (mapLegalEntityToSession as jest.Mock).mockReturnValue(mockBoData);
+      mockFetchApplicationData.mockReturnValue(mockAppData);
+      mockIsActiveFeature.mockReturnValue(false);
+      (saveLegalEntityBoInTrust as jest.Mock).mockReturnValue(mockBoData);
+      (getTrustByIdFromApp as jest.Mock).mockReturnValue(mockTrust);
       (saveTrustInApp as jest.Mock).mockReturnValue(mockUpdatedAppData);
 
       (validationResult as any as jest.Mock).mockImplementation(() => ({
@@ -244,6 +252,43 @@ describe('Trust Legal Entity Beneficial Owner Controller', () => {
         mockReq.session,
         mockUpdatedAppData,
       );
+      expect(mockSaveAndContinue).toBeCalled();
+      expect(mockUpdateOverseasEntity).not.toBeCalled();
+    });
+
+    test('Save when REDIS_flag is set to ON', async () => {
+      const mockBoData = {} as TrustCorporate;
+      const mockUpdatedTrust = {} as Trust;
+      const mockUpdatedAppData = {} as Trust;
+      const mockTrust = {} as Trust;
+
+      (mapLegalEntityToSession as jest.Mock).mockReturnValue(mockBoData);
+      mockFetchApplicationData.mockReturnValue(mockAppData);
+      mockIsActiveFeature.mockReturnValue(true);
+      (saveLegalEntityBoInTrust as jest.Mock).mockReturnValue(mockBoData);
+      (getTrustByIdFromApp as jest.Mock).mockReturnValue(mockTrust);
+      (saveTrustInApp as jest.Mock).mockReturnValue(mockUpdatedAppData);
+
+      (validationResult as any as jest.Mock).mockImplementation(() => ({
+        isEmpty: jest.fn().mockReturnValue(true),
+      }));
+
+      await post(mockReq, mockRes, mockNext);
+
+      expect(mapLegalEntityToSession).toBeCalledTimes(1);
+      expect(mapLegalEntityToSession).toBeCalledWith(mockReq.body);
+      expect(getTrustByIdFromApp).toBeCalledTimes(1);
+      expect(getTrustByIdFromApp).toBeCalledWith(mockAppData, trustId);
+      expect(saveLegalEntityBoInTrust).toBeCalledTimes(1);
+      expect(saveLegalEntityBoInTrust).toBeCalledWith(mockTrust, mockBoData);
+      expect(saveTrustInApp).toBeCalledTimes(1);
+      expect(saveTrustInApp).toBeCalledWith(mockAppData, mockUpdatedTrust);
+      expect(setExtraData as jest.Mock).toBeCalledWith(
+        mockReq.session,
+        mockUpdatedAppData,
+      );
+      expect(mockSaveAndContinue).not.toBeCalled();
+      expect(mockUpdateOverseasEntity).toBeCalled();
     });
 
     test('catch error when renders the page', async () => {
@@ -294,8 +339,15 @@ describe('Trust Legal Entity Beneficial Owner Controller', () => {
       mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
       mockGetRedirectUrl.mockReturnValue(`${UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL}`);
 
-      const resp = await request(app).post(pageUrl).send({});
+      (validationResult as any as jest.Mock).mockImplementation(() => ({
+        isEmpty: jest.fn().mockReturnValue(true),
+      }));
 
+      const resp = await request(app).post(pageUrl).send({ stillInvolved: '1', });
+
+      expect(setExtraData as jest.Mock).toBeCalled();
+      expect(mockSaveAndContinue).toBeCalled();
+      expect(mockUpdateOverseasEntity).not.toBeCalled();
       expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
       expect(resp.header.location).toEqual(
         `${UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL}/${trustId}${TRUST_INVOLVED_URL}`

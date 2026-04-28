@@ -1,10 +1,10 @@
 import { Request } from "express";
 import { logger } from "../../utils/logger";
+import { yesNoResponse } from "../../model/data.types.model";
 import { ApplicationData } from "../../model";
 import { RoleWithinTrustType } from "../../model/role.within.trust.type.model";
-import { yesNoResponse } from "../../model/data.types.model";
-import { BeneficialOwnerIndividual } from "../../model/beneficial.owner.individual.model";
 import { BeneficialOwnerOther } from "../../model/beneficial.owner.other.model";
+import { BeneficialOwnerIndividual } from "../../model/beneficial.owner.individual.model";
 
 import {
   mapInputDate,

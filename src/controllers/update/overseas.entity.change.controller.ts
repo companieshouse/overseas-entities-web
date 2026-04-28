@@ -23,6 +23,7 @@ export const get = async (req: Request, resp: Response, next: NextFunction) => {
   try {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
+
     const isRemove: boolean = await isRemoveJourney(req);
     const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
     const backLinkUrl = getRedirectUrl({

@@ -39,7 +39,7 @@
           {% set formerTrusteeChangeName = OE_CONFIGS.CORPORATE_NAME %}
         {% endif %}
         {% if pageData.isReview %}
-          {% set changeLink = OE_CONFIGS.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL + "/" + trustee.boId + formerTrusteeChangeName %}
+          {% set changeLink = isReviewChangeUrls.formerBo + "/" + trustee.boId + formerTrusteeChangeName %}
         {% else %}
           {% set changeLink = OE_CONFIGS.TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE + "/" + trustee.id + formerTrusteeChangeName %}
         {% endif %}
@@ -69,7 +69,7 @@
         {% set type = pageData.trusteeType.INDIVIDUAL | capitalize %}
         {% set name = trustee.forename + " " + trustee.surname %}
         {% if pageData.isReview %}
-          {% set changeLink = OE_CONFIGS.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL + "/" + trustee.trusteeId + OE_CONFIGS.FORENAME %}
+          {% set changeLink = isReviewChangeUrls.individual + "/" + trustee.trusteeId + OE_CONFIGS.FORENAME %}
         {% else %}
           {% set changeLink = OE_CONFIGS.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE + "/" + trustee.id + OE_CONFIGS.FORENAME %}
         {% endif %}
@@ -98,7 +98,7 @@
       {% for trustee in pageData.trustees %}
         {% set type = pageData.trusteeTypeTitle[trustee.trusteeItemType] %}
         {% if pageData.isReview %}
-          {% set changeLink = OE_CONFIGS.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL + "/" + trustee.id + OE_CONFIGS.LEGAL_ENTITY_NAME %}
+          {% set changeLink = isReviewChangeUrls.legal + "/" + trustee.id + OE_CONFIGS.LEGAL_ENTITY_NAME %}
         {% else %}
           {% set changeLink = OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + trustee.id + OE_CONFIGS.LEGAL_ENTITY_NAME %}
         {% endif %}

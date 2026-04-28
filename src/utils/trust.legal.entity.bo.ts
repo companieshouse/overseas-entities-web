@@ -101,7 +101,6 @@ export const getTrustLegalEntityBo = async (req: Request, res: Response, next: N
     const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
     const trusteeId = req.params[config.ROUTE_PARAM_TRUSTEE_ID];
     const isRelevantPeriod = req.query ? req.query["relevant-period"] === "true" : false;
-
     const formData: TrustLegalEntityForm = mapLegalEntityTrusteeByIdFromSessionToPage(
       appData,
       trustId,
@@ -149,7 +148,6 @@ export const postTrustLegalEntityBo = async (req: Request, res: Response, next: 
       setEntityNameInRelevantPeriodPageBanner(pageProps, appData ? appData.entity_name : pageProps.pageData.trustData.trustName);
       return res.render(pageProps.template, pageProps);
     }
-
     const updatedTrust = saveLegalEntityBoInTrust(getTrustByIdFromApp(appData, trustId), legalEntityBoData,);
     appData = saveTrustInApp(appData, updatedTrust);
     setExtraData(session, appData);

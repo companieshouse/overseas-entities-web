@@ -92,7 +92,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_INTERRUPT_CARD_WITH_PARAMS_URL]: {
     currentPage: config.UPDATE_INTERRUPT_CARD_PAGE,
-    previousPage: () => config.UPDATE_ANY_TRUSTS_INVOLVED_WITH_PARAMS_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.UPDATE_ANY_TRUSTS_INVOLVED_WITH_PARAMS_URL, req),
     nextPage: [config.OVERSEAS_ENTITY_QUERY_PAGE]
   },
   [config.OVERSEAS_ENTITY_QUERY_URL]: {
@@ -102,7 +102,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.OVERSEAS_ENTITY_QUERY_WITH_PARAMS_URL]: {
     currentPage: config.OVERSEAS_ENTITY_QUERY_PAGE,
-    previousPage: async (appData: ApplicationData, req: Request) => getUpdateOrRemoveBackLink(req, config.UPDATE_INTERRUPT_CARD_WITH_PARAMS_URL),
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.UPDATE_INTERRUPT_CARD_WITH_PARAMS_URL, req),
     nextPage: [config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE]
   },
   [config.UPDATE_FILING_DATE_URL]: {
@@ -112,7 +112,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_FILING_DATE_WITH_PARAMS_URL]: {
     currentPage: config.UPDATE_FILING_DATE_PAGE,
-    previousPage: () => config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL, req),
     nextPage: [config.UPDATE_PRESENTER_PAGE]
   },
   [config.OVERSEAS_ENTITY_PRESENTER_URL]: {
@@ -217,7 +217,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_WITH_PARAMS_URL]: {
     currentPage: config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE,
-    previousPage: () => config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_WITH_PARAMS_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_WITH_PARAMS_URL, req),
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL]
   },
   [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]: {
@@ -252,7 +252,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL]: {
     currentPage: config.BENEFICIAL_OWNER_STATEMENTS_PAGE,
-    previousPage: () => config.OVERSEAS_ENTITY_UPDATE_DETAILS_WITH_PARAMS_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.OVERSEAS_ENTITY_UPDATE_DETAILS_WITH_PARAMS_URL, req),
     nextPage: [config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_WITH_PARAMS_URL]
   },
   [config.SECURE_REGISTER_FILTER_URL]: {
@@ -482,12 +482,12 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_WITH_PARAMS_URL]: {
     currentPage: config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_PAGE,
-    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_WITH_PARAMS_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_WITH_PARAMS_URL, req),
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL]
   },
   [config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_WITH_PARAMS_WITH_INDEX_URL]: {
     currentPage: config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_PAGE,
-    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_WITH_PARAMS_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_WITH_PARAMS_URL, req),
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL]
   },
   [config.UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_URL]: {
@@ -502,12 +502,12 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL]: {
     currentPage: config.UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_PAGE,
-    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_WITH_PARAMS_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_WITH_PARAMS_URL, req),
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL]
   },
   [config.UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_WITH_PARAMS_WITH_INDEX_URL]: {
     currentPage: config.UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_PAGE,
-    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_WITH_PARAMS_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_WITH_PARAMS_URL, req),
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL]
   },
   [config.TRUST_INFO_URL]: {
@@ -537,7 +537,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_DUE_DILIGENCE_WITH_PARAMS_URL]: {
     currentPage: config.UPDATE_DUE_DILIGENCE_PAGE,
-    previousPage: () => config.WHO_IS_MAKING_UPDATE_WITH_PARAMS_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.WHO_IS_MAKING_UPDATE_WITH_PARAMS_URL, req),
     nextPage: [config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_WITH_PARAMS_URL]
   },
   [config.UPDATE_BENEFICIAL_OWNER_GOV_URL]: {
@@ -552,12 +552,12 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL]: {
     currentPage: config.UPDATE_BENEFICIAL_OWNER_GOV_PAGE,
-    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req),
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL]
   },
   [config.UPDATE_BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL + config.ID]: {
     currentPage: config.UPDATE_BENEFICIAL_OWNER_GOV_PAGE,
-    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req),
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL]
   },
   [config.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL]: {
@@ -572,12 +572,12 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL]: {
     currentPage: config.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE,
-    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_WITH_PARAMS_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_WITH_PARAMS_URL, req),
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL]
   },
   [config.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_WITH_PARAMS_WITH_INDEX_URL]: {
     currentPage: config.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE,
-    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_WITH_PARAMS_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_WITH_PARAMS_URL, req),
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL]
   },
   [config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL]: {
@@ -592,12 +592,12 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL]: {
     currentPage: config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
-    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req),
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL]
   },
   [config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL + config.ID]: {
     currentPage: config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
-    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req),
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL]
   },
   [config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL]: {
@@ -612,12 +612,12 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL]: {
     currentPage: config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
-    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_WITH_PARAMS_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_WITH_PARAMS_URL, req),
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL]
   },
   [config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_WITH_INDEX_URL]: {
     currentPage: config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
-    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_WITH_PARAMS_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_WITH_PARAMS_URL, req),
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL]
   },
   [config.UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_URL]: {
@@ -632,12 +632,12 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL]: {
     currentPage: config.UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_PAGE,
-    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_WITH_PARAMS_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_WITH_PARAMS_URL, req),
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL]
   },
   [config.UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_WITH_PARAMS_WITH_INDEX_URL]: {
     currentPage: config.UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_PAGE,
-    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_WITH_PARAMS_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_WITH_PARAMS_URL, req),
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL]
   },
   [config.UPDATE_BENEFICIAL_OWNER_OTHER_URL]: {
@@ -652,12 +652,12 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL]: {
     currentPage: config.UPDATE_BENEFICIAL_OWNER_OTHER_PAGE,
-    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req),
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL]
   },
   [config.UPDATE_BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL + config.ID]: {
     currentPage: config.UPDATE_BENEFICIAL_OWNER_OTHER_PAGE,
-    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req),
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL]
   },
   [config.UPDATE_CONFIRM_TO_REMOVE_URL + config.ROUTE_PARAM_BO_MO_TYPE + config.ID]: {
@@ -667,7 +667,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_CONFIRM_TO_REMOVE_WITH_PARAMS_URL + config.ROUTE_PARAM_BO_MO_TYPE + config.ID]: {
     currentPage: config.UPDATE_CONFIRM_TO_REMOVE_PAGE,
-    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_WITH_PARAMS_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_WITH_PARAMS_URL, req),
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_WITH_PARAMS_URL]
   },
   [config.UPDATE_MANAGING_OFFICER_URL]: {
@@ -682,12 +682,12 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_MANAGING_OFFICER_WITH_PARAMS_URL]: {
     currentPage: config.UPDATE_MANAGING_OFFICER_PAGE,
-    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req),
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL]
   },
   [config.UPDATE_MANAGING_OFFICER_WITH_PARAMS_URL + config.ID]: {
     currentPage: config.UPDATE_MANAGING_OFFICER_PAGE,
-    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req),
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL]
   },
   [config.UPDATE_MANAGING_OFFICER_CORPORATE_URL]: {
@@ -702,12 +702,12 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL]: {
     currentPage: config.UPDATE_MANAGING_OFFICER_CORPORATE_PAGE,
-    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req),
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL]
   },
   [config.UPDATE_MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL + config.ID]: {
     currentPage: config.UPDATE_MANAGING_OFFICER_CORPORATE_PAGE,
-    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req),
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL]
   },
   [config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL]: {
@@ -717,7 +717,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_WITH_PARAMS_URL]: {
     currentPage: config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_PAGE,
-    previousPage: () => config.OVERSEAS_ENTITY_UPDATE_DETAILS_WITH_PARAMS_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.OVERSEAS_ENTITY_UPDATE_DETAILS_WITH_PARAMS_URL, req),
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_WITH_PARAMS_URL]
   },
   [config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL]: {
@@ -752,7 +752,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_ANY_TRUSTS_INVOLVED_WITH_PARAMS_URL]: {
     currentPage: config.UPDATE_ANY_TRUSTS_INVOLVED_PAGE,
-    previousPage: () => config.SECURE_UPDATE_FILTER_WITH_PARAMS_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.SECURE_UPDATE_FILTER_WITH_PARAMS_URL, req),
     nextPage: [config.UPDATE_INTERRUPT_CARD_WITH_PARAMS_URL]
   },
   [config.UPDATE_TRUSTS_SUBMIT_BY_PAPER_URL]: {

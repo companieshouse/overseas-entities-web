@@ -179,12 +179,10 @@ const getTrustEntryUrl = (req: Request) => {
 };
 
 const getValidationErrors = async (appData: ApplicationData, req: Request): Promise<ValidationError[]> => {
-  // const stillInvolvedErrors = checkTrustLegalEntityBeneficialOwnerStillInvolved(appData, req);
   const filingPeriodTrustStartDateErrors = await filingPeriodTrustStartDateValidations(req);
   const filingPeriodTrustCeaseDateErrors = await filingPeriodTrustCeaseDateValidations(req);
 
   return [
-    // ...stillInvolvedErrors,
     ...filingPeriodTrustStartDateErrors,
     ...filingPeriodTrustCeaseDateErrors
   ];

@@ -39,6 +39,12 @@ export const TRUST_INVOLVED_TEXTS = {
   },
 };
 
+type IsReviewChangeUrls = {
+    formerBo: string,
+    individual: string,
+    legal: string,
+};
+
 type TrustInvolvedPageProperties = {
   backLinkUrl: string,
   templateName: string;
@@ -62,6 +68,7 @@ type TrustInvolvedPageProperties = {
   formData?: TrustWhoIsInvolvedForm,
   errors?: FormattedValidationErrors,
   url: string,
+  isReviewChangeUrls: IsReviewChangeUrls
 };
 
 const getPageProperties = async (
@@ -104,6 +111,7 @@ const getPageProperties = async (
     template,
     templateName,
     url: getUrl(isUpdate),
+    isReviewChangeUrls: getIsReviewChangeUrls(req),
     backLinkUrl: getBackLinkUrl(isUpdate, trustId, isReview, req),
     pageParams: {
       title: TRUST_INVOLVED_TEXTS.title,
@@ -373,4 +381,24 @@ const getRegistrationTrustEntryUrl = (req: Request) => {
     urlWithEntityIds: config.TRUST_ENTRY_WITH_PARAMS_URL,
     urlWithoutEntityIds: config.TRUST_ENTRY_URL,
   });
+};
+
+const getIsReviewChangeUrls = (req: Request) => {
+  return {
+    formerBo: getRedirectUrl({
+      req,
+      urlWithEntityIds: config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL,
+    }),
+    individual: getRedirectUrl({
+      req,
+      urlWithEntityIds: config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL,
+    }),
+    legal: getRedirectUrl({
+      req,
+      urlWithEntityIds: config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL,
+    }),
+  };
 };

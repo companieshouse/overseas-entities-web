@@ -70,6 +70,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
+
     const isRemove: boolean = await isRemoveJourney(req);
     const appData = await fetchApplicationData(req, !isRemove);
     const trusteeId = req.params[ROUTE_PARAM_TRUSTEE_ID];
@@ -94,6 +95,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
+
     const session = req.session as Session;
     const isRemove: boolean = await isRemoveJourney(req);
     const appData = await fetchApplicationData(req, !isRemove);

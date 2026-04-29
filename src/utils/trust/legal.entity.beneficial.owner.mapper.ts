@@ -52,7 +52,7 @@ const mapLegalEntityToSession = (
   };
 
   let publicRegisterData = {};
-  if (formData.is_on_register_in_country_formed_in?.toString() === "1"){
+  if (formData.is_on_register_in_country_formed_in?.toString() === "1") {
     publicRegisterData = {
       identification_place_registered: formData.public_register_name,
       identification_country_registration: formData.public_register_jurisdiction,
@@ -61,7 +61,7 @@ const mapLegalEntityToSession = (
   }
 
   let interestedPersonData = {};
-  if (formData.roleWithinTrust === RoleWithinTrustType.INTERESTED_PERSON){
+  if (formData.roleWithinTrust === RoleWithinTrustType.INTERESTED_PERSON) {
     interestedPersonData = {
       date_became_interested_person_day: formData.interestedPersonStartDateDay,
       date_became_interested_person_month: formData.interestedPersonStartDateMonth,
@@ -69,12 +69,7 @@ const mapLegalEntityToSession = (
     };
   }
 
-  let stillInvolved: string | null = (formData.stillInvolved === "1") ? "Yes" : "No";
-
-  // If a boolean value isn't receieved from the web form (it could be null or undefined, e.g. if question not displayed), need to set null
-  if (!formData.stillInvolved) {
-    stillInvolved = null;
-  }
+  const stillInvolved: string | null = (formData?.stillInvolved === "1") ? "Yes" : (formData?.stillInvolved ? "No" : null);
 
   if (formData.is_service_address_same_as_principal_address?.toString() === "0") {
     return {

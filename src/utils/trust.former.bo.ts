@@ -17,7 +17,6 @@ import { mapTrustApiToWebWhenFlagsAreSet } from "../utils/trust/api.to.web.mappe
 
 import { getRedirectUrl, isRemoveJourney } from './url';
 import { fetchApplicationData, setExtraData } from '../utils/application.data';
-import { checkTrustLegalEntityBeneficialOwnerStillInvolved } from '../validation/stillInvolved.validation';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
 import { mapBeneficialOwnerToSession, mapFormerTrusteeByIdFromSessionToPage } from '../utils/trust/historical.beneficial.owner.mapper';
 import { filingPeriodTrustCeaseDateValidations, filingPeriodTrustStartDateValidations } from '../validation/async';
@@ -180,12 +179,10 @@ const getTrustEntryUrl = (req: Request) => {
 };
 
 const getValidationErrors = async (appData: ApplicationData, req: Request): Promise<ValidationError[]> => {
-  const stillInvolvedErrors = checkTrustLegalEntityBeneficialOwnerStillInvolved(appData, req);
   const filingPeriodTrustStartDateErrors = await filingPeriodTrustStartDateValidations(req);
   const filingPeriodTrustCeaseDateErrors = await filingPeriodTrustCeaseDateValidations(req);
 
   return [
-    ...stillInvolvedErrors,
     ...filingPeriodTrustStartDateErrors,
     ...filingPeriodTrustCeaseDateErrors
   ];

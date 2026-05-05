@@ -202,7 +202,7 @@ describe('Trust Historical Beneficial Owner Controller', () => {
         body: {},
       } as Request;
 
-      (fetchApplicationData as jest.Mock).mockReturnValue(mockAppData);
+      (getApplicationData as jest.Mock).mockReturnValue(mockAppData);
 
       const resp = await request(app).post(pageUrl).send(mockHistBORequest);
 

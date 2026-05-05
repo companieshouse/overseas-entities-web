@@ -1,13 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import { body } from "express-validator";
-import { logger } from "../utils/logger";
-import { ErrorMessages } from "./error.messages";
-import { trustCreatedDateValidations, trustCeasedDateValidations } from "./fields/date.validation";
-import { VALID_CHARACTERS } from "./regex/regex.validation";
 import { ApplicationData } from "../model";
-import { fetchApplicationData } from "../utils/application.data";
+import { getApplicationData } from "../utils/application.data";
+import { logger } from "../utils/logger";
 import { hasNoBoAssignableToTrust } from "../utils/trusts";
-import { isRegistrationJourney } from "../utils/url";
+import { ErrorMessages } from "./error.messages";
+import { trustCeasedDateValidations, trustCreatedDateValidations } from "./fields/date.validation";
+import { VALID_CHARACTERS } from "./regex/regex.validation";
 
 const setIsTrustToBeCeasedFlagOnBody = () => {
   return async (req: Request, _res: Response, next: NextFunction) => {
@@ -15,8 +14,7 @@ const setIsTrustToBeCeasedFlagOnBody = () => {
       if (req.body["stillInvolved"] === "1") {
         return next();
       }
-      const isRegistration = isRegistrationJourney(req);
-      const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+      const appData: ApplicationData = await getApplicationData(req);
       const isTrustToBeCeased = req.body["stillInvolved"] === "0" || hasNoBoAssignableToTrust(appData) ? "true" : "false";
       // Create a new object with the updated property
       req.body = { ...req.body, isTrustToBeCeased };

@@ -362,7 +362,7 @@ describe('Update - Manage Trusts - Review the trust', () => {
     test(`renders the update-manage-trusts-review-the-trust page with missing ceased date error message when no eligible BOs`, async () => {
 
       // use app data with no trust associated BOs - i.e. no BOs have Trust nature of controls
-      mockFetchApplicationData.mockReturnValue(appDataWithNoTrustNocBOs);
+      mockGetApplicationData.mockReturnValue(appDataWithNoTrustNocBOs);
 
       const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);
 
@@ -399,7 +399,7 @@ describe('Update - Manage Trusts - Review the trust', () => {
     test.each(ceasedDateScenarioFixtures)(`renders the update-manage-trusts-review-the-trust page when no BOs have Trust nature of controls with %s`, async (_, formData, errorMessage) => {
 
       // use app data with no trust associated BOs - i.e. no BOs have Trust nature of controls
-      mockFetchApplicationData.mockReturnValue(appDataWithNoTrustNocBOs);
+      mockGetApplicationData.mockReturnValue(appDataWithNoTrustNocBOs);
 
       const resp = await request(app)
         .post(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL)
@@ -431,7 +431,7 @@ describe('Update - Manage Trusts - Review the trust', () => {
     test(`renders the update-manage-trusts-review-the-trust page with NO ceased date error message when using today's date`, async () => {
 
       // use app data with no trust associated BOs - i.e. no BOs have Trust nature of controls
-      mockFetchApplicationData.mockReturnValue(appDataWithNoTrustNocBOs);
+      mockGetApplicationData.mockReturnValue(appDataWithNoTrustNocBOs);
       const today = DateTime.now();
       const resp = await request(app)
         .post(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL)

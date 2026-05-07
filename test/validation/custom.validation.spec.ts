@@ -1,7 +1,6 @@
 jest.mock('../../src/utils/application.data');
 jest.mock("../../src/service/company.profile.service");
 jest.mock("../../src/utils/logger");
-jest.mock("../../src/utils/url");
 
 import { DateTime } from 'luxon';
 import { Request } from "express";
@@ -9,14 +8,10 @@ import { Session } from '@companieshouse/node-session-handler';
 import * as custom from "../../src/validation/custom.validation";
 import { ErrorMessages } from "../../src/validation/error.messages";
 import { MAX_80 } from "../__mocks__/max.length.mock";
-import { fetchApplicationData } from "../../src/utils/application.data";
+import { getApplicationData } from "../../src/utils/application.data";
 import { Trust } from "../../src/model/trust.model";
 import { ROUTE_PARAM_TRUST_ID } from "../../src/config/index";
-import { isRegistrationJourney } from "../../src/utils/url";
 import { DefaultErrorsSecondNationality } from "../../src/validation/models/second.nationality.error.model";
-
-const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
-mockIsRegistrationJourney.mockReturnValue(true);
 
 const public_register_name = MAX_80 + "1";
 const public_register_jurisdiction = MAX_80;
@@ -101,7 +96,7 @@ describe('tests for isUnableToObtainAllTrustInfo', () => {
         } as Trust]
       }
     };
-    (fetchApplicationData as jest.Mock).mockReturnValue(appData);
+    (getApplicationData as jest.Mock).mockReturnValue(appData);
     expect(await custom.isUnableToObtainAllTrustInfo(mockReq)).toBe(expectedResult);
   });
 
@@ -117,7 +112,7 @@ describe('tests for isUnableToObtainAllTrustInfo', () => {
         unable_to_obtain_all_trust_info: notAllInfoFlag
       } as Trust]
     };
-    (fetchApplicationData as jest.Mock).mockReturnValue(appData);
+    (getApplicationData as jest.Mock).mockReturnValue(appData);
     expect(await custom.isUnableToObtainAllTrustInfo(mockReq)).toBe(expectedResult);
   });
 
@@ -228,13 +223,13 @@ describe('tests for checkDatePreviousToFilingDate ', () => {
   });
 
   test("should return error if startDate is after filingDate", () => {
-    (fetchApplicationData as jest.Mock).mockReturnValue(mockAppData);
+    (getApplicationData as jest.Mock).mockReturnValue(mockAppData);
     expect(() => custom.checkDatePreviousToFilingDate(mockReq, "15", "6", "2023", ErrorMessages.START_DATE_BEFORE_FILING_DATE))
       .toBeTruthy();
   });
 
   test("should return error if startDate is after filingDate", async () => {
-    (fetchApplicationData as jest.Mock).mockReturnValue(mockAppData);
+    (getApplicationData as jest.Mock).mockReturnValue(mockAppData);
     await expect(custom.checkDatePreviousToFilingDate(mockReq, "3", "8", "2023", ErrorMessages.START_DATE_BEFORE_FILING_DATE)).rejects
       .toThrowError(ErrorMessages.START_DATE_BEFORE_FILING_DATE);
   });

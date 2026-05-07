@@ -368,6 +368,7 @@ describe("Update Filing Date controller", () => {
     });
 
     test(`renders the ${config.UPDATE_FILING_DATE_PAGE} page with error when filing date is after next made up to date`, async () => {
+      mockGetApplicationData.mockReset();
       const mockData = { ...APPLICATION_DATA_MOCK };
       mockGetApplicationData.mockReturnValue(mockData);
 
@@ -394,8 +395,9 @@ describe("Update Filing Date controller", () => {
     });
 
     test(`renders the service unavailable page when unable to get the entity number`, async () => {
+      mockGetApplicationData.mockReset();
       const mockData = {};
-      mockFetchApplicationData.mockReturnValue(mockData);
+      mockGetApplicationData.mockReturnValue(mockData);
 
       const resp = await request(app)
         .post(config.UPDATE_FILING_DATE_URL)

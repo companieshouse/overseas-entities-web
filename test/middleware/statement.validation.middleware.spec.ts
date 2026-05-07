@@ -16,7 +16,6 @@ import { BeneficialOwnerStatementKey, BeneficialOwnersStatementType } from '../.
 
 import {
   getApplicationData,
-  fetchApplicationData,
   checkActiveBOExists,
   checkActiveMOExists,
   hasAddedOrCeasedBO,
@@ -36,7 +35,6 @@ const next = jest.fn();
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
-const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 const mockCheckActiveBOExists = checkActiveBOExists as jest.Mock;
 const mockCheckActiveMOExists = checkActiveMOExists as jest.Mock;
 const mockHasAddedOrCeasedBO = hasAddedOrCeasedBO as jest.Mock;
@@ -88,7 +86,6 @@ describe('statement validation middleware', () => {
         };
         mockIsActiveFeature.mockReturnValueOnce(true);
         mockGetApplicationData.mockReturnValueOnce(appData);
-        mockFetchApplicationData.mockReturnValueOnce(appData);
         mockCheckActiveBOExists.mockReturnValueOnce(true);
         mockHasAddedOrCeasedBO.mockReturnValueOnce(true);
         mockCheckActiveMOExists.mockReturnValueOnce(activeMOExists);
@@ -133,7 +130,6 @@ describe('statement validation middleware', () => {
 
       mockIsActiveFeature.mockReturnValueOnce(true);
       mockGetApplicationData.mockReturnValueOnce(appData);
-      mockFetchApplicationData.mockReturnValueOnce(appData);
       mockCheckActiveBOExists.mockReturnValueOnce(true);
       mockHasAddedOrCeasedBO.mockReturnValueOnce(addedOrCeased);
 
@@ -207,7 +203,6 @@ describe('statement validation middleware', () => {
         };
         mockIsActiveFeature.mockReturnValueOnce(true);
         mockGetApplicationData.mockReturnValueOnce(appData);
-        mockFetchApplicationData.mockReturnValueOnce(appData);
         mockCheckActiveBOExists.mockReturnValueOnce(activeBOExists);
         mockCheckActiveMOExists.mockReturnValueOnce(activeMOExists);
         mockHasAddedOrCeasedBO.mockReturnValueOnce(true);
@@ -263,7 +258,6 @@ describe('statement validation middleware', () => {
 
         mockIsActiveFeature.mockReturnValueOnce(true);
         mockGetApplicationData.mockReturnValueOnce(appData);
-        mockFetchApplicationData.mockReturnValueOnce(appData);
         mockCheckActiveBOExists.mockReturnValueOnce(true);
         mockHasAddedOrCeasedBO.mockReturnValueOnce(hasAddedOrCeased);
 

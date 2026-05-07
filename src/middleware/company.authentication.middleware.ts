@@ -1,27 +1,27 @@
-import { Request, Response, NextFunction } from 'express';
 import { authMiddleware, AuthOptions } from "@companieshouse/web-security-node";
+import { NextFunction, Request, Response } from 'express';
 
-import { logger } from '../utils/logger';
+import { relevantPeriodStatementsState } from '../controllers/update/confirm.overseas.entity.details.controller';
 import { ApplicationData } from "../model";
 import { EntityNumberKey } from "../model/data.types.model";
 import { getTransaction } from "../service/transaction.service";
+import { getApplicationData } from "../utils/application.data";
 import { isActiveFeature } from "../utils/feature.flag";
-import { fetchApplicationData } from "../utils/application.data";
-import { relevantPeriodStatementsState } from '../controllers/update/confirm.overseas.entity.details.controller';
-import { getRedirectUrl, isRegistrationJourney, isRemoveJourney } from "../utils/url";
+import { logger } from '../utils/logger';
+import { getRedirectUrl, isRemoveJourney } from "../utils/url";
 
 import {
-  RESUME,
   CHS_URL,
-  UPDATE_LANDING_URL,
-  UPDATE_FILING_DATE_URL,
-  JOURNEY_REMOVE_QUERY_PARAM,
-  RELEVANT_PERIOD_QUERY_PARAM,
-  OVERSEAS_ENTITY_PRESENTER_URL,
-  UPDATE_FILING_DATE_WITH_PARAMS_URL,
   FEATURE_FLAG_ENABLE_RELEVANT_PERIOD,
+  JOURNEY_REMOVE_QUERY_PARAM,
+  OVERSEAS_ENTITY_PRESENTER_URL,
   RELEVANT_PERIOD_OWNED_LAND_FILTER_URL,
-  RELEVANT_PERIOD_OWNED_LAND_FILTER_WITH_PARAMS_URL
+  RELEVANT_PERIOD_OWNED_LAND_FILTER_WITH_PARAMS_URL,
+  RELEVANT_PERIOD_QUERY_PARAM,
+  RESUME,
+  UPDATE_FILING_DATE_URL,
+  UPDATE_FILING_DATE_WITH_PARAMS_URL,
+  UPDATE_LANDING_URL
 } from '../config';
 
 export const companyAuthentication = async (req: Request, res: Response, next: NextFunction) => {
@@ -31,8 +31,7 @@ export const companyAuthentication = async (req: Request, res: Response, next: N
     logger.debugRequest(req, `Company Authentication Request`);
 
     const isRemove: boolean = await isRemoveJourney(req);
-    const isRegistration = isRegistrationJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+    const appData: ApplicationData = await getApplicationData(req);
     let entityNumber: string | undefined = appData?.[EntityNumberKey];
 
     const updateFilingDateUrl = getRedirectUrl({

@@ -1,21 +1,16 @@
 jest.mock("ioredis");
 jest.mock("../../../src/utils/logger");
-jest.mock("../../../src/utils/url");
 jest.mock('../../../src/middleware/navigation/check.condition');
 
 import { Request, Response } from 'express';
 import { logger } from "../../../src/utils/logger";
 import { hasBOsOrMOs } from '../../../src/middleware/navigation/has.beneficial.owners.or.managing.officers.middleware';
-import { isRegistrationJourney } from "../../../src/utils/url";
 import { ANY_MESSAGE_ERROR } from '../../__mocks__/text.mock';
 import { SOLD_LAND_FILTER_URL } from '../../../src/config';
 import { checkBOsOrMOsDetailsEntered, NavigationErrorMessage } from '../../../src/middleware/navigation/check.condition';
 
 const mockCheckBOsOrMOsDetailsEntered = checkBOsOrMOsDetailsEntered as unknown as jest.Mock;
 const mockLoggerInfoRequest = logger.infoRequest as jest.Mock;
-
-const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
-mockIsRegistrationJourney.mockReturnValue(true);
 
 const req = {} as Request;
 const res = { redirect: jest.fn() as any } as Response;

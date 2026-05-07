@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { fetchApplicationData } from "../../utils/application.data";
+import { getApplicationData } from "../../utils/application.data";
 import { ApplicationData } from '../../model/application.model';
 import { TrustKey } from '../../model/trust.model';
 import { NavigationErrorMessage } from './check.condition';
@@ -21,7 +21,7 @@ const hasTrustWithId = async (req: Request, res: Response, next: NextFunction, u
   try {
     const trustId = req.params[ROUTE_PARAM_TRUST_ID];
     const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    const appData: ApplicationData = await getApplicationData(req, !isRemove);
     const isTrustPresent = appData[TrustKey]?.some(
       (trust) => trust.trust_id === trustId,
     );
@@ -43,7 +43,7 @@ const hasTrusteeWithId = async (req: Request, res: Response, next: NextFunction,
     const trusteeId = req.params[ROUTE_PARAM_TRUSTEE_ID];
     const trusteeType = req.params[ROUTE_PARAM_TRUSTEE_TYPE];
     const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    const appData: ApplicationData = await getApplicationData(req, !isRemove);
     const isTrustPresent = appData[TrustKey]?.some(
       (trust) => trust.trust_id === trustId,
     );
@@ -86,7 +86,7 @@ const hasTrusteeWithId = async (req: Request, res: Response, next: NextFunction,
 const hasTrustData = async (req: Request, res: Response, next: NextFunction, url: string): Promise<void> => {
   try {
     const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    const appData: ApplicationData = await getApplicationData(req, !isRemove);
     if (containsTrustData(getTrustArray(appData))) {
       return next();
     }

@@ -6,7 +6,7 @@ jest.mock('../../../src/middleware/navigation/check.condition');
 import { Request, Response } from 'express';
 import { logger } from "../../../src/utils/logger";
 import { hasDueDiligence } from '../../../src/middleware/navigation/has.due.diligence.middleware';
-import { isRegistrationJourney } from "../../../src/utils/url";
+import { isRemoveJourney } from "../../../src/utils/url";
 import { ANY_MESSAGE_ERROR } from '../../__mocks__/text.mock';
 import { SOLD_LAND_FILTER_URL } from '../../../src/config';
 import { checkDueDiligenceDetailsEntered, NavigationErrorMessage } from '../../../src/middleware/navigation/check.condition';
@@ -14,8 +14,8 @@ import { checkDueDiligenceDetailsEntered, NavigationErrorMessage } from '../../.
 const mockCheckDueDiligenceDetailsEntered = checkDueDiligenceDetailsEntered as unknown as jest.Mock;
 const mockLoggerInfoRequest = logger.infoRequest as jest.Mock;
 
-const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
-mockIsRegistrationJourney.mockReturnValue(true);
+const mockIsRemoveJourney = isRemoveJourney as jest.Mock;
+mockIsRemoveJourney.mockReturnValue(true);
 
 const req = {} as Request;
 const res = { redirect: jest.fn() as any } as Response;

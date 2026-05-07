@@ -9,7 +9,7 @@ import { isActiveFeature } from "../utils/feature.flag";
 import { ApplicationData } from "../model/application.model";
 
 import { EntityNameKey, EntityNumberKey, ID } from "../model/data.types.model";
-import { fetchApplicationData, prepareData } from "../utils/application.data";
+import { getApplicationData, prepareData } from "../utils/application.data";
 import { getUrlWithParamsToPath, isRemoveJourney } from "../utils/url";
 
 import {
@@ -66,7 +66,7 @@ export const checkValidations = async (req: Request, res: Response, next: NextFu
       // that don't use id will just ignore it.
       const id = req.params[ID];
       const isRemove: boolean = await isRemoveJourney(req);
-      const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+      const appData: ApplicationData = await getApplicationData(req, !isRemove);
       let entityName = req.body[EntityNameKey];
 
       if (req.body[EntityNameKey] === undefined) {
@@ -145,7 +145,7 @@ export const checkTrustValidations = async (req: Request, res: Response, next: N
       const errors = formatValidationError(errorList.array());
       const routePath = req.route.path;
       const isRemove = await isRemoveJourney(req);
-      const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+      const appData: ApplicationData = await getApplicationData(req, !isRemove);
 
       return res.render(NAVIGATION[routePath].currentPage, {
         ...req.body,

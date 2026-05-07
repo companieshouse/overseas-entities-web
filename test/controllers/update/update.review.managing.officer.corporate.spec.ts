@@ -29,6 +29,7 @@ import {
   prepareData,
   setApplicationData,
   fetchApplicationData,
+  getApplicationData,
 } from "../../../src/utils/application.data";
 
 import {
@@ -66,6 +67,7 @@ mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Respons
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockfFetchApplicationData = fetchApplicationData as jest.Mock;
+const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
@@ -148,6 +150,7 @@ describe('Review managing officer corporate controller tests', () => {
     });
 
     test("catch error when posting data", async () => {
+      mockGetApplicationData.mockImplementation(() => { throw new Error(ANY_MESSAGE_ERROR); });
       mockfFetchApplicationData.mockImplementation(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app)
         .post(UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_URL + "?index=0")

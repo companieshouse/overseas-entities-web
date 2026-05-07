@@ -13,36 +13,40 @@ import { getTodaysDate } from "./date";
 import { checkRPStatementsExist } from "./relevant.period";
 import { fetchApplicationData } from "../utils/application.data";
 
-import { isRegistrationJourney, isRemoveJourney } from "./url";
+import { getRedirectUrl, isRemoveJourney } from "./url";
 import { OverseasEntityKey, Transactionkey } from "../model/data.types.model";
 import { checkEntityRequiresTrusts, checkEntityReviewRequiresTrusts } from "./trusts";
 import { relevantPeriodStatementsState } from "../controllers/update/confirm.overseas.entity.details.controller";
 
 import {
-  OVERSEAS_ENTITY_UPDATE_DETAILS_URL,
-  OVERSEAS_ENTITY_SECTION_HEADING,
-  WHO_IS_MAKING_UPDATE_URL,
-  UPDATE_AN_OVERSEAS_ENTITY_URL,
   CHS_URL,
-  UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL,
+  JourneyType,
+  WHO_IS_MAKING_UPDATE_URL,
+  UPDATE_REVIEW_STATEMENT_PAGE,
+  REMOVE_CONFIRM_STATEMENT_URL,
+  UPDATE_AN_OVERSEAS_ENTITY_URL,
   FEATURE_FLAG_ENABLE_TRUSTS_WEB,
   UPDATE_CHECK_YOUR_ANSWERS_PAGE,
-  UPDATE_REVIEW_STATEMENT_PAGE,
+  OVERSEAS_ENTITY_SECTION_HEADING,
+  OVERSEAS_ENTITY_UPDATE_DETAILS_URL,
+  WHO_IS_MAKING_UPDATE_WITH_PARAMS_URL,
   UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL,
+  UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL,
+  OVERSEAS_ENTITY_UPDATE_DETAILS_WITH_PARAMS_URL,
+  FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC,
   UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL,
-  JourneyType,
-  REMOVE_CONFIRM_STATEMENT_URL,
-  FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+  UPDATE_REGISTRABLE_BENEFICIAL_OWNER_WITH_PARAMS_URL,
+  UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_WITH_PARAMS_URL,
+  UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_WITH_PARAMS_URL,
 } from "../config";
 
 export const getDataForReview = async (req: Request, res: Response, next: NextFunction, isNoChangeJourney: boolean) => {
 
   const session = req.session as Session;
-  const isRegistration: boolean = isRegistrationJourney(req);
-  const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
   const isRemove: boolean = await isRemoveJourney(req);
+  const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
   const hasAnyBosWithTrusteeNocs = isNoChangeJourney ? checkEntityReviewRequiresTrusts(appData) : checkEntityRequiresTrusts(appData);
-  const backLinkUrl = getBackLinkUrl(isNoChangeJourney, hasAnyBosWithTrusteeNocs, isRemove);
+  const backLinkUrl = getBackLinkUrl(req, isNoChangeJourney, hasAnyBosWithTrusteeNocs, isRemove);
   const templateName = getTemplateName(isNoChangeJourney);
   const isRPStatementExists = checkRPStatementsExist(appData);
   const relevantPeriodStatements: boolean = relevantPeriodStatementsState.has_answered_relevant_period_question;
@@ -82,9 +86,17 @@ export const getDataForReview = async (req: Request, res: Response, next: NextFu
     return res.render(templateName, {
       backLinkUrl,
       templateName,
-      changeLinkUrl: OVERSEAS_ENTITY_UPDATE_DETAILS_URL,
+      changeLinkUrl: getRedirectUrl({
+        req,
+        urlWithEntityIds: OVERSEAS_ENTITY_UPDATE_DETAILS_WITH_PARAMS_URL,
+        urlWithoutEntityIds: OVERSEAS_ENTITY_UPDATE_DETAILS_URL,
+      }),
       overseasEntityHeading: OVERSEAS_ENTITY_SECTION_HEADING,
-      whoIsCompletingChangeLink: WHO_IS_MAKING_UPDATE_URL,
+      whoIsCompletingChangeLink: getRedirectUrl({
+        req,
+        urlWithEntityIds: WHO_IS_MAKING_UPDATE_WITH_PARAMS_URL,
+        urlWithoutEntityIds: WHO_IS_MAKING_UPDATE_URL,
+      }),
       roleTypes: RoleWithinTrustType,
       ...appData,
       pageParams: {
@@ -111,21 +123,25 @@ export const postDataForReview = async (req: Request, res: Response, next: NextF
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const session = req.session as Session;
-    const isRegistration: boolean = isRegistrationJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+    const isRemove: boolean = await isRemoveJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
     const noChangeReviewStatement = req.body["no_change_review_statement"];
 
     if (noChangeReviewStatement === "0") {
-      return res.redirect(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL);
+      return res.redirect(getRedirectUrl({
+        req,
+        urlWithEntityIds: UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_WITH_PARAMS_URL,
+        urlWithoutEntityIds: UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL,
+      }));
     }
 
     const transactionID = appData[Transactionkey] as string;
     const overseasEntityID = appData[OverseasEntityKey] as string;
     const transactionClosedResponse = await closeTransaction(req, session, transactionID, overseasEntityID);
+    const baseURL = `${CHS_URL}${UPDATE_AN_OVERSEAS_ENTITY_URL}`;
 
     logger.infoRequest(req, `Transaction Closed, ID: ${transactionID}`);
 
-    const baseURL = `${CHS_URL}${UPDATE_AN_OVERSEAS_ENTITY_URL}`;
     const redirectPath = await startPaymentsSession(
       req,
       session,
@@ -144,18 +160,26 @@ export const postDataForReview = async (req: Request, res: Response, next: NextF
   }
 };
 
-const getBackLinkUrl = (isNoChangeJourney: boolean, hasAnyBosWithTrusteeNocs: boolean, isRemove: boolean) => {
+const getBackLinkUrl = (req: Request, isNoChangeJourney: boolean, hasAnyBosWithTrusteeNocs: boolean, isRemove: boolean) => {
   if (isNoChangeJourney) {
     if (isRemove) {
       return REMOVE_CONFIRM_STATEMENT_URL;
     }
-    return UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL;
+    return getRedirectUrl({
+      req,
+      urlWithEntityIds: UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_WITH_PARAMS_URL,
+      urlWithoutEntityIds: UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL,
+    });
   } else {
     let backLinkUrl: string;
     if (isRemove) {
       backLinkUrl = REMOVE_CONFIRM_STATEMENT_URL;
     } else {
-      backLinkUrl = UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL;
+      backLinkUrl = getRedirectUrl({
+        req,
+        urlWithEntityIds: UPDATE_REGISTRABLE_BENEFICIAL_OWNER_WITH_PARAMS_URL,
+        urlWithoutEntityIds: UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL,
+      });
     }
     return backLinkUrl;
   }

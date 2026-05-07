@@ -190,6 +190,11 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL,
     nextPage: [config.UPDATE_DUE_DILIGENCE_PAGE, config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE]
   },
+  [config.WHO_IS_MAKING_UPDATE_WITH_PARAMS_URL]: {
+    currentPage: config.WHO_IS_MAKING_UPDATE_PAGE,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_WITH_PARAMS_URL, req),
+    nextPage: [config.UPDATE_DUE_DILIGENCE_PAGE, config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE]
+  },
   [config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL]: {
     currentPage: config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE,
     previousPage: () => config.WHO_IS_MAKING_UPDATE_PAGE,

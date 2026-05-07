@@ -26,7 +26,6 @@ import { authentication } from "../../../src/middleware/authentication.middlewar
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { updateOverseasEntity } from "../../../src/service/overseas.entities.service";
 import { startPaymentsSession } from "../../../src/service/payment.service";
-import { fetchApplicationData, getApplicationData } from "../../../src/utils/application.data";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { hasBOsOrMOsUpdate } from "../../../src/middleware/navigation/update/has.beneficial.owners.or.managing.officers.update.middleware";
 import { BeneficialOwnerIndividualKey } from "../../../src/model/beneficial.owner.individual.model";
@@ -35,45 +34,47 @@ import { ADDRESS } from "../../__mocks__/fields/address.mock";
 import { BeneficialOwnerOtherKey } from "../../../src/model/beneficial.owner.other.model";
 import { getTodaysDate } from "../../../src/utils/date";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
-import { isRegistrationJourney, isRemoveJourney } from "../../../src/utils/url";
+import { isRegistrationJourney, getRedirectUrl, isRemoveJourney } from "../../../src/utils/url";
 
 import { postTransaction, closeTransaction } from "../../../src/service/transaction.service";
-import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../../src/model/who.is.making.filing.model";
 import { validateStatements, summaryPagesGuard } from "../../../src/middleware/statement.validation.middleware";
+import { fetchApplicationData, getApplicationData } from "../../../src/utils/application.data";
+import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../../src/model/who.is.making.filing.model";
 import { InputDate, OverseasEntityKey, Transactionkey } from '../../../src/model/data.types.model';
 
 import {
-  beneficialOwnerIndividualType,
   dueDiligenceType,
   managingOfficerType,
-  overseasEntityDueDiligenceType
+  beneficialOwnerIndividualType,
+  overseasEntityDueDiligenceType,
 } from "../../../src/model";
 
 import {
-  UPDATE_CHECK_YOUR_ANSWERS_PAGE,
-  UPDATE_CHECK_YOUR_ANSWERS_URL,
-  UPDATE_PRESENTER_CHANGE_FULL_NAME,
-  UPDATE_PRESENTER_CHANGE_EMAIL,
-  SECURE_UPDATE_FILTER_URL,
+
   REMOVE_SERVICE_NAME,
+  SECURE_UPDATE_FILTER_URL,
   REMOVE_CONFIRM_STATEMENT_URL,
-  UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL,
+  UPDATE_CHECK_YOUR_ANSWERS_URL,
+  UPDATE_PRESENTER_CHANGE_EMAIL,
+  UPDATE_CHECK_YOUR_ANSWERS_PAGE,
+  UPDATE_DUE_DILIGENCE_CHANGE_WHO,
+  UPDATE_DUE_DILIGENCE_CHANGE_NAME,
+  UPDATE_DUE_DILIGENCE_CHANGE_EMAIL,
+  UPDATE_PRESENTER_CHANGE_FULL_NAME,
+  UPDATE_DUE_DILIGENCE_CHANGE_AML_NUMBER,
   UPDATE_DUE_DILIGENCE_CHANGE_AGENT_CODE,
-  UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_DATE,
+  UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL,
+  UPDATE_DUE_DILIGENCE_CHANGE_PARTNER_NAME,
+  UPDATE_DUE_DILIGENCE_CHANGE_IDENTITY_DATE,
+  UPDATE_DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS,
+  UPDATE_DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME,
   UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_NAME,
-  UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS,
   UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_EMAIL,
-  UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME,
   UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_AML_NUMBER,
   UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_PARTNER_NAME,
-  UPDATE_DUE_DILIGENCE_CHANGE_WHO,
-  UPDATE_DUE_DILIGENCE_CHANGE_IDENTITY_DATE,
-  UPDATE_DUE_DILIGENCE_CHANGE_NAME,
-  UPDATE_DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS,
-  UPDATE_DUE_DILIGENCE_CHANGE_EMAIL,
-  UPDATE_DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME,
-  UPDATE_DUE_DILIGENCE_CHANGE_AML_NUMBER,
-  UPDATE_DUE_DILIGENCE_CHANGE_PARTNER_NAME
+  UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_DATE,
+  UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS,
+  UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME, UPDATE_AN_OVERSEAS_ENTITY_URL,
 } from "../../../src/config";
 
 import {
@@ -201,16 +202,18 @@ const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockAuthenticationMiddleware = authentication as jest.Mock;
-mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+const mockGetRedirectUrl = getRedirectUrl as jest.Mock;
+
+mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockCompanyAuthenticationMiddleware = companyAuthentication as jest.Mock;
-mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockHasBOsOrMOsUpdateMiddleware = hasBOsOrMOsUpdate as jest.Mock;
-mockHasBOsOrMOsUpdateMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockHasBOsOrMOsUpdateMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
-mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockValidateStatements = validateStatements as jest.Mock;
 mockValidateStatements.mockImplementation((_: Request, __: Response, next: NextFunction) => next());
@@ -219,16 +222,16 @@ const mockSummaryPagesGuard = summaryPagesGuard as jest.Mock;
 mockSummaryPagesGuard.mockImplementation((_: Request, __: Response, next: NextFunction) => next());
 
 const mockTransactionService = postTransaction as jest.Mock;
-mockTransactionService.mockReturnValue( TRANSACTION_ID );
+mockTransactionService.mockReturnValue(TRANSACTION_ID);
 
 const mockOverseasEntity = updateOverseasEntity as jest.Mock;
-mockOverseasEntity.mockReturnValue( OVERSEAS_ENTITY_ID );
+mockOverseasEntity.mockReturnValue(OVERSEAS_ENTITY_ID);
 
 const mockCloseTransaction = closeTransaction as jest.Mock;
-mockCloseTransaction.mockReturnValue( TRANSACTION_CLOSED_RESPONSE );
+mockCloseTransaction.mockReturnValue(TRANSACTION_CLOSED_RESPONSE);
 
 const mockPaymentsSession = startPaymentsSession as jest.Mock;
-mockPaymentsSession.mockReturnValue( "CONFIRMATION_URL" );
+mockPaymentsSession.mockReturnValue("CONFIRMATION_URL");
 
 const mockGetTodaysDate = getTodaysDate as jest.Mock;
 
@@ -245,6 +248,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
     mockSummaryPagesGuard.mockImplementation((_: Request, __: Response, next: NextFunction) => next());
     mockGetTodaysDate.mockReturnValue({ day: "5", month: "4", year: "2024" } as InputDate);
     mockIsRemoveJourney.mockReset();
+    mockGetRedirectUrl.mockReset();
   });
 
   describe("GET tests", () => {
@@ -766,6 +770,8 @@ describe("CHECK YOUR ANSWERS controller", () => {
       mockGetApplicationData.mockReturnValue(mockAppData);
       mockFetchApplicationData.mockReturnValue(mockAppData);
       mockIsRemoveJourney.mockReturnValue(false);
+      mockIsActiveFeature.mockReturnValue(false);
+      mockGetRedirectUrl.mockReturnValue(`${UPDATE_AN_OVERSEAS_ENTITY_URL}entity`);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
       expect(resp.status).toEqual(200);
@@ -830,6 +836,8 @@ describe("CHECK YOUR ANSWERS controller", () => {
     ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with verification checks - Agent selected %s`, async (_journeyType, mockAppData) => {
       mockGetApplicationData.mockReturnValue(mockAppData);
       mockFetchApplicationData.mockReturnValue(mockAppData);
+      mockGetRedirectUrl.mockReturnValueOnce(UPDATE_DUE_DILIGENCE_CHANGE_WHO);
+      mockGetRedirectUrl.mockReturnValueOnce(UPDATE_AN_OVERSEAS_ENTITY_URL);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
       expect(resp.status).toEqual(200);
@@ -870,6 +878,8 @@ describe("CHECK YOUR ANSWERS controller", () => {
         [overseasEntityDueDiligenceType.OverseasEntityDueDiligenceKey]: OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK,
         [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE
       });
+      mockGetRedirectUrl.mockReturnValueOnce(UPDATE_DUE_DILIGENCE_CHANGE_WHO);
+      mockGetRedirectUrl.mockReturnValueOnce(UPDATE_AN_OVERSEAS_ENTITY_URL);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
       expect(resp.status).toEqual(200);
@@ -1615,7 +1625,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
     });
 
     test('catch error when rendering the page', async () => {
-      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockLoggerDebugRequest.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);

@@ -15,8 +15,16 @@
       <h1 class="govuk-heading-xl govuk-!-margin-10">{{ title }}</h1>
 
       {% if pageData.trustData.length > 0 %}
+
         {% set reviewedTrustsRows = [] %}
         {% set addedTrusts = [] %}
+
+        {% if not IS_REDIS_REMOVAL_ENABLED %}
+          {% set changeTrustsOrchestratorLink = OE_CONFIGS.UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_CHANGE_HANDLER_URL %}
+        {% else %}
+          {% set changeTrustsOrchestratorLink = CREATE_CHANGE_LINK_WITH_IDS(OE_CONFIGS.UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_CHANGE_HANDLER_WITH_PARAMS_URL, OE_TRANSACTION_ID, OE_SUBMISSION_ID) %}
+        {% endif %}
+
         {% for trust in pageData.trustData %}
             {% if trust.ch_reference.length %}
               {% set reviewedTrustsRows = (reviewedTrustsRows.push({
@@ -28,7 +36,7 @@
                 },
                 actions: {
                   items: [CREATE_CHANGE_LINK(
-                    OE_CONFIGS.UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_CHANGE_HANDLER_URL + "/" + trust.trust_id,
+                    changeTrustsOrchestratorLink + "/" + trust.trust_id,
                     "Trust " + trust.trust_name,
                     "change-trust-button"
                   )]
@@ -41,6 +49,7 @@
       {% endif %}
 
       {% set feature_flag_relevant_period = OE_CONFIGS.FEATURE_FLAG_ENABLE_RELEVANT_PERIOD %}
+
       {% if reviewedTrustsRows.length > 0 %}
         {% if feature_flag_relevant_period === "true" and pageData.isRelevantPeriod %}
           <div class="govuk-summary-card">

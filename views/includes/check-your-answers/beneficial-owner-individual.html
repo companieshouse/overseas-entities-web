@@ -81,7 +81,7 @@
 {% if not FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC %}
   {# Add non-legal firm NOCs if the feature flag is disabled #}
   {% set boNOCHtml = boNOCHtml + boiBeneficialOwnerNonLegalFirmNOCs %}
-{% else %} 
+{% else %}
   {% if inNoChangeJourney %}
     {# Add non-legal firm NOCs if in no change journey #}
     {% set boNOCHtml = boNOCHtml + boiBeneficialOwnerNonLegalFirmNOCs %}
@@ -106,9 +106,17 @@
   {% endif %}
 {% else %}
   {% if boi.ch_reference %}
-    {% set changeLinkUrl = OE_CONFIGS.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + loop.index0 %}
+    {% if not IS_REDIS_REMOVAL_ENABLED %}
+      {% set changeLinkUrl = OE_CONFIGS.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + loop.index0 %}
+    {% else %}
+      {% set changeLinkUrl = CREATE_CHANGE_LINK_WITH_IDS(OE_CONFIGS.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL, OE_TRANSACTION_ID, OE_SUBMISSION_ID) + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + loop.index0 %}
+    {% endif %}
   {% else %}
-    {% set changeLinkUrl = OE_CONFIGS.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + "/" + boi.id %}
+    {% if not IS_REDIS_REMOVAL_ENABLED %}
+      {% set changeLinkUrl = OE_CONFIGS.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + "/" + boi.id %}
+    {% else %}
+      {% set changeLinkUrl = CREATE_CHANGE_LINK_WITH_IDS(OE_CONFIGS.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL, OE_TRANSACTION_ID, OE_SUBMISSION_ID) + "/" + boi.id %}
+    {% endif %}
   {% endif %}
 {% endif %}
 

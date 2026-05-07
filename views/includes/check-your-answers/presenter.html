@@ -23,8 +23,13 @@
       Who can we contact about this update application?
     {% endif %}
   {% endset %}
-  {% set presenterNameChangeLink = OE_CONFIGS.UPDATE_PRESENTER_CHANGE_FULL_NAME %}
-  {% set presenterEmailChangeLink = OE_CONFIGS.UPDATE_PRESENTER_CHANGE_EMAIL %}
+  {% if not IS_REDIS_REMOVAL_ENABLED %}
+    {% set presenterNameChangeLink = OE_CONFIGS.UPDATE_PRESENTER_CHANGE_FULL_NAME %}
+    {% set presenterEmailChangeLink = OE_CONFIGS.UPDATE_PRESENTER_CHANGE_EMAIL %}
+  {% else %}
+    {% set presenterNameChangeLink = CREATE_CHANGE_LINK_WITH_IDS(OE_CONFIGS.UPDATE_PRESENTER_CHANGE_FULL_NAME_WITH_PARAMS, OE_TRANSACTION_ID, OE_SUBMISSION_ID) %}
+    {% set presenterEmailChangeLink = CREATE_CHANGE_LINK_WITH_IDS(OE_CONFIGS.UPDATE_PRESENTER_CHANGE_EMAIL_WITH_PARAMS, OE_TRANSACTION_ID, OE_SUBMISSION_ID) %}
+  {% endif %}
   {% set nameFieldLabel = "Full Name" %}
   {% set emailFieldLabel = "Email address" %}
   {% if pageParams.noChangeFlag %}

@@ -22,83 +22,84 @@ import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddlewa
 import app from "../../../src/app";
 
 import { logger } from "../../../src/utils/logger";
-import { authentication } from "../../../src/middleware/authentication.middleware";
-import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
-import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
-import { hasOverseasEntity } from "../../../src/middleware/navigation/update/has.overseas.entity.middleware";
-import { isRegistrationJourney, isRemoveJourney } from "../../../src/utils/url";
-import { postTransaction, closeTransaction } from "../../../src/service/transaction.service";
-import { updateOverseasEntity } from "../../../src/service/overseas.entities.service";
-import { startPaymentsSession } from "../../../src/service/payment.service";
-import { isActiveFeature } from "../../../src/utils/feature.flag";
+import { stringCount } from "../../utils/test.utils";
 import { ErrorMessages } from "../../../src/validation/error.messages";
 import { getTodaysDate } from "../../../src/utils/date";
+import { authentication } from "../../../src/middleware/authentication.middleware";
 import { ApplicationData } from "../../../src/model";
-import { stringCount } from "../../utils/test.utils";
+import { isActiveFeature } from "../../../src/utils/feature.flag";
+import { hasOverseasEntity } from "../../../src/middleware/navigation/update/has.overseas.entity.middleware";
+import { updateOverseasEntity } from "../../../src/service/overseas.entities.service";
+import { startPaymentsSession } from "../../../src/service/payment.service";
+import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
+import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 
+import { postTransaction, closeTransaction } from "../../../src/service/transaction.service";
 import { OverseasEntityKey, Transactionkey } from "../../../src/model/data.types.model";
 import { getBeneficialOwnersPrivateData, getPrivateOeDetails } from "../../../src/service/private.overseas.entity.details";
+import { isRegistrationJourney, getRedirectUrl, isRemoveJourney } from "../../../src/utils/url";
 
 import {
+  setExtraData,
+  getApplicationData,
   checkActiveBOExists,
   checkActiveMOExists,
-  getApplicationData,
   fetchApplicationData,
-  setExtraData
 } from "../../../src/utils/application.data";
 
 import {
-  APPLICATION_DATA_CH_REF_UPDATE_MOCK,
-  APPLICATION_DATA_MOCK_WITH_OWNER_UPDATE_REVIEW_DATA,
-  APPLICATION_DATA_UPDATE_BO_MOCK,
-  APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW,
-  ENTITY_OBJECT_MOCK, ERROR, OVERSEAS_ENTITY_ID,
-  PAYMENT_LINK_JOURNEY, TRANSACTION_CLOSED_RESPONSE,
   TRANSACTION_ID,
-  APPLICATION_DATA_UPDATE_MO_PRIVATE_DATA_MOCK,
+  UPDATE_OWNERS_DATA_WITH_VALUE,
   APPLICATION_DATA_REMOVE_BO_MOCK,
+  APPLICATION_DATA_UPDATE_BO_MOCK,
+  APPLICATION_DATA_CH_REF_UPDATE_MOCK,
+  APPLICATION_DATA_UPDATE_MO_PRIVATE_DATA_MOCK,
+  ENTITY_OBJECT_MOCK, ERROR, OVERSEAS_ENTITY_ID,
+  APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW,
+  PAYMENT_LINK_JOURNEY, TRANSACTION_CLOSED_RESPONSE,
+  APPLICATION_DATA_MOCK_WITH_OWNER_UPDATE_REVIEW_DATA,
   APPLICATION_DATA_UPDATE_BO_TRUSTS_PRIVATE_DATA_MOCK,
-  UPDATE_OWNERS_DATA_WITH_VALUE
 } from "../../__mocks__/session.mock";
 
 import {
-  UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL,
-  UPDATE_PRESENTER_CHANGE_EMAIL,
-  UPDATE_PRESENTER_CHANGE_FULL_NAME,
   UPDATE_REVIEW_STATEMENT_URL,
   UPDATE_REVIEW_STATEMENT_PAGE,
+  UPDATE_PRESENTER_CHANGE_EMAIL,
+  UPDATE_FILING_DATE_CHANGELINK,
   OVERSEAS_ENTITY_SECTION_HEADING,
   SECURE_UPDATE_FILTER_CHANGELINK,
+  UPDATE_PRESENTER_CHANGE_FULL_NAME,
+  UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL,
   UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_CHANGELINK,
-  UPDATE_FILING_DATE_CHANGELINK,
+  REMOVE_SERVICE_NAME, REMOVE_CONFIRM_STATEMENT_URL,
   UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_CHANGELINK,
   UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_CHANGELINK,
-  REMOVE_SERVICE_NAME, REMOVE_CONFIRM_STATEMENT_URL
+
 } from "../../../src/config";
 
 import {
   ANY_MESSAGE_ERROR,
-  BENEFICIAL_OWNER_HEADING,
-  CONTINUE_BUTTON_TEXT,
-  NO_CHANGE_REVIEW_STATEMENT_BENEFICIAL_OWNER_STATEMENT,
-  NO_CHANGE_REVIEW_STATEMENT_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE,
-  NO_CHANGE_REVIEW_STATEMENT_PAGE_TITLE,
-  NO_CHANGE_REVIEW_STATEMENT_WHO_CAN_WE_CONTACT,
-  PRINT_BUTTON_TEXT, REMOVE_IS_ENTITY_REGISTERED_OWNER_TITLE,
-  REMOVE_NO_CHANGE_REVIEW_STATEMENT_DATE_TEXT,
-  REMOVE_NO_CHANGE_REVIEW_STATEMENT_IS_INFO_CORRECT,
-  REMOVE_NO_CHANGE_REVIEW_STATEMENT_OE_CHANGE_TEXT,
-  REMOVE_NO_CHANGE_REVIEW_STATEMENT_PAGE_TITLE,
-  REMOVE_NO_CHANGE_REVIEW_STATEMENT_PAGE_WINDOW_TITLE,
-  REMOVE_OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE,
-  REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE,
   SERVICE_UNAVAILABLE,
-  UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS,
-  TRUST_NAME, BO_NOC_HEADING, FIRM_NOC_HEADING,
-  TRUSTS_NOC_HEADING, FIRM_CONTROL_NOC_HEADING,
+  CONTINUE_BUTTON_TEXT,
+  BENEFICIAL_OWNER_HEADING,
   TRUST_CONTROL_NOC_HEADING,
   OWNER_OF_LAND_PERSON_NOC_HEADING,
-  OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING
+  NO_CHANGE_REVIEW_STATEMENT_PAGE_TITLE,
+  OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING,
+  REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE,
+  UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS,
+  REMOVE_OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE,
+  REMOVE_NO_CHANGE_REVIEW_STATEMENT_DATE_TEXT,
+  TRUST_NAME, BO_NOC_HEADING, FIRM_NOC_HEADING,
+  TRUSTS_NOC_HEADING, FIRM_CONTROL_NOC_HEADING,
+  REMOVE_NO_CHANGE_REVIEW_STATEMENT_PAGE_TITLE,
+  NO_CHANGE_REVIEW_STATEMENT_WHO_CAN_WE_CONTACT,
+  REMOVE_NO_CHANGE_REVIEW_STATEMENT_OE_CHANGE_TEXT,
+  REMOVE_NO_CHANGE_REVIEW_STATEMENT_IS_INFO_CORRECT,
+  REMOVE_NO_CHANGE_REVIEW_STATEMENT_PAGE_WINDOW_TITLE,
+  NO_CHANGE_REVIEW_STATEMENT_BENEFICIAL_OWNER_STATEMENT,
+  PRINT_BUTTON_TEXT, REMOVE_IS_ENTITY_REGISTERED_OWNER_TITLE,
+  NO_CHANGE_REVIEW_STATEMENT_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE,
 } from "../../__mocks__/text.mock";
 
 mockCsrfProtectionMiddleware.mockClear();
@@ -107,6 +108,8 @@ const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockAuthenticationMiddleware = authentication as jest.Mock;
+const mockGetRedirectUrl = getRedirectUrl as jest.Mock;
+
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockCompanyAuthenticationMiddleware = companyAuthentication as jest.Mock;
@@ -140,7 +143,6 @@ const mockGetTodaysDate = getTodaysDate as jest.Mock;
 const mockCheckActiveMOExists = checkActiveMOExists as jest.Mock;
 const mockCheckActiveBOExists = checkActiveBOExists as jest.Mock;
 
-const mockIsRemove = isRemoveJourney as jest.Mock;
 const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
 mockIsRegistrationJourney.mockReturnValue(false);
 
@@ -153,12 +155,11 @@ describe("Update review overseas entity information controller tests", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetTodaysDate.mockReturnValue({ day: "5", month: "4", year: "2024" });
-    mockGetApplicationData.mockReturnValue(appData);
-    mockFetchApplicationData.mockReturnValue(appData);
     mockCheckActiveMOExists.mockReturnValue(true);
     mockCheckActiveBOExists.mockReturnValue(true);
-    mockIsRemove.mockReset();
     mockIsRemoveJourney.mockReset();
+    mockGetApplicationData.mockReturnValue(appData);
+    mockFetchApplicationData.mockReturnValue(appData);
   });
 
   describe("GET tests", () => {
@@ -401,7 +402,7 @@ describe("Update review overseas entity information controller tests", () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
       mockGetApplicationData.mockReturnValue(APPLICATION_DATA_REMOVE_BO_MOCK);
       mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_REMOVE_BO_MOCK);
-      mockIsRemove.mockReturnValue(true);
+      mockIsRemoveJourney.mockReturnValue(true);
 
       const resp = await request(app).get(UPDATE_REVIEW_STATEMENT_URL);
 
@@ -452,7 +453,8 @@ describe("Update review overseas entity information controller tests", () => {
     });
 
     test(`should redirect to UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL when noChangeReviewStatement is '0'`, async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_UPDATE_BO_MOCK);
+      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_UPDATE_BO_MOCK);
+      mockGetRedirectUrl.mockReturnValue(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL);
       const resp = await request(app)
         .post(UPDATE_REVIEW_STATEMENT_URL)
         .send({ no_change_review_statement: '0' });
@@ -510,7 +512,7 @@ describe("Update review overseas entity information controller tests", () => {
     test("validation error when posting on REMOVE journey", async () => {
       mockGetApplicationData.mockReturnValue(APPLICATION_DATA_REMOVE_BO_MOCK);
       mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_REMOVE_BO_MOCK);
-      mockIsRemove.mockReturnValue(true);
+      mockIsRemoveJourney.mockReturnValue(true);
 
       const resp = await request(app).post(UPDATE_REVIEW_STATEMENT_URL);
 

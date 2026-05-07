@@ -34,10 +34,18 @@
 {% set hiddenTextPrefix = "Individual managing officer " + moFirstName + " " + moLastName %}
 {% if inChangeJourney %}
   {% if isNewMo %}
-    {% set changeLinkUrl = OE_CONFIGS.UPDATE_MANAGING_OFFICER_URL + '/' + moId %}
+    {% if not IS_REDIS_REMOVAL_ENABLED %}
+      {% set changeLinkUrl = OE_CONFIGS.UPDATE_MANAGING_OFFICER_URL + '/' + moId %}
+    {% else %}
+      {% set changeLinkUrl = CREATE_CHANGE_LINK_WITH_IDS(OE_CONFIGS.UPDATE_MANAGING_OFFICER_WITH_PARAMS_URL, OE_TRANSACTION_ID, OE_SUBMISSION_ID) + '/' + moId %}
+    {% endif %}
   {% else %}
     {% set moIndex = mois.indexOf(moi) %}
-    {% set changeLinkUrl = OE_CONFIGS.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_URL + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex %}
+    {% if not IS_REDIS_REMOVAL_ENABLED %}
+      {% set changeLinkUrl = OE_CONFIGS.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_URL + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex %}
+    {% else %}
+      {% set changeLinkUrl = CREATE_CHANGE_LINK_WITH_IDS(OE_CONFIGS.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_WITH_PARAMS_URL, OE_TRANSACTION_ID, OE_SUBMISSION_ID) + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex %}
+    {% endif %}
   {% endif %}
 {% endif %}
 

@@ -72,7 +72,7 @@ export const startPaymentsSession = async (
     return confirmationPageUrl;
   }
 
-  const createPaymentRequest: CreatePaymentRequest = await setPaymentRequest(req, transactionId, overseasEntityId, baseURL);
+  const createPaymentRequest: CreatePaymentRequest = setPaymentRequest(req, transactionId, overseasEntityId, baseURL);
 
   // Save app data including the state used as `nonce` against CSRF.
   if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && !isRemove) {

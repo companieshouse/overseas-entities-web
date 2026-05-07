@@ -162,14 +162,7 @@ export const postDataForReview = async (req: Request, res: Response, next: NextF
 
 const getBackLinkUrl = (req: Request, isNoChangeJourney: boolean, hasAnyBosWithTrusteeNocs: boolean, isRemove: boolean) => {
   if (isNoChangeJourney) {
-    if (isRemove) {
-      return REMOVE_CONFIRM_STATEMENT_URL;
-    }
-    return getRedirectUrl({
-      req,
-      urlWithEntityIds: UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_WITH_PARAMS_URL,
-      urlWithoutEntityIds: UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL,
-    });
+    return getNoChangeBackLinkUrl(req, isRemove);
   } else {
     let backLinkUrl: string;
     if (isRemove) {
@@ -183,6 +176,17 @@ const getBackLinkUrl = (req: Request, isNoChangeJourney: boolean, hasAnyBosWithT
     }
     return backLinkUrl;
   }
+};
+
+const getNoChangeBackLinkUrl = (req: Request, isRemove: boolean) => {
+  if (isRemove) {
+    return REMOVE_CONFIRM_STATEMENT_URL;
+  }
+  return getRedirectUrl({
+    req,
+    urlWithEntityIds: UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_WITH_PARAMS_URL,
+    urlWithoutEntityIds: UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL,
+  });
 };
 
 const getTemplateName = (isNoChangeJourney: boolean) => (

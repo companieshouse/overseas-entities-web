@@ -9,14 +9,13 @@ import { yesNoResponse } from '../../src/model/data.types.model';
 import { REMOVE_CONFIRM_STATEMENT_URL } from '../../src/config';
 import { ManagingOfficerKey } from '../../src/model/managing.officer.model';
 
-import { isRemoveJourney, isRegistrationJourney } from "../../src/utils/url";
+import { isRemoveJourney } from "../../src/utils/url";
 import { validateStatements, statementValidationErrorsGuard } from '../../src/middleware/statement.validation.middleware';
 import { RegistrableBeneficialOwnerKey, UpdateKey } from '../../src/model/update.type.model';
 import { BeneficialOwnerStatementKey, BeneficialOwnersStatementType } from '../../src/model/beneficial.owner.statement.model';
 
 import {
   getApplicationData,
-  fetchApplicationData,
   checkActiveBOExists,
   checkActiveMOExists,
   hasAddedOrCeasedBO,
@@ -36,14 +35,10 @@ const next = jest.fn();
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
-const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 const mockCheckActiveBOExists = checkActiveBOExists as jest.Mock;
 const mockCheckActiveMOExists = checkActiveMOExists as jest.Mock;
 const mockHasAddedOrCeasedBO = hasAddedOrCeasedBO as jest.Mock;
 const mockIsRemoveJourney = isRemoveJourney as jest.Mock;
-
-const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
-mockIsRegistrationJourney.mockReturnValue(true);
 
 describe('statement validation middleware', () => {
 
@@ -88,7 +83,6 @@ describe('statement validation middleware', () => {
         };
         mockIsActiveFeature.mockReturnValueOnce(true);
         mockGetApplicationData.mockReturnValueOnce(appData);
-        mockFetchApplicationData.mockReturnValueOnce(appData);
         mockCheckActiveBOExists.mockReturnValueOnce(true);
         mockHasAddedOrCeasedBO.mockReturnValueOnce(true);
         mockCheckActiveMOExists.mockReturnValueOnce(activeMOExists);
@@ -133,7 +127,6 @@ describe('statement validation middleware', () => {
 
       mockIsActiveFeature.mockReturnValueOnce(true);
       mockGetApplicationData.mockReturnValueOnce(appData);
-      mockFetchApplicationData.mockReturnValueOnce(appData);
       mockCheckActiveBOExists.mockReturnValueOnce(true);
       mockHasAddedOrCeasedBO.mockReturnValueOnce(addedOrCeased);
 
@@ -207,7 +200,6 @@ describe('statement validation middleware', () => {
         };
         mockIsActiveFeature.mockReturnValueOnce(true);
         mockGetApplicationData.mockReturnValueOnce(appData);
-        mockFetchApplicationData.mockReturnValueOnce(appData);
         mockCheckActiveBOExists.mockReturnValueOnce(activeBOExists);
         mockCheckActiveMOExists.mockReturnValueOnce(activeMOExists);
         mockHasAddedOrCeasedBO.mockReturnValueOnce(true);
@@ -263,7 +255,6 @@ describe('statement validation middleware', () => {
 
         mockIsActiveFeature.mockReturnValueOnce(true);
         mockGetApplicationData.mockReturnValueOnce(appData);
-        mockFetchApplicationData.mockReturnValueOnce(appData);
         mockCheckActiveBOExists.mockReturnValueOnce(true);
         mockHasAddedOrCeasedBO.mockReturnValueOnce(hasAddedOrCeased);
 

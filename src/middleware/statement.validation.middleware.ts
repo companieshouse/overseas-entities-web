@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 import { ApplicationData } from "../model";
-import { ErrorMessages } from "../validation/error.messages";
 import { yesNoResponse } from "../model/data.types.model";
-import { isNoChangeJourney } from "../utils/update/no.change.journey";
 import { RegistrableBeneficialOwnerKey } from "../model/update.type.model";
+import { isNoChangeJourney } from "../utils/update/no.change.journey";
+import { ErrorMessages } from "../validation/error.messages";
 
-import { getRedirectUrl, isRegistrationJourney, isRemoveJourney } from "../utils/url";
+import { getRedirectUrl, isRemoveJourney } from "../utils/url";
 
 import {
   BeneficialOwnerStatementKey,
@@ -15,18 +15,18 @@ import {
 import {
   checkActiveBOExists,
   checkActiveMOExists,
+  getApplicationData,
   hasAddedOrCeasedBO,
-  fetchApplicationData,
 } from "../utils/application.data";
 
 import {
-  UPDATE_CHECK_YOUR_ANSWERS_URL,
-  UPDATE_REVIEW_STATEMENT_URL,
-  SECURE_UPDATE_FILTER_URL,
   REMOVE_CONFIRM_STATEMENT_URL,
-  UPDATE_REVIEW_STATEMENT_WITH_PARAMS_URL,
-  UPDATE_CHECK_YOUR_ANSWERS_WITH_PARAMS_URL,
+  SECURE_UPDATE_FILTER_URL,
   SECURE_UPDATE_FILTER_WITH_PARAMS_URL,
+  UPDATE_CHECK_YOUR_ANSWERS_URL,
+  UPDATE_CHECK_YOUR_ANSWERS_WITH_PARAMS_URL,
+  UPDATE_REVIEW_STATEMENT_URL,
+  UPDATE_REVIEW_STATEMENT_WITH_PARAMS_URL,
 } from '../config';
 
 export const statementValidationErrorsGuard = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -42,8 +42,7 @@ export const statementValidationErrorsGuard = async (req: Request, res: Response
     return res.redirect(REMOVE_CONFIRM_STATEMENT_URL);
   }
 
-  const isRegistration = isRegistrationJourney(req);
-  const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+  const appData: ApplicationData = await getApplicationData(req);
 
   const redirectUrl = isNoChangeJourney(appData)
     ? getRedirectUrl({
@@ -72,8 +71,7 @@ export const summaryPagesGuard = (req: Request, res: Response, next: NextFunctio
 
 export const validateStatements = async (req: Request, _: Response, next: NextFunction): Promise<void> => {
 
-  const isRegistration = isRegistrationJourney(req);
-  const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+  const appData: ApplicationData = await getApplicationData(req);
   const errorList: string[] = [];
   const identifiedBOStatement = appData[BeneficialOwnerStatementKey];
   const allBOsIdentified = identifiedBOStatement === BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS;

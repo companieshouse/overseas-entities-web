@@ -8,8 +8,5 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   const resumeUrl: string = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
     ? getUrlWithTransactionIdAndSubmissionId(config.SOLD_LAND_FILTER_WITH_PARAMS_URL, transactionId, overseasEntityId)
     : config.SOLD_LAND_FILTER_URL;
-  console.log(`>>>>>resumeUrlRegistration`);
-  console.log(resumeUrl);
-  console.log(req.params);
   await getResumePage(req, res, next, resumeUrl);
 };

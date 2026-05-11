@@ -87,7 +87,7 @@ export const startPaymentsSession = async (
   // Calls the platform to create a payment session
   const paymentResult = await apiClient.payment.createPaymentWithFullUrl(createPaymentRequest);
 
-  // Verify the state of the payment, success or failure (eg. cost not found, connection issues ...)
+  // Verify the state of the payment, success or failure (e.g. cost not found, connection issues, etc..)
   if (paymentResult.isFailure()) {
     const errorResponse = paymentResult.value;
     const msgErrorStatusCode = `http response status code=${ errorResponse?.httpStatusCode || "No Status Code found in response" }`;

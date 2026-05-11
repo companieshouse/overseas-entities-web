@@ -10,17 +10,17 @@ import { isActiveFeature } from "../../utils/feature.flag";
 import { startPaymentsSession } from "../../service/payment.service";
 import { getTransaction } from "../../service/transaction.service";
 import { mapTrustApiReturnModelToWebModel } from "../../utils/trusts";
-import { isRegistrationJourney } from "../../utils/url";
+import { isRegistrationJourney, isRemoveJourney } from "../../utils/url";
 import { DueDiligenceKey } from "../../model/due.diligence.model";
 import { OverseasEntityDueDiligenceKey } from "../../model/overseas.entity.due.diligence.model";
 
 import { getOverseasEntity, updateOverseasEntity } from "../../service/overseas.entities.service";
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../model/who.is.making.filing.model";
 import { BeneficialOwnerGov, BeneficialOwnerGovKey } from "../../model/beneficial.owner.gov.model";
-import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
+import { ManagingOfficerIndividual, ManagingOfficerKey } from "../../model/managing.officer.model";
 import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../../model/beneficial.owner.other.model";
 import { ManagingOfficerCorporate, ManagingOfficerCorporateKey } from "../../model/managing.officer.corporate.model";
-import { ManagingOfficerIndividual, ManagingOfficerKey } from "../../model/managing.officer.model";
+import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
 
 import {
   ID,
@@ -47,6 +47,7 @@ export const getResumePage = async (req: Request, res: Response, next: NextFunct
     const { transactionId, overseasEntityId } = req.params;
     const infoMsg = `Transaction ID: ${transactionId}, OverseasEntity ID: ${overseasEntityId}`;
     const isRegistration: boolean = isRegistrationJourney(req);
+    const isRemove: boolean = await isRemoveJourney(req);
     logger.infoRequest(req, `Resuming OE - ${infoMsg}`);
     const appData: ApplicationData = await getOverseasEntity(req, transactionId, overseasEntityId);
 
@@ -55,7 +56,7 @@ export const getResumePage = async (req: Request, res: Response, next: NextFunct
     }
 
     const session = req.session as Session;
-    await setWebApplicationData(req, session, appData, transactionId, overseasEntityId, isRegistration);
+    await setWebApplicationData(req, session, appData, transactionId, overseasEntityId, !isRemove);
     const transactionResource = await getTransaction(req, transactionId);
 
     if (transactionResource.status === config.CLOSED_PENDING_PAYMENT) {
@@ -94,7 +95,7 @@ const setWebApplicationData = async (
   appData: ApplicationData,
   transactionId: string,
   overseasEntityId: string,
-  isRegistration: boolean
+  isRegistrationOrUpdate: boolean
 ) => {
 
   appData[BeneficialOwnerIndividualKey] = (appData[BeneficialOwnerIndividualKey] as BeneficialOwnerIndividual[])
@@ -108,7 +109,7 @@ const setWebApplicationData = async (
   appData[ManagingOfficerCorporateKey] = (appData[ManagingOfficerCorporateKey] as ManagingOfficerCorporate[])
     .map(moc => { return { ...moc, [ID]: uuidv4() }; });
 
-  if (!isRegistration || !isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+  if (!isRegistrationOrUpdate || !isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
     appData[HasSoldLandKey] = '0';
     appData[IsSecureRegisterKey] = '0';
     if (appData[OverseasEntityDueDiligenceKey] && Object.keys(appData[OverseasEntityDueDiligenceKey]).length) {
@@ -132,7 +133,7 @@ const setWebApplicationData = async (
     appData[BeneficialOwnerGovKey].forEach(bog => { delete bog[NonLegalFirmNoc]; });
   }
 
-  if (isRegistration && isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+  if (isRegistrationOrUpdate && isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
     await updateOverseasEntity(req, req.session as Session, appData, true);
   }
 

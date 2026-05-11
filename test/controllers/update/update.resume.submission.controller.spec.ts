@@ -6,7 +6,7 @@ jest.mock('../../../src/service/overseas.entities.service');
 jest.mock('../../../src/service/transaction.service');
 jest.mock('../../../src/service/payment.service');
 jest.mock('../../../src/utils/application.data');
-jest.mock("../../../src/utils/feature.flag" );
+jest.mock("../../../src/utils/feature.flag");
 jest.mock("../../../src/utils/logger");
 jest.mock("../../../src/utils/trusts");
 
@@ -15,73 +15,90 @@ import { NextFunction, Request, Response } from "express";
 import request from "supertest";
 
 import app from "../../../src/app";
+
+import * as config from '../../../src/config';
+import { authentication } from "../../../src/middleware/authentication.middleware";
+import { getTransaction } from "../../../src/service/transaction.service";
+import { isActiveFeature } from "../../../src/utils/feature.flag";
+import { DueDiligenceKey } from '../../../src/model/due.diligence.model';
+import { getOverseasEntity } from "../../../src/service/overseas.entities.service";
+import { startPaymentsSession } from "../../../src/service/payment.service";
+import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
+import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
+import { OverseasEntityDueDiligenceKey } from '../../../src/model/overseas.entity.due.diligence.model';
+import { MOCK_GET_TRANSACTION_RESPONSE } from '../../__mocks__/transaction.mock';
+import { mapTrustApiReturnModelToWebModel } from '../../../src/utils/trusts';
+import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from '../../__mocks__/overseas.entity.due.diligence.mock';
+
+import { createAndLogErrorRequest, logger } from "../../../src/utils/logger";
+import { getApplicationData, setExtraData } from "../../../src/utils/application.data";
+import { WhoIsRegisteringKey, WhoIsRegisteringType } from '../../../src/model/who.is.making.filing.model';
+
+import {
+  beneficialOwnerGovType,
+  beneficialOwnerOtherType,
+  beneficialOwnerIndividualType,
+} from "../../../src/model";
+
+import {
+  HasSoldLandKey,
+  Transactionkey,
+  OverseasEntityKey,
+  IsSecureRegisterKey,
+  NatureOfControlType,
+} from '../../../src/model/data.types.model';
+
 import {
   SECURE_UPDATE_FILTER_URL,
-  SECURE_UPDATE_FILTER_PAGE
+  SECURE_UPDATE_FILTER_PAGE,
+  UPDATE_AN_OVERSEAS_ENTITY_URL,
 } from "../../../src/config";
+
 import {
   ANY_MESSAGE_ERROR,
   FOUND_REDIRECT_TO,
-  SERVICE_UNAVAILABLE
+  SERVICE_UNAVAILABLE,
 } from '../../__mocks__/text.mock';
-import {
-  APPLICATION_DATA_MOCK,
-  BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
-  BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
-  BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
-  RESUME_UPDATE_SUBMISSION_URL,
-  OVERSEAS_ENTITY_ID,
-  TRANSACTION_ID,
-  FULL_PAYMENT_REDIRECT_PATH,
-  PAYMENT_HEADER
-} from '../../__mocks__/session.mock';
-import * as config from '../../../src/config';
-import { createAndLogErrorRequest, logger } from "../../../src/utils/logger";
-import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
-import { authentication } from "../../../src/middleware/authentication.middleware";
-import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
-import { getApplicationData, setExtraData } from "../../../src/utils/application.data";
-import { getOverseasEntity } from "../../../src/service/overseas.entities.service";
-import { getTransaction } from "../../../src/service/transaction.service";
-import { startPaymentsSession } from "../../../src/service/payment.service";
-import { isActiveFeature } from "../../../src/utils/feature.flag";
-import { WhoIsRegisteringKey, WhoIsRegisteringType } from '../../../src/model/who.is.making.filing.model';
-import { DueDiligenceKey } from '../../../src/model/due.diligence.model';
-import { HasSoldLandKey, IsSecureRegisterKey, NatureOfControlType, OverseasEntityKey, Transactionkey } from '../../../src/model/data.types.model';
-import { OverseasEntityDueDiligenceKey } from '../../../src/model/overseas.entity.due.diligence.model';
-import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from '../../__mocks__/overseas.entity.due.diligence.mock';
-import { MOCK_GET_TRANSACTION_RESPONSE } from '../../__mocks__/transaction.mock';
-import { mapTrustApiReturnModelToWebModel } from '../../../src/utils/trusts';
-import { beneficialOwnerIndividualType, beneficialOwnerOtherType, beneficialOwnerGovType } from "../../../src/model";
 
-const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
-mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+import {
+  PAYMENT_HEADER,
+  TRANSACTION_ID,
+  OVERSEAS_ENTITY_ID,
+  APPLICATION_DATA_MOCK,
+  FULL_PAYMENT_REDIRECT_PATH,
+  RESUME_UPDATE_SUBMISSION_URL,
+  BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
+  BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
+  BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+} from '../../__mocks__/session.mock';
 
 const mockSetExtraData = setExtraData as jest.Mock;
 const mockInfoRequest = logger.infoRequest as jest.Mock;
+const mockMapTrustApiReturnModelToWebModel = mapTrustApiReturnModelToWebModel as jest.Mock;
+const mockGetApplicationData = getApplicationData as jest.Mock;
+
 const mockCreateAndLogErrorRequest = createAndLogErrorRequest as jest.Mock;
 mockCreateAndLogErrorRequest.mockReturnValue("Error on resuming OE");
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
-mockIsActiveFeature.mockReturnValue( false );
+mockIsActiveFeature.mockReturnValue(false);
 
 const mockGetTransactionService = getTransaction as jest.Mock;
-mockGetTransactionService.mockReturnValue( {} );
+mockGetTransactionService.mockReturnValue({});
 
 const mockStartPaymentsSessionService = startPaymentsSession as jest.Mock;
 
 const mockGetOverseasEntity = getOverseasEntity as jest.Mock;
-mockGetOverseasEntity.mockReturnValue( APPLICATION_DATA_MOCK );
+mockGetOverseasEntity.mockReturnValue(APPLICATION_DATA_MOCK);
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
-mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockCompanyAuthenticationMiddleware = companyAuthentication as jest.Mock;
-mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
-const mockMapTrustApiReturnModelToWebModel = mapTrustApiReturnModelToWebModel as jest.Mock;
-
-const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
+mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const baseURL = `${config.CHS_URL}${config.UPDATE_AN_OVERSEAS_ENTITY_URL}`;
 
@@ -105,14 +122,15 @@ describe("Update Resume submission controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetOverseasEntity.mockReset();
+    mockIsActiveFeature.mockReset();
   });
 
   describe("GET tests", () => {
+
     test(`Redirect to ${SECURE_UPDATE_FILTER_URL} page`, async () => {
-      const mockAppData = {
-        ...APPLICATION_DATA_MOCK
-      };
-      mockGetOverseasEntity.mockReturnValueOnce( mockAppData );
+      const mockAppData = APPLICATION_DATA_MOCK;
+      mockGetOverseasEntity.mockReturnValueOnce(mockAppData);
 
       const resp = await request(app).get(RESUME_UPDATE_SUBMISSION_URL);
 
@@ -123,7 +141,7 @@ describe("Update Resume submission controller", () => {
       expect(mockSetExtraData).toHaveBeenCalled();
     });
 
-    test(`Redirect to ${SECURE_UPDATE_FILTER_PAGE} page after Resuming the OverseasEntity with DueDiligence object`, async () => {
+    test(`Redirect to ${SECURE_UPDATE_FILTER_PAGE} page after Resuming the OverseasEntity with DueDiligence object when the REDIS_flag is set to ON`, async () => {
       const mockAppData = {
         ...APPLICATION_DATA_MOCK,
         [OverseasEntityDueDiligenceKey]: {},
@@ -133,8 +151,36 @@ describe("Update Resume submission controller", () => {
         [HasSoldLandKey]: "",
         [IsSecureRegisterKey]: "",
       };
-      mockIsActiveFeature.mockReturnValueOnce( true );
-      mockGetOverseasEntity.mockReturnValueOnce( mockAppData );
+
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockGetOverseasEntity.mockReturnValueOnce(mockAppData);
+      const resp = await request(app).get(RESUME_UPDATE_SUBMISSION_URL);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${UPDATE_AN_OVERSEAS_ENTITY_URL}transaction/${TRANSACTION_ID}/submission/${OVERSEAS_ENTITY_ID}/${SECURE_UPDATE_FILTER_PAGE}`);
+      expect(mockAppData[WhoIsRegisteringKey]).toEqual(`${WhoIsRegisteringType.AGENT}`);
+      expect(mockAppData[OverseasEntityKey]).toEqual(`${OVERSEAS_ENTITY_ID}`);
+      expect(mockAppData[Transactionkey]).toEqual(`${TRANSACTION_ID}`);
+      expect(mockAppData[HasSoldLandKey]).toEqual('0');
+      expect(mockAppData[IsSecureRegisterKey]).toEqual('0');
+      expect(mockGetOverseasEntity).toHaveBeenCalledTimes(1);
+      expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
+      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+    });
+
+    test(`Redirect to ${SECURE_UPDATE_FILTER_PAGE} page after Resuming the OverseasEntity with DueDiligence object when the REDIS_flag is set to OFF`, async () => {
+      const mockAppData = {
+        ...APPLICATION_DATA_MOCK,
+        [OverseasEntityDueDiligenceKey]: {},
+        [WhoIsRegisteringKey]: "",
+        [OverseasEntityKey]: "",
+        [Transactionkey]: "",
+        [HasSoldLandKey]: "",
+        [IsSecureRegisterKey]: "",
+      };
+
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockGetOverseasEntity.mockReturnValueOnce(mockAppData);
       const resp = await request(app).get(RESUME_UPDATE_SUBMISSION_URL);
 
       expect(resp.status).toEqual(302);
@@ -160,12 +206,13 @@ describe("Update Resume submission controller", () => {
         [HasSoldLandKey]: "",
         [IsSecureRegisterKey]: "",
       };
-      mockIsActiveFeature.mockReturnValueOnce( true );
-      mockGetOverseasEntity.mockReturnValueOnce( mockAppData );
+
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockGetOverseasEntity.mockReturnValueOnce(mockAppData);
       const resp = await request(app).get(RESUME_UPDATE_SUBMISSION_URL);
 
       expect(resp.status).toEqual(302);
-      expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${SECURE_UPDATE_FILTER_URL}`);
+      expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${UPDATE_AN_OVERSEAS_ENTITY_URL}transaction/${TRANSACTION_ID}/submission/${OVERSEAS_ENTITY_ID}/${SECURE_UPDATE_FILTER_PAGE}`);
       expect(mockAppData[WhoIsRegisteringKey]).toEqual(`${WhoIsRegisteringType.SOMEONE_ELSE}`);
       expect(mockAppData[OverseasEntityKey]).toEqual(`${OVERSEAS_ENTITY_ID}`);
       expect(mockAppData[Transactionkey]).toEqual(`${TRANSACTION_ID}`);
@@ -177,13 +224,13 @@ describe("Update Resume submission controller", () => {
     });
 
     test(`Redirect to starting payment page after resuming the OverseasEntity object`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce( true );
-      mockGetOverseasEntity.mockReturnValueOnce( {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockGetOverseasEntity.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
         [OverseasEntityDueDiligenceKey]: {}
       });
-      mockGetTransactionService.mockReturnValueOnce( MOCK_GET_TRANSACTION_RESPONSE.resource );
-      mockStartPaymentsSessionService.mockReturnValueOnce( FULL_PAYMENT_REDIRECT_PATH );
+      mockGetTransactionService.mockReturnValueOnce(MOCK_GET_TRANSACTION_RESPONSE.resource);
+      mockStartPaymentsSessionService.mockReturnValueOnce(FULL_PAYMENT_REDIRECT_PATH);
 
       const errorMsg = `Trans_ID: ${TRANSACTION_ID}, OE_ID: ${OVERSEAS_ENTITY_ID}. Redirect to: ${FULL_PAYMENT_REDIRECT_PATH}`;
       const resp = await request(app).get(RESUME_UPDATE_SUBMISSION_URL);
@@ -198,21 +245,22 @@ describe("Update Resume submission controller", () => {
         { headers: PAYMENT_HEADER },
         baseURL
       );
-      expect(mockInfoRequest).toHaveBeenCalledWith( expect.anything(), `Payments Session created on Resume link with, ${errorMsg}`);
+      expect(mockInfoRequest).toHaveBeenCalledWith(expect.anything(), `Payments Session created on Resume link with, ${errorMsg}`);
       expect(mockGetOverseasEntity).toHaveBeenCalledTimes(1);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
       expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
     });
 
     test(`Redirect to starting payment page after resuming the OverseasEntity object and trusts feature flag on`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce( true );
-      mockIsActiveFeature.mockReturnValueOnce( true ); // needs twice both save and resume AND trusts
-      mockGetOverseasEntity.mockReturnValueOnce( {
+      mockIsActiveFeature.mockReturnValue(true);
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockGetOverseasEntity.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
         [OverseasEntityDueDiligenceKey]: {}
       });
-      mockGetTransactionService.mockReturnValueOnce( MOCK_GET_TRANSACTION_RESPONSE.resource );
-      mockStartPaymentsSessionService.mockReturnValueOnce( FULL_PAYMENT_REDIRECT_PATH );
+      mockGetTransactionService.mockReturnValueOnce(MOCK_GET_TRANSACTION_RESPONSE.resource);
+      mockStartPaymentsSessionService.mockReturnValueOnce(FULL_PAYMENT_REDIRECT_PATH);
 
       const errorMsg = `Trans_ID: ${TRANSACTION_ID}, OE_ID: ${OVERSEAS_ENTITY_ID}. Redirect to: ${FULL_PAYMENT_REDIRECT_PATH}`;
       const resp = await request(app).get(RESUME_UPDATE_SUBMISSION_URL);
@@ -227,7 +275,7 @@ describe("Update Resume submission controller", () => {
         { headers: PAYMENT_HEADER },
         baseURL
       );
-      expect(mockInfoRequest).toHaveBeenCalledWith( expect.anything(), `Payments Session created on Resume link with, ${errorMsg}`);
+      expect(mockInfoRequest).toHaveBeenCalledWith(expect.anything(), `Payments Session created on Resume link with, ${errorMsg}`);
       expect(mockGetOverseasEntity).toHaveBeenCalledTimes(1);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
       expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
@@ -235,8 +283,8 @@ describe("Update Resume submission controller", () => {
     });
 
     test(`Should throw an error on Resuming the OverseasEntity`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce( true );
-      mockGetOverseasEntity.mockImplementationOnce( null as any );
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockGetOverseasEntity.mockImplementationOnce(null as any);
 
       const errorMsg = `Error on resuming OE - Transaction ID: ${TRANSACTION_ID}, OverseasEntity ID: ${OVERSEAS_ENTITY_ID}`;
       const resp = await request(app).get(RESUME_UPDATE_SUBMISSION_URL);
@@ -245,7 +293,7 @@ describe("Update Resume submission controller", () => {
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
       expect(mockGetOverseasEntity).toHaveBeenCalledTimes(1);
       expect(mockCreateAndLogErrorRequest).toHaveBeenCalledTimes(1);
-      expect(mockCreateAndLogErrorRequest).toHaveBeenCalledWith( expect.anything(), errorMsg);
+      expect(mockCreateAndLogErrorRequest).toHaveBeenCalledWith(expect.anything(), errorMsg);
 
       expect(mockSetExtraData).not.toHaveBeenCalled();
     });
@@ -254,6 +302,7 @@ describe("Update Resume submission controller", () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockGetOverseasEntity.mockReturnValueOnce(() => {throw Error(ANY_MESSAGE_ERROR);});
+
       const resp = await request(app).get(RESUME_UPDATE_SUBMISSION_URL);
 
       expect(resp.status).toEqual(500);
@@ -261,12 +310,12 @@ describe("Update Resume submission controller", () => {
     });
 
     test(`Do not remove old NOCs after resuming the OverseasEntity Update submission and FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is ON`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce( true ); // REDIS flag
-      mockIsActiveFeature.mockReturnValueOnce( true ); // trusts feature flag
-      mockIsActiveFeature.mockReturnValueOnce( true ); // new NOCs
+      mockIsActiveFeature.mockReturnValueOnce(true); // REDIS flag
+      mockIsActiveFeature.mockReturnValueOnce(true); // trusts feature flag
+      mockIsActiveFeature.mockReturnValueOnce(true); // new NOCs
 
       const mockAppData = { ...mockNocAppData };
-      mockGetOverseasEntity.mockReturnValueOnce( mockAppData );
+      mockGetOverseasEntity.mockReturnValueOnce(mockAppData);
       const resp = await request(app).get(RESUME_UPDATE_SUBMISSION_URL);
 
       expect(resp.status).toEqual(302);
@@ -285,12 +334,12 @@ describe("Update Resume submission controller", () => {
     });
 
     test(`Do not remove old NOCs after resuming the OverseasEntity Update submission and FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC is OFF`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce( true ); // REDIS flag
-      mockIsActiveFeature.mockReturnValueOnce( true ); // trusts feature flag
-      mockIsActiveFeature.mockReturnValueOnce( false ); // new NOCs
+      mockIsActiveFeature.mockReturnValueOnce(true); // REDIS flag
+      mockIsActiveFeature.mockReturnValueOnce(true); // trusts feature flag
+      mockIsActiveFeature.mockReturnValueOnce(false); // new NOCs
 
       const mockAppData = { ...mockNocAppData };
-      mockGetOverseasEntity.mockReturnValueOnce( mockAppData );
+      mockGetOverseasEntity.mockReturnValueOnce(mockAppData);
       const resp = await request(app).get(RESUME_UPDATE_SUBMISSION_URL);
 
       expect(resp.status).toEqual(302);

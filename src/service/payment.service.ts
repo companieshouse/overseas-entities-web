@@ -54,7 +54,7 @@ export const startPaymentsSession = async (
 
   const isRemove: boolean = await isRemoveJourney(req);
   const appData: ApplicationData = {
-    ...(await fetchApplicationData(req, isRemove, true)),
+    ...(await fetchApplicationData(req, !isRemove, true)),
     [Transactionkey]: transactionId,
     [OverseasEntityKey]: overseasEntityId
   };

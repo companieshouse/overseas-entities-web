@@ -56,7 +56,7 @@ export const getResumePage = async (req: Request, res: Response, next: NextFunct
     }
 
     const session = req.session as Session;
-    await setWebApplicationData(req, session, appData, transactionId, overseasEntityId, !isRemove);
+    await setWebApplicationData(req, session, appData, transactionId, overseasEntityId, isRemove);
     const transactionResource = await getTransaction(req, transactionId);
 
     if (transactionResource.status === config.CLOSED_PENDING_PAYMENT) {
@@ -95,7 +95,7 @@ const setWebApplicationData = async (
   appData: ApplicationData,
   transactionId: string,
   overseasEntityId: string,
-  isRegistrationOrUpdate: boolean
+  isRemove: boolean
 ) => {
 
   appData[BeneficialOwnerIndividualKey] = (appData[BeneficialOwnerIndividualKey] as BeneficialOwnerIndividual[])
@@ -109,7 +109,7 @@ const setWebApplicationData = async (
   appData[ManagingOfficerCorporateKey] = (appData[ManagingOfficerCorporateKey] as ManagingOfficerCorporate[])
     .map(moc => { return { ...moc, [ID]: uuidv4() }; });
 
-  if (!isRegistrationOrUpdate || !isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+  if (isRemove || !isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
     appData[HasSoldLandKey] = '0';
     appData[IsSecureRegisterKey] = '0';
     if (appData[OverseasEntityDueDiligenceKey] && Object.keys(appData[OverseasEntityDueDiligenceKey]).length) {
@@ -133,7 +133,7 @@ const setWebApplicationData = async (
     appData[BeneficialOwnerGovKey].forEach(bog => { delete bog[NonLegalFirmNoc]; });
   }
 
-  if (isRegistrationOrUpdate && isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+  if (!isRemove && isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
     await updateOverseasEntity(req, req.session as Session, appData, true);
   }
 

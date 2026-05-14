@@ -1,11 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
-import { fetchApplicationData } from "../../utils/application.data";
+import { getApplicationData } from "../../utils/application.data";
 import { ApplicationData } from '../../model/application.model';
 import { TrustKey } from '../../model/trust.model';
 import { NavigationErrorMessage } from './check.condition';
 import { TrusteeType } from '../../model/trustee.type.model';
-import { isRemoveJourney } from "../../utils/url";
-
+import { getRedirectUrl } from "../../utils/url";
 import { createAndLogErrorRequest, logger } from '../../utils/logger';
 import { containsTrustData, getTrustArray } from '../../utils/trusts';
 
@@ -15,13 +14,14 @@ import {
   ROUTE_PARAM_TRUSTEE_ID,
   SECURE_UPDATE_FILTER_URL,
   ROUTE_PARAM_TRUSTEE_TYPE,
+  SOLD_LAND_FILTER_WITH_PARAMS_URL,
+  SECURE_UPDATE_FILTER_WITH_PARAMS_URL,
 } from '../../config';
 
 const hasTrustWithId = async (req: Request, res: Response, next: NextFunction, url: string): Promise<void> => {
   try {
     const trustId = req.params[ROUTE_PARAM_TRUST_ID];
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    const appData: ApplicationData = await getApplicationData(req);
     const isTrustPresent = appData[TrustKey]?.some(
       (trust) => trust.trust_id === trustId,
     );
@@ -42,8 +42,7 @@ const hasTrusteeWithId = async (req: Request, res: Response, next: NextFunction,
     const trustId = req.params[ROUTE_PARAM_TRUST_ID];
     const trusteeId = req.params[ROUTE_PARAM_TRUSTEE_ID];
     const trusteeType = req.params[ROUTE_PARAM_TRUSTEE_TYPE];
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    const appData: ApplicationData = await getApplicationData(req);
     const isTrustPresent = appData[TrustKey]?.some(
       (trust) => trust.trust_id === trustId,
     );
@@ -85,8 +84,7 @@ const hasTrusteeWithId = async (req: Request, res: Response, next: NextFunction,
 
 const hasTrustData = async (req: Request, res: Response, next: NextFunction, url: string): Promise<void> => {
   try {
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    const appData: ApplicationData = await getApplicationData(req);
     if (containsTrustData(getTrustArray(appData))) {
       return next();
     }
@@ -97,8 +95,23 @@ const hasTrustData = async (req: Request, res: Response, next: NextFunction, url
   }
 };
 
-export const hasTrustWithIdRegister = (req: Request, res: Response, next: NextFunction) => hasTrustWithId(req, res, next, SOLD_LAND_FILTER_URL);
-export const hasTrustDataRegister = (req: Request, res: Response, next: NextFunction) => hasTrustData(req, res, next, SOLD_LAND_FILTER_URL);
-export const hasTrustWithIdUpdate = (req: Request, res: Response, next: NextFunction) => hasTrustWithId(req, res, next, SECURE_UPDATE_FILTER_URL);
-export const hasTrustDataUpdate = (req: Request, res: Response, next: NextFunction) => hasTrustData(req, res, next, SECURE_UPDATE_FILTER_URL);
-export const hasTrusteeWithIdUpdate = (req: Request, res: Response, next: NextFunction) => hasTrusteeWithId(req, res, next, SECURE_UPDATE_FILTER_URL);
+const getSoldLandFilterUrl = (req: Request) => {
+  return getRedirectUrl({
+    req,
+    urlWithEntityIds: SOLD_LAND_FILTER_WITH_PARAMS_URL,
+    urlWithoutEntityIds: SOLD_LAND_FILTER_URL,
+  });
+};
+
+const getSecureUpdateFilterUrl = (req: Request) => {
+  return getRedirectUrl({
+    req,
+    urlWithEntityIds: SECURE_UPDATE_FILTER_WITH_PARAMS_URL,
+    urlWithoutEntityIds: SECURE_UPDATE_FILTER_URL,
+  });
+};
+export const hasTrustWithIdRegister = (req: Request, res: Response, next: NextFunction) => hasTrustWithId(req, res, next, getSoldLandFilterUrl(req));
+export const hasTrustDataRegister = (req: Request, res: Response, next: NextFunction) => hasTrustData(req, res, next, getSoldLandFilterUrl(req));
+export const hasTrustWithIdUpdate = (req: Request, res: Response, next: NextFunction) => hasTrustWithId(req, res, next, getSecureUpdateFilterUrl(req));
+export const hasTrustDataUpdate = (req: Request, res: Response, next: NextFunction) => hasTrustData(req, res, next, getSecureUpdateFilterUrl(req));
+export const hasTrusteeWithIdUpdate = (req: Request, res: Response, next: NextFunction) => hasTrusteeWithId(req, res, next, getSecureUpdateFilterUrl(req));

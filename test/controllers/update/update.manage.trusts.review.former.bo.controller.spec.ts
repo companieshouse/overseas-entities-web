@@ -30,25 +30,24 @@ import { Trust, TrustHistoricalBeneficialOwner } from '../../../src/model/trust.
 import { updateOverseasEntity } from "../../../src/service/overseas.entities.service";
 
 import {
-  checkBOsDetailsEntered,
-  fetchApplicationData,
   getApplicationData,
+  fetchApplicationData,
+  checkBOsDetailsEntered,
 } from '../../../src/utils/application.data';
 
 import {
   ANY_MESSAGE_ERROR,
   SERVICE_UNAVAILABLE,
-  UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_TABLE_HEADING,
   UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_TITLE,
+  UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_TABLE_HEADING,
 } from '../../__mocks__/text.mock';
 
 import {
-  SECURE_UPDATE_FILTER_URL,
-  UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_WITH_PARAMS_URL,
   UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL,
+  UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_WITH_PARAMS_URL,
   UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_WITH_PARAMS_URL,
   UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_WITH_PARAMS_URL,
-  UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_WITH_PARAMS_URL
+  UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_WITH_PARAMS_URL, SECURE_UPDATE_FILTER_WITH_PARAMS_URL
 } from '../../../src/config';
 
 const appDataWithReviewTrust = {
@@ -97,7 +96,9 @@ const appDataWithReviewTrust = {
 } as ApplicationData;
 
 mockCsrfProtectionMiddleware.mockClear();
+
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
+const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
 
 const mockIsInChangeJourney = isInChangeJourney as jest.Mock;
 mockIsInChangeJourney.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
@@ -122,8 +123,6 @@ mockCheckBOsDetailsEntered.mockReturnValue(true);
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue(true);
-
-const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
 
 describe('Update - Manage Trusts - Review former beneficial owners', () => {
 
@@ -157,7 +156,7 @@ describe('Update - Manage Trusts - Review former beneficial owners', () => {
       const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(302);
-      expect(resp.text).toContain(SECURE_UPDATE_FILTER_URL);
+      expect(resp.text).toContain(`Found. Redirecting to ${SECURE_UPDATE_FILTER_WITH_PARAMS_URL}`);
     });
 
     test('when feature flag is on, redirect if user tries to access with no BOs to review', async () => {
@@ -179,7 +178,7 @@ describe('Update - Manage Trusts - Review former beneficial owners', () => {
       const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(302);
-      expect(resp.text).toContain(SECURE_UPDATE_FILTER_URL);
+      expect(resp.text).toContain(`Found. Redirecting to ${SECURE_UPDATE_FILTER_WITH_PARAMS_URL}`);
     });
 
     test("catch error when rendering the page", async () => {

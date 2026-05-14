@@ -134,7 +134,7 @@ describe("Update Filing Date controller", () => {
 
     test('renders the update-filing-date page when FEATURE_FLAG_ENABLE_RELEVANT_PERIOD is not active,', async () => {
       mockCheckRelevantPeriodActionTaken.mockReturnValueOnce(true);
-      mockGetRedirectUrl.mockReturnValueOnce(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
+      mockGetRedirectUrl.mockReturnValue(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
 
       const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
 
@@ -149,7 +149,7 @@ describe("Update Filing Date controller", () => {
 
     test('renders the review-statements-for-the-pre-registration-period page when any action has been taken for relevant period is active,', async () => {
       mockCheckRelevantPeriodActionTaken.mockReturnValueOnce(true);
-      mockGetRedirectUrl.mockReturnValueOnce(config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL + "?relevant-period=true");
+      mockGetRedirectUrl.mockReturnValue(config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL + "?relevant-period=true");
       const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain("/update-an-overseas-entity/review-statements-for-the-pre-registration-period?relevant-period=true");
@@ -157,7 +157,7 @@ describe("Update Filing Date controller", () => {
 
     test('renders the update-filing-date page when FEATURE_FLAG_ENABLE_RELEVANT_PERIOD is active,', async () => {
       mockCheckRelevantPeriodActionTaken.mockReturnValueOnce(true);
-      mockGetRedirectUrl.mockReturnValueOnce(config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL + "?relevant-period=true");
+      mockGetRedirectUrl.mockReturnValue(config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL + "?relevant-period=true");
       const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain("/update-an-overseas-entity/review-statements-for-the-pre-registration-period?relevant-period=true");
@@ -167,7 +167,7 @@ describe("Update Filing Date controller", () => {
       const mockData = { ...UPDATE_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS, entity_number: 'OE111129' };
       mockGetApplicationData.mockReturnValueOnce(mockData);
       mockFetchApplicationData.mockReturnValueOnce(mockData);
-      mockGetRedirectUrl.mockReturnValueOnce(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
+      mockGetRedirectUrl.mockReturnValue(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
       mockCheckRelevantPeriodActionTaken.mockReturnValueOnce(false);
 
       const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
@@ -185,7 +185,7 @@ describe("Update Filing Date controller", () => {
       const mockData = { ...APPLICATION_DATA_MOCK };
       mockGetApplicationData.mockReturnValueOnce(mockData);
       mockFetchApplicationData.mockReturnValueOnce(mockData);
-      mockGetRedirectUrl.mockReturnValueOnce(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
+      mockGetRedirectUrl.mockReturnValue(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
       mockCheckRelevantPeriodActionTaken.mockReturnValueOnce(false);
 
       const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
@@ -203,7 +203,7 @@ describe("Update Filing Date controller", () => {
       const mockData = { ...APPLICATION_DATA_MOCK };
       mockGetApplicationData.mockReturnValueOnce(mockData);
       mockFetchApplicationData.mockReturnValueOnce(mockData);
-      mockGetRedirectUrl.mockReturnValueOnce(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
+      mockGetRedirectUrl.mockReturnValue(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL);
       mockCheckRelevantPeriodActionTaken.mockReturnValueOnce(false);
 
       const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);

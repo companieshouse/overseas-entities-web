@@ -3,17 +3,20 @@ jest.mock("@companieshouse/web-security-node");
 jest.mock('../../src/service/transaction.service');
 jest.mock("../../src/utils/logger");
 jest.mock("../../src/utils/url");
+jest.mock( "../../src/utils/update/data.cookie");
 
 import { Request, Response, NextFunction } from 'express';
 import { Params } from 'express-serve-static-core';
 
 import { logger } from '../../src/utils/logger';
+import { isRemoveJourney } from "../../src/utils/url";
 import { companyAuthentication } from "../../src/middleware/company.authentication.middleware";
 import { getTransaction } from "../../src/service/transaction.service";
 import { authMiddleware } from "@companieshouse/web-security-node";
+import { getDataFromEntityCookie } from "../../src/utils/update/data.cookie";
 import { ANY_MESSAGE_ERROR } from '../__mocks__/text.mock';
 import { MOCK_GET_UPDATE_TRANSACTION_RESPONSE } from '../__mocks__/transaction.mock';
-import { isRemoveJourney } from "../../src/utils/url";
+import { entityProfileModelMock } from "../__mocks__/update.entity.mocks";
 
 import {
   COMPANY_NUMBER,
@@ -27,6 +30,9 @@ const mockLoggerErrorRequest = logger.errorRequest as jest.Mock;
 const mockLoggerInfoRequest = logger.infoRequest as jest.Mock;
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockIsRemoveJourney = isRemoveJourney as jest.Mock;
+
+const mockGetDataFromEntityCookie = getDataFromEntityCookie as jest.Mock;
+mockGetDataFromEntityCookie.mockReturnValue(entityProfileModelMock);
 
 let req = {} as Request;
 const transactionId = "123";
@@ -124,7 +130,7 @@ describe('Company Authentication middleware', () => {
 
     const transactionResponse = { ...MOCK_GET_UPDATE_TRANSACTION_RESPONSE.resource };
     mockGetTransactionService.mockReturnValueOnce(transactionResponse);
-
+    mockGetDataFromEntityCookie.mockReturnValue({});
     await companyAuthentication(req, res, next);
 
     expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
@@ -186,6 +192,7 @@ describe('Company Authentication middleware', () => {
       body: {}
     } as Request;
 
+    mockGetDataFromEntityCookie.mockReturnValue({});
     await companyAuthentication(req, res, next);
 
     expect(res.redirect).toHaveBeenCalledTimes(1);

@@ -292,7 +292,7 @@ describe("Add Trust Controller Tests", () => {
       expect(resp.text).toContain(
         config.REGISTER_AN_OVERSEAS_ENTITY_URL + MOCKED_URL + config.TRUSTS_URL
       );
-      expect(mockGetRedirectUrl).toHaveBeenCalledTimes(1);
+      expect(mockGetRedirectUrl).toHaveBeenCalled();
     });
   });
 

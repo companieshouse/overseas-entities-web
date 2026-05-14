@@ -281,10 +281,9 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
     test(`redirects to ${config.BENEFICIAL_OWNER_DELETE_WARNING_PAGE}
               page with NONE_IDENTIFIED as beneficial owners statement type`, async () => {
       mockCheckBOsDetailsEntered.mockReturnValueOnce(true);
-      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL - getRedirectURL
-      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL - getWarningRedirectURL
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
-      mockFetchApplicationData.mockReturnValueOnce({
+      mockIsActiveFeature.mockReturnValue(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
+      mockFetchApplicationData.mockReturnValue({
         ...APPLICATION_DATA_MOCK,
         [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS
       });
@@ -294,16 +293,15 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
         .post(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL)
         .send({ [BeneficialOwnerStatementKey]: boStatement });
 
-      expect(mockIsActiveFeature).toHaveBeenCalledTimes(2);
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(3);
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(`${redirectWithParmsUrl}${boStatement}`);
     });
 
     test(`redirects to ${config.BENEFICIAL_OWNER_DELETE_WARNING_PAGE} page with ALL_IDENTIFIED_ALL_DETAILS as beneficial owners statement type`, async () => {
       mockCheckMOsDetailsEntered.mockReturnValueOnce(true);
-      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL - getRedirectURL
-      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL - getWarningRedirectURL
-      mockFetchApplicationData.mockReturnValueOnce({
+      mockIsActiveFeature.mockReturnValue(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockFetchApplicationData.mockReturnValue({
         ...APPLICATION_DATA_MOCK,
         [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS
       });
@@ -313,7 +311,7 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
         .post(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL)
         .send({ [BeneficialOwnerStatementKey]: boStatement });
 
-      expect(mockIsActiveFeature).toHaveBeenCalledTimes(2);
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(3);
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(`${redirectWithParmsUrl}${boStatement}`);
     });

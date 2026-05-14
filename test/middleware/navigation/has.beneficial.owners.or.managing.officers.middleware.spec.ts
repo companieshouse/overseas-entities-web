@@ -26,7 +26,7 @@ describe("has.beneficial.owners.or.managing.officers navigation middleware tests
     mockCheckBOsOrMOsDetailsEntered.mockImplementationOnce( () => { return false; });
     await hasBOsOrMOs(req, res, next);
     expect(next).not.toHaveBeenCalledTimes(1);
-    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
+    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(2);
     expect(mockLoggerInfoRequest).toHaveBeenCalledWith(req, NavigationErrorMessage);
     expect(res.redirect).toHaveBeenCalledTimes(1);
     expect(res.redirect).toHaveBeenCalledWith(SOLD_LAND_FILTER_URL);

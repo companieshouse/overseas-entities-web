@@ -24,15 +24,6 @@ import {
 } from "../__mocks__/text.mock";
 
 import {
-  TRANSACTION_ID,
-  OVERSEAS_ENTITY_ID,
-  PAYMENT_OBJECT_MOCK,
-  APPLICATION_DATA_MOCK,
-  PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING,
-  PAYMENT_DECLINED_WITH_TRANSACTION_URL_AND_QUERY_STRING,
-} from "../__mocks__/session.mock";
-
-import {
   PAYMENT_PAID,
   CONFIRMATION_URL,
   CONFIRMATION_PAGE,
@@ -40,6 +31,15 @@ import {
   PAYMENT_FAILED_PAGE,
   REGISTER_AN_OVERSEAS_ENTITY_URL,
 } from "../../src/config";
+
+import {
+  TRANSACTION_ID,
+  OVERSEAS_ENTITY_ID,
+  PAYMENT_OBJECT_MOCK,
+  APPLICATION_DATA_MOCK,
+  PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING,
+  PAYMENT_DECLINED_WITH_TRANSACTION_URL_AND_QUERY_STRING,
+} from "../__mocks__/session.mock";
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockLoggerInfoRequest = logger.infoRequest as jest.Mock;
@@ -118,6 +118,7 @@ describe("Payment controller", () => {
 
     test(`should redirect to ${CONFIRMATION_PAGE} page, Payment Successful with status ${PAYMENT_PAID}`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockIsActiveFeature.mockReturnValueOnce(true);
       mockFetchApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
         [PaymentKey]: PAYMENT_OBJECT_MOCK
@@ -133,6 +134,7 @@ describe("Payment controller", () => {
 
     test(`should redirect to ${PAYMENT_FAILED_PAGE} page, Payment failed somehow and feature flag active`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockIsActiveFeature.mockReturnValueOnce(true);
       mockFetchApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
         [PaymentKey]: PAYMENT_OBJECT_MOCK

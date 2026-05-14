@@ -7,6 +7,7 @@ jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock("../../../src/utils/feature.flag" );
 jest.mock('../../../src/service/persons.with.signficant.control.statement.service');
 jest.mock("../../../src/service/company.profile.service");
+jest.mock( "../../../src/utils/update/data.cookie");
 
 import request from "supertest";
 import { NextFunction } from "express";
@@ -18,15 +19,16 @@ import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddlewa
 
 import * as config from "../../../src/config";
 import app from "../../../src/app";
-import { logger } from "../../../src/utils/logger";
-import { authentication } from "../../../src/middleware/authentication.middleware";
-import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
-import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
-import { UpdateKey } from "../../../src/model/update.type.model";
-import { isActiveFeature } from "../../../src/utils/feature.flag";
-import { getCompanyPscStatements } from "../../../src/service/persons.with.signficant.control.statement.service";
-import { getCompanyProfile } from "../../../src/service/company.profile.service";
 
+import { logger } from "../../../src/utils/logger";
+import { UpdateKey } from "../../../src/model/update.type.model";
+import { authentication } from "../../../src/middleware/authentication.middleware";
+import { isActiveFeature } from "../../../src/utils/feature.flag";
+import { getCompanyProfile } from "../../../src/service/company.profile.service";
+import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
+import { getCompanyPscStatements } from "../../../src/service/persons.with.signficant.control.statement.service";
+import { getDataFromEntityCookie } from "../../../src/utils/update/data.cookie";
+import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { getApplicationData, fetchApplicationData } from "../../../src/utils/application.data";
 
 import {
@@ -58,14 +60,18 @@ import {
 
 mockJourneyDetectionMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
-const mockIsActiveFeature = isActiveFeature as jest.Mock;
-mockIsActiveFeature.mockReturnValue(false);
+
 const mockGetCompanyPscStatements = getCompanyPscStatements as jest.Mock;
 const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
-
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
+mockIsActiveFeature.mockReturnValue(false);
+
+const mockGetDataFromEntityCookie = getDataFromEntityCookie as jest.Mock;
+mockGetDataFromEntityCookie.mockReturnValue(entityProfileModelMock);
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -208,8 +214,9 @@ describe("Confirm company data", () => {
   });
 
   describe("Post update confirm overseas entity details", () => {
+
     test(`redirects to overseas-entity-query page if no entity - flag off`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({});
+      mockGetApplicationData.mockReturnValue({ no_data: "no_data" });
       mockIsActiveFeature.mockReturnValue(false); // Redis removal
 
       const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
@@ -219,7 +226,7 @@ describe("Confirm company data", () => {
     });
 
     test(`redirects to overseas-entity-query page if no entity - flag on`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({});
+      mockGetApplicationData.mockReturnValueOnce({ no_data: "no_data" });
       mockIsActiveFeature.mockReturnValue(true); // Redis removal
 
       const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL);
@@ -244,6 +251,7 @@ describe("Confirm company data", () => {
       mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW);
       mockIsActiveFeature.mockReturnValueOnce(false); // relevant period
       mockIsActiveFeature.mockReturnValueOnce(false); // relevant period
+      mockIsActiveFeature.mockReturnValueOnce(false); // relevant period
       mockIsActiveFeature.mockReturnValueOnce(true); // Redis removal
       const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL).send({});
 
@@ -255,6 +263,7 @@ describe("Confirm company data", () => {
       mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW);
       mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW);
       mockGetCompanyProfile.mockReturnValue(companyProfileQueryMock);
+      mockIsActiveFeature.mockReturnValueOnce(false); // Redis removal
       mockIsActiveFeature.mockReturnValueOnce(false); // Redis removal
       mockIsActiveFeature.mockReturnValueOnce(true); // relevant period
       mockIsActiveFeature.mockReturnValueOnce(false); // Redis removal
@@ -268,11 +277,13 @@ describe("Confirm company data", () => {
     test(`redirect to update-filing-date if no BOs when FEATURE_FLAG_ENABLE_RELEVANT_PERIOD is active - redis removal flag on`, async () => {
       mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW);
       mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW);
-      mockGetCompanyProfile.mockReturnValue(companyProfileQueryMock);
-      mockIsActiveFeature.mockReturnValueOnce(true); // Redis removal
-      mockIsActiveFeature.mockReturnValueOnce(true); // relevant period
-      mockIsActiveFeature.mockReturnValueOnce(true); // Redis removal
-      mockIsActiveFeature.mockReturnValueOnce(true); // Redis removal
+      mockGetCompanyPscStatements.mockReturnValue({
+        items: [
+          { statement: "change-beneficiary-relevant-period" },
+          { statement: "all-beneficial-owners-identified" },
+        ]
+      });
+      mockIsActiveFeature.mockReturnValue(true); // relevant period
 
       const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL).send({});
 
@@ -294,6 +305,7 @@ describe("Confirm company data", () => {
       mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW);
       mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW);
       mockIsActiveFeature.mockReturnValueOnce(false); // relevant period
+      mockIsActiveFeature.mockReturnValueOnce(false); // relevant period
       mockIsActiveFeature.mockReturnValueOnce(false); // Redis removal
       const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL).send({});
 
@@ -314,9 +326,13 @@ describe("Confirm company data", () => {
 
       mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW);
       mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW);
-      mockGetCompanyProfile.mockReturnValue(companyProfileQueryMock);
-      mockIsActiveFeature.mockReturnValueOnce(true); // Redis removal
-      mockIsActiveFeature.mockReturnValueOnce(true); // relevant period
+      mockIsActiveFeature.mockReturnValue(true); // Redis removal + Relevant period
+      mockGetCompanyPscStatements.mockReturnValue({
+        items: [
+          { statement: "change-beneficiary-relevant-period" },
+          { statement: "all-beneficial-owners-identified" },
+        ]
+      });
 
       const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL).send({});
 
@@ -336,7 +352,7 @@ describe("Confirm company data", () => {
 
   describe("Post remove confirm overseas entity details", () => {
     test(`redirects to overseas-entity-query page if no entity`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({});
+      mockGetApplicationData.mockReturnValueOnce({ no_data: "no_data" });
 
       const resp = await request(app).post(`${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
       expect(resp.statusCode).toEqual(302);
@@ -437,6 +453,7 @@ describe("Confirm company data", () => {
       statement: 'no-individual-or-entity-with-signficant-control' };
     mockGetCompanyPscStatements.mockReturnValue(mockStatement);
     mockIsActiveFeature.mockReturnValueOnce(false); // Redis removal
+    mockIsActiveFeature.mockReturnValueOnce(false); // Redis removal
     mockIsActiveFeature.mockReturnValueOnce(true); // relevant period
     mockIsActiveFeature.mockReturnValueOnce(false); // Redis removal
 
@@ -484,11 +501,15 @@ describe("Confirm company data", () => {
   test(`should redirect to update filing page if any relevant Period psc statements exist - redis removal flag on`, async () => {
     mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_BO_MOCK);
     mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_BO_MOCK);
-    mockIsActiveFeature.mockReturnValueOnce(true);
-    const mockStatements = [ { statement: 'change-beneficiary-relevant-period' },
-      { statement: 'all-beneficial-owners-identified' } ];
+    const mockStatements = [
+      { statement: 'change-beneficiary-relevant-period' },
+      { statement: 'all-beneficial-owners-identified' }
+    ];
     mockGetCompanyPscStatements.mockReturnValue({ items: mockStatements });
     mockIsActiveFeature.mockReturnValueOnce(true); // Redis removal
+    mockIsActiveFeature.mockReturnValueOnce(true); // Redis removal
+    mockIsActiveFeature.mockReturnValueOnce(true);
+    mockIsActiveFeature.mockReturnValueOnce(true);
 
     const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL).send({});
 

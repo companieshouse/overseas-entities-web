@@ -3,10 +3,10 @@ import { Request } from 'express';
 import { ValidationError } from 'express-validator';
 
 import * as config from '../../config';
-import { checkBeneficialOwnersSubmission, checkDatePreviousToFilingDate } from "../../validation/custom.validation";
-import { ErrorMessages } from '../../validation/error.messages';
 import isAllowedUrls from './isAllowedUrls';
+import { ErrorMessages } from '../../validation/error.messages';
 import { isRemoveJourney } from '../../utils/url';
+import { checkBeneficialOwnersSubmission, checkDatePreviousToFilingDate } from "../../validation/custom.validation";
 
 export const beneficialOwnersTypeSubmission = async (req: Request): Promise<ValidationError[]> => {
   const allowedUrls = [

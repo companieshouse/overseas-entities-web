@@ -1,24 +1,37 @@
 /* eslint-disable require-await */
 import { NextFunction, Request, Response } from "express";
-
 import { logger } from "../../../utils/logger";
-import { NavigationErrorMessage } from "../check.condition";
-import { ROUTE_PARAM_TRUSTEE_ID, SECURE_UPDATE_FILTER_URL } from '../../../config';
-import { getTrustInReview, getTrusteeIndex, hasTrusteesToReview, hasTrustsToReview } from "../../../utils/update/review_trusts";
-import { getApplicationData } from "../../../utils/application.data";
 import { TrusteeType } from "../../../model/trustee.type.model";
+import { getRedirectUrl } from "../../../utils/url";
 import { ApplicationData } from "model";
+import { getApplicationData } from "../../../utils/application.data";
+import { NavigationErrorMessage } from "../check.condition";
+
+import {
+  ROUTE_PARAM_TRUSTEE_ID,
+  SECURE_UPDATE_FILTER_URL,
+  SECURE_UPDATE_FILTER_WITH_PARAMS_URL,
+} from '../../../config';
+
+import {
+  getTrusteeIndex,
+  getTrustInReview,
+  hasTrustsToReview,
+  hasTrusteesToReview,
+} from "../../../utils/update/review_trusts";
 
 export const reviewTheTrustGuard = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const appData: ApplicationData = await getApplicationData(req.session);
-
+    const appData: ApplicationData = await getApplicationData(req);
     if (hasTrustsToReview(appData)) {
       return next();
     }
-
     logger.infoRequest(req, NavigationErrorMessage);
-    return res.redirect(SECURE_UPDATE_FILTER_URL);
+    return res.redirect(getRedirectUrl({
+      req,
+      urlWithEntityIds: SECURE_UPDATE_FILTER_WITH_PARAMS_URL,
+      urlWithoutEntityIds: SECURE_UPDATE_FILTER_URL,
+    }));
   } catch (err) {
     next(err);
   }
@@ -26,24 +39,28 @@ export const reviewTheTrustGuard = async (req: Request, res: Response, next: Nex
 
 const reviewTrusteesGuard = async (req: Request, res: Response, next: NextFunction, trusteeType: TrusteeType): Promise<void> => {
   try {
-    const appData: ApplicationData = await getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req);
     const trustInReview = getTrustInReview(appData);
     const hasTrusteesForReview = hasTrusteesToReview(trustInReview, trusteeType);
-
     if (hasTrusteesForReview) {
       return next();
     }
-
     logger.infoRequest(req, NavigationErrorMessage);
-    return res.redirect(SECURE_UPDATE_FILTER_URL);
+    return res.redirect(getRedirectUrl({
+      req,
+      urlWithEntityIds: SECURE_UPDATE_FILTER_WITH_PARAMS_URL,
+      urlWithoutEntityIds: SECURE_UPDATE_FILTER_URL,
+    }));
   } catch (err) {
     next(err);
   }
 };
 
 const tellUsAboutTrusteesGuard = async (req: Request, res: Response, next: NextFunction, trusteeType: TrusteeType): Promise<void> => {
+
   try {
-    const appData: ApplicationData = await getApplicationData(req.session);
+
+    const appData: ApplicationData = await getApplicationData(req);
     const trustInReview = getTrustInReview(appData);
     const trusteeId = req.params[ROUTE_PARAM_TRUSTEE_ID];
 
@@ -51,14 +68,23 @@ const tellUsAboutTrusteesGuard = async (req: Request, res: Response, next: NextF
       if (trusteeId) {
         if (getTrusteeIndex(trustInReview, trusteeId, trusteeType) < 0) {
           logger.infoRequest(req, NavigationErrorMessage);
-          return res.redirect(SECURE_UPDATE_FILTER_URL);
+          return res.redirect(getRedirectUrl({
+            req,
+            urlWithEntityIds: SECURE_UPDATE_FILTER_WITH_PARAMS_URL,
+            urlWithoutEntityIds: SECURE_UPDATE_FILTER_URL,
+          }));
         }
       }
       return next();
     }
 
     logger.infoRequest(req, NavigationErrorMessage);
-    return res.redirect(SECURE_UPDATE_FILTER_URL);
+
+    return res.redirect(getRedirectUrl({
+      req,
+      urlWithEntityIds: SECURE_UPDATE_FILTER_WITH_PARAMS_URL,
+      urlWithoutEntityIds: SECURE_UPDATE_FILTER_URL,
+    }));
   } catch (err) {
     next(err);
   }

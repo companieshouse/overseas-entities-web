@@ -1,18 +1,15 @@
 import { NextFunction, Request, Response } from "express";
-import { logger } from "../../utils/logger";
 import * as config from "../../config";
+import { logger } from "../../utils/logger";
+import { Update } from "../../model/update.type.model";
+import { isActiveFeature } from "../../utils/feature.flag";
 import { ApplicationData } from "../../model";
 import { fetchApplicationData } from "../../utils/application.data";
-import { Update } from "../../model/update.type.model";
-import { CompanyPersonsWithSignificantControlStatements } from "@companieshouse/api-sdk-node/dist/services/company-psc-statements/types";
-import { isActiveFeature } from "../../utils/feature.flag";
+import { getDataFromEntityCookie } from "../../utils/update/data.cookie";
 import { getCompanyPscStatements } from "../../service/persons.with.signficant.control.statement.service";
 import { relevantPeriodPscStatements } from "../../utils/relevant.period";
-import { EntityNumberCookieKey } from "../../model/data.types.model";
-import { getCompanyProfile } from "../../service/company.profile.service";
-import { mapCompanyProfileToOverseasEntity } from "../../utils/update/company.profile.mapper.to.overseas.entity";
-import { mapInputDate } from "../../utils/update/mapper.utils";
 import { getRedirectUrl, isRemoveJourney } from "../../utils/url";
+import { CompanyPersonsWithSignificantControlStatements } from "@companieshouse/api-sdk-node/dist/services/company-psc-statements/types";
 
 export const relevantPeriodStatementsState = {
   has_answered_relevant_period_question: false,
@@ -26,7 +23,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const isRemove: boolean = await isRemoveJourney(req);
     let appData: ApplicationData = {};
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
-      appData = await getCompanyProfileData(req);
+      appData = await getDataFromEntityCookie(req);
     } else {
       appData = await fetchApplicationData(req, !isRemove);
     }
@@ -71,7 +68,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const isRemove: boolean = await isRemoveJourney(req);
     let appData: ApplicationData = {};
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
-      appData = await getCompanyProfileData(req);
+      appData = await getDataFromEntityCookie(req);
     } else {
       appData = await fetchApplicationData(req, !isRemove);
     }
@@ -107,23 +104,3 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const getCompanyProfileData = async (req: Request): Promise<ApplicationData> => {
-  const entityNumber = req.cookies[EntityNumberCookieKey];
-  let data: ApplicationData = {
-    "entity_number": entityNumber,
-  };
-  const companyProfile = await getCompanyProfile(req, entityNumber);
-  if (!companyProfile) {
-    throw new Error('Company profile not found');
-  } else {
-    data = {
-      ...data,
-      "entity_name": companyProfile.companyName,
-      "entity": mapCompanyProfileToOverseasEntity(companyProfile),
-      "update": {
-        date_of_creation: mapInputDate(companyProfile.dateOfCreation),
-      }
-    };
-  }
-  return data;
-};

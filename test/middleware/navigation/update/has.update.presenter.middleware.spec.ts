@@ -6,11 +6,10 @@ import { describe, expect, test, beforeEach, jest } from '@jest/globals';
 import { Request, Response } from 'express';
 
 import { logger } from "../../../../src/utils/logger";
-import { SECURE_UPDATE_FILTER_PAGE, SECURE_UPDATE_FILTER_URL } from '../../../../src/config';
-import { ANY_MESSAGE_ERROR } from '../../../__mocks__/text.mock';
-
-import { checkUpdatePresenterEntered, NavigationErrorMessage } from '../../../../src/middleware/navigation/check.condition';
 import { hasUpdatePresenter } from '../../../../src/middleware/navigation/update/has.presenter.middleware';
+import { ANY_MESSAGE_ERROR } from '../../../__mocks__/text.mock';
+import { SECURE_UPDATE_FILTER_PAGE, SECURE_UPDATE_FILTER_URL } from '../../../../src/config';
+import { checkUpdatePresenterEntered, NavigationErrorMessage } from '../../../../src/middleware/navigation/check.condition';
 
 const mockCheckUpdatePresenterEntered = checkUpdatePresenterEntered as unknown as jest.Mock;
 const mockLoggerInfoRequest = logger.infoRequest as jest.Mock;
@@ -30,10 +29,8 @@ describe("has.update.presenter navigation middleware tests", () => {
     await hasUpdatePresenter(req, res, next);
 
     expect(next).not.toHaveBeenCalledTimes(1);
-
-    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
+    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(2);
     expect(mockLoggerInfoRequest).toHaveBeenCalledWith(req, NavigationErrorMessage);
-
     expect(res.redirect).toHaveBeenCalledTimes(1);
     expect(res.redirect).toHaveBeenCalledWith(SECURE_UPDATE_FILTER_URL);
   });
@@ -41,9 +38,7 @@ describe("has.update.presenter navigation middleware tests", () => {
   test(`should not redirect and pass to the next middleware`, async () => {
     mockCheckUpdatePresenterEntered.mockImplementationOnce( () => { return true; });
     await hasUpdatePresenter(req, res, next);
-
     expect(next).toHaveBeenCalledTimes(1);
-
     expect(mockLoggerInfoRequest).not.toHaveBeenCalled();
     expect(res.redirect).not.toHaveBeenCalled();
   });
@@ -51,9 +46,7 @@ describe("has.update.presenter navigation middleware tests", () => {
   test("should catch the error and call next(err)", async () => {
     mockCheckUpdatePresenterEntered.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
     await hasUpdatePresenter(req, res, next);
-
     expect(next).toHaveBeenCalledTimes(1);
-
     expect(mockLoggerInfoRequest).not.toHaveBeenCalled();
     expect(res.redirect).not.toHaveBeenCalled();
   });

@@ -25,12 +25,9 @@ describe("has.presenter navigation middleware tests", () => {
   test(`should redirect to ${SOLD_LAND_FILTER_URL} page and log message error ${NavigationErrorMessage}`, async () => {
     mockCheckPresenterDetailsEntered.mockImplementationOnce( () => { return false; });
     await hasPresenter(req, res, next);
-
     expect(next).not.toHaveBeenCalledTimes(1);
-
-    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
+    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(2);
     expect(mockLoggerInfoRequest).toHaveBeenCalledWith(req, NavigationErrorMessage);
-
     expect(res.redirect).toHaveBeenCalledTimes(1);
     expect(res.redirect).toHaveBeenCalledWith(SOLD_LAND_FILTER_URL);
   });
@@ -38,9 +35,7 @@ describe("has.presenter navigation middleware tests", () => {
   test(`should not redirect and pass to the next middleware`, async () => {
     mockCheckPresenterDetailsEntered.mockImplementationOnce( () => { return true; });
     await hasPresenter(req, res, next);
-
     expect(next).toHaveBeenCalledTimes(1);
-
     expect(mockLoggerInfoRequest).not.toHaveBeenCalled();
     expect(res.redirect).not.toHaveBeenCalled();
   });
@@ -48,9 +43,7 @@ describe("has.presenter navigation middleware tests", () => {
   test("should catch the error and call next(err)", async () => {
     mockCheckPresenterDetailsEntered.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
     await hasPresenter(req, res, next);
-
     expect(next).toHaveBeenCalledTimes(1);
-
     expect(mockLoggerInfoRequest).not.toHaveBeenCalled();
     expect(res.redirect).not.toHaveBeenCalled();
   });

@@ -34,13 +34,18 @@ import { ADDRESS } from "../../__mocks__/fields/address.mock";
 import { BeneficialOwnerOtherKey } from "../../../src/model/beneficial.owner.other.model";
 import { getTodaysDate } from "../../../src/utils/date";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
-import { isRegistrationJourney, getRedirectUrl, isRemoveJourney } from "../../../src/utils/url";
 
 import { postTransaction, closeTransaction } from "../../../src/service/transaction.service";
 import { validateStatements, summaryPagesGuard } from "../../../src/middleware/statement.validation.middleware";
 import { fetchApplicationData, getApplicationData } from "../../../src/utils/application.data";
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../../src/model/who.is.making.filing.model";
 import { InputDate, OverseasEntityKey, Transactionkey } from '../../../src/model/data.types.model';
+
+import {
+  getRedirectUrl,
+  isRemoveJourney,
+  isRegistrationJourney,
+} from "../../../src/utils/url";
 
 import {
   dueDiligenceType,
@@ -50,7 +55,6 @@ import {
 } from "../../../src/model";
 
 import {
-
   REMOVE_SERVICE_NAME,
   SECURE_UPDATE_FILTER_URL,
   REMOVE_CONFIRM_STATEMENT_URL,
@@ -76,6 +80,34 @@ import {
   UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS,
   UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME, UPDATE_AN_OVERSEAS_ENTITY_URL,
 } from "../../../src/config";
+
+import {
+  ERROR,
+  TRUST_WITH_ID,
+  TRANSACTION_ID,
+  COMPANY_NUMBER,
+  INDIVIUAL_TRUSTEE,
+  CORPORATE_TRUSTEE,
+  OVERSEAS_ENTITY_ID,
+  OVERSEAS_NAME_MOCK,
+  PAYMENT_LINK_JOURNEY,
+  TRANSACTION_CLOSED_RESPONSE,
+  APPLICATION_DATA_REMOVE_BO_MOCK,
+  APPLICATION_DATA_UPDATE_BO_MOCK,
+  APPLICATION_DATA_CH_REF_REMOVE_MOCK,
+  APPLICATION_DATA_CH_REF_UPDATE_MOCK,
+  UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE,
+  UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE,
+  BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_CH_REF,
+  UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+  BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_CH_REF,
+  UPDATE_MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF,
+  RELEVANT_PERIOD_BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
+  RELEVANT_PERIOD_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
+  BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF,
+  UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+  RELEVANT_PERIOD_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+} from "../../__mocks__/session.mock";
 
 import {
   PAGE_TITLE_ERROR,
@@ -168,42 +200,17 @@ import {
   OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING
 } from "../../__mocks__/text.mock";
 
-import {
-  ERROR,
-  OVERSEAS_ENTITY_ID,
-  APPLICATION_DATA_UPDATE_BO_MOCK,
-  APPLICATION_DATA_CH_REF_UPDATE_MOCK,
-  TRANSACTION_CLOSED_RESPONSE,
-  PAYMENT_LINK_JOURNEY,
-  TRANSACTION_ID,
-  BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF,
-  UPDATE_MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF,
-  BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_CH_REF,
-  BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_CH_REF,
-  APPLICATION_DATA_REMOVE_BO_MOCK,
-  APPLICATION_DATA_CH_REF_REMOVE_MOCK,
-  OVERSEAS_NAME_MOCK,
-  COMPANY_NUMBER,
-  INDIVIUAL_TRUSTEE,
-  CORPORATE_TRUSTEE,
-  TRUST_WITH_ID,
-  UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE,
-  UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE,
-  RELEVANT_PERIOD_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
-  RELEVANT_PERIOD_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
-  RELEVANT_PERIOD_BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
-  UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
-  UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK
-} from "../../__mocks__/session.mock";
-
 mockCsrfProtectionMiddleware.mockClear();
+
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
-const mockAuthenticationMiddleware = authentication as jest.Mock;
 const mockGetRedirectUrl = getRedirectUrl as jest.Mock;
+const mockGetTodaysDate = getTodaysDate as jest.Mock;
+const mockIsRemoveJourney = isRemoveJourney as jest.Mock;
 
+const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockCompanyAuthenticationMiddleware = companyAuthentication as jest.Mock;
@@ -233,12 +240,8 @@ mockCloseTransaction.mockReturnValue(TRANSACTION_CLOSED_RESPONSE);
 const mockPaymentsSession = startPaymentsSession as jest.Mock;
 mockPaymentsSession.mockReturnValue("CONFIRMATION_URL");
 
-const mockGetTodaysDate = getTodaysDate as jest.Mock;
-
 const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
 mockIsRegistrationJourney.mockReturnValue(false);
-
-const mockIsRemoveJourney = isRemoveJourney as jest.Mock;
 
 describe("CHECK YOUR ANSWERS controller", () => {
 
@@ -836,8 +839,9 @@ describe("CHECK YOUR ANSWERS controller", () => {
     ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with verification checks - Agent selected %s`, async (_journeyType, mockAppData) => {
       mockGetApplicationData.mockReturnValue(mockAppData);
       mockFetchApplicationData.mockReturnValue(mockAppData);
-      mockGetRedirectUrl.mockReturnValueOnce(UPDATE_DUE_DILIGENCE_CHANGE_WHO);
       mockGetRedirectUrl.mockReturnValueOnce(UPDATE_AN_OVERSEAS_ENTITY_URL);
+      mockGetRedirectUrl.mockReturnValueOnce(UPDATE_DUE_DILIGENCE_CHANGE_WHO);
+
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
       expect(resp.status).toEqual(200);
@@ -878,8 +882,9 @@ describe("CHECK YOUR ANSWERS controller", () => {
         [overseasEntityDueDiligenceType.OverseasEntityDueDiligenceKey]: OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK,
         [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE
       });
-      mockGetRedirectUrl.mockReturnValueOnce(UPDATE_DUE_DILIGENCE_CHANGE_WHO);
       mockGetRedirectUrl.mockReturnValueOnce(UPDATE_AN_OVERSEAS_ENTITY_URL);
+      mockGetRedirectUrl.mockReturnValueOnce(UPDATE_DUE_DILIGENCE_CHANGE_WHO);
+
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
       expect(resp.status).toEqual(200);

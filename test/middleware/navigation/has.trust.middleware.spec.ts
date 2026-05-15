@@ -7,7 +7,7 @@ import { Session } from "@companieshouse/node-session-handler";
 import { Params } from "express-serve-static-core";
 import { logger } from "../../../src/utils/logger";
 import { fetchApplicationData, getApplicationData } from "../../../src/utils/application.data";
-import { isRegistrationJourney } from "../../../src/utils/url";
+import { isRegistrationJourney, getRedirectUrl } from "../../../src/utils/url";
 import { ApplicationData } from "../../../src/model";
 import { yesNoResponse } from "../../../src/model/data.types.model";
 import { RoleWithinTrustType } from "../../../src/model/role.within.trust.type.model";
@@ -15,23 +15,25 @@ import { TrusteeType } from "../../../src/model/trustee.type.model";
 import { ANY_MESSAGE_ERROR } from "../../__mocks__/text.mock";
 
 import {
+  SOLD_LAND_FILTER_URL,
   SECURE_UPDATE_FILTER_URL,
-  SOLD_LAND_FILTER_URL
 } from "../../../src/config";
 
 import {
+  TRUST_WITH_ID,
   APPLICATION_DATA_NO_TRUSTS_MOCK,
   APPLICATION_DATA_WITH_TRUST_ID_MOCK,
-  TRUST_WITH_ID
 } from "../../__mocks__/session.mock";
 
 import {
-  hasTrustWithIdRegister,
+  hasTrustDataUpdate,
   hasTrustDataRegister,
   hasTrustWithIdUpdate,
-  hasTrustDataUpdate,
-  hasTrusteeWithIdUpdate
+  hasTrustWithIdRegister,
+  hasTrusteeWithIdUpdate,
 } from "../../../src/middleware/navigation/has.trust.middleware";
+
+const mockGetRedirectUrl = getRedirectUrl as jest.Mock;
 
 const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
 mockIsRegistrationJourney.mockReturnValue(true);
@@ -52,8 +54,8 @@ describe("Trusts Middleware tests", () => {
 
   beforeEach(() => {
     logger.infoRequest = jest.fn();
-
     jest.clearAllMocks();
+    mockGetRedirectUrl.mockReset();
   });
 
   describe('register tests', () => {
@@ -89,7 +91,7 @@ describe("Trusts Middleware tests", () => {
 
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_WITH_TRUST_ID_MOCK);
       mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_WITH_TRUST_ID_MOCK);
-
+      mockGetRedirectUrl.mockReturnValueOnce(SOLD_LAND_FILTER_URL);
       await hasTrustWithIdRegister(req, res, next);
 
       expect(res.redirect).toBeCalled();
@@ -108,6 +110,7 @@ describe("Trusts Middleware tests", () => {
     test("Submission does not contain trust data", async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_NO_TRUSTS_MOCK);
       mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_NO_TRUSTS_MOCK);
+      mockGetRedirectUrl.mockReturnValueOnce(SOLD_LAND_FILTER_URL);
       await hasTrustDataRegister(req, res, next);
       expect(res.redirect).toBeCalled();
       expect(res.redirect).toBeCalledWith(SOLD_LAND_FILTER_URL);
@@ -136,6 +139,7 @@ describe("Trusts Middleware tests", () => {
   });
 
   describe('update tests', () => {
+
     test("Trust present, return next", async () => {
       req = {
         params: {
@@ -173,6 +177,7 @@ describe("Trusts Middleware tests", () => {
 
       mockGetApplicationData.mockReturnValueOnce(appData);
       mockFetchApplicationData.mockReturnValueOnce(appData);
+      mockGetRedirectUrl.mockReturnValueOnce(SECURE_UPDATE_FILTER_URL);
 
       await hasTrusteeWithIdUpdate(req, res, next);
 
@@ -280,6 +285,7 @@ describe("Trusts Middleware tests", () => {
 
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_WITH_TRUST_ID_MOCK);
       mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_WITH_TRUST_ID_MOCK);
+      mockGetRedirectUrl.mockReturnValueOnce(SECURE_UPDATE_FILTER_URL);
 
       await hasTrustWithIdUpdate(req, res, next);
 
@@ -301,6 +307,7 @@ describe("Trusts Middleware tests", () => {
     test("Submission does not contain trust data", async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_NO_TRUSTS_MOCK);
       mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_NO_TRUSTS_MOCK);
+      mockGetRedirectUrl.mockReturnValueOnce(SECURE_UPDATE_FILTER_URL);
 
       await hasTrustDataUpdate(req, res, next);
 

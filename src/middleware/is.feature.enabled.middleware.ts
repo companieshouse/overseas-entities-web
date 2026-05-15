@@ -13,7 +13,6 @@ export const isFeatureEnabled = (featureFlagValue: string) => {
         .status(constants.HTTP_STATUS_NOT_FOUND)
         .render(NOT_FOUND_PAGE);
     }
-
     // feature is available - show
     return next();
   };

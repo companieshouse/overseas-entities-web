@@ -220,7 +220,7 @@ describe('Trust Individual Beneficial Owner Controller Integration Tests', () =>
 
       expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
-      expect(mockGetRedirectUrl).toHaveBeenCalledTimes(1);
+      expect(mockGetRedirectUrl).toHaveBeenCalledTimes(2);
       expect(resp.text).toContain(MOCKED_URL + `/${trustId}${TRUST_INVOLVED_URL}`); // back link
       expect(resp.text).toContain(ErrorMessages.FIRST_NAME_INDIVIDUAL_BO);
       expect(resp.text).toContain(ErrorMessages.LAST_NAME_INDIVIDUAL_BO);
@@ -264,7 +264,7 @@ describe('Trust Individual Beneficial Owner Controller Integration Tests', () =>
 
       expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
-      expect(mockGetRedirectUrl).toHaveBeenCalledTimes(1);
+      expect(mockGetRedirectUrl).toHaveBeenCalledTimes(2);
       expect(resp.text).toContain(ErrorMessages.MAX_FIRST_NAME_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_LAST_NAME_LENGTH_50);
       expect(resp.text).toContain(ErrorMessages.MAX_PROPERTY_NAME_OR_NUMBER_LENGTH);

@@ -43,7 +43,7 @@ import {
   DUE_DILIGENCE_URL,
   DUE_DILIGENCE_PAGE,
   WHO_IS_MAKING_FILING_URL,
-  DUE_DILIGENCE_WITH_PARAMS_URL,
+  DUE_DILIGENCE_WITH_PARAMS_URL, WHO_IS_MAKING_FILING_WITH_PARAMS_URL,
 } from "../../src/config";
 
 import {
@@ -74,14 +74,17 @@ import {
 } from "../__mocks__/due.diligence.mock";
 
 mockCsrfProtectionMiddleware.mockClear();
-const mockHasPresenterMiddleware = hasPresenter as jest.Mock;
-mockHasPresenterMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
+const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
+const mockSetExtraData = setExtraData as jest.Mock;
+
+const mockHasPresenterMiddleware = hasPresenter as jest.Mock;
+mockHasPresenterMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
@@ -90,9 +93,6 @@ const mockIsActiveFeature = isActiveFeature as jest.Mock;
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
-
-const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
-const mockSetExtraData = setExtraData as jest.Mock;
 
 describe("DUE_DILIGENCE controller", () => {
 
@@ -174,7 +174,7 @@ describe("DUE_DILIGENCE controller", () => {
       expect(resp.text).toContain(DUE_DILIGENCE_PARTNER_NAME_LABEL_TEXT);
       expect(resp.text).toContain(DUE_DILIGENCE_INFORMATION_ON_PUBLIC_REGISTER);
       expect(resp.text).toContain(ALL_THE_OTHER_INFORMATION_ON_PUBLIC_REGISTER);
-      expect(resp.text).toContain(WHO_IS_MAKING_FILING_URL);
+      expect(resp.text).toContain(WHO_IS_MAKING_FILING_WITH_PARAMS_URL);
       expect(resp.text).toContain(DUE_DILIGENCE_PARTNER_NAME_HINT_TEXT);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);

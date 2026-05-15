@@ -153,6 +153,7 @@ describe("Update Resume submission controller", () => {
       };
 
       mockIsActiveFeature.mockReturnValueOnce(true);
+      mockIsActiveFeature.mockReturnValueOnce(true);
       mockGetOverseasEntity.mockReturnValueOnce(mockAppData);
       const resp = await request(app).get(RESUME_UPDATE_SUBMISSION_URL);
 
@@ -207,6 +208,7 @@ describe("Update Resume submission controller", () => {
         [IsSecureRegisterKey]: "",
       };
 
+      mockIsActiveFeature.mockReturnValueOnce(true);
       mockIsActiveFeature.mockReturnValueOnce(true);
       mockGetOverseasEntity.mockReturnValueOnce(mockAppData);
       const resp = await request(app).get(RESUME_UPDATE_SUBMISSION_URL);

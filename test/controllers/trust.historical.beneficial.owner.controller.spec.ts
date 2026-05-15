@@ -428,7 +428,7 @@ describe('Trust Historical Beneficial Owner Controller', () => {
       expect(getTrustInReview).toBeCalledTimes(1);
       expect(authentication).toBeCalledTimes(1);
       expect(hasTrustWithIdRegister).toBeCalledTimes(1);
-      expect(mockGetRedirectUrl).toHaveBeenCalledTimes(1);
+      expect(mockGetRedirectUrl).toHaveBeenCalledTimes(2);
     });
 
     test('does validate BO end date if unable_to_provide_all_trust_info_flag is false', async () => {

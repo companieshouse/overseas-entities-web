@@ -679,7 +679,7 @@ describe('Trust Involved controller', () => {
 
     test(`successfully access POST method`, async () => {
       mockFetchApplicationData.mockReturnValue(mockAppData);
-      mockGetRedirectUrl.mockReturnValueOnce(MOCKED_URL);
+      mockGetRedirectUrl.mockReturnValue(MOCKED_URL);
 
       const resp = await request(app).post(pageUrl).send({ noMoreToAdd: 'noMoreToAdd' });
 

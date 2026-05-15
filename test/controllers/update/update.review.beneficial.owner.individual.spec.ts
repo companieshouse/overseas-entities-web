@@ -254,7 +254,7 @@ describe(`Update review beneficial owner individual controller`, () => {
         ...APPLICATION_DATA_MOCK
       });
       mockPrepareData.mockImplementationOnce( () => { return { ...REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA }; });
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
+      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
 
       const body = {
         ...REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA,

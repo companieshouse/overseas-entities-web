@@ -26,8 +26,8 @@ describe("has.beneficial.owners.statement navigation middleware tests", () => {
   test(`should redirect to ${SOLD_LAND_FILTER_URL} page and log message error ${NavigationErrorMessage}`, async () => {
     mockCheckBeneficialOwnersStatementDetailsEntered.mockImplementationOnce( () => { return false; });
     await hasBeneficialOwnersStatement(req, res, next);
-    expect(next).not.toHaveBeenCalledTimes(1);
-    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
+    expect(next).not.toHaveBeenCalledTimes(2);
+    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(2);
     expect(mockLoggerInfoRequest).toHaveBeenCalledWith(req, NavigationErrorMessage);
     expect(res.redirect).toHaveBeenCalledTimes(1);
     expect(res.redirect).toHaveBeenCalledWith(SOLD_LAND_FILTER_URL);

@@ -205,7 +205,7 @@ describe("Legal entity beneficial owner integration tests", () => {
 
       expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
-      expect(mockGetRedirectUrl).toHaveBeenCalledTimes(1);
+      expect(mockGetRedirectUrl).toHaveBeenCalledTimes(2);
       expect(resp.text).toContain(MOCKED_URL + `/${trustId}${TRUST_INVOLVED_URL}`); // back link
       expect(decodedHTML).toContain(ErrorMessages.LEGAL_ENTITY_BO_NAME);
       expect(decodedHTML).toContain(ErrorMessages.LEGAL_ENTITY_BO_ROLE);
@@ -280,7 +280,7 @@ describe("Legal entity beneficial owner integration tests", () => {
 
       expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
-      expect(mockGetRedirectUrl).toHaveBeenCalledTimes(1);
+      expect(mockGetRedirectUrl).toHaveBeenCalledTimes(2);
       expect(decodedHTML).toContain(ErrorMessages.NAME_REGISTRATION_JURISDICTION_LEGAL_ENTITY_BO);
     });
 

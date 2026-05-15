@@ -1,28 +1,30 @@
 import { authMiddleware, AuthOptions } from "@companieshouse/web-security-node";
 import { NextFunction, Request, Response } from 'express';
 
-import { relevantPeriodStatementsState } from '../controllers/update/confirm.overseas.entity.details.controller';
+import { logger } from '../utils/logger';
+import { getTransaction } from "../service/transaction.service";
+import { isActiveFeature } from "../utils/feature.flag";
 import { ApplicationData } from "../model";
 import { EntityNumberKey } from "../model/data.types.model";
-import { getTransaction } from "../service/transaction.service";
 import { getApplicationData } from "../utils/application.data";
-import { isActiveFeature } from "../utils/feature.flag";
-import { logger } from '../utils/logger';
+import { relevantPeriodStatementsState } from '../controllers/update/confirm.overseas.entity.details.controller';
 import { getRedirectUrl, isRemoveJourney } from "../utils/url";
 
 import {
-  CHS_URL,
-  FEATURE_FLAG_ENABLE_RELEVANT_PERIOD,
-  JOURNEY_REMOVE_QUERY_PARAM,
-  OVERSEAS_ENTITY_PRESENTER_URL,
-  RELEVANT_PERIOD_OWNED_LAND_FILTER_URL,
-  RELEVANT_PERIOD_OWNED_LAND_FILTER_WITH_PARAMS_URL,
-  RELEVANT_PERIOD_QUERY_PARAM,
   RESUME,
+  CHS_URL,
+  UPDATE_LANDING_URL,
   UPDATE_FILING_DATE_URL,
+  JOURNEY_REMOVE_QUERY_PARAM,
+  RELEVANT_PERIOD_QUERY_PARAM,
+  OVERSEAS_ENTITY_PRESENTER_URL,
   UPDATE_FILING_DATE_WITH_PARAMS_URL,
-  UPDATE_LANDING_URL
+  FEATURE_FLAG_ENABLE_RELEVANT_PERIOD,
+  RELEVANT_PERIOD_OWNED_LAND_FILTER_URL,
+  OVERSEAS_ENTITY_PRESENTER_WITH_PARAMS_URL,
+  RELEVANT_PERIOD_OWNED_LAND_FILTER_WITH_PARAMS_URL,
 } from '../config';
+import { getDataFromEntityCookie } from "../utils/update/data.cookie";
 
 export const companyAuthentication = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -31,7 +33,7 @@ export const companyAuthentication = async (req: Request, res: Response, next: N
     logger.debugRequest(req, `Company Authentication Request`);
 
     const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await getApplicationData(req);
+    const appData: ApplicationData = await getAppData(req);
     let entityNumber: string | undefined = appData?.[EntityNumberKey];
 
     const updateFilingDateUrl = getRedirectUrl({
@@ -52,7 +54,11 @@ export const companyAuthentication = async (req: Request, res: Response, next: N
 
     if (isRemove) {
       logger.debugRequest(req, "Remove journey proceed directly to the presenter page");
-      returnURL = `${OVERSEAS_ENTITY_PRESENTER_URL}${JOURNEY_REMOVE_QUERY_PARAM}`;
+      returnURL = getRedirectUrl({
+        req,
+        urlWithEntityIds: OVERSEAS_ENTITY_PRESENTER_WITH_PARAMS_URL,
+        urlWithoutEntityIds: OVERSEAS_ENTITY_PRESENTER_URL,
+      }) + JOURNEY_REMOVE_QUERY_PARAM;
     }
 
     if (req.path.endsWith(`/${RESUME}`)) {
@@ -88,9 +94,15 @@ async function processTransaction (req: Request): Promise<[string, string]> {
     if (entityNumberTransaction === undefined) {
       throw new Error("No company number in transaction to resume");
     }
-
     return [entityNumberTransaction, req.originalUrl];
   }
-
   throw new Error("Invalid transaction for resume");
 }
+
+const getAppData = async (req: Request): Promise<ApplicationData> => {
+  let appData: ApplicationData = await getApplicationData(req);
+  if (!Object.keys(appData).length) {
+    appData = await getDataFromEntityCookie(req);
+  }
+  return appData;
+};

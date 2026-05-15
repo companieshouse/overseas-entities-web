@@ -127,7 +127,7 @@ describe("Who is making update controller tests", () => {
         .send({ [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT });
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_DUE_DILIGENCE_URL);
-      expect(mockIsActiveFeature).toHaveBeenCalledTimes(3);
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(4);
       expect(mockUpdateOverseasEntity).not.toHaveBeenCalled();
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
@@ -142,7 +142,7 @@ describe("Who is making update controller tests", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_DUE_DILIGENCE_WITH_PARAMS_URL);
-      expect(mockIsActiveFeature).toHaveBeenCalledTimes(3);
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(4);
       expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
@@ -157,7 +157,7 @@ describe("Who is making update controller tests", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL);
-      expect(mockIsActiveFeature).toHaveBeenCalledTimes(3);
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(4);
       expect(mockUpdateOverseasEntity).not.toHaveBeenCalled();
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
@@ -172,7 +172,7 @@ describe("Who is making update controller tests", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_WITH_PARAMS_URL);
-      expect(mockIsActiveFeature).toHaveBeenCalledTimes(3);
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(4);
       expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });

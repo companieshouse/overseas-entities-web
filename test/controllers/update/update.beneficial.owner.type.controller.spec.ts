@@ -365,7 +365,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
 
     test('redirects to manage trusts interrupt if not fetched trust data already in app data', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockIsActiveFeature.mockReturnValue(true);
       mockRetrieveTrustData.mockReturnValueOnce(Promise.resolve());
       mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
       mockSetExtraData.mockReturnValueOnce(null);

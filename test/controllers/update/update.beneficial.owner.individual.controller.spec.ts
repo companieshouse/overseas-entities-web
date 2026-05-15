@@ -1137,7 +1137,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
       });
       mockGetFromApplicationData.mockReturnValueOnce({ ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK });
       mockPrepareData.mockReturnValueOnce({ ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK });
-
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
 
       const body = {
@@ -1145,7 +1145,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
         beneficial_owner_nature_of_control_types: boNoc,
         trustees_nature_of_control_types: trusteeNoc,
         trust_control_nature_of_control_types: trustControlNoc,
-        non_legal_firm_members_nature_of_control_types: null, // this noc should neot be visible when feature flag is active
+        non_legal_firm_members_nature_of_control_types: null, // this noc should not be visible when feature flag is active
         non_legal_firm_control_nature_of_control_types: nonLegalFirmControlNoc,
         owner_of_land_person_nature_of_control_jurisdictions: landPersonNoc,
         owner_of_land_other_entity_nature_of_control_jurisdictions: landOtherEntityNoc

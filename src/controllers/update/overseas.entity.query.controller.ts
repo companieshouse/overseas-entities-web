@@ -2,19 +2,20 @@ import { NextFunction, Request, Response } from "express";
 import { Session } from "@companieshouse/node-session-handler";
 import { logger } from "../../utils/logger";
 import * as config from "../../config";
-import { ApplicationData } from "../../model";
-import { resetEntityUpdate } from "../../utils/update/update.reset";
-import { getCompanyProfile } from "../../service/company.profile.service";
-import { updateOverseasEntity } from "../../service/overseas.entities.service";
-import { mapCompanyProfileToOverseasEntity } from "../../utils/update/company.profile.mapper.to.overseas.entity";
 import { mapInputDate } from "../../utils/update/mapper.utils";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
-import { retrieveBoAndMoData } from "../../utils/update/beneficial_owners_managing_officers_data_fetch";
 import { isActiveFeature } from "../../utils/feature.flag";
+import { ApplicationData } from "../../model";
+import { EntityNumberKey } from "../../model/data.types.model";
+import { resetEntityUpdate } from "../../utils/update/update.reset";
+import { getCompanyProfile } from "../../service/company.profile.service";
 import { updateTransaction } from "../../service/transaction.service";
+import { retrieveBoAndMoData } from "../../utils/update/beneficial_owners_managing_officers_data_fetch";
+import { updateOverseasEntity } from "../../service/overseas.entities.service";
+import { saveEntityNumberInCookie } from "../../utils/update/data.cookie";
 import { getRedirectUrl, isRemoveJourney } from "../../utils/url";
+import { mapCompanyProfileToOverseasEntity } from "../../utils/update/company.profile.mapper.to.overseas.entity";
 import { fetchApplicationData, setExtraData } from "../../utils/application.data";
-import { EntityNumberCookieKey, EntityNumberKey } from "../../model/data.types.model";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -72,7 +73,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       await addOeToApplicationData(req, appData, entityNumber, companyProfile, isRemove);
     }
 
-    setEntityCookie(res, entityNumber);
+    saveToCookie(req, res, entityNumber);
 
     const nextPageUrl = getRedirectUrl({
       req,
@@ -145,14 +146,9 @@ export const reloadOE = (appData: ApplicationData, entityNumber: string, company
   }
 };
 
-export const setEntityCookie = (res: Response, entityNumber: string) => {
+export const saveToCookie = (req: Request, res: Response, entityNumber: string) => {
   if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
-    res.cookie(EntityNumberCookieKey, entityNumber, {
-      httpOnly: true,
-      domain: config.COOKIE_DOMAIN,
-      path: config.UPDATE_AN_OVERSEAS_ENTITY_URL,
-      secure: config.CHS_URL.includes("https://"),
-    });
+    saveEntityNumberInCookie(req, res, entityNumber);
   }
 };
 

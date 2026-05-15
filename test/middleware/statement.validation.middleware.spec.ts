@@ -3,30 +3,31 @@ jest.mock('../../src/utils/application.data');
 jest.mock("../../src/utils/url");
 
 import { Request, Response } from 'express';
-import { isActiveFeature } from "../../src/utils/feature.flag";
-import { BeneficialOwnerIndividualKey } from '../../src/model/beneficial.owner.individual.model';
-import { yesNoResponse } from '../../src/model/data.types.model';
-import { REMOVE_CONFIRM_STATEMENT_URL } from '../../src/config';
-import { ManagingOfficerKey } from '../../src/model/managing.officer.model';
 
-import { isRemoveJourney } from "../../src/utils/url";
-import { validateStatements, statementValidationErrorsGuard } from '../../src/middleware/statement.validation.middleware';
+import { yesNoResponse } from '../../src/model/data.types.model';
+import { isActiveFeature } from "../../src/utils/feature.flag";
+import { ManagingOfficerKey } from '../../src/model/managing.officer.model';
+import { BeneficialOwnerIndividualKey } from '../../src/model/beneficial.owner.individual.model';
+import { REMOVE_CONFIRM_STATEMENT_URL } from '../../src/config';
+
+import { isRemoveJourney, getRedirectUrl } from "../../src/utils/url";
 import { RegistrableBeneficialOwnerKey, UpdateKey } from '../../src/model/update.type.model';
+import { validateStatements, statementValidationErrorsGuard } from '../../src/middleware/statement.validation.middleware';
 import { BeneficialOwnerStatementKey, BeneficialOwnersStatementType } from '../../src/model/beneficial.owner.statement.model';
 
 import {
+  hasAddedOrCeasedBO,
   getApplicationData,
   checkActiveBOExists,
   checkActiveMOExists,
-  hasAddedOrCeasedBO,
 } from "../../src/utils/application.data";
 
 import {
-  APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW,
-  BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF,
+  UPDATE_OBJECT_MOCK,
   MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF,
+  APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW,
   UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
-  UPDATE_OBJECT_MOCK
+  BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF,
 } from '../__mocks__/session.mock';
 
 const req = {} as Request;
@@ -39,6 +40,7 @@ const mockCheckActiveBOExists = checkActiveBOExists as jest.Mock;
 const mockCheckActiveMOExists = checkActiveMOExists as jest.Mock;
 const mockHasAddedOrCeasedBO = hasAddedOrCeasedBO as jest.Mock;
 const mockIsRemoveJourney = isRemoveJourney as jest.Mock;
+const mockGetRedirectUrl = getRedirectUrl as jest.Mock;
 
 describe('statement validation middleware', () => {
 
@@ -50,6 +52,7 @@ describe('statement validation middleware', () => {
 
     test(`Redirects to ${REMOVE_CONFIRM_STATEMENT_URL} when on the remove journey`, async () => {
       mockIsRemoveJourney.mockReturnValueOnce(true);
+      mockGetRedirectUrl.mockReturnValueOnce(REMOVE_CONFIRM_STATEMENT_URL);
       await statementValidationErrorsGuard(req, res, next);
       expect(next).not.toHaveBeenCalled();
       expect(res.redirect).toHaveBeenCalledWith(REMOVE_CONFIRM_STATEMENT_URL);
@@ -59,6 +62,7 @@ describe('statement validation middleware', () => {
   describe("validateStatements", () => {
 
     describe("validation passes, no errors added to request, moves onto next middleware", () => {
+
       test.each([
         [
           "when all BOs identified and 1 active BO exists",
@@ -137,6 +141,7 @@ describe('statement validation middleware', () => {
     });
 
     describe("validation fails on initial statement, adds errors to request, moves onto next middleware", () => {
+
       test.each([
         [
           "when all BOs identified and 0 active BO exists",
@@ -212,6 +217,7 @@ describe('statement validation middleware', () => {
     });
 
     describe("validation fails on second statement, adds errors to request, moves onto next middleware", () => {
+
       test.each([
         [
           "when reason to believe someone has become or ceased to be a BO, with no new BO and no ceased BO",

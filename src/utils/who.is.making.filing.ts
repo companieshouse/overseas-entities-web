@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from "express";
+import { Session } from "@companieshouse/node-session-handler";
+
+import * as config from "../config";
 import { logger } from "./logger";
 import { ApplicationData } from "../model";
-import { Session } from "@companieshouse/node-session-handler";
 import { isActiveFeature } from "./feature.flag";
-import * as config from "../config";
 import { updateOverseasEntity } from "../service/overseas.entities.service";
-import { isRemoveJourney } from "./url";
-import { fetchApplicationData, setExtraData } from "./application.data";
+import { getApplicationData, setExtraData } from "./application.data";
 import { OverseasEntityKey, Transactionkey } from "../model/data.types.model";
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../model/who.is.making.filing.model";
 
@@ -21,8 +21,7 @@ export const getWhoIsFiling = async (
   try {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    const appData: ApplicationData = await getApplicationData(req);
 
     return res.render(templateName, {
       backLinkUrl,
@@ -48,9 +47,8 @@ export const postWhoIsFiling = async (
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const session = req.session as Session;
-    const isRemove: boolean = await isRemoveJourney(req);
     const whoIsRegistering = req.body[WhoIsRegisteringKey];
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    const appData: ApplicationData = await getApplicationData(req);
     appData[WhoIsRegisteringKey] = whoIsRegistering;
 
     let nextPageUrl: string = "";
@@ -63,7 +61,7 @@ export const postWhoIsFiling = async (
       nextPageUrl = oeUrl;
     }
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && !isRemove) {
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       if (appData[Transactionkey] && appData[OverseasEntityKey]) {
         await updateOverseasEntity(req, session, appData);
       } else {

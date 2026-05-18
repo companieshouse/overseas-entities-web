@@ -5,7 +5,6 @@ import { logger } from "../utils/logger";
 import * as config from "../config";
 import { isActiveFeature } from "./feature.flag";
 import { saveAndContinue } from "../utils/save.and.continue";
-import { isRemoveJourney } from "./url";
 import { addResignedDateToTemplateOptions } from "./update/ceased_date_util";
 import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
 
@@ -14,7 +13,7 @@ import { ApplicationData, ApplicationDataType } from "../model";
 import {
   prepareData,
   setApplicationData,
-  fetchApplicationData,
+  getApplicationData,
   mapDataObjectToFields,
   mapFieldsToDataObject,
   getFromApplicationData,
@@ -59,8 +58,7 @@ const isNewlyAddedMO = (officerData: ManagingOfficerIndividual) => !officerData.
 export const getManagingOfficer = async (req: Request, res: Response, backLinkUrl: string, templateName: string) => {
 
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
-  const isRemove: boolean = await isRemoveJourney(req);
-  const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+  const appData: ApplicationData = await getApplicationData(req);
 
   return res.render(templateName, {
     backLinkUrl,
@@ -82,8 +80,7 @@ export const getManagingOfficerById = async (
 
     logger.debugRequest(req, `${req.method} BY ID ${templateName}`);
 
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    const appData: ApplicationData = await getApplicationData(req);
     const id = req.params[ID];
     const officerData = await getFromApplicationData(req, ManagingOfficerKey, id, true);
     const newlyAddedMO = isNewlyAddedMO(officerData);
@@ -106,9 +103,9 @@ export const getManagingOfficerById = async (
       const startDate = officerData ? mapDataObjectToFields(officerData[StartDateKey], StartDateKeys, InputDateKeys) : {};
       templateOptions[StartDateKey] = startDate;
     }
-    if (!isRemove) {
-      addActiveSubmissionBasePathToTemplateData(templateOptions, req);
-    }
+
+    addActiveSubmissionBasePathToTemplateData(templateOptions, req);
+
     if (inUpdateJourney) {
       templateOptions = addResignedDateToTemplateOptions(templateOptions, appData, officerData);
     }
@@ -126,12 +123,11 @@ export const postManagingOfficer = async (req: Request, res: Response, next: Nex
   try {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const isRemove: boolean = await isRemoveJourney(req);
     const session = req.session as Session;
     const officerData: ApplicationDataType = setOfficerData(req.body, uuidv4());
     officerData[HaveDayOfBirthKey] = true;
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && !isRemove) {
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       await setApplicationData(req, officerData, ManagingOfficerKey);
     } else {
       await setApplicationData(session, officerData, ManagingOfficerKey);
@@ -151,13 +147,12 @@ export const updateManagingOfficer = async (req: Request, res: Response, next: N
   try {
 
     logger.debugRequest(req, `UPDATE ${req.route.path}`);
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    const appData: ApplicationData = await getApplicationData(req);
     await removeFromApplicationData(req, ManagingOfficerKey, req.params[ID], appData);
     const officerData: ApplicationDataType = setOfficerData(req.body, req.params[ID]);
     const session = req.session as Session;
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && !isRemove) {
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       await setApplicationData(req, officerData, ManagingOfficerKey);
     } else {
       await setApplicationData(session, officerData, ManagingOfficerKey);
@@ -177,11 +172,10 @@ export const removeManagingOfficer = async (req: Request, res: Response, next: N
   try {
 
     logger.debugRequest(req, `REMOVE ${req.route.path}`);
-    const isRemove: boolean = await isRemoveJourney(req);
     const session = req.session as Session;
     await removeFromApplicationData(req, ManagingOfficerKey, req.params.id);
 
-    if (!isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) || isRemove) {
+    if (!isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       await saveAndContinue(req, session);
     }
 

@@ -7,10 +7,11 @@ import * as mapperDetails from '../utils/trust/details.mapper';
 import * as mapperBo from '../utils/trust/beneficial.owner.mapper';
 import * as PageModel from '../model/trust.page.model';
 import { Trust } from "../model/trust.model";
-import { ApplicationData } from '../model/application.model';
 import { safeRedirect } from '../utils/http.ext';
+import { getRedirectUrl } from "../utils/url";
 import { saveAndContinue } from '../utils/save.and.continue';
 import { isActiveFeature } from "../utils/feature.flag";
+import { ApplicationData } from '../model/application.model';
 import { ValidationError } from 'express-validator';
 import { validationResult } from 'express-validator/src/validation-result';
 import { updateOverseasEntity } from "../service/overseas.entities.service";
@@ -18,9 +19,8 @@ import { checkTrustStillInvolved } from '../validation/stillInvolved.validation'
 import { BeneficialOwnerOtherKey } from '../model/beneficial.owner.other.model';
 import { BeneficialOwnerIndividualKey } from '../model/beneficial.owner.individual.model';
 
-import { getRedirectUrl, isRemoveJourney } from "../utils/url";
+import { getApplicationData, setExtraData } from '../utils/application.data';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
-import { fetchApplicationData, setExtraData } from '../utils/application.data';
 
 import {
   getReviewTrustById,
@@ -72,8 +72,7 @@ const getPageProperties = async (
 ): Promise<TrustDetailPageProperties> => {
 
   const { templateName, template } = getPageTemplate(isUpdate, isReview, req.url);
-  const isRemove: boolean = await isRemoveJourney(req);
-  const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+  const appData: ApplicationData = await getApplicationData(req);
   const boAvailableForTrust = [
     ...getBoIndividualAssignableToTrust(appData).map(mapperBo.mapBoIndividualToPage),
     ...getBoOtherAssignableToTrust(appData).map(mapperBo.mapBoOtherToPage),
@@ -116,8 +115,7 @@ export const getTrustDetails = async (
   try {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    const appData: ApplicationData = await getApplicationData(req);
     let trustId;
 
     if (!isReview) {
@@ -175,8 +173,7 @@ export const postTrustDetails = async (req: Request, res: Response, next: NextFu
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const session = req.session as Session;
-    const isRemove: boolean = await isRemoveJourney(req);
-    let appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    let appData: ApplicationData = await getApplicationData(req);
     const errorList = validationResult(req);
     const errors = getValidationErrors(appData, req);
     const formData: PageModel.TrustDetailsForm = req.body as PageModel.TrustDetailsForm;
@@ -210,7 +207,7 @@ export const postTrustDetails = async (req: Request, res: Response, next: NextFu
       setTrustDetailsAsReviewed(appData);
     }
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && !isRemove) {
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       await updateOverseasEntity(req, session, appData);
     } else {
       await saveAndContinue(req, session);

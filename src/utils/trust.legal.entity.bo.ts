@@ -5,18 +5,18 @@ import * as config from '../config';
 import * as CommonTrustDataMapper from './trust/common.trust.data.mapper';
 import { logger } from './logger';
 import { safeRedirect } from './http.ext';
+import { getRedirectUrl } from './url';
 import { ApplicationData } from '../model';
 import { saveAndContinue } from './save.and.continue';
 import { isActiveFeature } from './feature.flag';
 import { RoleWithinTrustType } from '../model/role.within.trust.type.model';
 import { updateOverseasEntity } from "../service/overseas.entities.service";
+import { mapTrustApiToWebWhenFlagsAreSet } from "../utils/trust/api.to.web.mapper";
 import { checkTrusteeLegalEntityCeasedDate } from '../validation/async';
 import { checkTrustLegalEntityBeneficialOwnerStillInvolved } from '../validation/stillInvolved.validation';
 
-import { getRedirectUrl, isRemoveJourney } from './url';
-import { mapTrustApiToWebWhenFlagsAreSet } from "../utils/trust/api.to.web.mapper";
 import { ValidationError, validationResult } from 'express-validator';
-import { fetchApplicationData, setExtraData } from './application.data';
+import { getApplicationData, setExtraData } from './application.data';
 import { CommonTrustData, TrustLegalEntityForm } from '../model/trust.page.model';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
 import { mapLegalEntityTrusteeByIdFromSessionToPage, mapLegalEntityToSession } from './trust/legal.entity.beneficial.owner.mapper';
@@ -57,8 +57,7 @@ const getPageProperties = async (
   errors?: FormattedValidationErrors,
 ): Promise<TrustLegalEntityBeneficialOwnerPageProperties> => {
 
-  const isRemove: boolean = await isRemoveJourney(req);
-  const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+  const appData: ApplicationData = await getApplicationData(req);
   const { templateName, template } = getPageTemplate(isUpdate, req.url);
 
   return {
@@ -95,9 +94,8 @@ export const getTrustLegalEntityBo = async (req: Request, res: Response, next: N
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
-    mapTrustApiToWebWhenFlagsAreSet(appData, !isRemove);
+    const appData: ApplicationData = await getApplicationData(req);
+    mapTrustApiToWebWhenFlagsAreSet(appData);
     const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
     const trusteeId = req.params[config.ROUTE_PARAM_TRUSTEE_ID];
     const isRelevantPeriod = req.query ? req.query["relevant-period"] === "true" : false;
@@ -127,8 +125,7 @@ export const postTrustLegalEntityBo = async (req: Request, res: Response, next: 
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const isRemove: boolean = await isRemoveJourney(req);
-    let appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    let appData: ApplicationData = await getApplicationData(req);
     const session = req.session as Session;
     const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
     const legalEntityBoData = mapLegalEntityToSession(req.body);
@@ -152,7 +149,7 @@ export const postTrustLegalEntityBo = async (req: Request, res: Response, next: 
     appData = saveTrustInApp(appData, updatedTrust);
     setExtraData(session, appData);
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && !isRemove) {
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       await updateOverseasEntity(req, session, appData);
     } else {
       await saveAndContinue(req, session);

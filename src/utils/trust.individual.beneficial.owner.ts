@@ -5,6 +5,7 @@ import * as CommonTrustDataMapper from './trust/common.trust.data.mapper';
 import * as PageModel from '../model/trust.page.model';
 import { logger } from './logger';
 import { safeRedirect } from './http.ext';
+import { getRedirectUrl } from './url';
 import { saveAndContinue } from './save.and.continue';
 import { isActiveFeature } from './feature.flag';
 import { ApplicationData } from '../model';
@@ -15,9 +16,8 @@ import { checkTrustIndividualCeasedDate } from '../validation/async';
 import { mapTrustApiToWebWhenFlagsAreSet } from "../utils/trust/api.to.web.mapper";
 import { checkTrustIndividualBeneficialOwnerStillInvolved } from '../validation/stillInvolved.validation';
 
-import { getRedirectUrl, isRemoveJourney } from './url';
 import { ValidationError, validationResult } from 'express-validator';
-import { fetchApplicationData, setExtraData } from './application.data';
+import { getApplicationData, setExtraData } from './application.data';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
 import { mapIndividualTrusteeToSession, mapIndividualTrusteeByIdFromSessionToPage } from './trust/individual.trustee.mapper';
 
@@ -58,8 +58,7 @@ const getPageProperties = async (
   errors?: FormattedValidationErrors,
 ): Promise<TrustIndividualBeneificalOwnerPageProperties> => {
 
-  const isRemove: boolean = await isRemoveJourney(req);
-  const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+  const appData: ApplicationData = await getApplicationData(req);
   const { templateName, template } = getPageTemplate(isUpdate, req.url);
 
   return {
@@ -103,9 +102,8 @@ export const getTrustIndividualBo = async (req: Request, res: Response, next: Ne
 
     const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
     const trusteeId = req.params[config.ROUTE_PARAM_TRUSTEE_ID];
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
-    mapTrustApiToWebWhenFlagsAreSet(appData, !isRemove);
+    const appData: ApplicationData = await getApplicationData(req);
+    mapTrustApiToWebWhenFlagsAreSet(appData);
     const isRelevantPeriod = req.query['relevant-period'];
     const formData: PageModel.IndividualTrusteesFormCommon = mapIndividualTrusteeByIdFromSessionToPage(
       appData,
@@ -143,8 +141,7 @@ export const postTrustIndividualBo = async (req: Request, res: Response, next: N
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const session = req.session as Session;
-    const isRemove: boolean = await isRemoveJourney(req);
-    let appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    let appData: ApplicationData = await getApplicationData(req);
     const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
     const individualTrusteeData = mapIndividualTrusteeToSession(req.body);
     const errorList = validationResult(req);
@@ -181,7 +178,7 @@ export const postTrustIndividualBo = async (req: Request, res: Response, next: N
     appData = saveTrustInApp(appData, trustUpdate);
     setExtraData(session, appData);
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && !isRemove) {
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       await updateOverseasEntity(req, session, appData);
     } else {
       await saveAndContinue(req, session);

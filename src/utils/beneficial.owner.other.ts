@@ -5,7 +5,6 @@ import * as config from "../config";
 import { logger } from "./logger";
 import { isActiveFeature } from "./feature.flag";
 import { saveAndContinue } from "./save.and.continue";
-import { isRemoveJourney } from "./url";
 import { addCeasedDateToTemplateOptions } from "../utils/update/ceased_date_util";
 import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
 import { ApplicationData, ApplicationDataType } from "../model";
@@ -46,11 +45,10 @@ import {
   prepareData,
   setApplicationData,
   setBoNocDataAsArrays,
-  fetchApplicationData,
   mapDataObjectToFields,
   mapFieldsToDataObject,
   getFromApplicationData,
-  removeFromApplicationData,
+  removeFromApplicationData, getApplicationData,
 } from "./application.data";
 
 export const getBeneficialOwnerOther = async (
@@ -61,8 +59,7 @@ export const getBeneficialOwnerOther = async (
 ): Promise<void> => {
 
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
-  const isRemove: boolean = await isRemoveJourney(req);
-  const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+  const appData: ApplicationData = await getApplicationData(req);
 
   return res.render(templateName, {
     ...appData,
@@ -85,8 +82,7 @@ export const getBeneficialOwnerOtherById = async (
 
     logger.debugRequest(req, `GET BY ID ${req.route.path}`);
 
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    const appData: ApplicationData = await getApplicationData(req);
     const id = req.params[ID];
     const data = await getFromApplicationData(req, BeneficialOwnerOtherKey, id, true);
     const principalAddress = data ? mapDataObjectToFields(data[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};
@@ -105,9 +101,7 @@ export const getBeneficialOwnerOtherById = async (
       FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC: isActiveFeature(config.FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)
     };
 
-    if (!isRemove) {
-      addActiveSubmissionBasePathToTemplateData(templateOptions, req);
-    }
+    addActiveSubmissionBasePathToTemplateData(templateOptions, req);
 
     if (EntityNumberKey in appData && appData[EntityNumberKey]) {
       return res.render(templateName, addCeasedDateToTemplateOptions(templateOptions, appData, data));
@@ -126,11 +120,10 @@ export const postBeneficialOwnerOther = async (req: Request, res: Response, next
   try {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const isRemove: boolean = await isRemoveJourney(req);
     const data: ApplicationDataType = await setBeneficialOwnerData(req.body, uuidv4());
     const session = req.session as Session;
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && !isRemove) {
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       await setApplicationData(req, data, BeneficialOwnerOtherKey);
     } else {
       await setApplicationData(session, data, BeneficialOwnerOtherKey);
@@ -151,8 +144,7 @@ export const updateBeneficialOwnerOther = async (req: Request, res: Response, ne
 
     logger.debugRequest(req, `UPDATE ${req.route.path}`);
 
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    const appData: ApplicationData = await getApplicationData(req);
     const session = req.session as Session;
     const id = req.params[ID];
     const boData: BeneficialOwnerOther = await getFromApplicationData(req, BeneficialOwnerOtherKey, id, true);
@@ -164,7 +156,7 @@ export const updateBeneficialOwnerOther = async (req: Request, res: Response, ne
       (data as BeneficialOwnerOther).trust_ids = [...trustIds];
     }
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && !isRemove) {
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       await setApplicationData(req, data, BeneficialOwnerOtherKey);
     } else {
       await setApplicationData(session, data, BeneficialOwnerOtherKey);
@@ -184,13 +176,11 @@ export const removeBeneficialOwnerOther = async (req: Request, res: Response, ne
   try {
 
     logger.debugRequest(req, `REMOVE ${req.route.path}`);
-
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    const appData: ApplicationData = await getApplicationData(req);
     const session = req.session as Session;
     await removeFromApplicationData(req, BeneficialOwnerOtherKey, req.params[ID], appData);
 
-    if (!isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) || isRemove) {
+    if (!isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       await saveAndContinue(req, session);
     }
 

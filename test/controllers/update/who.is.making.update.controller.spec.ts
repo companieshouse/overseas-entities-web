@@ -29,7 +29,7 @@ import { updateOverseasEntity } from "../../../src/service/overseas.entities.ser
 import { APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock";
 
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../../src/model/who.is.making.filing.model";
-import { setExtraData, fetchApplicationData } from "../../../src/utils/application.data";
+import { setExtraData, getApplicationData } from "../../../src/utils/application.data";
 
 import {
   WHO_IS_MAKING_UPDATE_URL,
@@ -58,7 +58,7 @@ mockCsrfProtectionMiddleware.mockClear();
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockSetExtraData = setExtraData as jest.Mock;
-const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
 
@@ -84,7 +84,7 @@ describe("Who is making update controller tests", () => {
   describe("GET tests", () => {
 
     test(`renders the ${WHO_IS_MAKING_UPDATE_PAGE} page`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce({});
+      mockGetApplicationData.mockReturnValueOnce({});
       const resp = await request(app).get(WHO_IS_MAKING_UPDATE_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(WHO_IS_MAKING_UPDATE_PAGE_TITLE);
@@ -95,14 +95,14 @@ describe("Who is making update controller tests", () => {
     });
 
     test(`renders the ${WHO_IS_MAKING_UPDATE_PAGE} page with radios selected to ${WhoIsRegisteringType.AGENT}`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce({ [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT });
+      mockGetApplicationData.mockReturnValueOnce({ [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT });
       const resp = await request(app).get(WHO_IS_MAKING_UPDATE_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(RADIO_BUTTON_AGENT_SELECTED);
     });
 
     test(`renders the ${WHO_IS_MAKING_UPDATE_PAGE} page with radios selected to ${WhoIsRegisteringType.SOMEONE_ELSE}`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce({ [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE });
+      mockGetApplicationData.mockReturnValueOnce({ [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE });
       const resp = await request(app).get(WHO_IS_MAKING_UPDATE_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(RADIO_BUTTON_SOMEONE_ELSE_SELECTED);
@@ -119,7 +119,7 @@ describe("Who is making update controller tests", () => {
   describe("POST tests", () => {
 
     test(`redirect to ${UPDATE_DUE_DILIGENCE_PAGE} page when ${WhoIsRegisteringType.AGENT} is selected and REDIS_flag is set to OFF`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockIsActiveFeature.mockReturnValue(false);
       mockUpdateOverseasEntity.mockReturnValueOnce(true);
       const resp = await request(app)
@@ -133,7 +133,7 @@ describe("Who is making update controller tests", () => {
     });
 
     test(`redirect to ${UPDATE_DUE_DILIGENCE_PAGE} page when ${WhoIsRegisteringType.AGENT} is selected and REDIS_flag is set to ON`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockIsActiveFeature.mockReturnValue(true);
       mockUpdateOverseasEntity.mockReturnValueOnce(true);
       const resp = await request(app)
@@ -148,7 +148,7 @@ describe("Who is making update controller tests", () => {
     });
 
     test(`redirects to the ${UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE} page when ${WhoIsRegisteringType.SOMEONE_ELSE} is selected and REDIS_flag is set to OFF`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockIsActiveFeature.mockReturnValue(false);
       mockUpdateOverseasEntity.mockReturnValueOnce(true);
       const resp = await request(app)
@@ -163,7 +163,7 @@ describe("Who is making update controller tests", () => {
     });
 
     test(`redirects to the ${UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE} page when ${WhoIsRegisteringType.SOMEONE_ELSE} is selected and REDIS_flag is set to ON`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockIsActiveFeature.mockReturnValue(true);
       mockUpdateOverseasEntity.mockReturnValueOnce(true);
       const resp = await request(app)

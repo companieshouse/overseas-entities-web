@@ -57,10 +57,10 @@ import {
 import {
   prepareData,
   setApplicationData,
-  fetchApplicationData,
   mapFieldsToDataObject,
   getFromApplicationData,
   removeFromApplicationData,
+  getApplicationData,
 } from '../../../src/utils/application.data';
 
 import {
@@ -123,7 +123,7 @@ const mockPrepareData = prepareData as jest.Mock;
 const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 const mockRemoveFromApplicationData = removeFromApplicationData as jest.Mock;
-const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 
 const DUMMY_DATA_OBJECT = { dummy: "data" };
@@ -142,7 +142,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
 
     test(`renders the ${UPDATE_MANAGING_OFFICER_PAGE} page when the REDIS_flag is set to OFF`, async () => {
       mockIsActiveFeature.mockReturnValue(false);
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(UPDATE_MANAGING_OFFICER_URL);
 
       expect(resp.status).toEqual(200);
@@ -159,7 +159,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
 
     test(`renders the ${UPDATE_MANAGING_OFFICER_PAGE} page when the REDIS_flag is set to ON`, async () => {
       mockIsActiveFeature.mockReturnValue(true);
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(UPDATE_MANAGING_OFFICER_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(200);
@@ -764,8 +764,8 @@ describe("UPDATE MANAGING OFFICER controller", () => {
   describe("GET BY ID tests", () => {
 
     test(`renders ${UPDATE_MANAGING_OFFICER_PAGE} page`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_CH_REF_UPDATE_MOCK });
       mockGetFromApplicationData.mockReturnValueOnce(REQ_BODY_UPDATE_MANAGING_OFFICER_ACTIVE);
-      mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_CH_REF_UPDATE_MOCK });
 
       const resp = await request(app).get(UPDATE_MANAGING_OFFICER_URL + MO_IND_ID_URL);
 
@@ -913,7 +913,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
-      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test("catch error when removing data", async () => {

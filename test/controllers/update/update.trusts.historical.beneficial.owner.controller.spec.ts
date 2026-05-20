@@ -53,7 +53,6 @@ import {
 mockCsrfProtectionMiddleware.mockClear();
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
-const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 
 const mockAuthentication = (authentication as jest.Mock);
 mockAuthentication.mockImplementation((_, __, next: NextFunction) => next());
@@ -141,7 +140,7 @@ describe('Trust Historical Beneficial Owner Controller', () => {
   describe('GET unit tests', () => {
     test('catch error when renders the page', async () => {
       const error = new Error(ANY_MESSAGE_ERROR);
-      mockFetchApplicationData.mockImplementationOnce(() => { throw error; });
+      mockGetApplicationData.mockImplementationOnce(() => { throw error; });
       await get(mockReq, mockRes, mockNext);
       expect(mockNext).toBeCalledTimes(1);
       expect(mockNext).toBeCalledWith(error);
@@ -155,7 +154,6 @@ describe('Trust Historical Beneficial Owner Controller', () => {
       (mapBeneficialOwnerToSession as jest.Mock).mockReturnValue(mockBoData);
 
       mockGetApplicationData.mockReturnValue(mockAppData);
-      mockFetchApplicationData.mockReturnValue(mockAppData);
 
       const mockUpdatedTrust = {} as Trust;
       (saveHistoricalBoInTrust as jest.Mock).mockReturnValue(mockBoData);
@@ -202,7 +200,7 @@ describe('Trust Historical Beneficial Owner Controller', () => {
         body: {},
       } as Request;
 
-      (getApplicationData as jest.Mock).mockReturnValue(mockAppData);
+      mockGetApplicationData.mockReturnValue(mockAppData);
 
       const resp = await request(app).post(pageUrl).send(mockHistBORequest);
 

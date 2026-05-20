@@ -92,7 +92,6 @@ import {
   prepareData,
   getApplicationData,
   setApplicationData,
-  fetchApplicationData,
   mapFieldsToDataObject,
   getFromApplicationData,
   removeFromApplicationData,
@@ -119,7 +118,6 @@ const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockRemoveFromApplicationData = removeFromApplicationData as jest.Mock;
 const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
-const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
@@ -139,7 +137,7 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
   describe("GET tests", () => {
 
     test(`renders the ${UPDATE_MANAGING_OFFICER_CORPORATE_PAGE} page`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(UPDATE_MANAGING_OFFICER_CORPORATE_URL);
 
       expect(resp.status).toEqual(200);
@@ -153,7 +151,7 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
     });
 
     test("catch error when rendering the page", async () => {
-      mockFetchApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockGetApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(UPDATE_MANAGING_OFFICER_CORPORATE_URL);
 
       expect(resp.status).toEqual(500);
@@ -471,7 +469,7 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
 
     test(`renders ${UPDATE_MANAGING_OFFICER_CORPORATE_PAGE} page`, async () => {
       mockGetFromApplicationData.mockReturnValueOnce(REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_ACTIVE);
-      mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_CH_REF_UPDATE_MOCK });
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_CH_REF_UPDATE_MOCK });
 
       const resp = await request(app).get(UPDATE_MANAGING_OFFICER_CORPORATE_URL + MO_IND_ID_URL);
 
@@ -578,7 +576,7 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
   describe("REMOVE tests", () => {
 
     test(`redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page when the REDIS_flag is set to OFF`, async () => {
-      mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
       mockIsActiveFeature.mockReturnValue(false);
       mockPrepareData.mockReturnValueOnce(UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
       const resp = await request(app).get(UPDATE_MANAGING_OFFICER_CORPORATE_URL + REMOVE + MO_CORP_ID_URL);
@@ -593,7 +591,6 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
         ...APPLICATION_DATA_MOCK,
         [IsRemoveKey]: false,
       };
-      mockFetchApplicationData.mockReturnValue(appData);
       mockGetApplicationData.mockReturnValue(appData);
       mockIsActiveFeature.mockReturnValue(true);
       mockPrepareData.mockReturnValueOnce(UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);

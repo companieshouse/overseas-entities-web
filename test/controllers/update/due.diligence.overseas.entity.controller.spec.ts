@@ -28,7 +28,7 @@ import { DateTime } from "luxon";
 import { OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_INVALID_CHARACTERS_FIELDS_MOCK } from "../../__mocks__/validation.mock";
 
 import { EMPTY_IDENTITY_DATE_REQ_BODY_MOCK, getTwoMonthOldDate } from "../../__mocks__/fields/date.mock";
-import { fetchApplicationData, setApplicationData, prepareData } from "../../../src/utils/application.data";
+import { setApplicationData, prepareData, getApplicationData } from "../../../src/utils/application.data";
 
 import {
   DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
@@ -69,7 +69,7 @@ import {
 
 mockJourneyDetectionMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
-const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 
@@ -95,7 +95,7 @@ describe("UPDATE DUE DILIGENCE OVERSEAS ENTITY controller", () => {
   describe("GET tests", () => {
 
     test(`renders the ${UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE} page`, async () => {
-      mockFetchApplicationData.mockReturnValue({ [OverseasEntityDueDiligenceKey]: null });
+      mockGetApplicationData.mockReturnValue({ [OverseasEntityDueDiligenceKey]: null });
       const resp = await request(app).get(UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL);
 
       expect(resp.status).toEqual(200);
@@ -113,7 +113,7 @@ describe("UPDATE DUE DILIGENCE OVERSEAS ENTITY controller", () => {
     });
 
     test(`renders the ${UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE} page on GET method with session data populated`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce({ [OverseasEntityDueDiligenceKey]: OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK });
+      mockGetApplicationData.mockReturnValueOnce({ [OverseasEntityDueDiligenceKey]: OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK });
       const resp = await request(app).get(UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL);
 
       expect(resp.status).toEqual(200);
@@ -126,7 +126,7 @@ describe("UPDATE DUE DILIGENCE OVERSEAS ENTITY controller", () => {
     });
 
     test(`catch error when renders the ${UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE} page on GET method`, async () => {
-      mockFetchApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockGetApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL);
 
       expect(resp.status).toEqual(500);

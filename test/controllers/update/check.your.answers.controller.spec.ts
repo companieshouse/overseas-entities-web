@@ -79,6 +79,9 @@ import {
   UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_DATE,
   UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS,
   UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME, UPDATE_AN_OVERSEAS_ENTITY_URL,
+  OVERSEAS_ENTITY_UPDATE_DETAILS_URL,
+  WHO_IS_MAKING_UPDATE_URL,
+  UPDATE_CHECK_YOUR_ANSWERS_WITH_PARAMS_URL,
 } from "../../../src/config";
 
 import {
@@ -798,6 +801,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
       mockGetApplicationData.mockReturnValue(mockAppData);
       mockFetchApplicationData.mockReturnValue(mockAppData);
       mockIsRemoveJourney.mockReturnValue(true);
+      mockGetRedirectUrl.mockReturnValue(OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
       expect(resp.status).toEqual(200);
@@ -833,14 +837,11 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).not.toContain(RELEVANT_PERIOD_OWNED_LAND_CHANGE_LINK);
     });
 
-    test.each([
-      ["on remove journey", APPLICATION_DATA_REMOVE_BO_MOCK ],
-      ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK ]
-    ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with verification checks - Agent selected %s`, async (_journeyType, mockAppData) => {
-      mockGetApplicationData.mockReturnValue(mockAppData);
-      mockFetchApplicationData.mockReturnValue(mockAppData);
-      mockGetRedirectUrl.mockReturnValueOnce(UPDATE_AN_OVERSEAS_ENTITY_URL);
-      mockGetRedirectUrl.mockReturnValueOnce(UPDATE_DUE_DILIGENCE_CHANGE_WHO);
+    test("renders page with verification checks - Agent selected (remove journey)", async () => {
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_REMOVE_BO_MOCK);
+      mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_REMOVE_BO_MOCK);
+      mockIsRemoveJourney.mockReturnValue(true);
+      mockGetRedirectUrl.mockReturnValue(WHO_IS_MAKING_UPDATE_URL);
 
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
@@ -848,6 +849,36 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).toContain(VERIFICATION_CHECKS);
       expect(resp.text).toContain(VERIFICATION_CHECKS_DATE);
       expect(resp.text).toContain(VERIFICATION_CHECKS_PERSON);
+      expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.name);
+      expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.email);
+      expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.supervisory_name);
+      expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.aml_number);
+      expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.agent_code);
+      expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.partner_name);
+
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_CHANGE_WHO);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_CHANGE_IDENTITY_DATE);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_CHANGE_NAME);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_CHANGE_EMAIL);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_CHANGE_AML_NUMBER);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_CHANGE_PARTNER_NAME);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_CHANGE_AGENT_CODE);
+    });
+
+    test("renders page with verification checks - Agent selected (update journey)", async () => {
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_BO_MOCK);
+      mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_BO_MOCK);
+      mockGetRedirectUrl.mockReturnValue(WHO_IS_MAKING_UPDATE_URL);
+
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(VERIFICATION_CHECKS);
+      expect(resp.text).toContain(VERIFICATION_CHECKS_DATE);
+      expect(resp.text).toContain(VERIFICATION_CHECKS_PERSON);
+
       expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.name);
       expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.email);
       expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.supervisory_name);
@@ -884,6 +915,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
       });
       mockGetRedirectUrl.mockReturnValueOnce(UPDATE_AN_OVERSEAS_ENTITY_URL);
       mockGetRedirectUrl.mockReturnValueOnce(UPDATE_DUE_DILIGENCE_CHANGE_WHO);
+      mockGetRedirectUrl.mockReturnValue(WHO_IS_MAKING_UPDATE_URL);
 
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
@@ -1613,7 +1645,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
         }]
       };
 
-      mockFetchApplicationData.mockReturnValue(appData);
+      mockGetApplicationData.mockReturnValue(appData);
       mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
@@ -1644,7 +1676,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
       mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_BO_MOCK);
       mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_BO_MOCK);
       mockPaymentsSession.mockReturnValueOnce(PAYMENT_LINK_JOURNEY);
-      const resp = await request(app).post(UPDATE_CHECK_YOUR_ANSWERS_URL);
+      const resp = await request(app).post(UPDATE_CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(PAYMENT_LINK_JOURNEY);

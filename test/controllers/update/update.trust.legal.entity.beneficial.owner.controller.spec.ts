@@ -205,7 +205,7 @@ describe('Trust Legal Entity Beneficial Owner Controller', () => {
 
     test('catch error when renders the page', async () => {
       const error = new Error(ANY_MESSAGE_ERROR);
-      mockFetchApplicationData.mockImplementation(() => { throw error; });
+      mockGetApplicationData.mockImplementation(() => { throw error; });
       await get(mockReq, mockRes, mockNext);
       expect(mockNext).toBeCalledTimes(1);
       expect(mockNext).toBeCalledWith(error);
@@ -229,6 +229,7 @@ describe('Trust Legal Entity Beneficial Owner Controller', () => {
 
       (mapLegalEntityToSession as jest.Mock).mockReturnValue(mockBoData);
       mockFetchApplicationData.mockReturnValue(mockAppData);
+      mockGetApplicationData.mockReturnValue(mockAppData);
       mockIsActiveFeature.mockReturnValue(false);
       (saveLegalEntityBoInTrust as jest.Mock).mockReturnValue(mockBoData);
       (getTrustByIdFromApp as jest.Mock).mockReturnValue(mockTrust);
@@ -263,7 +264,7 @@ describe('Trust Legal Entity Beneficial Owner Controller', () => {
       const mockTrust = {} as Trust;
 
       (mapLegalEntityToSession as jest.Mock).mockReturnValue(mockBoData);
-      mockFetchApplicationData.mockReturnValue(mockAppData);
+      mockGetApplicationData.mockReturnValue(mockAppData);
       mockIsActiveFeature.mockReturnValue(true);
       (saveLegalEntityBoInTrust as jest.Mock).mockReturnValue(mockBoData);
       (getTrustByIdFromApp as jest.Mock).mockReturnValue(mockTrust);

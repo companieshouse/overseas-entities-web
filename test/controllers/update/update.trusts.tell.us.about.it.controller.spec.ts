@@ -20,7 +20,7 @@ import { isActiveFeature } from '../../../src/utils/feature.flag';
 import { saveAndContinue } from '../../../src/utils/save.and.continue';
 import { updateOverseasEntity } from "../../../src/service/overseas.entities.service";
 import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
-import { fetchApplicationData, getApplicationData } from '../../../src/utils/application.data';
+import { getApplicationData } from '../../../src/utils/application.data';
 
 import {
   TRUST_INVOLVED_URL,
@@ -54,7 +54,6 @@ import {
 } from '../../__mocks__/text.mock';
 
 mockCsrfProtectionMiddleware.mockClear();
-const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
@@ -79,13 +78,13 @@ describe('Update - Trusts - Tell us about the trust', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockIsActiveFeature.mockReset();
-    mockFetchApplicationData.mockReset();
+
   });
 
   describe('GET tests', () => {
 
     test('when manage trusts feature flag is on, and there are trusts page is returned', async () => {
-      mockFetchApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
+      mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
       const resp = await request(app).get(UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_TELL_US_ABOUT_TRUST_HEADING);
@@ -96,7 +95,7 @@ describe('Update - Trusts - Tell us about the trust', () => {
     });
 
     test('when manage trusts feature flag is on, and relevant query param is passed in url important banner is displayed', async () => {
-      mockFetchApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
+      mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
       const resp = await request(app).get(UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL + "?relevant-period=true");
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_TELL_US_ABOUT_TRUST_HEADING);
@@ -105,7 +104,7 @@ describe('Update - Trusts - Tell us about the trust', () => {
     });
 
     test('when manage trusts feature flag is on, and relevant period trust is inserted into page', async () => {
-      mockFetchApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK, trusts: [TRUST_RELEVANT_PERIOD] });
+      mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK, trusts: [TRUST_RELEVANT_PERIOD] });
       const resp = await request(app).get(UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL + "/0");
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_TELL_US_ABOUT_TRUST_HEADING);
@@ -114,7 +113,7 @@ describe('Update - Trusts - Tell us about the trust', () => {
     });
 
     test('when manage trusts feature flag is on, and there are no trusts page is returned', async () => {
-      mockFetchApplicationData.mockReturnValue({ ...APPLICATION_DATA_UPDATE_NO_TRUSTS_MOCK });
+      mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_UPDATE_NO_TRUSTS_MOCK });
       const resp = await request(app).get(UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_TELL_US_ABOUT_TRUST_HEADING);
@@ -126,7 +125,7 @@ describe('Update - Trusts - Tell us about the trust', () => {
 
     test('when no associated BOs, ceased date should not be shown as page is not in review mode', async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
-      mockFetchApplicationData.mockReturnValue({ ...APPLICATION_DATA_UPDATE_NO_BO_TRUSTEES_MOCK });
+      mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_UPDATE_NO_BO_TRUSTEES_MOCK });
       const resp = await request(app).get(UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_TELL_US_ABOUT_TRUST_HEADING);
@@ -141,7 +140,7 @@ describe('Update - Trusts - Tell us about the trust', () => {
 
     test('when feature flag is on and no data posted, re-render page with validation error', async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
-      mockFetchApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
+      mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
       const resp = await request(app).post(UPDATE_TRUSTS_TELL_US_ABOUT_IT_WITH_PARAMS_URL).send({});
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ERROR_LIST);
@@ -151,7 +150,7 @@ describe('Update - Trusts - Tell us about the trust', () => {
 
     test('when feature flag is off and no data posted, re-render page with validation error', async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
-      mockFetchApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
+      mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
       const resp = await request(app).post(UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL).send({});
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ERROR_LIST);
@@ -161,7 +160,7 @@ describe('Update - Trusts - Tell us about the trust', () => {
 
     test('when feature flag is on and new trust no longer involved in the OE, re-render page with ceased date validation error', async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
-      mockFetchApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
+      mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
       const resp = await request(app).post(UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL).send({ stillInvolved: '0' });
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ERROR_LIST);
@@ -171,7 +170,7 @@ describe('Update - Trusts - Tell us about the trust', () => {
 
     test('when feature flag is on and posting valid data, redirect to update-trusts-individuals-or-entities-involved page', async () => {
       mockIsActiveFeature.mockReturnValue(true);
-      mockFetchApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
+      mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
       const resp = await request(app).post(UPDATE_TRUSTS_TELL_US_ABOUT_IT_WITH_PARAMS_URL).send({
         name: 'Trust name',
         createdDateDay: '8',
@@ -189,7 +188,7 @@ describe('Update - Trusts - Tell us about the trust', () => {
 
     test('when feature flag is off and posting valid data, redirect to update-trusts-individuals-or-entities-involved page', async () => {
       mockIsActiveFeature.mockReturnValue(false);
-      mockFetchApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
+      mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
       const resp = await request(app).post(UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL).send({
         name: 'Trust name',
         createdDateDay: '8',
@@ -207,7 +206,7 @@ describe('Update - Trusts - Tell us about the trust', () => {
 
     test('when feature flag is on, relevant query param is set, and posting valid data, redirect to update-trusts-individuals-or-entities-involved page with relevant query param', async () => {
       mockIsActiveFeature.mockReturnValue(true);
-      mockFetchApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
+      mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
       const resp = await request(app).post(UPDATE_TRUSTS_TELL_US_ABOUT_IT_WITH_PARAMS_URL + RELEVANT_PERIOD_QUERY_PARAM).send({
         name: 'Trust name',
         createdDateDay: '8',
@@ -224,7 +223,7 @@ describe('Update - Trusts - Tell us about the trust', () => {
     });
     test('when feature flag is off, relevant query param is set, and posting valid data, redirect to update-trusts-individuals-or-entities-involved page with relevant query param', async () => {
       mockIsActiveFeature.mockReturnValue(false);
-      mockFetchApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
+      mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
       const resp = await request(app).post(UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL + RELEVANT_PERIOD_QUERY_PARAM).send({
         name: 'Trust name',
         createdDateDay: '8',

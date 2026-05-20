@@ -23,6 +23,7 @@ import { TrustLegalEntityForm } from '../../model/trust.page.model';
 import { ApplicationData } from '../../model';
 import { checkTrusteeLegalEntityCeasedDate } from '../../validation/async';
 import { checkTrustLegalEntityBeneficialOwnerStillInvolved } from '../../validation/stillInvolved.validation';
+import { checkInterestedPersonStartDate } from '../../validation/fields/date.validation';
 
 const getPageProperties = (trust, formData, url: string, errors?: FormattedValidationErrors) => {
   return {
@@ -138,6 +139,7 @@ const getBackLink = (legalEntitiesReviewed: boolean) => {
 const getValidationErrors = async (appData: ApplicationData, req: Request): Promise<ValidationError[]> => {
   const stillInvolvedErrors = checkTrustLegalEntityBeneficialOwnerStillInvolved(appData, req);
   const ceasedDateErrors = await checkTrusteeLegalEntityCeasedDate(appData, req);
+  const interestedDateErrors = checkInterestedPersonStartDate(appData, req);
 
-  return [...stillInvolvedErrors, ...ceasedDateErrors];
+  return [...stillInvolvedErrors, ...ceasedDateErrors, ...interestedDateErrors];
 };

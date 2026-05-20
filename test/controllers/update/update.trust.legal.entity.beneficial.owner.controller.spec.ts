@@ -212,7 +212,7 @@ describe('Trust Legal Entity Beneficial Owner Controller', () => {
 
       expect(mapLegalEntityToSession).toBeCalledTimes(1);
       expect(mapLegalEntityToSession).toBeCalledWith(mockReq.body);
-      expect(getTrustByIdFromApp).toBeCalledTimes(1);
+      expect(getTrustByIdFromApp).toBeCalledTimes(2);
       expect(getTrustByIdFromApp).toBeCalledWith(mockAppData, trustId);
       expect(saveLegalEntityBoInTrust).toBeCalledTimes(1);
       expect(saveLegalEntityBoInTrust).toBeCalledWith(mockTrust, mockBoData);

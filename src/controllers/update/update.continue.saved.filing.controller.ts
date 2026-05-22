@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from "express";
-
 import * as config from "../../config";
 import { logger } from "../../utils/logger";
 import { isRemoveJourney } from "../../utils/url";

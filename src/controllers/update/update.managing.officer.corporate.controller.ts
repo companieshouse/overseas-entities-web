@@ -1,10 +1,11 @@
 import { NextFunction, Request, Response } from "express";
+import { getRedirectUrl } from "../../utils/url";
+
 import {
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
+  UPDATE_MANAGING_OFFICER_CORPORATE_PAGE,
   UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
-  UPDATE_MANAGING_OFFICER_CORPORATE_PAGE
 } from "../../config";
-import { getRedirectUrl } from "../../utils/url";
 
 import {
   getManagingOfficerCorporate,

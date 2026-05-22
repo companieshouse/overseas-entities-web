@@ -4,7 +4,7 @@ import { logger } from "../../utils/logger";
 import { Update } from "../../model/update.type.model";
 import { isActiveFeature } from "../../utils/feature.flag";
 import { ApplicationData } from "../../model";
-import { fetchApplicationData } from "../../utils/application.data";
+import { getApplicationData } from "../../utils/application.data";
 import { getDataFromEntityCookie } from "../../utils/update/data.cookie";
 import { getCompanyPscStatements } from "../../service/persons.with.signficant.control.statement.service";
 import { relevantPeriodPscStatements } from "../../utils/relevant.period";
@@ -25,20 +25,9 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       appData = await getDataFromEntityCookie(req);
     } else {
-      appData = await fetchApplicationData(req, !isRemove);
+      appData = await getApplicationData(req);
     }
     const update = appData.update as Update;
-
-    if (isRemove) {
-      return res.render(config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE, {
-        journey: config.JourneyType.remove,
-        backLinkUrl: `${config.OVERSEAS_ENTITY_QUERY_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`,
-        updateUrl: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
-        templateName: config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
-        ...appData,
-        registrationDate: update.date_of_creation
-      });
-    }
 
     const backLinkUrl = getRedirectUrl({
       req,
@@ -46,11 +35,29 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       urlWithoutEntityIds: config.OVERSEAS_ENTITY_QUERY_URL,
     });
 
+    const updateUrl = getRedirectUrl({
+      req,
+      urlWithEntityIds: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
+    });
+
+    if (isRemove) {
+
+      return res.render(config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE, {
+        ...appData,
+        updateUrl,
+        journey: config.JourneyType.remove,
+        registrationDate: update.date_of_creation,
+        backLinkUrl: backLinkUrl + config.JOURNEY_REMOVE_QUERY_PARAM,
+        templateName: config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
+      });
+    }
+
     return res.render(config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE, {
       ...appData,
+      updateUrl,
       backLinkUrl,
       registrationDate: update.date_of_creation,
-      updateUrl: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
       templateName: config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
     });
 
@@ -70,11 +77,15 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       appData = await getDataFromEntityCookie(req);
     } else {
-      appData = await fetchApplicationData(req, !isRemove);
+      appData = await getApplicationData(req);
     }
 
     if (isRemove) {
-      return res.redirect(`${config.OVERSEAS_ENTITY_PRESENTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+      return res.redirect(getRedirectUrl({
+        req,
+        urlWithEntityIds: config.OVERSEAS_ENTITY_PRESENTER_WITH_PARAMS_URL,
+        urlWithoutEntityIds: config.OVERSEAS_ENTITY_PRESENTER_URL,
+      }) + config.JOURNEY_REMOVE_QUERY_PARAM);
     }
 
     if (appData.entity && appData.entity_number) {

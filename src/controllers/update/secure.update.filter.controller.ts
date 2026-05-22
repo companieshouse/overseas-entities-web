@@ -1,8 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-
 import * as config from "../../config";
-import { getFilterPage, postFilterPage } from "../../utils/secure.filter";
 import { isActiveFeature } from "../../utils/feature.flag";
+import { getFilterPage, postFilterPage } from "../../utils/secure.filter";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   await getFilterPage(req, res, next, config.SECURE_UPDATE_FILTER_PAGE, config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL);

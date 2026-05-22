@@ -1730,12 +1730,27 @@ router.route(config.REMOVE_SOLD_ALL_LAND_FILTER_URL)
   .get(removeSoldAllLandFilter.get)
   .post(...validator.removeSoldAllLandFilter, checkValidations, removeSoldAllLandFilter.post);
 
+router.route(config.REMOVE_SOLD_ALL_LAND_FILTER_WITH_PARAMS_URL)
+  .all(authentication)
+  .get(removeSoldAllLandFilter.get)
+  .post(...validator.removeSoldAllLandFilter, checkValidations, removeSoldAllLandFilter.post);
+
 router.route(config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL)
   .all(authentication)
   .get(removeIsEntityRegisteredOwner.get)
   .post(...validator.removeIsEntityRegisteredOwner, checkValidations, removeIsEntityRegisteredOwner.post);
 
+router.route(config.REMOVE_IS_ENTITY_REGISTERED_OWNER_WITH_PARAMS_URL)
+  .all(authentication)
+  .get(removeIsEntityRegisteredOwner.get)
+  .post(...validator.removeIsEntityRegisteredOwner, checkValidations, removeIsEntityRegisteredOwner.post);
+
 router.route(config.REMOVE_CONFIRM_STATEMENT_URL)
+  .all(authentication)
+  .get(removeConfirmStatement.get)
+  .post(...validator.removeConfirmStatement, checkValidations, removeConfirmStatement.post);
+
+router.route(config.REMOVE_CONFIRM_STATEMENT_WITH_PARAMS_URL)
   .all(authentication)
   .get(removeConfirmStatement.get)
   .post(...validator.removeConfirmStatement, checkValidations, removeConfirmStatement.post);
@@ -1785,5 +1800,6 @@ router.route(config.UPDATE_STATEMENT_VALIDATION_ERRORS_WITH_PARAMS_URL)
   .post(validateStatements, ...validator.statementResolution, updateStatementValidationErrors.post);
 
 router.get(config.REMOVE_CANNOT_USE_URL, authentication, removeCannotUse.get);
+router.get(config.REMOVE_CANNOT_USE_WITH_PARAMS_URL, authentication, removeCannotUse.get);
 
 export default router;

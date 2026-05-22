@@ -4,12 +4,12 @@ import { logger } from "../../utils/logger";
 import { Trust } from "../../model/trust.model";
 import { Session } from "@companieshouse/node-session-handler";
 import { TrusteeType } from "../../model/trustee.type.model";
+import { getRedirectUrl } from "../../utils/url";
 import { saveAndContinue } from "../../utils/save.and.continue";
 import { isActiveFeature } from "../../utils/feature.flag";
 import { updateOverseasEntity } from "../../service/overseas.entities.service";
 
-import { getRedirectUrl, isRemoveJourney } from "../../utils/url";
-import { fetchApplicationData, setExtraData } from "../../utils/application.data";
+import { getApplicationData, setExtraData } from "../../utils/application.data";
 import { getTrustInReview, setTrusteesAsReviewed, } from "../../utils/update/review_trusts";
 
 import {
@@ -28,8 +28,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData = await fetchApplicationData(req, !isRemove);
+    const appData = await getApplicationData(req);
     const trust = getTrustInReview(appData) as Trust;
 
     const backLinkUrl = getRedirectUrl({
@@ -64,12 +63,11 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       return res.redirect(redirectUrl);
     }
 
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData = await fetchApplicationData(req, !isRemove);
+    const appData = await getApplicationData(req);
     setTrusteesAsReviewed(appData, TrusteeType.HISTORICAL);
     setExtraData(req.session, appData);
 
-    if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && !isRemove) {
+    if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       await updateOverseasEntity(req, req.session as Session, appData);
     } else {
       await saveAndContinue(req, req.session as Session);

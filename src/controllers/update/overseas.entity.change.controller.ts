@@ -16,7 +16,7 @@ import { isActiveFeature } from "../../utils/feature.flag";
 import { updateOverseasEntity } from "../../service/overseas.entities.service";
 
 import { getRedirectUrl, isRemoveJourney } from "../../utils/url";
-import { fetchApplicationData, setExtraData } from "../../utils/application.data";
+import { getApplicationData, setExtraData } from "../../utils/application.data";
 
 export const get = async (req: Request, resp: Response, next: NextFunction) => {
 
@@ -25,7 +25,7 @@ export const get = async (req: Request, resp: Response, next: NextFunction) => {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    const appData: ApplicationData = await getApplicationData(req);
     const backLinkUrl = getRedirectUrl({
       req,
       urlWithEntityIds: config.OVERSEAS_ENTITY_PRESENTER_WITH_PARAMS_URL,
@@ -34,11 +34,15 @@ export const get = async (req: Request, resp: Response, next: NextFunction) => {
 
     if (isRemove) {
       return resp.render(config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE, {
-        journey: config.JourneyType.remove,
-        backLinkUrl: config.OVERSEAS_ENTITY_PRESENTER_URL,
-        templateName: config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE,
-        [NoChangeKey]: appData.update?.no_change,
         ...appData,
+        journey: config.JourneyType.remove,
+        [NoChangeKey]: appData.update?.no_change,
+        templateName: config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE,
+        backLinkUrl: getRedirectUrl({
+          req,
+          urlWithEntityIds: config.OVERSEAS_ENTITY_PRESENTER_WITH_PARAMS_URL,
+          urlWithoutEntityIds: config.OVERSEAS_ENTITY_PRESENTER_URL,
+        }),
       });
     }
 
@@ -60,10 +64,10 @@ export const post = async (req: Request, resp: Response, next: NextFunction) => 
   try {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
+
     let redirectUrl: string;
-    const isRemove: boolean = await isRemoveJourney(req);
     const session = req.session as Session;
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    const appData: ApplicationData = await getApplicationData(req);
     const noChangeStatement = req.body[NoChangeKey];
 
     if (appData.update) {

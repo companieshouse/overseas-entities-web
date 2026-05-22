@@ -1,16 +1,15 @@
 import { NextFunction, Request, Response } from "express";
-import { ApplicationData } from "../model";
-import { logger } from "../utils/logger";
 import * as config from "../config";
+import { logger } from "../utils/logger";
 import { isActiveFeature } from '../utils/feature.flag';
-import { getUrlWithParamsToPath } from "../utils/url";
+import { ApplicationData } from "../model";
 import { getApplicationData } from "../utils/application.data";
-
+import { getUrlWithParamsToPath } from "../utils/url";
 import { checkEntityRequiresTrusts, getTrustLandingUrl } from "../utils/trusts";
 
 import {
-  BeneficialOwnerTypeChoice,
   BeneficialOwnerTypeKey,
+  BeneficialOwnerTypeChoice,
   ManagingOfficerTypeChoice,
 } from "../model/beneficial.owner.type.model";
 

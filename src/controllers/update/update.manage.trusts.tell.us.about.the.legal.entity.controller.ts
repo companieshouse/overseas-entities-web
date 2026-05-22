@@ -4,16 +4,17 @@ import { Session } from '@companieshouse/node-session-handler';
 
 import { logger } from '../../utils/logger';
 import { TrusteeType } from '../../model/trustee.type.model';
+import { getRedirectUrl } from "../../utils/url";
 import { saveAndContinue } from '../../utils/save.and.continue';
 import { isActiveFeature } from "../../utils/feature.flag";
 import { ApplicationData } from '../../model';
 import { RoleWithinTrustType } from '../../model/role.within.trust.type.model';
 import { TrustLegalEntityForm } from '../../model/trust.page.model';
 import { updateOverseasEntity } from "../../service/overseas.entities.service";
+import { mapTrustApiToWebWhenFlagsAreSet } from "../../utils/trust/api.to.web.mapper";
 
 import { Trust, TrustCorporate } from '../../model/trust.model';
-import { getRedirectUrl, isRemoveJourney } from "../../utils/url";
-import { fetchApplicationData, setExtraData } from '../../utils/application.data';
+import { getApplicationData, setExtraData } from '../../utils/application.data';
 import { getTrustInReview, getTrustee, getTrusteeIndex } from '../../utils/update/review_trusts';
 import { FormattedValidationErrors, formatValidationError } from '../../middleware/validation.middleware';
 import { mapLegalEntityTrusteeFromSessionToPage, mapLegalEntityToSession } from '../../utils/trust/legal.entity.beneficial.owner.mapper';
@@ -68,8 +69,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    const appData: ApplicationData = await getApplicationData(req);
+    mapTrustApiToWebWhenFlagsAreSet(appData);
     const trusteeId = req.params[ROUTE_PARAM_TRUSTEE_ID];
     const isRelevantPeriod = req.query['relevant-period'];
     const trust = getTrustInReview(appData) as Trust;
@@ -92,8 +93,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    const appData: ApplicationData = await getApplicationData(req);
     const trusteeId = req.params[ROUTE_PARAM_TRUSTEE_ID];
     const trust = getTrustInReview(appData) as Trust;
     const trustee = getTrustee(trust, trusteeId, TrusteeType.LEGAL_ENTITY) as TrustCorporate;

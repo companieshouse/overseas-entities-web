@@ -1,8 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import { createAndLogErrorRequest, logger } from "../../utils/logger";
 import * as config from "../../config";
+import { createAndLogErrorRequest, logger } from "../../utils/logger";
 import { getPreviousPageUrl, isRemoveJourney } from "../../utils/url";
-
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   let journey = config.JourneyType.update;
   const previousPage = getPreviousPageUrl(req, config.UPDATE_AN_OVERSEAS_ENTITY_URL);

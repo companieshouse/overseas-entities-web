@@ -102,3 +102,4 @@ export const IsNotProprietorOfLandKey = "is_not_proprietor_of_land";
 
 // Cookie names
 export const EntityCookieKey = "_roe";
+export const EntityCookieCompanyNumberKey = "e_number";

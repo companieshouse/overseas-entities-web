@@ -1,14 +1,14 @@
 import { NextFunction, Request, Response } from "express";
 import { Session } from "@companieshouse/node-session-handler";
 import { logger } from "../../utils/logger";
-import { ApplicationData } from "../../model";
 import { getRedirectUrl } from "../../utils/url";
+import { ApplicationData } from "../../model";
 import { removeManagingOfficer } from "../../utils/managing.officer.individual";
 import { removeBeneficialOwnerGov } from "../../utils/beneficial.owner.gov";
+import { ID, DoYouWantToRemoveKey } from "../../model/data.types.model";
 import { removeBeneficialOwnerOther } from "../../utils/beneficial.owner.other";
 import { removeBeneficialOwnerIndividual } from "../../utils/beneficial.owner.individual";
 import { removeManagingOfficerCorporate } from "../../utils/managing.officer.corporate";
-import { DoYouWantToRemoveKey, ID } from "../../model/data.types.model";
 import { findBoOrMo, getApplicationData } from "../../utils/application.data";
 
 import {

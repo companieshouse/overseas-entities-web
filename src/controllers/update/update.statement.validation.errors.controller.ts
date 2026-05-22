@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import { validationResult } from "express-validator";
 import { logger } from "../../utils/logger";
+import { getRedirectUrl } from "../../utils/url";
 import { ApplicationData } from "../../model/application.model";
 import { isNoChangeJourney } from "../../utils/update/no.change.journey";
-import { getRedirectUrl, isRemoveJourney } from "../../utils/url";
-import { fetchApplicationData } from "../../utils/application.data";
-import { FormattedValidationErrors, formatValidationError } from "../../middleware/validation.middleware";
+import { getApplicationData } from "../../utils/application.data";
 import { StatementResolutionKey, StatementResolutionType } from "../../model/statement.resolution.model";
+import { FormattedValidationErrors, formatValidationError } from "../../middleware/validation.middleware";
 
 import {
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
@@ -25,16 +25,11 @@ import {
 } from "../../config";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
-
   try {
-
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    const appData: ApplicationData = await getApplicationData(req);
     const inNoChangeJourney: boolean = isNoChangeJourney(appData);
-
     return renderPage(req, res, appData, inNoChangeJourney, req['statementErrorList']);
-
   } catch (error) {
     next(error);
   }
@@ -45,8 +40,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    const appData: ApplicationData = await getApplicationData(req);
     const errors = validationResult(req);
     const inNoChangeJourney = isNoChangeJourney(appData);
 

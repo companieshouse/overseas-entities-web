@@ -1,13 +1,14 @@
 import { NextFunction, Request, Response } from "express";
 import { logger } from "../../utils/logger";
-import { getLoggedInUserEmail } from "../../utils/session";
-import { ApplicationData } from "../../model/application.model";
 import { Transactionkey } from "../../model/data.types.model";
-import { WhoIsRegisteringType } from "../../model/who.is.making.filing.model";
 import { isRemoveJourney } from "../../utils/url";
+import { ApplicationData } from "../../model/application.model";
 import { isNoChangeJourney } from "../../utils/update/no.change.journey";
-import { deleteApplicationData, getApplicationData } from "../../utils/application.data";
+import { removeEntityCookie } from "../../utils/update/data.cookie";
+import { getLoggedInUserEmail } from "../../utils/session";
+import { WhoIsRegisteringType } from "../../model/who.is.making.filing.model";
 import { CONFIRMATION_PAGE, JourneyType } from "../../config";
+import { deleteApplicationData, getApplicationData } from "../../utils/application.data";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -15,7 +16,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     logger.debugRequest(req, `${req?.method} ${req?.route?.path}`);
 
-    const appData: ApplicationData = await getApplicationData(req.session);
+    const appData: ApplicationData = await getApplicationData(req);
     const referenceNumber = appData[Transactionkey];
 
     // It's necessary to do this check and save the result before deleting the application
@@ -23,6 +24,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const isRemove: boolean = await isRemoveJourney(req);
 
     deleteApplicationData(req.session);
+    removeEntityCookie(req, res);
 
     if (isRemove) {
       return res.render(CONFIRMATION_PAGE, {

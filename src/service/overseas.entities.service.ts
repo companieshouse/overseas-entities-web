@@ -1,9 +1,9 @@
 import { Request } from "express";
 import { Session } from "@companieshouse/node-session-handler";
-import { createAndLogErrorRequest, logger } from "../utils/logger";
+import { ApplicationData } from "../model/application.model";
 import { getApplicationData } from "../utils/application.data";
 import { makeApiCallWithRetry } from "./retry.handler.service";
-import { ApplicationData } from "../model/application.model";
+import { createAndLogErrorRequest, logger } from "../utils/logger";
 import { Transactionkey, OverseasEntityKey } from "../model/data.types.model";
 
 export const createOverseasEntity = async (

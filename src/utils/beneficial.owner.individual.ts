@@ -6,8 +6,8 @@ import * as config from "../config";
 import { isRemoveJourney } from "./url";
 import { saveAndContinue } from "../utils/save.and.continue";
 import { isActiveFeature } from "./feature.flag";
-import { ApplicationDataType, ApplicationData } from "../model";
 import { addCeasedDateToTemplateOptions } from "../utils/update/ceased_date_util";
+import { ApplicationDataType, ApplicationData } from "../model";
 import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
 
 import {

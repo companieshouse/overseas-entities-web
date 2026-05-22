@@ -1,16 +1,15 @@
 import { NextFunction, Request, Response } from "express";
-
-import { logger } from "../utils/logger";
+import { Session } from "@companieshouse/node-session-handler";
 import * as config from "../config";
+import { logger } from "../utils/logger";
 import { ApplicationData } from "../model";
-import { deleteApplicationData, getApplicationData, setExtraData } from "../utils/application.data";
-import { HasSoldLandKey, OverseasEntityKey, Transactionkey } from "../model/data.types.model";
-import { getSoldLandFilterBackLink } from "../utils/navigation";
 import { isActiveFeature } from "../utils/feature.flag";
 import { postTransaction } from "../service/transaction.service";
-import { createOverseasEntity, updateOverseasEntity } from "../service/overseas.entities.service";
-import { Session } from "@companieshouse/node-session-handler";
+import { getSoldLandFilterBackLink } from "../utils/navigation";
 import { getUrlWithTransactionIdAndSubmissionId } from "../utils/url";
+import { createOverseasEntity, updateOverseasEntity } from "../service/overseas.entities.service";
+import { HasSoldLandKey, OverseasEntityKey, Transactionkey } from "../model/data.types.model";
+import { deleteApplicationData, getApplicationData, setExtraData } from "../utils/application.data";
 
 export const get = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 
@@ -54,7 +53,11 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       nextPageUrl = req.params[config.ROUTE_PARAM_TRANSACTION_ID]
         && req.params[config.ROUTE_PARAM_SUBMISSION_ID]
         && isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)
-        ? getUrlWithTransactionIdAndSubmissionId(config.CANNOT_USE_WITH_PARAMS_URL, req.params[config.ROUTE_PARAM_TRANSACTION_ID], req.params[config.ROUTE_PARAM_SUBMISSION_ID])
+        ? getUrlWithTransactionIdAndSubmissionId(
+          config.CANNOT_USE_WITH_PARAMS_URL,
+          req.params[config.ROUTE_PARAM_TRANSACTION_ID],
+          req.params[config.ROUTE_PARAM_SUBMISSION_ID]
+        )
         : config.CANNOT_USE_URL;
 
     } else if (hasSoldLand === "0") {
@@ -69,7 +72,11 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         } else {
           await updateOverseasEntity(req, session, appData);
         }
-        nextPageUrl = getUrlWithTransactionIdAndSubmissionId(config.SECURE_REGISTER_FILTER_WITH_PARAMS_URL, appData[Transactionkey] as string, appData[OverseasEntityKey] as string);
+        nextPageUrl = getUrlWithTransactionIdAndSubmissionId(
+          config.SECURE_REGISTER_FILTER_WITH_PARAMS_URL,
+            appData[Transactionkey] as string,
+            appData[OverseasEntityKey] as string
+        );
       }
     }
 

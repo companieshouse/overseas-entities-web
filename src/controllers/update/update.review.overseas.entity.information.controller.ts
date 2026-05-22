@@ -1,18 +1,17 @@
 import { NextFunction, Request, Response } from "express";
 import { logger } from "../../utils/logger";
 import * as config from "../../config";
+import { getRedirectUrl } from "../../utils/url";
 import { ApplicationData } from "model";
 import { DueDiligenceKey } from "../../model/due.diligence.model";
-import { fetchApplicationData } from "../../utils/application.data";
-import { getRedirectUrl, isRemoveJourney } from "../../utils/url";
+import { getApplicationData } from "../../utils/application.data";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
 
   try {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const isRemove = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    const appData: ApplicationData = await getApplicationData(req);
 
     return res.render(config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE, {
       ...appData,

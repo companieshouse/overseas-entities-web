@@ -257,6 +257,11 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL,
     nextPage: []
   },
+  [config.UPDATE_CHECK_YOUR_ANSWERS_WITH_PARAMS_URL]: {
+    currentPage: config.UPDATE_CHECK_YOUR_ANSWERS_PAGE,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.OVERSEAS_ENTITY_UPDATE_DETAILS_WITH_PARAMS_URL, req),
+    nextPage: []
+  },
   [config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL]: {
     currentPage: config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE,
     previousPage: () => config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE,
@@ -803,5 +808,10 @@ export const NAVIGATION: Navigation = {
     currentPage: config.REMOVE_CONFIRM_STATEMENT_PAGE,
     previousPage: () => `${config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL}`,
     nextPage: [`${config.REMOVE_CANNOT_USE_URL}`]
+  },
+  [config.REMOVE_CONFIRM_STATEMENT_WITH_PARAMS_URL]: {
+    currentPage: config.REMOVE_CONFIRM_STATEMENT_PAGE,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_WITH_PARAMS_URL, req),
+    nextPage: [`${config.REMOVE_CANNOT_USE_WITH_PARAMS_URL}`]
   }
 };

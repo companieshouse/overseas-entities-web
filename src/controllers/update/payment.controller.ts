@@ -1,19 +1,21 @@
 import { Request, Response, NextFunction } from "express";
 import { isActiveFeature } from "../../utils/feature.flag";
 import { ApplicationData } from "model";
-import { fetchApplicationData } from "../../utils/application.data";
+import { getApplicationData } from "../../utils/application.data";
 import { CreatePaymentRequest } from "@companieshouse/api-sdk-node/dist/services/payment";
 import { createAndLogErrorRequest, logger } from "../../utils/logger";
+import { getUrlWithTransactionIdAndSubmissionId } from "../../utils/url";
 import { OverseasEntityKey, PaymentKey, Transactionkey } from "../../model/data.types.model";
-import { getUrlWithTransactionIdAndSubmissionId, isRemoveJourney } from "../../utils/url";
 import {
   PAYMENT_PAID,
   PAYMENT_FAILED_PAGE,
   UPDATE_CONFIRMATION_URL,
   UPDATE_CONFIRMATION_PAGE,
   UPDATE_PAYMENT_FAILED_URL,
+  ROUTE_PARAM_SUBMISSION_ID,
   ACTIVE_SUBMISSION_BASE_PATH,
   UPDATE_AN_OVERSEAS_ENTITY_URL,
+  ROUTE_PARAM_OVERSEAS_ENTITY_ID,
   FEATURE_FLAG_ENABLE_REDIS_REMOVAL,
 } from "../../config";
 
@@ -22,8 +24,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
 
     const { status, state } = req.query;
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, isRemove, true);
+    req.params[ROUTE_PARAM_SUBMISSION_ID] = req.params[ROUTE_PARAM_SUBMISSION_ID] ?? req.params[ROUTE_PARAM_OVERSEAS_ENTITY_ID];
+    const appData: ApplicationData = await getApplicationData(req, true);
     const savedPayment = appData[PaymentKey] || {} as CreatePaymentRequest;
 
     logger.infoRequest(req, `Returned state: ${ state }, saved state: ${savedPayment.state}, with status: ${ status }`);

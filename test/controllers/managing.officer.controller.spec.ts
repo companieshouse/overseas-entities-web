@@ -39,7 +39,7 @@ import {
 } from "../../src/config";
 
 import {
-  fetchApplicationData,
+  getApplicationData,
   getFromApplicationData,
   mapFieldsToDataObject,
   prepareData,
@@ -105,7 +105,7 @@ const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
-const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockGetFromApplicationData = getFromApplicationData as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
@@ -141,7 +141,7 @@ describe("MANAGING_OFFICER controller", () => {
   describe("GET tests", () => {
 
     test(`renders the ${MANAGING_OFFICER_PAGE} page`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(MANAGING_OFFICER_URL);
 
       expect(resp.status).toEqual(200);
@@ -157,7 +157,7 @@ describe("MANAGING_OFFICER controller", () => {
     });
 
     test(`renders the ${MANAGING_OFFICER_PAGE} page when REDIS_removal flag is ON`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockIsActiveFeature.mockReturnValue(true);
       const resp = await request(app).get(MANAGING_OFFICER_WITH_PARAMS_URL);
 
@@ -176,7 +176,7 @@ describe("MANAGING_OFFICER controller", () => {
     });
 
     test(`renders the ${MANAGING_OFFICER_PAGE} page when REDIS_removal flag is OFF`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockIsActiveFeature.mockReturnValue(false);
       const resp = await request(app).get(MANAGING_OFFICER_WITH_PARAMS_URL);
 
@@ -198,7 +198,7 @@ describe("MANAGING_OFFICER controller", () => {
   describe("GET with url params tests", () => {
 
     test(`renders the ${MANAGING_OFFICER_PAGE} page`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(MANAGING_OFFICER_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(200);
@@ -223,7 +223,7 @@ describe("MANAGING_OFFICER controller", () => {
         [ManagingOfficerKey]: [moMock],
         [EntityNumberKey]: undefined,
       };
-      mockFetchApplicationData.mockReturnValueOnce(appData);
+      mockGetApplicationData.mockReturnValueOnce(appData);
       mockGetFromApplicationData.mockReturnValueOnce(moMock);
       const resp = await request(app).get(MANAGING_OFFICER_URL + MO_IND_ID_URL);
 
@@ -244,7 +244,7 @@ describe("MANAGING_OFFICER controller", () => {
         [ManagingOfficerKey]: [moMock],
         [EntityNumberKey]: undefined,
       };
-      mockFetchApplicationData.mockReturnValueOnce(appData);
+      mockGetApplicationData.mockReturnValueOnce(appData);
       mockGetFromApplicationData.mockReturnValueOnce(moMock);
       mockIsActiveFeature.mockReturnValue(true);
       const resp = await request(app).get(MANAGING_OFFICER_WITH_PARAMS_URL + MO_IND_ID_URL);
@@ -268,7 +268,7 @@ describe("MANAGING_OFFICER controller", () => {
         [ManagingOfficerKey]: [moMock],
         [EntityNumberKey]: undefined,
       };
-      mockFetchApplicationData.mockReturnValueOnce(appData);
+      mockGetApplicationData.mockReturnValueOnce(appData);
       mockGetFromApplicationData.mockReturnValueOnce(moMock);
       mockIsActiveFeature.mockReturnValue(false);
       const resp = await request(app).get(MANAGING_OFFICER_URL + MO_IND_ID_URL);
@@ -303,8 +303,8 @@ describe("MANAGING_OFFICER controller", () => {
         [ManagingOfficerKey]: [moMock],
         [EntityNumberKey]: undefined,
       };
-      mockFetchApplicationData.mockReturnValueOnce(appData);
-      mockGetFromApplicationData.mockReturnValueOnce(moMock);
+      mockGetApplicationData.mockReturnValueOnce(appData);
+      mockGetFromApplicationData.mockReturnValue(moMock);
       const resp = await request(app).get(MANAGING_OFFICER_WITH_PARAMS_URL + MO_IND_ID_URL);
 
       expect(resp.status).toEqual(200);

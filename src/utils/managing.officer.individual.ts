@@ -77,7 +77,6 @@ export const getManagingOfficerById = async (
 ) => {
 
   try {
-
     logger.debugRequest(req, `${req.method} BY ID ${templateName}`);
 
     const appData: ApplicationData = await getApplicationData(req);

@@ -147,7 +147,7 @@ describe('Trust Involved controller', () => {
   describe('GET unit tests', () => {
 
     test(('success'), async () => {
-      mockFetchApplicationData.mockReturnValue(mockAppData);
+      mockGetApplicationData.mockReturnValue(mockAppData);
 
       const mockTrustData = {
         trustName: 'dummy',
@@ -217,8 +217,7 @@ describe('Trust Involved controller', () => {
     test('catch error when renders the page', async () => {
       const error = new Error(ANY_MESSAGE_ERROR);
       mockGetRedirectUrl.mockReturnValue(MOCKED_URL);
-      mockGetApplicationData.mockReturnValue(mockAppData);
-      mockFetchApplicationData.mockImplementation(() => {
+      mockGetApplicationData.mockImplementation(() => {
         throw error;
       });
 
@@ -428,7 +427,7 @@ describe('Trust Involved controller', () => {
     );
 
     test('render error', async () => {
-      mockFetchApplicationData.mockReturnValue(mockAppData);
+      mockGetApplicationData.mockReturnValue(mockAppData);
       mockGetRedirectUrl.mockReturnValueOnce(MOCKED_URL);
       const mockValidationErrors = [
         {
@@ -581,8 +580,8 @@ describe('Trust Involved controller', () => {
         array: jest.fn().mockReturnValue(mockValidationErrors),
       }));
 
-      // mockGetApplicationData.mockReturnValueOnce(mockAppData);
-      mockFetchApplicationData.mockReturnValue(mockAppData);
+      mockGetApplicationData.mockReturnValue(mockAppData);
+      // mockFetchApplicationData.mockReturnValue(mockAppData);
       mockGetRedirectUrl.mockReturnValueOnce(MOCKED_URL);
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
@@ -700,7 +699,7 @@ describe('Trust Involved controller', () => {
         }]
       } as ApplicationData;
 
-      (fetchApplicationData as jest.Mock).mockResolvedValue(mockAppData);
+      (getApplicationData as jest.Mock).mockResolvedValue(mockAppData);
 
       mockReq.body = {
         noMoreToAdd: 'noMoreToAdd',
@@ -727,7 +726,7 @@ describe('Trust Involved controller', () => {
         }]
       } as ApplicationData;
 
-      (fetchApplicationData as jest.Mock).mockResolvedValue(mockAppData);
+      (getApplicationData as jest.Mock).mockResolvedValue(mockAppData);
       mockReq.body = {
         noMoreToAdd: 'noMoreToAdd',
       };

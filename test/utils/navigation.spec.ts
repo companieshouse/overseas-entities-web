@@ -85,6 +85,7 @@ describe("NAVIGATION utils", () => {
 
   test(`getSecureUpdateFilterBackLink returns the correct URL with the 'journey' query parameter present when on the Remove journey`, async () => {
     mockIsRemoveJourney.mockReturnValueOnce(true);
+    mockGetRedirectUrl.mockReturnValueOnce(config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL);
     const backLink = await getSecureUpdateFilterBackLink(mockRemoveRequest);
     expect(backLink).toEqual(`${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
   });
@@ -97,6 +98,7 @@ describe("NAVIGATION utils", () => {
 
   test(`getOverseasEntityPresenterBackLink returns the correct URL with the 'journey' query parameter present when on the Remove journey`, async () => {
     mockIsRemoveJourney.mockReturnValueOnce(true);
+    mockGetRedirectUrl.mockReturnValueOnce(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
     const backLink = await getOverseasEntityPresenterBackLink(mockRemoveRequest);
     expect(backLink).toEqual(`${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
   });
@@ -360,6 +362,7 @@ describe("NAVIGATION utils", () => {
 
   test(`NAVIGATION returns ${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL} with 'journey' param set when calling previousPage on ${config.SECURE_UPDATE_FILTER_URL} object for Remove journey`, async () => {
     mockIsRemoveJourney.mockReturnValueOnce(true);
+    mockGetRedirectUrl.mockReturnValueOnce(config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL);
     const navigation = await NAVIGATION[config.SECURE_UPDATE_FILTER_URL].previousPage(undefined, mockRemoveRequest);
     expect(navigation).toEqual(`${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
   });
@@ -381,6 +384,7 @@ describe("NAVIGATION utils", () => {
 
   test(`NAVIGATION returns ${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL} when calling previousPage on ${config.OVERSEAS_ENTITY_PRESENTER_URL} object for the remove journey`, async () => {
     mockIsRemoveJourney.mockReturnValueOnce(true);
+    mockGetRedirectUrl.mockReturnValueOnce(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
     const navigation = await NAVIGATION[config.OVERSEAS_ENTITY_PRESENTER_URL].previousPage(undefined, mockRemoveRequest);
     expect(navigation).toEqual(`${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
   });

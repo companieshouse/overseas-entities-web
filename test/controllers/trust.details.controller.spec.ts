@@ -45,7 +45,6 @@ import {
 import {
   setExtraData,
   getApplicationData,
-  fetchApplicationData,
 } from '../../src/utils/application.data';
 
 import {
@@ -96,7 +95,6 @@ describe('Trust Details controller', () => {
   const mockSetExtraData = setExtraData as jest.Mock;
   const mockGetApplicationData = getApplicationData as jest.Mock;
   mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
-  const mockFetchApplicationData = fetchApplicationData as jest.Mock;
   const pageUrl = TRUST_DETAILS_URL;
   const pageWithParamsUrl = TRUST_ENTRY_WITH_PARAMS_URL;
 
@@ -131,7 +129,7 @@ describe('Trust Details controller', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockIsActiveFeature.mockReset();
-    mockFetchApplicationData.mockReset();
+    mockGetApplicationData.mockReset();
 
     mockAppData = {
       [TrustKey]: [
@@ -157,14 +155,14 @@ describe('Trust Details controller', () => {
 
     test('catch error when renders the page', async () => {
       const error = new Error(ANY_MESSAGE_ERROR);
-      mockFetchApplicationData.mockImplementationOnce(() => { throw error; });
+      mockGetApplicationData.mockImplementationOnce(() => { throw error; });
       await get(mockReq, mockRes, mockNext);
       expect(mockNext).toBeCalledTimes(1);
       expect(mockNext).toBeCalledWith(error);
     });
 
     test('render trust data based on parameter id', async () => {
-      mockFetchApplicationData.mockReturnValue(mockAppData);
+      mockGetApplicationData.mockReturnValue(mockAppData);
 
       const expectMapResult = { dummyKey: 'EXPECT-MAP-RESULT' };
       (mapDetailToPage as jest.Mock).mockReturnValueOnce(expectMapResult);
@@ -213,7 +211,7 @@ describe('Trust Details controller', () => {
 
     test("catch error when post data from page", async () => {
       const error = new Error(ANY_MESSAGE_ERROR);
-      mockFetchApplicationData.mockImplementationOnce(() => { throw error; });
+      mockGetApplicationData.mockImplementationOnce(() => { throw error; });
       await post(mockReq, mockRes, mockNext);
       expect(mockNext).toBeCalledTimes(1);
       expect(mockNext).toBeCalledWith(error);
@@ -230,7 +228,7 @@ describe('Trust Details controller', () => {
       };
 
       mockIsActiveFeature.mockReturnValue(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-      mockFetchApplicationData.mockReturnValue(mockAppData);
+      mockGetApplicationData.mockReturnValue(mockAppData);
       mockSaveAndContinue.mockReturnValue(true);
 
       const expectTrustResult = { dummyMapKey: "MAP-TO-SESSION-RESULT", };
@@ -290,7 +288,7 @@ describe('Trust Details controller', () => {
       };
 
       mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-      mockFetchApplicationData.mockReturnValueOnce(mockAppData);
+      mockGetApplicationData.mockReturnValueOnce(mockAppData);
       mockSaveAndContinue.mockReturnValue(true);
 
       const expectTrustResult = { dummyMapKey: "MAP-TO-SESSION-RESULT", };
@@ -340,7 +338,7 @@ describe('Trust Details controller', () => {
     });
 
     test("update existing trust in session", async () => {
-      mockFetchApplicationData.mockReturnValueOnce(mockAppData);
+      mockGetApplicationData.mockReturnValueOnce(mockAppData);
 
       const expectTrustResult = {
         trust_id: mockTrust2Data.trust_id,
@@ -379,7 +377,7 @@ describe('Trust Details controller', () => {
         isEmpty: jest.fn().mockReturnValue(true),
       }));
 
-      mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
 
       const expectBoIndividualItems = { dummyKey: "EXPECT-BENEFICIAL-OWNERS-INDIVID-LIST", };
       (getBoIndividualAssignableToTrust as jest.Mock).mockReturnValueOnce([expectBoIndividualItems,]);
@@ -410,7 +408,7 @@ describe('Trust Details controller', () => {
 
     test("catch error when post data from page", async () => {
       const error = new Error(ANY_MESSAGE_ERROR);
-      mockFetchApplicationData.mockImplementationOnce(() => {
+      mockGetApplicationData.mockImplementationOnce(() => {
         throw error;
       });
 
@@ -430,7 +428,7 @@ describe('Trust Details controller', () => {
       };
 
       mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-      mockFetchApplicationData.mockReturnValue(mockAppData);
+      mockGetApplicationData.mockReturnValue(mockAppData);
 
       const expectTrustResult = { dummyMapKey: "MAP-TO-SESSION-RESULT", };
       (mapDetailToSession as jest.Mock).mockImplementation(() => expectTrustResult);
@@ -481,7 +479,7 @@ describe('Trust Details controller', () => {
 
     test("update existing trust in session", async () => {
       mockIsActiveFeature.mockReturnValue(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-      mockFetchApplicationData.mockReturnValueOnce(mockAppData);
+      mockGetApplicationData.mockReturnValueOnce(mockAppData);
 
       const expectTrustResult = {
         trust_id: mockTrust2Data.trust_id,
@@ -521,7 +519,7 @@ describe('Trust Details controller', () => {
         isEmpty: jest.fn().mockReturnValue(true),
       }));
 
-      mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
 
       const expectBoIndividualItems = {
         dummyKey: "EXPECT-BENEFICIAL-OWNERS-INDIVID-LIST",
@@ -586,7 +584,7 @@ describe('Trust Details controller', () => {
     });
 
     test('successful POST submission to same page', async () => {
-      mockFetchApplicationData.mockReturnValue({});
+      mockGetApplicationData.mockReturnValue({});
       (mapDetailToSession as jest.Mock).mockReturnValue({ trust_id: mockTrust2Data.trust_id, });
 
       const resp = await request(app)
@@ -601,7 +599,7 @@ describe('Trust Details controller', () => {
     });
 
     test('successful POST submission to same page with validation errors', async () => {
-      mockFetchApplicationData.mockReturnValue({});
+      mockGetApplicationData.mockReturnValue({});
       (mapDetailToSession as jest.Mock).mockReturnValue({ trust_id: mockTrust2Data.trust_id, });
 
       const resp = await request(app)
@@ -616,7 +614,7 @@ describe('Trust Details controller', () => {
     });
 
     test('successful POST submission to same page with params and validation errors', async () => {
-      mockFetchApplicationData.mockReturnValue({});
+      mockGetApplicationData.mockReturnValue({});
       (mapDetailToSession as jest.Mock).mockReturnValue({ trust_id: mockTrust2Data.trust_id, });
 
       const resp = await request(app)
@@ -631,7 +629,7 @@ describe('Trust Details controller', () => {
     });
 
     test("successful POST submission to same page with a missing (equivalent to 'undefined') entity number does not raise an error for the 'still involved' trust question", async () => {
-      mockFetchApplicationData.mockReturnValue({});
+      mockGetApplicationData.mockReturnValue({});
       (mapDetailToSession as jest.Mock).mockReturnValue({ trust_id: mockTrust2Data.trust_id, });
 
       const resp = await request(app)
@@ -646,7 +644,7 @@ describe('Trust Details controller', () => {
     });
 
     test("successful POST submission to same page with a null entity number (simulating a resumed registration) does not raise an error for the 'still involved' trust question", async () => {
-      mockFetchApplicationData.mockReturnValue({ entity_number: null });
+      mockGetApplicationData.mockReturnValue({ entity_number: null });
       (mapDetailToSession as jest.Mock).mockReturnValue({ trust_id: mockTrust2Data.trust_id, });
 
       const resp = await request(app)

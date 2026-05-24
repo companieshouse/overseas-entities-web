@@ -42,7 +42,7 @@ import { LEGAL_ENTITY_BO_TEXTS } from "../../src/utils/trust.legal.entity.bo";
 import { get, post, } from "../../src/controllers/trust.legal.entity.beneficial.owner.controller";
 import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR } from "../__mocks__/text.mock";
 
-import { fetchApplicationData, setExtraData, } from "../../src/utils/application.data";
+import { getApplicationData, setExtraData, } from "../../src/utils/application.data";
 import { getUrlWithParamsToPath, isRegistrationJourney } from '../../src/utils/url';
 import { Trust, TrustCorporate, TrustKey } from "../../src/model/trust.model";
 
@@ -75,7 +75,7 @@ const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
 
 describe("Trust Legal Entity Beneficial Owner Controller", () => {
 
-  const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+  const mockGetApplicationData = getApplicationData as jest.Mock;
   const trustId = "999999";
   const pageUrl = TRUST_ENTRY_URL + "/" + trustId + TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL;
   const pageUrlWithParams = TRUST_ENTRY_WITH_PARAMS_URL + "/" + trustId + TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL;
@@ -152,7 +152,7 @@ describe("Trust Legal Entity Beneficial Owner Controller", () => {
 
     test("catch error when renders the page", async () => {
       const error = new Error(ANY_MESSAGE_ERROR);
-      mockFetchApplicationData.mockImplementationOnce(() => {
+      mockGetApplicationData.mockImplementationOnce(() => {
         throw error;
       });
 
@@ -170,7 +170,7 @@ describe("Trust Legal Entity Beneficial Owner Controller", () => {
       (mapLegalEntityToSession as jest.Mock).mockReturnValue(mockBoData);
 
       mockIsActiveFeature.mockReturnValue(false);
-      mockFetchApplicationData.mockReturnValue(mockAppData);
+      mockGetApplicationData.mockReturnValue(mockAppData);
       mockUpdateOverseasEntity.mockReturnValue(true);
 
       const mockUpdatedTrust = {} as Trust;
@@ -208,7 +208,7 @@ describe("Trust Legal Entity Beneficial Owner Controller", () => {
       (mapLegalEntityToSession as jest.Mock).mockReturnValue(mockBoData);
 
       mockIsActiveFeature.mockReturnValue(true);
-      mockFetchApplicationData.mockReturnValue(mockAppData);
+      mockGetApplicationData.mockReturnValue(mockAppData);
       mockUpdateOverseasEntity.mockReturnValue(true);
 
       const mockUpdatedTrust = {} as Trust;
@@ -258,7 +258,7 @@ describe("Trust Legal Entity Beneficial Owner Controller", () => {
       (validationResult as any as jest.Mock).mockImplementationOnce(() => ({
         isEmpty: jest.fn().mockReturnValue(true),
       }));
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
 
       mockReq.url = "/register-an-overseas-entity/transaction/123/submission/456/trusts/trust-legal-entity-beneficial-owner";
       mockReq.query = {};
@@ -274,7 +274,7 @@ describe("Trust Legal Entity Beneficial Owner Controller", () => {
       (validationResult as any as jest.Mock).mockImplementationOnce(() => ({
         isEmpty: jest.fn().mockReturnValue(true),
       }));
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
 
       mockReq.url = "/register-an-overseas-entity/trusts/trust-legal-entity-beneficial-owner";
       mockReq.query = {};
@@ -336,7 +336,7 @@ describe("Trust Legal Entity Beneficial Owner Controller", () => {
 
     test("should have validation error", async () => {
       mockIsActiveFeature.mockReturnValue(false);
-      mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
       (validationResult as unknown as jest.Mock).mockImplementation(() => ({
         isEmpty: jest.fn().mockReturnValue(false),
         array: jest.fn().mockReturnValue([{ test: 'error' }])
@@ -383,7 +383,7 @@ describe("Trust Legal Entity Beneficial Owner Controller", () => {
     * Might need to be deleted. Will skip it for now.
     */
     test.skip("successfully access POST method", async () => {
-      mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
       mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockGetUrlWithParamsToPath.mockReturnValueOnce(MOCKED_URL);
 
@@ -400,7 +400,7 @@ describe("Trust Legal Entity Beneficial Owner Controller", () => {
 
     test("should have validation error", async () => {
       mockIsActiveFeature.mockReturnValue(false);
-      mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
       (validationResult as unknown as jest.Mock).mockImplementation(() => ({
         isEmpty: jest.fn().mockReturnValue(false),
         array: jest.fn().mockReturnValue([{ test: 'error' }])

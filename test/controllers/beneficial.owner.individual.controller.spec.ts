@@ -104,7 +104,7 @@ import {
   prepareData,
   removeFromApplicationData,
   setApplicationData,
-  fetchApplicationData
+  getApplicationData
 } from '../../src/utils/application.data';
 
 mockCsrfProtectionMiddleware.mockClear();
@@ -120,7 +120,7 @@ const mockSaveAndContinue = saveAndContinue as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
 const mockRemoveFromApplicationData = removeFromApplicationData as unknown as jest.Mock;
 const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
-const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+const mockGetApplicationData = getApplicationData as jest.Mock;
 
 const DUMMY_DATA_OBJECT = { dummy: "data" };
 
@@ -153,7 +153,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       const appData = APPLICATION_DATA_MOCK;
       delete appData[EntityNumberKey];
 
-      mockFetchApplicationData.mockReturnValueOnce({ ...appData });
+      mockGetApplicationData.mockReturnValueOnce({ ...appData });
 
       const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL);
 
@@ -184,7 +184,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       const appData = APPLICATION_DATA_MOCK;
       delete appData[EntityNumberKey];
 
-      mockFetchApplicationData.mockReturnValueOnce({ ...appData });
+      mockGetApplicationData.mockReturnValueOnce({ ...appData });
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
 
@@ -205,7 +205,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
     test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with correct back link url when Redis removal feature flag is off`, async () => {
       const appData = APPLICATION_DATA_MOCK;
       delete appData[EntityNumberKey];
-      mockFetchApplicationData.mockReturnValueOnce({ ...appData });
+      mockGetApplicationData.mockReturnValueOnce({ ...appData });
       mockIsActiveFeature.mockReturnValue(false);
 
       const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL);
@@ -223,7 +223,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       const appData = APPLICATION_DATA_MOCK;
       delete appData[EntityNumberKey];
 
-      mockFetchApplicationData.mockReturnValueOnce({ ...appData });
+      mockGetApplicationData.mockReturnValueOnce({ ...appData });
 
       const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL);
 
@@ -254,7 +254,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       const appData = APPLICATION_DATA_MOCK;
       delete appData[EntityNumberKey];
 
-      mockFetchApplicationData.mockReturnValueOnce({ ...appData });
+      mockGetApplicationData.mockReturnValueOnce({ ...appData });
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
 
@@ -275,7 +275,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
     test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with correct back link url when feature flag is on`, async () => {
       const appData = APPLICATION_DATA_MOCK;
       delete appData[EntityNumberKey];
-      mockFetchApplicationData.mockReturnValueOnce({ ...appData });
+      mockGetApplicationData.mockReturnValueOnce({ ...appData });
       mockGetUrlWithParamsToPath.mockReturnValueOnce(`${BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL}`);
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
@@ -297,7 +297,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
       const applicationDataMock = { ...APPLICATION_DATA_MOCK };
       delete applicationDataMock[EntityNumberKey];
-      mockFetchApplicationData.mockReturnValueOnce(applicationDataMock);
+      mockGetApplicationData.mockReturnValueOnce(applicationDataMock);
 
       const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL);
 
@@ -315,7 +315,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
       const applicationDataMock = { ...APPLICATION_DATA_MOCK };
       delete applicationDataMock[EntityNumberKey];
-      mockFetchApplicationData.mockReturnValueOnce(applicationDataMock);
+      mockGetApplicationData.mockReturnValueOnce(applicationDataMock);
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
@@ -339,7 +339,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
       const applicationDataMock = { ...APPLICATION_DATA_MOCK };
       delete applicationDataMock[EntityNumberKey];
-      mockFetchApplicationData.mockReturnValueOnce(applicationDataMock);
+      mockGetApplicationData.mockReturnValueOnce(applicationDataMock);
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
       mockIsActiveFeature.mockReturnValueOnce(false); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
@@ -373,7 +373,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
       const applicationDataMock = { ...APPLICATION_DATA_MOCK };
       delete applicationDataMock[EntityNumberKey];
-      mockFetchApplicationData.mockReturnValueOnce(applicationDataMock);
+      mockGetApplicationData.mockReturnValueOnce(applicationDataMock);
 
       const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL + BO_IND_ID_URL);
 

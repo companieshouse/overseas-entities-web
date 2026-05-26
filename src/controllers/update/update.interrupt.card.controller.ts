@@ -41,11 +41,18 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const isRemove: boolean = await isRemoveJourney(req);
+    const nextPageUrl = getRedirectUrl({
+      req,
+      urlWithEntityIds: config.OVERSEAS_ENTITY_QUERY_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.OVERSEAS_ENTITY_QUERY_URL,
+    });
 
     if (isRemove){
-      return res.redirect(`${config.OVERSEAS_ENTITY_QUERY_PAGE}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+      return res.redirect(`${nextPageUrl}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
     }
-    return res.redirect(config.OVERSEAS_ENTITY_QUERY_PAGE);
+
+    return res.redirect(nextPageUrl);
+
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

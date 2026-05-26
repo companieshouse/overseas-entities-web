@@ -7,14 +7,13 @@ import { mapInputDate } from "../../utils/update/mapper.utils";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { isActiveFeature } from "../../utils/feature.flag";
 import { ApplicationData } from "../../model";
+import { postTransaction } from "../../service/transaction.service";
 import { resetEntityUpdate } from "../../utils/update/update.reset";
 import { getCompanyProfile } from "../../service/company.profile.service";
-import { updateTransaction } from "../../service/transaction.service";
 import { retrieveBoAndMoData } from "../../utils/update/beneficial_owners_managing_officers_data_fetch";
-import { updateOverseasEntity } from "../../service/overseas.entities.service";
-import { getRedirectUrl, isRemoveJourney } from "../../utils/url";
 import { mapCompanyProfileToOverseasEntity } from "../../utils/update/company.profile.mapper.to.overseas.entity";
 import { getDataFromEntityCookie, saveDataToCookie } from "../../utils/update/data.cookie";
+import { createOverseasEntity, updateOverseasEntity } from "../../service/overseas.entities.service";
 
 import {
   getRemove,
@@ -23,9 +22,17 @@ import {
 } from "../../utils/application.data";
 
 import {
+  getRedirectUrl,
+  isRemoveJourney,
+  getUrlWithTransactionIdAndSubmissionId,
+} from "../../utils/url";
+
+import {
   IsRemoveKey,
+  Transactionkey,
   EntityNumberKey,
-  EntityCookieCompanyNumberKey,
+  OverseasEntityKey,
+  IsSecureRegisterKey,
 } from "../../model/data.types.model";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
@@ -34,7 +41,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await getApplicationData(req);
+    const appData: ApplicationData = await getAppData(req, false);
 
     const backLinkUrl = getRedirectUrl({
       req,
@@ -72,22 +79,18 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const entityNumber = req.body[EntityNumberKey];
     const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await getApplicationData(req);
+    const appData: ApplicationData = await getAppData(req);
 
-    if (appData.entity_number !== entityNumber) {
+    if (appData?.entity_number !== entityNumber) {
       const companyProfile = await getCompanyProfile(req, entityNumber);
       if (!companyProfile) {
         return await renderGetPageWithError(req, res, entityNumber);
       }
-      await addOeToApplicationData(req, appData, entityNumber, companyProfile, isRemove);
+      await addOeToApplicationData(req, res, appData, entityNumber, companyProfile, isRemove);
       saveToCookie(req, res, entityNumber);
     }
 
-    const nextPageUrl = getRedirectUrl({
-      req,
-      urlWithEntityIds: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL,
-      urlWithoutEntityIds: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
-    });
+    const nextPageUrl = getNextPageUrl(req, appData);
 
     if (isRemove) {
       return res.redirect(`${nextPageUrl}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
@@ -135,19 +138,19 @@ const renderGetPageWithError = async (req: Request, res: Response, entityNumber:
   });
 };
 
-const addOeToApplicationData = async (req: Request, appData: ApplicationData, entityNumber: any, companyProfile: CompanyProfile, isRemove: boolean) => {
+const addOeToApplicationData = async (
+  req: Request,
+  res: Response,
+  appData: ApplicationData,
+  entityNumber: any,
+  companyProfile: CompanyProfile,
+  isRemove: boolean
+) => {
   resetEntityUpdate(appData);
   reloadOE(appData, entityNumber, companyProfile);
   await retrieveBoAndMoData(req, appData);
-  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
-    if (isRemove) {
-      appData[IsRemoveKey] = true;
-      appData[RemoveKey] = getRemove(await getDataFromEntityCookie(req, false));
-    }
-    await updateTransaction(req, req.session as Session, appData);
-    await updateOverseasEntity(req, req.session as Session, appData);
-  }
-  setExtraData(req.session, appData);
+  await saveEntityDetails(req, res, appData, isRemove);
+  setExtraData(req.session as Session, appData);
 };
 
 export const reloadOE = (appData: ApplicationData, entityNumber: string, companyProfile: CompanyProfile) => {
@@ -161,7 +164,58 @@ export const reloadOE = (appData: ApplicationData, entityNumber: string, company
 
 export const saveToCookie = (req: Request, res: Response, entityNumber: string) => {
   if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
-    saveDataToCookie(req, res, EntityCookieCompanyNumberKey, entityNumber);
+    saveDataToCookie(req, res, EntityNumberKey, entityNumber);
   }
 };
 
+const saveEntityDetails = async (
+  req: Request,
+  res: Response,
+  appData: ApplicationData,
+  isRemove: boolean
+): Promise<void> => {
+  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+    const session = req.session as Session;
+    if (!appData[Transactionkey]) {
+      const transactionID = await postTransaction(req, session);
+      appData[Transactionkey] = transactionID;
+      appData[OverseasEntityKey] = await createOverseasEntity(req, session, transactionID);
+    }
+    const cookieData = await getDataFromEntityCookie(req, false);
+    if (isRemove) {
+      appData[IsRemoveKey] = true;
+      appData[RemoveKey] = getRemove(cookieData);
+    }
+    appData[IsSecureRegisterKey] = cookieData[IsSecureRegisterKey];
+    await updateOverseasEntity(req, req.session as Session, appData);
+  }
+};
+
+export const getNextPageUrl = (req: Request, appData: ApplicationData) => {
+  if (!isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+    return config.UPDATE_INTERRUPT_CARD_URL;
+  }
+
+  if (appData[Transactionkey] && appData[OverseasEntityKey]) {
+    return getUrlWithTransactionIdAndSubmissionId(
+      config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL,
+        appData[Transactionkey] as string,
+        appData[OverseasEntityKey] as string
+    );
+  }
+
+  return getRedirectUrl({
+    req,
+    urlWithEntityIds: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL,
+    urlWithoutEntityIds: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
+  });
+
+};
+
+const getAppData = async (req: Request, getCompany: boolean = true): Promise<ApplicationData> => {
+  let appData: ApplicationData = await getApplicationData(req);
+  if (!Object.keys(appData).length) {
+    appData = await getDataFromEntityCookie(req, getCompany);
+  }
+  return appData;
+};

@@ -307,7 +307,7 @@ describe("Update review overseas entity information controller tests", () => {
 
     test(`that the ${UPDATE_REVIEW_STATEMENT_PAGE} page managing officer section is rendered if MO data exists`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
-      mockFetchApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK_WITH_OWNER_UPDATE_REVIEW_DATA });
+      mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK_WITH_OWNER_UPDATE_REVIEW_DATA });
 
       const resp = await request(app).get(UPDATE_REVIEW_STATEMENT_URL);
       expect(resp.status).toEqual(200);
@@ -400,9 +400,9 @@ describe("Update review overseas entity information controller tests", () => {
 
     test(`renders the ${UPDATE_REVIEW_STATEMENT_PAGE} page for remove journey`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
-      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_REMOVE_BO_MOCK);
       mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_REMOVE_BO_MOCK);
       mockIsRemoveJourney.mockReturnValue(true);
+      mockGetRedirectUrl.mockReturnValue(REMOVE_CONFIRM_STATEMENT_URL);
 
       const resp = await request(app).get(UPDATE_REVIEW_STATEMENT_URL);
 
@@ -499,7 +499,8 @@ describe("Update review overseas entity information controller tests", () => {
 
     test(`redirect to ${UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL} page when NO is submitted on REMOVE journey`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
-      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_REMOVE_BO_MOCK);
+      mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_REMOVE_BO_MOCK);
+      mockGetRedirectUrl.mockReturnValue(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL);
 
       const resp = await request(app)
         .post(UPDATE_REVIEW_STATEMENT_URL)

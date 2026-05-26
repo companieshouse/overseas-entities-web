@@ -76,7 +76,7 @@ import {
 } from "../__mocks__/text.mock";
 
 import {
-  fetchApplicationData,
+  getApplicationData,
   getFromApplicationData,
   mapFieldsToDataObject,
   prepareData,
@@ -97,7 +97,7 @@ mockHasBeneficialOwnersStatementMiddleware.mockImplementation((req: Request, res
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
-const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockGetFromApplicationData = getFromApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
@@ -134,7 +134,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
   describe("GET tests", () => {
 
     test(`renders the ${MANAGING_OFFICER_CORPORATE_PAGE} page`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(MANAGING_OFFICER_CORPORATE_URL);
 
       expect(resp.status).toEqual(200);
@@ -149,7 +149,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
 
     test(`renders the ${MANAGING_OFFICER_CORPORATE_PAGE} page with correct backlink url when REDIS_removal feature flag is ON`, async () => {
       mockIsActiveFeature.mockReturnValue(true);
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(MANAGING_OFFICER_CORPORATE_URL);
 
       expect(resp.status).toEqual(200);
@@ -168,7 +168,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
     test(`renders the ${MANAGING_OFFICER_CORPORATE_PAGE} page with correct backlink url when REDIS_removal feature flag is OFF`, async () => {
       mockIsActiveFeature.mockReturnValue(false);
       mockIsActiveFeature.mockReturnValue(false);
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(MANAGING_OFFICER_CORPORATE_URL);
 
       expect(resp.status).toEqual(200);
@@ -183,7 +183,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
     });
 
     test(`renders the ${MANAGING_OFFICER_CORPORATE_PAGE} page`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(MANAGING_OFFICER_CORPORATE_URL);
 
       expect(resp.status).toEqual(200);
@@ -206,7 +206,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
         [ManagingOfficerCorporateKey]: [moMock],
         [EntityNumberKey]: undefined,
       };
-      mockFetchApplicationData.mockReturnValueOnce(appData);
+      mockGetApplicationData.mockReturnValueOnce(appData);
       mockGetFromApplicationData.mockReturnValueOnce(moMock);
       const resp = await request(app).get(MANAGING_OFFICER_CORPORATE_URL + MO_CORP_ID_URL);
 
@@ -234,7 +234,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
   describe("GET with url params tests", () => {
 
     test(`renders the ${MANAGING_OFFICER_CORPORATE_PAGE} page`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(200);
@@ -248,7 +248,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
     });
 
     test(`renders the ${MANAGING_OFFICER_CORPORATE_PAGE} page without public register jurisdiction field`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(200);
@@ -270,7 +270,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
         [ManagingOfficerCorporateKey]: [moMock],
         [EntityNumberKey]: undefined,
       };
-      mockFetchApplicationData.mockReturnValueOnce(appData);
+      mockGetApplicationData.mockReturnValueOnce(appData);
       mockGetFromApplicationData.mockReturnValueOnce(moMock);
       const resp = await request(app).get(MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL + MO_CORP_ID_URL);
 

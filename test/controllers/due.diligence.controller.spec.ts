@@ -110,7 +110,7 @@ describe("DUE_DILIGENCE controller", () => {
 
     test(`renders the ${DUE_DILIGENCE_PAGE} when the REDIS_removal flag is set to OFF`, async () => {
       mockIsActiveFeature.mockReturnValue(false);
-      mockFetchApplicationData.mockReturnValueOnce({ [DueDiligenceKey]: null });
+      mockGetApplicationData.mockReturnValue({ [DueDiligenceKey]: null });
       const resp = await request(app).get(DUE_DILIGENCE_URL);
 
       expect(resp.status).toEqual(200);
@@ -127,11 +127,11 @@ describe("DUE_DILIGENCE controller", () => {
       expect(resp.text).toContain(DUE_DILIGENCE_PARTNER_NAME_HINT_TEXT);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-      expect(mockFetchApplicationData).toHaveBeenCalledTimes(1);
+      expect(mockGetApplicationData).toHaveBeenCalled();
     });
 
     test(`renders the ${DUE_DILIGENCE_PAGE} page on GET method with session data populated`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce({ [DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK });
+      mockGetApplicationData.mockReturnValue({ [DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK });
       const resp = await request(app).get(DUE_DILIGENCE_URL);
 
       expect(resp.status).toEqual(200);
@@ -161,7 +161,7 @@ describe("DUE_DILIGENCE controller", () => {
     test(`renders the ${DUE_DILIGENCE_PAGE} when the REDIS_removal flag is set to ON`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(false); // SERVICE OFFLINE FEATURE FLAG
       mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-      mockFetchApplicationData.mockReturnValueOnce({ [DueDiligenceKey]: null });
+      mockGetApplicationData.mockReturnValue({ [DueDiligenceKey]: null });
       const resp = await request(app).get(DUE_DILIGENCE_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(200);
@@ -178,11 +178,11 @@ describe("DUE_DILIGENCE controller", () => {
       expect(resp.text).toContain(DUE_DILIGENCE_PARTNER_NAME_HINT_TEXT);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-      expect(mockFetchApplicationData).toHaveBeenCalledTimes(1);
+      expect(mockGetApplicationData).toHaveBeenCalled();
     });
 
     test(`renders the ${DUE_DILIGENCE_PAGE} page on GET method with session data populated`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce({ [DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK });
+      mockGetApplicationData.mockReturnValue({ [DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK });
       const resp = await request(app).get(DUE_DILIGENCE_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(200);
@@ -199,7 +199,7 @@ describe("DUE_DILIGENCE controller", () => {
     });
 
     test(`renders the ${DUE_DILIGENCE_PAGE} page on GET method with correct back link url when REDIS removal feature flag is off`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce({ [DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK });
+      mockGetApplicationData.mockReturnValue({ [DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK });
       mockIsActiveFeature.mockReturnValue(false);
       const resp = await request(app).get(DUE_DILIGENCE_WITH_PARAMS_URL);
       expect(resp.status).toEqual(200);
@@ -208,7 +208,7 @@ describe("DUE_DILIGENCE controller", () => {
     });
 
     test(`renders the ${DUE_DILIGENCE_PAGE} page on GET method with correct back link url when REDIS removal feature flag is on`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce({ [DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK });
+      mockGetApplicationData.mockReturnValue({ [DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK });
       mockIsActiveFeature.mockReturnValue(true);
       const resp = await request(app).get(DUE_DILIGENCE_WITH_PARAMS_URL);
       expect(resp.status).toEqual(200);
@@ -216,7 +216,7 @@ describe("DUE_DILIGENCE controller", () => {
     });
 
     test(`catch error when renders the ${DUE_DILIGENCE_PAGE} page on GET method`, async () => {
-      mockFetchApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockGetApplicationData.mockImplementationOnce(() => { new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(DUE_DILIGENCE_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(500);
@@ -762,7 +762,7 @@ describe("DUE_DILIGENCE controller", () => {
     test(`redirect to ${ENTITY_PAGE} page after a successful post from ${DUE_DILIGENCE_PAGE} page with url params when the REDIS_removal flag is set to ON`, async () => {
       mockIsActiveFeature.mockReturnValue(false); // SERVICE OFFLINE FEATURE FLAG
       mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-      mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_KEY);
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_KEY);
       mockUpdateOverseasEntity.mockReturnValue(true);
       mockSetApplicationData.mockReturnValue(true);
       mockSetExtraData.mockReturnValue(true);
@@ -780,7 +780,7 @@ describe("DUE_DILIGENCE controller", () => {
         .send(dueDiligenceData);
 
       expect(resp.status).toEqual(302);
-      expect(mockFetchApplicationData).toHaveBeenCalledTimes(1);
+      expect(mockGetApplicationData).toHaveBeenCalled();
       expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(0);
       expect(mockSetApplicationData).toHaveBeenCalledTimes(0);

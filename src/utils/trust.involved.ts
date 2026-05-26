@@ -7,6 +7,7 @@ import { BeneficialOwnerTypeChoice } from '../model/beneficial.owner.type.model'
 import { validationResult } from 'express-validator/src/validation-result';
 
 import { safeRedirect } from './http.ext';
+import { getRedirectUrl } from './url';
 import { saveAndContinue } from './save.and.continue';
 import { isActiveFeature } from './feature.flag';
 import { ApplicationData } from "../model";
@@ -15,11 +16,10 @@ import { RoleWithinTrustType } from '../model/role.within.trust.type.model';
 import { updateOverseasEntity } from "../service/overseas.entities.service";
 import { mapCommonTrustDataToPage } from './trust/common.trust.data.mapper';
 import { mapTrustWhoIsInvolvedToPage } from './trust/who.is.involved.mapper';
-import { mapIndividualTrusteeFromSessionToPage } from '../utils/trust/individual.trustee.mapper';
 import { mapFormerTrusteeFromSessionToPage } from '../utils/trust/historical.beneficial.owner.mapper';
+import { mapIndividualTrusteeFromSessionToPage } from '../utils/trust/individual.trustee.mapper';
 
-import { getRedirectUrl, isRemoveJourney } from './url';
-import { fetchApplicationData, setExtraData } from './application.data';
+import { getApplicationData, setExtraData } from './application.data';
 import { getTrustInReview, moveTrustOutOfReview } from './update/review_trusts';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
 import { IndividualTrustee, TrustHistoricalBeneficialOwner } from '../model/trust.model';
@@ -79,8 +79,7 @@ const getPageProperties = async (
   errors?: FormattedValidationErrors,
 ): Promise<TrustInvolvedPageProperties> => {
 
-  const isRemove: boolean = await isRemoveJourney(req);
-  const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+  const appData: ApplicationData = await getApplicationData(req);
   let trustId;
   let individualTrusteeData;
   let formerTrusteeData;
@@ -144,8 +143,7 @@ export const getTrustInvolvedPage = async (
   try {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    const appData: ApplicationData = await getApplicationData(req);
     const pageProps = await getPageProperties(req, isUpdate, isReview);
 
     return res.render(pageProps.template, { ...pageProps, ...appData });
@@ -171,15 +169,14 @@ export const postTrustInvolvedPage = async (
     if (req.body.noMoreToAdd) {
       if (isReview) {
         const session = req.session as Session;
-        const isRemove: boolean = await isRemoveJourney(req);
-        const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+        const appData: ApplicationData = await getApplicationData(req);
         moveTrustOutOfReview(appData);
         appData?.trusts?.forEach(trust => {
           if (Array.isArray(trust.INDIVIDUALS)) {
             trust.INDIVIDUALS = trust.INDIVIDUALS.filter(ind => ind.forename);
           }
         });
-        if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && !isRemove) {
+        if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
           await updateOverseasEntity(req, session, appData);
         } else {
           await saveAndContinue(req, session);

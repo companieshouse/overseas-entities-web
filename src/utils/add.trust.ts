@@ -3,14 +3,14 @@ import * as config from '../config';
 import * as PageModel from '../model/trust.page.model';
 import { logger } from './logger';
 import { Trust } from '../model/trust.model';
+import { getRedirectUrl } from './url';
 import { generateTrustId } from './trust/details.mapper';
 import { ApplicationData } from 'model';
+import { getApplicationData } from './application.data';
 import { checkRelevantPeriod } from './relevant.period';
-import { fetchApplicationData } from './application.data';
 import { isAddTrustToBeValidated } from '../validation/add.trust.validation';
 import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
 
-import { getRedirectUrl, isRemoveJourney } from './url';
 import { ValidationError, validationResult } from 'express-validator';
 import { getTrustArray, hasNoBoAssignableToTrust } from './trusts';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
@@ -45,8 +45,7 @@ const getPageProperties = async (
   errors?: FormattedValidationErrors,
 ): Promise<TrustInvolvedPageProperties> => {
 
-  const isRemove: boolean = await isRemoveJourney(req);
-  const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+  const appData: ApplicationData = await getApplicationData(req);
 
   // note: isUpdate covers both Update and Remove journeys, so when on Remove journey isUpdate will be true.
   return {
@@ -99,8 +98,7 @@ export const postTrusts = async (
 
     logger.debugRequest(req, `POST ${getPageTemplate(isUpdate)}`);
 
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    const appData: ApplicationData = await getApplicationData(req);
     const addNewTrust = req.body["addTrust"];
     const formData: PageModel.AddTrust = req.body as PageModel.AddTrust;
     const errorList = validationResult(req);

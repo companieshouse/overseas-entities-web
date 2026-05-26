@@ -14,7 +14,7 @@ import { updateOverseasEntity } from "../../src/service/overseas.entities.servic
 
 import { ApiResponse, ApiResult } from "@companieshouse/api-sdk-node/dist/services/resource";
 import { Payment, PaymentService } from "@companieshouse/api-sdk-node/dist/services/payment";
-import { setApplicationData, fetchApplicationData, } from '../../src/utils/application.data';
+import { setApplicationData, getApplicationData, } from '../../src/utils/application.data';
 
 import {
   isRegistrationJourney,
@@ -75,7 +75,7 @@ const mockPaymentResult: ApiResult<ApiResponse<Payment>> = {
 const mockCreateApiClient = createApiClient as jest.Mock;
 mockCreateApiClient.mockReturnValue({ payment: PaymentService.prototype });
 
-const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+const mockGetApplicationData = getApplicationData as jest.Mock;
 
 const mockSetApplicationData = setApplicationData as jest.Mock;
 mockSetApplicationData.mockReturnValue(true);
@@ -101,7 +101,7 @@ beforeEach (() => {
   mockCreatePayment.mockReset();
   mockIsFailure.mockReset();
   mockUpdateOverseasEntity.mockReset();
-  mockFetchApplicationData.mockReset();
+  mockGetApplicationData.mockReset();
 });
 
 describe('Payment Service test suite', () => {
@@ -161,10 +161,10 @@ describe('Payment Service test suite with params url', () => {
     mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
     mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
     mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-    mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
+    mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
     const response = await startPaymentsSession(req, session, TRANSACTION_ID, OVERSEAS_ENTITY_ID, TRANSACTION_CLOSED_RESPONSE);
     expect(response).toEqual(NEXT_PAGE_URL);
-    expect(mockFetchApplicationData).toHaveBeenCalledTimes(1);
+    expect(mockGetApplicationData).toHaveBeenCalledTimes(1);
     expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
     expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(CONFIRMATION_WITH_PARAMS_URL);
   });
@@ -174,16 +174,16 @@ describe('Payment Service test suite with params url', () => {
     mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
     mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
     mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-    mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
+    mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
     const response = await startPaymentsSession(req, session, TRANSACTION_ID, OVERSEAS_ENTITY_ID, TRANSACTION_CLOSED_RESPONSE);
     expect(response).toEqual(CONFIRMATION_URL);
     expect(mockUpdateOverseasEntity).not.toHaveBeenCalled();
-    expect(mockFetchApplicationData).toHaveBeenCalledTimes(1);
+    expect(mockGetApplicationData).toHaveBeenCalledTimes(1);
     expect(mockGetUrlWithParamsToPath).not.toHaveBeenCalled();
   });
 
   test(`startPaymentsSession() should return ${CONFIRMATION_URL} without substituted values if ${PAYMENT_REQUIRED_HEADER} blank but not on the registration journey`, async () => {
-    mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
+    mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
     mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
     mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
     mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
@@ -207,7 +207,7 @@ describe('Payment Service test suite with params url', () => {
   });
 
   test(`startPaymentsSession() should return the first page to initiate the web journey ${PAYMENT_JOURNEY_URL} and with correct callback details, including a redirect URI without substituted values if not on the registration journey`, async () => {
-    mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
+    mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
     mockIsActiveFeature.mockReturnValueOnce(false); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
     mockCreatePayment.mockResolvedValueOnce(mockPaymentResult);
     const updateBaseUrl = `${process.env.CHS_URL}${UPDATE_AN_OVERSEAS_ENTITY_URL}`;

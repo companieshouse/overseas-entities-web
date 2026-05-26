@@ -2,18 +2,18 @@ import { NextFunction, Request, Response } from "express";
 import { Session } from "@companieshouse/node-session-handler";
 import * as config from "../config";
 import { logger } from "../utils/logger";
+import { getRedirectUrl } from "../utils/url";
 import { ApplicationData } from "../model";
 import { saveAndContinue } from "../utils/save.and.continue";
 import { isActiveFeature } from "./feature.flag";
 
-import { getRedirectUrl, isRemoveJourney } from "../utils/url";
 import { EntityNameKey, EntityNumberKey } from "../model/data.types.model";
 import { containsTrustData, getTrustArray } from "./trusts";
 import { BeneficialOwnersStatementType, BeneficialOwnerStatementKey } from "../model/beneficial.owner.statement.model";
 
 import {
   setApplicationData,
-  fetchApplicationData,
+  getApplicationData,
   checkBOsDetailsEntered,
   checkMOsDetailsEntered,
 } from "../utils/application.data";
@@ -33,8 +33,7 @@ export const getBeneficialOwnerStatements = async (
     let backLinkUrl: string;
     let noChangeFlag: boolean = false;
     let templateName: string;
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    const appData: ApplicationData = await getApplicationData(req);
 
     if (noChangeBackLink) {
       backLinkUrl = noChangeBackLink;
@@ -106,8 +105,7 @@ export const postBeneficialOwnerStatements = async (
 
     const session = req.session as Session;
     const boStatement = req.body[BeneficialOwnerStatementKey];
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    const appData: ApplicationData = await getApplicationData(req);
     const redirectUrl = getRedirectUrlLocal(req, registrationFlag, noChangeRedirectUrl);
 
     if (registrationFlag &&
@@ -119,7 +117,7 @@ export const postBeneficialOwnerStatements = async (
 
     appData[BeneficialOwnerStatementKey] = boStatement;
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && !isRemove) {
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       await setApplicationData(req, boStatement, BeneficialOwnerStatementKey);
     } else {
       await setApplicationData(session, boStatement, BeneficialOwnerStatementKey);

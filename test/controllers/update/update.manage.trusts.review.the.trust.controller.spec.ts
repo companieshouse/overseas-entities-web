@@ -155,7 +155,7 @@ describe('Update - Manage Trusts - Review the trust', () => {
     test('when feature flags are on and no associated beneficial owners, page shows ceased date', async () => {
 
       // use app data with no trust associated BOs - i.e. no BOs have Trust nature of controls
-      mockFetchApplicationData.mockReturnValue(appDataWithNoTrustNocBOs);
+      mockGetApplicationData.mockReturnValue(appDataWithNoTrustNocBOs);
 
       const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);
 

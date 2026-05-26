@@ -7,7 +7,7 @@ import { saveAndContinue } from "./save.and.continue";
 import { postTransaction } from "../service/transaction.service";
 import { createOverseasEntity } from "../service/overseas.entities.service";
 import { isActiveFeature } from "./feature.flag";
-import { isRemoveJourney } from "../utils/url";
+import { getRedirectUrl, isRemoveJourney } from "../utils/url";
 
 import { PresenterKey, PresenterKeys } from "../model/presenter.model";
 import { IsRemoveKey, OverseasEntityKey, Transactionkey } from '../model/data.types.model';
@@ -17,7 +17,6 @@ import {
   setExtraData,
   setApplicationData,
   getApplicationData,
-  fetchApplicationData,
 } from "./application.data";
 
 export const getPresenterPage = async (
@@ -33,15 +32,22 @@ export const getPresenterPage = async (
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    const appData: ApplicationData = await getApplicationData(req);
     const presenter = appData[PresenterKey];
 
     if (isRemove) {
+
+      const backLinkUrl = getRedirectUrl({
+        req,
+        urlWithEntityIds: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL,
+        urlWithoutEntityIds: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
+      }) + config.JOURNEY_REMOVE_QUERY_PARAM;
+
       return res.render(templateName, {
         ...presenter,
+        backLinkUrl,
         templateName,
         journey: config.JourneyType.remove,
-        backLinkUrl: `${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`,
       });
     }
 
@@ -72,7 +78,7 @@ export const postPresenterPage = async (
     const isRemove: boolean = await isRemoveJourney(req);
 
     if (isRemove) {
-      const appData: ApplicationData = await getApplicationData(session);
+      const appData: ApplicationData = await getApplicationData(req);
       if (!appData[Transactionkey]) {
         const transactionID = await postTransaction(req, session);
         appData[Transactionkey] = transactionID;
@@ -84,7 +90,7 @@ export const postPresenterPage = async (
 
     const data = prepareData(req.body, PresenterKeys);
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && !isRemove) {
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       await setApplicationData(req, data, PresenterKey);
     } else {
       await setApplicationData(session, data, PresenterKey);

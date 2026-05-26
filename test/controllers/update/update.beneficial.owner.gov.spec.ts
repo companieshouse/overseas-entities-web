@@ -9,89 +9,88 @@ jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/relevant.period');
 jest.mock('../../../src/utils/feature.flag');
 
-import { DateTime } from "luxon";
+import { beforeEach, describe, expect, jest, test } from "@jest/globals";
 import { NextFunction, Request, Response } from "express";
-import { describe, expect, jest, test, beforeEach } from "@jest/globals";
+import { DateTime } from "luxon";
 import request from "supertest";
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
-import mockJourneyDetectionMiddleware from "../../__mocks__/journey.detection.middleware.mock";
 import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
+import mockJourneyDetectionMiddleware from "../../__mocks__/journey.detection.middleware.mock";
 
 import app from "../../../src/app";
 
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
-import { logger } from "../../../src/utils/logger";
-import { AddressKeys } from '../../../src/model/data.types.model';
-import { ApplicationDataType } from '../../../src/model';
-import { ErrorMessages } from "../../../src/validation/error.messages";
-import { isActiveFeature } from "../../../src/utils/feature.flag";
-import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
-import { checkRelevantPeriod } from "../../../src/utils/relevant.period";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
+import { ApplicationDataType } from '../../../src/model';
+import { AddressKeys } from '../../../src/model/data.types.model';
+import { isActiveFeature } from "../../../src/utils/feature.flag";
+import { logger } from "../../../src/utils/logger";
+import { checkRelevantPeriod } from "../../../src/utils/relevant.period";
+import { saveAndContinue } from "../../../src/utils/save.and.continue";
+import { ErrorMessages } from "../../../src/validation/error.messages";
 
-import { BeneficialOwnerGov, BeneficialOwnerGovKey } from "../../../src/model/beneficial.owner.gov.model";
 import { ServiceAddressKey, ServiceAddressKeys } from "../../../src/model/address.model";
+import { BeneficialOwnerGov, BeneficialOwnerGovKey } from "../../../src/model/beneficial.owner.gov.model";
 
 import {
-  prepareData,
-  setApplicationData,
   getApplicationData,
-  fetchApplicationData,
-  mapFieldsToDataObject,
   getFromApplicationData,
+  mapFieldsToDataObject,
+  prepareData,
   removeFromApplicationData,
+  setApplicationData
 } from '../../../src/utils/application.data';
 
 import {
-  UPDATE_LANDING_PAGE_URL,
   RELEVANT_PERIOD_QUERY_PARAM,
-  UPDATE_BENEFICIAL_OWNER_GOV_URL,
-  UPDATE_BENEFICIAL_OWNER_TYPE_URL,
   UPDATE_BENEFICIAL_OWNER_GOV_PAGE,
+  UPDATE_BENEFICIAL_OWNER_GOV_URL,
   UPDATE_BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL,
+  UPDATE_BENEFICIAL_OWNER_TYPE_URL,
   UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
+  UPDATE_LANDING_PAGE_URL,
 } from "../../../src/config";
 
 import {
-  ERROR_LIST,
-  MESSAGE_ERROR,
-  BO_NOC_HEADING,
-  RELEVANT_PERIOD,
-  FIRM_NOC_HEADING,
-  PAGE_TITLE_ERROR,
   ANY_MESSAGE_ERROR,
-  TRUSTS_NOC_HEADING,
-  SERVICE_UNAVAILABLE,
+  BENEFICIAL_OWNER_GOV_PAGE_HEADING,
+  BO_NOC_HEADING,
+  ERROR_LIST,
   FIRM_CONTROL_NOC_HEADING,
-  TRUST_CONTROL_NOC_HEADING,
+  FIRM_NOC_HEADING,
+  INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER,
+  MESSAGE_ERROR,
+  OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING,
+  OWNER_OF_LAND_PERSON_NOC_HEADING,
+  PAGE_TITLE_ERROR,
+  RELEVANT_PERIOD,
   RELEVANT_PERIOD_INFORMATION,
   SAVE_AND_CONTINUE_BUTTON_TEXT,
-  OWNER_OF_LAND_PERSON_NOC_HEADING,
-  BENEFICIAL_OWNER_GOV_PAGE_HEADING,
+  SERVICE_UNAVAILABLE,
   SHOW_INFORMATION_ON_PUBLIC_REGISTER,
-  OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING,
-  INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER,
+  TRUST_CONTROL_NOC_HEADING,
+  TRUSTS_NOC_HEADING,
 } from "../../__mocks__/text.mock";
 
 import {
-  BO_GOV_ID,
-  BO_GOV_ID_URL,
   APPLICATION_DATA_UPDATE_BO_MOCK,
   BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
-  REQ_BODY_BENEFICIAL_OWNER_GOV_EMPTY,
-  UPDATE_BENEFICIAL_OWNER_GOV_MOCK_FOR_CEASE_VALIDATION,
-  REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_START_DATE_VALIDATION,
   BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO,
   BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES,
+  BO_GOV_ID,
+  BO_GOV_ID_URL,
+  REQ_BODY_BENEFICIAL_OWNER_GOV_EMPTY,
+  REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_START_DATE_VALIDATION,
   UPDATE_BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS,
+  UPDATE_BENEFICIAL_OWNER_GOV_MOCK_FOR_CEASE_VALIDATION,
 } from "../../__mocks__/session.mock";
 
 import {
-  BENEFICIAL_OWNER_GOV_WITH_MAX_LENGTH_FIELDS_MOCK,
   BENEFICIAL_OWNER_GOV_WITH_INVALID_CHARACTERS_FIELDS_MOCK,
+  BENEFICIAL_OWNER_GOV_WITH_MAX_LENGTH_FIELDS_MOCK,
 } from "../../__mocks__/validation.mock";
 
 mockJourneyDetectionMiddleware.mockClear();
@@ -116,7 +115,6 @@ const mockRemoveFromApplicationData = removeFromApplicationData as unknown as je
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
-const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 const DUMMY_DATA_OBJECT = { dummy: "data" };
 const mockCheckRelevantPeriod = checkRelevantPeriod as jest.Mock;
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
@@ -176,7 +174,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
     });
 
     test("catch error when rendering the page", async () => {
-      mockFetchApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
 
       const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_GOV_URL);
 
@@ -185,7 +183,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
     });
 
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with relevant period content when query param is passed`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
 
       const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_GOV_URL + RELEVANT_PERIOD_QUERY_PARAM);
 
@@ -202,7 +200,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
 
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page`, async () => {
       mockGetFromApplicationData.mockReturnValueOnce(UPDATE_BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
-      mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
       const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_GOV_URL + BO_GOV_ID_URL);
 
       expect(resp.status).toEqual(200);
@@ -220,7 +218,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
 
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with relevant period content, when inserting a relevent period object`, async () => {
       mockGetFromApplicationData.mockReturnValueOnce({ ...UPDATE_BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS, relevant_period: true });
-      mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
       const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_GOV_URL + BO_GOV_ID_URL);
 
       expect(resp.status).toEqual(200);

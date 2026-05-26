@@ -22,7 +22,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     const isRegistration = isRegistrationJourney(req);
     const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
-    mapTrustApiToWebWhenFlagsAreSet (appData, isRegistration);
+    mapTrustApiToWebWhenFlagsAreSet(appData);
     const requiresTrusts: boolean = checkEntityRequiresTrusts(appData);
     const changeLinkUrl: string = config.ENTITY_URL;
     const overseasEntityHeading: string = config.OVERSEAS_ENTITY_SECTION_HEADING;

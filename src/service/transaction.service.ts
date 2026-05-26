@@ -2,16 +2,16 @@ import { Request } from "express";
 import { Transaction } from "@companieshouse/api-sdk-node/dist/services/transaction/types";
 import { Session } from "@companieshouse/node-session-handler";
 import { ApiResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
-import { createAndLogErrorRequest, logger } from "../utils/logger";
-import { fetchApplicationData } from "../utils/application.data";
+import { getApplicationData } from "../utils/application.data";
+
 import { ApplicationData } from "../model";
 import { makeApiCallWithRetry } from "./retry.handler.service";
-import { isRemoveJourney } from "../utils/url";
 import { DESCRIPTION, REFERENCE } from "../config";
+import { createAndLogErrorRequest, logger } from "../utils/logger";
 import { EntityNameKey, EntityNumberKey, Transactionkey } from "../model/data.types.model";
 
 export const postTransaction = async (req: Request, session: Session, data?: ApplicationData): Promise<string> => {
-  const applicationData: ApplicationData = data ?? await fetchApplicationData(req, !(await isRemoveJourney(req)));
+  const applicationData: ApplicationData = data ?? await getApplicationData(req);
   const companyName = applicationData[EntityNameKey];
   const companyNumber = applicationData[EntityNumberKey];
 
@@ -41,7 +41,7 @@ export const postTransaction = async (req: Request, session: Session, data?: App
 };
 
 export const updateTransaction = async (req: Request, session: Session, data?: ApplicationData) => {
-  const applicationData: ApplicationData = data ?? await fetchApplicationData(req, !(await isRemoveJourney(req)));
+  const applicationData: ApplicationData = data ?? await getApplicationData(req);
   const companyName = applicationData[EntityNameKey];
   const companyNumber = applicationData[EntityNumberKey];
 

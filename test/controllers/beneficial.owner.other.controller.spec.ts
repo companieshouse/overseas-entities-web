@@ -287,7 +287,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS);
       const applicationDataMock = { ...APPLICATION_DATA_MOCK };
       delete applicationDataMock[EntityNumberKey];
-      mockFetchApplicationData.mockReturnValueOnce(applicationDataMock);
+      mockGetApplicationData.mockReturnValueOnce(applicationDataMock);
 
       const resp = await request(app).get(BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL);
 
@@ -318,7 +318,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       mockGetFromApplicationData.mockReturnValueOnce({ ...BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS });
       const applicationDataMock = { ...APPLICATION_DATA_MOCK };
       delete applicationDataMock[EntityNumberKey];
-      mockFetchApplicationData.mockReturnValueOnce(applicationDataMock);
+      mockGetApplicationData.mockReturnValueOnce(applicationDataMock);
 
       const resp = await request(app).get(BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL + BO_OTHER_ID_URL);
 

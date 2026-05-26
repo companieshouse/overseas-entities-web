@@ -3,7 +3,6 @@ import { Session } from "@companieshouse/node-session-handler";
 import { logger } from "../utils/logger";
 import * as config from "../config";
 import { ApplicationData } from "../model";
-import { isRemoveJourney } from "./url";
 import { saveAndContinue } from "../utils/save.and.continue";
 import { isActiveFeature } from "./feature.flag";
 import { updateOverseasEntity } from "../service/overseas.entities.service";
@@ -18,7 +17,7 @@ import {
   prepareData,
   setExtraData,
   setApplicationData,
-  fetchApplicationData,
+  getApplicationData,
   mapDataObjectToFields,
   mapFieldsToDataObject,
 } from "../utils/application.data";
@@ -35,10 +34,8 @@ export const getDueDiligencePage = async (
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const isRemove = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    const appData: ApplicationData = await getApplicationData(req);
     const agentData = appData[DueDiligenceKey];
-
     const identityAddress = (agentData?.[IdentityAddressKey]) ? mapDataObjectToFields(agentData[IdentityAddressKey], IdentityAddressKeys, AddressKeys) : {};
     const identityDate = (agentData?.[IdentityDateKey]) ? mapDataObjectToFields(agentData[IdentityDateKey], IdentityDateKeys, InputDateKeys) : {};
 
@@ -61,14 +58,13 @@ export const postDueDiligencePage = async (req: Request, res: Response, next: Ne
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const isRemove = await isRemoveJourney(req);
     const session = req.session as Session;
     const agentData = prepareData(req.body, DueDiligenceKeys);
     agentData[IdentityAddressKey] = mapFieldsToDataObject(req.body, IdentityAddressKeys, AddressKeys);
     agentData[IdentityDateKey] = mapFieldsToDataObject(req.body, IdentityDateKeys, InputDateKeys);
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && !isRemove) {
-      let appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+      let appData: ApplicationData = await getApplicationData(req);
       appData = Object.assign(appData, { [DueDiligenceKey]: agentData });
       appData = Object.assign(appData, { [OverseasEntityDueDiligenceKey]: {} }); // set overseasEntityDueDiligence object to empty
       await updateOverseasEntity(req, session, appData);

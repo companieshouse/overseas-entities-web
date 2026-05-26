@@ -36,7 +36,6 @@ import {
   removeFromApplicationData,
   setApplicationData,
   getApplicationData,
-  fetchApplicationData,
 } from '../../src/utils/application.data';
 
 import {
@@ -105,7 +104,6 @@ const mockRemoveFromApplicationData = removeFromApplicationData as unknown as je
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
-const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 
 const DUMMY_DATA_OBJECT = { dummy: "data" };
 const NEXT_PAGE_URL = "/NEXT_PAGE";
@@ -239,7 +237,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
       const applicationDataMock = { ...APPLICATION_DATA_MOCK };
       delete applicationDataMock[EntityNumberKey];
-      mockFetchApplicationData.mockReturnValue(applicationDataMock);
+      mockGetApplicationData.mockReturnValue(applicationDataMock);
 
       const resp = await request(app).get(config.BENEFICIAL_OWNER_GOV_URL + BO_GOV_ID_URL);
 

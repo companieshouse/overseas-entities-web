@@ -30,7 +30,7 @@ import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.a
 import { logger } from "../../../src/utils/logger";
 import { RegistrableBeneficialOwnerKey } from "../../../src/model/update.type.model";
 
-import { getApplicationData, fetchApplicationData, setExtraData } from "../../../src/utils/application.data";
+import { getApplicationData, setExtraData } from "../../../src/utils/application.data";
 import {
   OVERSEAS_ENTITY_ID,
   APPLICATION_DATA_MOCK,
@@ -77,7 +77,6 @@ mockIsActiveFeature.mockReturnValue(false);
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
-const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 const mockSetExtraData = setExtraData as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
@@ -90,7 +89,7 @@ describe("No change registrable beneficial owner", () => {
   describe("GET tests", () => {
 
     test(`that ${UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_PAGE} page is rendered`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
       const resp = await request(app).get(UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_REGISTRABLE_BENEFICIAL_OWNER_TITLE);
@@ -102,7 +101,7 @@ describe("No change registrable beneficial owner", () => {
       if (APPLICATION_DATA_MOCK.update) {
         APPLICATION_DATA_MOCK.update.registrable_beneficial_owner = yesNoResponse.Yes;
       }
-      mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
       const resp = await request(app).get(UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(RADIO_BUTTON_YES_SELECTED);
@@ -112,14 +111,14 @@ describe("No change registrable beneficial owner", () => {
       if (APPLICATION_DATA_MOCK.update) {
         APPLICATION_DATA_MOCK.update.registrable_beneficial_owner = yesNoResponse.No;
       }
-      mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
       const resp = await request(app).get(UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(RADIO_BUTTON_NO_SELECTED);
     });
 
     test(`renders the ${UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_PAGE} page with unselected radio button if no update data`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK_WITHOUT_UPDATE });
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK_WITHOUT_UPDATE });
       const resp = await request(app).get(UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).not.toContain(RADIO_BUTTON_NO_SELECTED);
@@ -138,7 +137,7 @@ describe("No change registrable beneficial owner", () => {
   describe("POST tests", () => {
 
     test(`Test redirect to ${UPDATE_STATEMENT_VALIDATION_ERRORS_URL} page when 'no reasonable cause' is selected`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
       const resp = await request(app)
         .post(UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL)
         .send({ [RegistrableBeneficialOwnerKey]: "1" });
@@ -149,7 +148,7 @@ describe("No change registrable beneficial owner", () => {
     });
 
     test(`redirects to the update-statement-validation-errors page when 'has reasonable cause' is selected and REDIS_flag is set to OFF`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
       mockIsActiveFeature.mockReturnValue(false);
       const resp = await request(app)
         .post(UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL)
@@ -163,7 +162,7 @@ describe("No change registrable beneficial owner", () => {
     });
 
     test(`redirects to the update-statement-validation-errors page when 'has reasonable cause' is selected and REDIS_flag is set to ON`, async () => {
-      mockFetchApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
+      mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
       mockIsActiveFeature.mockReturnValue(true);
       const resp = await request(app)
         .post(UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_WITH_PARAMS_URL)
@@ -178,7 +177,6 @@ describe("No change registrable beneficial owner", () => {
 
     test(`with statement validation flag on, redirects to the update-statement-validation-errors page when 'has reasonable cause' is selected`, async () => {
       mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
-      mockFetchApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
       mockIsActiveFeature.mockReturnValue(true);
       mockSaveAndContinue.mockReturnValue(Promise.resolve());
 
@@ -194,7 +192,7 @@ describe("No change registrable beneficial owner", () => {
     });
 
     test("Test validation error is displayed when posting empty object", async () => {
-      mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
       const resp = await request(app).post(UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(PAGE_TITLE_ERROR);

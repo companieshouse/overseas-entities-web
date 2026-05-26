@@ -28,7 +28,7 @@ import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.a
 
 import {
   setApplicationData,
-  fetchApplicationData,
+  getApplicationData,
 } from "../../../src/utils/application.data";
 
 import {
@@ -71,7 +71,7 @@ mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Respo
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
-const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 
 describe("BENEFICIAL OWNER STATEMENTS controller", () => {
@@ -83,7 +83,7 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
   describe("GET tests", () => {
 
     test("renders the beneficial owner statements page", async () => {
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL);
 
       expect(resp.status).toEqual(200);
@@ -97,7 +97,7 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
     });
 
     test("renders the beneficial owner statements page with statement validation flag on and trusts flag on ", async () => {
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(true);
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL);
 
@@ -112,7 +112,7 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
     });
 
     test("renders the beneficial owner statements page with statement validation flag on and trusts flag on with no trusts", async () => {
-      mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK, [TrustKey]: {} });
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK, [TrustKey]: {} });
       mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(true);
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL);
 
@@ -127,7 +127,7 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
     });
 
     test("renders the trusts associated page with statement validation flag off and trusts flag on ", async () => {
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockIsActiveFeature.mockReturnValueOnce(false).mockReturnValueOnce(true);
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL);
 
@@ -142,7 +142,7 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
     });
 
     test("catch error when rendering the page", async () => {
-      mockFetchApplicationData.mockImplementationOnce(() => { throw ERROR; });
+      mockGetApplicationData.mockImplementationOnce(() => { throw ERROR; });
       const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
       expect(resp.status).toEqual(500);
@@ -152,7 +152,7 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
   describe("POST tests", () => {
 
     test("redirects to the beneficial owner type page", async () => {
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL)
         .send({ [BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK });
@@ -173,7 +173,7 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
 
     test("catch error when posting data", async () => {
       const ERROR = new Error("Something went wrong");
-      mockFetchApplicationData.mockImplementationOnce(() => { throw ERROR; });
+      mockGetApplicationData.mockImplementationOnce(() => { throw ERROR; });
 
       const resp = await request(app)
         .post(config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL)

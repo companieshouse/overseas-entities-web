@@ -5,7 +5,6 @@ import * as config from "../config";
 import { logger } from "../utils/logger";
 import { isActiveFeature } from "./feature.flag";
 import { saveAndContinue } from "../utils/save.and.continue";
-import { isRemoveJourney } from "./url";
 import { addCeasedDateToTemplateOptions } from "../utils/update/ceased_date_util";
 import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
 
@@ -38,8 +37,8 @@ import {
 import {
   prepareData,
   setApplicationData,
+  getApplicationData,
   setBoNocDataAsArrays,
-  fetchApplicationData,
   mapDataObjectToFields,
   mapFieldsToDataObject,
   getFromApplicationData,
@@ -57,8 +56,7 @@ export const getBeneficialOwnerGov = async (
   try {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    const appData: ApplicationData = await getApplicationData(req);
 
     res.render(templateName, {
       ...appData,
@@ -86,8 +84,7 @@ export const getBeneficialOwnerGovById = async (
 
     logger.debugRequest(req, `GET BY ID ${req.route.path}`);
 
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    const appData: ApplicationData = await getApplicationData(req);
     const id = req.params[ID];
     const data = await getFromApplicationData(req, BeneficialOwnerGovKey, id, true);
     const principalAddress = data ? mapDataObjectToFields(data[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};
@@ -106,9 +103,7 @@ export const getBeneficialOwnerGovById = async (
       FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC: isActiveFeature(config.FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)
     };
 
-    if (!isRemove) {
-      addActiveSubmissionBasePathToTemplateData(templateOptions, req);
-    }
+    addActiveSubmissionBasePathToTemplateData(templateOptions, req);
 
     if (EntityNumberKey in appData && appData[EntityNumberKey]) {
       return res.render(templateName, addCeasedDateToTemplateOptions(templateOptions, appData, data));
@@ -127,11 +122,10 @@ export const postBeneficialOwnerGov = async (req: Request, res: Response, next: 
   try {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const isRemove: boolean = await isRemoveJourney(req);
     const data: ApplicationDataType = setBeneficialOwnerData(req.body, uuidv4());
     const session = req.session as Session;
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && !isRemove) {
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       await setApplicationData(req, data, BeneficialOwnerGovKey);
     } else {
       await setApplicationData(session, data, BeneficialOwnerGovKey);
@@ -152,13 +146,12 @@ export const updateBeneficialOwnerGov = async (req: Request, res: Response, next
 
     logger.debugRequest(req, `UPDATE ${req.route.path}`);
 
-    const isRemove: boolean = await isRemoveJourney(req);
     const id = req.params[ID];
     await removeFromApplicationData(req, BeneficialOwnerGovKey, id);
     const data: ApplicationDataType = setBeneficialOwnerData(req.body, id);
     const session = req.session as Session;
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && !isRemove) {
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       await setApplicationData(req, data, BeneficialOwnerGovKey);
     } else {
       await setApplicationData(session, data, BeneficialOwnerGovKey);
@@ -178,11 +171,10 @@ export const removeBeneficialOwnerGov = async (req: Request, res: Response, next
   try {
 
     logger.debugRequest(req, `REMOVE ${req.route.path}`);
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    const appData: ApplicationData = await getApplicationData(req);
     await removeFromApplicationData(req, BeneficialOwnerGovKey, req.params[ID], appData);
 
-    if (!isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) || isRemove) {
+    if (!isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       await saveAndContinue(req, req.session as Session);
     }
     return res.redirect(nextPage);

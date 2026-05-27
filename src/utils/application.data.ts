@@ -5,6 +5,7 @@ import { BeneficialOwnerOtherKey } from '../model/beneficial.owner.other.model';
 import { Remove } from '../model/remove.type.model';
 import { isActiveFeature } from "./feature.flag";
 import { isNoChangeJourney } from "./update/no.change.journey";
+import { isRegistrationJourney } from "./url";
 import { createAndLogErrorRequest, logger } from './logger';
 import { getOverseasEntity, updateOverseasEntity } from "../service/overseas.entities.service";
 import { BeneficialOwnerGov, BeneficialOwnerGovKey } from '../model/beneficial.owner.gov.model';
@@ -43,6 +44,7 @@ import {
   FEATURE_FLAG_ENABLE_REDIS_REMOVAL,
   PARAM_BENEFICIAL_OWNER_INDIVIDUAL,
   FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC,
+  FEATURE_FLAG_ENABLE_REDIS_REMOVAL_PHASE_2,
 } from '../config';
 
 /**
@@ -242,6 +244,7 @@ export const setBoNocDataAsArrays = (data: ApplicationDataType) => {
 };
 
 export const removeFromApplicationData = async (req: Request, key: string, id: string, appData?: ApplicationData): Promise<void> => {
+  const isRegistration = isRegistrationJourney(req);
   if (!appData) {
     appData = await getApplicationData(req);
   }
@@ -251,7 +254,8 @@ export const removeFromApplicationData = async (req: Request, key: string, id: s
   }
   appData[key].splice(index, 1);
   setExtraData(req.session, appData);
-  if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+  if ((isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration)
+      || isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL_PHASE_2)) {
     await updateOverseasEntity(req, req.session as Session, appData);
   }
 };

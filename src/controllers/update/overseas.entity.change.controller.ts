@@ -86,7 +86,7 @@ export const post = async (req: Request, resp: Response, next: NextFunction) => 
       });
     }
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL_PHASE_2)) {
       await updateOverseasEntity(req, req.session as Session, appData);
     } else {
       await saveAndContinue(req, session);

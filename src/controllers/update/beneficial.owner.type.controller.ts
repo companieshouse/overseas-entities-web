@@ -145,7 +145,7 @@ export const postSubmit = async (req: Request, res: Response, next: NextFunction
     if (!appData.update?.trust_data_fetched) {
       const session = req.session as Session;
       await retrieveTrustData(req, appData);
-      if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && !isRemove) {
+      if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL_PHASE_2) && !isRemove) {
         await updateOverseasEntity(req, req.session as Session, appData);
       } else {
         await saveAndContinue(req, session);

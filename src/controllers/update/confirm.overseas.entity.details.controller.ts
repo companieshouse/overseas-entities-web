@@ -22,7 +22,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const isRemove: boolean = await isRemoveJourney(req);
     let appData: ApplicationData = {};
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL_PHASE_2)) {
       appData = await getDataFromEntityCookie(req);
     } else {
       appData = await fetchApplicationData(req, !isRemove);
@@ -67,7 +67,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const isRemove: boolean = await isRemoveJourney(req);
     let appData: ApplicationData = {};
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL_PHASE_2)) {
       appData = await getDataFromEntityCookie(req);
     } else {
       appData = await fetchApplicationData(req, !isRemove);

@@ -50,6 +50,7 @@ export const EXCLUDED_PATHS = /^\/(?!register-an-overseas-entity\/healthcheck).*
 export const SHOW_SERVICE_OFFLINE_PAGE = getEnvironmentValue("SHOW_SERVICE_OFFLINE_PAGE");
 export const FEATURE_FLAG_ENABLE_TRUSTS_WEB = getEnvironmentValue('FEATURE_FLAG_ENABLE_TRUSTS_WEB_07112022', 'false');
 export const FEATURE_FLAG_ENABLE_REDIS_REMOVAL = getEnvironmentValue('FEATURE_FLAG_ENABLE_REDIS_REMOVAL_27092023', 'false');
+export const FEATURE_FLAG_ENABLE_REDIS_REMOVAL_PHASE_2 = "false"; // Unit tests all pass, regardless of whether this value is 'true' or 'false'
 export const FEATURE_FLAG_ENABLE_RELEVANT_PERIOD = getEnvironmentValue('FEATURE_FLAG_ENABLE_RELEVANT_PERIOD_26042024', 'false');
 export const FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC = getEnvironmentValue('FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC_30082024', 'false');
 

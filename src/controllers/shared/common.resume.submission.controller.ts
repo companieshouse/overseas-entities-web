@@ -10,7 +10,7 @@ import { isActiveFeature } from "../../utils/feature.flag";
 import { startPaymentsSession } from "../../service/payment.service";
 import { getTransaction } from "../../service/transaction.service";
 import { mapTrustApiReturnModelToWebModel } from "../../utils/trusts";
-import { isRegistrationJourney, isRemoveJourney } from "../../utils/url";
+import { isRegistrationJourney, isUpdateJourney, isRemoveJourney } from "../../utils/url";
 import { DueDiligenceKey } from "../../model/due.diligence.model";
 import { OverseasEntityDueDiligenceKey } from "../../model/overseas.entity.due.diligence.model";
 
@@ -47,7 +47,6 @@ export const getResumePage = async (req: Request, res: Response, next: NextFunct
     const { transactionId, overseasEntityId } = req.params;
     const infoMsg = `Transaction ID: ${transactionId}, OverseasEntity ID: ${overseasEntityId}`;
     const isRegistration: boolean = isRegistrationJourney(req);
-    const isRemove: boolean = await isRemoveJourney(req);
     logger.infoRequest(req, `Resuming OE - ${infoMsg}`);
     const appData: ApplicationData = await getOverseasEntity(req, transactionId, overseasEntityId);
 
@@ -56,7 +55,7 @@ export const getResumePage = async (req: Request, res: Response, next: NextFunct
     }
 
     const session = req.session as Session;
-    await setWebApplicationData(req, session, appData, transactionId, overseasEntityId, isRemove);
+    await setWebApplicationData(req, session, appData, transactionId, overseasEntityId, isRegistration);
     const transactionResource = await getTransaction(req, transactionId);
 
     if (transactionResource.status === config.CLOSED_PENDING_PAYMENT) {
@@ -90,26 +89,32 @@ export const getResumePage = async (req: Request, res: Response, next: NextFunct
  * @param overseasEntityId
  */
 const setWebApplicationData = async (
-  req: Request,
-  session: Session,
-  appData: ApplicationData,
-  transactionId: string,
-  overseasEntityId: string,
-  isRemove: boolean
+    req: Request,
+    session: Session,
+    appData: ApplicationData,
+    transactionId: string,
+    overseasEntityId: string,
+    isRegistration: boolean
 ) => {
 
   appData[BeneficialOwnerIndividualKey] = (appData[BeneficialOwnerIndividualKey] as BeneficialOwnerIndividual[])
-    .map(boi => { return { ...boi, [ID]: uuidv4() }; });
+      .map(boi => { return { ...boi, [ID]: uuidv4() }; });
   appData[BeneficialOwnerOtherKey] = (appData[BeneficialOwnerOtherKey] as BeneficialOwnerOther[])
-    .map(boo => { return { ...boo, [ID]: uuidv4() }; });
+      .map(boo => { return { ...boo, [ID]: uuidv4() }; });
   appData[BeneficialOwnerGovKey] = (appData[BeneficialOwnerGovKey] as BeneficialOwnerGov[])
-    .map(bog => { return { ...bog, [ID]: uuidv4() }; });
+      .map(bog => { return { ...bog, [ID]: uuidv4() }; });
   appData[ManagingOfficerKey] = (appData[ManagingOfficerKey] as ManagingOfficerIndividual[])
-    .map(moi => { return { ...moi, [ID]: uuidv4() }; });
+      .map(moi => { return { ...moi, [ID]: uuidv4() }; });
   appData[ManagingOfficerCorporateKey] = (appData[ManagingOfficerCorporateKey] as ManagingOfficerCorporate[])
-    .map(moc => { return { ...moc, [ID]: uuidv4() }; });
+      .map(moc => { return { ...moc, [ID]: uuidv4() }; });
 
-  if (isRemove || !isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+  const isUpdate: boolean = await isUpdateJourney(req);
+  const isRemove: boolean = await isRemoveJourney(req);
+
+  if ((isRegistration && !isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL))
+      || (isUpdate && !isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL_PHASE_2))
+      || isRemove) {
+
     appData[HasSoldLandKey] = '0';
     appData[IsSecureRegisterKey] = '0';
     if (appData[OverseasEntityDueDiligenceKey] && Object.keys(appData[OverseasEntityDueDiligenceKey]).length) {
@@ -133,7 +138,8 @@ const setWebApplicationData = async (
     appData[BeneficialOwnerGovKey].forEach(bog => { delete bog[NonLegalFirmNoc]; });
   }
 
-  if (!isRemove && isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+  if ((isRegistration && isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL))
+      || (isUpdate && isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL_PHASE_2))) {
     await updateOverseasEntity(req, req.session as Session, appData, true);
   }
 

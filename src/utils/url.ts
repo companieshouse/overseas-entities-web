@@ -1,10 +1,9 @@
 import { Request } from "express";
-import { Session } from "@companieshouse/node-session-handler";
 import * as config from "../config";
-import { ApplicationData } from "../model";
-import { getApplicationData } from "./application.data";
 import { IsRemoveKey } from "../model/data.types.model";
 import { isActiveFeature } from "./feature.flag";
+import { ApplicationData } from "../model";
+import { getApplicationData } from "./application.data";
 import { createAndLogErrorRequest, logger } from "./logger";
 
 export interface TransactionIdAndSubmissionId {
@@ -111,8 +110,8 @@ export const isUpdateJourney = async (req: Request): Promise<boolean> => {
 };
 
 export const isRemoveJourney = async (req: Request): Promise<boolean> => {
-  const session = req.session as Session;
-  const appData: ApplicationData = await getApplicationData(session);
+
+  const appData: ApplicationData = await getApplicationData(req);
 
   if (appData) {
     if (appData[IsRemoveKey] !== undefined && appData[IsRemoveKey] !== null) {

@@ -27,13 +27,12 @@ import {
 
 import {
   setApplicationData,
-  fetchApplicationData,
   checkBOsDetailsEntered,
   checkMOsDetailsEntered,
+  getApplicationData,
 } from "../../src/utils/application.data";
 
 import {
-  ERROR,
   APPLICATION_DATA_MOCK,
   APPLICATION_DATA_UPDATE_BO_MOCK,
   APPLICATION_DATA_REGISTRATION_MOCK,
@@ -56,7 +55,7 @@ mockHasEntityMiddleware.mockImplementation((req: Request, res: Response, next: N
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
-const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockCheckBOsDetailsEntered = checkBOsDetailsEntered as jest.Mock;
 const mockCheckMOsDetailsEntered = checkMOsDetailsEntered as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
@@ -79,7 +78,7 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
   describe("GET tests", () => {
 
     test("renders the beneficial owner statements page with Registration data", async () => {
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_REGISTRATION_MOCK);
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_REGISTRATION_MOCK);
       const resp = await request(app).get(config.BENEFICIAL_OWNER_STATEMENTS_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING);
@@ -91,7 +90,7 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
     });
 
     test("renders the beneficial owner statements page with undefined entity_number", async () => {
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK_WITHOUT_UPDATE);
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK_WITHOUT_UPDATE);
       const resp = await request(app).get(config.BENEFICIAL_OWNER_STATEMENTS_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING);
@@ -103,7 +102,7 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
     });
 
     test("renders the beneficial owner statements page with Update data", async () => {
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_UPDATE_BO_MOCK);
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_BO_MOCK);
       const resp = await request(app).get(config.BENEFICIAL_OWNER_STATEMENTS_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING);
@@ -115,7 +114,7 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
     });
 
     test("catch error when rendering the page", async () => {
-      mockFetchApplicationData.mockImplementationOnce(() => { throw ERROR; });
+      mockGetApplicationData.mockImplementation(() => { new Error(); });
       const resp = await request(app).get(config.BENEFICIAL_OWNER_STATEMENTS_URL);
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
@@ -124,7 +123,7 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
   describe("GET with url params tests", () => {
 
     test("renders the beneficial owner statements page with Registration data", async () => {
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_REGISTRATION_MOCK);
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_REGISTRATION_MOCK);
       const resp = await request(app).get(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING);
@@ -136,7 +135,7 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
     });
 
     test("renders the beneficial owner statements page with undefined entity_number", async () => {
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK_WITHOUT_UPDATE);
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK_WITHOUT_UPDATE);
       const resp = await request(app).get(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING);
@@ -148,7 +147,7 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
     });
 
     test("renders the beneficial owner statements page with Update data", async () => {
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_UPDATE_BO_MOCK);
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_BO_MOCK);
       const resp = await request(app).get(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING);
@@ -160,7 +159,7 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
     });
 
     test("catch error when rendering the page", async () => {
-      mockFetchApplicationData.mockImplementationOnce(() => { throw ERROR; });
+      mockGetApplicationData.mockImplementation(() => { new Error(); });
       const resp = await request(app).get(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL);
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
@@ -171,7 +170,7 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
 
     test("redirects to the beneficial owner type page when the REDIS_removal flag is set to OFF", async () => {
       mockIsActiveFeature.mockReturnValue(false);
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
       const resp = await request(app)
         .post(config.BENEFICIAL_OWNER_STATEMENTS_URL)
         .send({ [BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK });
@@ -190,7 +189,7 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
     });
 
     test("catch error when posting data", async () => {
-      mockFetchApplicationData.mockImplementationOnce(() => { throw ERROR; });
+      mockGetApplicationData.mockImplementation(() => { new Error(); });
       const resp = await request(app)
         .post(config.BENEFICIAL_OWNER_STATEMENTS_URL)
         .send({ [BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK });
@@ -209,7 +208,7 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
     test(`redirects to ${config.BENEFICIAL_OWNER_DELETE_WARNING_PAGE}
               page with NONE_IDENTIFIED as beneficial owners statement type`, async () => {
       mockCheckBOsDetailsEntered.mockReturnValueOnce(true);
-      mockFetchApplicationData.mockReturnValueOnce({
+      mockGetApplicationData.mockReturnValue({
         ...APPLICATION_DATA_MOCK,
         [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS
       });
@@ -225,7 +224,7 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
 
     test(`redirects to ${config.BENEFICIAL_OWNER_DELETE_WARNING_PAGE} page with ALL_IDENTIFIED_ALL_DETAILS as beneficial owners statement type`, async () => {
       mockCheckMOsDetailsEntered.mockReturnValueOnce(true);
-      mockFetchApplicationData.mockReturnValueOnce({
+      mockGetApplicationData.mockReturnValue({
         ...APPLICATION_DATA_MOCK,
         [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS
       });
@@ -244,7 +243,7 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
 
     test("redirects to the beneficial owner type page with url params when the REDIS_removal flag is set to OFF", async () => {
       mockIsActiveFeature.mockReturnValue(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
       const resp = await request(app)
         .post(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL)
         .send({ [BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK });
@@ -262,7 +261,7 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
     });
 
     test("catch error when posting data", async () => {
-      mockFetchApplicationData.mockImplementationOnce(() => { throw ERROR; });
+      mockGetApplicationData.mockImplementation(() => { new Error(); });
       const resp = await request(app)
         .post(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL)
         .send({ [BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK });
@@ -282,8 +281,8 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
               page with NONE_IDENTIFIED as beneficial owners statement type`, async () => {
       mockCheckBOsDetailsEntered.mockReturnValueOnce(true);
       mockIsActiveFeature.mockReturnValue(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-      mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
-      mockFetchApplicationData.mockReturnValue({
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValue({
         ...APPLICATION_DATA_MOCK,
         [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS
       });
@@ -301,7 +300,7 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
     test(`redirects to ${config.BENEFICIAL_OWNER_DELETE_WARNING_PAGE} page with ALL_IDENTIFIED_ALL_DETAILS as beneficial owners statement type`, async () => {
       mockCheckMOsDetailsEntered.mockReturnValueOnce(true);
       mockIsActiveFeature.mockReturnValue(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-      mockFetchApplicationData.mockReturnValue({
+      mockGetApplicationData.mockReturnValue({
         ...APPLICATION_DATA_MOCK,
         [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS
       });

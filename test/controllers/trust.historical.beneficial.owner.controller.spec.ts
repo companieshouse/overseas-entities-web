@@ -157,7 +157,7 @@ describe('Trust Historical Beneficial Owner Controller', () => {
 
     test('catch error when renders the page', async () => {
       const error = new Error(ANY_MESSAGE_ERROR);
-      mockFetchApplicationData.mockImplementationOnce(() => { throw error; });
+      mockGetApplicationData.mockImplementationOnce(() => { throw error; });
       await get(mockReq, mockRes, mockNext);
       expect(mockNext).toBeCalledTimes(1);
       expect(mockNext).toBeCalledWith(error);
@@ -171,7 +171,7 @@ describe('Trust Historical Beneficial Owner Controller', () => {
       (mapBeneficialOwnerToSession as jest.Mock).mockReturnValue(mockBoData);
 
       mockIsActiveFeature.mockReturnValue(false); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-      mockFetchApplicationData.mockReturnValue(mockAppData);
+      mockGetApplicationData.mockReturnValue(mockAppData);
       mockUpdateOverseasEntity.mockReturnValue(true);
 
       const mockUpdatedTrust = {} as Trust;

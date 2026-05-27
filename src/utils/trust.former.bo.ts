@@ -8,15 +8,14 @@ import * as CommonTrustDataMapper from '../utils/trust/common.trust.data.mapper'
 import { logger } from '../utils/logger';
 import { TrusteeType } from '../model/trustee.type.model';
 import { safeRedirect } from '../utils/http.ext';
+import { getRedirectUrl } from './url';
 import { saveAndContinue } from '../utils/save.and.continue';
 import { ApplicationData } from '../model';
-
 import { isActiveFeature } from './feature.flag';
 import { updateOverseasEntity } from "../service/overseas.entities.service";
 import { mapTrustApiToWebWhenFlagsAreSet } from "../utils/trust/api.to.web.mapper";
 
-import { getRedirectUrl, isRemoveJourney } from './url';
-import { fetchApplicationData, setExtraData } from '../utils/application.data';
+import { getApplicationData, setExtraData } from '../utils/application.data';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
 import { mapBeneficialOwnerToSession, mapFormerTrusteeByIdFromSessionToPage } from '../utils/trust/historical.beneficial.owner.mapper';
 import { filingPeriodTrustCeaseDateValidations, filingPeriodTrustStartDateValidations } from '../validation/async';
@@ -55,8 +54,7 @@ const getPageProperties = async (
   errors?: FormattedValidationErrors,
 ): Promise<TrustHistoricalBeneficialOwnerProperties> => {
 
-  const isRemove: boolean = await isRemoveJourney(req);
-  const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+  const appData: ApplicationData = await getApplicationData(req);
   const { templateName, template } = getPageTemplate(isUpdate, req.url);
 
   return ({
@@ -84,9 +82,8 @@ export const getTrustFormerBo = async (req: Request, res: Response, next: NextFu
 
     const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
     const trusteeId = req.params[config.ROUTE_PARAM_TRUSTEE_ID];
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
-    mapTrustApiToWebWhenFlagsAreSet(appData, !isRemove);
+    const appData: ApplicationData = await getApplicationData(req);
+    mapTrustApiToWebWhenFlagsAreSet(appData);
     const formData: PageModel.TrustHistoricalBeneficialOwnerForm = mapFormerTrusteeByIdFromSessionToPage(
       appData,
       trustId,
@@ -109,8 +106,7 @@ export const postTrustFormerBo = async (req: Request, res: Response, next: NextF
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const session = req.session as Session;
-    const isRemove: boolean = await isRemoveJourney(req);
-    let appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    let appData: ApplicationData = await getApplicationData(req);
 
     const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
     const boData = mapBeneficialOwnerToSession(req.body); // convert form data to application (session) object
@@ -134,7 +130,7 @@ export const postTrustFormerBo = async (req: Request, res: Response, next: NextF
     appData = saveTrustInApp(appData, updatedTrust);
     setExtraData(session, appData);
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && !isRemove) {
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       await updateOverseasEntity(req, session, appData);
     } else {
       await saveAndContinue(req, session);

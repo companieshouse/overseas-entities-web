@@ -33,7 +33,11 @@ export const getUpdateOrRemoveBackLink = async (req: Request, backLinkUrl: strin
 export const getSecureUpdateFilterBackLink = async (req: Request): Promise<string> => {
   const isRemove: boolean = await isRemoveJourney(req);
   if (isRemove) {
-    return `${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`;
+    return getRedirectUrl({
+      req,
+      urlWithEntityIds: config.REMOVE_IS_ENTITY_REGISTERED_OWNER_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL,
+    }) + config.JOURNEY_REMOVE_QUERY_PARAM;
   } else {
     return config.UPDATE_LANDING_PAGE_URL;
   }
@@ -42,7 +46,11 @@ export const getSecureUpdateFilterBackLink = async (req: Request): Promise<strin
 export const getOverseasEntityPresenterBackLink = async (req: Request): Promise<string> => {
   const isRemove: boolean = await isRemoveJourney(req);
   if (isRemove) {
-    return `${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`;
+    return getRedirectUrl({
+      req,
+      urlWithEntityIds: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
+    }) + config.JOURNEY_REMOVE_QUERY_PARAM;
   } else {
     return getRedirectUrl({
       req,
@@ -55,7 +63,11 @@ export const getOverseasEntityPresenterBackLink = async (req: Request): Promise<
 export const getUpdateReviewStatementBackLink = async (req: Request): Promise<string> => {
   const isRemove: boolean = await isRemoveJourney(req);
   if (isRemove) {
-    return config.REMOVE_CONFIRM_STATEMENT_URL;
+    return getRedirectUrl({
+      req,
+      urlWithEntityIds: config.REMOVE_CONFIRM_STATEMENT_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.REMOVE_CONFIRM_STATEMENT_URL,
+    });
   }
   return getRedirectUrl({
     req,

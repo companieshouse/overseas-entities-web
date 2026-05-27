@@ -89,24 +89,24 @@ export const getResumePage = async (req: Request, res: Response, next: NextFunct
  * @param overseasEntityId
  */
 const setWebApplicationData = async (
-    req: Request,
-    session: Session,
-    appData: ApplicationData,
-    transactionId: string,
-    overseasEntityId: string,
-    isRegistration: boolean
+  req: Request,
+  session: Session,
+  appData: ApplicationData,
+  transactionId: string,
+  overseasEntityId: string,
+  isRegistration: boolean
 ) => {
 
   appData[BeneficialOwnerIndividualKey] = (appData[BeneficialOwnerIndividualKey] as BeneficialOwnerIndividual[])
-      .map(boi => { return { ...boi, [ID]: uuidv4() }; });
+    .map(boi => { return { ...boi, [ID]: uuidv4() }; });
   appData[BeneficialOwnerOtherKey] = (appData[BeneficialOwnerOtherKey] as BeneficialOwnerOther[])
-      .map(boo => { return { ...boo, [ID]: uuidv4() }; });
+    .map(boo => { return { ...boo, [ID]: uuidv4() }; });
   appData[BeneficialOwnerGovKey] = (appData[BeneficialOwnerGovKey] as BeneficialOwnerGov[])
-      .map(bog => { return { ...bog, [ID]: uuidv4() }; });
+    .map(bog => { return { ...bog, [ID]: uuidv4() }; });
   appData[ManagingOfficerKey] = (appData[ManagingOfficerKey] as ManagingOfficerIndividual[])
-      .map(moi => { return { ...moi, [ID]: uuidv4() }; });
+    .map(moi => { return { ...moi, [ID]: uuidv4() }; });
   appData[ManagingOfficerCorporateKey] = (appData[ManagingOfficerCorporateKey] as ManagingOfficerCorporate[])
-      .map(moc => { return { ...moc, [ID]: uuidv4() }; });
+    .map(moc => { return { ...moc, [ID]: uuidv4() }; });
 
   const isUpdate: boolean = await isUpdateJourney(req);
   const isRemove: boolean = await isRemoveJourney(req);

@@ -99,7 +99,7 @@ describe("No change Get beneficial owner statement", () => {
     });
 
     test("catch error when rendering the page", async () => {
-      mockFetchApplicationData.mockImplementationOnce(() => { throw ERROR; });
+      mockGetApplicationData.mockImplementationOnce(() => { throw ERROR; });
       const resp = await request(app).get(config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
       expect(resp.status).toEqual(500);

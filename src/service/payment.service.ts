@@ -4,8 +4,9 @@ import { Session } from "@companieshouse/node-session-handler";
 import ApiClient from "@companieshouse/api-sdk-node/dist/client";
 import { isActiveFeature } from "../utils/feature.flag";
 import { ApplicationData } from "../model";
-import { createAndLogErrorRequest, logger } from "../utils/logger";
 import { createOAuthApiClient } from "./api.service";
+import { getUrlWithParamsToPath } from "../utils/url";
+import { createAndLogErrorRequest, logger } from "../utils/logger";
 
 import { CreatePaymentRequest, Payment } from "@companieshouse/api-sdk-node/dist/services/payment";
 
@@ -18,13 +19,8 @@ import {
 import {
   setExtraData,
   setApplicationData,
-  fetchApplicationData,
+  getApplicationData,
 } from "../utils/application.data";
-
-import {
-  isRemoveJourney,
-  getUrlWithParamsToPath,
-} from "../utils/url";
 
 import {
   API_URL,
@@ -52,9 +48,8 @@ export const startPaymentsSession = async (
   baseURL?: string
 ): Promise<string> => {
 
-  const isRemove: boolean = await isRemoveJourney(req);
   const appData: ApplicationData = {
-    ...(await fetchApplicationData(req, !isRemove, true)),
+    ...(await getApplicationData(req, true)),
     [Transactionkey]: transactionId,
     [OverseasEntityKey]: overseasEntityId
   };
@@ -66,7 +61,7 @@ export const startPaymentsSession = async (
   if (!paymentUrl) {
     // Only if transaction does not have a fee
     let confirmationPageUrl = CONFIRMATION_URL;
-    if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && !isRemove) {
+    if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       confirmationPageUrl = getUrlWithParamsToPath(CONFIRMATION_WITH_PARAMS_URL, req);
     }
     return confirmationPageUrl;
@@ -75,7 +70,7 @@ export const startPaymentsSession = async (
   const createPaymentRequest: CreatePaymentRequest = setPaymentRequest(req, transactionId, overseasEntityId, baseURL);
 
   // Save app data including the state used as `nonce` against CSRF.
-  if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && !isRemove) {
+  if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
     await setApplicationData(req, createPaymentRequest, PaymentKey);
   } else {
     await setApplicationData(session, createPaymentRequest, PaymentKey);

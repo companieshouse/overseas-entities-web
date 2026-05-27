@@ -6,11 +6,12 @@ import { isActiveFeature } from "./feature.flag";
 import { Session } from "@companieshouse/node-session-handler";
 import { postTransaction } from "../service/transaction.service";
 
-import { fetchApplicationData, setExtraData } from "./application.data";
+import { getApplicationData, setExtraData } from "./application.data";
 import { createOverseasEntity, updateOverseasEntity } from "../service/overseas.entities.service";
 import { IsSecureRegisterKey, OverseasEntityKey, Transactionkey } from "../model/data.types.model";
 
 import {
+  getRedirectUrl,
   isRemoveJourney,
   isUpdateJourney,
   getUrlWithTransactionIdAndSubmissionId,
@@ -22,14 +23,18 @@ export const getFilterPage = async (req: Request, res: Response, next: NextFunct
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const isRemove = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    const appData: ApplicationData = await getApplicationData(req);
 
     if (isRemove) {
       return res.render(templateName, {
         templateName,
         journey: config.JourneyType.remove,
-        backLinkUrl: config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL,
-        [IsSecureRegisterKey]: appData[IsSecureRegisterKey]
+        [IsSecureRegisterKey]: appData[IsSecureRegisterKey],
+        backLinkUrl: getRedirectUrl({
+          req,
+          urlWithEntityIds: config.REMOVE_IS_ENTITY_REGISTERED_OWNER_WITH_PARAMS_URL,
+          urlWithoutEntityIds: config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL,
+        }),
       });
     }
 
@@ -59,7 +64,7 @@ export const postFilterPage = async (
     const isRedisRemovalFlag = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL);
     const isUpdate: boolean = await isUpdateJourney(req);
     const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, isUpdate);
+    const appData: ApplicationData = await getApplicationData(req);
     const isSecureRegister = (req.body[IsSecureRegisterKey]).toString();
     appData[IsSecureRegisterKey] = isSecureRegister;
 
@@ -71,9 +76,9 @@ export const postFilterPage = async (
 
     if (isSecureRegister === "0") {
       nextPageUrl = isSecureRegisterNoUrl;
-      if (isRedisRemovalFlag && !isRemove) {
+      if (isRedisRemovalFlag) {
         await createOrUpdateEntityDetails(req, appData, isUpdate);
-        nextPageUrl = getNextPageUrl(appData, isSecureRegisterNoUrl, isRemove, isRedisRemovalFlag);
+        nextPageUrl = getNextPageUrl(appData, isSecureRegisterNoUrl, isRedisRemovalFlag);
       }
     }
 
@@ -107,9 +112,9 @@ const createOrUpdateEntityDetails = async (req: Request, appData: ApplicationDat
   }
 };
 
-const getNextPageUrl = (appData: ApplicationData, fallbackUrl: string, isRemove: boolean, isRedisRemovalFlag: boolean): string => {
+const getNextPageUrl = (appData: ApplicationData, fallbackUrl: string, isRedisRemovalFlag: boolean): string => {
   try {
-    if (isRedisRemovalFlag && !isRemove) {
+    if (isRedisRemovalFlag) {
       return getUrlWithTransactionIdAndSubmissionId(fallbackUrl, appData[Transactionkey] as string, appData[OverseasEntityKey] as string);
     }
     return fallbackUrl;

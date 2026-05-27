@@ -88,7 +88,7 @@ describe("Update registrable beneficial owner controller tests", () => {
   describe("GET tests", () => {
 
     test(`renders the ${UPDATE_REGISTRABLE_BENEFICIAL_OWNER_PAGE} page`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
       const resp = await request(app).get(UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_REGISTRABLE_BENEFICIAL_OWNER_TITLE);
@@ -101,7 +101,7 @@ describe("Update registrable beneficial owner controller tests", () => {
       if (APPLICATION_DATA_MOCK.update) {
         APPLICATION_DATA_MOCK.update.registrable_beneficial_owner = yesNoResponse.Yes;
       }
-      mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
       const resp = await request(app).get(UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(RADIO_BUTTON_YES_SELECTED);
@@ -111,7 +111,7 @@ describe("Update registrable beneficial owner controller tests", () => {
       if (APPLICATION_DATA_MOCK.update) {
         APPLICATION_DATA_MOCK.update.registrable_beneficial_owner = yesNoResponse.No;
       }
-      mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
       const resp = await request(app).get(UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(RADIO_BUTTON_NO_SELECTED);
@@ -162,8 +162,8 @@ describe("Update registrable beneficial owner controller tests", () => {
     });
 
     test(`redirects to the update-statement-validation-errors page when ${yesNoResponse.No} is selected`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
-      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+      mockIsActiveFeature.mockReturnValue(true);
       mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
 
       const resp = await request(app)
@@ -178,7 +178,9 @@ describe("Update registrable beneficial owner controller tests", () => {
     });
 
     test(`redirects to the update-statement-validation-errors page when on the remove journey`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+      mockFetchApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
+      mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
+      mockIsActiveFeature.mockReturnValue(false);
       mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
 
       const resp = await request(app)

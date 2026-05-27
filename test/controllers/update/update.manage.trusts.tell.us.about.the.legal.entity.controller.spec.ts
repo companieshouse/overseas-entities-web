@@ -39,7 +39,7 @@ import { manageTrustsTellUsAboutLegalEntitiesGuard } from '../../../src/middlewa
 
 import { Trust, TrustCorporate } from '../../../src/model/trust.model';
 import { getTrustInReview, getTrustee, getTrusteeIndex } from '../../../src/utils/update/review_trusts';
-import { getApplicationData, fetchApplicationData, setExtraData } from '../../../src/utils/application.data';
+import { getApplicationData, setExtraData } from '../../../src/utils/application.data';
 
 import {
   TRUST_WITH_ID,
@@ -100,7 +100,6 @@ const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
 mockUpdateOverseasEntity.mockReturnValue(OVERSEAS_ENTITY_ID);
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
-const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetTrustInReview = getTrustInReview as jest.Mock;
 const mockGetTrusteeIndex = getTrusteeIndex as jest.Mock;
@@ -181,7 +180,6 @@ describe('Update - Manage Trusts - Review legal entities', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetApplicationData.mockReset();
-    mockFetchApplicationData.mockReset();
     mockIsActiveFeature.mockReset();
   });
 
@@ -193,7 +191,6 @@ describe('Update - Manage Trusts - Review legal entities', () => {
 
       mockIsActiveFeature.mockReturnValue(false);
       mockGetApplicationData.mockReturnValue(appData);
-      mockFetchApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
       mockGetTrustee.mockReturnValue(undefined);
 
@@ -215,7 +212,6 @@ describe('Update - Manage Trusts - Review legal entities', () => {
 
       mockIsActiveFeature.mockReturnValue(true);
       mockGetApplicationData.mockReturnValue(appData);
-      mockFetchApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
       mockGetTrustee.mockReturnValue(undefined);
 
@@ -237,7 +233,6 @@ describe('Update - Manage Trusts - Review legal entities', () => {
 
       mockIsActiveFeature.mockReturnValue(true);
       mockGetApplicationData.mockReturnValue(appData);
-      mockFetchApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
       mockGetTrustee.mockReturnValue(undefined);
 
@@ -260,7 +255,6 @@ describe('Update - Manage Trusts - Review legal entities', () => {
 
       mockIsActiveFeature.mockReturnValue(true);
       mockGetApplicationData.mockReturnValue(appData);
-      mockFetchApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
       mockGetTrustee.mockReturnValue(undefined);
 
@@ -284,7 +278,6 @@ describe('Update - Manage Trusts - Review legal entities', () => {
 
       mockIsActiveFeature.mockReturnValue(true);
       mockGetApplicationData.mockReturnValue(appData);
-      mockFetchApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
       mockGetTrustee.mockReturnValue(undefined);
 
@@ -308,7 +301,6 @@ describe('Update - Manage Trusts - Review legal entities', () => {
 
       mockIsActiveFeature.mockReturnValue(true);
       mockGetApplicationData.mockReturnValue(appData);
-      mockFetchApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
       mockGetTrustee.mockReturnValue(undefined);
 
@@ -331,7 +323,6 @@ describe('Update - Manage Trusts - Review legal entities', () => {
 
       mockIsActiveFeature.mockReturnValue(true);
       mockGetApplicationData.mockReturnValue(appData);
-      mockFetchApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
       mockGetTrustee.mockReturnValue(undefined);
 
@@ -359,7 +350,6 @@ describe('Update - Manage Trusts - Review legal entities', () => {
 
       mockIsActiveFeature.mockReturnValue(true);
       mockGetApplicationData.mockReturnValue(appData);
-      mockFetchApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
       mockGetTrustee.mockReturnValue(trustee);
 
@@ -391,7 +381,6 @@ describe('Update - Manage Trusts - Review legal entities', () => {
 
       mockIsActiveFeature.mockReturnValue(true);
       mockGetApplicationData.mockReturnValue(appData);
-      mockFetchApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
       mockGetTrustee.mockReturnValue(legalEntityTrustee);
 
@@ -425,7 +414,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
 
     test("catch error when rendering the page", async () => {
       mockIsActiveFeature.mockReturnValue(false);
-      mockFetchApplicationData.mockImplementation(() => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockGetApplicationData.mockRejectedValue(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const response = await request(app).get(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL);
       expect(response.status).toEqual(500);
       expect(response.text).toContain(SERVICE_UNAVAILABLE);
@@ -729,7 +718,6 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       const spyGetTrustByIdFromApp = jest.spyOn(trusts, "getTrustByIdFromApp");
       spyGetTrustByIdFromApp.mockReturnValueOnce(trustInReview);
       mockGetApplicationData.mockReturnValue(appData);
-      mockFetchApplicationData.mockReturnValue(appData);
 
       const resp = await request(app)
         .post(UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + "/" + trustId + TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL)
@@ -798,7 +786,6 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       const spyGetTrustByIdFromApp = jest.spyOn(trusts, "getTrustByIdFromApp");
       spyGetTrustByIdFromApp.mockReturnValueOnce(trustInReview);
       mockGetApplicationData.mockReturnValue(appData);
-      mockFetchApplicationData.mockReturnValue(appData);
 
       const resp = await request(app)
         .post(UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + "/" + trustId + TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL + RELEVANT_PERIOD_QUERY_PARAM)
@@ -846,7 +833,6 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       const spyGetTrustByIdFromApp = jest.spyOn(trusts, "getTrustByIdFromApp");
       spyGetTrustByIdFromApp.mockReturnValueOnce(TRUST_RELEVANT_PERIOD);
       mockGetApplicationData.mockReturnValue(appData);
-      mockFetchApplicationData.mockReturnValue(appData);
 
       const resp = await request(app)
         .post(UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + "/" + trustId + TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL + RELEVANT_PERIOD_QUERY_PARAM)
@@ -953,7 +939,6 @@ describe('Update - Manage Trusts - Review legal entities', () => {
 
       mockIsActiveFeature.mockReturnValue(true);
       mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
-      mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
 
       const resp = await request(app)
         .post(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL)

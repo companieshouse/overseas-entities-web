@@ -23,7 +23,7 @@ import { ErrorMessages } from "../../../src/validation/error.messages";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 
-import { fetchApplicationData, mapDataObjectToFields, prepareData } from "../../../src/utils/application.data";
+import { getApplicationData, mapDataObjectToFields, prepareData } from "../../../src/utils/application.data";
 
 import {
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
@@ -68,7 +68,7 @@ const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockMapDataObjectToFields = mapDataObjectToFields as jest.Mock;
-const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
@@ -84,7 +84,7 @@ describe(`Update review beneficial owner other`, () => {
   describe(`GET tests`, () => {
 
     test(`render the ${UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_PAGE} page`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce({
+      mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_UPDATE_BO_MOCK,
         ...UPDATE_OBJECT_MOCK_REVIEW_BO_OTHER_MODEL
       });
@@ -98,7 +98,7 @@ describe(`Update review beneficial owner other`, () => {
 
     test(`render the ${UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_PAGE} page with the flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC off`, async () => {
       mockMapDataObjectToFields.mockReturnValueOnce(DISTINCT_PRINCIPAL_ADDRESS_MOCK);
-      mockFetchApplicationData.mockReturnValueOnce({
+      mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_UPDATE_BO_MOCK,
         ...UPDATE_OBJECT_MOCK_REVIEW_BO_OTHER_MODEL
       });
@@ -120,7 +120,7 @@ describe(`Update review beneficial owner other`, () => {
     test(`render the ${UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_PAGE} page with the flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC on`, async () => {
       mockIsActiveFeature.mockReturnValue(true);
       mockMapDataObjectToFields.mockReturnValueOnce(DISTINCT_PRINCIPAL_ADDRESS_MOCK);
-      mockFetchApplicationData.mockReturnValueOnce({
+      mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_UPDATE_BO_MOCK,
         ...UPDATE_OBJECT_MOCK_REVIEW_BO_OTHER_MODEL
       });
@@ -147,7 +147,7 @@ describe(`Update review beneficial owner other`, () => {
     });
 
     test("return empty object when no address in data to review", async () => {
-      mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
       const resp = await request(app).get(UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_URL + '?index=0');
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_HEADING);
@@ -163,7 +163,7 @@ describe(`Update review beneficial owner other`, () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
       mockIsActiveFeature.mockReturnValueOnce(true);
       mockPrepareData.mockImplementationOnce(() => UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_REQ_MOCK);
-      mockFetchApplicationData.mockReturnValue({
+      mockGetApplicationData.mockReturnValue({
         ...APPLICATION_DATA_UPDATE_BO_MOCK
       });
 
@@ -182,7 +182,7 @@ describe(`Update review beneficial owner other`, () => {
       mockIsActiveFeature.mockReturnValueOnce(false);
       mockIsActiveFeature.mockReturnValueOnce(false);
       mockPrepareData.mockImplementationOnce(() => UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_REQ_MOCK);
-      mockFetchApplicationData.mockReturnValue({
+      mockGetApplicationData.mockReturnValue({
         ...APPLICATION_DATA_UPDATE_BO_MOCK
       });
 

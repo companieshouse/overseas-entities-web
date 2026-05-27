@@ -25,7 +25,7 @@ import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/ha
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 
-import { fetchApplicationData, mapDataObjectToFields, prepareData } from "../../../src/utils/application.data";
+import { getApplicationData, mapDataObjectToFields, prepareData } from "../../../src/utils/application.data";
 
 import {
   APPLICATION_DATA_MOCK,
@@ -53,7 +53,7 @@ mockJourneyDetectionMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
 
 const mockMapDataObjectToFields = mapDataObjectToFields as jest.Mock;
-const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
@@ -79,7 +79,7 @@ describe(`Update review beneficial owner Gov`, () => {
   describe(`GET tests`, () => {
 
     test(`render the ${config.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE} page with the flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC off`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockMapDataObjectToFields.mockReturnValueOnce(DISTINCT_PRINCIPAL_ADDRESS_MOCK);
 
       const resp = await request(app).get(UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL_WITH_PARAM_URL_TEST);
@@ -99,7 +99,7 @@ describe(`Update review beneficial owner Gov`, () => {
 
     test(`render the ${config.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE} page with the flag FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC on`, async () => {
       mockIsActiveFeature.mockReturnValue(true);
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockMapDataObjectToFields.mockReturnValueOnce(DISTINCT_PRINCIPAL_ADDRESS_MOCK);
 
       const resp = await request(app).get(UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL_WITH_PARAM_URL_TEST);
@@ -118,7 +118,7 @@ describe(`Update review beneficial owner Gov`, () => {
     });
 
     test("return empty object when no address in data to review", async () => {
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL_WITH_PARAM_URL_TEST);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_HEADING);
@@ -127,7 +127,7 @@ describe(`Update review beneficial owner Gov`, () => {
     });
 
     test(`render the ${config.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE} page With ceased date`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockPrepareData.mockImplementationOnce(() => REVIEW_BENEFICIAL_OWNER_GOV_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA);
       const resp = await request(app).get(UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL_WITH_PARAM_URL_TEST);
       expect(resp.status).toEqual(200);
@@ -136,7 +136,7 @@ describe(`Update review beneficial owner Gov`, () => {
     });
 
     test("catch error when rendering the page", async () => {
-      mockFetchApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockGetApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL_WITH_PARAM_URL_TEST);
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
@@ -160,7 +160,7 @@ describe(`Update review beneficial owner Gov`, () => {
 
     test(`redirect to ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page on successful submission when REDIS_flag is set to OFF`, async () => {
       mockIsActiveFeature.mockReturnValue(false);
-      mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
       mockPrepareData.mockImplementationOnce(() => UPDATE_REVIEW_BENEFICIAL_OWNER_MOCK_DATA);
 
       const resp = await request(app)
@@ -171,7 +171,7 @@ describe(`Update review beneficial owner Gov`, () => {
     });
 
     test(`redirect to ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page on successful submission when REDIS_flag is set to ON`, async () => {
-      mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
       mockIsActiveFeature.mockReturnValue(true);
       mockPrepareData.mockImplementationOnce(() => UPDATE_REVIEW_BENEFICIAL_OWNER_MOCK_DATA);
 
@@ -183,7 +183,7 @@ describe(`Update review beneficial owner Gov`, () => {
     });
 
     test(`validation error is shown with empty submitted data`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_UPDATE_BO_MOCK,);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_UPDATE_BO_MOCK,);
       const resp = await request(app).post(UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL_WITH_PARAM_URL_TEST);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_HEADING);
@@ -203,7 +203,7 @@ describe(`Update review beneficial owner Gov`, () => {
     });
 
     test(`error if index param is undefined and no redirection to ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE}`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockPrepareData.mockImplementationOnce(() => UPDATE_REVIEW_BENEFICIAL_OWNER_MOCK_DATA);
       const resp = await request(app)
         .post(config.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_WITH_INDEX_URL)

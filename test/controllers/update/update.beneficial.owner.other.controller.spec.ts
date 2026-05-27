@@ -51,7 +51,6 @@ import {
   prepareData,
   setApplicationData,
   getApplicationData,
-  fetchApplicationData,
   mapFieldsToDataObject,
   getFromApplicationData,
   removeFromApplicationData,
@@ -119,9 +118,6 @@ mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Respons
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
-
-const mockFetchApplicationData = fetchApplicationData as jest.Mock;
-mockFetchApplicationData.mockReturnValue({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
 
 const mockGetFromApplicationData = getFromApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;

@@ -33,7 +33,7 @@ import { companyAuthentication } from '../../../src/middleware/company.authentic
 import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
 import { manageTrustsTellUsAboutIndividualsGuard } from '../../../src/middleware/navigation/update/manage.trusts.middleware';
 
-import { fetchApplicationData, setExtraData } from '../../../src/utils/application.data';
+import { getApplicationData, setExtraData } from '../../../src/utils/application.data';
 
 import {
   getTrustee,
@@ -59,7 +59,7 @@ import {
 } from '../../__mocks__/text.mock';
 
 mockCsrfProtectionMiddleware.mockClear();
-const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockGetTrustInReview = getTrustInReview as jest.Mock;
 const mockGetTrustee = getTrustee as jest.Mock;
 const mockGetTrusteeIndex = getTrusteeIndex as jest.Mock;
@@ -96,7 +96,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockFetchApplicationData.mockReset();
+    mockGetApplicationData.mockReset();
 
     DEFAULT_FORM_SUBMISSION = {
       trusteeId: 'trustee-id-2',
@@ -144,7 +144,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
       const trustInReview = { trust_id: 'trust-in-review-1', trust_name: 'Veggie Trust', review_status: { in_review: true } };
 
       mockIsActiveFeature.mockReturnValue(false);
-      mockFetchApplicationData.mockReturnValue(appData);
+      mockGetApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
       mockGetTrustee.mockReturnValue(undefined);
 
@@ -167,7 +167,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
       const trustInReview = { trust_id: 'trust-in-review-1', trust_name: 'Veggie Trust', review_status: { in_review: true } };
 
       mockIsActiveFeature.mockReturnValue(true);
-      mockFetchApplicationData.mockReturnValue(appData);
+      mockGetApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
       mockGetTrustee.mockReturnValue(undefined);
 
@@ -228,7 +228,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
         ceased_date_year: "2022"
       };
 
-      mockFetchApplicationData.mockReturnValue(appData);
+      mockGetApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
       mockGetTrustee.mockReturnValue(trustee);
 
@@ -261,7 +261,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
       const appData = { entity_number: 'OE999999', entity_name: 'Overseas Entity Name' };
       const trustInReview = { trust_id: 'trust-in-review-1', trust_name: 'Overseas Entity Name', review_status: { in_review: true } };
       mockIsActiveFeature.mockReturnValue(true);
-      mockFetchApplicationData.mockReturnValue(appData);
+      mockGetApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
       const resp = await request(app).get(`${UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL}${RELEVANT_PERIOD_QUERY_PARAM}`);
       expect(resp.status).toEqual(200);
@@ -281,7 +281,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
         relevant_period: true
       };
       mockIsActiveFeature.mockReturnValue(true);
-      mockFetchApplicationData.mockReturnValue(appData);
+      mockGetApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
       mockGetTrustee.mockReturnValue(trustee);
       const resp = await request(app).get(`${UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL}`);
@@ -386,7 +386,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
       };
 
       mockIsActiveFeature.mockReturnValue(true);
-      mockFetchApplicationData.mockReturnValue(appData);
+      mockGetApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
       mockGetTrusteeIndex.mockReturnValue(0);
 
@@ -503,7 +503,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
       };
 
       mockIsActiveFeature.mockReturnValue(true);
-      mockFetchApplicationData.mockReturnValue(appData);
+      mockGetApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
       mockGetTrusteeIndex.mockReturnValue(-1);
 
@@ -589,7 +589,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
       };
 
       mockIsActiveFeature.mockReturnValue(true);
-      mockFetchApplicationData.mockReturnValue(appData);
+      mockGetApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
       mockGetTrustee.mockReturnValue(existingTrustee);
 
@@ -721,7 +721,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
       };
 
       mockIsActiveFeature.mockReturnValue(true);
-      mockFetchApplicationData.mockReturnValue(appData);
+      mockGetApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
 
       const resp = await request(app)

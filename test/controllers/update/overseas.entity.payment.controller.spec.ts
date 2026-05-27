@@ -18,7 +18,7 @@ import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { createAndLogErrorRequest, logger } from "../../../src/utils/logger";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
-import { fetchApplicationData } from "../../../src/utils/application.data";
+import { getApplicationData } from "../../../src/utils/application.data";
 
 import {
   MESSAGE_ERROR,
@@ -48,7 +48,7 @@ import {
 
 mockJourneyDetectionMiddleware.mockClear();
 
-const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockLoggerInfoRequest = logger.infoRequest as jest.Mock;
 const mockCreateAndLogErrorRequest = createAndLogErrorRequest as jest.Mock;
@@ -71,7 +71,7 @@ describe('OVERSEAS ENTITY PAYMENT controller suit', () => {
   });
 
   test("should rejecting redirect, state does not match", async () => {
-    mockFetchApplicationData.mockReturnValueOnce({});
+    mockGetApplicationData.mockReturnValueOnce({});
     await request(app).get(UPDATE_PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING);
     expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(3);
     expect(mockLoggerDebugRequest).not.toHaveBeenCalled();
@@ -80,7 +80,7 @@ describe('OVERSEAS ENTITY PAYMENT controller suit', () => {
 
   test(`should redirect to ${UPDATE_CONFIRMATION_PAGE} page, Payment Successful with status ${PAYMENT_PAID} when REDIS flag is set to OFF`, async () => {
     mockIsActiveFeature.mockReturnValue(false);
-    mockFetchApplicationData.mockReturnValueOnce({ [PaymentKey]: PAYMENT_OBJECT_MOCK });
+    mockGetApplicationData.mockReturnValueOnce({ [PaymentKey]: PAYMENT_OBJECT_MOCK });
     const resp = await request(app).get(UPDATE_PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING);
     expect(resp.status).toEqual(302);
     expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${UPDATE_CONFIRMATION_URL}`);
@@ -91,7 +91,7 @@ describe('OVERSEAS ENTITY PAYMENT controller suit', () => {
 
   test(`should redirect to ${UPDATE_CONFIRMATION_PAGE} page, Payment Successful with status ${PAYMENT_PAID} when REDIS flag is set to ON`, async () => {
     mockIsActiveFeature.mockReturnValue(true);
-    mockFetchApplicationData.mockReturnValueOnce({
+    mockGetApplicationData.mockReturnValueOnce({
       ...APPLICATION_DATA_MOCK,
       [PaymentKey]: PAYMENT_OBJECT_MOCK
     });
@@ -104,7 +104,7 @@ describe('OVERSEAS ENTITY PAYMENT controller suit', () => {
   });
 
   test(`should redirect to ${UPDATE_PAYMENT_FAILED_URL} page, Payment failed somehow`, async () => {
-    mockFetchApplicationData.mockReturnValueOnce({ [PaymentKey]: PAYMENT_OBJECT_MOCK });
+    mockGetApplicationData.mockReturnValueOnce({ [PaymentKey]: PAYMENT_OBJECT_MOCK });
     const resp = await request(app).get(UPDATE_PAYMENT_DECLINED_WITH_TRANSACTION_URL_AND_QUERY_STRING);
     expect(resp.status).toEqual(302);
     expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${UPDATE_PAYMENT_FAILED_URL}`);
@@ -114,7 +114,7 @@ describe('OVERSEAS ENTITY PAYMENT controller suit', () => {
   });
 
   test(`should redirect to ${PAYMENT_FAILED_PAGE} page, if Payment failed through no change`, async () => {
-    mockFetchApplicationData.mockReturnValueOnce(
+    mockGetApplicationData.mockReturnValueOnce(
       {
         [PaymentKey]: PAYMENT_OBJECT_MOCK,
         update: {

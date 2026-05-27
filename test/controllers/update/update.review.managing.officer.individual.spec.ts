@@ -28,7 +28,7 @@ import { ApplicationData, managingOfficerType } from '../../../src/model';
 
 import {
   prepareData,
-  fetchApplicationData,
+  getApplicationData,
   mapDataObjectToFields,
 } from "../../../src/utils/application.data";
 
@@ -66,7 +66,7 @@ mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, ne
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
-const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
@@ -81,7 +81,7 @@ describe('Test review managing officer', () => {
   describe('GET tests', () => {
 
     test(`that render ${config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_PAGE} is rendered with resign on date`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce({
+      mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_CH_REF_UPDATE_MOCK,
         ...UPDATE_REVIEW_MANAGING_OFFICER_MOCK
       });
@@ -92,7 +92,7 @@ describe('Test review managing officer', () => {
     });
 
     test(`render the ${config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_PAGE} page`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_EMPTY_BO_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_EMPTY_BO_MOCK);
       mockMapDataObjectToFields.mockReturnValueOnce(RESIDENTIAL_ADDRESS_MOCK);
       const resp = await request(app).get(UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_WITH_PARAM_URL_TEST);
       expect(resp.status).toEqual(200);
@@ -103,7 +103,7 @@ describe('Test review managing officer', () => {
     });
 
     test('residential address not displayed when no address returned', async () => {
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_EMPTY_BO_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_EMPTY_BO_MOCK);
       const resp = await request(app).get(UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_WITH_PARAM_URL_TEST);
       expect(resp.status).toEqual(200);
       expect(resp.text).not.toContain("residential address addressLine1");
@@ -117,7 +117,7 @@ describe('Test review managing officer', () => {
     });
 
     test(`render the ${config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_PAGE} page and verifies service and residential address`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_EMPTY_BO_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_EMPTY_BO_MOCK);
       mockMapDataObjectToFields.mockReturnValueOnce(SERVICE_ADDRESS_MOCK);
       mockMapDataObjectToFields.mockReturnValueOnce(RESIDENTIAL_ADDRESS_MOCK);
       const resp = await request(app).get(UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_WITH_PARAM_URL_TEST);
@@ -128,7 +128,7 @@ describe('Test review managing officer', () => {
     });
 
     test('service and residential address not displayed when no address returned', async () => {
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_EMPTY_BO_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_EMPTY_BO_MOCK);
       const resp = await request(app).get(UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_WITH_PARAM_URL_TEST);
       expect(resp.status).toEqual(200);
       expect(resp.text).not.toContain("addressLine1");
@@ -139,7 +139,7 @@ describe('Test review managing officer', () => {
   describe(`POST tests`, () => {
 
     test(`redirect to ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page on successful submission`, async () => {
-      mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_BO_MOCK);
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_BO_MOCK);
       mockPrepareData.mockImplementationOnce( () => UPDATE_REVIEW_MANAGING_OFFICER_MOCK );
       const resp = await request(app)
         .post(UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_WITH_PARAM_URL_TEST)
@@ -153,7 +153,7 @@ describe('Test review managing officer', () => {
       const appData: ApplicationData = {
         [managingOfficerType.ManagingOfficerKey]: [UPDATE_MANAGING_OFFICER_HAVE_DAY_OF_BIRTH_MOCK]
       };
-      mockFetchApplicationData.mockReturnValueOnce(appData);
+      mockGetApplicationData.mockReturnValueOnce(appData);
       mockPrepareData.mockImplementationOnce( () => UPDATE_REVIEW_MANAGING_OFFICER_MOCK );
       const resp = await request(app)
         .post(UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_WITH_PARAM_URL_TEST)
@@ -166,7 +166,7 @@ describe('Test review managing officer', () => {
     });
 
     test(`verify that have_day_of_birth is not set following post method if not set in app data`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_UPDATE_BO_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_UPDATE_BO_MOCK);
       mockPrepareData.mockImplementationOnce( () => UPDATE_REVIEW_MANAGING_OFFICER_MOCK );
       const resp = await request(app)
         .post(UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_WITH_PARAM_URL_TEST)
@@ -193,7 +193,7 @@ describe('Test review managing officer', () => {
     });
 
     test(`error if index param is undefined and no redirection to ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE}`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_UPDATE_BO_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_UPDATE_BO_MOCK);
       const resp = await request(app).post(config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_WITH_INDEX_URL)
         .send(UPDATE_REVIEW_MANAGING_OFFICER_MOCK_STILL_MO);
       expect(resp.status).toEqual(500);

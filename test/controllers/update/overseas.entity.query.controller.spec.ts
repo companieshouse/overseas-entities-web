@@ -1,3 +1,4 @@
+
 jest.mock("ioredis");
 jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/middleware/authentication.middleware');
@@ -6,6 +7,7 @@ jest.mock('../../../src/utils/application.data');
 jest.mock("../../../src/service/company.profile.service");
 jest.mock("../../../src/utils/update/company.profile.mapper.to.overseas.entity");
 jest.mock("../../../src/utils/update/beneficial_owners_managing_officers_data_fetch");
+jest.mock("../../../src/utils/update/data.cookie");
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
 import mockJourneyDetectionMiddleware from "../../__mocks__/journey.detection.middleware.mock";
@@ -26,9 +28,9 @@ import { retrieveBoAndMoData } from "../../../src/utils/update/beneficial_owners
 import { ApplicationData } from "../../../src/model";
 import { companyProfileQueryMock } from "../../__mocks__/update.entity.mocks";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
+import { getApplicationData, setExtraData } from "../../../src/utils/application.data";
 import { mapCompanyProfileToOverseasEntity } from "../../../src/utils/update/company.profile.mapper.to.overseas.entity";
-
-import { fetchApplicationData, getApplicationData, setExtraData } from "../../../src/utils/application.data";
+import { getDataFromEntityCookie, saveDataToCookie } from "../../../src/utils/update/data.cookie";
 
 import {
   PAGE_TITLE_ERROR,
@@ -44,17 +46,25 @@ const notFoundOENumberError = "Enter a correct Overseas Entity ID";
 
 mockJourneyDetectionMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
+
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
-const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 const mockSetExtraData = setExtraData as jest.Mock;
+const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
+const mockMapCompanyProfileToOverseasEntity = mapCompanyProfileToOverseasEntity as jest.Mock;
+
+const mockGetDataFromEntityCookie = getDataFromEntityCookie as jest.Mock;
+mockGetDataFromEntityCookie.mockReturnValue(companyProfileQueryMock);
+
+const mockSaveDataToCookie = saveDataToCookie as jest.Mock;
+mockSaveDataToCookie.mockReturnValue(true);
+
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
-const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
-const mockMapCompanyProfileToOverseasEntity = mapCompanyProfileToOverseasEntity as jest.Mock;
 const mockRetrieveBoAndMoData = retrieveBoAndMoData as jest.Mock;
 mockRetrieveBoAndMoData.mockImplementation((req: Request, appData: ApplicationData) => appData.update = { bo_mo_data_fetched: true } );
 
@@ -67,8 +77,7 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
   describe("GET tests", () => {
 
     test(`renders the ${config.OVERSEAS_ENTITY_QUERY_PAGE} page`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({});
-      mockFetchApplicationData.mockReturnValueOnce({});
+      mockGetApplicationData.mockReturnValue({});
       const resp = await request(app).get(config.OVERSEAS_ENTITY_QUERY_URL);
 
       expect(resp.status).toEqual(200);
@@ -80,7 +89,6 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
 
     test(`renders the ${config.OVERSEAS_ENTITY_QUERY_PAGE} page for the Remove journey`, async () => {
       mockGetApplicationData.mockReturnValueOnce({});
-      mockFetchApplicationData.mockReturnValueOnce({});
       const resp = await request(app).get(`${config.OVERSEAS_ENTITY_QUERY_URL}?${config.JOURNEY_QUERY_PARAM}=remove`);
 
       expect(resp.status).toEqual(200);
@@ -162,7 +170,6 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
 
     test('redirects to confirm page for valid oe number in update journey', async () => {
       mockGetApplicationData.mockReturnValue({});
-      mockFetchApplicationData.mockReturnValue({});
       mockGetCompanyProfile.mockReturnValueOnce(companyProfileQueryMock);
       mockMapCompanyProfileToOverseasEntity.mockReturnValueOnce({});
 

@@ -1,9 +1,11 @@
+
 jest.mock("../../../src/utils/logger");
 jest.mock("../../../src/service/company.profile.service");
 
 import { Request, Response } from "express";
 import { beforeEach, jest, describe } from "@jest/globals";
 import { logger } from "../../../src/utils/logger";
+import { EntityNumberKey } from "../../../src/model/data.types.model";
 import { getCompanyProfile } from "../../../src/service/company.profile.service";
 
 import {
@@ -30,7 +32,7 @@ describe("Test suite for data cookie in update/remove journey", () => {
 
   const mockReq = {
     cookies: {
-      _roe: JSON.stringify({ e_number: testEntityNumber }),
+      _roe: JSON.stringify({ entity_number: testEntityNumber }),
     }
   } as Request;
 
@@ -46,7 +48,7 @@ describe("Test suite for data cookie in update/remove journey", () => {
     test("returns data object with only the entity number if company details are not found", async () => {
       mockGetCompanyProfile.mockReturnValue(false);
       const resp = await getDataFromEntityCookie(mockReq);
-      expect(resp).toEqual({ e_number: testEntityNumber });
+      expect(resp).toEqual({ [EntityNumberKey]: testEntityNumber });
     });
   });
 

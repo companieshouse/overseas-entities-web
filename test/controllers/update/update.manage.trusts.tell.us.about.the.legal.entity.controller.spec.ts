@@ -12,6 +12,7 @@ jest.mock('../../../src/middleware/navigation/update/has.beneficial.owners.or.ma
 jest.mock("../../../src/middleware/navigation/update/has.presenter.middleware");
 jest.mock("../../../src/middleware/navigation/has.trust.middleware");
 jest.mock('../../../src/service/overseas.entities.service');
+jest.mock("../../../src/utils/url");
 
 import { NextFunction } from 'express';
 import request from 'supertest';
@@ -69,6 +70,7 @@ import {
   UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_WITH_PARAMS_URL,
   UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_WITH_PARAMS_URL,
 } from '../../../src/config';
+import { getRedirectUrl } from '../../../src/utils/url';
 
 mockCsrfProtectionMiddleware.mockClear();
 
@@ -98,6 +100,8 @@ mockHasTrustWithIdUpdate.mockImplementation((req: Request, res: Response, next: 
 
 const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
 mockUpdateOverseasEntity.mockReturnValue(OVERSEAS_ENTITY_ID);
+
+const mockGetRedirectUrl = getRedirectUrl as jest.Mock;
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
@@ -190,6 +194,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       const trustInReview = { trust_id: '1199', trust_name: 'Trust 1', review_status: { in_review: true } };
 
       mockIsActiveFeature.mockReturnValue(false);
+      mockGetRedirectUrl.mockReturnValue(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
       mockGetApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
       mockGetTrustee.mockReturnValue(undefined);
@@ -211,6 +216,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       const trustInReview = { trust_id: '1199', trust_name: 'Trust 1', review_status: { in_review: true } };
 
       mockIsActiveFeature.mockReturnValue(true);
+      mockGetRedirectUrl.mockReturnValue(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_WITH_PARAMS_URL);
       mockGetApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
       mockGetTrustee.mockReturnValue(undefined);
@@ -232,6 +238,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       const trustInReview = { trust_id: '2288', trust_name: 'not-for-profit trust', review_status: { in_review: true } };
 
       mockIsActiveFeature.mockReturnValue(true);
+      mockGetRedirectUrl.mockReturnValue(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
       mockGetApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
       mockGetTrustee.mockReturnValue(undefined);
@@ -254,6 +261,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       const trustInReview = { trust_id: '3377', trust_name: 'Trust-3', review_status: { in_review: true } };
 
       mockIsActiveFeature.mockReturnValue(true);
+      mockGetRedirectUrl.mockReturnValue(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
       mockGetApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
       mockGetTrustee.mockReturnValue(undefined);
@@ -277,6 +285,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       const trustInReview = { trust_id: '4466', trust_name: 'TRUST+4', review_status: { in_review: true } };
 
       mockIsActiveFeature.mockReturnValue(true);
+      mockGetRedirectUrl.mockReturnValue(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
       mockGetApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
       mockGetTrustee.mockReturnValue(undefined);
@@ -300,6 +309,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       const trustInReview = { trust_id: '4466', trust_name: 'TRUST+4', review_status: { in_review: true } };
 
       mockIsActiveFeature.mockReturnValue(true);
+      mockGetRedirectUrl.mockReturnValue(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
       mockGetApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
       mockGetTrustee.mockReturnValue(undefined);
@@ -323,6 +333,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
 
       mockIsActiveFeature.mockReturnValue(true);
       mockGetApplicationData.mockReturnValue(appData);
+      mockGetRedirectUrl.mockReturnValue(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
       mockGetTrustInReview.mockReturnValue(trustInReview);
       mockGetTrustee.mockReturnValue(undefined);
 
@@ -350,6 +361,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
 
       mockIsActiveFeature.mockReturnValue(true);
       mockGetApplicationData.mockReturnValue(appData);
+      mockGetRedirectUrl.mockReturnValue(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
       mockGetTrustInReview.mockReturnValue(trustInReview);
       mockGetTrustee.mockReturnValue(trustee);
 
@@ -381,6 +393,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
 
       mockIsActiveFeature.mockReturnValue(true);
       mockGetApplicationData.mockReturnValue(appData);
+      mockGetRedirectUrl.mockReturnValue(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
       mockGetTrustInReview.mockReturnValue(trustInReview);
       mockGetTrustee.mockReturnValue(legalEntityTrustee);
 
@@ -414,7 +427,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
 
     test("catch error when rendering the page", async () => {
       mockIsActiveFeature.mockReturnValue(false);
-      mockGetApplicationData.mockRejectedValue(() => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockGetApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const response = await request(app).get(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL);
       expect(response.status).toEqual(500);
       expect(response.text).toContain(SERVICE_UNAVAILABLE);
@@ -539,6 +552,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       };
 
       mockIsActiveFeature.mockReturnValue(true);
+      mockGetRedirectUrl.mockReturnValue(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
       mockGetApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
       mockGetTrusteeIndex.mockReturnValue(0);
@@ -644,6 +658,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       };
 
       mockIsActiveFeature.mockReturnValue(true);
+      mockGetRedirectUrl.mockReturnValue(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
       mockGetApplicationData.mockReturnValue(appData);
       mockGetTrustInReview.mockReturnValue(trustInReview);
       mockGetTrusteeIndex.mockReturnValue(-1);
@@ -938,6 +953,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       };
 
       mockIsActiveFeature.mockReturnValue(true);
+      mockGetRedirectUrl.mockReturnValue(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
       mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
 
       const resp = await request(app)

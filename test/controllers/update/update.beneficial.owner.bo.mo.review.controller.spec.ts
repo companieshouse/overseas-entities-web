@@ -83,9 +83,10 @@ describe("BENEFICIAL OWNER BO MO REVIEW controller", () => {
       expect(resp.text).toContain("SA000392");
     });
 
-    // @todo: this test inexplicably hangs and needs to be investigated further
-    test.skip("catch error when rendering the Overseas Entity Review page on GET method", async () => {
-      mockGetApplicationData.mockImplementation( () => { throw new Error(ANY_MESSAGE_ERROR); });
+    test("catch error when rendering the Overseas Entity Review page on GET method", async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockImplementation(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);

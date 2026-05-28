@@ -20,7 +20,7 @@ import {
   prepareData,
   getApplicationData,
   setApplicationData,
-  getFromApplicationData
+  getFromApplicationData,
 } from "../utils/application.data";
 
 export const get = async (req: Request, res: Response, next: NextFunction): Promise<void> => {

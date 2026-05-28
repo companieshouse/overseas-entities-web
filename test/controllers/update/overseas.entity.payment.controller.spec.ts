@@ -8,6 +8,7 @@ jest.mock('../../../src/middleware/service.availability.middleware');
 
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
+
 // import remove journey middleware mock before app to prevent real function being used instead of mock
 import mockJourneyDetectionMiddleware from "../../__mocks__/journey.detection.middleware.mock";
 import app from "../../../src/app";
@@ -15,10 +16,10 @@ import app from "../../../src/app";
 import { PaymentKey } from "../../../src/model/data.types.model";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
+import { getApplicationData } from "../../../src/utils/application.data";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { createAndLogErrorRequest, logger } from "../../../src/utils/logger";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
-import { getApplicationData } from "../../../src/utils/application.data";
 
 import {
   MESSAGE_ERROR,

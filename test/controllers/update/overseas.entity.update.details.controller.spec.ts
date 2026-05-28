@@ -21,23 +21,23 @@ import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.a
 import app from "../../../src/app";
 import * as config from "../../../src/config";
 
-import { hasOverseasEntityNumber } from "../../../src/middleware/navigation/update/has.overseas.entity.middleware";
-import { isActiveFeature } from "../../../src/utils/feature.flag";
-import { getPrivateOeDetails } from "../../../src/service/private.overseas.entity.details";
-import { updateOverseasEntity } from "../../../src/service/overseas.entities.service";
+import { EntityKey } from "../../../src/model/entity.model";
 import { NAVIGATION } from "../../../src/utils/navigation";
 import { ErrorMessages } from "../../../src/validation/error.messages";
 import { authentication } from "../../../src/middleware/authentication.middleware";
-import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
-import { EntityKey } from "../../../src/model/entity.model";
+import { isActiveFeature } from "../../../src/utils/feature.flag";
+import { getPrivateOeDetails } from "../../../src/service/private.overseas.entity.details";
+import { updateOverseasEntity } from "../../../src/service/overseas.entities.service";
+import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
+import { hasOverseasEntityNumber } from "../../../src/middleware/navigation/update/has.overseas.entity.middleware";
 import { UPDATE_ENTITY_WITH_INVALID_CHARACTERS_FIELDS_MOCK } from "../../__mocks__/validation.mock";
 
 import {
   prepareData,
   setExtraData,
   setApplicationData,
-  fetchApplicationData,
+  getApplicationData,
 } from "../../../src/utils/application.data";
 
 import {
@@ -64,6 +64,7 @@ import {
 
 mockJourneyDetectionMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
+
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
@@ -77,7 +78,7 @@ const mockHasOverseasEntityNumber = hasOverseasEntityNumber as jest.Mock;
 mockHasOverseasEntityNumber.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockPrepareData = prepareData as jest.Mock;
-const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
@@ -91,14 +92,14 @@ describe("OVERSEAS ENTITY UPDATE DETAILS controller", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockIsActiveFeature.mockReset();
-    mockFetchApplicationData.mockReset();
+    mockGetApplicationData.mockReset();
   });
 
   describe("GET tests", () => {
 
     test(`renders the OVERSEAS ENTITY UPDATE DETAILS page`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
-      mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
 
       const resp = await request(app).get(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
       expect(resp.status).toEqual(200);
@@ -108,7 +109,7 @@ describe("OVERSEAS ENTITY UPDATE DETAILS controller", () => {
 
     test("renders the OVERSEAS ENTITY UPDATE DETAILS on GET method with Afghanistan as country field", async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
-      mockFetchApplicationData.mockReturnValueOnce({
+      mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
         [EntityKey]: {
           ...APPLICATION_DATA_MOCK[EntityKey],
@@ -124,7 +125,7 @@ describe("OVERSEAS ENTITY UPDATE DETAILS controller", () => {
 
     test("catch error when renders the entity page on GET method", async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
-      mockFetchApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockGetApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
 
       expect(resp.status).toEqual(500);
@@ -133,7 +134,7 @@ describe("OVERSEAS ENTITY UPDATE DETAILS controller", () => {
 
     test(`renders the OVERSEAS ENTITY UPDATE DETAILS page with email address in session`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(false);
-      mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
 
       const resp = await request(app).get(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
       expect(resp.status).toEqual(200);
@@ -146,7 +147,7 @@ describe("OVERSEAS ENTITY UPDATE DETAILS controller", () => {
       mockIsActiveFeature.mockReturnValueOnce(false);
       const appData = getMockAppDataWithoutEmail();
 
-      mockFetchApplicationData.mockReturnValueOnce(appData);
+      mockGetApplicationData.mockReturnValueOnce(appData);
       mockGetPrivateOeDetails.mockReturnValueOnce({ email_address: "tester@test.com" });
 
       const resp = await request(app).get(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
@@ -163,7 +164,7 @@ describe("OVERSEAS ENTITY UPDATE DETAILS controller", () => {
       mockIsActiveFeature.mockReturnValueOnce(false);
       const appData = { ...APPLICATION_DATA_MOCK };
       appData.entity = undefined;
-      mockFetchApplicationData.mockReturnValueOnce(appData);
+      mockGetApplicationData.mockReturnValueOnce(appData);
       mockGetPrivateOeDetails.mockReturnValueOnce({ email_address: "tester@test.com" });
 
       const resp = await request(app).get(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
@@ -180,7 +181,7 @@ describe("OVERSEAS ENTITY UPDATE DETAILS controller", () => {
       mockIsActiveFeature.mockReturnValueOnce(false);
       const appData = getMockAppDataWithoutEmail();
 
-      mockFetchApplicationData.mockReturnValueOnce(appData);
+      mockGetApplicationData.mockReturnValueOnce(appData);
       mockGetPrivateOeDetails.mockReturnValueOnce(undefined);
 
       const resp = await request(app).get(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
@@ -195,7 +196,7 @@ describe("OVERSEAS ENTITY UPDATE DETAILS controller", () => {
       mockIsActiveFeature.mockReturnValueOnce(false);
       const appData = getMockAppDataWithoutEmail();
 
-      mockFetchApplicationData.mockReturnValueOnce(appData);
+      mockGetApplicationData.mockReturnValueOnce(appData);
       mockGetPrivateOeDetails.mockReturnValueOnce({ });
 
       const resp = await request(app).get(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
@@ -210,7 +211,7 @@ describe("OVERSEAS ENTITY UPDATE DETAILS controller", () => {
       mockIsActiveFeature.mockReturnValueOnce(false);
       const appData = getMockAppDataWithoutEmail();
 
-      mockFetchApplicationData.mockReturnValueOnce(appData);
+      mockGetApplicationData.mockReturnValueOnce(appData);
       mockGetPrivateOeDetails.mockReturnValueOnce({ email_address: "" });
 
       const resp = await request(app).get(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
@@ -225,7 +226,7 @@ describe("OVERSEAS ENTITY UPDATE DETAILS controller", () => {
       mockIsActiveFeature.mockReturnValueOnce(false);
       const appData = getMockAppDataWithoutEmail();
 
-      mockFetchApplicationData.mockReturnValueOnce(appData);
+      mockGetApplicationData.mockReturnValueOnce(appData);
       mockGetPrivateOeDetails.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
 
       const resp = await request(app).get(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
@@ -242,7 +243,7 @@ describe("OVERSEAS ENTITY UPDATE DETAILS controller", () => {
 
     test("redirect to UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE page after a successful post from OVERSEAS ENTITY UPDATE DETAILS page when REDIS_flag is OFF", async () => {
       const appData = getMockAppDataWithoutEmail();
-      mockFetchApplicationData.mockReturnValueOnce(appData);
+      mockGetApplicationData.mockReturnValueOnce(appData);
       mockPrepareData.mockReturnValueOnce(ENTITY_OBJECT_MOCK);
       mockIsActiveFeature.mockReturnValue(false);
       const resp = await request(app)
@@ -257,7 +258,7 @@ describe("OVERSEAS ENTITY UPDATE DETAILS controller", () => {
 
     test("redirect to UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE page after a successful post from OVERSEAS ENTITY UPDATE DETAILS page when REDIS_flag is ON", async () => {
       const appData = getMockAppDataWithoutEmail();
-      mockFetchApplicationData.mockReturnValueOnce(appData);
+      mockGetApplicationData.mockReturnValueOnce(appData);
       mockPrepareData.mockReturnValueOnce(ENTITY_OBJECT_MOCK);
       mockIsActiveFeature.mockReturnValue(true);
       const resp = await request(app)
@@ -295,7 +296,7 @@ describe("OVERSEAS ENTITY UPDATE DETAILS controller", () => {
 
     test("redirect to the next page page after a successful post from OVERSEAS ENTITY UPDATE DETAILS page without the register option", async () => {
       const appData = getMockAppDataWithoutEmail();
-      mockFetchApplicationData.mockReturnValueOnce(appData);
+      mockGetApplicationData.mockReturnValueOnce(appData);
       mockPrepareData.mockReturnValueOnce({ ...ENTITY_OBJECT_MOCK, [IsOnRegisterInCountryFormedInKey]: "", [EntityNumberKey]: COMPANY_NUMBER });
       const resp = await request(app)
         .post(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL)

@@ -3,15 +3,15 @@ import { v4 as uuidv4 } from "uuid";
 import { Session } from "@companieshouse/node-session-handler";
 import { logger } from "../../utils/logger";
 import { InputDate } from "../../model/data.types.model";
+import { setOfficerData } from "../../utils/managing.officer.individual";
+import { getRedirectUrl } from "../../utils/url";
 import { isActiveFeature } from "../../utils/feature.flag";
 import { saveAndContinue } from "../../utils/save.and.continue";
-import { setOfficerData } from "../../utils/managing.officer.individual";
-import { checkRelevantPeriod } from "../../utils/relevant.period";
 import { ManagingOfficerKey } from "../../model/managing.officer.model";
+import { checkRelevantPeriod } from "../../utils/relevant.period";
 import { setReviewedDateOfBirth } from "./update.review.beneficial.owner.individual";
 import { addResignedDateToTemplateOptions } from "../../utils/update/ceased_date_util";
 
-import { getRedirectUrl, isRemoveJourney } from "../../utils/url";
 import { HaveDayOfBirthKey, ResignedOnKey } from "../../model/date.model";
 import { ApplicationData, ApplicationDataType } from "../../model";
 
@@ -22,7 +22,7 @@ import {
 
 import {
   setApplicationData,
-  fetchApplicationData,
+  getApplicationData,
   removeFromApplicationData,
 } from "../../utils/application.data";
 
@@ -41,8 +41,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData = await fetchApplicationData(req, !isRemove);
+    const appData = await getApplicationData(req);
     const index = Number(req.query.index);
     if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       checkAndReviewManagingOfficers(req as any, appData);
@@ -78,8 +77,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const moIndex = req.query.index;
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData = await fetchApplicationData(req, !isRemove);
+    const appData = await getApplicationData(req);
     const requestId = req.body["id"];
 
     if (isMoReviewable(appData, moIndex, requestId)) {

@@ -1,16 +1,20 @@
 import { NextFunction, Request, Response } from "express";
 import { Session } from "@companieshouse/node-session-handler";
 import * as config from "../config";
-import { ApplicationData } from "../model";
 import { logger } from "./logger";
+import { isActiveFeature } from "./feature.flag";
+import { ApplicationData } from "../model";
 import { saveAndContinue } from "./save.and.continue";
 import { postTransaction } from "../service/transaction.service";
 import { createOverseasEntity } from "../service/overseas.entities.service";
-import { isActiveFeature } from "./feature.flag";
 import { getRedirectUrl, isRemoveJourney } from "../utils/url";
-
 import { PresenterKey, PresenterKeys } from "../model/presenter.model";
-import { IsRemoveKey, OverseasEntityKey, Transactionkey } from '../model/data.types.model';
+
+import {
+  IsRemoveKey,
+  Transactionkey,
+  OverseasEntityKey,
+} from '../model/data.types.model';
 
 import {
   prepareData,

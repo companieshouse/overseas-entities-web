@@ -30,8 +30,8 @@ import { NatureOfControlJurisdiction, NatureOfControlType } from "../../../src/m
 
 import {
   prepareData,
-  fetchApplicationData,
   mapDataObjectToFields,
+  getApplicationData,
 } from "../../../src/utils/application.data";
 
 import {
@@ -74,7 +74,7 @@ mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, ne
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
-const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+const mockFetchApplicationData = getApplicationData as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
 const mockMapDataObjectToFields = mapDataObjectToFields as jest.Mock;
 const mockIsActiveFeature = isActiveFeature as jest.Mock;

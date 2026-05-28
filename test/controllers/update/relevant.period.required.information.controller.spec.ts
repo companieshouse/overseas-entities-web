@@ -15,22 +15,28 @@ import { logger } from "../../../src/utils/logger";
 
 import * as config from "../../../src/config";
 import app from "../../../src/app";
+
+import { authentication } from "../../../src/middleware/authentication.middleware";
+import { isActiveFeature } from "../../../src/utils/feature.flag";
+import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
+import { getApplicationData } from "../../../src/utils/application.data";
+import { APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock";
+import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
+import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
+import { RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_URL } from "../../../src/config";
+
 import {
+  RELEVANT_PERIOD,
   ANY_MESSAGE_ERROR,
   SERVICE_UNAVAILABLE,
   RELEVANT_PERIOD_REQUIRED_INFORMATION_TITLE,
-  RELEVANT_PERIOD
 } from "../../__mocks__/text.mock";
-import { APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock";
-import { getApplicationData } from "../../../src/utils/application.data";
-import { authentication } from "../../../src/middleware/authentication.middleware";
-import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
-import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
-import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
-import { isActiveFeature } from "../../../src/utils/feature.flag";
-import { RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_URL } from "../../../src/config";
 
 mockCsrfProtectionMiddleware.mockClear();
+
+const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
+
 const mockHasUpdatePresenter = hasUpdatePresenter as jest.Mock;
 mockHasUpdatePresenter.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
@@ -43,10 +49,6 @@ mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Respo
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
-const mockGetApplicationData = getApplicationData as jest.Mock;
-
-const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
-
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue(true);
 
@@ -55,7 +57,9 @@ describe("relevant period required information page tests", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
+
   describe("GET tests", () => {
+
     test(`renders the ${config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_PAGE} page`, async () => {
       mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
       const resp = await request(app).get(config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_URL);
@@ -78,14 +82,16 @@ describe("relevant period required information page tests", () => {
   });
 
   describe("POST tests", () => {
+
     test(`renders the ${config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL + config.RELEVANT_PERIOD_QUERY_PARAM} page when yes is selected`, async () => {
       const resp = await request(app)
         .post(config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_URL + config.RELEVANT_PERIOD_QUERY_PARAM)
         .send({ 'required_information': "1" });
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE + config.RELEVANT_PERIOD_QUERY_PARAM);
+      expect(resp.header.location).toEqual(config.UPDATE_AN_OVERSEAS_ENTITY_URL + config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE + config.RELEVANT_PERIOD_QUERY_PARAM);
     });
+
     test(`renders the ${config.RELEVANT_PERIOD_SUBMIT_BY_PAPER_URL} page when no is selected`, async () => {
       const resp = await request(app)
         .post(config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_URL + config.RELEVANT_PERIOD_QUERY_PARAM)
@@ -94,6 +100,7 @@ describe("relevant period required information page tests", () => {
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.RELEVANT_PERIOD_SUBMIT_BY_PAPER_URL);
     });
+
     test("catch error when validating the page", async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);

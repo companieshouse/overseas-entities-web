@@ -29,7 +29,6 @@ import {
   prepareData,
   getApplicationData,
   setApplicationData,
-  fetchApplicationData,
 } from "../../../src/utils/application.data";
 
 import {
@@ -66,7 +65,6 @@ const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
-const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
@@ -82,14 +80,13 @@ describe('Review managing officer corporate controller tests', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockIsActiveFeature.mockReset();
-    mockFetchApplicationData.mockReset();
     mockGetApplicationData.mockReset();
   });
 
   describe('GET tests', () => {
 
     test(`renders the review-managing-officer-corporate page for MO already popped from appData.update and REDIS_flag is set to OFF`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_CH_REF_UPDATE_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_CH_REF_UPDATE_MOCK);
       mockIsActiveFeature.mockReturnValue(false);
       const resp = await request(app).get(UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_URL + "?index=0");
       expect(resp.status).toEqual(200);
@@ -98,7 +95,7 @@ describe('Review managing officer corporate controller tests', () => {
     });
 
     test(`renders the review-managing-officer-corporate page for MO already popped from appData.update and REDIS_flag is set to ON`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_CH_REF_UPDATE_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_CH_REF_UPDATE_MOCK);
       mockIsActiveFeature.mockReturnValue(true);
       const resp = await request(app).get(UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL + "?index=0");
       expect(resp.status).toEqual(200);
@@ -117,7 +114,7 @@ describe('Review managing officer corporate controller tests', () => {
   describe(`POST tests`, () => {
 
     test(`redirect to update-beneficial-owner-type page on successful submission and REDIS_flag is set to OFF`, async () => {
-      mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_CH_REF_UPDATE_MOCK);
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_CH_REF_UPDATE_MOCK);
       mockIsActiveFeature.mockReturnValue(false);
       const resp = await request(app)
         .post(UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_URL + "?index=0")
@@ -129,7 +126,7 @@ describe('Review managing officer corporate controller tests', () => {
     });
 
     test(`redirect to update-beneficial-owner-type page on successful submission and REDIS_flag is set to ON`, async () => {
-      mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_CH_REF_UPDATE_MOCK);
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_CH_REF_UPDATE_MOCK);
       mockIsActiveFeature.mockReturnValue(true);
       const resp = await request(app)
         .post(UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL + "?index=0")
@@ -152,7 +149,6 @@ describe('Review managing officer corporate controller tests', () => {
     });
 
     test("catch error when posting data", async () => {
-      mockFetchApplicationData.mockImplementation(() => { throw new Error(ANY_MESSAGE_ERROR); });
       mockGetApplicationData.mockImplementation(() => { throw new Error(ANY_MESSAGE_ERROR); });
       mockIsActiveFeature.mockReturnValue(false);
       const resp = await request(app)

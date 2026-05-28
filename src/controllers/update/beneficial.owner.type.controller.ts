@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { Session } from "@companieshouse/node-session-handler";
 import { logger } from "../../utils/logger";
 import * as config from "../../config";
+import { getRedirectUrl } from "../../utils/url";
 import { ApplicationData } from "../../model";
 import { saveAndContinue } from "../../utils/save.and.continue";
 import { isActiveFeature } from "../../utils/feature.flag";
@@ -16,8 +17,7 @@ import { BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.indiv
 import { checkAndReviewBeneficialOwner } from "../../utils/update/review.beneficial.owner";
 import { checkAndReviewManagingOfficers } from "../../utils/update/review.managing.officer";
 
-import { getRedirectUrl, isRemoveJourney } from "../../utils/url";
-import { fetchApplicationData, setExtraData } from "../../utils/application.data";
+import { getApplicationData, setExtraData } from "../../utils/application.data";
 import { checkEntityRequiresTrusts, getTrustLandingUrl } from "../../utils/trusts";
 import { FormattedValidationErrors, formatValidationError } from "../../middleware/validation.middleware";
 
@@ -58,8 +58,7 @@ type BeneficialOwnerTypePageProperties = {
 
 const getPageProperties = async (req: Request, errors?: FormattedValidationErrors,): Promise<BeneficialOwnerTypePageProperties> => {
 
-  const isRemove: boolean = await isRemoveJourney(req);
-  const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+  const appData: ApplicationData = await getApplicationData(req);
 
   const allBosMos = [
     ...(appData[BeneficialOwnerIndividualKey] ?? []),
@@ -102,8 +101,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    const appData: ApplicationData = await getApplicationData(req);
     const checkIsRedirect = checkAndReviewBeneficialOwner(req as any, appData);
 
     if (checkIsRedirect && checkIsRedirect !== "") {
@@ -139,13 +137,12 @@ export const postSubmit = async (req: Request, res: Response, next: NextFunction
   try {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData = await fetchApplicationData(req, !isRemove);
+    const appData = await getApplicationData(req);
 
     if (!appData.update?.trust_data_fetched) {
       const session = req.session as Session;
       await retrieveTrustData(req, appData);
-      if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && !isRemove) {
+      if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
         await updateOverseasEntity(req, req.session as Session, appData);
       } else {
         await saveAndContinue(req, session);
@@ -259,8 +256,8 @@ const getReviewBaseUrls = (req: Request): ReviewBaseUrls => {
     }),
     beneficialOwnerGov: getRedirectUrl({
       req,
-      urlWithEntityIds: config.UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL,
-      urlWithoutEntityIds: config.UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_URL,
+      urlWithEntityIds: config.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL,
     }),
     beneficialOwnerOther: getRedirectUrl({
       req,

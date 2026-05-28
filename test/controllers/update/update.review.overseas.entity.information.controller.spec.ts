@@ -22,7 +22,7 @@ import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.a
 import { hasDueDiligenceDetails } from "../../../src/middleware/navigation/update/has.due.diligence.details.middleware";
 import { APPLICATION_DATA_MOCK } from '../../__mocks__/session.mock';
 import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/overseas.entity.due.diligence.mock";
-import { fetchApplicationData } from "../../../src/utils/application.data";
+import { getApplicationData } from "../../../src/utils/application.data";
 
 import {
   OVERSEAS_ENTITY_UPDATE_DETAILS_URL,
@@ -52,7 +52,8 @@ const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
-const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+// const mockGetApplicationData = fetchApplicationData as jest.Mock;
+const mockGetApplicationData = getApplicationData as jest.Mock;
 
 describe("Update review overseas entity information controller tests", () => {
 
@@ -63,7 +64,7 @@ describe("Update review overseas entity information controller tests", () => {
   describe("GET tests", () => {
 
     test(`renders the ${UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE} page`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
       const resp = await request(app).get(UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE_TITLE);
@@ -75,7 +76,7 @@ describe("Update review overseas entity information controller tests", () => {
       const appData = { ...APPLICATION_DATA_MOCK };
       appData.due_diligence = {};
       appData.overseas_entity_due_diligence = OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK;
-      mockFetchApplicationData.mockReturnValueOnce(appData);
+      mockGetApplicationData.mockReturnValueOnce(appData);
       const resp = await request(app).get(UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE_TITLE);
@@ -95,7 +96,7 @@ describe("Update review overseas entity information controller tests", () => {
   describe("POST tests", () => {
 
     test(`redirect to ${OVERSEAS_ENTITY_UPDATE_DETAILS_URL} page after a successful post from ${UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE} page`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
       const resp = await request(app)
         .post(UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL);
       expect(resp.status).toEqual(302);

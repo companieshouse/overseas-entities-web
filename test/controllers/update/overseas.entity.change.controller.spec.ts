@@ -24,12 +24,11 @@ import request from "supertest";
 import * as config from "../../../src/config";
 import app from "../../../src/app";
 import { authentication } from "../../../src/middleware/authentication.middleware";
-import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
-import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import { updateOverseasEntity } from "../../../src/service/overseas.entities.service";
-
-import { fetchApplicationData, getApplicationData, setExtraData } from "../../../src/utils/application.data";
+import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
+import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
+import { getApplicationData, setExtraData } from "../../../src/utils/application.data";
 
 import {
   COMPANY_NUMBER,
@@ -91,7 +90,6 @@ const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
 mockUpdateOverseasEntity.mockReturnValue(OVERSEAS_ENTITY_ID);
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
-const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 const mockSetExtraData = setExtraData as jest.Mock;
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
@@ -120,7 +118,7 @@ describe("Overseas entity do you want to change your OE controller", () => {
   describe("GET tests", () => {
 
     test(`that ${UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE} page is rendered`, async() => {
-      mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+      mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
       const resp = await request(app).get(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(OVERSEAS_NAME_MOCK);
@@ -131,7 +129,7 @@ describe("Overseas entity do you want to change your OE controller", () => {
     });
 
     test(`renders the ${UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE} page with radio button selected as Yes, I need to make changes`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce({
+      mockGetApplicationData.mockReturnValueOnce({
         update: {
           [NoChangeKey]: "1"
         }
@@ -142,7 +140,7 @@ describe("Overseas entity do you want to change your OE controller", () => {
     });
 
     test(`renders the ${UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE} page with radio button selected as No, I do not need to make changes`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce({
+      mockGetApplicationData.mockReturnValue({
         update: {
           [NoChangeKey]: "0"
         }
@@ -153,14 +151,14 @@ describe("Overseas entity do you want to change your OE controller", () => {
     });
 
     test(`catch error when rendering ${UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE} page`, async () => {
-      mockFetchApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockGetApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL);
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
 
     test(`renders the ${UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE} page with radios selected to No`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce({
+      mockGetApplicationData.mockReturnValue({
         update: {
           [NoChangeKey]: "0"
         }
@@ -172,8 +170,9 @@ describe("Overseas entity do you want to change your OE controller", () => {
   });
 
   describe("GET remove journey tests", () => {
+
     test(`that ${UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE} page is rendered`, async() => {
-      mockFetchApplicationData.mockReturnValue({ ...APPLICATION_DATA_REMOVE_MOCK });
+      mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_REMOVE_MOCK });
       const resp = await request(app).get(`${config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL}?${config.JOURNEY_QUERY_PARAM}=remove`);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(OVERSEAS_NAME_MOCK);
@@ -187,7 +186,7 @@ describe("Overseas entity do you want to change your OE controller", () => {
   describe("POST tests", () => {
 
     test("retrieve trust data is not called if feature disabled and no update model data", async () => {
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK_WITHOUT_UPDATE);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK_WITHOUT_UPDATE);
       mockGetCompanyProfile.mockReturnValueOnce(companyProfileQueryMock);
       mockIsActiveFeature.mockReturnValue(false);
       mockSaveAndContinue.mockReturnValueOnce(undefined);
@@ -199,7 +198,7 @@ describe("Overseas entity do you want to change your OE controller", () => {
     });
 
     test("retrieve trust data is called if feature enabled and relevant period changes are specified in the app data", async () => {
-      mockFetchApplicationData.mockReturnValueOnce({
+      mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK_WITHOUT_UPDATE,
         update: UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE
       });
@@ -214,7 +213,7 @@ describe("Overseas entity do you want to change your OE controller", () => {
     });
 
     test(`redirect to ${WHO_IS_MAKING_UPDATE_URL} on YES selection with REDIS_flag set to OFF`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockIsActiveFeature.mockReturnValue(false);
       const resp = await request(app).post(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL)
         .send({ [NoChangeKey]: "0" });
@@ -233,7 +232,7 @@ describe("Overseas entity do you want to change your OE controller", () => {
     });
 
     test(`redirect to ${WHO_IS_MAKING_UPDATE_URL} on YES selection with REDIS_flag set to ON`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockIsActiveFeature.mockReturnValue(true);
       const resp = await request(app).post(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_WITH_PARAMS_URL)
         .send({ [NoChangeKey]: "0" });
@@ -252,7 +251,7 @@ describe("Overseas entity do you want to change your OE controller", () => {
     });
 
     test(`redirect to ${UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE} on No, I do not need to make changes selection and relevant period no change is selected`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK, update: UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE });
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK, update: UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE });
       mockGetCompanyProfile.mockReturnValueOnce(companyProfileQueryMock);
       mockGetCompanyPscService.mockReturnValue(MOCK_GET_COMPANY_PSC_ALL_BO_TYPES);
       mockGetCompanyOfficers.mockReturnValue(MOCK_GET_COMPANY_OFFICERS);
@@ -278,7 +277,7 @@ describe("Overseas entity do you want to change your OE controller", () => {
     });
 
     test(`redirect to ${WHO_IS_MAKING_UPDATE_URL} on No, I do not need to make changes selection but relevant period change selected`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK, update: UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE });
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK, update: UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE });
       mockGetCompanyProfile.mockReturnValueOnce(companyProfileQueryMock);
       mockGetCompanyPscService.mockReturnValue(MOCK_GET_COMPANY_PSC_ALL_BO_TYPES);
       mockGetCompanyOfficers.mockReturnValue(MOCK_GET_COMPANY_OFFICERS);

@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-import { ApplicationData } from "../model";
-import { logger } from "./logger";
-import * as config from "../config";
-import { isActiveFeature } from "./feature.flag";
 import { Session } from "@companieshouse/node-session-handler";
+
+import * as config from "../config";
+import { logger } from "./logger";
+import { ApplicationData } from "../model";
+import { isActiveFeature } from "./feature.flag";
 import { postTransaction } from "../service/transaction.service";
 
 import { getApplicationData, setExtraData } from "./application.data";
@@ -12,8 +13,8 @@ import { IsSecureRegisterKey, OverseasEntityKey, Transactionkey } from "../model
 
 import {
   getRedirectUrl,
-  isRemoveJourney,
   isUpdateJourney,
+  isRemoveJourney,
   getUrlWithTransactionIdAndSubmissionId,
 } from "../utils/url";
 
@@ -61,6 +62,7 @@ export const postFilterPage = async (
   try {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
+
     const isRedisRemovalFlag = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL);
     const isUpdate: boolean = await isUpdateJourney(req);
     const isRemove: boolean = await isRemoveJourney(req);
@@ -77,7 +79,7 @@ export const postFilterPage = async (
     if (isSecureRegister === "0") {
       nextPageUrl = isSecureRegisterNoUrl;
       if (isRedisRemovalFlag) {
-        await createOrUpdateEntityDetails(req, appData, isUpdate);
+        await createOrUpdateEntityDetails(req, appData, isUpdate, isRemove);
         nextPageUrl = getNextPageUrl(appData, isSecureRegisterNoUrl, isRedisRemovalFlag);
       }
     }
@@ -95,18 +97,18 @@ export const postFilterPage = async (
   }
 };
 
-const createOrUpdateEntityDetails = async (req: Request, appData: ApplicationData, isUpdate: boolean): Promise<void> => {
+const createOrUpdateEntityDetails = async (req: Request, appData: ApplicationData, isUpdate: boolean, isRemove: boolean): Promise<void> => {
 
   const session = req.session as Session;
 
-  if (isUpdate && !appData[Transactionkey]) {
+  if ((isUpdate || isRemove) && !appData[Transactionkey]) {
     const transactionID = await postTransaction(req, session);
     appData[Transactionkey] = transactionID;
     appData[OverseasEntityKey] = await createOverseasEntity(req, session, transactionID);
   }
 
   if (appData[Transactionkey] && appData[OverseasEntityKey]) {
-    await updateOverseasEntity(req, session, appData);
+    await updateOverseasEntity(req, session, appData, true);
   } else {
     throw new Error("Error: is_secure_register filter cannot be updated - transaction_id or overseas_entity_id is missing");
   }

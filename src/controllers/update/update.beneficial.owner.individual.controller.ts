@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
+import { getRedirectUrl } from "../../utils/url";
 import { ApplicationData } from "../../model";
+import { getApplicationData } from "../../utils/application.data";
 import { checkRelevantPeriod } from "../../utils/relevant.period";
-import { fetchApplicationData } from "../../utils/application.data";
-import { getRedirectUrl, isRemoveJourney } from "../../utils/url";
 
 import {
   RELEVANT_PERIOD_QUERY_PARAM,
@@ -27,8 +27,7 @@ export const getById = async (req: Request, res: Response, next: NextFunction) =
 };
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
-  const isRemove: boolean = await isRemoveJourney(req);
-  const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+  const appData: ApplicationData = await getApplicationData(req);
   if (checkRelevantPeriod(appData)) {
     await postBeneficialOwnerIndividual(req, res, next, getBackLinkUrl(req) + RELEVANT_PERIOD_QUERY_PARAM);
   } else {

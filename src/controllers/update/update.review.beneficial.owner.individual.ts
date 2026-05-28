@@ -3,22 +3,23 @@ import { Session } from "@companieshouse/node-session-handler";
 import { v4 as uuidv4 } from "uuid";
 
 import { logger } from "../../utils/logger";
+import { getRedirectUrl } from "../../utils/url";
 import { saveAndContinue } from "../../utils/save.and.continue";
 import { isActiveFeature } from "../../utils/feature.flag";
 import { checkRelevantPeriod } from "../../utils/relevant.period";
 import { setBeneficialOwnerData } from "../../utils/beneficial.owner.individual";
-import { addCeasedDateToTemplateOptions } from "../../utils/update/ceased_date_util";
 import { checkAndReviewBeneficialOwner } from "../../utils/update/review.beneficial.owner";
+import { addCeasedDateToTemplateOptions } from "../../utils/update/ceased_date_util";
 
 import { ApplicationData, ApplicationDataType } from "../../model";
-import { getRedirectUrl, isRemoveJourney } from "../../utils/url";
+
 import { CeasedDateKey, HaveDayOfBirthKey } from "../../model/date.model";
 import { AddressKeys, EntityNumberKey, InputDate } from "../../model/data.types.model";
 import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
 
 import {
   setApplicationData,
-  fetchApplicationData,
+  getApplicationData,
   mapDataObjectToFields,
   removeFromApplicationData,
 } from "../../utils/application.data";
@@ -46,8 +47,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData = await fetchApplicationData(req, !isRemove);
+    const appData = await getApplicationData(req);
     const index = req.query.index;
     let dataToReview = {}, serviceAddress = {}, usual_residential_address = {};
 
@@ -98,8 +98,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    const appData: ApplicationData = await getApplicationData(req);
     const boiIndex = req.query.index;
     const requestId = req.body["id"];
 

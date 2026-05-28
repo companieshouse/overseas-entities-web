@@ -4,6 +4,7 @@ import { Session } from '@companieshouse/node-session-handler';
 
 import { logger } from '../../utils/logger';
 import { TrusteeType } from '../../model/trustee.type.model';
+import { getRedirectUrl } from "../../utils/url";
 import { isActiveFeature } from "../../utils/feature.flag";
 import { ApplicationData } from 'model';
 import { saveAndContinue } from '../../utils/save.and.continue';
@@ -12,10 +13,10 @@ import { RoleWithinTrustType } from '../../model/role.within.trust.type.model';
 import { checkTrusteeInterestedDate } from '../../validation/fields/date.validation';
 import { IndividualTrusteesFormCommon } from '../../model/trust.page.model';
 import { checkTrustIndividualCeasedDate } from '../../validation/async';
+import { mapTrustApiToWebWhenFlagsAreSet } from "../../utils/trust/api.to.web.mapper";
 import { checkTrustIndividualBeneficialOwnerStillInvolved } from '../../validation/stillInvolved.validation';
 
-import { getRedirectUrl, isRemoveJourney } from "../../utils/url";
-import { fetchApplicationData, setExtraData } from '../../utils/application.data';
+import { getApplicationData, setExtraData } from '../../utils/application.data';
 import { FormattedValidationErrors, formatValidationError } from '../../middleware/validation.middleware';
 import { mapIndividualTrusteeFromSessionToPage, mapIndividualTrusteeToSession } from '../../utils/trust/individual.trustee.mapper';
 
@@ -71,8 +72,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData = await fetchApplicationData(req, !isRemove);
+    const appData = await getApplicationData(req);
+    mapTrustApiToWebWhenFlagsAreSet(appData);
     const trusteeId = req.params[ROUTE_PARAM_TRUSTEE_ID];
     const trust = getTrustInReview(appData) as Trust;
     const trustee = getTrustee(trust, trusteeId, TrusteeType.INDIVIDUAL) as IndividualTrustee;
@@ -97,8 +98,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const session = req.session as Session;
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData = await fetchApplicationData(req, !isRemove);
+    const appData = await getApplicationData(req);
     const trusteeId = req.params[ROUTE_PARAM_TRUSTEE_ID];
     const trust = getTrustInReview(appData) as Trust;
     const relevant_period = req.query['relevant-period'];

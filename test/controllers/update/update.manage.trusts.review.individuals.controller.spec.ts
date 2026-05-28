@@ -30,7 +30,7 @@ import { manageTrustsReviewIndividualsGuard } from '../../../src/middleware/navi
 import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
 import { RoleWithinTrustType } from '../../../src/model/role.within.trust.type.model';
 import { TrusteeType } from '../../../src/model/trustee.type.model';
-import { fetchApplicationData, setExtraData } from '../../../src/utils/application.data';
+import { getApplicationData, setExtraData } from '../../../src/utils/application.data';
 import { isActiveFeature } from '../../../src/utils/feature.flag';
 import { saveAndContinue } from '../../../src/utils/save.and.continue';
 import { getTrustInReview, setTrusteesAsReviewed } from '../../../src/utils/update/review_trusts';
@@ -61,7 +61,8 @@ mockManageTrustsReviewIndividualsGuard.mockImplementation((req: Request, res: Re
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue(true);
 
-const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+// const mockGetApplicationData = fetchApplicationData as jest.Mock;
+const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockGetTrustInReview = getTrustInReview as jest.Mock;
 const mockSetTrusteesAsReviewed = setTrusteesAsReviewed as jest.Mock;
 const mockSetExtraData = setExtraData as jest.Mock;
@@ -109,7 +110,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
       const appData = { update: { review_trusts: trusts } };
 
       mockIsActiveFeature.mockReturnValueOnce(true);
-      mockFetchApplicationData.mockReturnValueOnce(appData);
+      mockGetApplicationData.mockReturnValueOnce(appData);
       mockGetTrustInReview.mockReturnValueOnce(trustInReview);
 
       const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_WITH_PARAMS_URL);
@@ -143,7 +144,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
       const appData = { update: { review_trusts: trusts } };
 
       mockIsActiveFeature.mockReturnValueOnce(true);
-      mockFetchApplicationData.mockReturnValueOnce(appData);
+      mockGetApplicationData.mockReturnValueOnce(appData);
       mockGetTrustInReview.mockReturnValueOnce(trustInReview);
 
       const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL);
@@ -186,7 +187,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
       const appData = { update: { review_trusts: trusts } };
 
       mockIsActiveFeature.mockReturnValueOnce(true);
-      mockFetchApplicationData.mockReturnValueOnce(appData);
+      mockGetApplicationData.mockReturnValueOnce(appData);
       mockGetTrustInReview.mockReturnValueOnce(trustInReview);
 
       const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL);
@@ -217,7 +218,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
         ...trusts[0],
       };
 
-      mockFetchApplicationData.mockReturnValueOnce(appData);
+      mockGetApplicationData.mockReturnValueOnce(appData);
       mockGetTrustInReview.mockReturnValueOnce(trustInReview);
 
       const response = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL);
@@ -249,7 +250,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
         ...trusts[0],
       };
 
-      mockFetchApplicationData.mockReturnValueOnce(appData);
+      mockGetApplicationData.mockReturnValueOnce(appData);
       mockGetTrustInReview.mockReturnValueOnce(trustInReview);
 
       const response = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL);
@@ -278,7 +279,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
       mockIsActiveFeature.mockReturnValue(true);
       const appData = { entity_number: 'OE999876', entity_name: 'Test OE' };
 
-      mockFetchApplicationData.mockReturnValueOnce(appData);
+      mockGetApplicationData.mockReturnValueOnce(appData);
 
       const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_WITH_PARAMS_URL);
 

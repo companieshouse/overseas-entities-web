@@ -64,3 +64,14 @@ export const companyProfileQueryMock = {
     }
   }
 };
+
+export const entityCookieUpdateMock = {
+  "entity_number": testEntityNumber,
+};
+export const entityCookieRemoveMock = {
+  remove: {
+    is_listed_as_property_owner: "1",
+    has_sold_all_land: "0",
+    is_not_proprietor_of_land: false,
+  }
+};

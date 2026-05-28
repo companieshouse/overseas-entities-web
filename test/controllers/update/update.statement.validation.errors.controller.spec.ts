@@ -18,7 +18,7 @@ import app from "../../../src/app";
 import { logger } from "../../../src/utils/logger";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { authentication } from "../../../src/middleware/authentication.middleware";
-import { fetchApplicationData } from "../../../src/utils/application.data";
+import { getApplicationData } from "../../../src/utils/application.data";
 import { ErrorMessages } from "../../../src/validation/error.messages";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { hasUpdatePresenter } from '../../../src/middleware/navigation/update/has.presenter.middleware';
@@ -48,7 +48,7 @@ const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((_: Request, __: Response, next: NextFunction) => next());
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
-const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 
 const mockCompanyAuthentication = companyAuthentication as jest.Mock;
@@ -96,7 +96,7 @@ describe("Update statement validation errors controller", () => {
         next();
       });
 
-      mockFetchApplicationData.mockReturnValue({
+      mockGetApplicationData.mockReturnValue({
         entity_name: 'Potato',
         entity_number: 'OE991992',
         beneficial_owners_statement: 'ALL_IDENTIFIED_ALL_DETAILS',
@@ -122,7 +122,7 @@ describe("Update statement validation errors controller", () => {
     });
 
     test(`renders the Update statement validation errors page with no change back link when in no change journey`, async () => {
-      mockFetchApplicationData.mockReturnValue({
+      mockGetApplicationData.mockReturnValue({
         update: { no_change: true },
       });
       const resp = await request(app).get(UPDATE_STATEMENT_VALIDATION_ERRORS_URL);
@@ -138,7 +138,7 @@ describe("Update statement validation errors controller", () => {
         next();
       });
 
-      mockFetchApplicationData.mockReturnValue({
+      mockGetApplicationData.mockReturnValue({
         entity_name: 'Potato',
         entity_number: 'OE991992',
         beneficial_owners_statement: 'NONE_IDENTIFIED',
@@ -170,7 +170,7 @@ describe("Update statement validation errors controller", () => {
         next();
       });
 
-      mockFetchApplicationData.mockReturnValue({
+      mockGetApplicationData.mockReturnValue({
         entity_name: 'Potato',
         entity_number: 'OE991992',
         beneficial_owners_statement: 'NONE_IDENTIFIED',
@@ -206,7 +206,7 @@ describe("Update statement validation errors controller", () => {
 
   describe("POST tests", () => {
     test("in a change journey, redirect to BO review page if user chooses to change information provided", async () => {
-      mockFetchApplicationData.mockReturnValue({
+      mockGetApplicationData.mockReturnValue({
         entity_name: 'Potato',
         entity_number: 'OE991992',
         beneficial_owners_statement: 'ALL_IDENTIFIED_ALL_DETAILS',
@@ -225,7 +225,7 @@ describe("Update statement validation errors controller", () => {
     });
 
     test("in a no-change journey, redirect to do you need to make a change page if user chooses to change information provided", async () => {
-      mockFetchApplicationData.mockReturnValue({
+      mockGetApplicationData.mockReturnValue({
         entity_name: 'Potato',
         entity_number: 'OE991992',
         beneficial_owners_statement: 'ALL_IDENTIFIED_ALL_DETAILS',
@@ -244,7 +244,7 @@ describe("Update statement validation errors controller", () => {
     });
 
     test("in a change journey, redirect to beneficial-owner-statements if user chooses to change their statement", async () => {
-      mockFetchApplicationData.mockReturnValue({
+      mockGetApplicationData.mockReturnValue({
         entity_name: 'Potato',
         entity_number: 'OE991992',
         beneficial_owners_statement: 'ALL_IDENTIFIED_ALL_DETAILS',
@@ -263,7 +263,7 @@ describe("Update statement validation errors controller", () => {
     });
 
     test("in a no-change journey, redirect to update-no-change-beneficial-owner-statements if user chooses to change their statement", async () => {
-      mockFetchApplicationData.mockReturnValue({
+      mockGetApplicationData.mockReturnValue({
         entity_name: 'Potato',
         entity_number: 'OE991992',
         beneficial_owners_statement: 'ALL_IDENTIFIED_ALL_DETAILS',
@@ -282,7 +282,7 @@ describe("Update statement validation errors controller", () => {
     });
 
     test('renders the Update statement validation errors page with validator failure when no radio button selected', async () => {
-      mockFetchApplicationData.mockReturnValue({
+      mockGetApplicationData.mockReturnValue({
         entity_name: 'Potato',
         entity_number: 'OE991992',
         beneficial_owners_statement: 'ALL_IDENTIFIED_ALL_DETAILS',
@@ -302,7 +302,7 @@ describe("Update statement validation errors controller", () => {
       ['invalid', 'potatoes'],
       ['no', undefined]
     ])('renders validation error when %s statement_resolution provided', async (_, statement_resolution) => {
-      mockFetchApplicationData.mockReturnValue({
+      mockGetApplicationData.mockReturnValue({
         entity_name: 'Potato',
         entity_number: 'OE991992',
         beneficial_owners_statement: 'ALL_IDENTIFIED_ALL_DETAILS',

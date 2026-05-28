@@ -1,29 +1,43 @@
 import { NextFunction, Request, Response } from "express";
 import { Session } from "@companieshouse/node-session-handler";
-
-import { logger } from "../utils/logger";
 import * as config from "../config";
-import { ApplicationData, ApplicationDataType, trustType } from "../model";
-import { getApplicationData, prepareData, setApplicationData, getFromApplicationData } from "../utils/application.data";
-import { TrustKey, TrustKeys } from "../model/trust.model";
-import { BeneficialOwnerIndividualKey } from "../model/beneficial.owner.individual.model";
-import { BeneficialOwnerOtherKey } from "../model/beneficial.owner.other.model";
-import { getBeneficialOwnerList } from "../utils/trusts";
+import { logger } from "../utils/logger";
+import { isActiveFeature } from "../utils/feature.flag";
 import { saveAndContinue } from "../utils/save.and.continue";
+import { getRedirectUrl } from "../utils/url";
+import { TrustKey, TrustKeys } from "../model/trust.model";
+import { getBeneficialOwnerList } from "../utils/trusts";
+import { BeneficialOwnerOtherKey } from "../model/beneficial.owner.other.model";
+import { BeneficialOwnerIndividualKey } from "../model/beneficial.owner.individual.model";
+
+import {
+  trustType,
+  ApplicationData,
+  ApplicationDataType,
+} from "../model";
+
+import {
+  prepareData,
+  getApplicationData,
+  setApplicationData,
+  getFromApplicationData,
+} from "../utils/application.data";
 
 export const get = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  try {
-    logger.debugRequest(req, `GET ${config.TRUST_INFO_PAGE}`);
 
-    const appData: ApplicationData = await getApplicationData(req.session);
+  try {
+
+    logger.debugRequest(req, `GET ${config.TRUST_INFO_PAGE}`);
+    const appData: ApplicationData = await getApplicationData(req);
 
     return res.render(config.TRUST_INFO_PAGE, {
-      backLinkUrl: config.BENEFICIAL_OWNER_TYPE_PAGE,
+      ...appData,
       templateName: config.TRUST_INFO_PAGE,
-      beneficialOwners: getBeneficialOwnerList(appData),
       url: config.REGISTER_AN_OVERSEAS_ENTITY_URL,
-      ...appData
+      backLinkUrl: config.BENEFICIAL_OWNER_TYPE_PAGE,
+      beneficialOwners: getBeneficialOwnerList(appData),
     });
+
   } catch (error) {
     console.log("ERROR: ", error);
     logger.errorRequest(req, error);
@@ -32,7 +46,9 @@ export const get = async (req: Request, res: Response, next: NextFunction): Prom
 };
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
+
   try {
+
     logger.debugRequest(req, `POST ${config.TRUST_INFO_PAGE}`);
 
     // If only one BO is selected, data is a string.
@@ -47,29 +63,34 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       }
     });
 
-    const trustsReq: trustType.Trusts = {
-      trusts: trustData
-    };
-
+    const trustsReq: trustType.Trusts = { trusts: trustData };
     const trustIds = await generateTrustIds(req, trustData);
-
     await assignTrustIdsToBeneficialOwners(req, beneficialOwnerIds, trustIds);
-
     const data: ApplicationDataType = prepareData(trustsReq, TrustKeys);
     const session = req.session as Session;
 
     for (const trust of data[TrustKey]) {
-      await setApplicationData(session, trust, TrustKey);
+      if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+        await setApplicationData(req, trust, TrustKey);
+      } else {
+        await setApplicationData(session, trust, TrustKey);
+      }
     }
 
     await saveAndContinue(req, session);
 
     if (req.body.add) {
-      return res.redirect(config.TRUST_INFO_URL);
+      return res.redirect(getRedirectUrl({
+        req,
+        urlWithEntityIds: config.TRUST_INFO_WITH_PARAMS_URL,
+        urlWithoutEntityIds: config.TRUST_INFO_URL,
+      }));
     }
+
     if (req.body.submit) {
       return res.redirect(config.CHECK_YOUR_ANSWERS_PAGE);
     }
+
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);
@@ -94,6 +115,7 @@ const assignTrustIdsToIndividualBeneficialOwners = async (req: any, beneficialOw
     }
   }
 };
+
 const assignTrustIdsToCorporateBeneficialOwners = async (req: any, beneficialOwnerId: string, trustIds: string[]) => {
   const corporateBo = await getFromApplicationData(req, BeneficialOwnerOtherKey, beneficialOwnerId, false);
   if (corporateBo !== undefined) {
@@ -109,17 +131,21 @@ const assignTrustIdsToCorporateBeneficialOwners = async (req: any, beneficialOwn
 // Generate a unique trust_id for each trust
 const generateTrustIds = async (req: any, trustData: trustType.Trust[]): Promise<string[]> => {
   let trustCount = 0;
-  const appData: ApplicationData = await getApplicationData(req.session);
+  const appData: ApplicationData = await getApplicationData(req);
   const trusts = appData[TrustKey];
+
   if (trusts !== undefined) {
     trustCount = trusts.length;
   }
 
   const trustIds: string[] = [];
+
   for (const trust of trustData) {
     trustCount++;
     trust.trust_id = trustCount.toString();
     trustIds.push(trustCount.toString());
   }
+
   return trustIds;
+
 };

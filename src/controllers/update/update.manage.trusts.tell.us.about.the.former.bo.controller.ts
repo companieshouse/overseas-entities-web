@@ -4,14 +4,14 @@ import { ValidationError, validationResult } from 'express-validator';
 import { logger } from '../../utils/logger';
 import { Session } from '@companieshouse/node-session-handler';
 import { TrusteeType } from '../../model/trustee.type.model';
+import { getRedirectUrl } from "../../utils/url";
 import { saveAndContinue } from '../../utils/save.and.continue';
 import { ApplicationData } from "../../model";
 import { isActiveFeature } from "../../utils/feature.flag";
 import { updateOverseasEntity } from "../../service/overseas.entities.service";
 import { TrustHistoricalBeneficialOwnerForm } from '../../model/trust.page.model';
 
-import { getRedirectUrl, isRemoveJourney } from "../../utils/url";
-import { fetchApplicationData, setExtraData } from '../../utils/application.data';
+import { getApplicationData, setExtraData } from '../../utils/application.data';
 import { Trust, TrustHistoricalBeneficialOwner } from '../../model/trust.model';
 import { FormattedValidationErrors, formatValidationError } from '../../middleware/validation.middleware';
 import { getTrustInReview, getTrustee, getTrusteeIndex } from '../../utils/update/review_trusts';
@@ -37,8 +37,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    const appData: ApplicationData = await getApplicationData(req);
     const trust = getTrustInReview(appData) as Trust;
     const trusteeId = req.params[ROUTE_PARAM_TRUSTEE_ID];
     const trustee = getTrustee(trust, trusteeId, TrusteeType.HISTORICAL) as TrustHistoricalBeneficialOwner;
@@ -59,8 +58,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const session = req.session as Session;
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    const appData: ApplicationData = await getApplicationData(req);
     const trust = getTrustInReview(appData) as Trust;
     const trusteeId = req.params[ROUTE_PARAM_TRUSTEE_ID];
     const formData: TrustHistoricalBeneficialOwnerForm = req.body as TrustHistoricalBeneficialOwnerForm;
@@ -84,7 +82,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       trust.HISTORICAL_BO?.push(trustee);
     }
 
-    if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && !isRemove) {
+    if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       await updateOverseasEntity(req, req.session as Session, appData);
     } else {
       await saveAndContinue(req, session);

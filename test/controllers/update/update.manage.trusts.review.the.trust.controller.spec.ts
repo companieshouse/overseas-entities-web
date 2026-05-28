@@ -28,7 +28,7 @@ import { updateOverseasEntity } from "../../../src/service/overseas.entities.ser
 import { companyAuthentication } from '../../../src/middleware/company.authentication.middleware';
 import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
 
-import { getApplicationData, fetchApplicationData } from '../../../src/utils/application.data';
+import { fetchApplicationData, getApplicationData } from '../../../src/utils/application.data';
 import { beneficialOwnerIndividualType, beneficialOwnerOtherType } from '../../../src/model';
 
 import {
@@ -132,7 +132,6 @@ describe('Update - Manage Trusts - Review the trust', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetApplicationData.mockReturnValue(appDataWithReviewTrust);
-    mockFetchApplicationData.mockReturnValue(appDataWithReviewTrust);
     mockIsActiveFeature.mockReset();
   });
 
@@ -317,7 +316,6 @@ describe('Update - Manage Trusts - Review the trust', () => {
 
       // use app data with no trust associated BOs - i.e. no BOs have Trust nature of controls
       mockGetApplicationData.mockReturnValue(appDataWithNoTrustNocBOs);
-      mockFetchApplicationData.mockReturnValue(appDataWithNoTrustNocBOs);
 
       const DAY = "11";
       const MONTH = "12";
@@ -417,6 +415,7 @@ describe('Update - Manage Trusts - Review the trust', () => {
 
       // use app data with trust associated BOs
       mockGetApplicationData.mockReturnValue(appDataWithReviewTrust);
+      mockFetchApplicationData.mockReturnValue(appDataWithReviewTrust);
 
       const resp = await request(app)
         .post(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL)

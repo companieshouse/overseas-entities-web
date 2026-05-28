@@ -3,6 +3,7 @@ import { Session } from "@companieshouse/node-session-handler";
 import { logger } from "../../utils/logger";
 import { AddressKeys } from "../../model/data.types.model";
 import { ResignedOnKey } from "../../model/date.model";
+import { getRedirectUrl } from "../../utils/url";
 import { setOfficerData } from "../../utils/managing.officer.corporate";
 import { isActiveFeature } from "../../utils/feature.flag";
 import { saveAndContinue } from "../../utils/save.and.continue";
@@ -10,12 +11,11 @@ import { checkRelevantPeriod } from "../../utils/relevant.period";
 import { ManagingOfficerCorporateKey } from "../../model/managing.officer.corporate.model";
 import { checkAndReviewManagingOfficers } from "../../utils/update/review.managing.officer";
 import { addResignedDateToTemplateOptions } from "../../utils/update/ceased_date_util";
-import { getRedirectUrl, isRemoveJourney } from "../../utils/url";
 import { ApplicationData, ApplicationDataType } from "../../model";
 
 import {
   setApplicationData,
-  fetchApplicationData,
+  getApplicationData,
   mapDataObjectToFields,
   removeFromApplicationData,
 } from "../../utils/application.data";
@@ -42,8 +42,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData = await fetchApplicationData(req, !isRemove);
+    const appData = await getApplicationData(req);
     const index = req.query.index;
     let dataToReview = {}, principalAddress = {}, serviceAddress = {};
     if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
@@ -88,8 +87,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const moIndex = req.query.index;
     const requestId = req.body["id"];
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData = await fetchApplicationData(req, !isRemove);
+    const appData = await getApplicationData(req);
 
     if (isMoReviewable(appData, moIndex, requestId)) {
       checkAndReviewManagingOfficers(req as any, appData);

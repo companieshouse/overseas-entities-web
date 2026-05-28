@@ -42,10 +42,10 @@ import { BeneficialOwnerIndividualKey } from '../../../src/model/beneficial.owne
 import { ManagingOfficerCorporateKey } from '../../../src/model/managing.officer.corporate.model';
 import { RELEVANT_PERIOD_QUERY_PARAM } from "../../../src/config";
 
+import { getApplicationData, setExtraData } from '../../../src/utils/application.data';
 import { checkEntityRequiresTrusts, getTrustLandingUrl } from '../../../src/utils/trusts';
 import { BeneficialOwnersStatementType, BeneficialOwnerStatementKey } from '../../../src/model/beneficial.owner.statement.model';
 import { BeneficialOwnerTypeChoice, BeneficialOwnerTypeKey } from "../../../src/model/beneficial.owner.type.model";
-import { fetchApplicationData, getApplicationData, setExtraData } from '../../../src/utils/application.data';
 
 import {
   hasTrustsToReview,
@@ -109,7 +109,6 @@ const mockCheckEntityRequiresTrusts = checkEntityRequiresTrusts as jest.Mock;
 const mockHasTrustsToReview = hasTrustsToReview as jest.Mock;
 const mockGetTrustLandingUrl = getTrustLandingUrl as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
-const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockRetrieveTrustData = retrieveTrustData as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
@@ -126,7 +125,6 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     jest.clearAllMocks();
     jest.resetModules();
     mockGetApplicationData.mockReset();
-    mockFetchApplicationData.mockReset();
     mockHasTrustsToReview.mockReturnValue(false);
     mockIsActiveFeature.mockReset();
   });
@@ -145,7 +143,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
         appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
         appData[UpdateKey] = { [key]: [mockObject] };
 
-        mockFetchApplicationData.mockReturnValueOnce(appData);
+        mockGetApplicationData.mockReturnValueOnce(appData);
 
         const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
         expect(resp.status).toEqual(302);
@@ -160,7 +158,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
         appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
         appData[BeneficialOwnerStatementKey] = BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS;
 
-        mockFetchApplicationData.mockReturnValueOnce(appData).mockReturnValueOnce(appData);
+        mockGetApplicationData.mockReturnValueOnce(appData).mockReturnValueOnce(appData);
         const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
 
         expect(resp.status).toEqual(200);
@@ -191,7 +189,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
         appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
         appData[key] = [objectWithRef];
 
-        mockFetchApplicationData.mockReturnValueOnce(appData).mockReturnValueOnce(appData);
+        mockGetApplicationData.mockReturnValueOnce(appData).mockReturnValueOnce(appData);
         const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
 
         expect(resp.status).toEqual(200);
@@ -209,7 +207,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
         appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
         appData[key] = [mockObject];
 
-        mockFetchApplicationData.mockReturnValueOnce(appData).mockReturnValueOnce(appData);
+        mockGetApplicationData.mockReturnValueOnce(appData).mockReturnValueOnce(appData);
         const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
 
         expect(resp.status).toEqual(200);
@@ -219,7 +217,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
 
     test("catch error when rendering the page", async () => {
-      mockFetchApplicationData.mockImplementationOnce(() => { throw ERROR; });
+      mockGetApplicationData.mockImplementationOnce(() => { throw ERROR; });
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
@@ -228,7 +226,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} page with first statement selected`, async () => {
       appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
       appData[UpdateKey] = UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE;
-      mockFetchApplicationData.mockReturnValueOnce(appData).mockReturnValueOnce(appData);
+      mockGetApplicationData.mockReturnValueOnce(appData).mockReturnValueOnce(appData);
       mockIsActiveFeature.mockReturnValueOnce(true);
 
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
@@ -244,7 +242,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
       appData[UpdateKey] = UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE;
 
-      mockFetchApplicationData.mockReturnValueOnce(appData).mockReturnValueOnce(appData);
+      mockGetApplicationData.mockReturnValueOnce(appData).mockReturnValueOnce(appData);
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(RELEVANT_PERIOD_INDIVIDUAL_BENEFICIAL_OWNER);
@@ -258,7 +256,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     test('displays error message when pressing add with no radio buttons selected', async () => {
       appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
       appData[BeneficialOwnerStatementKey] = BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS;
-      mockFetchApplicationData.mockReturnValueOnce(appData);
+      mockGetApplicationData.mockReturnValueOnce(appData);
 
       const resp = await request(app)
         .post(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL)
@@ -274,7 +272,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     test('displays 2 error messages when in relevant period and pressing add with no radio buttons selected', async () => {
       appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
       appData[BeneficialOwnerStatementKey] = BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS;
-      mockFetchApplicationData.mockReturnValueOnce(appData);
+      mockGetApplicationData.mockReturnValueOnce(appData);
 
       const resp = await request(app)
         .post(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM)
@@ -297,7 +295,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       mockRetrieveTrustData.mockReturnValueOnce(Promise.resolve());
       mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
       mockSetExtraData.mockReturnValueOnce(null);
-      mockFetchApplicationData.mockReturnValueOnce({});
+      mockGetApplicationData.mockReturnValueOnce({});
       mockHasTrustsToReview.mockReturnValueOnce(true);
 
       const resp = await request(app).post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
@@ -315,7 +313,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       mockRetrieveTrustData.mockReturnValueOnce(Promise.resolve());
       mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
       mockSetExtraData.mockReturnValueOnce(null);
-      mockFetchApplicationData.mockReturnValueOnce({});
+      mockGetApplicationData.mockReturnValueOnce({});
       mockHasTrustsToReview.mockReturnValueOnce(true);
 
       const resp = await request(app).post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_WITH_PARAMS_URL);
@@ -333,7 +331,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       mockRetrieveTrustData.mockReturnValueOnce(Promise.resolve());
       mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
       mockSetExtraData.mockReturnValueOnce(null);
-      mockFetchApplicationData.mockReturnValueOnce({ update: {} });
+      mockGetApplicationData.mockReturnValueOnce({ update: {} });
       mockHasTrustsToReview.mockReturnValueOnce(true);
 
       const resp = await request(app).post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_WITH_PARAMS_URL);
@@ -351,7 +349,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       mockRetrieveTrustData.mockReturnValueOnce(Promise.resolve());
       mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
       mockSetExtraData.mockReturnValueOnce(null);
-      mockFetchApplicationData.mockReturnValueOnce({ update: {} });
+      mockGetApplicationData.mockReturnValueOnce({ update: {} });
       mockHasTrustsToReview.mockReturnValueOnce(true);
 
       const resp = await request(app).post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
@@ -369,7 +367,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       mockRetrieveTrustData.mockReturnValueOnce(Promise.resolve());
       mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
       mockSetExtraData.mockReturnValueOnce(null);
-      mockFetchApplicationData.mockReturnValueOnce({ update: { trust_data_fetched: false } });
+      mockGetApplicationData.mockReturnValueOnce({ update: { trust_data_fetched: false } });
       mockHasTrustsToReview.mockReturnValueOnce(true);
 
       const resp = await request(app).post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
@@ -387,7 +385,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       mockRetrieveTrustData.mockReturnValueOnce(Promise.resolve());
       mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
       mockSetExtraData.mockReturnValueOnce(null);
-      mockFetchApplicationData.mockReturnValueOnce({ update: { trust_data_fetched: false } });
+      mockGetApplicationData.mockReturnValueOnce({ update: { trust_data_fetched: false } });
       mockHasTrustsToReview.mockReturnValueOnce(true);
 
       const resp = await request(app).post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_WITH_PARAMS_URL);
@@ -407,7 +405,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       mockRetrieveTrustData.mockReturnValueOnce(Promise.resolve());
       mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
       mockSetExtraData.mockReturnValueOnce(null);
-      mockFetchApplicationData.mockReturnValueOnce({});
+      mockGetApplicationData.mockReturnValueOnce({});
       mockHasTrustsToReview.mockReturnValueOnce(false);
 
       const resp = await request(app).post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
@@ -421,7 +419,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
 
     test('redirects to beneficial owner statements page if already reviewed trusts', async () => {
-      mockFetchApplicationData.mockReturnValueOnce({ update: { trust_data_fetched: true } });
+      mockGetApplicationData.mockReturnValueOnce({ update: { trust_data_fetched: true } });
       mockHasTrustsToReview.mockReturnValueOnce(false);
 
       const resp = await request(app).post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
@@ -436,7 +434,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
     test('redirects to add trusts if update trusts flag is on, and trusts are required', async () => {
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
-      mockFetchApplicationData.mockReturnValueOnce(appData);
+      mockGetApplicationData.mockReturnValueOnce(appData);
       mockIsActiveFeature.mockReturnValueOnce(true);
       mockCheckEntityRequiresTrusts.mockReturnValueOnce(true);
       const mockLandingUrl = 'update/mock-get-trust-landing-url';
@@ -450,7 +448,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
     test('does not redirect to add trusts if update trusts flag is on, and trusts are not required', async () => {
       const mockLandingUrl = 'update/mock-get-trust-landing-url';
-      mockFetchApplicationData.mockReturnValueOnce(appData);
+      mockGetApplicationData.mockReturnValueOnce(appData);
       mockCheckEntityRequiresTrusts.mockReturnValueOnce(false);
       mockGetTrustLandingUrl.mockReturnValueOnce(mockLandingUrl);
 
@@ -480,7 +478,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
       appData[BeneficialOwnerIndividualKey] = [{ ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK, ch_reference: '12345' }, BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK];
 
-      mockFetchApplicationData.mockReturnValueOnce(appData).mockReturnValueOnce(appData);
+      mockGetApplicationData.mockReturnValueOnce(appData).mockReturnValueOnce(appData);
 
       const resp = await request(app)
         .post(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
@@ -504,7 +502,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
 
     test("Catch error when posting submit", async () => {
-      mockFetchApplicationData.mockImplementationOnce(() => { throw new Error(MESSAGE_ERROR); });
+      mockGetApplicationData.mockImplementationOnce(() => { throw new Error(MESSAGE_ERROR); });
       const resp = await request(app)
         .post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
       expect(resp.status).toEqual(500);

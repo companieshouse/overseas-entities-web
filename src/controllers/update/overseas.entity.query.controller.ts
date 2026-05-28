@@ -2,20 +2,31 @@ import { NextFunction, Request, Response } from "express";
 import { Session } from "@companieshouse/node-session-handler";
 import { logger } from "../../utils/logger";
 import * as config from "../../config";
+import { RemoveKey } from "../../model/remove.type.model";
 import { mapInputDate } from "../../utils/update/mapper.utils";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { isActiveFeature } from "../../utils/feature.flag";
 import { ApplicationData } from "../../model";
-import { EntityNumberKey } from "../../model/data.types.model";
 import { resetEntityUpdate } from "../../utils/update/update.reset";
 import { getCompanyProfile } from "../../service/company.profile.service";
 import { updateTransaction } from "../../service/transaction.service";
 import { retrieveBoAndMoData } from "../../utils/update/beneficial_owners_managing_officers_data_fetch";
 import { updateOverseasEntity } from "../../service/overseas.entities.service";
-import { saveEntityNumberInCookie } from "../../utils/update/data.cookie";
 import { getRedirectUrl, isRemoveJourney } from "../../utils/url";
 import { mapCompanyProfileToOverseasEntity } from "../../utils/update/company.profile.mapper.to.overseas.entity";
-import { fetchApplicationData, setExtraData } from "../../utils/application.data";
+import { getDataFromEntityCookie, saveDataToCookie } from "../../utils/update/data.cookie";
+
+import {
+  getRemove,
+  setExtraData,
+  getApplicationData,
+} from "../../utils/application.data";
+
+import {
+  IsRemoveKey,
+  EntityNumberKey,
+  EntityCookieCompanyNumberKey,
+} from "../../model/data.types.model";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -23,17 +34,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
-
-    if (isRemove) {
-      return res.render(config.OVERSEAS_ENTITY_QUERY_PAGE, {
-        journey: config.JourneyType.remove,
-        backLinkUrl: `${config.UPDATE_INTERRUPT_CARD_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`,
-        templateName: config.OVERSEAS_ENTITY_QUERY_PAGE,
-        chsUrl: process.env.CHS_URL,
-        [EntityNumberKey]: appData[EntityNumberKey]
-      });
-    }
+    const appData: ApplicationData = await getApplicationData(req);
 
     const backLinkUrl = getRedirectUrl({
       req,
@@ -41,11 +42,21 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       urlWithoutEntityIds: config.UPDATE_INTERRUPT_CARD_URL,
     });
 
+    if (isRemove) {
+      return res.render(config.OVERSEAS_ENTITY_QUERY_PAGE, {
+        chsUrl: process.env.CHS_URL,
+        journey: config.JourneyType.remove,
+        [EntityNumberKey]: appData[EntityNumberKey],
+        templateName: config.OVERSEAS_ENTITY_QUERY_PAGE,
+        backLinkUrl: `${backLinkUrl}${config.JOURNEY_REMOVE_QUERY_PARAM}`,
+      });
+    }
+
     return res.render(config.OVERSEAS_ENTITY_QUERY_PAGE, {
       backLinkUrl,
-      templateName: config.OVERSEAS_ENTITY_QUERY_PAGE,
       chsUrl: process.env.CHS_URL,
-      [EntityNumberKey]: appData[EntityNumberKey]
+      [EntityNumberKey]: appData[EntityNumberKey],
+      templateName: config.OVERSEAS_ENTITY_QUERY_PAGE,
     });
 
   } catch (error) {
@@ -59,21 +70,18 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-
     const entityNumber = req.body[EntityNumberKey];
-    const companyProfile = await getCompanyProfile(req, entityNumber);
     const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
-
-    if (!companyProfile) {
-      return await renderGetPageWithError(req, res, entityNumber);
-    }
+    const appData: ApplicationData = await getApplicationData(req);
 
     if (appData.entity_number !== entityNumber) {
+      const companyProfile = await getCompanyProfile(req, entityNumber);
+      if (!companyProfile) {
+        return await renderGetPageWithError(req, res, entityNumber);
+      }
       await addOeToApplicationData(req, appData, entityNumber, companyProfile, isRemove);
+      saveToCookie(req, res, entityNumber);
     }
-
-    saveToCookie(req, res, entityNumber);
 
     const nextPageUrl = getRedirectUrl({
       req,
@@ -107,11 +115,15 @@ const renderGetPageWithError = async (req: Request, res: Response, entityNumber:
 
   if (isRemove) {
     return res.render(config.OVERSEAS_ENTITY_QUERY_PAGE, {
-      journey: config.JourneyType.remove,
-      backLinkUrl: `${config.UPDATE_INTERRUPT_CARD_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`,
-      templateName: config.OVERSEAS_ENTITY_QUERY_PAGE,
+      errors,
       [EntityNumberKey]: entityNumber,
-      errors
+      journey: config.JourneyType.remove,
+      templateName: config.OVERSEAS_ENTITY_QUERY_PAGE,
+      backLinkUrl: getRedirectUrl({
+        req,
+        urlWithEntityIds: config.UPDATE_INTERRUPT_CARD_WITH_PARAMS_URL,
+        urlWithoutEntityIds: config.UPDATE_INTERRUPT_CARD_URL,
+      }) + config.JOURNEY_REMOVE_QUERY_PARAM,
     });
   }
 
@@ -123,18 +135,19 @@ const renderGetPageWithError = async (req: Request, res: Response, entityNumber:
   });
 };
 
-const addOeToApplicationData = async (req: Request, appData: ApplicationData, entityNumber: any, companyProfile: CompanyProfile, isRemove) => {
-  const isRedisFlagEnabled = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL);
-  if (isRemove || !isRedisFlagEnabled) {
-    resetEntityUpdate(appData);
-  }
+const addOeToApplicationData = async (req: Request, appData: ApplicationData, entityNumber: any, companyProfile: CompanyProfile, isRemove: boolean) => {
+  resetEntityUpdate(appData);
   reloadOE(appData, entityNumber, companyProfile);
   await retrieveBoAndMoData(req, appData);
-  setExtraData(req.session, appData);
-  if (!isRemove && isRedisFlagEnabled) {
+  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+    if (isRemove) {
+      appData[IsRemoveKey] = true;
+      appData[RemoveKey] = getRemove(await getDataFromEntityCookie(req, false));
+    }
     await updateTransaction(req, req.session as Session, appData);
     await updateOverseasEntity(req, req.session as Session, appData);
   }
+  setExtraData(req.session, appData);
 };
 
 export const reloadOE = (appData: ApplicationData, entityNumber: string, companyProfile: CompanyProfile) => {
@@ -148,7 +161,7 @@ export const reloadOE = (appData: ApplicationData, entityNumber: string, company
 
 export const saveToCookie = (req: Request, res: Response, entityNumber: string) => {
   if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
-    saveEntityNumberInCookie(req, res, entityNumber);
+    saveDataToCookie(req, res, EntityCookieCompanyNumberKey, entityNumber);
   }
 };
 

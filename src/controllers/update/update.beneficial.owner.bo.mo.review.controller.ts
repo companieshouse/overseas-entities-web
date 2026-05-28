@@ -1,18 +1,17 @@
 import { NextFunction, Request, Response } from "express";
-import { logger } from "../../utils/logger";
 import * as config from "../../config";
+import { logger } from "../../utils/logger";
+import { getRedirectUrl } from "../../utils/url";
 import { ApplicationData } from "../../model";
-import { fetchApplicationData } from "../../utils/application.data";
+import { getApplicationData } from "../../utils/application.data";
 import { checkRelevantPeriod } from "../../utils/relevant.period";
-import { getRedirectUrl, isRemoveJourney } from "../../utils/url";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
 
   try {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    const appData: ApplicationData = await getApplicationData(req);
 
     return res.render(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE, {
       ...appData,
@@ -35,8 +34,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, !isRemove);
+    const appData: ApplicationData = await getApplicationData(req);
     let redirectUrl: string;
 
     if (checkRelevantPeriod(appData)) {

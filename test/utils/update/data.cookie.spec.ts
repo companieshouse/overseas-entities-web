@@ -8,7 +8,7 @@ import { getCompanyProfile } from "../../../src/service/company.profile.service"
 
 import {
   getDataFromEntityCookie,
-  saveEntityNumberInCookie,
+  saveDataToCookie,
 } from "../../../src/utils/update/data.cookie";
 
 import {
@@ -43,21 +43,20 @@ describe("Test suite for data cookie in update/remove journey", () => {
       expect(resp.entity_name).toBe(testEntityName);
     });
 
-    test("returns empty data object if company profile is not found", async () => {
+    test("returns data object with only the entity number if company details are not found", async () => {
       mockGetCompanyProfile.mockReturnValue(false);
       const resp = await getDataFromEntityCookie(mockReq);
-      expect(resp).toEqual({});
+      expect(resp).toEqual({ e_number: testEntityNumber });
     });
   });
 
-  describe("saveEntityNumberInCookie", () => {
+  describe("saveDataToCookie", () => {
 
     test("correctly saves entity number to data cookie", async () => {
       const mockRes = {
         cookie: jest.fn() as any,
       } as Response;
-
-      await saveEntityNumberInCookie(mockReq, mockRes, testEntityNumber);
+      await saveDataToCookie(mockReq, mockRes, 'e_number', testEntityNumber);
       expect(mockRes.cookie).toHaveBeenCalled();
     });
   });

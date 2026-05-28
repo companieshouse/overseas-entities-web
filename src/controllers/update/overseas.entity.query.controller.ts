@@ -193,7 +193,7 @@ const saveEntityDetails = async (
 
 export const getNextPageUrl = (req: Request, appData: ApplicationData) => {
   if (!isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
-    return config.UPDATE_INTERRUPT_CARD_URL;
+    return config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL;
   }
 
   if (appData[Transactionkey] && appData[OverseasEntityKey]) {

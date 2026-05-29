@@ -82,17 +82,17 @@ export const postFilterPage = async (
 
     if (isSecureRegister === "0") {
       nextPageUrl = isSecureRegisterNoUrl;
-      if (isRedisRemovalFlag) {
-        await updateEntityDetails(req, res, appData, isUpdate, isRemove, isSecureRegister);
-        nextPageUrl = getNextPageUrl(req, appData, isSecureRegisterNoUrl, isRedisRemovalFlag);
-      }
     }
+
+    nextPageUrl = getNextPageUrl(req, appData, nextPageUrl, isSecureRegister, isRedisRemovalFlag);
 
     if (isRemove) {
-      nextPageUrl = `${nextPageUrl}${config.JOURNEY_REMOVE_QUERY_PARAM}`;
+      nextPageUrl += config.JOURNEY_REMOVE_QUERY_PARAM;
     }
 
-    setExtraData(req.session, appData);
+    await updateEntityDetails(req, res, appData, isUpdate, isRemove, isSecureRegister, isRedisRemovalFlag);
+    setExtraData(req.session as Session, appData);
+
     return res.redirect(nextPageUrl);
 
   } catch (error) {
@@ -107,36 +107,50 @@ const updateEntityDetails = async (
   appData: ApplicationData,
   isUpdate: boolean,
   isRemove: boolean,
-  isSecureRegister: string
+  isSecureRegister: string,
+  isRedisRemovalFlag: boolean
 ): Promise<void> => {
 
-  const session = req.session as Session;
-
-  if (isUpdate || isRemove) {
-    saveDataToCookie(req, res, IsSecureRegisterKey, isSecureRegister);
-  } else {
-    if (appData[Transactionkey] && appData[OverseasEntityKey]) {
-      await updateOverseasEntity(req, session, appData, true);
+  if (isRedisRemovalFlag) {
+    const session = req.session as Session;
+    if (isUpdate || isRemove) {
+      saveDataToCookie(req, res, IsSecureRegisterKey, isSecureRegister);
     } else {
-      throw new Error("Error: is_secure_register filter cannot be updated - transaction_id or overseas_entity_id is missing");
+      if (appData[Transactionkey] && appData[OverseasEntityKey]) {
+        await updateOverseasEntity(req, session, appData, true);
+      } else {
+        throw new Error("Error: is_secure_register filter cannot be updated - transaction_id or overseas_entity_id is missing");
+      }
     }
   }
 };
 
-const getNextPageUrl = (req, appData: ApplicationData, fallbackUrl: string, isRedisRemovalFlag: boolean): string => {
+const getNextPageUrl = (req, appData: ApplicationData, fallbackUrl: string, isSecureRegister: string, isRedisRemovalFlag: boolean): string => {
+
   try {
-    if (isRedisRemovalFlag) {
-      if (appData[Transactionkey] && appData[OverseasEntityKey]) {
-        return getUrlWithTransactionIdAndSubmissionId(fallbackUrl, appData[Transactionkey] as string, appData[OverseasEntityKey] as string);
-      } else {
-        return getRedirectUrl({
-          req,
-          urlWithEntityIds: config.UPDATE_INTERRUPT_CARD_WITH_PARAMS_URL,
-          urlWithoutEntityIds: config.UPDATE_INTERRUPT_CARD_URL,
-        });
-      }
+
+    if (!isRedisRemovalFlag) {
+      return fallbackUrl;
     }
-    return fallbackUrl;
+
+    if (appData[Transactionkey] && appData[OverseasEntityKey]) {
+      return getUrlWithTransactionIdAndSubmissionId(fallbackUrl, appData[Transactionkey] as string, appData[OverseasEntityKey] as string);
+    }
+
+    if (isSecureRegister === "0") {
+      return getRedirectUrl({
+        req,
+        urlWithEntityIds: config.UPDATE_INTERRUPT_CARD_WITH_PARAMS_URL,
+        urlWithoutEntityIds: config.UPDATE_INTERRUPT_CARD_URL,
+      });
+    }
+
+    return getRedirectUrl({
+      req,
+      urlWithEntityIds: config.UPDATE_USE_PAPER_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.UPDATE_USE_PAPER_URL,
+    });
+
   } catch (error) {
     logger.error(`Error generating nextPageUrl with transactionId and submissionId: ${error}`);
     return fallbackUrl;

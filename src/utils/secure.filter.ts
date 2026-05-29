@@ -1,15 +1,18 @@
 import { NextFunction, Request, Response } from "express";
 import { Session } from "@companieshouse/node-session-handler";
-
 import * as config from "../config";
 import { logger } from "./logger";
 import { ApplicationData } from "../model";
 import { isActiveFeature } from "./feature.flag";
-import { postTransaction } from "../service/transaction.service";
-
+import { updateOverseasEntity } from "../service/overseas.entities.service";
 import { getApplicationData, setExtraData } from "./application.data";
-import { createOverseasEntity, updateOverseasEntity } from "../service/overseas.entities.service";
-import { IsSecureRegisterKey, OverseasEntityKey, Transactionkey } from "../model/data.types.model";
+import { getDataFromEntityCookie, saveDataToCookie } from "./update/data.cookie";
+
+import {
+  Transactionkey,
+  OverseasEntityKey,
+  IsSecureRegisterKey,
+} from "../model/data.types.model";
 
 import {
   getRedirectUrl,
@@ -24,7 +27,8 @@ export const getFilterPage = async (req: Request, res: Response, next: NextFunct
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const isRemove = await isRemoveJourney(req);
-    const appData: ApplicationData = await getApplicationData(req);
+    const isUpdate: boolean = await isUpdateJourney(req);
+    const appData: ApplicationData = await getAppData(req, isUpdate, isRemove);
 
     if (isRemove) {
       return res.render(templateName, {
@@ -66,7 +70,7 @@ export const postFilterPage = async (
     const isRedisRemovalFlag = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL);
     const isUpdate: boolean = await isUpdateJourney(req);
     const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await getApplicationData(req);
+    const appData: ApplicationData = await getAppData(req, isUpdate, isRemove);
     const isSecureRegister = (req.body[IsSecureRegisterKey]).toString();
     appData[IsSecureRegisterKey] = isSecureRegister;
 
@@ -79,8 +83,8 @@ export const postFilterPage = async (
     if (isSecureRegister === "0") {
       nextPageUrl = isSecureRegisterNoUrl;
       if (isRedisRemovalFlag) {
-        await createOrUpdateEntityDetails(req, appData, isUpdate, isRemove);
-        nextPageUrl = getNextPageUrl(appData, isSecureRegisterNoUrl, isRedisRemovalFlag);
+        await updateEntityDetails(req, res, appData, isUpdate, isRemove, isSecureRegister);
+        nextPageUrl = getNextPageUrl(req, appData, isSecureRegisterNoUrl, isRedisRemovalFlag);
       }
     }
 
@@ -97,31 +101,54 @@ export const postFilterPage = async (
   }
 };
 
-const createOrUpdateEntityDetails = async (req: Request, appData: ApplicationData, isUpdate: boolean, isRemove: boolean): Promise<void> => {
+const updateEntityDetails = async (
+  req: Request,
+  res: Response,
+  appData: ApplicationData,
+  isUpdate: boolean,
+  isRemove: boolean,
+  isSecureRegister: string
+): Promise<void> => {
 
   const session = req.session as Session;
 
-  if ((isUpdate || isRemove) && !appData[Transactionkey]) {
-    const transactionID = await postTransaction(req, session);
-    appData[Transactionkey] = transactionID;
-    appData[OverseasEntityKey] = await createOverseasEntity(req, session, transactionID);
-  }
-
-  if (appData[Transactionkey] && appData[OverseasEntityKey]) {
-    await updateOverseasEntity(req, session, appData, true);
+  if (isUpdate || isRemove) {
+    saveDataToCookie(req, res, IsSecureRegisterKey, isSecureRegister);
   } else {
-    throw new Error("Error: is_secure_register filter cannot be updated - transaction_id or overseas_entity_id is missing");
+    if (appData[Transactionkey] && appData[OverseasEntityKey]) {
+      await updateOverseasEntity(req, session, appData, true);
+    } else {
+      throw new Error("Error: is_secure_register filter cannot be updated - transaction_id or overseas_entity_id is missing");
+    }
   }
 };
 
-const getNextPageUrl = (appData: ApplicationData, fallbackUrl: string, isRedisRemovalFlag: boolean): string => {
+const getNextPageUrl = (req, appData: ApplicationData, fallbackUrl: string, isRedisRemovalFlag: boolean): string => {
   try {
     if (isRedisRemovalFlag) {
-      return getUrlWithTransactionIdAndSubmissionId(fallbackUrl, appData[Transactionkey] as string, appData[OverseasEntityKey] as string);
+      if (appData[Transactionkey] && appData[OverseasEntityKey]) {
+        return getUrlWithTransactionIdAndSubmissionId(fallbackUrl, appData[Transactionkey] as string, appData[OverseasEntityKey] as string);
+      } else {
+        return getRedirectUrl({
+          req,
+          urlWithEntityIds: config.UPDATE_INTERRUPT_CARD_WITH_PARAMS_URL,
+          urlWithoutEntityIds: config.UPDATE_INTERRUPT_CARD_URL,
+        });
+      }
     }
     return fallbackUrl;
   } catch (error) {
     logger.error(`Error generating nextPageUrl with transactionId and submissionId: ${error}`);
     return fallbackUrl;
   }
+};
+
+const getAppData = async (req: Request, isUpdate: boolean, isRemove: boolean): Promise<ApplicationData> => {
+  let appData: ApplicationData = await getApplicationData(req);
+  if (isUpdate || isRemove) {
+    if (!Object.keys(appData).length) {
+      appData = await getDataFromEntityCookie(req, false);
+    }
+  }
+  return appData;
 };

@@ -4,15 +4,15 @@ import { logger } from "../logger";
 import { mapInputDate } from "./mapper.utils";
 import { ApplicationData } from "../../model/application.model";
 import { getCompanyProfile } from "../../service/company.profile.service";
+import { EntityNumberKey, EntityCookieKey } from "../../model/data.types.model";
 import { mapCompanyProfileToOverseasEntity } from "./company.profile.mapper.to.overseas.entity";
-import { EntityCookieCompanyNumberKey, EntityCookieKey } from "../../model/data.types.model";
 
 export const getDataFromEntityCookie = async (req: Request, getCompany: boolean = true): Promise<ApplicationData> => {
 
   try {
 
     const cookieData = req.cookies[EntityCookieKey] ? JSON.parse(req.cookies[EntityCookieKey]) : {};
-    const entityNumber = cookieData?.[EntityCookieCompanyNumberKey];
+    const entityNumber = cookieData?.[EntityNumberKey];
 
     if (!entityNumber || !getCompany) {
       return cookieData;

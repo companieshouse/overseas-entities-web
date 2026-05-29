@@ -3,7 +3,6 @@ jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/application.data');
-jest.mock('../../../src/service/transaction.service');
 jest.mock('../../../src/service/overseas.entities.service');
 jest.mock("../../../src/utils/feature.flag" );
 jest.mock("../../../src/utils/url");
@@ -21,22 +20,19 @@ import { logger } from "../../../src/utils/logger";
 import { ErrorMessages } from "../../../src/validation/error.messages";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
-import { postTransaction } from "../../../src/service/transaction.service";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 
-import { setExtraData, fetchApplicationData, getApplicationData } from "../../../src/utils/application.data";
-import { createOverseasEntity, updateOverseasEntity } from "../../../src/service/overseas.entities.service";
+import { setExtraData, getApplicationData } from "../../../src/utils/application.data";
+import { updateOverseasEntity } from "../../../src/service/overseas.entities.service";
 
 import {
   isRemoveJourney,
   isUpdateJourney,
-  isRegistrationJourney,
   getUrlWithTransactionIdAndSubmissionId,
   getRedirectUrl,
 } from "../../../src/utils/url";
 
 import {
-  TRANSACTION_ID,
   APPLICATION_DATA_MOCK,
 } from "../../__mocks__/session.mock";
 
@@ -69,9 +65,6 @@ const mockIsRemoveJourney = isRemoveJourney as jest.Mock;
 const mockGetRedirectUrl = getRedirectUrl as jest.Mock;
 const MOCKED_PAGE_URL = "/MOCKED_PAGE";
 
-const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
-mockIsRegistrationJourney.mockReturnValue(false);
-
 const mockIsUpdateJourney = isUpdateJourney as jest.Mock;
 mockIsUpdateJourney.mockReturnValue(true);
 
@@ -84,19 +77,12 @@ mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Respons
 const mockGetUrlWithTransactionIdAndSubmissionId = getUrlWithTransactionIdAndSubmissionId as jest.Mock;
 mockGetUrlWithTransactionIdAndSubmissionId.mockReturnValue(MOCKED_PAGE_URL);
 
-const mockPostTransactionService = postTransaction as jest.Mock;
-mockPostTransactionService.mockReturnValue(TRANSACTION_ID);
-
 const mockGetApplicationData = getApplicationData as jest.Mock;
 mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
-
-const mockFetchApplicationData = fetchApplicationData as jest.Mock;
-mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockSetExtraData = setExtraData as jest.Mock;
 const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
-const mockCreateOverseasEntity = createOverseasEntity as jest.Mock;
 
 describe("SECURE UPDATE FILTER controller", () => {
 
@@ -137,7 +123,6 @@ describe("SECURE UPDATE FILTER controller", () => {
 
     test(`renders the ${SECURE_UPDATE_FILTER_PAGE} page for remove`, async () => {
       mockIsActiveFeature.mockReturnValue(false);
-      mockFetchApplicationData.mockReturnValue({});
       mockGetApplicationData.mockReturnValue({});
       mockGetRedirectUrl.mockReturnValue(REMOVE_IS_ENTITY_REGISTERED_OWNER_URL);
       mockIsRemoveJourney.mockReturnValueOnce(true);
@@ -196,7 +181,6 @@ describe("SECURE UPDATE FILTER controller", () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockIsRemoveJourney.mockReturnValueOnce(false);
       mockUpdateOverseasEntity.mockReturnValueOnce(true);
-      mockCreateOverseasEntity.mockReturnValueOnce(false);
 
       const resp = await request(app)
         .post(SECURE_UPDATE_FILTER_WITH_PARAMS_URL)
@@ -204,7 +188,6 @@ describe("SECURE UPDATE FILTER controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(MOCKED_PAGE_URL);
-      expect(mockCreateOverseasEntity).not.toHaveBeenCalled();
       expect(mockGetUrlWithTransactionIdAndSubmissionId).toHaveBeenCalledTimes(1);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });

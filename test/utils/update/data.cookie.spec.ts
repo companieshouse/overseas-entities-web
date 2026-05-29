@@ -1,4 +1,3 @@
-
 jest.mock("../../../src/utils/logger");
 jest.mock("../../../src/service/company.profile.service");
 jest.mock("../../../src/utils/update/mapper.utils");
@@ -6,16 +5,17 @@ jest.mock("../../../src/utils/update/company.profile.mapper.to.overseas.entity")
 
 import { Request, Response } from "express";
 import { beforeEach, jest, describe, test, expect } from "@jest/globals";
+
 import { logger } from "../../../src/utils/logger";
-import { EntityNumberKey, EntityCookieKey } from "../../../src/model/data.types.model";
-import { getCompanyProfile } from "../../../src/service/company.profile.service";
 import { mapInputDate } from "../../../src/utils/update/mapper.utils";
+import { getCompanyProfile } from "../../../src/service/company.profile.service";
+import { EntityNumberKey, EntityCookieKey } from "../../../src/model/data.types.model";
 import { mapCompanyProfileToOverseasEntity } from "../../../src/utils/update/company.profile.mapper.to.overseas.entity";
 
 import {
-  getDataFromEntityCookie,
   saveDataToCookie,
   removeEntityCookie,
+  getDataFromEntityCookie,
 } from "../../../src/utils/update/data.cookie";
 
 import {

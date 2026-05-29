@@ -164,7 +164,7 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
     });
 
     test('renders not found error for non existing oe number', async () => {
-      mockGetApplicationData.mockReturnValueOnce({});
+      mockGetApplicationData.mockReturnValue({});
       mockGetCompanyProfile.mockReturnValueOnce(undefined);
       const resp = await request(app)
         .post(config.OVERSEAS_ENTITY_QUERY_URL)
@@ -217,27 +217,6 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
       expect(resp.header.location).toEqual(config.UPDATE_AN_OVERSEAS_ENTITY_URL + config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE);
     });
 
-    // @todo: test passes individually, but fails as part of the suite. needs to be fixed so it passes as part of the suite
-    test.skip('redirects to confirm page for valid oe number with lowercase oe in update journey when REDIS_flag is set to ON', async () => {
-      mockGetApplicationData.mockReturnValue({});
-      mockIsActiveFeature.mockReturnValue(true);
-      mockGetCompanyProfile.mockReturnValue(companyProfileQueryMock);
-      mockMapCompanyProfileToOverseasEntity.mockReturnValue({});
-      mockCreateOverseasEntity.mockReturnValue(OVERSEAS_ENTITY_ID);
-      mockRetrieveBoAndMoData.mockReturnValueOnce(Promise.resolve(true));
-      const resp = await request(app)
-        .post(config.OVERSEAS_ENTITY_QUERY_URL)
-        .send({ entity_number: testOENumberLowercase });
-      expect(resp.status).toEqual(302);
-      expect(mockRetrieveBoAndMoData).toHaveBeenCalledTimes(1);
-      expect(mockPostTransactionService).toHaveBeenCalledTimes(1);
-      expect(mockCreateOverseasEntity).toHaveBeenCalledTimes(1);
-      expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
-      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
-      expect(mockSaveDataToCookie).toHaveBeenCalledTimes(1);
-      expect(resp.header.location).toEqual(`${config.UPDATE_AN_OVERSEAS_ENTITY_URL}transaction/${TRANSACTION_ID}/submission/${OVERSEAS_ENTITY_ID}/${config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE}`);
-    });
-
     test('redirects to confirm page for valid oe number in remove journey', async () => {
       mockGetApplicationData.mockReturnValue({});
       mockGetCompanyProfile.mockReturnValueOnce(companyProfileQueryMock);
@@ -281,6 +260,27 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
         expect(resp.status).toEqual(200);
         expect(resp.text).not.toContain(invalidOENUmberError);
       });
+
+    test('redirects to confirm page for valid oe number with lowercase oe in update journey when REDIS_flag is set to ON', async () => {
+      mockGetApplicationData.mockReturnValue({});
+      mockIsActiveFeature.mockReturnValue(true);
+      mockGetCompanyProfile.mockReturnValue(companyProfileQueryMock);
+      mockMapCompanyProfileToOverseasEntity.mockReturnValue({});
+      mockCreateOverseasEntity.mockReturnValue(OVERSEAS_ENTITY_ID);
+      mockRetrieveBoAndMoData.mockReturnValueOnce(Promise.resolve(true));
+      const resp = await request(app)
+        .post(config.OVERSEAS_ENTITY_QUERY_URL)
+        .send({ entity_number: testOENumberLowercase });
+      expect(resp.status).toEqual(302);
+      expect(mockRetrieveBoAndMoData).toHaveBeenCalledTimes(1);
+      expect(mockPostTransactionService).toHaveBeenCalledTimes(1);
+      expect(mockCreateOverseasEntity).toHaveBeenCalledTimes(1);
+      expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
+      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+      expect(mockSaveDataToCookie).toHaveBeenCalledTimes(1);
+      expect(resp.header.location).toEqual(`${config.UPDATE_AN_OVERSEAS_ENTITY_URL}transaction/${TRANSACTION_ID}/submission/${OVERSEAS_ENTITY_ID}/${config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE}`);
+    });
+
   });
 
 });

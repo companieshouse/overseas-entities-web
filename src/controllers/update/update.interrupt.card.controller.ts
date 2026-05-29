@@ -10,13 +10,14 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const isRemove: boolean = await isRemoveJourney(req);
 
-    const backLinkUrl = getRedirectUrl({
+    let backLinkUrl = getRedirectUrl({
       req,
       urlWithEntityIds: config.SECURE_UPDATE_FILTER_WITH_PARAMS_URL,
       urlWithoutEntityIds: config.SECURE_UPDATE_FILTER_URL,
     });
 
     if (isRemove) {
+      backLinkUrl += config.JOURNEY_REMOVE_QUERY_PARAM;
       return res.render(config.UPDATE_INTERRUPT_CARD_PAGE, {
         backLinkUrl,
         journey: config.JourneyType.remove,

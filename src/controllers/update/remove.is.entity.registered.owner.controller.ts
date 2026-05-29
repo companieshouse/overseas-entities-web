@@ -7,15 +7,17 @@ import { getRedirectUrl } from "../../utils/url";
 import { isActiveFeature } from "../../utils/feature.flag";
 import { ApplicationData } from "../../model";
 import { IsListedAsPropertyOwnerKey } from "../../model/data.types.model";
-import { getRemove, setApplicationData } from "../../utils/application.data";
 import { saveDataToCookie, getDataFromEntityCookie } from "../../utils/update/data.cookie";
+import { getApplicationData, getRemove, setApplicationData } from "../../utils/application.data";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
 
   try {
 
     logger.debugRequest(req, `GET ${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE}`);
-    const appData: ApplicationData = await getDataFromEntityCookie(req, false);
+
+    const isRedisRemovalFlag = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL);
+    const appData: ApplicationData = await getAppData(req, isRedisRemovalFlag);
     const remove = appData?.[RemoveKey];
 
     return res.render(config.REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE, {
@@ -39,12 +41,14 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
 
     logger.debugRequest(req, `POST ${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE}`);
+
+    const isRedisRemovalFlag = isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL);
     const isListedAsPropertyOwner = req.body[IsListedAsPropertyOwnerKey];
-    const appData: ApplicationData = await getDataFromEntityCookie(req, false);
+    const appData: ApplicationData = await getAppData(req, isRedisRemovalFlag);
     const remove = getRemove(appData);
     remove[IsListedAsPropertyOwnerKey] = isListedAsPropertyOwner;
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+    if (isRedisRemovalFlag) {
       saveDataToCookie(req, res, RemoveKey, remove);
     } else {
       await setApplicationData(req.session as Session, remove, RemoveKey);
@@ -67,4 +71,14 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   } catch (error) {
     next(error);
   }
+};
+
+const getAppData = async (req: Request, isRedisRemovalFlag: boolean): Promise<ApplicationData> => {
+  let appData: ApplicationData = await getApplicationData(req);
+  if (isRedisRemovalFlag) {
+    if (!Object.keys(appData).length) {
+      appData = await getDataFromEntityCookie(req, false);
+    }
+  }
+  return appData;
 };

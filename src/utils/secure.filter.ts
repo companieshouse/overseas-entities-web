@@ -116,10 +116,10 @@ const updateEntityDetails = async (
     if (isUpdate || isRemove) {
       saveDataToCookie(req, res, IsSecureRegisterKey, isSecureRegister);
     } else {
-      if (appData[Transactionkey] && appData[OverseasEntityKey]) {
+      if (appData[Transactionkey] && appData[OverseasEntityKey] && isSecureRegister === "0") {
         await updateOverseasEntity(req, session, appData, true);
       } else {
-        throw new Error("Error: is_secure_register filter cannot be updated - transaction_id or overseas_entity_id is missing");
+        logger.errorRequest(req, "Error: is_secure_register filter cannot be updated - transaction_id or overseas_entity_id is missing");
       }
     }
   }

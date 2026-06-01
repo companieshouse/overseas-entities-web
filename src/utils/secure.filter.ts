@@ -134,7 +134,7 @@ const getNextPageUrl = (req, appData: ApplicationData, fallbackUrl: string, isSe
     }
 
     if (appData[Transactionkey] && appData[OverseasEntityKey]) {
-      return getUrlWithTransactionIdAndSubmissionId(fallbackUrl, appData[Transactionkey] as string, appData[OverseasEntityKey] as string);
+      return getUrlWithTransactionIdAndSubmissionId(fallbackUrl, appData[Transactionkey], appData[OverseasEntityKey]);
     }
 
     if (isSecureRegister === "0") {

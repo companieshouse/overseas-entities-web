@@ -74,8 +74,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         }
         nextPageUrl = getUrlWithTransactionIdAndSubmissionId(
           config.SECURE_REGISTER_FILTER_WITH_PARAMS_URL,
-            appData[Transactionkey] as string,
-            appData[OverseasEntityKey] as string
+          appData[Transactionkey],
+          appData[OverseasEntityKey] as string
         );
       }
     }

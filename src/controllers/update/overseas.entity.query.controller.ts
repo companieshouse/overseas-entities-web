@@ -199,8 +199,8 @@ export const getNextPageUrl = (req: Request, appData: ApplicationData) => {
   if (appData[Transactionkey] && appData[OverseasEntityKey]) {
     return getUrlWithTransactionIdAndSubmissionId(
       config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL,
-        appData[Transactionkey] as string,
-        appData[OverseasEntityKey] as string
+      appData[Transactionkey],
+      appData[OverseasEntityKey]
     );
   }
 

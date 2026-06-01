@@ -116,7 +116,7 @@ describe("Remove sold all land filter controller", () => {
       expect(resp.text).toContain(REMOVE_PROPERTY_BOUGHT_ON_OR_AFTER_DATE_TEXT);
       expect(resp.text).toContain(`${config.UPDATE_AN_OVERSEAS_ENTITY_URL}sign-out?page=${config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE}&amp;${config.JOURNEY_QUERY_PARAM}=${config.JourneyType.remove}`);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
-      expect(mockGetApplicationData).toHaveBeenCalledTimes(1);
+      expect(mockGetApplicationData).not.toHaveBeenCalled;
       expect(mockGetDataFromEntityCookie).toHaveBeenCalledTimes(1);
     });
 
@@ -175,7 +175,7 @@ describe("Remove sold all land filter controller", () => {
       expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${REMOVE_IS_ENTITY_REGISTERED_OWNER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
       expect(resp.header.location).toEqual(`${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
-      expect(mockGetApplicationData).toHaveBeenCalledTimes(1);
+      expect(mockGetApplicationData).not.toHaveBeenCalled;
       expect(mockGetDataFromEntityCookie).toHaveBeenCalledTimes(1);
       expect(mockGetRemove).toHaveBeenCalledTimes(1);
       expect(mockSetApplicationData).not.toHaveBeenCalled();

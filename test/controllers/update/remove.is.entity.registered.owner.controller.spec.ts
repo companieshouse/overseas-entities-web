@@ -100,7 +100,7 @@ describe("Remove registered owner controller", () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(`${config.UPDATE_AN_OVERSEAS_ENTITY_URL}sign-out?page=${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE}&amp;${config.JOURNEY_QUERY_PARAM}=${config.JourneyType.remove}`);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
-      expect(mockGetApplicationData).toHaveBeenCalledTimes(1);
+      expect(mockGetApplicationData).not.toHaveBeenCalled;
       expect(mockGetDataFromEntityCookie).toHaveBeenCalledTimes(1);
     });
 
@@ -155,7 +155,7 @@ describe("Remove registered owner controller", () => {
       expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${config.REMOVE_CANNOT_USE_URL}?${config.PREVIOUS_PAGE_QUERY_PARAM}=${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE}`);
       expect(resp.header.location).toEqual(`${config.REMOVE_CANNOT_USE_URL}?${config.PREVIOUS_PAGE_QUERY_PARAM}=${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE}`);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
-      expect(mockGetApplicationData).toHaveBeenCalledTimes(1);
+      expect(mockGetApplicationData).not.toHaveBeenCalled;
       expect(mockGetDataFromEntityCookie).toHaveBeenCalledTimes(1);
       expect(mockGetRemove).toHaveBeenCalledTimes(1);
       expect(mockSetApplicationData).not.toHaveBeenCalled();

@@ -74,11 +74,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const getAppData = async (req: Request, isRedisRemovalFlag: boolean): Promise<ApplicationData> => {
-  let appData: ApplicationData = await getApplicationData(req);
   if (isRedisRemovalFlag) {
-    if (!Object.keys(appData).length) {
-      appData = await getDataFromEntityCookie(req, false);
-    }
+    return await getDataFromEntityCookie(req, false);
   }
-  return appData;
+  return await getApplicationData(req);
 };

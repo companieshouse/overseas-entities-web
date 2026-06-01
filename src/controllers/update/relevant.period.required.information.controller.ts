@@ -14,9 +14,13 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = await getApplicationData(req);
 
     return res.render(config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_PAGE, {
-      backLinkUrl: config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL + config.RELEVANT_PERIOD_QUERY_PARAM,
-      templateName: config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_PAGE,
       ...appData,
+      templateName: config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_PAGE,
+      backLinkUrl: getRedirectUrl({
+        req,
+        urlWithEntityIds: config.RELEVANT_PERIOD_OWNED_LAND_FILTER_WITH_PARAMS_URL,
+        urlWithoutEntityIds: config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL
+      }),
     });
 
   } catch (error) {

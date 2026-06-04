@@ -1,14 +1,13 @@
 import { Request } from "express";
-import { Transaction } from "@companieshouse/api-sdk-node/dist/services/transaction/types";
 import { Session } from "@companieshouse/node-session-handler";
+import { Transaction } from "@companieshouse/api-sdk-node/dist/services/transaction/types";
 import { ApiResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
-import { getApplicationData } from "../utils/application.data";
-
 import { ApplicationData } from "../model";
+import { getApplicationData } from "../utils/application.data";
 import { makeApiCallWithRetry } from "./retry.handler.service";
 import { DESCRIPTION, REFERENCE } from "../config";
+import { EntityNameKey, EntityNumberKey } from "../model/data.types.model";
 import { createAndLogErrorRequest, logger } from "../utils/logger";
-import { EntityNameKey, EntityNumberKey, Transactionkey } from "../model/data.types.model";
 
 export const postTransaction = async (req: Request, session: Session, data?: ApplicationData): Promise<string> => {
   const applicationData: ApplicationData = data ?? await getApplicationData(req);
@@ -38,33 +37,6 @@ export const postTransaction = async (req: Request, session: Session, data?: App
   logger.infoRequest(req, `Response from 'postTransaction' for company number '${companyNumber}' with name '${companyName}': ${JSON.stringify(response)}`);
 
   return response.resource.id;
-};
-
-export const updateTransaction = async (req: Request, session: Session, data?: ApplicationData) => {
-  const applicationData: ApplicationData = data ?? await getApplicationData(req);
-  const companyName = applicationData[EntityNameKey];
-  const companyNumber = applicationData[EntityNumberKey];
-
-  let transaction: Object = { reference: REFERENCE, description: DESCRIPTION, "id": applicationData[Transactionkey] };
-  transaction = companyNumber !== undefined ? { ...transaction, companyNumber } : transaction;
-  transaction = companyName !== undefined ? { ...transaction, companyName } : transaction;
-
-  logger.infoRequest(req, `Calling 'putTransaction' for company number '${companyNumber}' with name '${companyName}'`);
-
-  const response = await makeApiCallWithRetry(
-    "transaction",
-    "putTransaction",
-    req,
-    session,
-    transaction
-  );
-
-  if (!response.httpStatusCode || response.httpStatusCode >= 400) {
-    throw createAndLogErrorRequest(req, `'putTransaction' for company number '${companyNumber}' with name '${companyName}' returned HTTP status code ${response.httpStatusCode}`);
-  }
-
-  logger.infoRequest(req, `Response from 'putTransaction' for company number '${companyNumber}' with name '${companyName}': ${JSON.stringify(response)}`);
-
 };
 
 export const closeTransaction = async (

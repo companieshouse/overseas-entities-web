@@ -4,17 +4,15 @@ jest.mock("../../src/utils/url");
 jest.mock("../../src/service/retry.handler.service");
 
 import { Request } from "express";
-import { makeApiCallWithRetry } from "../../src/service/retry.handler.service";
-import { isRegistrationJourney, } from "../../src/utils/url";
 import { getApplicationData } from "../../src/utils/application.data";
-
+import { makeApiCallWithRetry } from "../../src/service/retry.handler.service";
+import { isRegistrationJourney } from "../../src/utils/url";
+import { EntityNameKey, EntityNumberKey } from "../../src/model/data.types.model";
 import { createAndLogErrorRequest, logger } from '../../src/utils/logger';
-import { EntityNameKey, EntityNumberKey, Transactionkey } from "../../src/model/data.types.model";
 
 import {
   getTransaction,
   postTransaction,
-  updateTransaction,
   closeTransaction,
 } from "../../src/service/transaction.service";
 
@@ -32,15 +30,14 @@ import {
   OVERSEAS_ENTITY_ID,
   OVERSEAS_NAME_MOCK,
   APPLICATION_DATA_MOCK,
-  TRANSACTION_PUT_PARAMS,
   TRANSACTION_POST_PARAMS,
   TRANSACTION_CLOSED_PARAMS,
   TRANSACTION_CLOSED_RESPONSE,
+  fnNamePutTransaction,
   fnNameGetTransaction,
   fnNamePostTransaction,
-  fnNamePutTransaction,
   serviceNameTransaction,
-  getSessionRequestWithExtraData, APPLICATION_DATA_WITHOUT_TRANSACTION_ID_MOCK, TRANSACTION_PUT_WITHOUT_ID_PARAMS,
+  getSessionRequestWithExtraData,
 } from "../__mocks__/session.mock";
 
 const mockInfoRequestLog = logger.infoRequest as jest.Mock;
@@ -114,63 +111,6 @@ describe('Transaction Service test suite', () => {
       expect(mockInfoRequestLog).toHaveBeenCalledWith(req, `Calling 'postTransaction' for company number '${COMPANY_NUMBER}' with name '${OVERSEAS_NAME_MOCK}'`);
       expect(mockCreateAndLogErrorRequest).toBeCalledWith(req, `'postTransaction' for company number '${COMPANY_NUMBER}' with name '${OVERSEAS_NAME_MOCK}' returned no response`);
     });
-  });
-
-  describe('PUT Transaction', () => {
-
-    test(`Should successfully PUT a transaction when ${Transactionkey} is not blank`, async () => {
-      const companyNumber = "OE111129";
-      const companyName = 'overseasEntityName';
-      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK, [EntityNameKey]: companyName, [EntityNumberKey]: companyNumber });
-      const mockResponse = { httpStatusCode: 204 };
-      mockMakeApiCallWithRetry.mockReturnValueOnce(mockResponse);
-      const response = await updateTransaction(req, session);
-
-      expect(mockMakeApiCallWithRetry).toBeCalledWith(serviceNameTransaction, fnNamePutTransaction, req, session, TRANSACTION_PUT_PARAMS);
-
-      expect(response).toEqual(undefined);
-      expect(mockInfoRequestLog).toHaveBeenCalledWith(req, `Calling 'putTransaction' for company number '${companyNumber}' with name '${companyName}'`);
-      expect(mockInfoRequestLog).toHaveBeenCalledWith(req, `Response from 'putTransaction' for company number '${companyNumber}' with name '${companyName}': ${JSON.stringify(mockResponse)}`);
-    });
-
-    test(`Should fail to PUT a transaction when ${Transactionkey} is blank`, async () => {
-      const companyNumber = COMPANY_NUMBER;
-      const companyName = OVERSEAS_NAME_MOCK;
-      const appDataMock = { ...APPLICATION_DATA_WITHOUT_TRANSACTION_ID_MOCK, [EntityNameKey]: companyName, [EntityNumberKey]: companyNumber };
-      mockGetApplicationData.mockReturnValueOnce(appDataMock);
-      const mockResponse = { httpStatusCode: 401 };
-      mockMakeApiCallWithRetry.mockReturnValueOnce(mockResponse);
-      await updateTransaction(req, session, appDataMock).catch(e => {
-        expect(e).toBe(ERROR);
-      });
-      expect(mockMakeApiCallWithRetry).toBeCalledWith(serviceNameTransaction, fnNamePutTransaction, req, session, { ...TRANSACTION_PUT_WITHOUT_ID_PARAMS, companyName: companyName, companyNumber: companyNumber });
-      expect(mockCreateAndLogErrorRequest).toBeCalledWith(req, `'putTransaction' for company number '${COMPANY_NUMBER}' with name '${OVERSEAS_NAME_MOCK}' returned HTTP status code 401`);
-    });
-
-    test(`Should throw an error when HTTP status code is 500`, async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
-      mockMakeApiCallWithRetry.mockReturnValueOnce({ httpStatusCode: 500 });
-      await expect(updateTransaction(req, session)).rejects.toThrow(ERROR);
-      expect(mockInfoRequestLog).toHaveBeenCalledWith(req, `Calling 'putTransaction' for company number '${COMPANY_NUMBER}' with name '${OVERSEAS_NAME_MOCK}'`);
-      expect(mockCreateAndLogErrorRequest).toBeCalledWith(req, `'putTransaction' for company number '${COMPANY_NUMBER}' with name '${OVERSEAS_NAME_MOCK}' returned HTTP status code 500`);
-    });
-
-    test(`Should throw an error when HTTP status code is 400`, async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
-      mockMakeApiCallWithRetry.mockReturnValueOnce({ httpStatusCode: 400 });
-      await expect(updateTransaction(req, session)).rejects.toThrow(ERROR);
-      expect(mockInfoRequestLog).toHaveBeenCalledWith(req, `Calling 'putTransaction' for company number '${COMPANY_NUMBER}' with name '${OVERSEAS_NAME_MOCK}'`);
-      expect(mockCreateAndLogErrorRequest).toBeCalledWith(req, `'putTransaction' for company number '${COMPANY_NUMBER}' with name '${OVERSEAS_NAME_MOCK}' returned HTTP status code 400`);
-    });
-
-    test(`Should throw an error when no HTTP status code is received`, async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
-      mockMakeApiCallWithRetry.mockReturnValueOnce({ httpStatusCode: undefined });
-      await expect(updateTransaction(req, session)).rejects.toThrow(ERROR);
-      expect(mockInfoRequestLog).toHaveBeenCalledWith(req, `Calling 'putTransaction' for company number '${COMPANY_NUMBER}' with name '${OVERSEAS_NAME_MOCK}'`);
-      expect(mockCreateAndLogErrorRequest).toBeCalledWith(req, `'putTransaction' for company number '${COMPANY_NUMBER}' with name '${OVERSEAS_NAME_MOCK}' returned HTTP status code undefined`);
-    });
-
   });
 
   describe('CLOSE Transaction', () => {

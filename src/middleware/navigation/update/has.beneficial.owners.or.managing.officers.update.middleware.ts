@@ -8,7 +8,7 @@ import { SECURE_UPDATE_FILTER_URL, SECURE_UPDATE_FILTER_WITH_PARAMS_URL } from '
 
 export const hasBOsOrMOsUpdate = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const appData: ApplicationData = await getApplicationData(req);
+    const appData: ApplicationData = await getApplicationData(req, true);
     if (!(appData.update?.no_change || checkBOsOrMOsDetailsEnteredUpdate(appData))) {
       logger.infoRequest(req, NavigationErrorMessage);
       return res.redirect(getRedirectUrl({

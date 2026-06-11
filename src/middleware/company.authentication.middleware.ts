@@ -100,7 +100,7 @@ async function processTransaction (req: Request): Promise<[string, string]> {
 }
 
 const getAppData = async (req: Request): Promise<ApplicationData> => {
-  let appData: ApplicationData = await getApplicationData(req);
+  let appData: ApplicationData = await getApplicationData(req, true);
   if (!Object.keys(appData).length) {
     appData = await getDataFromEntityCookie(req);
   }

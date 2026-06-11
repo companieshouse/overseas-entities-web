@@ -16,7 +16,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     logger.debugRequest(req, `${req?.method} ${req?.route?.path}`);
 
-    const appData: ApplicationData = await getApplicationData(req);
+    const appData: ApplicationData = await getApplicationData(req, true);
     const referenceNumber = appData[Transactionkey];
 
     // It's necessary to do this check and save the result before deleting the application

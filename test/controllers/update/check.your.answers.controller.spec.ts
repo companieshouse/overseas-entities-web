@@ -26,7 +26,6 @@ import { authentication } from "../../../src/middleware/authentication.middlewar
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { updateOverseasEntity } from "../../../src/service/overseas.entities.service";
 import { startPaymentsSession } from "../../../src/service/payment.service";
-import { fetchApplicationData, getApplicationData } from "../../../src/utils/application.data";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { hasBOsOrMOsUpdate } from "../../../src/middleware/navigation/update/has.beneficial.owners.or.managing.officers.update.middleware";
 import { BeneficialOwnerIndividualKey } from "../../../src/model/beneficial.owner.individual.model";
@@ -35,46 +34,83 @@ import { ADDRESS } from "../../__mocks__/fields/address.mock";
 import { BeneficialOwnerOtherKey } from "../../../src/model/beneficial.owner.other.model";
 import { getTodaysDate } from "../../../src/utils/date";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
-import { isRegistrationJourney, isRemoveJourney } from "../../../src/utils/url";
 
 import { postTransaction, closeTransaction } from "../../../src/service/transaction.service";
-import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../../src/model/who.is.making.filing.model";
 import { validateStatements, summaryPagesGuard } from "../../../src/middleware/statement.validation.middleware";
+import { fetchApplicationData, getApplicationData } from "../../../src/utils/application.data";
+import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../../src/model/who.is.making.filing.model";
 import { InputDate, OverseasEntityKey, Transactionkey } from '../../../src/model/data.types.model';
 
 import {
-  beneficialOwnerIndividualType,
+  getRedirectUrl,
+  isRemoveJourney,
+  isRegistrationJourney,
+} from "../../../src/utils/url";
+
+import {
   dueDiligenceType,
   managingOfficerType,
-  overseasEntityDueDiligenceType
+  beneficialOwnerIndividualType,
+  overseasEntityDueDiligenceType,
 } from "../../../src/model";
 
 import {
-  UPDATE_CHECK_YOUR_ANSWERS_PAGE,
-  UPDATE_CHECK_YOUR_ANSWERS_URL,
-  UPDATE_PRESENTER_CHANGE_FULL_NAME,
-  UPDATE_PRESENTER_CHANGE_EMAIL,
-  SECURE_UPDATE_FILTER_URL,
   REMOVE_SERVICE_NAME,
+  SECURE_UPDATE_FILTER_URL,
   REMOVE_CONFIRM_STATEMENT_URL,
-  UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL,
+  UPDATE_CHECK_YOUR_ANSWERS_URL,
+  UPDATE_PRESENTER_CHANGE_EMAIL,
+  UPDATE_CHECK_YOUR_ANSWERS_PAGE,
+  UPDATE_DUE_DILIGENCE_CHANGE_WHO,
+  UPDATE_DUE_DILIGENCE_CHANGE_NAME,
+  UPDATE_DUE_DILIGENCE_CHANGE_EMAIL,
+  UPDATE_PRESENTER_CHANGE_FULL_NAME,
+  UPDATE_DUE_DILIGENCE_CHANGE_AML_NUMBER,
   UPDATE_DUE_DILIGENCE_CHANGE_AGENT_CODE,
-  UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_DATE,
+  UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL,
+  UPDATE_DUE_DILIGENCE_CHANGE_PARTNER_NAME,
+  UPDATE_DUE_DILIGENCE_CHANGE_IDENTITY_DATE,
+  UPDATE_DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS,
+  UPDATE_DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME,
   UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_NAME,
-  UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS,
   UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_EMAIL,
-  UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME,
   UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_AML_NUMBER,
   UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_PARTNER_NAME,
-  UPDATE_DUE_DILIGENCE_CHANGE_WHO,
-  UPDATE_DUE_DILIGENCE_CHANGE_IDENTITY_DATE,
-  UPDATE_DUE_DILIGENCE_CHANGE_NAME,
-  UPDATE_DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS,
-  UPDATE_DUE_DILIGENCE_CHANGE_EMAIL,
-  UPDATE_DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME,
-  UPDATE_DUE_DILIGENCE_CHANGE_AML_NUMBER,
-  UPDATE_DUE_DILIGENCE_CHANGE_PARTNER_NAME
+  UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_DATE,
+  UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS,
+  UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME, UPDATE_AN_OVERSEAS_ENTITY_URL,
+  OVERSEAS_ENTITY_UPDATE_DETAILS_URL,
+  WHO_IS_MAKING_UPDATE_URL,
+  UPDATE_CHECK_YOUR_ANSWERS_WITH_PARAMS_URL,
 } from "../../../src/config";
+
+import {
+  ERROR,
+  TRUST_WITH_ID,
+  TRANSACTION_ID,
+  COMPANY_NUMBER,
+  INDIVIUAL_TRUSTEE,
+  CORPORATE_TRUSTEE,
+  OVERSEAS_ENTITY_ID,
+  OVERSEAS_NAME_MOCK,
+  PAYMENT_LINK_JOURNEY,
+  TRANSACTION_CLOSED_RESPONSE,
+  APPLICATION_DATA_REMOVE_BO_MOCK,
+  APPLICATION_DATA_UPDATE_BO_MOCK,
+  APPLICATION_DATA_CH_REF_REMOVE_MOCK,
+  APPLICATION_DATA_CH_REF_UPDATE_MOCK,
+  UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE,
+  UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE,
+  BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_CH_REF,
+  UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+  BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_CH_REF,
+  UPDATE_MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF,
+  RELEVANT_PERIOD_BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
+  RELEVANT_PERIOD_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
+  BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF,
+  UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+  RELEVANT_PERIOD_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+} from "../../__mocks__/session.mock";
 
 import {
   PAGE_TITLE_ERROR,
@@ -167,50 +203,27 @@ import {
   OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING
 } from "../../__mocks__/text.mock";
 
-import {
-  ERROR,
-  OVERSEAS_ENTITY_ID,
-  APPLICATION_DATA_UPDATE_BO_MOCK,
-  APPLICATION_DATA_CH_REF_UPDATE_MOCK,
-  TRANSACTION_CLOSED_RESPONSE,
-  PAYMENT_LINK_JOURNEY,
-  TRANSACTION_ID,
-  BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF,
-  UPDATE_MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF,
-  BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_CH_REF,
-  BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_CH_REF,
-  APPLICATION_DATA_REMOVE_BO_MOCK,
-  APPLICATION_DATA_CH_REF_REMOVE_MOCK,
-  OVERSEAS_NAME_MOCK,
-  COMPANY_NUMBER,
-  INDIVIUAL_TRUSTEE,
-  CORPORATE_TRUSTEE,
-  TRUST_WITH_ID,
-  UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_CHANGE,
-  UPDATE_OBJECT_MOCK_RELEVANT_PERIOD_NO_CHANGE,
-  RELEVANT_PERIOD_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
-  RELEVANT_PERIOD_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
-  RELEVANT_PERIOD_BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
-  UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
-  UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK
-} from "../../__mocks__/session.mock";
-
 mockCsrfProtectionMiddleware.mockClear();
+
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
+const mockGetRedirectUrl = getRedirectUrl as jest.Mock;
+const mockGetTodaysDate = getTodaysDate as jest.Mock;
+const mockIsRemoveJourney = isRemoveJourney as jest.Mock;
+
 const mockAuthenticationMiddleware = authentication as jest.Mock;
-mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockCompanyAuthenticationMiddleware = companyAuthentication as jest.Mock;
-mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockHasBOsOrMOsUpdateMiddleware = hasBOsOrMOsUpdate as jest.Mock;
-mockHasBOsOrMOsUpdateMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockHasBOsOrMOsUpdateMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
-mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockValidateStatements = validateStatements as jest.Mock;
 mockValidateStatements.mockImplementation((_: Request, __: Response, next: NextFunction) => next());
@@ -219,23 +232,19 @@ const mockSummaryPagesGuard = summaryPagesGuard as jest.Mock;
 mockSummaryPagesGuard.mockImplementation((_: Request, __: Response, next: NextFunction) => next());
 
 const mockTransactionService = postTransaction as jest.Mock;
-mockTransactionService.mockReturnValue( TRANSACTION_ID );
+mockTransactionService.mockReturnValue(TRANSACTION_ID);
 
 const mockOverseasEntity = updateOverseasEntity as jest.Mock;
-mockOverseasEntity.mockReturnValue( OVERSEAS_ENTITY_ID );
+mockOverseasEntity.mockReturnValue(OVERSEAS_ENTITY_ID);
 
 const mockCloseTransaction = closeTransaction as jest.Mock;
-mockCloseTransaction.mockReturnValue( TRANSACTION_CLOSED_RESPONSE );
+mockCloseTransaction.mockReturnValue(TRANSACTION_CLOSED_RESPONSE);
 
 const mockPaymentsSession = startPaymentsSession as jest.Mock;
-mockPaymentsSession.mockReturnValue( "CONFIRMATION_URL" );
-
-const mockGetTodaysDate = getTodaysDate as jest.Mock;
+mockPaymentsSession.mockReturnValue("CONFIRMATION_URL");
 
 const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
 mockIsRegistrationJourney.mockReturnValue(false);
-
-const mockIsRemoveJourney = isRemoveJourney as jest.Mock;
 
 describe("CHECK YOUR ANSWERS controller", () => {
 
@@ -245,6 +254,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
     mockSummaryPagesGuard.mockImplementation((_: Request, __: Response, next: NextFunction) => next());
     mockGetTodaysDate.mockReturnValue({ day: "5", month: "4", year: "2024" } as InputDate);
     mockIsRemoveJourney.mockReset();
+    mockGetRedirectUrl.mockReset();
   });
 
   describe("GET tests", () => {
@@ -766,6 +776,8 @@ describe("CHECK YOUR ANSWERS controller", () => {
       mockGetApplicationData.mockReturnValue(mockAppData);
       mockFetchApplicationData.mockReturnValue(mockAppData);
       mockIsRemoveJourney.mockReturnValue(false);
+      mockIsActiveFeature.mockReturnValue(false);
+      mockGetRedirectUrl.mockReturnValue(`${UPDATE_AN_OVERSEAS_ENTITY_URL}entity`);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
       expect(resp.status).toEqual(200);
@@ -789,6 +801,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
       mockGetApplicationData.mockReturnValue(mockAppData);
       mockFetchApplicationData.mockReturnValue(mockAppData);
       mockIsRemoveJourney.mockReturnValue(true);
+      mockGetRedirectUrl.mockReturnValue(OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
       expect(resp.status).toEqual(200);
@@ -824,18 +837,48 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).not.toContain(RELEVANT_PERIOD_OWNED_LAND_CHANGE_LINK);
     });
 
-    test.each([
-      ["on remove journey", APPLICATION_DATA_REMOVE_BO_MOCK ],
-      ["on update journey", APPLICATION_DATA_UPDATE_BO_MOCK ]
-    ])(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with verification checks - Agent selected %s`, async (_journeyType, mockAppData) => {
-      mockGetApplicationData.mockReturnValue(mockAppData);
-      mockFetchApplicationData.mockReturnValue(mockAppData);
+    test("renders page with verification checks - Agent selected (remove journey)", async () => {
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_REMOVE_BO_MOCK);
+      mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_REMOVE_BO_MOCK);
+      mockIsRemoveJourney.mockReturnValue(true);
+      mockGetRedirectUrl.mockReturnValue(WHO_IS_MAKING_UPDATE_URL);
+
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(VERIFICATION_CHECKS);
       expect(resp.text).toContain(VERIFICATION_CHECKS_DATE);
       expect(resp.text).toContain(VERIFICATION_CHECKS_PERSON);
+      expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.name);
+      expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.email);
+      expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.supervisory_name);
+      expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.aml_number);
+      expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.agent_code);
+      expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.partner_name);
+
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_CHANGE_WHO);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_CHANGE_IDENTITY_DATE);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_CHANGE_NAME);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_CHANGE_EMAIL);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_CHANGE_AML_NUMBER);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_CHANGE_PARTNER_NAME);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_CHANGE_AGENT_CODE);
+    });
+
+    test("renders page with verification checks - Agent selected (update journey)", async () => {
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_BO_MOCK);
+      mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_BO_MOCK);
+      mockGetRedirectUrl.mockReturnValue(WHO_IS_MAKING_UPDATE_URL);
+
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(VERIFICATION_CHECKS);
+      expect(resp.text).toContain(VERIFICATION_CHECKS_DATE);
+      expect(resp.text).toContain(VERIFICATION_CHECKS_PERSON);
+
       expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.name);
       expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.email);
       expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.supervisory_name);
@@ -870,6 +913,10 @@ describe("CHECK YOUR ANSWERS controller", () => {
         [overseasEntityDueDiligenceType.OverseasEntityDueDiligenceKey]: OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK,
         [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE
       });
+      mockGetRedirectUrl.mockReturnValueOnce(UPDATE_AN_OVERSEAS_ENTITY_URL);
+      mockGetRedirectUrl.mockReturnValueOnce(UPDATE_DUE_DILIGENCE_CHANGE_WHO);
+      mockGetRedirectUrl.mockReturnValue(WHO_IS_MAKING_UPDATE_URL);
+
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
       expect(resp.status).toEqual(200);
@@ -1598,7 +1645,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
         }]
       };
 
-      mockFetchApplicationData.mockReturnValue(appData);
+      mockGetApplicationData.mockReturnValue(appData);
       mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
@@ -1615,7 +1662,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
     });
 
     test('catch error when rendering the page', async () => {
-      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockLoggerDebugRequest.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
@@ -1629,7 +1676,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
       mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_BO_MOCK);
       mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_BO_MOCK);
       mockPaymentsSession.mockReturnValueOnce(PAYMENT_LINK_JOURNEY);
-      const resp = await request(app).post(UPDATE_CHECK_YOUR_ANSWERS_URL);
+      const resp = await request(app).post(UPDATE_CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(PAYMENT_LINK_JOURNEY);

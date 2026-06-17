@@ -1,49 +1,84 @@
-import {
-  UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
-  UPDATE_BENEFICIAL_OWNER_TYPE_URL,
-  UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
-  RELEVANT_PERIOD_QUERY_PARAM,
-  FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
-} from "../../config";
 import { NextFunction, Request, Response } from "express";
-import { getApplicationData, mapDataObjectToFields, removeFromApplicationData, setApplicationData } from "../../utils/application.data";
-import { logger } from "../../utils/logger";
-import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
-import { ApplicationDataType } from "../../model";
-import { setBeneficialOwnerData } from "../../utils/beneficial.owner.individual";
-import { v4 as uuidv4 } from "uuid";
 import { Session } from "@companieshouse/node-session-handler";
+import { v4 as uuidv4 } from "uuid";
+
+import { logger } from "../../utils/logger";
+import { getRedirectUrl } from "../../utils/url";
 import { saveAndContinue } from "../../utils/save.and.continue";
-import { AddressKeys, EntityNumberKey, InputDate } from "../../model/data.types.model";
-import { addCeasedDateToTemplateOptions } from "../../utils/update/ceased_date_util";
-import { CeasedDateKey, HaveDayOfBirthKey } from "../../model/date.model";
-import { ServiceAddressKey, ServiceAddressKeys, UsualResidentialAddressKey, UsualResidentialAddressKeys } from "../../model/address.model";
-import { checkRelevantPeriod } from "../../utils/relevant.period";
 import { isActiveFeature } from "../../utils/feature.flag";
+import { checkRelevantPeriod } from "../../utils/relevant.period";
+import { setBeneficialOwnerData } from "../../utils/beneficial.owner.individual";
+import { checkAndReviewBeneficialOwner } from "../../utils/update/review.beneficial.owner";
+import { addCeasedDateToTemplateOptions } from "../../utils/update/ceased_date_util";
+
+import { ApplicationData, ApplicationDataType } from "../../model";
+
+import { CeasedDateKey, HaveDayOfBirthKey } from "../../model/date.model";
+import { AddressKeys, EntityNumberKey, InputDate } from "../../model/data.types.model";
+import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
+
+import {
+  setApplicationData,
+  getApplicationData,
+  mapDataObjectToFields,
+  removeFromApplicationData,
+} from "../../utils/application.data";
+
+import {
+  ServiceAddressKey,
+  ServiceAddressKeys,
+  UsualResidentialAddressKey,
+  UsualResidentialAddressKeys,
+} from "../../model/address.model";
+
+import {
+  RELEVANT_PERIOD_QUERY_PARAM,
+  UPDATE_BENEFICIAL_OWNER_TYPE_URL,
+  FEATURE_FLAG_ENABLE_REDIS_REMOVAL,
+  UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
+  UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
+  UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
+  FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC,
+  UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_WITH_PARAMS_URL,
+} from "../../config";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const appData = await getApplicationData(req.session);
-    const index = req.query.index;
 
+  try {
+
+    logger.debugRequest(req, `${req.method} ${req.route.path}`);
+    const appData = await getApplicationData(req);
+    const index = req.query.index;
     let dataToReview = {}, serviceAddress = {}, usual_residential_address = {};
-    if (appData?.beneficial_owners_individual){
-      dataToReview = appData?.beneficial_owners_individual[Number(index)];
-      serviceAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
-      usual_residential_address = (dataToReview) ? mapDataObjectToFields(dataToReview[UsualResidentialAddressKey], UsualResidentialAddressKeys, AddressKeys) : {};
+
+    if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+      checkAndReviewBeneficialOwner(req as any, appData);
     }
 
+    if (appData?.beneficial_owners_individual) {
+      dataToReview = appData.beneficial_owners_individual[Number(index)];
+      if (dataToReview) {
+        serviceAddress = mapDataObjectToFields(dataToReview[ServiceAddressKey], ServiceAddressKeys, AddressKeys);
+        usual_residential_address = mapDataObjectToFields(dataToReview[UsualResidentialAddressKey], UsualResidentialAddressKeys, AddressKeys);
+      }
+    }
+
+    const backLinkUrl = getRedirectUrl({
+      req,
+      urlWithEntityIds: UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_WITH_PARAMS_URL,
+      urlWithoutEntityIds: UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
+    });
+
     const templateOptions = {
-      backLinkUrl: UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
-      templateName: UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
       ...dataToReview,
-      isBeneficialOwnersReview: true,
-      populateResidentialAddress: false,
       ...serviceAddress,
       ...usual_residential_address,
+      backLinkUrl,
+      isBeneficialOwnersReview: true,
+      populateResidentialAddress: false,
       entity_number: appData[EntityNumberKey],
-      FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC: isActiveFeature(FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)
+      templateName: UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
+      FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC: isActiveFeature(FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC),
     };
 
     // Ceased date is undefined and residential address is private for initial review of BO - don't set ceased date data or residential address in this scenario
@@ -59,26 +94,33 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const boiIndex = req.query.index;
-    const appData = await getApplicationData(req.session);
 
-    if (boiIndex !== undefined && appData.beneficial_owners_individual && appData.beneficial_owners_individual[Number(boiIndex)].id === req.body["id"]) {
+  try {
+
+    logger.debugRequest(req, `${req.method} ${req.route.path}`);
+    const appData: ApplicationData = await getApplicationData(req);
+    const boiIndex = req.query.index;
+    const requestId = req.body["id"];
+
+    if (isBoReviewable(appData, boiIndex, requestId)) {
+      checkAndReviewBeneficialOwner(req as any, appData);
+    }
+
+    if (boiIndex !== undefined &&
+        appData?.beneficial_owners_individual &&
+        appData.beneficial_owners_individual[Number(boiIndex)].id === requestId
+    ) {
+
       const boData: BeneficialOwnerIndividual = appData.beneficial_owners_individual[Number(boiIndex)];
       const boId = boData.id;
       const dob = boData.date_of_birth as InputDate;
       const haveDayOfBirth = boData.have_day_of_birth;
-
       const trustIds: string[] = boData?.trust_ids?.length ? [...boData.trust_ids] : [];
-
-      await removeFromApplicationData(req, BeneficialOwnerIndividualKey, boId);
-
+      await removeFromApplicationData(req, BeneficialOwnerIndividualKey, boId, appData);
       setReviewedDateOfBirth(req, dob);
-
       const session = req.session as Session;
-
       const data: ApplicationDataType = setBeneficialOwnerData(req.body, uuidv4());
+
       if (haveDayOfBirth) {
         data[HaveDayOfBirthKey] = haveDayOfBirth;
       }
@@ -87,15 +129,26 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         (data as BeneficialOwnerIndividual).trust_ids = [...trustIds];
       }
 
-      await setApplicationData(req.session, data, BeneficialOwnerIndividualKey);
+      if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+        await setApplicationData(req, data, BeneficialOwnerIndividualKey);
+      } else {
+        await setApplicationData(req.session, data, BeneficialOwnerIndividualKey);
+        await saveAndContinue(req, session);
+      }
+    }
 
-      await saveAndContinue(req, session);
-    }
+    const boTypeRedirectUrl = getRedirectUrl({
+      req,
+      urlWithEntityIds: UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL,
+      urlWithoutEntityIds: UPDATE_BENEFICIAL_OWNER_TYPE_URL,
+    });
+
     if (checkRelevantPeriod(appData)) {
-      return res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL + RELEVANT_PERIOD_QUERY_PARAM);
-    } else {
-      return res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      return res.redirect(boTypeRedirectUrl + RELEVANT_PERIOD_QUERY_PARAM);
     }
+
+    return res.redirect(boTypeRedirectUrl);
+
   } catch (error) {
     next(error);
   }
@@ -107,8 +160,20 @@ export const setReviewedDateOfBirth = (req: Request, dob: InputDate) => {
   req.body["date_of_birth-year"] = padWithZero(dob?.year, 2, "0");
 };
 
+export const isBoReviewable = (appData: ApplicationData, boiIndex: any, requestId: string | undefined): boolean => {
+  if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && (
+    !boiIndex ||
+    !appData?.beneficial_owners_individual ||
+    !appData?.beneficial_owners_individual[Number(boiIndex)]?.id ||
+    appData.beneficial_owners_individual[Number(boiIndex)].id !== requestId)
+  ) {
+    return true;
+  }
+  return false;
+};
+
 export const padWithZero = (input: string, maxLength: number, fillString: string): string => {
-  if (input && input.toString().length > 1){
+  if (input && input.toString().length > 1) {
     return input;
   }
   return String(input).padStart(maxLength, fillString);

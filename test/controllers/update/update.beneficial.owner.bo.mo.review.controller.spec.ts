@@ -12,27 +12,35 @@ import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddlewa
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
+
+import app from "../../../src/app";
+import * as config from "../../../src/config";
+import { logger } from "../../../src/utils/logger";
+
+import { authentication } from "../../../src/middleware/authentication.middleware";
+import { isActiveFeature } from "../../../src/utils/feature.flag";
+import { getApplicationData } from "../../../src/utils/application.data";
+import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
+import { checkRelevantPeriod } from "../../../src/utils/relevant.period";
+import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 
-import * as config from "../../../src/config";
-import app from "../../../src/app";
+import { APPLICATION_DATA_MOCK, OVERSEAS_NAME_MOCK } from "../../__mocks__/session.mock";
+
 import {
-  ANY_MESSAGE_ERROR,
   PAGE_TITLE_ERROR,
+  ANY_MESSAGE_ERROR,
   SERVICE_UNAVAILABLE,
   UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_TITLE
 } from "../../__mocks__/text.mock";
 
-import { APPLICATION_DATA_MOCK, OVERSEAS_NAME_MOCK } from "../../__mocks__/session.mock";
-import { getApplicationData } from "../../../src/utils/application.data";
-import { authentication } from "../../../src/middleware/authentication.middleware";
-import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
-import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
-import { logger } from "../../../src/utils/logger";
-import { isActiveFeature } from "../../../src/utils/feature.flag";
-import { checkRelevantPeriod } from "../../../src/utils/relevant.period";
-
 mockCsrfProtectionMiddleware.mockClear();
+
+const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
+const mockCheckRelevantPeriod = checkRelevantPeriod as jest.Mock;
+
 const mockHasUpdatePresenter = hasUpdatePresenter as jest.Mock;
 mockHasUpdatePresenter.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
@@ -45,21 +53,17 @@ mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Respo
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
-const mockGetApplicationData = getApplicationData as jest.Mock;
-const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
-const mockIsActiveFeature = isActiveFeature as jest.Mock;
-const mockCheckRelevantPeriod = checkRelevantPeriod as jest.Mock;
-
 describe("BENEFICIAL OWNER BO MO REVIEW controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetApplicationData.mockReset();
   });
 
   describe("GET tests", () => {
+
     test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE} page`, async () => {
       mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
-
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_TITLE);
@@ -71,7 +75,6 @@ describe("BENEFICIAL OWNER BO MO REVIEW controller", () => {
     test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE} page when statement validation flag is on`, async () => {
       mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
       mockIsActiveFeature.mockReturnValue(true);
-
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_TITLE);
@@ -83,22 +86,20 @@ describe("BENEFICIAL OWNER BO MO REVIEW controller", () => {
     test("catch error when rendering the Overseas Entity Review page on GET method", async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
-      mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockGetApplicationData.mockImplementation(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
-
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
   });
 
   describe("POST tests", () => {
+
     test(`redirect to ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE}`, async () => {
       mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
       mockIsActiveFeature.mockReturnValue(true);
       mockCheckRelevantPeriod.mockReturnValueOnce(true);
-
       const resp = await request(app).post(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
-
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
     });
@@ -106,7 +107,6 @@ describe("BENEFICIAL OWNER BO MO REVIEW controller", () => {
     test(`catch error on POST action for ${config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE} page`, async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).post(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
-
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });

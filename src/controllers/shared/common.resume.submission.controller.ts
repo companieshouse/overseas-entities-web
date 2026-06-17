@@ -3,24 +3,24 @@ import { v4 as uuidv4 } from "uuid";
 import { Session } from "@companieshouse/node-session-handler";
 
 import * as config from "../../config";
-import { ApplicationData } from "../../model";
-import { createAndLogErrorRequest, logger } from "../../utils/logger";
 import { setExtraData } from "../../utils/application.data";
-import { isActiveFeature } from "../../utils/feature.flag";
-import { startPaymentsSession } from "../../service/payment.service";
 import { getTransaction } from "../../service/transaction.service";
-import { mapTrustApiReturnModelToWebModel } from "../../utils/trusts";
-import { isRegistrationJourney } from "../../utils/url";
+import { isActiveFeature } from "../../utils/feature.flag";
 import { DueDiligenceKey } from "../../model/due.diligence.model";
+import { ApplicationData } from "../../model";
+import { startPaymentsSession } from "../../service/payment.service";
+import { isRegistrationJourney } from "../../utils/url";
 import { OverseasEntityDueDiligenceKey } from "../../model/overseas.entity.due.diligence.model";
+import { mapTrustApiReturnModelToWebModel } from "../../utils/trusts";
 
+import { createAndLogErrorRequest, logger } from "../../utils/logger";
 import { getOverseasEntity, updateOverseasEntity } from "../../service/overseas.entities.service";
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../model/who.is.making.filing.model";
 import { BeneficialOwnerGov, BeneficialOwnerGovKey } from "../../model/beneficial.owner.gov.model";
-import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
+import { ManagingOfficerIndividual, ManagingOfficerKey } from "../../model/managing.officer.model";
 import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../../model/beneficial.owner.other.model";
 import { ManagingOfficerCorporate, ManagingOfficerCorporateKey } from "../../model/managing.officer.corporate.model";
-import { ManagingOfficerIndividual, ManagingOfficerKey } from "../../model/managing.officer.model";
+import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
 
 import {
   ID,
@@ -55,7 +55,7 @@ export const getResumePage = async (req: Request, res: Response, next: NextFunct
     }
 
     const session = req.session as Session;
-    await setWebApplicationData(req, session, appData, transactionId, overseasEntityId, isRegistration);
+    await setWebApplicationData(req, session, appData, transactionId, overseasEntityId);
     const transactionResource = await getTransaction(req, transactionId);
 
     if (transactionResource.status === config.CLOSED_PENDING_PAYMENT) {
@@ -93,8 +93,7 @@ const setWebApplicationData = async (
   session: Session,
   appData: ApplicationData,
   transactionId: string,
-  overseasEntityId: string,
-  isRegistration: boolean
+  overseasEntityId: string
 ) => {
 
   appData[BeneficialOwnerIndividualKey] = (appData[BeneficialOwnerIndividualKey] as BeneficialOwnerIndividual[])
@@ -108,7 +107,7 @@ const setWebApplicationData = async (
   appData[ManagingOfficerCorporateKey] = (appData[ManagingOfficerCorporateKey] as ManagingOfficerCorporate[])
     .map(moc => { return { ...moc, [ID]: uuidv4() }; });
 
-  if (!isRegistration || !isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+  if (!isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
     appData[HasSoldLandKey] = '0';
     appData[IsSecureRegisterKey] = '0';
     if (appData[OverseasEntityDueDiligenceKey] && Object.keys(appData[OverseasEntityDueDiligenceKey]).length) {
@@ -132,7 +131,7 @@ const setWebApplicationData = async (
     appData[BeneficialOwnerGovKey].forEach(bog => { delete bog[NonLegalFirmNoc]; });
   }
 
-  if (isRegistration && isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
     await updateOverseasEntity(req, req.session as Session, appData, true);
   }
 

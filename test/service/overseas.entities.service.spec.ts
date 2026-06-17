@@ -7,7 +7,7 @@ import { Request } from "express";
 import { createAndLogErrorRequest, logger } from "../../src/utils/logger";
 import { isRegistrationJourney, } from "../../src/utils/url";
 import { makeApiCallWithRetry } from "../../src/service/retry.handler.service";
-import { fetchApplicationData } from "../../src/utils/application.data";
+import { getApplicationData } from "../../src/utils/application.data";
 import { BAD_REQUEST, UNAUTHORISED } from "../__mocks__/text.mock";
 
 import {
@@ -29,7 +29,7 @@ import {
   FORCE_FETCH,
 } from "../__mocks__/session.mock";
 
-const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockInfoRequestLog = logger.infoRequest as jest.Mock;
 const mockCreateAndLogErrorRequest = createAndLogErrorRequest as jest.Mock;
 mockCreateAndLogErrorRequest.mockReturnValue(ERROR);
@@ -51,7 +51,7 @@ describe(`Overseas Entity Service test suite`, () => {
   test(`createOverseasEntity should respond with created httpStatusCode`, async () => {
     const mockResponse = { httpStatusCode: 201, resource: { id: OVERSEAS_ENTITY_ID } };
     mockMakeApiCallWithRetry.mockReturnValueOnce(mockResponse);
-    mockFetchApplicationData.mockReturnValueOnce( APPLICATION_DATA_MOCK );
+    mockGetApplicationData.mockReturnValueOnce( APPLICATION_DATA_MOCK );
     const response = await createOverseasEntity(req, session, TRANSACTION_ID);
 
     expect(response).toEqual(OVERSEAS_ENTITY_ID);
@@ -101,7 +101,7 @@ describe(`Update Overseas Entity Service test suite`, () => {
 
   test(`updateOverseasEntity should respond with created httpStatusCode`, async () => {
     const mockResponse = { httpStatusCode: 200 };
-    mockFetchApplicationData.mockReturnValueOnce( APPLICATION_DATA_MOCK );
+    mockGetApplicationData.mockReturnValueOnce( APPLICATION_DATA_MOCK );
     mockMakeApiCallWithRetry.mockResolvedValueOnce( mockResponse);
 
     await updateOverseasEntity(req, getSessionRequestWithExtraData());
@@ -125,7 +125,7 @@ describe(`Update Overseas Entity Service test suite`, () => {
   test(`updateOverseasEntity should respond with 400 (Bad Request) error message`, async () => {
     const mockResponse = { httpStatusCode: 400, errors: [BAD_REQUEST] };
     const errorMsg = `'putOverseasEntity' for transaction id '${TRANSACTION_ID}' and overseas entity id '${OVERSEAS_ENTITY_ID}' encountered an error - ${JSON.stringify(mockResponse)}`;
-    mockFetchApplicationData.mockReturnValueOnce( APPLICATION_DATA_MOCK );
+    mockGetApplicationData.mockReturnValueOnce( APPLICATION_DATA_MOCK );
     mockMakeApiCallWithRetry.mockResolvedValueOnce(mockResponse);
 
     await expect( updateOverseasEntity(req, session) ).rejects.toThrow(ERROR);

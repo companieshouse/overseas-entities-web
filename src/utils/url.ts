@@ -1,14 +1,20 @@
-import * as config from "../config";
 import { Request } from "express";
+import * as config from "../config";
+import { IsRemoveKey } from "../model/data.types.model";
+import { isActiveFeature } from "./feature.flag";
 import { ApplicationData } from "../model";
 import { getApplicationData } from "./application.data";
-import { Session } from "@companieshouse/node-session-handler";
-import { IsRemoveKey } from "../model/data.types.model";
 import { createAndLogErrorRequest, logger } from "./logger";
 
 export interface TransactionIdAndSubmissionId {
   transactionId: string;
   submissionId: string;
+}
+
+interface RedirectUrlDependencies {
+  req: Request;
+  urlWithEntityIds: string;
+  urlWithoutEntityIds: string;
 }
 
 export const getUrlWithTransactionIdAndSubmissionId = (url: string, transactionId: string, submissionId: string): string => {
@@ -63,6 +69,32 @@ export const getTransactionIdAndSubmissionIdFromOriginalUrl = (req: Request): Tr
   }
 };
 
+export const getRedirectUrl = ({
+  req,
+  urlWithEntityIds,
+  urlWithoutEntityIds,
+}: RedirectUrlDependencies): string => {
+
+  try {
+
+    const ids = getTransactionIdAndSubmissionIdFromOriginalUrl(req);
+
+    if (!isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) || typeof ids === "undefined") {
+      return urlWithoutEntityIds;
+    }
+
+    return getUrlWithTransactionIdAndSubmissionId(
+      urlWithEntityIds,
+      ids[config.ROUTE_PARAM_TRANSACTION_ID],
+      ids[config.ROUTE_PARAM_SUBMISSION_ID]
+    );
+
+  } catch (error) {
+    logger.error(error);
+    return urlWithoutEntityIds;
+  }
+};
+
 export const isRegistrationJourney = (req: Request): boolean => {
   if (req.originalUrl.startsWith(config.LANDING_URL)) {
     return true;
@@ -78,8 +110,8 @@ export const isUpdateJourney = async (req: Request): Promise<boolean> => {
 };
 
 export const isRemoveJourney = async (req: Request): Promise<boolean> => {
-  const session = req.session as Session;
-  const appData: ApplicationData = await getApplicationData(session);
+
+  const appData: ApplicationData = await getApplicationData(req);
 
   if (appData) {
     if (appData[IsRemoveKey] !== undefined && appData[IsRemoveKey] !== null) {

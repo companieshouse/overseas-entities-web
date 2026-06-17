@@ -17,7 +17,7 @@ update.filing_date["year"]) %}
     Yes
   {% else %}
     No
-  {% endif %}  
+  {% endif %}
 {% endset %}
 
 {% set isProtectedInformation %}
@@ -27,6 +27,18 @@ update.filing_date["year"]) %}
     No
   {% endif %}
 {% endset %}
+
+{% if not IS_REDIS_REMOVAL_ENABLED %}
+  {% set changeLinkSecureUpdateUrl = OE_CONFIGS.SECURE_UPDATE_FILTER_URL %}
+  {% set changeLinkRelevantPeriodUrl = OE_CONFIGS.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL %}
+  {% set changeLinkFilingDateUrl = OE_CONFIGS.UPDATE_FILING_DATE_CHANGELINK %}
+  {% set changeLinkOeChangeUrl = OE_CONFIGS.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_CHANGELINK %}
+{% else %}
+  {% set changeLinkSecureUpdateUrl = CREATE_CHANGE_LINK_WITH_IDS(OE_CONFIGS.SECURE_UPDATE_FILTER_WITH_PARAMS_URL, OE_TRANSACTION_ID, OE_SUBMISSION_ID) %}
+  {% set changeLinkRelevantPeriodUrl = CREATE_CHANGE_LINK_WITH_IDS(OE_CONFIGS.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL, OE_TRANSACTION_ID, OE_SUBMISSION_ID) %}
+  {% set changeLinkFilingDateUrl = CREATE_CHANGE_LINK_WITH_IDS(OE_CONFIGS.UPDATE_FILING_DATE_CHANGELINK_WITH_PARAMS, OE_TRANSACTION_ID, OE_SUBMISSION_ID) %}
+  {% set changeLinkOeChangeUrl = CREATE_CHANGE_LINK_WITH_IDS(OE_CONFIGS.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_CHANGELINK_WITH_PARAMS, OE_TRANSACTION_ID, OE_SUBMISSION_ID) %}
+{% endif %}
 
   {{ govukSummaryList({
     rows: [
@@ -39,7 +51,7 @@ update.filing_date["year"]) %}
     },
       actions: {
         items: [ CREATE_CHANGE_LINK(
-        OE_CONFIGS.SECURE_UPDATE_FILTER_URL,
+        changeLinkSecureUpdateUrl,
         isProtectedInformation,
         "has-protected-information-change-link"
         ) ]
@@ -54,8 +66,8 @@ update.filing_date["year"]) %}
         },
         actions: {
           items: [ CREATE_CHANGE_LINK(
-          OE_CONFIGS.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL,
-          isOwnedLand,          
+          changeLinkRelevantPeriodUrl,
+          isOwnedLand,
           "is-owned-land-change-link"
           ) ]
         }
@@ -72,7 +84,7 @@ update.filing_date["year"]) %}
       },
       actions: {
         items: [ CREATE_CHANGE_LINK(
-        OE_CONFIGS.UPDATE_FILING_DATE_CHANGELINK,
+        changeLinkFilingDateUrl,
         updateStatementDate,
         "nochange-changelink-filingdate-review-statement-button"
         ) ]
@@ -90,7 +102,7 @@ update.filing_date["year"]) %}
       },
       actions: {
         items: [ CREATE_CHANGE_LINK(
-        OE_CONFIGS.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_CHANGELINK,
+        changeLinkOeChangeUrl,
         noChange,
         "nochange-changelink-entity-review-statement-button"
         ) ]

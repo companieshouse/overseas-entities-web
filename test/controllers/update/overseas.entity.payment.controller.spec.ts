@@ -5,83 +5,102 @@ jest.mock("../../../src/utils/logger");
 jest.mock("../../../src/utils/feature.flag");
 jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/middleware/service.availability.middleware');
-jest.mock('../../../src/utils/url');
 
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
+
 // import remove journey middleware mock before app to prevent real function being used instead of mock
 import mockJourneyDetectionMiddleware from "../../__mocks__/journey.detection.middleware.mock";
 import app from "../../../src/app";
 
 import { PaymentKey } from "../../../src/model/data.types.model";
 import { authentication } from "../../../src/middleware/authentication.middleware";
+import { isActiveFeature } from "../../../src/utils/feature.flag";
+import { getApplicationData } from "../../../src/utils/application.data";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { createAndLogErrorRequest, logger } from "../../../src/utils/logger";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
-import { isRegistrationJourney } from "../../../src/utils/url";
-import { getApplicationData } from "../../../src/utils/application.data";
 
 import {
+  MESSAGE_ERROR,
   ANY_MESSAGE_ERROR,
   FOUND_REDIRECT_TO,
-  MESSAGE_ERROR,
-  SERVICE_UNAVAILABLE
+  SERVICE_UNAVAILABLE,
 } from "../../__mocks__/text.mock";
 
 import {
   PAYMENT_PAID,
-  UPDATE_CONFIRMATION_PAGE,
-  UPDATE_CONFIRMATION_URL,
   PAYMENT_FAILED_PAGE,
-  UPDATE_PAYMENT_FAILED_URL
+  UPDATE_CONFIRMATION_URL,
+  UPDATE_CONFIRMATION_PAGE,
+  UPDATE_PAYMENT_FAILED_URL,
+  UPDATE_AN_OVERSEAS_ENTITY_URL
 } from "../../../src/config";
 
 import {
+  TRANSACTION_ID,
+  OVERSEAS_ENTITY_ID,
   PAYMENT_OBJECT_MOCK,
+  APPLICATION_DATA_MOCK,
   PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING,
+  UPDATE_PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING,
   UPDATE_PAYMENT_DECLINED_WITH_TRANSACTION_URL_AND_QUERY_STRING,
-  UPDATE_PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING
 } from "../../__mocks__/session.mock";
 
 mockJourneyDetectionMiddleware.mockClear();
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
+const mockLoggerInfoRequest = logger.infoRequest as jest.Mock;
+const mockCreateAndLogErrorRequest = createAndLogErrorRequest as jest.Mock;
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
+
+const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
+mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
+
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockCompanyAuthenticationMiddleware = companyAuthentication as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
-const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
-mockIsRegistrationJourney.mockReturnValue(false);
-
-const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
-const mockLoggerInfoRequest = logger.infoRequest as jest.Mock;
-const mockCreateAndLogErrorRequest = createAndLogErrorRequest as jest.Mock;
-const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
-mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
-
 describe('OVERSEAS ENTITY PAYMENT controller suit', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockIsActiveFeature.mockReset();
   });
 
   test("should rejecting redirect, state does not match", async () => {
     mockGetApplicationData.mockReturnValueOnce({});
     await request(app).get(UPDATE_PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING);
-    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
+    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(3);
     expect(mockLoggerDebugRequest).not.toHaveBeenCalled();
     expect(mockCreateAndLogErrorRequest).toHaveBeenCalledTimes(1);
   });
 
-  test(`should redirect to ${UPDATE_CONFIRMATION_PAGE} page, Payment Successful with status ${PAYMENT_PAID}`, async () => {
+  test(`should redirect to ${UPDATE_CONFIRMATION_PAGE} page, Payment Successful with status ${PAYMENT_PAID} when REDIS flag is set to OFF`, async () => {
+    mockIsActiveFeature.mockReturnValue(false);
     mockGetApplicationData.mockReturnValueOnce({ [PaymentKey]: PAYMENT_OBJECT_MOCK });
     const resp = await request(app).get(UPDATE_PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING);
     expect(resp.status).toEqual(302);
     expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${UPDATE_CONFIRMATION_URL}`);
     expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
-    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
+    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(3);
+    expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
+  });
+
+  test(`should redirect to ${UPDATE_CONFIRMATION_PAGE} page, Payment Successful with status ${PAYMENT_PAID} when REDIS flag is set to ON`, async () => {
+    mockIsActiveFeature.mockReturnValue(true);
+    mockGetApplicationData.mockReturnValueOnce({
+      ...APPLICATION_DATA_MOCK,
+      [PaymentKey]: PAYMENT_OBJECT_MOCK
+    });
+    const resp = await request(app).get(UPDATE_PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING);
+    expect(resp.status).toEqual(302);
+    expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${UPDATE_AN_OVERSEAS_ENTITY_URL}transaction/${TRANSACTION_ID}/submission/${OVERSEAS_ENTITY_ID}/${UPDATE_CONFIRMATION_PAGE}`);
+    expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
+    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(3);
     expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
   });
 
@@ -91,7 +110,7 @@ describe('OVERSEAS ENTITY PAYMENT controller suit', () => {
     expect(resp.status).toEqual(302);
     expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${UPDATE_PAYMENT_FAILED_URL}`);
     expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
-    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
+    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(3);
     expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
   });
 
@@ -108,7 +127,7 @@ describe('OVERSEAS ENTITY PAYMENT controller suit', () => {
     expect(resp.status).toEqual(302);
     expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${UPDATE_PAYMENT_FAILED_URL}`);
     expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
-    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
+    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(3);
     expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
   });
 

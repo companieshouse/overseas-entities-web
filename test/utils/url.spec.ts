@@ -1,20 +1,22 @@
-import { expect, jest } from "@jest/globals";
-
 jest.mock('../../src/utils/application.data');
 jest.mock("../../src/utils/logger");
+jest.mock("../../src/utils/feature.flag");
 
+import { expect, jest } from "@jest/globals";
 import { Request, request } from "express";
 import * as config from "../../src/config";
 import * as urlUtils from "../../src/utils/url";
 import { getApplicationData } from '../../src/utils/application.data';
 import { APPLICATION_DATA_MOCK } from "../__mocks__/session.mock";
 import { createAndLogErrorRequest, logger } from "../../src/utils/logger";
+import { isActiveFeature } from "../../src/utils/feature.flag";
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockCreateAndLogErrorRequest = createAndLogErrorRequest as jest.Mock;
 const mockLoggerInfoRequest = logger.infoRequest as jest.Mock;
 
 describe("Url utils tests", () => {
+
   const req = request;
   const TRANSACTION_ID = "987654321";
   const SUBMISSION_ID = "1234-abcd";
@@ -39,7 +41,6 @@ describe("Url utils tests", () => {
         [config.ROUTE_PARAM_TRANSACTION_ID]: TRANSACTION_ID,
         [config.ROUTE_PARAM_SUBMISSION_ID]: SUBMISSION_ID
       };
-
       const url = urlUtils.getUrlWithParamsToPath(config.PRESENTER_WITH_PARAMS_URL, req);
       expect(url).toEqual(`/register-an-overseas-entity/transaction/${TRANSACTION_ID}/submission/${SUBMISSION_ID}/presenter`);
     });
@@ -52,7 +53,6 @@ describe("Url utils tests", () => {
         [config.ROUTE_PARAM_TRANSACTION_ID]: TRANSACTION_ID,
         [config.ROUTE_PARAM_SUBMISSION_ID]: SUBMISSION_ID
       };
-
       const response = urlUtils.transactionIdAndSubmissionIdExistInRequest(req);
       expect(response).toEqual(true);
     });
@@ -60,7 +60,6 @@ describe("Url utils tests", () => {
     test("FALSE returned if neither id is set", () => {
       req["params"] = {
       };
-
       const response = urlUtils.transactionIdAndSubmissionIdExistInRequest(req);
       expect(response).toEqual(false);
     });
@@ -69,7 +68,6 @@ describe("Url utils tests", () => {
       req["params"] = {
         [config.ROUTE_PARAM_TRANSACTION_ID]: TRANSACTION_ID
       };
-
       const response = urlUtils.transactionIdAndSubmissionIdExistInRequest(req);
       expect(response).toEqual(false);
     });
@@ -78,7 +76,6 @@ describe("Url utils tests", () => {
       req["params"] = {
         [config.ROUTE_PARAM_SUBMISSION_ID]: SUBMISSION_ID
       };
-
       const response = urlUtils.transactionIdAndSubmissionIdExistInRequest(req);
       expect(response).toEqual(false);
     });
@@ -333,7 +330,6 @@ describe("Url utils tests", () => {
         "journey": journeyQueryParamValue
       };
       const result = await urlUtils.isRemoveJourney(req);
-
       expect(result).toBeFalsy();
     });
 
@@ -342,7 +338,6 @@ describe("Url utils tests", () => {
         "journey": undefined
       };
       const result = await urlUtils.isRemoveJourney(req);
-
       expect(result).toBeFalsy();
     });
 
@@ -351,14 +346,12 @@ describe("Url utils tests", () => {
         "question": "answer"
       };
       const result = await urlUtils.isRemoveJourney(req);
-
       expect(result).toBeFalsy();
     });
 
     test("returns false if request has empty query params object", async () => {
       req["query"] = {};
       const result = await urlUtils.isRemoveJourney(req);
-
       expect(result).toBeFalsy();
     });
   });
@@ -385,10 +378,56 @@ describe("Url utils tests", () => {
 
     test("returns undefined if no url found in headers", () => {
       req["rawHeaders"] = ["Referer", ""];
-
       const previousPage = urlUtils.getPreviousPageUrl(req, config.REGISTER_AN_OVERSEAS_ENTITY_URL);
-
       expect(previousPage).toBeUndefined();
+    });
+  });
+
+  describe("getBackLinkOrNextUrl tests", () => {
+    const urlWithEntityIds = "/transaction/:transactionId/submission/:submissionId/entity";
+    const urlWithoutEntityIds = "/entity";
+    const transactionId = "tx123";
+    const submissionId = "sub456";
+    const mockIsActiveFeature = isActiveFeature as jest.Mock;
+
+    beforeEach(() => {
+      jest.spyOn(urlUtils, "getTransactionIdAndSubmissionIdFromOriginalUrl").mockImplementation(() => ({
+        transactionId,
+        submissionId
+      }));
+      jest.spyOn(urlUtils, "getUrlWithTransactionIdAndSubmissionId").mockImplementation((url, tId, sId) => {
+        return url.replace(":transactionId", tId).replace(":submissionId", sId);
+      });
+      jest.clearAllMocks();
+    });
+
+    test("returns url with entity ids when feature flag is enabled and ids are present", () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      const req = { originalUrl: "/transaction/tx123/submission/sub456", params: {}, query: {} } as unknown as Request;
+      const result = urlUtils.getRedirectUrl({ req, urlWithEntityIds, urlWithoutEntityIds });
+      expect(result).toBe("/transaction/tx123/submission/sub456/entity");
+    });
+
+    test("returns urlWithoutEntityIds when feature flag is disabled", () => {
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      const req = { originalUrl: "/transaction/tx123/submission/sub456", params: {}, query: {} } as unknown as Request;
+      const result = urlUtils.getRedirectUrl({ req, urlWithEntityIds, urlWithoutEntityIds });
+      expect(result).toBe(urlWithoutEntityIds);
+    });
+
+    test("returns urlWithoutEntityIds when ids are undefined", () => {
+      jest.spyOn(urlUtils, "getTransactionIdAndSubmissionIdFromOriginalUrl").mockReturnValue(undefined);
+      const req = { originalUrl: "/no-ids-here", params: {}, query: {} } as unknown as Request;
+      const result = urlUtils.getRedirectUrl({ req, urlWithEntityIds, urlWithoutEntityIds });
+      expect(result).toBe(urlWithoutEntityIds);
+    });
+
+    test("returns urlWithoutEntityIds and logs error if exception is thrown", () => {
+      jest.spyOn(urlUtils, "getTransactionIdAndSubmissionIdFromOriginalUrl").mockImplementation(() => { throw new Error("fail"); });
+      const req = { originalUrl: "/fail", params: {}, query: {} } as unknown as Request;
+      const result = urlUtils.getRedirectUrl({ req, urlWithEntityIds, urlWithoutEntityIds });
+      expect(result).toBe(urlWithoutEntityIds);
+      expect(logger.error).toHaveBeenCalled();
     });
   });
 });

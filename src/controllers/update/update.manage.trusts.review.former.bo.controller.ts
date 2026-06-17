@@ -1,51 +1,86 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Request, Response } from "express";
+import { logger } from "../../utils/logger";
 
-import { logger } from '../../utils/logger';
+import { Trust } from "../../model/trust.model";
+import { Session } from "@companieshouse/node-session-handler";
+import { TrusteeType } from "../../model/trustee.type.model";
+import { getRedirectUrl } from "../../utils/url";
+import { saveAndContinue } from "../../utils/save.and.continue";
+import { isActiveFeature } from "../../utils/feature.flag";
+import { updateOverseasEntity } from "../../service/overseas.entities.service";
+
+import { getApplicationData, setExtraData } from "../../utils/application.data";
+import { getTrustInReview, setTrusteesAsReviewed, } from "../../utils/update/review_trusts";
+
 import {
+  FEATURE_FLAG_ENABLE_REDIS_REMOVAL,
   UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL,
-  UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_PAGE,
   UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL,
+  UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_PAGE,
+  UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_WITH_PARAMS_URL,
   UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL,
-} from '../../config';
-import { getApplicationData, setExtraData } from '../../utils/application.data';
-import { saveAndContinue } from '../../utils/save.and.continue';
-import { getTrustInReview, setTrusteesAsReviewed } from '../../utils/update/review_trusts';
-import { Trust } from '../../model/trust.model';
-import { Session } from '@companieshouse/node-session-handler';
-import { TrusteeType } from '../../model/trustee.type.model';
+  UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_WITH_PARAMS_URL,
+  UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_WITH_PARAMS_URL,
+} from "../../config";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const appData = await getApplicationData(req.session as Session);
+  try {
+
+    logger.debugRequest(req, `${req.method} ${req.route.path}`);
+    const appData = await getApplicationData(req);
     const trust = getTrustInReview(appData) as Trust;
+
+    const backLinkUrl = getRedirectUrl({
+      req,
+      urlWithEntityIds: UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_WITH_PARAMS_URL,
+      urlWithoutEntityIds: UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL
+    });
 
     return res.render(UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_PAGE, {
       templateName: UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_PAGE,
-      backLinkUrl: UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL,
+      backLinkUrl,
       trust
     });
+
   } catch (error) {
     next(error);
   }
 };
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
+
   try {
+
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     if (req.body.addFormerBo) {
-      return res.redirect(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL);
+      const redirectUrl = getRedirectUrl({
+        req,
+        urlWithEntityIds: UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_WITH_PARAMS_URL,
+        urlWithoutEntityIds: UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL
+      });
+      return res.redirect(redirectUrl);
     }
 
-    const appData = await getApplicationData(req.session);
+    const appData = await getApplicationData(req);
     setTrusteesAsReviewed(appData, TrusteeType.HISTORICAL);
-
     setExtraData(req.session, appData);
-    await saveAndContinue(req, req.session as Session);
 
-    return res.redirect(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
+    if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+      await updateOverseasEntity(req, req.session as Session, appData);
+    } else {
+      await saveAndContinue(req, req.session as Session);
+    }
+
+    const redirectUrl = getRedirectUrl({
+      req,
+      urlWithEntityIds: UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_WITH_PARAMS_URL,
+      urlWithoutEntityIds: UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL
+    });
+
+    return res.redirect(redirectUrl);
+
   } catch (error) {
     next(error);
   }

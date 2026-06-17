@@ -3,6 +3,8 @@ jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/application.data');
+jest.mock("../../../src/utils/update/data.cookie");
+jest.mock("../../../src/utils/feature.flag" );
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
 import mockJourneyDetectionMiddleware from "../../__mocks__/journey.detection.middleware.mock";
@@ -14,50 +16,77 @@ import request from "supertest";
 import { ErrorMessages } from '../../../src/validation/error.messages';
 import * as config from "../../../src/config";
 import app from "../../../src/app";
+import { logger } from "../../../src/utils/logger";
+import { RemoveKey } from "../../../src/model/remove.type.model";
+import { authentication } from "../../../src/middleware/authentication.middleware";
+import { isActiveFeature } from "../../../src/utils/feature.flag";
+
+import { HasSoldAllLandKey } from "../../../src/model/data.types.model";
+import { entityCookieRemoveMock } from "../../__mocks__/update.entity.mocks";
+
+import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
+import { getDataFromEntityCookie, saveDataToCookie } from "../../../src/utils/update/data.cookie";
+
 import {
+  getRemove,
+  getApplicationData,
+  setApplicationData
+} from "../../../src/utils/application.data";
+
+import {
+  REMOVE_SERVICE_NAME,
+  REMOVE_IS_ENTITY_REGISTERED_OWNER_URL,
+} from "../../../src/config";
+
+import {
+  PAGE_TITLE_ERROR,
   ANY_MESSAGE_ERROR,
   FOUND_REDIRECT_TO,
-  PAGE_TITLE_ERROR,
+  SERVICE_UNAVAILABLE,
+  REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE,
   REMOVE_PROPERTY_BOUGHT_ON_OR_AFTER_DATE_TEXT,
   REMOVE_RELEVANT_PROPERTY_OR_LAND_DEFINED_TEXT,
-  REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE,
   REMOVE_WHAT_IS_RELEVANT_PROPERTY_OR_LAND_TEXT,
-  SERVICE_UNAVAILABLE,
 } from "../../__mocks__/text.mock";
-import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
-import { authentication } from "../../../src/middleware/authentication.middleware";
-import { logger } from "../../../src/utils/logger";
-import { REMOVE_SERVICE_NAME } from "../../../src/config";
-import { getApplicationData, getRemove, setApplicationData } from "../../../src/utils/application.data";
-import { RemoveKey } from "../../../src/model/remove.type.model";
-import { HasSoldAllLandKey } from "../../../src/model/data.types.model";
 
 mockJourneyDetectionMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
+
+const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
+const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockSetApplicationData = setApplicationData as jest.Mock;
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
+const mockGetRemove = getRemove as jest.Mock;
+
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => {
   // Add userEmail to res.locals to make sign-out url appear
   res.locals.userEmail = "userEmail";
   return next();
 });
+
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
-const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
+const mockGetDataFromEntityCookie = getDataFromEntityCookie as jest.Mock;
+mockGetDataFromEntityCookie.mockReturnValue(entityCookieRemoveMock);
 
-const mockGetApplicationData = getApplicationData as jest.Mock;
-const mockSetApplicationData = setApplicationData as jest.Mock;
-const mockGetRemove = getRemove as jest.Mock;
+const mockSaveDataToCookie = saveDataToCookie as jest.Mock;
+mockSaveDataToCookie.mockReturnValue(true);
 
 describe("Remove sold all land filter controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetRemove.mockReturnValue({});
+    mockGetApplicationData.mockReset();
+    mockIsActiveFeature.mockReset();
   });
 
   describe("GET tests", () => {
-    test(`renders the ${config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE} page`, async () => {
+
+    test(`renders the ${config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE} page when REDIS_flag is set to OFF`, async () => {
+      mockIsActiveFeature.mockReturnValue(false);
       const resp = await request(app).get(`${config.REMOVE_SOLD_ALL_LAND_FILTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
 
       expect(resp.status).toEqual(200);
@@ -70,6 +99,25 @@ describe("Remove sold all land filter controller", () => {
       expect(resp.text).toContain(`${config.UPDATE_AN_OVERSEAS_ENTITY_URL}sign-out?page=${config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE}&amp;${config.JOURNEY_QUERY_PARAM}=${config.JourneyType.remove}`);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
       expect(mockGetApplicationData).toHaveBeenCalledTimes(1);
+      expect(mockGetDataFromEntityCookie).not.toHaveBeenCalled;
+    });
+
+    test(`renders the ${config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE} page when REDIS_flag is set to ON`, async () => {
+      mockIsActiveFeature.mockReturnValue(true);
+      mockGetApplicationData.mockReturnValue({});
+      const resp = await request(app).get(`${config.REMOVE_SOLD_ALL_LAND_FILTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE);
+      expect(resp.text).toContain(REMOVE_SERVICE_NAME);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(REMOVE_WHAT_IS_RELEVANT_PROPERTY_OR_LAND_TEXT);
+      expect(resp.text).toContain(REMOVE_RELEVANT_PROPERTY_OR_LAND_DEFINED_TEXT);
+      expect(resp.text).toContain(REMOVE_PROPERTY_BOUGHT_ON_OR_AFTER_DATE_TEXT);
+      expect(resp.text).toContain(`${config.UPDATE_AN_OVERSEAS_ENTITY_URL}sign-out?page=${config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE}&amp;${config.JOURNEY_QUERY_PARAM}=${config.JourneyType.remove}`);
+      expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
+      expect(mockGetApplicationData).not.toHaveBeenCalled;
+      expect(mockGetDataFromEntityCookie).toHaveBeenCalledTimes(1);
     });
 
     test(`renders the ${config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE} page with data`, async () => {
@@ -97,14 +145,16 @@ describe("Remove sold all land filter controller", () => {
   });
 
   describe("POST tests", () => {
-    test(`redirects to the ${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE} page when yes is selected`, async () => {
+
+    test(`redirects to the ${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE} page when yes is selected and when the REDIS_flag is set to OFF`, async () => {
+      mockIsActiveFeature.mockReturnValue(false);
       const resp = await request(app)
         .post(config.REMOVE_SOLD_ALL_LAND_FILTER_URL)
         .send({ has_sold_all_land: config.BUTTON_OPTION_YES });
 
       expect(resp.status).toEqual(302);
-      expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
-      expect(resp.header.location).toEqual(`${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+      expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${REMOVE_IS_ENTITY_REGISTERED_OWNER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+      expect(resp.header.location).toEqual(`${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
       expect(mockGetApplicationData).toHaveBeenCalledTimes(1);
       expect(mockGetRemove).toHaveBeenCalledTimes(1);
@@ -114,14 +164,31 @@ describe("Remove sold all land filter controller", () => {
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(RemoveKey);
     });
 
+    test(`redirects to the ${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE} page when yes is selected and when the REDIS_flag is set to ON`, async () => {
+      mockIsActiveFeature.mockReturnValue(true);
+      mockGetApplicationData.mockReturnValue({});
+      const resp = await request(app)
+        .post(config.REMOVE_SOLD_ALL_LAND_FILTER_URL)
+        .send({ has_sold_all_land: config.BUTTON_OPTION_YES });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${REMOVE_IS_ENTITY_REGISTERED_OWNER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+      expect(resp.header.location).toEqual(`${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+      expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
+      expect(mockGetApplicationData).not.toHaveBeenCalled;
+      expect(mockGetDataFromEntityCookie).toHaveBeenCalledTimes(1);
+      expect(mockGetRemove).toHaveBeenCalledTimes(1);
+      expect(mockSetApplicationData).not.toHaveBeenCalled();
+    });
+
     test(`redirects to the ${config.REMOVE_CANNOT_USE_PAGE} page when no is selected`, async () => {
       const resp = await request(app)
         .post(config.REMOVE_SOLD_ALL_LAND_FILTER_URL)
         .send({ has_sold_all_land: config.BUTTON_OPTION_NO });
 
       expect(resp.status).toEqual(302);
-      expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${config.REMOVE_CANNOT_USE_URL}?${config.PREVIOUS_PAGE_QUERY_PARAM}=${config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE}`);
-      expect(resp.header.location).toEqual(`${config.REMOVE_CANNOT_USE_URL}?${config.PREVIOUS_PAGE_QUERY_PARAM}=${config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE}`);
+      expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${config.REMOVE_CANNOT_USE_URL}`);
+      expect(resp.header.location).toEqual(`${config.REMOVE_CANNOT_USE_URL}`);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
       expect(mockGetApplicationData).toHaveBeenCalledTimes(1);
       expect(mockSetApplicationData).toHaveBeenCalledTimes(1);

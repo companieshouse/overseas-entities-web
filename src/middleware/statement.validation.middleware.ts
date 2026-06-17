@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from "express";
-import { ApplicationData } from "../model";
-import { ErrorMessages } from "../validation/error.messages";
 import { yesNoResponse } from "../model/data.types.model";
+import { ErrorMessages } from "../validation/error.messages";
+import { ApplicationData } from "../model";
 import { isNoChangeJourney } from "../utils/update/no.change.journey";
 import { RegistrableBeneficialOwnerKey } from "../model/update.type.model";
 
-import { isRegistrationJourney, isRemoveJourney } from "../utils/url";
+import { getRedirectUrl, isRemoveJourney } from "../utils/url";
 
 import {
   BeneficialOwnerStatementKey,
@@ -13,17 +13,21 @@ import {
 } from "../model/beneficial.owner.statement.model";
 
 import {
+  getApplicationData,
+  hasAddedOrCeasedBO,
   checkActiveBOExists,
   checkActiveMOExists,
-  hasAddedOrCeasedBO,
-  fetchApplicationData,
 } from "../utils/application.data";
 
 import {
-  UPDATE_CHECK_YOUR_ANSWERS_URL,
-  UPDATE_REVIEW_STATEMENT_URL,
   SECURE_UPDATE_FILTER_URL,
+  UPDATE_REVIEW_STATEMENT_URL,
   REMOVE_CONFIRM_STATEMENT_URL,
+  UPDATE_CHECK_YOUR_ANSWERS_URL,
+  SECURE_UPDATE_FILTER_WITH_PARAMS_URL,
+  UPDATE_REVIEW_STATEMENT_WITH_PARAMS_URL,
+  REMOVE_CONFIRM_STATEMENT_WITH_PARAMS_URL,
+  UPDATE_CHECK_YOUR_ANSWERS_WITH_PARAMS_URL,
 } from '../config';
 
 export const statementValidationErrorsGuard = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -36,13 +40,25 @@ export const statementValidationErrorsGuard = async (req: Request, res: Response
   const isRemove: boolean = await isRemoveJourney(req);
 
   if (isRemove) {
-    return res.redirect(REMOVE_CONFIRM_STATEMENT_URL);
+    return res.redirect(getRedirectUrl({
+      req,
+      urlWithEntityIds: REMOVE_CONFIRM_STATEMENT_WITH_PARAMS_URL,
+      urlWithoutEntityIds: REMOVE_CONFIRM_STATEMENT_URL,
+    }));
   }
 
-  const isRegistration = isRegistrationJourney(req);
-  const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
-  const redirectUrl = isNoChangeJourney(appData) ? UPDATE_REVIEW_STATEMENT_URL : UPDATE_CHECK_YOUR_ANSWERS_URL;
+  const appData: ApplicationData = await getApplicationData(req);
 
+  const redirectUrl = isNoChangeJourney(appData)
+    ? getRedirectUrl({
+      req,
+      urlWithEntityIds: UPDATE_REVIEW_STATEMENT_WITH_PARAMS_URL,
+      urlWithoutEntityIds: UPDATE_REVIEW_STATEMENT_URL,
+    }) : getRedirectUrl({
+      req,
+      urlWithEntityIds: UPDATE_CHECK_YOUR_ANSWERS_WITH_PARAMS_URL,
+      urlWithoutEntityIds: UPDATE_CHECK_YOUR_ANSWERS_URL,
+    });
   return res.redirect(redirectUrl);
 };
 
@@ -51,13 +67,16 @@ export const summaryPagesGuard = (req: Request, res: Response, next: NextFunctio
   if (!hasStatementErrors) {
     return next();
   }
-  return res.redirect(SECURE_UPDATE_FILTER_URL);
+  return res.redirect(getRedirectUrl({
+    req,
+    urlWithEntityIds: SECURE_UPDATE_FILTER_WITH_PARAMS_URL,
+    urlWithoutEntityIds: SECURE_UPDATE_FILTER_URL,
+  }));
 };
 
 export const validateStatements = async (req: Request, _: Response, next: NextFunction): Promise<void> => {
 
-  const isRegistration = isRegistrationJourney(req);
-  const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+  const appData: ApplicationData = await getApplicationData(req);
   const errorList: string[] = [];
   const identifiedBOStatement = appData[BeneficialOwnerStatementKey];
   const allBOsIdentified = identifiedBOStatement === BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS;

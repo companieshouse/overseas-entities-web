@@ -9,36 +9,32 @@ import { isActiveFeature } from "../utils/feature.flag";
 import { ApplicationData } from "../model/application.model";
 
 import { EntityNameKey, EntityNumberKey, ID } from "../model/data.types.model";
-import { fetchApplicationData, prepareData } from "../utils/application.data";
+import { getApplicationData, prepareData } from "../utils/application.data";
+import { getUrlWithParamsToPath, isRemoveJourney } from "../utils/url";
 
 import {
-  getUrlWithParamsToPath,
-  isRegistrationJourney,
-  isRemoveJourney,
-} from "../utils/url";
-
-import {
-  beneficialOwnersTypeSubmission,
   checkNoChangeReviewStatement,
+  beneficialOwnersTypeSubmission,
   checkNoChangeStatementSubmission,
+  filingPeriodStartDateValidations,
   filingPeriodCeasedDateValidations,
   filingPeriodResignedDateValidations,
-  filingPeriodStartDateValidations,
 } from "../validation/async/validation-middleware";
 
 import {
-  DateOfBirthKey,
   StartDateKey,
-  DateOfBirthKeys,
   StartDateKeys,
-  IdentityDateKey,
-  IdentityDateKeys,
   CeasedDateKey,
-  CeasedDateKeys,
   FilingDateKey,
   FilingDateKeys,
+  CeasedDateKeys,
+  DateOfBirthKey,
+  DateOfBirthKeys,
+  IdentityDateKey,
+  IdentityDateKeys,
+  ResignedOnDateKey,
   ResignedOnDateKeys,
-  ResignedOnDateKey
+
 } from "../model/date.model";
 
 export const checkValidations = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -69,8 +65,8 @@ export const checkValidations = async (req: Request, res: Response, next: NextFu
       // when changing BO or MO data after failing validation. If not present, undefined will be passed in, which is fine as those pages
       // that don't use id will just ignore it.
       const id = req.params[ID];
-      const isRegistration = isRegistrationJourney(req);
-      const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+      const isRemove: boolean = await isRemoveJourney(req);
+      const appData: ApplicationData = await getApplicationData(req);
       let entityName = req.body[EntityNameKey];
 
       if (req.body[EntityNameKey] === undefined) {
@@ -82,7 +78,6 @@ export const checkValidations = async (req: Request, res: Response, next: NextFu
       // The journey property may already be part of the page form data/body so get it from there and override it if we are on a remove journey
       // Then when we pass it back into the template, make sure it is below/after the req.body fields so it overrides the req.body value
       let journey = req.body["journey"];
-      const isRemove: boolean = await isRemoveJourney(req);
 
       if (isRemove) {
         journey = config.JourneyType.remove;
@@ -95,41 +90,37 @@ export const checkValidations = async (req: Request, res: Response, next: NextFu
         // This is for the REDIS removal work, all BO / MO pages need the activeSubmissionBasePath passed into the template
         // and we also need to pass the feature flag as true so the template constructs the correct urls.
         return res.render(NAVIGATION[routePath].currentPage, {
-          backLinkUrl: await NAVIGATION[routePath].previousPage(appData, req),
-          templateName: NAVIGATION[routePath].currentPage,
           id,
-          entityName,
-          entityNumber,
           ...appData,
           ...req.body,
           ...dates,
-          journey,
-          relevant_period: relevantPeriod,
           errors,
+          journey,
+          entityName,
+          entityNumber,
+          relevant_period: relevantPeriod,
+          pageParams: { noChangeFlag },
           FEATURE_FLAG_ENABLE_REDIS_REMOVAL: true,
+          backLinkUrl: await NAVIGATION[routePath].previousPage(appData, req),
+          templateName: NAVIGATION[routePath].currentPage,
           activeSubmissionBasePath: getUrlWithParamsToPath(config.ACTIVE_SUBMISSION_BASE_PATH, req),
-          pageParams: {
-            noChangeFlag
-          },
           FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
         });
       }
 
       return res.render(NAVIGATION[routePath].currentPage, {
-        backLinkUrl: await NAVIGATION[routePath].previousPage(appData, req),
-        templateName: NAVIGATION[routePath].currentPage,
         id,
-        entityName,
-        entityNumber,
         ...appData,
         ...req.body,
         ...dates,
-        journey,
-        relevant_period: relevantPeriod,
         errors,
-        pageParams: {
-          noChangeFlag
-        },
+        journey,
+        entityName,
+        entityNumber,
+        pageParams: { noChangeFlag },
+        relevant_period: relevantPeriod,
+        backLinkUrl: await NAVIGATION[routePath].previousPage(appData, req),
+        templateName: NAVIGATION[routePath].currentPage,
         FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC
       });
     }
@@ -149,19 +140,19 @@ export const checkTrustValidations = async (req: Request, res: Response, next: N
     const errorList = validationResult(req);
 
     if (!errorList.isEmpty()) {
+
       const errors = formatValidationError(errorList.array());
       const routePath = req.route.path;
-      const isRegistration = isRegistrationJourney(req);
-      const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+      const appData: ApplicationData = await getApplicationData(req);
 
       return res.render(NAVIGATION[routePath].currentPage, {
-        backLinkUrl: await NAVIGATION[routePath].previousPage(appData),
-        templateName: NAVIGATION[routePath].currentPage,
         ...req.body,
+        errors,
+        trusts_input: req.body.trusts?.toString(),
+        templateName: NAVIGATION[routePath].currentPage,
         beneficialOwners: getBeneficialOwnerList(appData),
         relevant_period: req.query["relevant-period"] === "true",
-        trusts_input: req.body.trusts?.toString(),
-        errors
+        backLinkUrl: await NAVIGATION[routePath].previousPage(appData),
       });
     }
 

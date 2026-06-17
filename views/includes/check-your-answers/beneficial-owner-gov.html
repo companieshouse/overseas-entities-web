@@ -87,14 +87,22 @@
   {% endif %}
 {% else %}
   {% if bog.ch_reference %}
-    {% set changeLinkUrl = OE_CONFIGS.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + loop.index0 %}
+    {% if not IS_REDIS_REMOVAL_ENABLED %}
+      {% set changeLinkUrl = OE_CONFIGS.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + loop.index0 %}
+    {% else %}
+      {% set changeLinkUrl = CREATE_CHANGE_LINK_WITH_IDS(OE_CONFIGS.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL, OE_TRANSACTION_ID, OE_SUBMISSION_ID) + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + loop.index0 %}
+    {% endif %}
   {% else %}
-    {% set changeLinkUrl = OE_CONFIGS.UPDATE_BENEFICIAL_OWNER_GOV_URL + "/" + bog.id %}
+    {% if not IS_REDIS_REMOVAL_ENABLED %}
+      {% set changeLinkUrl = OE_CONFIGS.UPDATE_BENEFICIAL_OWNER_GOV_URL + "/" + bog.id %}
+    {% else %}
+      {% set changeLinkUrl = CREATE_CHANGE_LINK_WITH_IDS(OE_CONFIGS.UPDATE_BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL, OE_TRANSACTION_ID, OE_SUBMISSION_ID) + "/" + bog.id %}
+    {% endif %}
   {% endif %}
 
   {% if bog.ceased_date | length %}
     {% set bogCeasedDate = dateMacros.formatDate(bog.ceased_date["day"], bog.ceased_date["month"], bog.ceased_date["year"]) %}
-    {% set isStillBeneficialOwner = { 
+    {% set isStillBeneficialOwner = {
       key: { text: "Are they still a beneficial owner?" },
       value: { text: "No" },
       actions: {

@@ -1,15 +1,21 @@
 import { body } from "express-validator";
-import { defaultRequiredErrorMessages, defaultOptionalErrorMessages, ErrorMessagesOptional, ErrorMessagesRequired } from "../models/address.error.model";
+import { ErrorMessages } from "../error.messages";
+import { VALID_CHARACTERS } from "../regex/regex.validation";
+
+import {
+  ErrorMessagesOptional,
+  ErrorMessagesRequired,
+  defaultRequiredErrorMessages,
+  defaultOptionalErrorMessages,
+} from "../models/address.error.model";
 
 import {
   addressFieldsHaveNoValue,
   checkFieldIfRadioButtonSelected,
-  checkFieldIfRadioButtonSelectedAndFieldsEmpty,
+  checkMaxFieldIfRadioButtonSelected,
   checkInvalidCharactersIfRadioButtonSelected,
-  checkMaxFieldIfRadioButtonSelected
+  checkFieldIfRadioButtonSelectedAndFieldsEmpty,
 } from "../custom.validation";
-import { ErrorMessages } from "../error.messages";
-import { VALID_CHARACTERS } from "../regex/regex.validation";
 
 export const principal_address_validations = (errors: ErrorMessagesOptional = defaultOptionalErrorMessages) => {
   errors = { ...defaultOptionalErrorMessages, ...errors };

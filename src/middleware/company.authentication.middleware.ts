@@ -1,26 +1,30 @@
-import { Request, Response, NextFunction } from 'express';
 import { authMiddleware, AuthOptions } from "@companieshouse/web-security-node";
+import { NextFunction, Request, Response } from 'express';
 
 import { logger } from '../utils/logger';
-import { ApplicationData } from "../model";
-import { EntityNumberKey } from "../model/data.types.model";
 import { getTransaction } from "../service/transaction.service";
 import { isActiveFeature } from "../utils/feature.flag";
-import { fetchApplicationData } from "../utils/application.data";
+import { ApplicationData } from "../model";
+import { EntityNumberKey } from "../model/data.types.model";
+import { getApplicationData } from "../utils/application.data";
 import { relevantPeriodStatementsState } from '../controllers/update/confirm.overseas.entity.details.controller';
-import { isRegistrationJourney, isRemoveJourney } from "../utils/url";
+import { getRedirectUrl, isRemoveJourney } from "../utils/url";
 
 import {
   RESUME,
   CHS_URL,
   UPDATE_LANDING_URL,
   UPDATE_FILING_DATE_URL,
-  OVERSEAS_ENTITY_PRESENTER_URL,
   JOURNEY_REMOVE_QUERY_PARAM,
-  FEATURE_FLAG_ENABLE_RELEVANT_PERIOD,
   RELEVANT_PERIOD_QUERY_PARAM,
+  OVERSEAS_ENTITY_PRESENTER_URL,
+  UPDATE_FILING_DATE_WITH_PARAMS_URL,
+  FEATURE_FLAG_ENABLE_RELEVANT_PERIOD,
   RELEVANT_PERIOD_OWNED_LAND_FILTER_URL,
+  OVERSEAS_ENTITY_PRESENTER_WITH_PARAMS_URL,
+  RELEVANT_PERIOD_OWNED_LAND_FILTER_WITH_PARAMS_URL,
 } from '../config';
+import { getDataFromEntityCookie } from "../utils/update/data.cookie";
 
 export const companyAuthentication = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -29,16 +33,32 @@ export const companyAuthentication = async (req: Request, res: Response, next: N
     logger.debugRequest(req, `Company Authentication Request`);
 
     const isRemove: boolean = await isRemoveJourney(req);
-    const isRegistration = isRegistrationJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+    const appData: ApplicationData = await getAppData(req);
     let entityNumber: string | undefined = appData?.[EntityNumberKey];
+
+    const updateFilingDateUrl = getRedirectUrl({
+      req,
+      urlWithEntityIds: UPDATE_FILING_DATE_WITH_PARAMS_URL,
+      urlWithoutEntityIds: UPDATE_FILING_DATE_URL,
+    });
+
+    const relevantPeriodOwnedLandFilterUrl = getRedirectUrl({
+      req,
+      urlWithEntityIds: RELEVANT_PERIOD_OWNED_LAND_FILTER_WITH_PARAMS_URL,
+      urlWithoutEntityIds: RELEVANT_PERIOD_OWNED_LAND_FILTER_URL,
+    });
+
     let returnURL = !isActiveFeature(FEATURE_FLAG_ENABLE_RELEVANT_PERIOD) || appData.entity && relevantPeriodStatementsState.has_answered_relevant_period_question
-      ? UPDATE_FILING_DATE_URL
-      : RELEVANT_PERIOD_OWNED_LAND_FILTER_URL + RELEVANT_PERIOD_QUERY_PARAM;
+      ? updateFilingDateUrl
+      : relevantPeriodOwnedLandFilterUrl + RELEVANT_PERIOD_QUERY_PARAM;
 
     if (isRemove) {
       logger.debugRequest(req, "Remove journey proceed directly to the presenter page");
-      returnURL = `${OVERSEAS_ENTITY_PRESENTER_URL}${JOURNEY_REMOVE_QUERY_PARAM}`;
+      returnURL = getRedirectUrl({
+        req,
+        urlWithEntityIds: OVERSEAS_ENTITY_PRESENTER_WITH_PARAMS_URL,
+        urlWithoutEntityIds: OVERSEAS_ENTITY_PRESENTER_URL,
+      }) + JOURNEY_REMOVE_QUERY_PARAM;
     }
 
     if (req.path.endsWith(`/${RESUME}`)) {
@@ -64,6 +84,7 @@ export const companyAuthentication = async (req: Request, res: Response, next: N
 };
 
 async function processTransaction (req: Request): Promise<[string, string]> {
+
   const { transactionId } = req.params;
 
   if (transactionId) {
@@ -75,6 +96,13 @@ async function processTransaction (req: Request): Promise<[string, string]> {
     }
     return [entityNumberTransaction, req.originalUrl];
   }
-
   throw new Error("Invalid transaction for resume");
 }
+
+const getAppData = async (req: Request): Promise<ApplicationData> => {
+  let appData: ApplicationData = await getApplicationData(req, true);
+  if (!Object.keys(appData).length) {
+    appData = await getDataFromEntityCookie(req);
+  }
+  return appData;
+};

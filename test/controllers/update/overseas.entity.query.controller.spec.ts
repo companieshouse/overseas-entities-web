@@ -5,33 +5,47 @@ jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/application.data');
 jest.mock("../../../src/service/company.profile.service");
 jest.mock("../../../src/utils/update/company.profile.mapper.to.overseas.entity");
+jest.mock('../../../src/service/transaction.service');
+jest.mock('../../../src/service/overseas.entities.service');
 jest.mock("../../../src/utils/update/beneficial_owners_managing_officers_data_fetch");
+jest.mock("../../../src/utils/update/data.cookie");
+jest.mock("../../../src/utils/feature.flag" );
 
 // import remove journey middleware mock before app to prevent real function being used instead of mock
 import mockJourneyDetectionMiddleware from "../../__mocks__/journey.detection.middleware.mock";
 import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 
+import { NextFunction } from "express";
+
 import * as config from "../../../src/config";
 import app from "../../../src/app";
 import request from "supertest";
-import { getApplicationData, setExtraData } from "../../../src/utils/application.data";
+
 import { beforeEach, jest, test, describe } from "@jest/globals";
+
 import { logger } from "../../../src/utils/logger";
-import { authentication } from "../../../src/middleware/authentication.middleware";
-import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { ErrorMessages } from "../../../src/validation/error.messages";
-import {
-  ANY_MESSAGE_ERROR,
-  PAGE_TITLE_ERROR,
-  OVERSEAS_ENTITY_QUERY_PAGE_TITLE,
-  SERVICE_UNAVAILABLE,
-} from "../../__mocks__/text.mock";
-import { NextFunction } from "express";
-import { getCompanyProfile } from "../../../src/service/company.profile.service";
-import { mapCompanyProfileToOverseasEntity } from "../../../src/utils/update/company.profile.mapper.to.overseas.entity";
-import { companyProfileQueryMock } from "../../__mocks__/update.entity.mocks";
-import { retrieveBoAndMoData } from "../../../src/utils/update/beneficial_owners_managing_officers_data_fetch";
+import { authentication } from "../../../src/middleware/authentication.middleware";
+import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { ApplicationData } from "../../../src/model";
+import { postTransaction } from "../../../src/service/transaction.service";
+import { getCompanyProfile } from "../../../src/service/company.profile.service";
+import { retrieveBoAndMoData } from "../../../src/utils/update/beneficial_owners_managing_officers_data_fetch";
+import { companyProfileQueryMock } from "../../__mocks__/update.entity.mocks";
+import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
+import { getApplicationData, setExtraData } from "../../../src/utils/application.data";
+import { mapCompanyProfileToOverseasEntity } from "../../../src/utils/update/company.profile.mapper.to.overseas.entity";
+import { getDataFromEntityCookie, saveDataToCookie } from "../../../src/utils/update/data.cookie";
+
+import { TRANSACTION_ID, OVERSEAS_ENTITY_ID } from "../../__mocks__/session.mock";
+import { createOverseasEntity, updateOverseasEntity } from "../../../src/service/overseas.entities.service";
+
+import {
+  PAGE_TITLE_ERROR,
+  ANY_MESSAGE_ERROR,
+  SERVICE_UNAVAILABLE,
+  OVERSEAS_ENTITY_QUERY_PAGE_TITLE,
+} from "../../__mocks__/text.mock";
 
 const testOENumber = "OE123456";
 const testOENumberLowercase = "oe123456";
@@ -40,29 +54,50 @@ const notFoundOENumberError = "Enter a correct Overseas Entity ID";
 
 mockJourneyDetectionMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
+
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetExtraData = setExtraData as jest.Mock;
-const mockAuthenticationMiddleware = authentication as jest.Mock;
-mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
-const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
-mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
-
 const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
 const mockMapCompanyProfileToOverseasEntity = mapCompanyProfileToOverseasEntity as jest.Mock;
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
+const mockCreateOverseasEntity = createOverseasEntity as jest.Mock;
+
+const mockGetDataFromEntityCookie = getDataFromEntityCookie as jest.Mock;
+mockGetDataFromEntityCookie.mockReturnValue(companyProfileQueryMock);
+
+const mockSaveDataToCookie = saveDataToCookie as jest.Mock;
+mockSaveDataToCookie.mockReturnValue(true);
+
+const mockAuthenticationMiddleware = authentication as jest.Mock;
+mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
+
+const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
+mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
+
 const mockRetrieveBoAndMoData = retrieveBoAndMoData as jest.Mock;
-mockRetrieveBoAndMoData.mockImplementation((req: Request, appData: ApplicationData) => appData.update = { bo_mo_data_fetched: true } );
+mockRetrieveBoAndMoData.mockImplementation((req: Request, appData: ApplicationData) => appData.update = { bo_mo_data_fetched: true });
+
+const mockPostTransactionService = postTransaction as jest.Mock;
+mockPostTransactionService.mockReturnValue(TRANSACTION_ID);
+
+const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
+mockUpdateOverseasEntity.mockReturnValue(true);
 
 describe("OVERSEAS ENTITY QUERY controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockIsActiveFeature.mockReset();
+    mockCreateOverseasEntity.mockReset();
+    mockUpdateOverseasEntity.mockReset();
+    mockUpdateOverseasEntity.mockReset();
   });
 
   describe("GET tests", () => {
 
     test(`renders the ${config.OVERSEAS_ENTITY_QUERY_PAGE} page`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ });
+      mockGetApplicationData.mockReturnValue({});
       const resp = await request(app).get(config.OVERSEAS_ENTITY_QUERY_URL);
 
       expect(resp.status).toEqual(200);
@@ -73,7 +108,7 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
     });
 
     test(`renders the ${config.OVERSEAS_ENTITY_QUERY_PAGE} page for the Remove journey`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ });
+      mockGetApplicationData.mockReturnValueOnce({});
       const resp = await request(app).get(`${config.OVERSEAS_ENTITY_QUERY_URL}?${config.JOURNEY_QUERY_PARAM}=remove`);
 
       expect(resp.status).toEqual(200);
@@ -85,7 +120,7 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
     });
 
     test('catch error when rendering the page', async () => {
-      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockLoggerDebugRequest.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(config.OVERSEAS_ENTITY_QUERY_URL);
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
@@ -129,7 +164,7 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
     });
 
     test('renders not found error for non existing oe number', async () => {
-      mockGetApplicationData.mockReturnValueOnce({});
+      mockGetApplicationData.mockReturnValue({});
       mockGetCompanyProfile.mockReturnValueOnce(undefined);
       const resp = await request(app)
         .post(config.OVERSEAS_ENTITY_QUERY_URL)
@@ -167,8 +202,9 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
       expect(resp.header.location).toEqual(config.UPDATE_AN_OVERSEAS_ENTITY_URL + config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE);
     });
 
-    test('redirects to confirm page for valid oe number with lowercase oe in update journey', async () => {
+    test('redirects to confirm page for valid oe number with lowercase oe in update journey when REDIS_flag is set to OFF', async () => {
       mockGetApplicationData.mockReturnValue({});
+      mockIsActiveFeature.mockReturnValue(false);
       mockGetCompanyProfile.mockReturnValueOnce(companyProfileQueryMock);
       mockMapCompanyProfileToOverseasEntity.mockReturnValueOnce({});
 
@@ -196,7 +232,7 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
     });
 
     test("catch error when posting data", async () => {
-      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockLoggerDebugRequest.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app)
         .post(config.OVERSEAS_ENTITY_QUERY_URL)
         .send({ entity_number: testOENumber });
@@ -224,6 +260,27 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
         expect(resp.status).toEqual(200);
         expect(resp.text).not.toContain(invalidOENUmberError);
       });
+
+    test('redirects to confirm page for valid oe number with lowercase oe in update journey when REDIS_flag is set to ON', async () => {
+      mockGetApplicationData.mockReturnValue({});
+      mockIsActiveFeature.mockReturnValue(true);
+      mockGetCompanyProfile.mockReturnValue(companyProfileQueryMock);
+      mockMapCompanyProfileToOverseasEntity.mockReturnValue({});
+      mockCreateOverseasEntity.mockReturnValue(OVERSEAS_ENTITY_ID);
+      mockRetrieveBoAndMoData.mockReturnValueOnce(Promise.resolve(true));
+      const resp = await request(app)
+        .post(config.OVERSEAS_ENTITY_QUERY_URL)
+        .send({ entity_number: testOENumberLowercase });
+      expect(resp.status).toEqual(302);
+      expect(mockRetrieveBoAndMoData).toHaveBeenCalledTimes(1);
+      expect(mockPostTransactionService).toHaveBeenCalledTimes(1);
+      expect(mockCreateOverseasEntity).toHaveBeenCalledTimes(1);
+      expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
+      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+      expect(mockSaveDataToCookie).toHaveBeenCalledTimes(1);
+      expect(resp.header.location).toEqual(`${config.UPDATE_AN_OVERSEAS_ENTITY_URL}transaction/${TRANSACTION_ID}/submission/${OVERSEAS_ENTITY_ID}/${config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE}`);
+    });
+
   });
 
 });

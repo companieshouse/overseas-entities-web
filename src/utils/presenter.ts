@@ -1,23 +1,26 @@
 import { NextFunction, Request, Response } from "express";
 import { Session } from "@companieshouse/node-session-handler";
 import * as config from "../config";
-import { ApplicationData } from "../model";
 import { logger } from "./logger";
+import { isActiveFeature } from "./feature.flag";
+import { ApplicationData } from "../model";
 import { saveAndContinue } from "./save.and.continue";
 import { postTransaction } from "../service/transaction.service";
 import { createOverseasEntity } from "../service/overseas.entities.service";
-import { isActiveFeature } from "./feature.flag";
-
+import { getRedirectUrl, isRemoveJourney } from "../utils/url";
 import { PresenterKey, PresenterKeys } from "../model/presenter.model";
-import { isRegistrationJourney, isRemoveJourney } from "../utils/url";
-import { IsRemoveKey, OverseasEntityKey, Transactionkey } from '../model/data.types.model';
+
+import {
+  IsRemoveKey,
+  Transactionkey,
+  OverseasEntityKey,
+} from '../model/data.types.model';
 
 import {
   prepareData,
   setExtraData,
   setApplicationData,
   getApplicationData,
-  fetchApplicationData,
 } from "./application.data";
 
 export const getPresenterPage = async (
@@ -33,23 +36,29 @@ export const getPresenterPage = async (
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const isRemove: boolean = await isRemoveJourney(req);
-    const isRegistration = isRegistrationJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+    const appData: ApplicationData = await getApplicationData(req);
     const presenter = appData[PresenterKey];
 
     if (isRemove) {
+
+      const backLinkUrl = getRedirectUrl({
+        req,
+        urlWithEntityIds: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_WITH_PARAMS_URL,
+        urlWithoutEntityIds: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
+      }) + config.JOURNEY_REMOVE_QUERY_PARAM;
+
       return res.render(templateName, {
+        ...presenter,
+        backLinkUrl,
         templateName,
         journey: config.JourneyType.remove,
-        backLinkUrl: `${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`,
-        ...presenter
       });
     }
 
     return res.render(templateName, {
+      ...presenter,
       backLinkUrl,
       templateName,
-      ...presenter
     });
 
   } catch (error) {
@@ -71,10 +80,9 @@ export const postPresenterPage = async (
 
     const session = req.session as Session;
     const isRemove: boolean = await isRemoveJourney(req);
-    const isRegistration: boolean = isRegistrationJourney(req);
 
     if (isRemove) {
-      const appData: ApplicationData = await getApplicationData(session);
+      const appData: ApplicationData = await getApplicationData(req);
       if (!appData[Transactionkey]) {
         const transactionID = await postTransaction(req, session);
         appData[Transactionkey] = transactionID;
@@ -86,7 +94,7 @@ export const postPresenterPage = async (
 
     const data = prepareData(req.body, PresenterKeys);
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       await setApplicationData(req, data, PresenterKey);
     } else {
       await setApplicationData(session, data, PresenterKey);

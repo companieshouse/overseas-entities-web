@@ -35,6 +35,7 @@ import {
   prepareData,
   fetchApplicationData,
   setExtraData,
+  getApplicationData,
 } from "../../src/utils/application.data";
 
 import {
@@ -83,6 +84,7 @@ const mockHasPresenterMiddleware = hasPresenter as jest.Mock;
 mockHasPresenterMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
@@ -117,7 +119,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
   describe("GET tests", () => {
 
     test(`renders the ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE}`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce({ [OverseasEntityDueDiligenceKey]: null });
+      mockGetApplicationData.mockReturnValueOnce({ [OverseasEntityDueDiligenceKey]: null });
       const resp = await request(app).get(OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
 
       expect(resp.status).toEqual(200);
@@ -137,7 +139,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
     });
 
     test(`renders the ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page on GET method with session data populated`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce({ [OverseasEntityDueDiligenceKey]: OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK });
+      mockGetApplicationData.mockReturnValueOnce({ [OverseasEntityDueDiligenceKey]: OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK });
       const resp = await request(app).get(OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
 
       expect(resp.status).toEqual(200);
@@ -152,7 +154,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
     });
 
     test(`catch error when renders the ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page on GET method`, async () => {
-      mockFetchApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockGetApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
 
       expect(resp.status).toEqual(500);
@@ -161,7 +163,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
 
     test(`renders the ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page with correct backlink url when the REDIS_removal feature flag is ON`, async () => {
       mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-      mockFetchApplicationData.mockReturnValueOnce({ [OverseasEntityDueDiligenceKey]: null });
+      mockGetApplicationData.mockReturnValueOnce({ [OverseasEntityDueDiligenceKey]: null });
       const resp = await request(app).get(OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
 
       expect(resp.status).toEqual(200);
@@ -184,7 +186,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
 
     test(`renders the ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page with correct backlink url when the REDIS_removal feature flag is OFF`, async () => {
       mockIsActiveFeature.mockReturnValue(false);
-      mockFetchApplicationData.mockReturnValueOnce({ [OverseasEntityDueDiligenceKey]: null });
+      mockGetApplicationData.mockReturnValueOnce({ [OverseasEntityDueDiligenceKey]: null });
       const resp = await request(app).get(OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
 
       expect(resp.status).toEqual(200);
@@ -209,7 +211,8 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
   describe("GET with url Params tests", () => {
 
     test(`renders the ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE}`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce({ [OverseasEntityDueDiligenceKey]: null });
+      mockFetchApplicationData.mockReturnValue({ [OverseasEntityDueDiligenceKey]: null });
+      mockGetApplicationData.mockReturnValue({ [OverseasEntityDueDiligenceKey]: null });
       const resp = await request(app).get(OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(200);
@@ -229,7 +232,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
     });
 
     test(`renders the ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page on GET method with session data populated`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce({ [OverseasEntityDueDiligenceKey]: OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK });
+      mockGetApplicationData.mockReturnValueOnce({ [OverseasEntityDueDiligenceKey]: OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK });
       const resp = await request(app).get(OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(200);
@@ -245,6 +248,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
 
     test(`catch error when renders the ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page on GET method`, async () => {
       mockFetchApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockGetApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(500);
@@ -284,7 +288,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
 
       mockPrepareData.mockReturnValueOnce(dueDiligenceMock);
       mockIsActiveFeature.mockReturnValue(true);
-      mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_KEY);
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_KEY);
       mockUpdateOverseasEntity.mockReturnValue(true);
       mockSetExtraData.mockReturnValue(true);
       mockSetApplicationData.mockReturnValue(true);
@@ -295,7 +299,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${NEXT_PAGE_URL}`);
-      expect(mockFetchApplicationData).toHaveBeenCalledTimes(1);
+      expect(mockGetApplicationData).toHaveBeenCalledTimes(1);
       expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);

@@ -1,10 +1,20 @@
-import { ApplicationData } from '../../model';
-import { Trust, TrustBeneficialOwner, TrustKey } from '../../model/trust.model';
 import * as Page from '../../model/trust.page.model';
-import { BeneficialOwnerIndividualKey } from '../../model/beneficial.owner.individual.model';
-import { BeneficialOwnerOtherKey } from '../../model/beneficial.owner.other.model';
-import { addTrustToBeneficialOwner, getTrustByIdFromApp, removeTrustFromBeneficialOwner } from '../../utils/trusts';
+import { ApplicationData } from '../../model';
 import { getReviewTrustById } from '../../utils/update/review_trusts';
+import { BeneficialOwnerOtherKey } from '../../model/beneficial.owner.other.model';
+import { BeneficialOwnerIndividualKey } from '../../model/beneficial.owner.individual.model';
+
+import {
+  Trust,
+  TrustKey,
+  TrustBeneficialOwner,
+} from '../../model/trust.model';
+
+import {
+  getTrustByIdFromApp,
+  addTrustToBeneficialOwner,
+  removeTrustFromBeneficialOwner,
+} from '../../utils/trusts';
 
 //  to page form mapping
 const mapDetailToPage = (
@@ -41,6 +51,7 @@ const mapDetailToPage = (
       .map(bo => bo.id || "");
 
   let unableToObtainAllTrustInfo: string;
+
   switch (trustData.unable_to_obtain_all_trust_info) {
       case "Yes":
         unableToObtainAllTrustInfo = "0";

@@ -1,55 +1,54 @@
+import { Session } from "@companieshouse/node-session-handler";
 import { NextFunction, Request, Response } from "express";
 import { v4 as uuidv4 } from 'uuid';
-import { Session } from "@companieshouse/node-session-handler";
-import { logger } from "./logger";
 import * as config from "../config";
+import { logger } from "./logger";
+import { isActiveFeature } from "./feature.flag";
 import { saveAndContinue } from "./save.and.continue";
 import { addResignedDateToTemplateOptions } from "./update/ceased_date_util";
 import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
-import { isRegistrationJourney } from "./url";
-import { isActiveFeature } from "./feature.flag";
 
 import { ApplicationData, ApplicationDataType } from "../model";
 
 import {
+  ServiceAddressKey,
+  ServiceAddressKeys,
   PrincipalAddressKey,
   PrincipalAddressKeys,
-  ServiceAddressKey,
-  ServiceAddressKeys
 } from "../model/address.model";
 
 import {
-  AddressKeys,
-  EntityNumberKey,
-  HasSamePrincipalAddressKey,
   ID,
+  AddressKeys,
   InputDateKeys,
-  IsOnRegisterInCountryFormedInKey,
+  EntityNumberKey,
   PublicRegisterNameKey,
-  RegistrationNumberKey
+  RegistrationNumberKey,
+  HasSamePrincipalAddressKey,
+  IsOnRegisterInCountryFormedInKey,
 } from "../model/data.types.model";
 
 import {
+  StartDateKey,
+  StartDateKeys,
   ResignedOnDateKey,
   ResignedOnDateKeys,
-  StartDateKey,
-  StartDateKeys
 } from "../model/date.model";
 
 import {
   ManagingOfficerCorporate,
   ManagingOfficerCorporateKey,
-  ManagingOfficerCorporateKeys
+  ManagingOfficerCorporateKeys,
 } from "../model/managing.officer.corporate.model";
 
 import {
-  fetchApplicationData,
-  getFromApplicationData,
+  prepareData,
+  getApplicationData,
+  setApplicationData,
   mapDataObjectToFields,
   mapFieldsToDataObject,
-  prepareData,
+  getFromApplicationData,
   removeFromApplicationData,
-  setApplicationData,
 } from "./application.data";
 
 const isNewlyAddedMO = (officerData: ManagingOfficerCorporate) => !officerData.ch_reference;
@@ -65,9 +64,7 @@ export const getManagingOfficerCorporate = async (
   try {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-
-    const isRegistration = isRegistrationJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+    const appData: ApplicationData = await getApplicationData(req);
 
     return res.render(templateName, {
       backLinkUrl,
@@ -75,7 +72,7 @@ export const getManagingOfficerCorporate = async (
       entity_number: appData[EntityNumberKey]
     });
 
-  } catch (error) {
+  } catch (error: any) {
     logger.errorRequest(req, error);
     next(error);
   }
@@ -93,8 +90,7 @@ export const getManagingOfficerCorporateById = async (
 
     logger.debugRequest(req, `${req.method} BY ID ${req.route.path}`);
 
-    const isRegistration = isRegistrationJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+    const appData: ApplicationData = await getApplicationData(req);
     const id = req.params[ID];
     const officerData = await getFromApplicationData(req, ManagingOfficerCorporateKey, id, true);
     const newlyAddedMO = isNewlyAddedMO(officerData);
@@ -103,28 +99,28 @@ export const getManagingOfficerCorporateById = async (
     const serviceAddress = officerData ? mapDataObjectToFields(officerData[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
 
     let templateOptions = {
-      backLinkUrl,
-      templateName: `${templateName}/${id}`,
       id,
       ...officerData,
       ...principalAddress,
       ...serviceAddress,
+      backLinkUrl,
+      templateName: `${templateName}/${id}`,
     };
 
     if (newlyAddedMO) {
       const startDate = officerData ? mapDataObjectToFields(officerData[StartDateKey], StartDateKeys, InputDateKeys) : {};
       templateOptions[StartDateKey] = startDate;
     }
-    if (isRegistration) {
-      addActiveSubmissionBasePathToTemplateData(templateOptions, req);
-    }
+
+    addActiveSubmissionBasePathToTemplateData(templateOptions, req);
+
     if (inUpdateJourney) {
       templateOptions = addResignedDateToTemplateOptions(templateOptions, appData, officerData);
     }
 
     return res.render(templateName, templateOptions);
 
-  } catch (error) {
+  } catch (error: any) {
     logger.errorRequest(req, error);
     next(error);
   }
@@ -136,11 +132,10 @@ export const postManagingOfficerCorporate = async (req: Request, res: Response, 
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const isRegistration = isRegistrationJourney(req);
     const data: ApplicationDataType = setOfficerData(req.body, uuidv4());
     const session = req.session as Session;
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       await setApplicationData(req, data, ManagingOfficerCorporateKey);
     } else {
       await setApplicationData(session, data, ManagingOfficerCorporateKey);
@@ -149,7 +144,7 @@ export const postManagingOfficerCorporate = async (req: Request, res: Response, 
 
     return res.redirect(nextPage);
 
-  } catch (error) {
+  } catch (error: any) {
     logger.errorRequest(req, error);
     next(error);
   }
@@ -161,12 +156,12 @@ export const updateManagingOfficerCorporate = async (req: Request, res: Response
 
     logger.debugRequest(req, `UPDATE ${req.route.path}`);
 
-    const isRegistration = isRegistrationJourney(req);
-    await removeFromApplicationData(req, ManagingOfficerCorporateKey, req.params[ID]); // remove old managing officer
-    const data: ApplicationDataType = setOfficerData(req.body, req.params[ID]); // set officer data
-    const session = req.session as Session; // save new managing officer
+    const appData: ApplicationData = await getApplicationData(req);
+    await removeFromApplicationData(req, ManagingOfficerCorporateKey, req.params[ID], appData);
+    const data: ApplicationDataType = setOfficerData(req.body, req.params[ID]);
+    const session = req.session as Session;
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       await setApplicationData(req, data, ManagingOfficerCorporateKey);
     } else {
       await setApplicationData(session, data, ManagingOfficerCorporateKey);
@@ -175,7 +170,7 @@ export const updateManagingOfficerCorporate = async (req: Request, res: Response
 
     return res.redirect(nextPage);
 
-  } catch (error) {
+  } catch (error: any) {
     logger.errorRequest(req, error);
     next(error);
   }
@@ -187,16 +182,17 @@ export const removeManagingOfficerCorporate = async (req: Request, res: Response
 
     logger.debugRequest(req, `REMOVE ${req.route.path}`);
 
-    const isRegistration = isRegistrationJourney(req);
-    await removeFromApplicationData(req, ManagingOfficerCorporateKey, req.params[ID]);
+    const appData: ApplicationData = await getApplicationData(req);
+    await removeFromApplicationData(req, ManagingOfficerCorporateKey, req.params[ID], appData);
     const session = req.session as Session;
 
-    if (!isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) || !isRegistration) {
+    if (!isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       await saveAndContinue(req, session);
     }
+
     return res.redirect(nextPage);
 
-  } catch (error) {
+  } catch (error: any) {
     logger.errorRequest(req, error);
     next(error);
   }

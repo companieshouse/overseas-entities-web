@@ -31,7 +31,7 @@ import { DUE_DILIGENCE_WITH_INVALID_CHARACTERS_FIELDS_MOCK } from "../../__mocks
 import { DateTime } from "luxon";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
 
-import { getApplicationData, setApplicationData, prepareData, fetchApplicationData } from "../../../src/utils/application.data";
+import { getApplicationData, setApplicationData, prepareData } from "../../../src/utils/application.data";
 
 import {
   UPDATE_DUE_DILIGENCE_PAGE,
@@ -81,7 +81,6 @@ mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Respons
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
-const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
@@ -91,13 +90,12 @@ describe("Update due diligence controller tests", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetApplicationData.mockReset();
-    mockFetchApplicationData.mockReset();
     mockSetApplicationData.mockReset();
   });
 
   describe("GET tests", () => {
     test(`renders the ${UPDATE_DUE_DILIGENCE_PAGE}`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce({ [DueDiligenceKey]: null });
+      mockGetApplicationData.mockReturnValueOnce({ [DueDiligenceKey]: null });
       const resp = await request(app).get(UPDATE_DUE_DILIGENCE_URL);
 
       expect(resp.status).toEqual(200);
@@ -121,7 +119,7 @@ describe("Update due diligence controller tests", () => {
     });
 
     test(`renders the ${UPDATE_DUE_DILIGENCE_PAGE} page on GET method with session data populated`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce({ [DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK } );
+      mockGetApplicationData.mockReturnValueOnce({ [DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK } );
       const resp = await request(app).get(UPDATE_DUE_DILIGENCE_URL);
 
       expect(resp.status).toEqual(200);

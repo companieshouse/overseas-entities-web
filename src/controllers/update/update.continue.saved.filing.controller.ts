@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-
 import * as config from "../../config";
 import { logger } from "../../utils/logger";
 import { isRemoveJourney } from "../../utils/url";
+import { removeEntityCookie } from "../../utils/update/data.cookie";
 
 export const get = async (req: Request, res: Response, _: NextFunction) => {
   logger.debugRequest(req, `GET ${config.UPDATE_CONTINUE_WITH_SAVED_FILING_PAGE}`);
@@ -28,6 +28,8 @@ export const post = async (req: Request, res: Response, _: NextFunction) => {
   if (req.body["continue_saved_filing"] === 'yes') {
     return res.redirect(config.YOUR_FILINGS_PATH);
   }
+
+  removeEntityCookie(req, res);
 
   if (isRemove) {
     return res.redirect(`${config.REMOVE_SOLD_ALL_LAND_FILTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);

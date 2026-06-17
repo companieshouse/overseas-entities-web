@@ -33,7 +33,7 @@ describe("is in change journey middleware", () => {
     await isInChangeJourney(req, res, next);
 
     expect(next).not.toHaveBeenCalledTimes(1);
-    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
+    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(2);
     expect(mockLoggerInfoRequest).toHaveBeenCalledWith(req, NavigationErrorMessage);
     expect(res.redirect).toHaveBeenCalledTimes(1);
     expect(res.redirect).toHaveBeenCalledWith(SECURE_UPDATE_FILTER_URL);

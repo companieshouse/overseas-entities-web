@@ -11,7 +11,7 @@ import request from 'supertest';
 import { NextFunction } from 'express';
 
 import app from '../../../src/app';
-import { UPDATE_BENEFICIAL_OWNER_TYPE_URL, UPDATE_MANAGE_TRUSTS_INTERRUPT_URL, UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL } from '../../../src/config';
+import { UPDATE_BENEFICIAL_OWNER_TYPE_URL, UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, UPDATE_MANAGE_TRUSTS_INTERRUPT_URL, UPDATE_MANAGE_TRUSTS_INTERRUPT_WITH_PARAMS_URL, UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL, UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_WITH_PARAMS_URL } from '../../../src/config';
 import { authentication } from '../../../src/middleware/authentication.middleware';
 import { companyAuthentication } from '../../../src/middleware/company.authentication.middleware';
 import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
@@ -35,7 +35,6 @@ const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
-mockIsActiveFeature.mockReturnValue(true);
 
 describe('Update - Manage Trusts - Interrupt', () => {
   beforeEach(() => {
@@ -43,8 +42,20 @@ describe('Update - Manage Trusts - Interrupt', () => {
   });
 
   describe('GET tests', () => {
-    test('when feature flag is on, page is returned', async () => {
+    test('when redis feature flag is on, page is returned', async () => {
       mockIsActiveFeature.mockReturnValue(true);
+
+      const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_INTERRUPT_WITH_PARAMS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain("You&#39;re about to review trust information");
+      expect(resp.text).toContain(UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+    });
+
+    test('when redis feature flag is off, page is returned', async () => {
+      mockIsActiveFeature.mockReturnValue(false);
 
       const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
 
@@ -57,13 +68,22 @@ describe('Update - Manage Trusts - Interrupt', () => {
   });
 
   describe('POST tests', () => {
-    test('redirect to review the trust page', async () => {
-      mockIsActiveFeature.mockReturnValue(true);
+    test('redirect to review the trust page when redis feature flag is off', async () => {
+      mockIsActiveFeature.mockReturnValue(false);
 
       const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
+    });
+
+    test('redirect to review the trust page when redis feature flag is on', async () => {
+      mockIsActiveFeature.mockReturnValue(true);
+
+      const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_INTERRUPT_WITH_PARAMS_URL);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_WITH_PARAMS_URL);
     });
   });
 });

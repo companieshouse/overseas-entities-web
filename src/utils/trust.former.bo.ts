@@ -3,28 +3,27 @@ import { Session } from '@companieshouse/node-session-handler';
 import { ValidationError, validationResult } from 'express-validator';
 
 import * as config from '../config';
+import * as PageModel from '../model/trust.page.model';
+import * as CommonTrustDataMapper from '../utils/trust/common.trust.data.mapper';
 import { logger } from '../utils/logger';
 import { TrusteeType } from '../model/trustee.type.model';
-import * as CommonTrustDataMapper from '../utils/trust/common.trust.data.mapper';
-import { ApplicationData } from '../model';
-import * as PageModel from '../model/trust.page.model';
-import { saveAndContinue } from '../utils/save.and.continue';
 import { safeRedirect } from '../utils/http.ext';
+import { getRedirectUrl } from './url';
+import { saveAndContinue } from '../utils/save.and.continue';
+import { ApplicationData } from '../model';
 import { isActiveFeature } from './feature.flag';
-
-import { getUrlWithParamsToPath, isRegistrationJourney } from './url';
-import { checkTrustLegalEntityBeneficialOwnerStillInvolved } from '../validation/stillInvolved.validation';
-import { fetchApplicationData, setExtraData } from '../utils/application.data';
-import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
-import { mapBeneficialOwnerToSession, mapFormerTrusteeByIdFromSessionToPage } from '../utils/trust/historical.beneficial.owner.mapper';
-import { filingPeriodTrustCeaseDateValidations, filingPeriodTrustStartDateValidations } from '../validation/async';
 import { updateOverseasEntity } from "../service/overseas.entities.service";
 import { mapTrustApiToWebWhenFlagsAreSet } from "../utils/trust/api.to.web.mapper";
 
+import { getApplicationData, setExtraData } from '../utils/application.data';
+import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
+import { mapBeneficialOwnerToSession, mapFormerTrusteeByIdFromSessionToPage } from '../utils/trust/historical.beneficial.owner.mapper';
+import { filingPeriodTrustCeaseDateValidations, filingPeriodTrustStartDateValidations } from '../validation/async';
+
 import {
+  saveTrustInApp,
   getTrustByIdFromApp,
   saveHistoricalBoInTrust,
-  saveTrustInApp
 } from '../utils/trusts';
 
 export const HISTORICAL_BO_TEXTS = {
@@ -55,14 +54,16 @@ const getPageProperties = async (
   errors?: FormattedValidationErrors,
 ): Promise<TrustHistoricalBeneficialOwnerProperties> => {
 
-  const isRegistration = isRegistrationJourney(req);
-  const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+  const appData: ApplicationData = await getApplicationData(req);
   const { templateName, template } = getPageTemplate(isUpdate, req.url);
 
   return ({
-    backLinkUrl: getTrustInvolvedUrl(isUpdate, trustId, req),
-    templateName,
+    errors,
+    formData,
     template,
+    templateName,
+    url: getUrl(isUpdate),
+    backLinkUrl: getTrustInvolvedUrl(isUpdate, trustId, req),
     pageParams: {
       title: HISTORICAL_BO_TEXTS.title,
     },
@@ -70,9 +71,6 @@ const getPageProperties = async (
       trustData: CommonTrustDataMapper.mapCommonTrustDataToPage(appData, trustId, false),
       trusteeType: TrusteeType,
     },
-    formData,
-    errors,
-    url: getUrl(isUpdate),
   });
 };
 
@@ -84,9 +82,8 @@ export const getTrustFormerBo = async (req: Request, res: Response, next: NextFu
 
     const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
     const trusteeId = req.params[config.ROUTE_PARAM_TRUSTEE_ID];
-    const isRegistration = isRegistrationJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
-    mapTrustApiToWebWhenFlagsAreSet(appData, isRegistration);
+    const appData: ApplicationData = await getApplicationData(req);
+    mapTrustApiToWebWhenFlagsAreSet(appData);
     const formData: PageModel.TrustHistoricalBeneficialOwnerForm = mapFormerTrusteeByIdFromSessionToPage(
       appData,
       trustId,
@@ -109,8 +106,7 @@ export const postTrustFormerBo = async (req: Request, res: Response, next: NextF
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const session = req.session as Session;
-    const isRegistration = isRegistrationJourney(req);
-    let appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+    let appData: ApplicationData = await getApplicationData(req);
 
     const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
     const boData = mapBeneficialOwnerToSession(req.body); // convert form data to application (session) object
@@ -134,7 +130,7 @@ export const postTrustFormerBo = async (req: Request, res: Response, next: NextF
     appData = saveTrustInApp(appData, updatedTrust);
     setExtraData(session, appData);
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       await updateOverseasEntity(req, session, appData);
     } else {
       await saveAndContinue(req, session);
@@ -150,7 +146,11 @@ export const postTrustFormerBo = async (req: Request, res: Response, next: NextF
 
 const getTrustInvolvedUrl = (isUpdate: boolean, trustId: string, req: Request) => (
   isUpdate
-    ? `${config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL}/${trustId}${config.TRUST_INVOLVED_URL}`
+    ? getRedirectUrl({
+      req,
+      urlWithEntityIds: config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_WITH_PARAMS_URL,
+      urlWithoutEntityIds: config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL,
+    }) + `/${trustId}${config.TRUST_INVOLVED_URL}`
     : `${getTrustEntryUrl(req)}/${trustId}${config.TRUST_INVOLVED_URL}`
 );
 
@@ -167,18 +167,19 @@ const getUrl = (isUpdate: boolean) => (
 );
 
 const getTrustEntryUrl = (req: Request) => {
-  let url = `${config.TRUST_ENTRY_URL}`;
-  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
-    url = getUrlWithParamsToPath(config.TRUST_ENTRY_WITH_PARAMS_URL, req);
-  }
-  return url;
+  return getRedirectUrl({
+    req,
+    urlWithEntityIds: config.TRUST_ENTRY_WITH_PARAMS_URL,
+    urlWithoutEntityIds: config.TRUST_ENTRY_URL,
+  });
 };
 
-// Get validation errors that depend on an asynchronous request
 const getValidationErrors = async (appData: ApplicationData, req: Request): Promise<ValidationError[]> => {
-  const stillInvolvedErrors = checkTrustLegalEntityBeneficialOwnerStillInvolved(appData, req);
   const filingPeriodTrustStartDateErrors = await filingPeriodTrustStartDateValidations(req);
   const filingPeriodTrustCeaseDateErrors = await filingPeriodTrustCeaseDateValidations(req);
 
-  return [...stillInvolvedErrors, ...filingPeriodTrustStartDateErrors, ...filingPeriodTrustCeaseDateErrors];
+  return [
+    ...filingPeriodTrustStartDateErrors,
+    ...filingPeriodTrustCeaseDateErrors
+  ];
 };

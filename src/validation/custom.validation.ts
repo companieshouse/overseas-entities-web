@@ -1,19 +1,18 @@
 // Custom validation utils - For now checking is not empty
-import { DateTime } from "luxon";
 import { Request } from "express";
-import { logger } from "../utils/logger";
-import { ErrorMessages } from "./error.messages";
-import { BeneficialOwnersStatementType } from "../model/beneficial.owner.statement.model";
-import { fetchApplicationData } from "../utils/application.data";
-import { FilingDateKey } from '../model/date.model';
-import { DefaultErrorsSecondNationality } from "./models/second.nationality.error.model";
-import { getTrustByIdFromApp } from "../utils/trusts";
-import { InputDate } from "../model/data.types.model";
-import { isRegistrationJourney } from "../utils/url";
-import { ApplicationData, trustType } from "../model";
-import { getTrustInReview, hasTrustsToReview } from "../utils/update/review_trusts";
-import { VALID_CHARACTERS, VALID_EMAIL_FORMAT } from "./regex/regex.validation";
+import { DateTime } from "luxon";
 import { CONCATENATED_VALUES_SEPARATOR, ROUTE_PARAM_TRUST_ID } from "../config";
+import { ApplicationData, trustType } from "../model";
+import { BeneficialOwnersStatementType } from "../model/beneficial.owner.statement.model";
+import { InputDate } from "../model/data.types.model";
+import { FilingDateKey } from '../model/date.model';
+import { getApplicationData } from "../utils/application.data";
+import { logger } from "../utils/logger";
+import { getTrustByIdFromApp } from "../utils/trusts";
+import { getTrustInReview, hasTrustsToReview } from "../utils/update/review_trusts";
+import { ErrorMessages } from "./error.messages";
+import { DefaultErrorsSecondNationality } from "./models/second.nationality.error.model";
+import { VALID_CHARACTERS, VALID_EMAIL_FORMAT } from "./regex/regex.validation";
 
 export const checkFieldIfRadioButtonSelected = (selected: boolean, errMsg: string, value: string = "") => {
   if (selected && !value.trim()) {
@@ -560,8 +559,7 @@ export const checkBeneficialOwnerType = (beneficialOwnersStatement: string, valu
 };
 
 export const checkBeneficialOwnersSubmission = async (req) => {
-  const isRegistration = isRegistrationJourney(req);
-  const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+  const appData: ApplicationData = await getApplicationData(req);
   if (appData?.beneficial_owners_statement === BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS) {
     if (!hasBeneficialOwners(appData)) {
       throw new Error(ErrorMessages.MUST_ADD_BENEFICIAL_OWNER);
@@ -574,9 +572,7 @@ export const checkBeneficialOwnersSubmission = async (req) => {
 };
 
 export const checkDatePreviousToFilingDate = async (req, dateDay: string, dateMonth: string, dateYear: string, errorMessage: string) => {
-
-  const isRegistration = isRegistrationJourney(req);
-  const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+  const appData: ApplicationData = await getApplicationData(req);
   const filingDateDay = appData?.update?.[FilingDateKey]?.day;
   const filingDateMonth = appData?.update?.[FilingDateKey]?.month;
   const filingDateYear = appData?.update?.[FilingDateKey]?.year;
@@ -585,8 +581,7 @@ export const checkDatePreviousToFilingDate = async (req, dateDay: string, dateMo
 };
 
 export const isUnableToObtainAllTrustInfo = async (req) => {
-  const isRegistration = isRegistrationJourney(req);
-  const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+  const appData: ApplicationData = await getApplicationData(req);
   let trust;
   // Check first if the trust is in review.
   if (hasTrustsToReview(appData)) {

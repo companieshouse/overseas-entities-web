@@ -6,7 +6,7 @@
     <h1 class="govuk-heading-xl govuk-!-margin-0">{{ pageParams.title }}</h1>
     <br> <p class="govuk-body">You can add more later.</p> <br>
 
-    <form class="form" method="post"> 
+    <form class="form" method="post">
       {% include "includes/csrf_token.html" %}
 
       {% set legalEntityHtml %}
@@ -42,6 +42,7 @@
       {% include "includes/inputs/text-input.html" %}
       {% endset -%}
 
+      {% set boType = formData.type.toUpperCase() if formData.type else false %}
       {% set fieldParam = {
         name: 'type',
         label: 'Is the former beneficial owner an individual or a legal entity?',
@@ -51,7 +52,7 @@
           {
             value: pageData.trusteeType.LEGAL_ENTITY,
             text: "Legal Entity",
-            checked: formData.type == pageData.trusteeType.LEGAL_ENTITY,
+            checked: boType === pageData.trusteeType.LEGAL_ENTITY.toUpperCase(),
             conditional: {
               html: legalEntityHtml
             }
@@ -59,7 +60,7 @@
           {
             value: pageData.trusteeType.INDIVIDUAL,
             text: "Individual",
-            checked: formData.type == pageData.trusteeType.INDIVIDUAL,
+            checked: boType === pageData.trusteeType.INDIVIDUAL.toUpperCase(),
             conditional: {
               html: individualBoHtml
             }

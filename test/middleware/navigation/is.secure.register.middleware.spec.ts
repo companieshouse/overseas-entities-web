@@ -1,11 +1,9 @@
 jest.mock("ioredis");
 jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/middleware/navigation/check.condition');
-jest.mock("../../../src/utils/url");
 
 import { Request, Response } from 'express';
 import { logger } from "../../../src/utils/logger";
-import { isRegistrationJourney } from "../../../src/utils/url";
 import { isSecureRegister } from '../../../src/middleware/navigation/is.secure.register.middleware';
 import { ANY_MESSAGE_ERROR } from '../../__mocks__/text.mock';
 import { SOLD_LAND_FILTER_URL } from '../../../src/config';
@@ -13,9 +11,6 @@ import { checkIsSecureRegisterDetailsEntered, NavigationErrorMessage } from '../
 
 const mockCheckIsSecureRegisterDetailsEntered = checkIsSecureRegisterDetailsEntered as unknown as jest.Mock;
 const mockLoggerInfoRequest = logger.infoRequest as jest.Mock;
-
-const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
-mockIsRegistrationJourney.mockReturnValue(true);
 
 const req = {} as Request;
 const res = { redirect: jest.fn() as any } as Response;
@@ -31,7 +26,7 @@ describe("is.secure.register navigation middleware tests", () => {
     mockCheckIsSecureRegisterDetailsEntered.mockImplementationOnce( () => { return false; });
     await isSecureRegister(req, res, next);
     expect(next).not.toHaveBeenCalledTimes(1);
-    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
+    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(2);
     expect(mockLoggerInfoRequest).toHaveBeenCalledWith(req, NavigationErrorMessage);
     expect(res.redirect).toHaveBeenCalledTimes(1);
     expect(res.redirect).toHaveBeenCalledWith(SOLD_LAND_FILTER_URL);

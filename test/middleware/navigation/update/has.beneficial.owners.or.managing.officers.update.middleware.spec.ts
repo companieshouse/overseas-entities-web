@@ -6,14 +6,14 @@ jest.mock('../../../../src/utils/application.data');
 import { describe, expect, test, beforeEach, jest } from '@jest/globals';
 import { Request, Response } from 'express';
 
-import { SECURE_UPDATE_FILTER_URL } from '../../../../src/config';
 import { logger } from "../../../../src/utils/logger";
 import { ANY_MESSAGE_ERROR } from '../../../__mocks__/text.mock';
+import { SECURE_UPDATE_FILTER_URL } from '../../../../src/config';
 
-import { checkBOsOrMOsDetailsEnteredUpdate, NavigationErrorMessage } from '../../../../src/middleware/navigation/check.condition';
 import { hasBOsOrMOsUpdate } from '../../../../src/middleware/navigation/update/has.beneficial.owners.or.managing.officers.update.middleware';
-import { APPLICATION_DATA_REGISTRATION_MOCK } from '../../../__mocks__/session.mock';
 import { getApplicationData } from '../../../../src/utils/application.data';
+import { APPLICATION_DATA_REGISTRATION_MOCK } from '../../../__mocks__/session.mock';
+import { checkBOsOrMOsDetailsEnteredUpdate, NavigationErrorMessage } from '../../../../src/middleware/navigation/check.condition';
 
 const mockCheckBOsOrMOsDetailsEnteredUpdate = checkBOsOrMOsDetailsEnteredUpdate as unknown as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
@@ -36,10 +36,8 @@ describe("has.beneficial.owners.or.managing.officers.update navigation middlewar
     await hasBOsOrMOsUpdate(req, res, next);
 
     expect(next).not.toHaveBeenCalledTimes(1);
-
-    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
+    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(2);
     expect(mockLoggerInfoRequest).toHaveBeenCalledWith(req, NavigationErrorMessage);
-
     expect(res.redirect).toHaveBeenCalledTimes(1);
     expect(res.redirect).toHaveBeenCalledWith(SECURE_UPDATE_FILTER_URL);
   });
@@ -49,10 +47,8 @@ describe("has.beneficial.owners.or.managing.officers.update navigation middlewar
     await hasBOsOrMOsUpdate(req, res, next);
 
     expect(next).not.toHaveBeenCalledTimes(1);
-
-    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
+    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(2);
     expect(mockLoggerInfoRequest).toHaveBeenCalledWith(req, NavigationErrorMessage);
-
     expect(res.redirect).toHaveBeenCalledTimes(1);
     expect(res.redirect).toHaveBeenCalledWith(SECURE_UPDATE_FILTER_URL);
   });
@@ -62,7 +58,6 @@ describe("has.beneficial.owners.or.managing.officers.update navigation middlewar
     await hasBOsOrMOsUpdate(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
-
     expect(mockLoggerInfoRequest).not.toHaveBeenCalled();
     expect(res.redirect).not.toHaveBeenCalled();
   });
@@ -72,7 +67,6 @@ describe("has.beneficial.owners.or.managing.officers.update navigation middlewar
     await hasBOsOrMOsUpdate(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
-
     expect(mockLoggerInfoRequest).not.toHaveBeenCalled();
     expect(res.redirect).not.toHaveBeenCalled();
   });
@@ -87,7 +81,6 @@ describe("has.beneficial.owners.or.managing.officers.update navigation middlewar
     await hasBOsOrMOsUpdate(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
-
     expect(mockLoggerInfoRequest).not.toHaveBeenCalled();
     expect(res.redirect).not.toHaveBeenCalled();
   });

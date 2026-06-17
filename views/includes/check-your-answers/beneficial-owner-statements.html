@@ -49,6 +49,14 @@
 
   <h2 class="govuk-heading-m">Has the overseas entity identified any registrable beneficial owners?</h2>
 
+  {% if not IS_REDIS_REMOVAL_ENABLED %}
+    {% set changeLinkUrlBo = OE_CONFIGS.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL %}
+    {% set changeLinkUrlRbo = OE_CONFIGS.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL %}
+  {% else %}
+    {% set changeLinkUrlBo = CREATE_CHANGE_LINK_WITH_IDS(OE_CONFIGS.UPDATE_BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL, OE_TRANSACTION_ID, OE_SUBMISSION_ID) %}
+    {% set changeLinkUrlRbo = CREATE_CHANGE_LINK_WITH_IDS(OE_CONFIGS.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_WITH_PARAMS_URL, OE_TRANSACTION_ID, OE_SUBMISSION_ID) %}
+  {% endif %}
+
   {{ govukSummaryList({
       rows: [
         {
@@ -60,7 +68,7 @@
           },
           actions: {
             items: [ CREATE_CHANGE_LINK(
-              OE_CONFIGS.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL,
+              changeLinkUrlBo,
               identifiedStatementText,
               "update-change-registrable-beneficial-owner-statement-button"
             ) ]
@@ -82,7 +90,7 @@
           },
           actions: {
             items: [ CREATE_CHANGE_LINK(
-              OE_CONFIGS.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL,
+              changeLinkUrlRbo,
               ceasedStatementText,
               "update-change-ceased-beneficial-owner-statement-button"
             ) ]

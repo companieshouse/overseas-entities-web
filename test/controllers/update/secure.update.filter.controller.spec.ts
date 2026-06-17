@@ -3,69 +3,67 @@ jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/application.data');
-jest.mock('../../../src/service/transaction.service');
 jest.mock('../../../src/service/overseas.entities.service');
 jest.mock("../../../src/utils/feature.flag" );
 jest.mock("../../../src/utils/url");
 
-// import remove journey middleware mock before app to prevent real function being used instead of mock
-import mockJourneyDetectionMiddleware from "../../__mocks__/journey.detection.middleware.mock";
-import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
+
+// import remove journey middleware mock before app to prevent real function being used instead of mock
+import mockJourneyDetectionMiddleware from "../../__mocks__/journey.detection.middleware.mock";
+import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddleware.mock";
+
 import app from "../../../src/app";
-
-import { ErrorMessages } from "../../../src/validation/error.messages";
-
-import { authentication } from "../../../src/middleware/authentication.middleware";
-import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { logger } from "../../../src/utils/logger";
+import { ErrorMessages } from "../../../src/validation/error.messages";
+import { authentication } from "../../../src/middleware/authentication.middleware";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
-import { postTransaction } from "../../../src/service/transaction.service";
+import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 
-import { getApplicationData, setExtraData, fetchApplicationData } from "../../../src/utils/application.data";
+import { setExtraData, getApplicationData } from "../../../src/utils/application.data";
+import { updateOverseasEntity } from "../../../src/service/overseas.entities.service";
 
 import {
-  isRegistrationJourney,
   isRemoveJourney,
   isUpdateJourney,
-  getUrlWithTransactionIdAndSubmissionId
+  getUrlWithTransactionIdAndSubmissionId,
+  getRedirectUrl,
 } from "../../../src/utils/url";
 
 import {
   APPLICATION_DATA_MOCK,
-  TRANSACTION_ID,
 } from "../../__mocks__/session.mock";
 
 import {
   ANY_MESSAGE_ERROR,
   PAGE_TITLE_ERROR,
+  SERVICE_UNAVAILABLE,
   RADIO_BUTTON_NO_SELECTED,
   RADIO_BUTTON_YES_SELECTED,
   SECURE_UPDATE_FILTER_PAGE_HEADING,
-  SERVICE_UNAVAILABLE,
 } from "../../__mocks__/text.mock";
 
 import {
-  JOURNEY_REMOVE_QUERY_PARAM,
-  REMOVE_IS_ENTITY_REGISTERED_OWNER_URL,
   REMOVE_SERVICE_NAME,
-  SECURE_UPDATE_FILTER_PAGE,
-  SECURE_UPDATE_FILTER_URL,
-  UPDATE_INTERRUPT_CARD_URL,
   UPDATE_SERVICE_NAME,
-  UPDATE_USE_PAPER_URL
+  UPDATE_USE_PAPER_URL,
+  UPDATE_LANDING_PAGE_URL,
+  SECURE_UPDATE_FILTER_URL,
+  SECURE_UPDATE_FILTER_PAGE,
+  UPDATE_INTERRUPT_CARD_URL,
+  JOURNEY_REMOVE_QUERY_PARAM,
+  SECURE_UPDATE_FILTER_WITH_PARAMS_URL,
+  REMOVE_IS_ENTITY_REGISTERED_OWNER_URL,
 } from "../../../src/config";
 
 mockJourneyDetectionMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockIsRemoveJourney = isRemoveJourney as jest.Mock;
+const mockGetRedirectUrl = getRedirectUrl as jest.Mock;
 const MOCKED_PAGE_URL = "/MOCKED_PAGE";
-
-const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
-mockIsRegistrationJourney.mockReturnValue(false);
 
 const mockIsUpdateJourney = isUpdateJourney as jest.Mock;
 mockIsUpdateJourney.mockReturnValue(true);
@@ -79,15 +77,12 @@ mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Respons
 const mockGetUrlWithTransactionIdAndSubmissionId = getUrlWithTransactionIdAndSubmissionId as jest.Mock;
 mockGetUrlWithTransactionIdAndSubmissionId.mockReturnValue(MOCKED_PAGE_URL);
 
-const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
+mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
+
+const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockSetExtraData = setExtraData as jest.Mock;
-
-const mockPostTransactionService = postTransaction as jest.Mock;
-mockPostTransactionService.mockReturnValue(TRANSACTION_ID);
-
-const mockFetchApplicationData = fetchApplicationData as jest.Mock;
-mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
+const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
 
 describe("SECURE UPDATE FILTER controller", () => {
 
@@ -99,17 +94,37 @@ describe("SECURE UPDATE FILTER controller", () => {
 
   describe("GET tests", () => {
 
-    test(`renders the ${SECURE_UPDATE_FILTER_PAGE} page`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce({ });
+    test(`renders the ${SECURE_UPDATE_FILTER_PAGE} page when REDIS_removal flag is set to OFF`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({});
       const resp = await request(app).get(SECURE_UPDATE_FILTER_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_SERVICE_NAME);
+      expect(resp.text).toContain(SECURE_UPDATE_FILTER_PAGE_HEADING);
+      expect(resp.text).toContain(UPDATE_LANDING_PAGE_URL);
+      expect(resp.text).not.toContain(RADIO_BUTTON_YES_SELECTED);
+      expect(resp.text).not.toContain(RADIO_BUTTON_NO_SELECTED);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+    });
+
+    test(`renders the ${SECURE_UPDATE_FILTER_PAGE} page when REDIS_removal flag is set to ON`, async () => {
+      mockIsActiveFeature.mockReturnValue(true);
+      mockGetApplicationData.mockReturnValueOnce({});
+
+      const resp = await request(app).get(SECURE_UPDATE_FILTER_WITH_PARAMS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_SERVICE_NAME);
+      expect(resp.text).toContain(SECURE_UPDATE_FILTER_PAGE_HEADING);
+      expect(resp.text).toContain(UPDATE_LANDING_PAGE_URL);
+      expect(resp.text).not.toContain(RADIO_BUTTON_YES_SELECTED);
+      expect(resp.text).not.toContain(RADIO_BUTTON_NO_SELECTED);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 
     test(`renders the ${SECURE_UPDATE_FILTER_PAGE} page for remove`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(false);
-      mockFetchApplicationData.mockReturnValueOnce({});
-      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockIsActiveFeature.mockReturnValue(false);
+      mockGetApplicationData.mockReturnValue({});
+      mockGetRedirectUrl.mockReturnValue(REMOVE_IS_ENTITY_REGISTERED_OWNER_URL);
       mockIsRemoveJourney.mockReturnValueOnce(true);
       const resp = await request(app).get(`${SECURE_UPDATE_FILTER_URL}${JOURNEY_REMOVE_QUERY_PARAM}`);
 
@@ -125,15 +140,13 @@ describe("SECURE UPDATE FILTER controller", () => {
     test(`renders the ${SECURE_UPDATE_FILTER_PAGE} page with radios selected to no`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ is_secure_register: 0 });
       const resp = await request(app).get(SECURE_UPDATE_FILTER_URL);
-
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(RADIO_BUTTON_NO_SELECTED);
     });
 
     test(`renders the ${SECURE_UPDATE_FILTER_PAGE} page with radios selected to yes`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce({ is_secure_register: 1 });
+      mockGetApplicationData.mockReturnValueOnce({ is_secure_register: 1 });
       const resp = await request(app).get(SECURE_UPDATE_FILTER_URL);
-
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(RADIO_BUTTON_YES_SELECTED);
     });
@@ -163,10 +176,25 @@ describe("SECURE UPDATE FILTER controller", () => {
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 
+    test ("if REDIS_removal flag is ON, update the entity when transactionKey and overseasEntityKey are present, and redirect to update-interrupt-card, with entity IDs in URL", async () => {
+      mockIsActiveFeature.mockReturnValue(true);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockIsRemoveJourney.mockReturnValueOnce(false);
+      mockUpdateOverseasEntity.mockReturnValueOnce(true);
+
+      const resp = await request(app)
+        .post(SECURE_UPDATE_FILTER_WITH_PARAMS_URL)
+        .send({ is_secure_register: "0" });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(MOCKED_PAGE_URL);
+      expect(mockGetUrlWithTransactionIdAndSubmissionId).toHaveBeenCalledTimes(1);
+      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+    });
+
     test("renders the current page with error message", async () => {
       const resp = await request(app)
         .post(SECURE_UPDATE_FILTER_URL);
-
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(SECURE_UPDATE_FILTER_PAGE_HEADING);
       expect(resp.text).toContain(ErrorMessages.SELECT_IF_SECURE_REGISTER_FILTER);
@@ -183,7 +211,6 @@ describe("SECURE UPDATE FILTER controller", () => {
       const resp = await request(app)
         .post(SECURE_UPDATE_FILTER_URL)
         .send({ is_secure_register: '0' });
-
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });

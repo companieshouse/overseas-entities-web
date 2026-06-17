@@ -35,7 +35,7 @@ import { isActiveFeature } from "../../src/utils/feature.flag";
 import { isRegistrationJourney, getUrlWithParamsToPath } from "../../src/utils/url";
 import * as CHANGE_LINKS from "../../src/config";
 import { stringCount } from "../utils/test.utils";
-import { fetchApplicationData } from "../../src/utils/application.data";
+import { fetchApplicationData, getApplicationData } from "../../src/utils/application.data";
 
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../src/model/who.is.making.filing.model";
 import { NatureOfControlJurisdiction, NatureOfControlType } from "../../src/model/data.types.model";
@@ -162,6 +162,7 @@ const mockHasBOsOrMOsMiddleware = hasBOsOrMOs as jest.Mock;
 mockHasBOsOrMOsMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+const mockGetApplicationData = getApplicationData as jest.Mock;
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
@@ -518,12 +519,7 @@ describe("GET tests", () => {
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with trust data and feature flags set to on`, async () => {
     // set FEATURE_FLAG_ENABLE_TRUSTS_WEB and FEATURE_FLAG_ENABLE_REDIS_REMOVAL to ON
-    mockIsActiveFeature.mockReturnValueOnce(true);
-    mockIsActiveFeature.mockReturnValueOnce(true);
-    mockIsActiveFeature.mockReturnValueOnce(true);
-    mockIsActiveFeature.mockReturnValueOnce(true);
-    mockIsActiveFeature.mockReturnValueOnce(true);
-    mockIsActiveFeature.mockReturnValueOnce(true);
+    mockIsActiveFeature.mockReturnValue(true);
 
     const mockAppData = {
       ...APPLICATION_DATA_MOCK,
@@ -533,6 +529,7 @@ describe("GET tests", () => {
       ]
     };
 
+    mockGetApplicationData.mockReturnValueOnce(mockAppData);
     mockFetchApplicationData.mockReturnValueOnce(mockAppData);
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
@@ -1173,11 +1170,7 @@ describe("GET with url params tests tests", () => {
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with trust data and feature flags set to on`, async () => {
     // set FEATURE_FLAG_ENABLE_TRUSTS_WEB and FEATURE_FLAG_ENABLE_REDIS_REMOVAL to ON
-    mockIsActiveFeature.mockReturnValueOnce(true);
-    mockIsActiveFeature.mockReturnValueOnce(true);
-    mockIsActiveFeature.mockReturnValueOnce(true);
-    mockIsActiveFeature.mockReturnValueOnce(true);
-    mockIsActiveFeature.mockReturnValueOnce(true);
+    mockIsActiveFeature.mockReturnValue(true);
 
     const mockAppData = {
       ...APPLICATION_DATA_MOCK,
@@ -1202,7 +1195,8 @@ describe("GET with url params tests tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with no trust data`, async () => {
-    mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_NO_TRUSTS_MOCK });
+    mockFetchApplicationData.mockReturnValue({ ...APPLICATION_DATA_NO_TRUSTS_MOCK });
+    mockGetUrlWithParamsToPath.mockReturnValue(CHANGE_LINKS.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
 
@@ -1226,7 +1220,8 @@ describe("GET with url params tests tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE}`, async () => {
-    mockFetchApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+    mockFetchApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
+    mockIsActiveFeature.mockReturnValue(true);
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
 

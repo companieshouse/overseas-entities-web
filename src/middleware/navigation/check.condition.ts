@@ -1,14 +1,20 @@
-import { SOLD_LAND_FILTER_URL } from '../../config';
-
-import { ApplicationData } from '../../model/application.model';
-import { HasSoldLandKey, IsSecureRegisterKey, EntityNameKey, EntityNumberKey } from '../../model/data.types.model';
-import { PresenterKey } from '../../model/presenter.model';
 import { EntityKey } from '../../model/entity.model';
-import { BeneficialOwnerStatementKey } from '../../model/beneficial.owner.statement.model';
-import { WhoIsRegisteringKey } from '../../model/who.is.making.filing.model';
-import { OverseasEntityDueDiligenceKey } from '../../model/overseas.entity.due.diligence.model';
-import { DueDiligenceKey } from '../../model/due.diligence.model';
 import { UpdateKey } from '../../model/update.type.model';
+import { PresenterKey } from '../../model/presenter.model';
+import { ApplicationData } from '../../model/application.model';
+import { DueDiligenceKey } from '../../model/due.diligence.model';
+import { WhoIsRegisteringKey } from '../../model/who.is.making.filing.model';
+import { SOLD_LAND_FILTER_URL } from '../../config';
+import { BeneficialOwnerStatementKey } from '../../model/beneficial.owner.statement.model';
+import { OverseasEntityDueDiligenceKey } from '../../model/overseas.entity.due.diligence.model';
+
+import {
+  EntityNameKey,
+  HasSoldLandKey,
+  EntityNumberKey,
+  IsSecureRegisterKey,
+} from '../../model/data.types.model';
+
 import {
   checkBOsDetailsEntered,
   checkMOsDetailsEntered,

@@ -36,7 +36,7 @@ import { serviceAvailabilityMiddleware } from '../../src/middleware/service.avai
 import { updateOverseasEntity } from "../../src/service/overseas.entities.service";
 
 import { get, post } from "../../src/controllers/trust.individual.beneficial.owner.controller";
-import { fetchApplicationData, setExtraData } from '../../src/utils/application.data';
+import { getApplicationData, setExtraData } from '../../src/utils/application.data';
 import { IndividualTrustee, Trust, TrustKey } from '../../src/model/trust.model';
 
 import {
@@ -84,7 +84,7 @@ mockIsRegistrationJourney.mockReturnValue(true);
 
 describe('Trust Individual Beneficial Owner Controller', () => {
 
-  const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+  const mockGetApplicationData = getApplicationData as jest.Mock;
   const trustId = TRUST_WITH_ID.trust_id;
   const pageUrl = TRUST_ENTRY_URL + "/" + trustId + TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL;
   const mockNext = jest.fn();
@@ -142,7 +142,7 @@ describe('Trust Individual Beneficial Owner Controller', () => {
       (mapCommonTrustDataToPage as jest.Mock).mockReturnValue(mockTrust1Data);
       mockIsActiveFeature.mockReturnValueOnce(true);
       mockReq.query = { "relevant-period": "true" };
-      mockFetchApplicationData.mockReturnValue(mockAppData);
+      mockGetApplicationData.mockReturnValue(mockAppData);
 
       await get(mockReq, mockRes, mockNext);
 
@@ -161,7 +161,7 @@ describe('Trust Individual Beneficial Owner Controller', () => {
 
     test('catch error when renders the page', async () => {
       const error = new Error(ANY_MESSAGE_ERROR);
-      mockFetchApplicationData.mockImplementationOnce(() => { throw error; });
+      mockGetApplicationData.mockImplementationOnce(() => { throw error; });
       await get(mockReq, mockRes, mockNext);
       expect(mockNext).toBeCalledTimes(1);
       expect(mockNext).toBeCalledWith(error);
@@ -174,7 +174,7 @@ describe('Trust Individual Beneficial Owner Controller', () => {
       const mockTrustee = {} as IndividualTrustee ;
       (mapIndividualTrusteeToSession as jest.Mock).mockReturnValue(mockTrustee);
 
-      mockFetchApplicationData.mockReturnValue(mockAppData);
+      mockGetApplicationData.mockReturnValue(mockAppData);
       mockIsActiveFeature.mockReturnValue(false);
       mockUpdateOverseasEntity.mockReturnValueOnce(true);
 
@@ -209,7 +209,7 @@ describe('Trust Individual Beneficial Owner Controller', () => {
       const mockTrustee = {} as IndividualTrustee ;
       (mapIndividualTrusteeToSession as jest.Mock).mockReturnValue(mockTrustee);
 
-      mockFetchApplicationData.mockReturnValue(mockAppData);
+      mockGetApplicationData.mockReturnValue(mockAppData);
       mockIsActiveFeature.mockReturnValue(true);
       mockUpdateOverseasEntity.mockReturnValueOnce(true);
 
@@ -252,7 +252,7 @@ describe('Trust Individual Beneficial Owner Controller', () => {
       (validationResult as any as jest.Mock).mockImplementationOnce(() => ({
         isEmpty: jest.fn().mockReturnValue(true),
       }));
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockReq.url = "/register-an-overseas-entity/transaction/123/submission/456/trusts/trust-individual-beneficial-owner";
       mockReq.body = {};
       await post(mockReq, mockRes, mockNext);
@@ -264,7 +264,7 @@ describe('Trust Individual Beneficial Owner Controller', () => {
       (validationResult as any as jest.Mock).mockImplementationOnce(() => ({
         isEmpty: jest.fn().mockReturnValue(true),
       }));
-      mockFetchApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockReq.url = "/register-an-overseas-entity/trusts/trust-individual-beneficial-owner";
       mockReq.body = {};
       await post(mockReq, mockRes, mockNext);

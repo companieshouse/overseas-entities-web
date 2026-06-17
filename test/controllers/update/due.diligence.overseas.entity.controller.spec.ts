@@ -5,7 +5,6 @@ jest.mock("../../../src/utils/application.data");
 jest.mock('../../../src/middleware/navigation/update/has.who.is.making.update.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/save.and.continue');
-jest.mock("../../../src/utils/url");
 
 import { describe, expect, test, jest, beforeEach } from "@jest/globals";
 import { NextFunction, Request, Response } from "express";
@@ -27,10 +26,9 @@ import { EMAIL_ADDRESS } from "../../__mocks__/session.mock";
 import { ErrorMessages } from '../../../src/validation/error.messages';
 import { DateTime } from "luxon";
 import { OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_INVALID_CHARACTERS_FIELDS_MOCK } from "../../__mocks__/validation.mock";
-import { isRegistrationJourney } from "../../../src/utils/url";
 
 import { EMPTY_IDENTITY_DATE_REQ_BODY_MOCK, getTwoMonthOldDate } from "../../__mocks__/fields/date.mock";
-import { fetchApplicationData, setApplicationData, prepareData } from "../../../src/utils/application.data";
+import { setApplicationData, prepareData, getApplicationData } from "../../../src/utils/application.data";
 
 import {
   DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
@@ -39,39 +37,39 @@ import {
 
 import {
   OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK,
-  OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES,
+  OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
   OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_EMPTY_OBJECT_MOCK,
   OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_MAX_LENGTH_FIELDS_MOCK,
-  OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK
+  OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES
 } from "../../__mocks__/overseas.entity.due.diligence.mock";
 
 import {
   WHO_IS_MAKING_UPDATE_URL,
-  UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE,
   UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL,
+  UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE,
+  UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL,
   UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE,
-  UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL
 } from "../../../src/config";
 
 import {
+  PAGE_TITLE_ERROR,
+  FOUND_REDIRECT_TO,
   ANY_MESSAGE_ERROR,
   SERVICE_UNAVAILABLE,
-  OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE_TITLE,
   OVERSEAS_ENTITY_DUE_DILIGENCE_NAME_TEXT,
-  FOUND_REDIRECT_TO,
-  OVERSEAS_ENTITY_NO_EMAIL_OR_VERIFICATION_DATE_SHOWN_INFORMATION_ON_PUBLIC_REGISTER,
-  PAGE_TITLE_ERROR,
-  OVERSEAS_ENTITY_DUE_DILIGENCE_IDENTITY_ADDRESS_HINT_TEXT,
-  OVERSEAS_ENTITY_DUE_DILIGENCE_PARTNER_NAME_HINT_TEXT,
-  OVERSEAS_ENTITY_DUE_DILIGENCE_IDENTITY_DATE_LABEL_TEXT,
-  OVERSEAS_ENTITY_DUE_DILIGENCE_PARTNER_NAME_LABEL_TEXT,
-  OVERSEAS_ENTITY_DUE_DILIGENCE_SUPERVISORY_NAME_LABEL_TEXT,
+  OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE_TITLE,
   ALL_THE_OTHER_INFORMATION_ON_PUBLIC_REGISTER,
+  OVERSEAS_ENTITY_DUE_DILIGENCE_PARTNER_NAME_HINT_TEXT,
+  OVERSEAS_ENTITY_DUE_DILIGENCE_PARTNER_NAME_LABEL_TEXT,
+  OVERSEAS_ENTITY_DUE_DILIGENCE_IDENTITY_DATE_LABEL_TEXT,
+  OVERSEAS_ENTITY_DUE_DILIGENCE_IDENTITY_ADDRESS_HINT_TEXT,
+  OVERSEAS_ENTITY_DUE_DILIGENCE_SUPERVISORY_NAME_LABEL_TEXT,
+  OVERSEAS_ENTITY_NO_EMAIL_OR_VERIFICATION_DATE_SHOWN_INFORMATION_ON_PUBLIC_REGISTER
 } from "../../__mocks__/text.mock";
 
 mockJourneyDetectionMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
-const mockFetchApplicationData = fetchApplicationData as jest.Mock;
+const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 
@@ -87,9 +85,6 @@ mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, ne
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
-const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
-mockIsRegistrationJourney.mockReturnValue(false);
-
 describe("UPDATE DUE DILIGENCE OVERSEAS ENTITY controller", () => {
 
   beforeEach(() => {
@@ -98,8 +93,9 @@ describe("UPDATE DUE DILIGENCE OVERSEAS ENTITY controller", () => {
   });
 
   describe("GET tests", () => {
+
     test(`renders the ${UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE} page`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce({ [OverseasEntityDueDiligenceKey]: null });
+      mockGetApplicationData.mockReturnValue({ [OverseasEntityDueDiligenceKey]: null });
       const resp = await request(app).get(UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL);
 
       expect(resp.status).toEqual(200);
@@ -117,7 +113,7 @@ describe("UPDATE DUE DILIGENCE OVERSEAS ENTITY controller", () => {
     });
 
     test(`renders the ${UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE} page on GET method with session data populated`, async () => {
-      mockFetchApplicationData.mockReturnValueOnce({ [OverseasEntityDueDiligenceKey]: OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK });
+      mockGetApplicationData.mockReturnValueOnce({ [OverseasEntityDueDiligenceKey]: OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK });
       const resp = await request(app).get(UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL);
 
       expect(resp.status).toEqual(200);
@@ -130,7 +126,7 @@ describe("UPDATE DUE DILIGENCE OVERSEAS ENTITY controller", () => {
     });
 
     test(`catch error when renders the ${UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE} page on GET method`, async () => {
-      mockFetchApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockGetApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL);
 
       expect(resp.status).toEqual(500);
@@ -139,6 +135,7 @@ describe("UPDATE DUE DILIGENCE OVERSEAS ENTITY controller", () => {
   });
 
   describe("POST tests", () => {
+
     test(`redirect to ${UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE} page after a successful post from ${UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE} page`, async () => {
       const dueDiligenceMock = { ...OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK };
       const twoMonthOldDate = getTwoMonthOldDate();

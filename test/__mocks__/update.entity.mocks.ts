@@ -1,10 +1,4 @@
 import { DATE } from "./fields/date.mock";
-
-export const companyProfileQueryMock = {
-  companyName: "Test1",
-  companyNumber: "OE111129"
-};
-
 export const testDateOfCreation = DATE;
 export const testFilingDate = DATE;
 export const testEntityName = "testEntity";
@@ -57,5 +51,27 @@ export const updateModelMock = {
   update: {
     date_of_creation: testDateOfCreation,
     filing_date: testFilingDate
+  }
+};
+
+export const companyProfileQueryMock = {
+  companyName: testEntityName,
+  companyNumber: testEntityNumber,
+  dateOfCreation: "2000-01-01",
+  foreignCompanyDetails: {
+    originatingRegistry: {
+      country: testIncorporationCountry
+    }
+  }
+};
+
+export const entityCookieUpdateMock = {
+  "entity_number": testEntityNumber,
+};
+export const entityCookieRemoveMock = {
+  remove: {
+    is_listed_as_property_owner: "1",
+    has_sold_all_land: "0",
+    is_not_proprietor_of_land: false,
   }
 };

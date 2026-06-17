@@ -4,15 +4,17 @@ import { isActiveFeature } from "../utils/feature.flag";
 import { ApplicationData } from "../model";
 import { fetchApplicationData } from "../utils/application.data";
 import { logger, createAndLogErrorRequest } from "../utils/logger";
-import { OverseasEntityKey, PaymentKey } from "../model/data.types.model";
-import { getUrlWithParamsToPath, isRegistrationJourney } from "../utils/url";
+import { OverseasEntityKey, PaymentKey, Transactionkey } from "../model/data.types.model";
+import { getUrlWithTransactionIdAndSubmissionId, isRemoveJourney } from "../utils/url";
 import {
+  PAYMENT_PAID,
   CONFIRMATION_URL,
-  CONFIRMATION_WITH_PARAMS_URL,
-  FEATURE_FLAG_ENABLE_REDIS_REMOVAL,
+  CONFIRMATION_PAGE,
   PAYMENT_FAILED_URL,
-  PAYMENT_FAILED_WITH_PARAMS_URL,
-  PAYMENT_PAID
+  PAYMENT_FAILED_PAGE,
+  ACTIVE_SUBMISSION_BASE_PATH,
+  REGISTER_AN_OVERSEAS_ENTITY_URL,
+  FEATURE_FLAG_ENABLE_REDIS_REMOVAL,
 } from "../config";
 
 // The Payment Platform will redirect the user's browser back to the `redirectUri` supplied when the payment session was created,
@@ -22,8 +24,8 @@ export const get = async (req: Request, res: Response, next: NextFunction): Prom
   try {
 
     const { status, state } = req.query;
-    const isRegistration: boolean = isRegistrationJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, isRegistration, true);
+    const isRemove: boolean = await isRemoveJourney(req);
+    const appData: ApplicationData = await fetchApplicationData(req, isRemove, true);
     const savedPayment = appData[PaymentKey] || {} as CreatePaymentRequest;
 
     logger.infoRequest(req, `Returned state: ${ state }, saved state: ${savedPayment.state}, with status: ${ status }`);
@@ -33,21 +35,22 @@ export const get = async (req: Request, res: Response, next: NextFunction): Prom
       return next(createAndLogErrorRequest(req, `Rejecting payment redirect, payment state does not match. Payment Request: ${ JSON.stringify(savedPayment)}`));
     }
 
+    let paymentConfirmationUrl = CONFIRMATION_URL;
+    let paymentFailureUrl = PAYMENT_FAILED_URL;
+
+    if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+      const basePath = getUrlWithTransactionIdAndSubmissionId(ACTIVE_SUBMISSION_BASE_PATH, appData[Transactionkey] as string, appData[OverseasEntityKey] as string);
+      paymentConfirmationUrl = REGISTER_AN_OVERSEAS_ENTITY_URL + basePath + CONFIRMATION_PAGE;
+      paymentFailureUrl = REGISTER_AN_OVERSEAS_ENTITY_URL + basePath + PAYMENT_FAILED_PAGE;
+    }
+
     if (status === PAYMENT_PAID) {
-      let confirmationPageUrl = CONFIRMATION_URL;
-      if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {
-        confirmationPageUrl = getUrlWithParamsToPath(CONFIRMATION_WITH_PARAMS_URL, req);
-      }
-      logger.debugRequest(req, `Overseas Entity id: ${ appData[OverseasEntityKey] }, Payment status: ${status}, Redirecting to: ${confirmationPageUrl}`);
-      return res.redirect(confirmationPageUrl);
+      logger.debugRequest(req, `Overseas Entity id: ${appData[OverseasEntityKey]}, Payment status: ${status}, Redirecting to: ${paymentConfirmationUrl}`);
+      return res.redirect(paymentConfirmationUrl);
     } else {
       // Dealing with failures payment (User cancelled, Insufficient funds, Payment error ...)
-      logger.debugRequest(req, `Overseas Entity id: ${ appData[OverseasEntityKey] }, Payment status: ${status}, Redirecting to: ${PAYMENT_FAILED_URL}`);
-      let nextPageUrl = PAYMENT_FAILED_URL;
-      if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {
-        nextPageUrl = getUrlWithParamsToPath(PAYMENT_FAILED_WITH_PARAMS_URL, req);
-      }
-      return res.redirect(nextPageUrl);
+      logger.debugRequest(req, `Overseas Entity id: ${appData[OverseasEntityKey]}, Payment status: ${status}, Redirecting to: ${paymentFailureUrl}`);
+      return res.redirect(paymentFailureUrl);
     }
   } catch (error) {
     logger.errorRequest(req, error);

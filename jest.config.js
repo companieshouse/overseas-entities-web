@@ -18,13 +18,16 @@ module.exports = {
   testTimeout: 25000,
   verbose: true,
   testMatch: ["**/test/**/*.spec.[jt]s"],
-  globals: {
-    "ts-jest": {
-      diagnostics: false,
-    }
-  },
   globalSetup: "./test/setup.ts",
+  globals: {},
+  transform: {
+    '^.+\\.tsx?$': ['ts-jest', {
+      diagnostics: false,
+    }],
+  },
   moduleNameMapper: {
+    'uuid': require.resolve('uuid'),
     '^axios$': require.resolve('axios'),
-  }
+    '^@opentelemetry/([^/]+)/(.+)$': '<rootDir>/node_modules/@opentelemetry/$1/build/src/index-$2',
+  },
 };

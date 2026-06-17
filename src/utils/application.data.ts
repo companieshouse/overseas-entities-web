@@ -2,11 +2,9 @@ import { Request } from "express";
 import { Session } from '@companieshouse/node-session-handler';
 import { BeneficialOwnerCorporate } from '@companieshouse/api-sdk-node/dist/services/overseas-entities';
 import { BeneficialOwnerOtherKey } from '../model/beneficial.owner.other.model';
-import { Remove } from 'model/remove.type.model';
+import { Remove } from '../model/remove.type.model';
 import { isActiveFeature } from "./feature.flag";
 import { isNoChangeJourney } from "./update/no.change.journey";
-import { isRegistrationJourney } from "./url";
-
 import { createAndLogErrorRequest, logger } from './logger';
 import { getOverseasEntity, updateOverseasEntity } from "../service/overseas.entities.service";
 import { BeneficialOwnerGov, BeneficialOwnerGovKey } from '../model/beneficial.owner.gov.model';
@@ -15,43 +13,43 @@ import { ManagingOfficerCorporate, ManagingOfficerCorporateKey } from '../model/
 import { ManagingOfficerIndividual, ManagingOfficerKey } from '../model/managing.officer.model';
 
 import {
+  ApplicationData,
+  ApplicationDataType,
+  APPLICATION_DATA_KEY,
+  ApplicationDataArrayType
+} from "../model";
+
+import {
   ID,
+  PaymentKey,
+  TrusteesNoc,
+  Transactionkey,
+  NonLegalFirmNoc,
+  TrustControlNoc,
+  OverseasEntityKey,
   BeneficialOwnerNoc,
   NonLegalFirmControlNoc,
-  NonLegalFirmNoc,
-  OwnerOfLandOtherEntityJurisdictionsNoc,
   OwnerOfLandPersonJurisdictionsNoc,
-  TrustControlNoc,
-  TrusteesNoc,
-  OverseasEntityKey,
-  Transactionkey,
-  PaymentKey,
+  OwnerOfLandOtherEntityJurisdictionsNoc,
 } from '../model/data.types.model';
 
 import {
+  ROUTE_PARAM_SUBMISSION_ID,
   PARAM_BENEFICIAL_OWNER_GOV,
-  PARAM_BENEFICIAL_OWNER_INDIVIDUAL,
+  ROUTE_PARAM_TRANSACTION_ID,
   PARAM_BENEFICIAL_OWNER_OTHER,
   PARAM_MANAGING_OFFICER_CORPORATE,
   PARAM_MANAGING_OFFICER_INDIVIDUAL,
-  FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC,
   FEATURE_FLAG_ENABLE_REDIS_REMOVAL,
-  ROUTE_PARAM_TRANSACTION_ID,
-  ROUTE_PARAM_SUBMISSION_ID
+  PARAM_BENEFICIAL_OWNER_INDIVIDUAL,
+  FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC,
 } from '../config';
-
-import {
-  ApplicationData,
-  APPLICATION_DATA_KEY,
-  ApplicationDataType,
-  ApplicationDataArrayType
-} from "../model";
 
 /**
  * @todo: remove this method after REDIS removal has been implemented for the Update/Remove journeys (ROE-2645)
  */
-export const fetchApplicationData = (req: Request, isRegistration: boolean, forceFetch: boolean = false): Promise<ApplicationData> => {
-  if (isRegistration) {
+export const fetchApplicationData = (req: Request, isRegistrationOrUpdate: boolean, forceFetch: boolean = false): Promise<ApplicationData> => {
+  if (isRegistrationOrUpdate) {
     return getApplicationData(req, forceFetch);
   } else {
     return getApplicationData(req.session);
@@ -220,7 +218,6 @@ export const findBoOrMo = (appData: ApplicationData, boMoType: string, id: strin
       default:
         return undefined;
   }
-
   return boMos.find(boMo => boMo.id === id);
 };
 
@@ -244,24 +241,24 @@ export const setBoNocDataAsArrays = (data: ApplicationDataType) => {
   }
 };
 
-export const removeFromApplicationData = async (req: Request, key: string, id: string): Promise<void> => {
-  const isRegistration = isRegistrationJourney(req);
-  const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+export const removeFromApplicationData = async (req: Request, key: string, id: string, appData?: ApplicationData): Promise<void> => {
+  if (!appData) {
+    appData = await getApplicationData(req);
+  }
   const index = getIndexInApplicationData(req, appData, key, id, true);
   if (index === -1) {
     throw createAndLogErrorRequest(req, `application.data removeFromApplicationData - unable to find object in session data for key ${key} and ID ${id}`);
   }
   appData[key].splice(index, 1);
   setExtraData(req.session, appData);
-  if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {
+  if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
     await updateOverseasEntity(req, req.session as Session, appData);
   }
 };
 
 // gets data from ApplicationData. errorIfNotFound boolean indicates whether an error should be thrown if no data found.
 export const getFromApplicationData = async (req: Request, key: string, id: string, errorIfNotFound: boolean = true): Promise<any> => {
-  const isRegistration = isRegistrationJourney(req);
-  const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
+  const appData = await getApplicationData(req);
   const index = getIndexInApplicationData(req, appData, key, id, errorIfNotFound);
 
   if (index === -1) {

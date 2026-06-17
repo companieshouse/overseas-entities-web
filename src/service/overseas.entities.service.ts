@@ -1,10 +1,9 @@
 import { Request } from "express";
 import { Session } from "@companieshouse/node-session-handler";
-import { createAndLogErrorRequest, logger } from "../utils/logger";
-import { fetchApplicationData } from "../utils/application.data";
-import { makeApiCallWithRetry } from "./retry.handler.service";
 import { ApplicationData } from "../model/application.model";
-import { isRegistrationJourney } from "../utils/url";
+import { getApplicationData } from "../utils/application.data";
+import { makeApiCallWithRetry } from "./retry.handler.service";
+import { createAndLogErrorRequest, logger } from "../utils/logger";
 import { Transactionkey, OverseasEntityKey } from "../model/data.types.model";
 
 export const createOverseasEntity = async (
@@ -16,7 +15,7 @@ export const createOverseasEntity = async (
 
   logger.infoRequest(req, `Calling 'postOverseasEntity' for transaction id '${transactionId}'`);
 
-  const appData: ApplicationData = data ?? await fetchApplicationData(req, isRegistrationJourney(req));
+  const appData: ApplicationData = data ?? await getApplicationData(req);
 
   const response = await makeApiCallWithRetry(
     "overseasEntity",
@@ -39,10 +38,9 @@ export const createOverseasEntity = async (
 
 export const updateOverseasEntity = async (req: Request, session: Session, data?: ApplicationData, forceUpdate: boolean = false) => {
 
-  const appData: ApplicationData = data ?? await fetchApplicationData(req, isRegistrationJourney(req));
+  const appData: ApplicationData = data ?? await getApplicationData(req);
   const transactionId = appData[Transactionkey] as string;
   const overseasEntityId = appData[OverseasEntityKey] as string;
-
   logger.infoRequest(req, `Calling 'putOverseasEntity' for transaction id '${transactionId}' and overseas entity id '${overseasEntityId}'`);
 
   const response = await makeApiCallWithRetry(

@@ -1,12 +1,12 @@
-import { Session } from "@companieshouse/node-session-handler";
 import { Request } from "express";
+import { Session } from "@companieshouse/node-session-handler";
 import { makeApiCallWithRetry } from "./retry.handler.service";
 import { createAndLogErrorRequest, logger } from "../utils/logger";
 import {
   TrustData,
   TrustLinkData,
+  CorporateTrusteeData,
   IndividualTrusteeData,
-  CorporateTrusteeData
 } from "@companieshouse/api-sdk-node/dist/services/overseas-entities/types";
 
 export const getTrustData = async (

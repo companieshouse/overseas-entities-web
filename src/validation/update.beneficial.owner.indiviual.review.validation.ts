@@ -1,14 +1,13 @@
 import { body } from "express-validator";
-
 import { ErrorMessages } from "./error.messages";
 import { VALID_CHARACTERS } from "./regex/regex.validation";
+import { nature_of_control_validations } from "./fields/nature-of-control.validation";
+import { second_nationality_validations } from "./fields/second-nationality.validation";
+import { ceased_date_validations, start_date_validations } from "./fields/date.validation";
 import {
   usual_residential_address_validations,
   usual_residential_service_address_validations
 } from "./fields/address.validation";
-import { nature_of_control_validations } from "./fields/nature-of-control.validation";
-import { second_nationality_validations } from "./fields/second-nationality.validation";
-import { ceased_date_validations, start_date_validations } from "./fields/date.validation";
 
 export const updateBeneficialOwnerAndReviewValidator = [
   body("first_name")
@@ -34,11 +33,8 @@ export const updateBeneficialOwnerAndReviewValidator = [
 
   ...usual_residential_address_validations(),
   ...usual_residential_service_address_validations(),
-
   ...start_date_validations,
-
   body("is_still_bo").not().isEmpty().withMessage(ErrorMessages.SELECT_IF_STILL_BENEFICIAL_OWNER),
-
   ...ceased_date_validations,
   ...nature_of_control_validations
 ];

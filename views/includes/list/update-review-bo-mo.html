@@ -1,8 +1,3 @@
-{% set reviewBeneficialOwnerIndividualUrl = OE_CONFIGS.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL %}
-{% set reviewBeneficialOwnerGovUrl = OE_CONFIGS.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL %}
-{% set reviewBeneficialOwnerOtherUrl = OE_CONFIGS.UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_URL %}
-{% set reviewManagingOfficerIndividualUrl = OE_CONFIGS.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_URL %}
-{% set reviewManagingOfficerCorporateUrl = OE_CONFIGS.UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_URL %}
 {% set indexQueryParam = OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM %}
 
 <div class="govuk-summary-card">
@@ -28,7 +23,7 @@
                             {% endif %}
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="{{ reviewBeneficialOwnerIndividualUrl }}{{ indexQueryParam }}{{ beneficial_owners_individual.indexOf(boi) }}"
+                            <a class="govuk-link" href="{{ reviewUrls.beneficialOwnerIndividual }}{{ indexQueryParam }}{{ beneficial_owners_individual.indexOf(boi) }}"
                             data-event-id="change-link-review-individual-bo">
                                 Change<span class="govuk-visually-hidden"> {{ boi.first_name }} {{ boi.last_name }} - Individual beneficial owner</span>
                             </a>
@@ -53,7 +48,7 @@
                             {% endif %}
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="{{ reviewBeneficialOwnerOtherUrl }}{{ indexQueryParam }}{{ beneficial_owners_corporate.indexOf(boo) }}"
+                            <a class="govuk-link" href="{{ reviewUrls.beneficialOwnerOther }}{{ indexQueryParam }}{{ beneficial_owners_corporate.indexOf(boo) }}"
                             data-event-id="change-link-review-other-bo">
                                 Change<span class="govuk-visually-hidden">{{ boo.name }} - Other legal entity</span>
                             </a>
@@ -78,7 +73,7 @@
                             {% endif %}
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="{{ reviewBeneficialOwnerGovUrl }}{{ indexQueryParam }}{{ beneficial_owners_government_or_public_authority.indexOf(bog) }}"
+                            <a class="govuk-link" href="{{ reviewUrls.beneficialOwnerGov }}{{ indexQueryParam }}{{ beneficial_owners_government_or_public_authority.indexOf(bog) }}"
                             data-event-id="change-link-review-gov-bo">
                                 Change<span class="govuk-visually-hidden">{{ bog.name }} - Government or public authority</span>
                             </a>
@@ -103,7 +98,7 @@
                             {% endif %}
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="{{ reviewManagingOfficerIndividualUrl }}{{ indexQueryParam }}{{ managing_officers_individual.indexOf(mo) }}"
+                            <a class="govuk-link" href="{{ reviewUrls.managingOfficerIndividual }}{{ indexQueryParam }}{{ managing_officers_individual.indexOf(mo) }}"
                             data-event-id="change-link-review-individual-mo">
                                 Change<span class="govuk-visually-hidden">{{ mo.first_name + " " + mo.last_name }} - Individual managing officer</span>
                             </a>
@@ -128,7 +123,7 @@
                             {% endif %}
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="{{ reviewManagingOfficerCorporateUrl }}{{ indexQueryParam }}{{ managing_officers_corporate.indexOf(moc) }}"
+                            <a class="govuk-link" href="{{ reviewUrls.managingOfficerCorporate }}{{ indexQueryParam }}{{ managing_officers_corporate.indexOf(moc) }}"
                             data-event-id="change-link-review-corporate-mo">
                                 Change<span class="govuk-visually-hidden">{{ moc.name }} - Corporate managing officer</span>
                             </a>

@@ -6,11 +6,10 @@ import { describe, expect, test, beforeEach, jest } from '@jest/globals';
 import { Request, Response } from 'express';
 
 import { logger } from "../../../../src/utils/logger";
-import { OVERSEAS_ENTITY_QUERY_URL } from '../../../../src/config';
 import { ANY_MESSAGE_ERROR } from '../../../__mocks__/text.mock';
-
-import { checkUpdateDueDiligenceDetailsEntered, NavigationErrorMessage } from '../../../../src/middleware/navigation/check.condition';
+import { OVERSEAS_ENTITY_QUERY_URL } from '../../../../src/config';
 import { hasDueDiligenceDetails } from '../../../../src/middleware/navigation/update/has.due.diligence.details.middleware';
+import { checkUpdateDueDiligenceDetailsEntered, NavigationErrorMessage } from '../../../../src/middleware/navigation/check.condition';
 
 const mockCheckUpdateDueDiligenceDetailsEntered = checkUpdateDueDiligenceDetailsEntered as unknown as jest.Mock;
 const mockLoggerInfoRequest = logger.infoRequest as jest.Mock;
@@ -30,7 +29,7 @@ describe("has.due.diligence.detials navigation middleware tests", () => {
     await hasDueDiligenceDetails(req, res, next);
 
     expect(next).not.toHaveBeenCalledTimes(1);
-    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
+    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(2);
     expect(mockLoggerInfoRequest).toHaveBeenCalledWith(req, NavigationErrorMessage);
     expect(res.redirect).toHaveBeenCalledTimes(1);
     expect(res.redirect).toHaveBeenCalledWith(OVERSEAS_ENTITY_QUERY_URL);

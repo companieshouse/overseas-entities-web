@@ -4,8 +4,9 @@ import { Session } from "@companieshouse/node-session-handler";
 import ApiClient from "@companieshouse/api-sdk-node/dist/client";
 import { isActiveFeature } from "../utils/feature.flag";
 import { ApplicationData } from "../model";
-import { createAndLogErrorRequest, logger } from "../utils/logger";
 import { createOAuthApiClient } from "./api.service";
+import { getUrlWithParamsToPath } from "../utils/url";
+import { createAndLogErrorRequest, logger } from "../utils/logger";
 
 import { CreatePaymentRequest, Payment } from "@companieshouse/api-sdk-node/dist/services/payment";
 
@@ -18,14 +19,8 @@ import {
 import {
   setExtraData,
   setApplicationData,
-  fetchApplicationData,
+  getApplicationData,
 } from "../utils/application.data";
-
-import {
-  isRegistrationJourney,
-  getUrlWithParamsToPath,
-  getUrlWithTransactionIdAndSubmissionId,
-} from "../utils/url";
 
 import {
   API_URL,
@@ -36,7 +31,6 @@ import {
   OVERSEAS_ENTITY,
   CONFIRMATION_URL,
   PAYMENT_REQUIRED_HEADER,
-  ACTIVE_SUBMISSION_BASE_PATH,
   CONFIRMATION_WITH_PARAMS_URL,
   REGISTER_AN_OVERSEAS_ENTITY_URL,
   FEATURE_FLAG_ENABLE_REDIS_REMOVAL,
@@ -54,9 +48,8 @@ export const startPaymentsSession = async (
   baseURL?: string
 ): Promise<string> => {
 
-  const isRegistration = isRegistrationJourney(req);
   const appData: ApplicationData = {
-    ...(await fetchApplicationData(req, isRegistration, true)),
+    ...(await getApplicationData(req, true)),
     [Transactionkey]: transactionId,
     [OverseasEntityKey]: overseasEntityId
   };
@@ -68,7 +61,7 @@ export const startPaymentsSession = async (
   if (!paymentUrl) {
     // Only if transaction does not have a fee
     let confirmationPageUrl = CONFIRMATION_URL;
-    if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {
+    if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       confirmationPageUrl = getUrlWithParamsToPath(CONFIRMATION_WITH_PARAMS_URL, req);
     }
     return confirmationPageUrl;
@@ -77,18 +70,19 @@ export const startPaymentsSession = async (
   const createPaymentRequest: CreatePaymentRequest = setPaymentRequest(req, transactionId, overseasEntityId, baseURL);
 
   // Save app data including the state used as `nonce` against CSRF.
-  if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {
+  if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
     await setApplicationData(req, createPaymentRequest, PaymentKey);
   } else {
     await setApplicationData(session, createPaymentRequest, PaymentKey);
   }
+
   // Create Payment Api Client by using the `paymentUrl` as baseURL
   const apiClient: ApiClient = createOAuthApiClient(session, paymentUrl);
 
   // Calls the platform to create a payment session
   const paymentResult = await apiClient.payment.createPaymentWithFullUrl(createPaymentRequest);
 
-  // Verify the state of the payment, success or failure (eg. cost not found, connection issues ...)
+  // Verify the state of the payment, success or failure (e.g. cost not found, connection issues, etc..)
   if (paymentResult.isFailure()) {
     const errorResponse = paymentResult.value;
     const msgErrorStatusCode = `http response status code=${ errorResponse?.httpStatusCode || "No Status Code found in response" }`;
@@ -108,27 +102,17 @@ export const startPaymentsSession = async (
   }
 };
 
-const setPaymentRequest = (req: Request, transactionId: string, overseasEntityId: string, baseURL?: string): CreatePaymentRequest => {
+const setPaymentRequest = (req: Request, transactionId: string, overseasEntityId: string, baseUrl?: string): CreatePaymentRequest => {
 
   const paymentResourceUri = `${API_URL}/transactions/${transactionId}/${PAYMENT}`;
-
-  if (!baseURL) {
-    baseURL = `${CHS_URL}${REGISTER_AN_OVERSEAS_ENTITY_URL}`;
-  }
-
   const reference = `${REFERENCE}_${transactionId}`;
 
-  // Once payment has been taken, the platform redirects the user back to the application,
-  // using the application supplied `redirectUri`.
-  let redirectUri = `${baseURL}${TRANSACTION}/${transactionId}/${OVERSEAS_ENTITY}/${overseasEntityId}/${PAYMENT}`;
-
-  // TODO Remove this and the check for being on the registration journey when ids are in the Update journey URLs
-  const isRegistration = isRegistrationJourney(req);
-
-  if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {
-    const activeSubmissionBasePathWithIds = getUrlWithTransactionIdAndSubmissionId(ACTIVE_SUBMISSION_BASE_PATH, transactionId, overseasEntityId);
-    redirectUri = `${baseURL}${activeSubmissionBasePathWithIds}${PAYMENT}`;
+  if (!baseUrl) {
+    baseUrl = `${CHS_URL}${REGISTER_AN_OVERSEAS_ENTITY_URL}`;
   }
+
+  // Once payment has been taken, the platform redirects the user back to the application via the redirectUri endpoint
+  const redirectUri = `${baseUrl}${TRANSACTION}/${transactionId}/${OVERSEAS_ENTITY}/${overseasEntityId}/${PAYMENT}`;
 
   return {
     resource: paymentResourceUri,

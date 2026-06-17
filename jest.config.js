@@ -26,7 +26,7 @@ module.exports = {
     }],
   },
   moduleNameMapper: {
-    "uuid": require.resolve('uuid'),
+    'uuid': require.resolve('uuid'),
     '^axios$': require.resolve('axios'),
     '^@opentelemetry/([^/]+)/(.+)$': '<rootDir>/node_modules/@opentelemetry/$1/build/src/index-$2',
   },

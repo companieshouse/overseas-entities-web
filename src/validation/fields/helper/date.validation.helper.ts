@@ -69,4 +69,3 @@ export type dateContext = {
 };
 
 export type dateContextWithCondition = dateContext & {condition: {elementName: string, expectedValue: string}};
-

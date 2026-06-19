@@ -144,7 +144,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_WITH_PARAMS_URL]: {
     currentPage: config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE,
-    previousPage: () => config.OVERSEAS_ENTITY_PRESENTER_WITH_PARAMS_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.OVERSEAS_ENTITY_PRESENTER_WITH_PARAMS_URL, req),
     nextPage: [config.WHO_IS_MAKING_UPDATE_WITH_PARAMS_URL, config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE]
   },
   [config.UPDATE_REVIEW_STATEMENT_URL]: {

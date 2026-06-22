@@ -87,9 +87,9 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         return await renderGetPageWithError(req, res, entityNumber);
       }
       await addOeToApplicationData(req, res, appData, entityNumber, companyProfile, isRemove);
-      saveToCookie(req, res, entityNumber);
     }
 
+    saveToCookie(req, res, entityNumber);
     const nextPageUrl = getNextPageUrl(req, appData);
 
     if (isRemove) {

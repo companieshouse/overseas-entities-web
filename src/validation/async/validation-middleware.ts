@@ -155,7 +155,7 @@ export const checkNoChangeReviewStatement = async (req) => {
 
 export const checkNoChangeStatementSubmission = async (req) => {
   const allowedUrls = [
-    [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL]
+    [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE]
   ];
   const allowed: boolean = isAllowedUrls(allowedUrls, req);
   const errors: ValidationError[] = [];

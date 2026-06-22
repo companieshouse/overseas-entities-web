@@ -36,9 +36,13 @@ import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.a
 import { getApplicationData, setExtraData } from "../../../src/utils/application.data";
 import { mapCompanyProfileToOverseasEntity } from "../../../src/utils/update/company.profile.mapper.to.overseas.entity";
 import { getDataFromEntityCookie, saveDataToCookie } from "../../../src/utils/update/data.cookie";
-
-import { TRANSACTION_ID, OVERSEAS_ENTITY_ID } from "../../__mocks__/session.mock";
 import { createOverseasEntity, updateOverseasEntity } from "../../../src/service/overseas.entities.service";
+
+import {
+  TRANSACTION_ID,
+  OVERSEAS_ENTITY_ID,
+  APPLICATION_DATA_MOCK,
+} from "../../__mocks__/session.mock";
 
 import {
   PAGE_TITLE_ERROR,
@@ -117,6 +121,7 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
       expect(resp.text).toContain(`${config.UPDATE_INTERRUPT_CARD_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain('href="test"');
+      expect(mockGetDataFromEntityCookie).toHaveBeenCalledTimes(1);
     });
 
     test('catch error when rendering the page', async () => {
@@ -215,6 +220,22 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
       expect(mockRetrieveBoAndMoData).toHaveBeenCalledTimes(1);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
       expect(resp.header.location).toEqual(config.UPDATE_AN_OVERSEAS_ENTITY_URL + config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE);
+    });
+
+    test('redirects to confirm page for valid oe number with lowercase oe in update journey when REDIS_flag is set to ON', async () => {
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
+      mockIsActiveFeature.mockReturnValue(true);
+      mockGetCompanyProfile.mockReturnValueOnce(companyProfileQueryMock);
+      mockMapCompanyProfileToOverseasEntity.mockReturnValueOnce({});
+
+      const resp = await request(app)
+        .post(config.OVERSEAS_ENTITY_QUERY_WITH_PARAMS_URL)
+        .send({ entity_number: testOENumberLowercase });
+      expect(resp.status).toEqual(302);
+      expect(mockRetrieveBoAndMoData).toHaveBeenCalledTimes(1);
+      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+      expect(mockSaveDataToCookie).toHaveBeenCalledTimes(1);
+      expect(resp.header.location).toEqual(`${config.UPDATE_AN_OVERSEAS_ENTITY_URL}transaction/${TRANSACTION_ID}/submission/${OVERSEAS_ENTITY_ID}/${config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE}`);
     });
 
     test('redirects to confirm page for valid oe number in remove journey', async () => {

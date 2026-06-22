@@ -4,15 +4,18 @@ import { isActiveFeature } from "../utils/feature.flag";
 import { ApplicationData } from "../model";
 import { fetchApplicationData } from "../utils/application.data";
 import { logger, createAndLogErrorRequest } from "../utils/logger";
+import { getUrlWithTransactionIdAndSubmissionId } from "../utils/url";
 import { OverseasEntityKey, PaymentKey, Transactionkey } from "../model/data.types.model";
-import { getUrlWithTransactionIdAndSubmissionId, isRemoveJourney } from "../utils/url";
+
 import {
   PAYMENT_PAID,
   CONFIRMATION_URL,
   CONFIRMATION_PAGE,
   PAYMENT_FAILED_URL,
   PAYMENT_FAILED_PAGE,
+  ROUTE_PARAM_SUBMISSION_ID,
   ACTIVE_SUBMISSION_BASE_PATH,
+  ROUTE_PARAM_OVERSEAS_ENTITY_ID,
   REGISTER_AN_OVERSEAS_ENTITY_URL,
   FEATURE_FLAG_ENABLE_REDIS_REMOVAL,
 } from "../config";
@@ -24,8 +27,8 @@ export const get = async (req: Request, res: Response, next: NextFunction): Prom
   try {
 
     const { status, state } = req.query;
-    const isRemove: boolean = await isRemoveJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, isRemove, true);
+    req.params[ROUTE_PARAM_SUBMISSION_ID] = req.params[ROUTE_PARAM_SUBMISSION_ID] ?? req.params[ROUTE_PARAM_OVERSEAS_ENTITY_ID];
+    const appData: ApplicationData = await fetchApplicationData(req, true, true);
     const savedPayment = appData[PaymentKey] || {} as CreatePaymentRequest;
 
     logger.infoRequest(req, `Returned state: ${ state }, saved state: ${savedPayment.state}, with status: ${ status }`);

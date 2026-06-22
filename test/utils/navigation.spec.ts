@@ -563,8 +563,9 @@ describe("NAVIGATION utils", () => {
     expect(navigation).toEqual(config.OVERSEAS_ENTITY_PRESENTER_URL);
   });
 
-  test(`NAVIGATION returns ${config.OVERSEAS_ENTITY_PRESENTER_WITH_PARAMS_URL} when calling previousPage on ${config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_WITH_PARAMS_URL} object`, () => {
-    const navigation = NAVIGATION[config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_WITH_PARAMS_URL].previousPage();
+  test(`NAVIGATION returns ${config.OVERSEAS_ENTITY_PRESENTER_WITH_PARAMS_URL} when calling previousPage on ${config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_WITH_PARAMS_URL} object`, async () => {
+    mockGetUrlWithParamsToPath.mockReturnValueOnce(config.OVERSEAS_ENTITY_PRESENTER_WITH_PARAMS_URL);
+    const navigation = await NAVIGATION[config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_WITH_PARAMS_URL].previousPage();
     expect(navigation).toEqual(config.OVERSEAS_ENTITY_PRESENTER_WITH_PARAMS_URL);
   });
 

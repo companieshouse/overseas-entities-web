@@ -445,6 +445,13 @@ describe("NAVIGATION utils", () => {
     expect(navigation).toEqual(config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
   });
 
+  test(`NAVIGATION returns ${config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_WITH_PARAMS_URL} when calling previousPage on ${config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_WITH_PARAMS_URL} object`, async () => {
+    const mockRequest = { query: {} } as Request;
+    mockGetUrlWithParamsToPath.mockReturnValueOnce(config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_WITH_PARAMS_URL);
+    const navigation = await NAVIGATION[config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_WITH_PARAMS_URL].previousPage(undefined, mockRequest);
+    expect(navigation).toEqual(config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_WITH_PARAMS_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
+  });
+
   test(`NAVIGATION returns ${config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_URL} when calling previousPage on ${config.RELEVANT_PERIOD_SUBMIT_BY_PAPER_URL} object`, async () => {
     const mockRequest = { query: {} } as Request;
     const navigation = await NAVIGATION[config.RELEVANT_PERIOD_SUBMIT_BY_PAPER_URL].previousPage(undefined, mockRequest);
@@ -455,6 +462,13 @@ describe("NAVIGATION utils", () => {
     const mockRequest = { query: {} } as Request;
     const navigation = await NAVIGATION[config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_URL].previousPage(undefined, mockRequest);
     expect(navigation).toEqual(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
+  });
+
+  test(`NAVIGATION returns ${config.RELEVANT_PERIOD_OWNED_LAND_FILTER_WITH_PARAMS_URL + config.RELEVANT_PERIOD_QUERY_PARAM} when calling previousPage on ${config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_WITH_PARAMS_URL} object`, async () => {
+    const mockRequest = { query: {} } as Request;
+    mockGetUrlWithParamsToPath.mockReturnValueOnce(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_WITH_PARAMS_URL);
+    const navigation = await NAVIGATION[config.RELEVANT_PERIOD_REQUIRED_INFORMATION_CONFIRM_WITH_PARAMS_URL].previousPage(undefined, mockRequest);
+    expect(navigation).toEqual(config.RELEVANT_PERIOD_OWNED_LAND_FILTER_WITH_PARAMS_URL + config.RELEVANT_PERIOD_QUERY_PARAM);
   });
 
   test(`NAVIGATION returns ${config.RELEVANT_PERIOD_COMBINED_STATEMENTS_PAGE_URL} when calling previousPage on ${config.RELEVANT_PERIOD_REVIEW_STATEMENTS_URL} object`, async () => {

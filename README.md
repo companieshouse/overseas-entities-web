@@ -31,7 +31,7 @@ Simplified view of the architecture and does not show all services, components a
 
 ## Running locally on Docker env
 
-The only local development mode available, that includes account, redis and other important service/dependency is only possible through our development orchestrator service in [Docker CHS Development](https://github.com/companieshouse/docker-chs-development).
+The only local development mode available, that includes account, Redis and other important service/dependency is only possible through our development orchestrator service in [Docker CHS Development](https://github.com/companieshouse/docker-chs-development).
 
 1. Clone [Docker CHS Development](https://github.com/companieshouse/docker-chs-development) and follow the steps in the README.
 2. Ensure you are logged into AWS SSO (`aws sso login`) and authenticate to both ECR registries:

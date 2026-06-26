@@ -6,6 +6,7 @@ import { Trust } from '../model/trust.model';
 import { getRedirectUrl } from './url';
 import { generateTrustId } from './trust/details.mapper';
 import { ApplicationData } from 'model';
+import { hasTrustsToReview } from "./update/review_trusts";
 import { getApplicationData } from './application.data';
 import { checkRelevantPeriod } from './relevant.period';
 import { isAddTrustToBeValidated } from '../validation/add.trust.validation';
@@ -24,6 +25,7 @@ type TrustInvolvedPageProperties = {
   templateName: string;
   isUpdate: boolean,
   backLinkUrl?: string,
+  hasTrustsToReview?: boolean;
   pageParams: {
     title: string,
     subtitle: string
@@ -38,6 +40,7 @@ type TrustInvolvedPageProperties = {
   url: string,
 };
 
+// note: isUpdate covers both Update and Remove journeys, so when on Remove journey isUpdate will be true
 const getPageProperties = async (
   req: Request,
   isUpdate: boolean,
@@ -47,12 +50,12 @@ const getPageProperties = async (
 
   const appData: ApplicationData = await getApplicationData(req);
 
-  // note: isUpdate covers both Update and Remove journeys, so when on Remove journey isUpdate will be true.
   return {
     ...appData,
     errors,
     isUpdate,
     formData,
+    hasTrustsToReview: isUpdate && hasTrustsToReview(appData),
     url: getUrl(isUpdate),
     templateName: getPageTemplate(isUpdate),
     backLinkUrl: getBackLinkUrl(isUpdate, req, appData),

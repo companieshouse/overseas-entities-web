@@ -128,18 +128,11 @@ export const putTrustInChangeScenario = (appData: ApplicationData, trustId: stri
   const trustForChangeScenario = appData.trusts?.splice(appData.trusts.findIndex(trust => trust.trust_id === trustId), 1)[0];
 
   if (!isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
-
     appData.update?.review_trusts?.push(trustForChangeScenario as Trust);
     const trustInChangeScenario = (appData.update?.review_trusts ?? [])[0];
 
     if (trustInChangeScenario) {
-      trustInChangeScenario.review_status = {
-        in_review: true,
-        reviewed_former_bos: (trusteeType ? trusteeType !== TrusteeType.HISTORICAL : true),
-        reviewed_individuals: (trusteeType ? trusteeType !== TrusteeType.INDIVIDUAL : true),
-        reviewed_legal_entities: (trusteeType ? trusteeType !== TrusteeType.LEGAL_ENTITY : true),
-        reviewed_trust_details: (trusteeType !== undefined)
-      };
+      trustInChangeScenario.review_status = resetTrustInChangeReviewStatus(trusteeType);
     }
 
   } else {
@@ -152,13 +145,7 @@ export const putTrustInChangeScenario = (appData: ApplicationData, trustId: stri
     }
 
     if (trustForChangeScenario) {
-      trustForChangeScenario.review_status = {
-        in_review: true,
-        reviewed_former_bos: false,
-        reviewed_individuals: false,
-        reviewed_legal_entities: false,
-        reviewed_trust_details: false,
-      };
+      trustForChangeScenario.review_status = resetTrustInChangeReviewStatus(trusteeType);
     }
     appData.update?.review_trusts?.push(trustForChangeScenario as Trust);
   }
@@ -205,4 +192,14 @@ const resetTrustReviewStatus = (trust: Trust) => {
       reviewed_legal_entities: false
     };
   }
+};
+
+const resetTrustInChangeReviewStatus = (trusteeType) => {
+  return {
+    in_review: true,
+    reviewed_former_bos: (trusteeType ? trusteeType !== TrusteeType.HISTORICAL : true),
+    reviewed_individuals: (trusteeType ? trusteeType !== TrusteeType.INDIVIDUAL : true),
+    reviewed_legal_entities: (trusteeType ? trusteeType !== TrusteeType.LEGAL_ENTITY : true),
+    reviewed_trust_details: (trusteeType !== undefined)
+  };
 };

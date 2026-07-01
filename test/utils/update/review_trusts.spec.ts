@@ -591,9 +591,9 @@ describe('putTrustInChangeScenario', () => {
     expect(appData[UpdateKey].review_trusts[0].trust_id).toEqual("1");
     expect(appData[UpdateKey].review_trusts[0].review_status).toEqual({
       in_review: true,
-      reviewed_former_bos: false,
-      reviewed_individuals: false,
-      reviewed_legal_entities: false,
+      reviewed_former_bos: true,
+      reviewed_individuals: true,
+      reviewed_legal_entities: true,
       reviewed_trust_details: false
     });
   });

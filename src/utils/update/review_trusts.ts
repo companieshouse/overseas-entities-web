@@ -1,6 +1,8 @@
 import { Trust } from '../../model/trust.model';
-import { ApplicationData } from '../../model';
 import { TrusteeType } from '../../model/trustee.type.model';
+import { ApplicationData } from '../../model';
+import { isActiveFeature } from "../feature.flag";
+import { FEATURE_FLAG_ENABLE_REDIS_REMOVAL } from "../../config";
 
 export const hasTrustsToReview = (appData: ApplicationData) =>
   (appData.update?.review_trusts ?? []).length > 0;
@@ -122,20 +124,43 @@ export const moveTrustOutOfReview = (appData: ApplicationData) => {
 };
 
 export const putTrustInChangeScenario = (appData: ApplicationData, trustId: string, trusteeType?: string) => {
+
   const trustForChangeScenario = appData.trusts?.splice(appData.trusts.findIndex(trust => trust.trust_id === trustId), 1)[0];
 
-  appData.update?.review_trusts?.push(trustForChangeScenario as Trust);
+  if (!isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
 
-  const trustInChangeScenario = (appData.update?.review_trusts ?? [])[0];
+    appData.update?.review_trusts?.push(trustForChangeScenario as Trust);
+    const trustInChangeScenario = (appData.update?.review_trusts ?? [])[0];
 
-  if (trustInChangeScenario) {
-    trustInChangeScenario.review_status = {
-      in_review: true,
-      reviewed_former_bos: (trusteeType ? trusteeType !== TrusteeType.HISTORICAL : true),
-      reviewed_individuals: (trusteeType ? trusteeType !== TrusteeType.INDIVIDUAL : true),
-      reviewed_legal_entities: (trusteeType ? trusteeType !== TrusteeType.LEGAL_ENTITY : true),
-      reviewed_trust_details: (trusteeType !== undefined)
-    };
+    if (trustInChangeScenario) {
+      trustInChangeScenario.review_status = {
+        in_review: true,
+        reviewed_former_bos: (trusteeType ? trusteeType !== TrusteeType.HISTORICAL : true),
+        reviewed_individuals: (trusteeType ? trusteeType !== TrusteeType.INDIVIDUAL : true),
+        reviewed_legal_entities: (trusteeType ? trusteeType !== TrusteeType.LEGAL_ENTITY : true),
+        reviewed_trust_details: (trusteeType !== undefined)
+      };
+    }
+
+  } else {
+
+    if (!appData.update?.review_trusts) {
+      appData.update = {
+        ...appData.update,
+        review_trusts: [],
+      };
+    }
+
+    if (trustForChangeScenario) {
+      trustForChangeScenario.review_status = {
+        in_review: true,
+        reviewed_former_bos: false,
+        reviewed_individuals: false,
+        reviewed_legal_entities: false,
+        reviewed_trust_details: false,
+      };
+    }
+    appData.update?.review_trusts?.push(trustForChangeScenario as Trust);
   }
 };
 

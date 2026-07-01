@@ -1,48 +1,60 @@
-import { ApplicationData } from '../../../src/model';
-import { Trust, TrustCorporate, TrustHistoricalBeneficialOwner, TrustIndividual } from '../../../src/model/trust.model';
-import { TrusteeType } from '../../../src/model/trustee.type.model';
+jest.mock("../../../src/utils/feature.flag");
+
+import { jest } from "@jest/globals";
 import { UpdateKey } from '../../../src/model/update.type.model';
+import { TrusteeType } from '../../../src/model/trustee.type.model';
+import { ApplicationData } from '../../../src/model';
+import { isActiveFeature } from "../../../src/utils/feature.flag";
+
 import {
-  hasTrustsToReview,
-  getTrustInReview,
-  hasTrusteesToReview,
-  getTrusteeIndex,
+  Trust,
+  TrustCorporate,
+  TrustIndividual,
+  TrustHistoricalBeneficialOwner,
+} from '../../../src/model/trust.model';
+
+import {
   getTrustee,
+  getTrusteeIndex,
+  getTrustInReview,
+  hasTrustsToReview,
+  getReviewTrustById,
+  hasTrusteesToReview,
+  moveTrustOutOfReview,
+  putNextTrustInReview,
   setTrusteesAsReviewed,
   updateTrustInReviewList,
-  getReviewTrustById,
-  putNextTrustInReview,
-  setTrustDetailsAsReviewed,
-  moveTrustOutOfReview,
   putTrustInChangeScenario,
+  setTrustDetailsAsReviewed,
   moveReviewableTrustsIntoReview,
   resetReviewStatusOnAllTrustsToBeReviewed,
 } from '../../../src/utils/update/review_trusts';
 
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
+
 describe('Manage trusts - review trusts utils tests', () => {
+
   describe('hasTrustsToReview', () => {
+
     test.each([
       [ 'no update in model', undefined ],
       [ 'no review trusts', { review_trusts: undefined } ],
       [ 'review trusts is empty', { review_trusts: [] } ],
     ])('will return false when there is %s', (_, update) => {
       const appData = { update };
-
       const result = hasTrustsToReview(appData);
-
       expect(result).toBe(false);
     });
 
     test('will return true when there are some trusts to review', () => {
       const appData = { update: { review_trusts: [{} as Trust] } };
-
       const result = hasTrustsToReview(appData);
-
       expect(result).toBe(true);
     });
   });
 
   describe('getTrustInReview', () => {
+
     test.each([
       [ 'no update in model', undefined ],
       [ 'no review trusts', { review_trusts: undefined } ],
@@ -50,32 +62,27 @@ describe('Manage trusts - review trusts utils tests', () => {
       [ 'review trusts has no trust in review', { review_trusts: [{ review_status: { in_review: false } } as Trust] }],
     ])('will return undefined when there is %s', (_, update) => {
       const appData = { update };
-
       const result = getTrustInReview(appData);
-
       expect(result).toBe(undefined);
     });
 
     test('will return true when there is a trust in review', () => {
       const trust = { review_status: { in_review: true } } as Trust;
       const appData = { update: { review_trusts: [trust] } };
-
       const result = getTrustInReview(appData);
-
       expect(result).toBe(trust);
     });
   });
 
   describe('putNextTrustInReview', () => {
+
     test.each([
       [ 'there is no update in model', undefined ],
       [ 'there is no review trusts in model', { review_trusts: undefined } ],
       [ 'review trusts is empty', { review_trusts: [] } ],
     ])('will return undefined when %s', (_, update) => {
       const appData = { update };
-
       const result = putNextTrustInReview(appData);
-
       expect(result).toBe(undefined);
     });
 
@@ -93,9 +100,7 @@ describe('Manage trusts - review trusts utils tests', () => {
       };
 
       const appData = { update: { review_trusts: [trust] } };
-
       const result = putNextTrustInReview(appData);
-
       expect(result).toEqual(expectedTrust);
     });
   });
@@ -108,9 +113,7 @@ describe('Manage trusts - review trusts utils tests', () => {
       [ 'there is no review_status in trust', { review_trusts: [{ trust_name: 'Trust 1' }] } ],
     ])('will return false when %s', (_, update) => {
       const appData = { update } as ApplicationData;
-
       const result = setTrustDetailsAsReviewed(appData);
-
       expect(result).toBe(false);
     });
 
@@ -123,7 +126,6 @@ describe('Manage trusts - review trusts utils tests', () => {
         reviewed_legal_entities: false,
       } } as Trust;
       const appData = { update: { review_trusts: [trust] } };
-
       const result = setTrustDetailsAsReviewed(appData);
 
       expect(result).toBe(true);
@@ -138,15 +140,14 @@ describe('Manage trusts - review trusts utils tests', () => {
   });
 
   describe('hasTrusteesToReview', () => {
+
     test('when checking former bos, and former bos are reviewed, with no former bos, returns false', () => {
       const trusteeType = TrusteeType.HISTORICAL;
       const trust = {
         review_status: { reviewed_former_bos: true },
         HISTORICAL_BO: [] as TrustHistoricalBeneficialOwner[],
       } as Trust;
-
       const result = hasTrusteesToReview(trust, trusteeType);
-
       expect(result).toBe(false);
     });
 
@@ -156,9 +157,7 @@ describe('Manage trusts - review trusts utils tests', () => {
         review_status: { reviewed_former_bos: true },
         HISTORICAL_BO: [{}],
       } as Trust;
-
       const result = hasTrusteesToReview(trust, trusteeType);
-
       expect(result).toBe(false);
     });
 
@@ -168,9 +167,7 @@ describe('Manage trusts - review trusts utils tests', () => {
         review_status: { reviewed_former_bos: false },
         HISTORICAL_BO: [] as TrustHistoricalBeneficialOwner[],
       } as Trust;
-
       const result = hasTrusteesToReview(trust, trusteeType);
-
       expect(result).toBe(false);
     });
 
@@ -180,9 +177,7 @@ describe('Manage trusts - review trusts utils tests', () => {
         review_status: { reviewed_former_bos: false },
         HISTORICAL_BO: [{}],
       } as Trust;
-
       const result = hasTrusteesToReview(trust, trusteeType);
-
       expect(result).toBe(true);
     });
 
@@ -192,9 +187,7 @@ describe('Manage trusts - review trusts utils tests', () => {
         review_status: { reviewed_individuals: true },
         INDIVIDUALS: [] as TrustIndividual[],
       } as Trust;
-
       const result = hasTrusteesToReview(trust, trusteeType);
-
       expect(result).toBe(false);
     });
 
@@ -204,9 +197,7 @@ describe('Manage trusts - review trusts utils tests', () => {
         review_status: { reviewed_individuals: true },
         INDIVIDUALS: [{}],
       } as Trust;
-
       const result = hasTrusteesToReview(trust, trusteeType);
-
       expect(result).toBe(false);
     });
 
@@ -216,9 +207,7 @@ describe('Manage trusts - review trusts utils tests', () => {
         review_status: { reviewed_individuals: false },
         INDIVIDUALS: [] as TrustIndividual[],
       } as Trust;
-
       const result = hasTrusteesToReview(trust, trusteeType);
-
       expect(result).toBe(false);
     });
 
@@ -228,9 +217,7 @@ describe('Manage trusts - review trusts utils tests', () => {
         review_status: { reviewed_individuals: false },
         INDIVIDUALS: [{}],
       } as Trust;
-
       const result = hasTrusteesToReview(trust, trusteeType);
-
       expect(result).toBe(true);
     });
 
@@ -240,9 +227,7 @@ describe('Manage trusts - review trusts utils tests', () => {
         review_status: { reviewed_legal_entities: true },
         CORPORATES: [] as TrustCorporate[],
       } as Trust;
-
       const result = hasTrusteesToReview(trust, trusteeType);
-
       expect(result).toBe(false);
     });
 
@@ -252,9 +237,7 @@ describe('Manage trusts - review trusts utils tests', () => {
         review_status: { reviewed_legal_entities: true },
         CORPORATES: [{}],
       } as Trust;
-
       const result = hasTrusteesToReview(trust, trusteeType);
-
       expect(result).toBe(false);
     });
 
@@ -264,9 +247,7 @@ describe('Manage trusts - review trusts utils tests', () => {
         review_status: { reviewed_legal_entities: false },
         CORPORATES: [] as TrustCorporate[],
       };
-
       const result = hasTrusteesToReview(trust as Trust, trusteeType);
-
       expect(result).toBe(false);
     });
 
@@ -276,9 +257,7 @@ describe('Manage trusts - review trusts utils tests', () => {
         review_status: { reviewed_legal_entities: false },
         CORPORATES: [{}],
       } as any;
-
       const result = hasTrusteesToReview(trust, trusteeType);
-
       expect(result).toBe(true);
     });
 
@@ -288,12 +267,12 @@ describe('Manage trusts - review trusts utils tests', () => {
       ['legal entities', { review_status: { reviewed_legal_entities: false }, CORPORATES: [{}] }],
     ])('when trustee type is invalid, with %s to review, returns false', (_, trust) => {
       const result = hasTrusteesToReview(trust as Trust, 'carrot' as any);
-
       expect(result).toBe(false);
     });
   });
 
   describe('getTrusteeIndex', () => {
+
     test.each([
       ['former bo', TrusteeType.HISTORICAL],
       ['individual', TrusteeType.INDIVIDUAL],
@@ -320,7 +299,6 @@ describe('Manage trusts - review trusts utils tests', () => {
       ['legal entities', { CORPORATES: [{ id: 'onions' }] }, TrusteeType.LEGAL_ENTITY],
     ])('when there are %s, searching for an id that does not exist returns -1', (_, trust, trusteeType) => {
       const result = getTrusteeIndex(trust as Trust, 'parsnip', trusteeType);
-
       expect(result).toBe(-1);
     });
 
@@ -330,19 +308,18 @@ describe('Manage trusts - review trusts utils tests', () => {
       ['legal entities', { CORPORATES: [{ id: 'onions' }, { id: 'bananas' }, { id: 'tomatoes' }] }, 2, TrusteeType.LEGAL_ENTITY],
     ])('when there are %s, searching for an id that does exist returns the index', (_, trust, expectedIndex, trusteeType) => {
       const result = getTrusteeIndex(trust as Trust, 'tomatoes', trusteeType);
-
       expect(result).toBe(expectedIndex);
     });
   });
 
   describe('getTrustee', () => {
+
     test.each([
       [' former bo', TrusteeType.HISTORICAL],
       ['n individual', TrusteeType.INDIVIDUAL],
       [' legal entity', TrusteeType.LEGAL_ENTITY],
     ])('when trust is undefined, getting a%s, returns undefined', (_, trusteeType) => {
       const result = getTrustee(undefined, '', trusteeType);
-
       expect(result).toBe(undefined);
     });
 
@@ -352,7 +329,6 @@ describe('Manage trusts - review trusts utils tests', () => {
       ['legal entities', { CORPORATES: [] as TrustCorporate[] }, TrusteeType.LEGAL_ENTITY],
     ])('when there are no %s, searching for one returns undefined', (_, trust, trusteeType) => {
       const result = getTrustee(trust as Trust, '', trusteeType);
-
       expect(result).toBe(undefined);
     });
 
@@ -362,39 +338,33 @@ describe('Manage trusts - review trusts utils tests', () => {
       ['legal entities', { CORPORATES: [{ id: 'onions' }] }, TrusteeType.LEGAL_ENTITY],
     ])('when there are %s, searching for an id that does not exist returns undefined', (_, trust, trusteeType) => {
       const result = getTrustee(trust as Trust, 'parsnip', trusteeType);
-
       expect(result).toBe(undefined);
     });
 
     test('when there are former bo trustees, searching for an id of one that exists, returns the trustee', () => {
       const expectedTrustee = { id: 'expected-former-bo' };
       const trust = { HISTORICAL_BO: [{ id: 'unexpected-former-bo' }, expectedTrustee] };
-
       const result = getTrustee(trust as Trust, 'expected-former-bo', TrusteeType.HISTORICAL);
-
       expect(result).toBe(expectedTrustee);
     });
 
     test('when there are individual trustees, searching for an id of one that exists, returns the trustee', () => {
       const expectedTrustee = { id: 'expected-individual' };
       const trust = { INDIVIDUALS: [{ id: 'unexpected-individual' }, expectedTrustee, { id: 'unexpected-individual-1' }] };
-
       const result = getTrustee(trust as Trust, 'expected-individual', TrusteeType.INDIVIDUAL);
-
       expect(result).toBe(expectedTrustee);
     });
 
     test('when there are legal entity trustees, searching for an id of one that exists, returns the trustee', () => {
       const expectedTrustee = { id: 'expected-legal-entity' };
       const trust = { CORPORATES: [{ id: 'unexpected-legal-entity' }, { id: 'unexpected-legal-entity-1' }, expectedTrustee] };
-
       const result = getTrustee(trust as Trust, 'expected-legal-entity', TrusteeType.LEGAL_ENTITY);
-
       expect(result).toBe(expectedTrustee);
     });
   });
 
   describe('setTrusteesAsReviewed', () => {
+
     test('when no trust is in review, returns false, and trust remains unchanged', () => {
       const review_status = {
         in_review: false,
@@ -404,7 +374,6 @@ describe('Manage trusts - review trusts utils tests', () => {
         reviewed_legal_entities: false,
       };
       const appData = { update: { review_trusts: [{ review_status }] } } as ApplicationData;
-
       const result = setTrusteesAsReviewed(appData, '' as any);
 
       expect(result).toBe(false);
@@ -426,7 +395,6 @@ describe('Manage trusts - review trusts utils tests', () => {
         reviewed_legal_entities: false,
       };
       const appData = { update: { review_trusts: [{ review_status }] } } as ApplicationData;
-
       const result = setTrusteesAsReviewed(appData, '' as any);
 
       expect(result).toBe(false);
@@ -448,7 +416,6 @@ describe('Manage trusts - review trusts utils tests', () => {
         reviewed_legal_entities: false,
       };
       const appData = { update: { review_trusts: [{ review_status }] } } as ApplicationData;
-
       const result = setTrusteesAsReviewed(appData, TrusteeType.HISTORICAL);
 
       expect(result).toBe(true);
@@ -470,7 +437,6 @@ describe('Manage trusts - review trusts utils tests', () => {
         reviewed_legal_entities: false,
       };
       const appData = { update: { review_trusts: [{ review_status }] } } as ApplicationData;
-
       const result = setTrusteesAsReviewed(appData, TrusteeType.INDIVIDUAL);
 
       expect(result).toBe(true);
@@ -492,7 +458,6 @@ describe('Manage trusts - review trusts utils tests', () => {
         reviewed_legal_entities: false,
       };
       const appData = { update: { review_trusts: [{ review_status }] } } as ApplicationData;
-
       const result = setTrusteesAsReviewed(appData, TrusteeType.LEGAL_ENTITY);
 
       expect(result).toBe(true);
@@ -507,6 +472,7 @@ describe('Manage trusts - review trusts utils tests', () => {
   });
 
   describe('updateTrustInReviewList', () => {
+
     test ('that new trust data is saved to application data', () => {
       const trustData = {
         trust_id: '1',
@@ -528,7 +494,6 @@ describe('Manage trusts - review trusts utils tests', () => {
 
       const appData = { update: { no_change: false, review_trusts: [trustData] } };
       const expectedAppData = { update: { no_change: false, review_trusts: [reviewedTrustData] } };
-
       updateTrustInReviewList(appData, reviewedTrustData);
 
       expect(appData).toEqual(expectedAppData);
@@ -536,6 +501,7 @@ describe('Manage trusts - review trusts utils tests', () => {
   });
 
   describe('getReviewTrustById', () => {
+
     test ('test that correct trust is returned', () => {
       const reviewTrustData = {
         trust_id: '1',
@@ -545,9 +511,7 @@ describe('Manage trusts - review trusts utils tests', () => {
         creation_date_year: '2023',
         unable_to_obtain_all_trust_info: 'No',
       } as Trust;
-
       const appData = { update: { review_trusts: [reviewTrustData] } };
-
       expect(getReviewTrustById(appData, reviewTrustData.trust_id)).toEqual(reviewTrustData);
     });
   });
@@ -563,11 +527,8 @@ describe('moveTrustOutOfReview', () => {
       reviewed_individuals: false,
       reviewed_legal_entities: false,
     };
-
     const appData = { update: { review_trusts: [{ review_status }] } } as ApplicationData;
-
     moveTrustOutOfReview(appData);
-
     // trust.review_status set to undefined, trust added to trusts list in app data
     expect(appData.trusts).toEqual( [{ review_status: undefined }] );
   });
@@ -581,9 +542,7 @@ describe('moveTrustOutOfReview', () => {
       reviewed_individuals: false,
       reviewed_legal_entities: false,
     };
-
     const appData = { update: { review_trusts: [{ review_status }] } } as ApplicationData;
-
     moveTrustOutOfReview(appData);
 
     // appData set to [] if undefined
@@ -592,19 +551,56 @@ describe('moveTrustOutOfReview', () => {
 });
 
 describe('putTrustInChangeScenario', () => {
-  test('moves trust from main model to review_trusts', () => {
+
+  beforeEach(() => {
+    mockIsActiveFeature.mockReset();
+  });
+
+  test('moves trust from main model to review_trusts when the Redis_flag is OFF', () => {
+    mockIsActiveFeature.mockReturnValue(false);
     const appData = {
       trusts: [{ trust_id: '1', trust_name: 'trust name' } as Trust],
       [UpdateKey]: {
         review_trusts: []
       }
     };
-
     putTrustInChangeScenario(appData, '1');
+    console.log(appData[UpdateKey].review_trusts);
+    expect(appData[UpdateKey].review_trusts.length).toEqual(1);
+    expect(appData[UpdateKey].review_trusts[0].trust_id).toEqual("1");
+    expect(appData[UpdateKey].review_trusts[0].review_status).toEqual({
+      in_review: true,
+      reviewed_former_bos: true,
+      reviewed_individuals: true,
+      reviewed_legal_entities: true,
+      reviewed_trust_details: false
+    });
+  });
+
+  test('moves trust from main model to review_trusts when the Redis_flag is ON', () => {
+    mockIsActiveFeature.mockReturnValue(true);
+    const appData = {
+      trusts: [{ trust_id: '1', trust_name: 'trust name' } as Trust],
+      [UpdateKey]: {
+        review_trusts: []
+      }
+    };
+    putTrustInChangeScenario(appData, '1');
+    console.log(appData[UpdateKey].review_trusts);
+    expect(appData[UpdateKey].review_trusts.length).toEqual(1);
+    expect(appData[UpdateKey].review_trusts[0].trust_id).toEqual("1");
+    expect(appData[UpdateKey].review_trusts[0].review_status).toEqual({
+      in_review: true,
+      reviewed_former_bos: false,
+      reviewed_individuals: false,
+      reviewed_legal_entities: false,
+      reviewed_trust_details: false
+    });
   });
 });
 
 describe('moveReviewableTrustsIntoReview', () => {
+
   test('moves trusts with ch_reference attribute from appData.trusts to appData.update.review_trusts', () => {
     const trust1 = {
       trust_id: "1",
@@ -642,10 +638,8 @@ describe('moveReviewableTrustsIntoReview', () => {
 
     expect(appData.trusts?.length).toEqual(2);
     expect(appData.update?.review_trusts?.length).toEqual(2);
-
     expect(appData.update?.review_trusts).toContain(trust1);
     expect(appData.update?.review_trusts).toContain(trust3);
-
     expect(appData.trusts).toContain(trust2);
     expect(appData.trusts).toContain(trust4);
 
@@ -708,10 +702,8 @@ describe('moveReviewableTrustsIntoReview', () => {
 
     expect(appData.trusts?.length).toEqual(2);
     expect(appData.update?.review_trusts?.length).toEqual(2);
-
     expect(appData.update?.review_trusts).toContain(trust3);
     expect(appData.update?.review_trusts).toContain(trust4);
-
     expect(appData.trusts).toContain(trust1);
     expect(appData.trusts).toContain(trust2);
   });
@@ -720,12 +712,12 @@ describe('moveReviewableTrustsIntoReview', () => {
     const appData = {
       trusts: []
     } as ApplicationData;
-
     expect(() => moveReviewableTrustsIntoReview(appData)).toThrowError("No update object exists on appData when trying to move trusts back into review");
   });
 });
 
 describe('resetReviewStatusOnAllTrustsToBeReviewed', () => {
+
   test('should rest review_status object on all trusts in review_trusts', () => {
     const appData: ApplicationData = {
       update: {
@@ -773,9 +765,7 @@ describe('resetReviewStatusOnAllTrustsToBeReviewed', () => {
         review_trusts: []
       }
     } as ApplicationData;
-
     resetReviewStatusOnAllTrustsToBeReviewed(appData);
-
     expect(appData.update?.review_trusts?.length).toEqual(0);
   });
 
@@ -783,9 +773,7 @@ describe('resetReviewStatusOnAllTrustsToBeReviewed', () => {
     const appData: ApplicationData = {
       update: { }
     } as ApplicationData;
-
     resetReviewStatusOnAllTrustsToBeReviewed(appData);
-
     expect(appData.update?.review_trusts).toBeUndefined();
   });
 });

@@ -2,9 +2,9 @@ import { v4 as uuidv4 } from "uuid";
 import * as Trust from "../../model/trust.model";
 import * as Page from "../../model/trust.page.model";
 import { TrusteeType } from '../../model/trustee.type.model';
+import { ApplicationData } from 'model';
 import { RoleWithinTrustType } from '../../model/role.within.trust.type.model';
 import { getLegalEntityTrustee } from '../../utils/trusts';
-import { ApplicationData } from 'model';
 
 enum YesOrNo {
   No = "0",
@@ -52,6 +52,7 @@ const mapLegalEntityToSession = (
   };
 
   let publicRegisterData = {};
+
   if (formData.is_on_register_in_country_formed_in?.toString() === "1") {
     publicRegisterData = {
       identification_place_registered: formData.public_register_name,
@@ -176,11 +177,11 @@ const mapLegalEntityItemToPage = (
     id: legalEntity.id,
     name: legalEntity.name,
     trusteeItemType: TrusteeType.LEGAL_ENTITY,
-    is_newly_added: legalEntity.ch_references ? false : true
+    is_newly_added: legalEntity.ch_references ? false : Number(String(legalEntity.id)) ? false : true,
   };
 };
 
-//  other
+// other
 const generateId = (): string => {
   return uuidv4();
 };

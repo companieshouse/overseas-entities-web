@@ -51,14 +51,18 @@
   {% set stillInvolved = individualTrustee.still_involved %}
   {% set isNotStillInvolved = stillInvolved === "No" %}
   {% set trusteeCeasedDate = dateMacros.formatDate(individualTrustee.ceased_date_day, individualTrustee.ceased_date_month, individualTrustee.ceased_date_year) %}
-  {% if IS_REDIS_REMOVAL_ENABLED %}
-    {% set changeLinkUrl = CREATE_CHANGE_LINK_WITH_IDS(OE_CONFIGS.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_WITH_PARAMS_URL, OE_TRANSACTION_ID, OE_SUBMISSION_ID) +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE + "/" + individualTrustee.id %}
-  {% else %}
-     {% if manageTrusts %}
+  {% if not IS_REDIS_REMOVAL_ENABLED %}
+    {% if manageTrusts %}
       {% set changeLinkUrl = OE_CONFIGS.UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_CHANGE_HANDLER_URL +  "/" + trust.trust_id + "/individual/" + individualTrustee.id %}
     {% else %}
       {% set changeLinkUrl = OE_CONFIGS.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE + "/" + individualTrustee.id %}
-    {% endif %} 
+    {% endif %}
+  {% else %}
+    {% if manageTrusts %}
+      {% set changeLinkUrl = CREATE_CHANGE_LINK_WITH_IDS(OE_CONFIGS.UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_CHANGE_HANDLER_WITH_PARAMS_URL, OE_TRANSACTION_ID, OE_SUBMISSION_ID) +  "/" + trust.trust_id + "/individual/" + individualTrustee.id %}
+    {% else %}
+      {% set changeLinkUrl = CREATE_CHANGE_LINK_WITH_IDS(OE_CONFIGS.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_WITH_PARAMS_URL, OE_TRANSACTION_ID, OE_SUBMISSION_ID) +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE + "/" + individualTrustee.id %}
+    {% endif %}
   {% endif %}
 {% endif %}
 

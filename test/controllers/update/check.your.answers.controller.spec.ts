@@ -12,7 +12,6 @@ jest.mock("../../../src/utils/feature.flag");
 jest.mock('../../../src/middleware/statement.validation.middleware');
 jest.mock("../../../src/utils/date");
 jest.mock("../../../src/utils/url");
-jest.mock("../../../src/utils/trust/api.to.web.mapper");
 
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
@@ -21,21 +20,20 @@ import mockCsrfProtectionMiddleware from "../../__mocks__/csrfProtectionMiddlewa
 import app from "../../../src/app";
 
 import { logger } from "../../../src/utils/logger";
-import { ADDRESS } from "../../__mocks__/fields/address.mock";
-import { getTodaysDate } from "../../../src/utils/date";
+import { DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/due.diligence.mock";
+import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/overseas.entity.due.diligence.mock";
 import { authentication } from "../../../src/middleware/authentication.middleware";
-import { isActiveFeature } from "../../../src/utils/feature.flag";
-import { hasBOsOrMOsUpdate } from "../../../src/middleware/navigation/update/has.beneficial.owners.or.managing.officers.update.middleware";
+import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { updateOverseasEntity } from "../../../src/service/overseas.entities.service";
 import { startPaymentsSession } from "../../../src/service/payment.service";
-import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
-import { BeneficialOwnerGovKey } from "../../../src/model/beneficial.owner.gov.model";
-import { BeneficialOwnerOtherKey } from "../../../src/model/beneficial.owner.other.model";
-import { DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/due.diligence.mock";
+import { isActiveFeature } from "../../../src/utils/feature.flag";
+import { hasBOsOrMOsUpdate } from "../../../src/middleware/navigation/update/has.beneficial.owners.or.managing.officers.update.middleware";
 import { BeneficialOwnerIndividualKey } from "../../../src/model/beneficial.owner.individual.model";
+import { BeneficialOwnerGovKey } from "../../../src/model/beneficial.owner.gov.model";
+import { ADDRESS } from "../../__mocks__/fields/address.mock";
+import { BeneficialOwnerOtherKey } from "../../../src/model/beneficial.owner.other.model";
+import { getTodaysDate } from "../../../src/utils/date";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
-import { mapTrustApiToWebWhenFlagsAreSet } from "../../../src/utils/trust/api.to.web.mapper";
-import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/overseas.entity.due.diligence.mock";
 
 import { postTransaction, closeTransaction } from "../../../src/service/transaction.service";
 import { validateStatements, summaryPagesGuard } from "../../../src/middleware/statement.validation.middleware";
@@ -247,9 +245,6 @@ mockPaymentsSession.mockReturnValue("CONFIRMATION_URL");
 
 const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
 mockIsRegistrationJourney.mockReturnValue(false);
-
-const mockMapTrustApiToWebWhenFlagsAreSet = mapTrustApiToWebWhenFlagsAreSet as jest.Mock;
-mockMapTrustApiToWebWhenFlagsAreSet.mockReturnValue(true);
 
 describe("CHECK YOUR ANSWERS controller", () => {
 

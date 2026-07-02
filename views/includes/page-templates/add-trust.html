@@ -20,14 +20,10 @@
         {% set addedTrusts = [] %}
 
         {% if not IS_REDIS_REMOVAL_ENABLED %}
-          {% set changeTrustLink = OE_CONFIGS.UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_CHANGE_HANDLER_URL %}
+          {% set changeTrustsOrchestratorLink = OE_CONFIGS.UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_CHANGE_HANDLER_URL %}
         {% else %}
-          {% if hasTrustsToReview %}
-            {% set changeTrustLink = CREATE_CHANGE_LINK_WITH_IDS(OE_CONFIGS.UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_CHANGE_HANDLER_WITH_PARAMS_URL, OE_TRANSACTION_ID, OE_SUBMISSION_ID) %}
-          {% else %}
-            {% set changeTrustLink = CREATE_CHANGE_LINK_WITH_IDS(OE_CONFIGS.UPDATE_TRUSTS_TELL_US_ABOUT_IT_WITH_PARAMS_URL, OE_TRANSACTION_ID, OE_SUBMISSION_ID) %}
-          {% endif %}
-      {% endif %}
+          {% set changeTrustsOrchestratorLink = CREATE_CHANGE_LINK_WITH_IDS(OE_CONFIGS.UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_CHANGE_HANDLER_WITH_PARAMS_URL, OE_TRANSACTION_ID, OE_SUBMISSION_ID) %}
+        {% endif %}
 
         {% for trust in pageData.trustData %}
             {% if trust.ch_reference.length %}
@@ -40,7 +36,7 @@
                 },
                 actions: {
                   items: [CREATE_CHANGE_LINK(
-                    changeTrustLink + "/" + trust.trust_id,
+                    changeTrustsOrchestratorLink + "/" + trust.trust_id,
                     "Trust " + trust.trust_name,
                     "change-trust-button"
                   )]

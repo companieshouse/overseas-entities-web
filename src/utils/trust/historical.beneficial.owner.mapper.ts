@@ -57,7 +57,7 @@ const mapFormerTrusteeFromSessionToPage = (
     endDateDay: trustee.ceased_date_day,
     endDateMonth: trustee.ceased_date_month,
     endDateYear: trustee.ceased_date_year,
-    is_newly_added: trustee.ch_references ? false : Number(String(trustee.id)) ? false : true,
+    is_newly_added: trustee.ch_references ? false : Number(trustee.id) ? false : true,
   };
 
   if (trustee.corporate_indicator && 'corporate_name' in trustee) {

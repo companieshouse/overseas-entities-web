@@ -111,7 +111,7 @@ export const mapIndividualTrusteeFromSessionToPage = (
 
   const data = {
     trusteeId: trustee.id,
-    is_newly_added: trustee.ch_references ? false : Number(String(trustee.id)) ? false : true,
+    is_newly_added: trustee.ch_references ? false : Number(trustee.id) ? false : true,
     roleWithinTrust: trustee.type,
     forename: trustee.forename,
     surname: trustee.surname,

@@ -177,7 +177,7 @@ const mapLegalEntityItemToPage = (
     id: legalEntity.id,
     name: legalEntity.name,
     trusteeItemType: TrusteeType.LEGAL_ENTITY,
-    is_newly_added: legalEntity.ch_references ? false : Number(String(legalEntity.id)) ? false : true,
+    is_newly_added: legalEntity.ch_references ? false : Number(legalEntity.id) ? false : true,
   };
 };
 

@@ -14,7 +14,6 @@ jest.mock("../../../src/service/private.overseas.entity.details");
 jest.mock("../../../src/service/overseas.entities.service");
 jest.mock("../../../src/utils/date");
 jest.mock('../../../src/utils/url');
-jest.mock("../../../src/utils/trust/api.to.web.mapper");
 
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
@@ -34,7 +33,6 @@ import { updateOverseasEntity } from "../../../src/service/overseas.entities.ser
 import { startPaymentsSession } from "../../../src/service/payment.service";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
-import { mapTrustApiToWebWhenFlagsAreSet } from "../../../src/utils/trust/api.to.web.mapper";
 
 import { postTransaction, closeTransaction } from "../../../src/service/transaction.service";
 import { OverseasEntityKey, Transactionkey } from "../../../src/model/data.types.model";
@@ -111,11 +109,6 @@ const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 const mockGetRedirectUrl = getRedirectUrl as jest.Mock;
-const mockIsRemoveJourney = isRemoveJourney as jest.Mock;
-const mockGetPrivateOeDetails = getPrivateOeDetails as jest.Mock;
-const mockGetBeneficialOwnersPrivateData = getBeneficialOwnersPrivateData as jest.Mock;
-const mockSetExtraData = setExtraData as jest.Mock;
-const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
 
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
@@ -127,6 +120,11 @@ mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Respons
 
 const mockHasOverseasEntityMiddleware = hasOverseasEntity as jest.Mock;
 mockHasOverseasEntityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+
+const mockGetPrivateOeDetails = getPrivateOeDetails as jest.Mock;
+const mockGetBeneficialOwnersPrivateData = getBeneficialOwnersPrivateData as jest.Mock;
+const mockSetExtraData = setExtraData as jest.Mock;
+const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
 
 const mockTransactionService = postTransaction as jest.Mock;
 mockTransactionService.mockReturnValue( TRANSACTION_ID );
@@ -148,8 +146,7 @@ const mockCheckActiveBOExists = checkActiveBOExists as jest.Mock;
 const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
 mockIsRegistrationJourney.mockReturnValue(false);
 
-const mockMapTrustApiToWebWhenFlagsAreSet = mapTrustApiToWebWhenFlagsAreSet as jest.Mock;
-mockMapTrustApiToWebWhenFlagsAreSet.mockReturnValue(true);
+const mockIsRemoveJourney = isRemoveJourney as jest.Mock;
 
 const appData = { ...APPLICATION_DATA_CH_REF_UPDATE_MOCK, };
 

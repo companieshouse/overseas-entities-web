@@ -1,9 +1,9 @@
+import { v4 as uuidv4 } from 'uuid';
 import * as Trust from '../../model/trust.model';
 import * as Page from '../../model/trust.page.model';
-import { v4 as uuidv4 } from 'uuid';
+import { ApplicationData } from 'model';
 import { RoleWithinTrustType } from '../../model/role.within.trust.type.model';
 import { getIndividualTrustee } from '../../utils/trusts';
-import { ApplicationData } from 'model';
 
 enum YesOrNo {
   No = "0",
@@ -111,7 +111,7 @@ export const mapIndividualTrusteeFromSessionToPage = (
 
   const data = {
     trusteeId: trustee.id,
-    is_newly_added: trustee.ch_references ? false : true,
+    is_newly_added: trustee.ch_references ? false : Number(trustee.id) ? false : true,
     roleWithinTrust: trustee.type,
     forename: trustee.forename,
     surname: trustee.surname,

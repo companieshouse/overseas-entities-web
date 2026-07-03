@@ -1,18 +1,20 @@
 jest.mock('uuid');
 
-import { TrustIndividual, yesNoResponse } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
 import { beforeEach, describe, expect, jest, test } from "@jest/globals";
+import * as Page from '../../../src/model/trust.page.model';
 import { ApplicationData } from "../../../src/model";
 import { RoleWithinTrustType } from "../../../src/model/role.within.trust.type.model";
 import { IndividualTrustee, TrustKey } from "../../../src/model/trust.model";
-import * as Page from '../../../src/model/trust.page.model';
+import { TrustIndividual, yesNoResponse } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
+
 import {
-  mapIndividualTrusteeByIdFromSessionToPage,
-  mapIndividualTrusteeFromSessionToPage,
   mapIndividualTrusteeToSession,
+  mapIndividualTrusteeFromSessionToPage,
+  mapIndividualTrusteeByIdFromSessionToPage,
 } from '../../../src/utils/trust/individual.trustee.mapper';
 
 describe('Individual Beneficial Owner page Mapper Service', () => {
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -22,6 +24,7 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
     ['10000', RoleWithinTrustType.GRANTOR],
     ['10001', RoleWithinTrustType.SETTLOR]
   ];
+
   describe('To Session mapper methods test', () => {
 
     describe('Individual Beneficial Owner mapper', () => {
@@ -420,10 +423,11 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
       });
     });
   });
+
   describe('To Session mapper methods test', () => {
 
     const test_trust_id = '342';
-    const test_trustee_id = '999';
+    const test_trustee_id = 'abc123';
 
     const mockSessionDataBasic = {
       id: test_trustee_id,

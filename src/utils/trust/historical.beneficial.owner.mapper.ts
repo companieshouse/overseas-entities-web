@@ -1,10 +1,10 @@
 import { v4 as uuidv4 } from 'uuid';
-import { TrusteeType } from '../../model/trustee.type.model';
 import * as Trust from '../../model/trust.model';
 import * as Page from '../../model/trust.page.model';
+import { TrusteeType } from '../../model/trustee.type.model';
 import { yesNoResponse } from '../../model/data.types.model';
-import { getFormerTrustee } from '../../utils/trusts';
 import { ApplicationData } from 'model';
+import { getFormerTrustee } from '../../utils/trusts';
 
 const mapBeneficialOwnerToSession = (
   formData: Page.TrustHistoricalBeneficialOwnerForm,
@@ -57,7 +57,7 @@ const mapFormerTrusteeFromSessionToPage = (
     endDateDay: trustee.ceased_date_day,
     endDateMonth: trustee.ceased_date_month,
     endDateYear: trustee.ceased_date_year,
-    is_newly_added: trustee.ch_references ? false : true
+    is_newly_added: trustee.ch_references ? false : Number(trustee.id) ? false : true,
   };
 
   if (trustee.corporate_indicator && 'corporate_name' in trustee) {

@@ -1,25 +1,33 @@
 jest.mock('uuid');
 
 import { beforeEach, describe, expect, jest, test } from "@jest/globals";
-import { ApplicationData } from "../../../src/model";
 import * as uuid from 'uuid';
 import * as Page from '../../../src/model/trust.page.model';
+import { ApplicationData } from "../../../src/model";
+import { TrusteeType } from "../../../src/model/trustee.type.model";
+import { yesNoResponse } from "../../../src/model/data.types.model";
+
+import {
+  TrustKey,
+  TrustHistoricalBeneficialOwner,
+} from "../../../src/model/trust.model";
+
 import {
   generateBoId,
   mapBeneficialOwnerToSession,
   mapFormerTrusteeByIdFromSessionToPage,
 } from '../../../src/utils/trust/historical.beneficial.owner.mapper';
-import { TrusteeType } from "../../../src/model/trustee.type.model";
-import { yesNoResponse } from "../../../src/model/data.types.model";
-import { TrustHistoricalBeneficialOwner, TrustKey } from "../../../src/model/trust.model";
 
 describe('Historical Beneficial Owner page Mapper Service', () => {
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   describe('To Session mapper methods test', () => {
+
     describe('History Beneficial owner mapper', () => {
+
       const mockFormDataBasic = {
         startDateDay: '99',
         startDateMonth: '98',
@@ -79,11 +87,11 @@ describe('Historical Beneficial Owner page Mapper Service', () => {
   });
 
   describe('From session to page mapper method tests', () => {
+
     describe('Map historical/former trustee from session to page Beneficial owner mapper', () => {
 
       const trustId = '987';
       const trusteeId = '9998';
-
       const mockSessionDataBasic = {
         id: trusteeId,
         notified_date_day: "01",
@@ -120,8 +128,7 @@ describe('Historical Beneficial Owner page Mapper Service', () => {
           endDateDay: mockSessionData.ceased_date_day,
           endDateMonth: mockSessionData.ceased_date_month,
           endDateYear: mockSessionData.ceased_date_year,
-          is_newly_added: true,
-
+          is_newly_added: false,
         });
       });
 
@@ -140,7 +147,6 @@ describe('Historical Beneficial Owner page Mapper Service', () => {
         } as ApplicationData;
 
         expect(mapFormerTrusteeByIdFromSessionToPage( appData, trustId, trusteeId )).toEqual({
-
           boId: mockSessionData.id,
           type: TrusteeType.LEGAL_ENTITY,
           corporate_name: mockSessionData.corporate_name,
@@ -150,7 +156,7 @@ describe('Historical Beneficial Owner page Mapper Service', () => {
           endDateDay: mockSessionData.ceased_date_day,
           endDateMonth: mockSessionData.ceased_date_month,
           endDateYear: mockSessionData.ceased_date_year,
-          is_newly_added: true,
+          is_newly_added: false,
         });
       });
     });
@@ -159,7 +165,6 @@ describe('Historical Beneficial Owner page Mapper Service', () => {
   test('test generateBoId', () => {
     const expectNewId = '9999';
     jest.spyOn(uuid, 'v4').mockReturnValue(expectNewId);
-
     expect(generateBoId()).toBe(expectNewId);
   });
 });

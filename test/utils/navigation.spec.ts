@@ -567,6 +567,21 @@ describe("NAVIGATION utils", () => {
     expect(navigation).toEqual(config.REMOVE_CONFIRM_STATEMENT_URL);
   });
 
+  test(`NAVIGATION returns ${config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_WITH_PARAMS_URL} when calling previousPage on ${config.UPDATE_REVIEW_STATEMENT_WITH_PARAMS_URL} object`, async () => {
+    mockIsRemoveJourney.mockReturnValueOnce(false);
+    mockGetRedirectUrl.mockReturnValueOnce(config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_WITH_PARAMS_URL);
+    const mockRequest = { query: {} } as Request;
+    const navigation = await NAVIGATION[config.UPDATE_REVIEW_STATEMENT_WITH_PARAMS_URL].previousPage(undefined, mockRequest);
+    expect(navigation).toEqual(config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_WITH_PARAMS_URL);
+  });
+
+  test(`NAVIGATION returns ${config.REMOVE_CONFIRM_STATEMENT_URL} when calling previousPage on ${config.UPDATE_REVIEW_STATEMENT_URL} object for Remove journey`, async () => {
+    mockIsRemoveJourney.mockReturnValueOnce(false);
+    mockGetRedirectUrl.mockReturnValueOnce(config.REMOVE_CONFIRM_STATEMENT_WITH_PARAMS_URL);
+    const navigation = await NAVIGATION[config.UPDATE_REVIEW_STATEMENT_WITH_PARAMS_URL].previousPage(undefined, mockRemoveRequest);
+    expect(navigation).toEqual(config.REMOVE_CONFIRM_STATEMENT_WITH_PARAMS_URL);
+  });
+
   test(`NAVIGATION returns ${config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL} when calling previousPage on ${config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_WITH_INDEX_URL} object`, async () => {
     const navigation = await NAVIGATION[config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_WITH_INDEX_URL].previousPage();
     expect(navigation).toEqual(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);

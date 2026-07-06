@@ -42,11 +42,11 @@ const checkAgainstFilingDate = async (req: Request, date_field_id: string, error
 
 const is_date_within_filing_period = async (req: Request, date_field_id: string, error_message: string) => {
   const allowedUrls = [
-    [config.UPDATE_BENEFICIAL_OWNER_GOV_URL],
-    [config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL],
-    [config.UPDATE_BENEFICIAL_OWNER_OTHER_URL],
-    [config.UPDATE_MANAGING_OFFICER_CORPORATE_URL],
-    [config.UPDATE_MANAGING_OFFICER_URL]
+    [config.UPDATE_BENEFICIAL_OWNER_GOV_PAGE],
+    [config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE],
+    [config.UPDATE_BENEFICIAL_OWNER_OTHER_PAGE],
+    [config.UPDATE_MANAGING_OFFICER_CORPORATE_PAGE],
+    [config.UPDATE_MANAGING_OFFICER_PAGE]
   ];
   const allowed: boolean = isAllowedUrls(allowedUrls, req);
   const errors: ValidationError[] = [];
@@ -102,29 +102,30 @@ const is_end_date_within_filing_period = async (req: Request, allowedUrls: Array
 
 export const filingPeriodCeasedDateValidations = async (req: Request) => {
   const allowedUrls = [
-    [config.UPDATE_BENEFICIAL_OWNER_GOV_URL],
-    [config.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL],
-    [config.UPDATE_BENEFICIAL_OWNER_OTHER_URL],
-    [config.UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_URL],
-    [config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL],
-    [config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL]
+    [config.UPDATE_BENEFICIAL_OWNER_GOV_PAGE],
+    [config.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE],
+    [config.UPDATE_BENEFICIAL_OWNER_OTHER_PAGE],
+    [config.UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_PAGE],
+    [config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE],
+    [config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE]
   ];
+
   return is_end_date_within_filing_period(req, allowedUrls, "ceased_date", "is_still_bo", ErrorMessages.CEASED_DATE_BEFORE_FILING_DATE);
 };
 
 export const filingPeriodResignedDateValidations = async (req: Request) => {
   const allowedUrls = [
-    [config.UPDATE_MANAGING_OFFICER_CORPORATE_URL],
-    [config.UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_URL],
-    [config.UPDATE_MANAGING_OFFICER_URL],
-    [config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_URL]
+    [config.UPDATE_MANAGING_OFFICER_CORPORATE_PAGE],
+    [config.UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_PAGE],
+    [config.UPDATE_MANAGING_OFFICER_PAGE],
+    [config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_PAGE]
   ];
   return is_end_date_within_filing_period(req, allowedUrls, "resigned_on", "is_still_mo", ErrorMessages.RESIGNED_ON_BEFORE_FILING_DATE);
 };
 
 export const checkNoChangeReviewStatement = async (req) => {
   const allowedUrls = [
-    [config.UPDATE_REVIEW_STATEMENT_URL]
+    [config.UPDATE_REVIEW_STATEMENT_PAGE]
   ];
   const allowed: boolean = isAllowedUrls(allowedUrls, req);
   const errors: ValidationError[] = [];

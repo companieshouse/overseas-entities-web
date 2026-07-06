@@ -152,6 +152,11 @@ export const NAVIGATION: Navigation = {
     previousPage: async (appData: ApplicationData, req: Request) => getUpdateReviewStatementBackLink(req),
     nextPage: [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL, config.OVERSEAS_ENTITY_PAYMENT_WITH_TRANSACTION_URL]
   },
+  [config.UPDATE_REVIEW_STATEMENT_WITH_PARAMS_URL]: {
+    currentPage: config.UPDATE_REVIEW_STATEMENT_PAGE,
+    previousPage: async (appData: ApplicationData, req: Request) => getUpdateReviewStatementBackLink(req),
+    nextPage: [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_WITH_PARAMS_URL, config.OVERSEAS_ENTITY_PAYMENT_WITH_TRANSACTION_URL]
+  },
   [config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL]: {
     currentPage: config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
     previousPage: async (appData: ApplicationData, req: Request) => getUpdateOrRemoveBackLink(req, config.OVERSEAS_ENTITY_QUERY_URL),

@@ -96,7 +96,7 @@ export const validateStatements = async (req: Request, _: Response, next: NextFu
     errorList.push(ErrorMessages.NO_ACTIVE_MO);
   }
 
-  const ceasedOrBecomeBOStatement = appData.update?.[RegistrableBeneficialOwnerKey];
+  const ceasedOrBecomeBOStatement = Number(appData.update?.[RegistrableBeneficialOwnerKey]);
   const someoneCeasedOrBecomeBO = ceasedOrBecomeBOStatement === yesNoResponse.Yes;
 
   if (someoneCeasedOrBecomeBO && !hasAddedOrCeasedBO(appData)) {

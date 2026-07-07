@@ -243,6 +243,14 @@ describe('statement validation middleware', () => {
           { day: '1', month: '3', year: '2023' },
           ['You have added or ceased a beneficial owner as part of this update statement.'],
         ],
+        [
+          "when no reason to believe someone has become or ceased to be a BO, with a ceased BO",
+          yesNoResponse.No,
+          "1",
+          'test-ch-reference',
+          { day: '1', month: '3', year: '2023' },
+          ['You have added or ceased a beneficial owner as part of this update statement.'],
+        ],
       ])(`%s`, async (_, response, hasAddedOrCeased, ch_reference, ceased_date, expectedErrorList) => {
         const BOI_MOCK = {
           ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,

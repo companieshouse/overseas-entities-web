@@ -575,7 +575,7 @@ describe("NAVIGATION utils", () => {
     expect(navigation).toEqual(config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_WITH_PARAMS_URL);
   });
 
-  test(`NAVIGATION returns ${config.REMOVE_CONFIRM_STATEMENT_URL} when calling previousPage on ${config.UPDATE_REVIEW_STATEMENT_URL} object for Remove journey`, async () => {
+  test(`NAVIGATION returns ${config.REMOVE_CONFIRM_STATEMENT_WITH_PARAMS_URL} when calling previousPage on ${config.UPDATE_REVIEW_STATEMENT_WITH_PARAMS_URL} object for Remove journey`, async () => {
     mockIsRemoveJourney.mockReturnValueOnce(false);
     mockGetRedirectUrl.mockReturnValueOnce(config.REMOVE_CONFIRM_STATEMENT_WITH_PARAMS_URL);
     const navigation = await NAVIGATION[config.UPDATE_REVIEW_STATEMENT_WITH_PARAMS_URL].previousPage(undefined, mockRemoveRequest);

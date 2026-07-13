@@ -5,6 +5,7 @@ jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
+jest.mock('../../../src/service/overseas.entities.service');
 jest.mock('../../../src/utils/save.and.continue');
 jest.mock('../../../src/utils/feature.flag');
 
@@ -22,6 +23,7 @@ import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { saveAndContinue } from '../../../src/utils/save.and.continue';
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
+import { updateOverseasEntity } from "../../../src/service/overseas.entities.service";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 
@@ -38,6 +40,7 @@ import {
 } from '../../../src/config';
 
 import {
+  OVERSEAS_ENTITY_ID,
   APPLICATION_DATA_CH_REF_UPDATE_MOCK,
   REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_ACTIVE
 } from "../../__mocks__/session.mock";
@@ -52,6 +55,13 @@ import {
 mockJourneyDetectionMiddleware.mockClear();
 mockCsrfProtectionMiddleware.mockClear();
 
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
+const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockSetApplicationData = setApplicationData as jest.Mock;
+const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
+const mockSaveAndContinue = saveAndContinue as jest.Mock;
+const mockPrepareData = prepareData as jest.Mock;
+
 const mockHasUpdatePresenter = hasUpdatePresenter as jest.Mock;
 mockHasUpdatePresenter.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
@@ -64,12 +74,8 @@ mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, ne
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
-const mockIsActiveFeature = isActiveFeature as jest.Mock;
-const mockGetApplicationData = getApplicationData as jest.Mock;
-const mockSetApplicationData = setApplicationData as jest.Mock;
-const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
-const mockSaveAndContinue = saveAndContinue as jest.Mock;
-const mockPrepareData = prepareData as jest.Mock;
+const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
+mockUpdateOverseasEntity.mockReturnValue(OVERSEAS_ENTITY_ID);
 
 mockPrepareData.mockImplementation((data: any, keys: string[]) =>
   keys.reduce((o, key) => Object.assign(o, { [key]: data[key] }), {})
@@ -123,6 +129,7 @@ describe('Review managing officer corporate controller tests', () => {
       expect(resp.header.location).toEqual("/update-an-overseas-entity/update-beneficial-owner-type");
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
       expect(mockSetApplicationData).toHaveBeenCalledTimes(1);
+      expect(mockUpdateOverseasEntity).not.toHaveBeenCalled();
     });
 
     test(`redirect to update-beneficial-owner-type page on successful submission and REDIS_flag is set to ON`, async () => {
@@ -135,6 +142,7 @@ describe('Review managing officer corporate controller tests', () => {
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
       expect(mockSetApplicationData).toHaveBeenCalledTimes(1);
+      expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
     });
 
     test(`throw validation error on update-beneficial-owner-type without complete data`, async () => {

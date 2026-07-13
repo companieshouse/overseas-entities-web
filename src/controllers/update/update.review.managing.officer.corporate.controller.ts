@@ -8,6 +8,7 @@ import { setOfficerData } from "../../utils/managing.officer.corporate";
 import { isActiveFeature } from "../../utils/feature.flag";
 import { saveAndContinue } from "../../utils/save.and.continue";
 import { checkRelevantPeriod } from "../../utils/relevant.period";
+import { updateOverseasEntity } from "../../service/overseas.entities.service";
 import { ManagingOfficerCorporateKey } from "../../model/managing.officer.corporate.model";
 import { checkAndReviewManagingOfficers } from "../../utils/update/review.managing.officer";
 import { addResignedDateToTemplateOptions } from "../../utils/update/ceased_date_util";
@@ -105,6 +106,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
       if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
         await setApplicationData(req, data, ManagingOfficerCorporateKey);
+        await updateOverseasEntity(req, req.session as Session, appData);
       } else {
         await setApplicationData(session, data, ManagingOfficerCorporateKey);
         await saveAndContinue(req, session);

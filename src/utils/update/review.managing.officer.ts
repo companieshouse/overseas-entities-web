@@ -1,15 +1,17 @@
-import { mapDataObjectToFields } from "../../utils/application.data";
-import { ApplicationData } from "../../model";
-import { ManagingOfficerCorporateKey } from "../../model/managing.officer.corporate.model";
-import { ManagingOfficerKey } from "../../model/managing.officer.model";
 import { Update } from "../../model/update.type.model";
-import { reviewAllOwnwers } from "./review.beneficial.owner";
 import { AddressKeys } from "../../model/data.types.model";
 import { getRedirectUrl } from "../url";
+import { ApplicationData } from "../../model";
+import { isActiveFeature } from "../feature.flag";
+import { reviewAllOwnwers } from "./review.beneficial.owner";
+import { ManagingOfficerKey } from "../../model/managing.officer.model";
+import { mapDataObjectToFields } from "../../utils/application.data";
+import { ManagingOfficerCorporateKey } from "../../model/managing.officer.corporate.model";
 
 import {
   REVIEW_OWNER_INDEX_PARAM,
   UPDATE_AN_OVERSEAS_ENTITY_URL,
+  FEATURE_FLAG_ENABLE_REDIS_REMOVAL,
   UPDATE_AN_OVERSEAS_ENTITY_WITH_PARAMS_URL,
   UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_PAGE,
   UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_PAGE,
@@ -63,7 +65,7 @@ export const checkAndReviewManagingOfficers = (req: Request, appData: Applicatio
 
   if (AllMoTypes.moIndividualOfficerReview in update_review) {
     const redirectToUnsubmittedMo = checkForUnsubmittedReviewMo(appData, AllMoTypes.moIndividual, managingOfficerIndividualReviewRedirectUrl);
-    if (redirectToUnsubmittedMo) {
+    if (redirectToUnsubmittedMo && !isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       return redirectToUnsubmittedMo;
     }
     if (appData.update?.review_managing_officers_individual?.length) {
@@ -74,7 +76,7 @@ export const checkAndReviewManagingOfficers = (req: Request, appData: Applicatio
 
   if (AllMoTypes.moCorporateOfficerReview in update_review) {
     const redirectToUnsubmittedMo = checkForUnsubmittedReviewMo(appData, AllMoTypes.moCorporate, managingOfficerCorporateReviewRedirectUrl);
-    if (redirectToUnsubmittedMo) {
+    if (redirectToUnsubmittedMo && !isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       return redirectToUnsubmittedMo;
     }
     if (appData.update?.review_managing_officers_corporate?.length) {

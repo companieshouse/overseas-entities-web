@@ -49,6 +49,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const appData = await getApplicationData(req);
     const index = req.query.index;
+    const reviewed = req.query.r;
     let dataToReview = {}, serviceAddress = {}, usual_residential_address = {};
 
     if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
@@ -85,7 +86,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     if (CeasedDateKey in dataToReview) {
       templateOptions.populateResidentialAddress = true;
     }
-    if (dataToReview?.[CeasedDateKey]) {
+    if (dataToReview?.[CeasedDateKey] || reviewed) {
       return res.render(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, addCeasedDateToTemplateOptions(templateOptions, appData, dataToReview));
     } else {
       return res.render(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, templateOptions);

@@ -50,9 +50,9 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     return res.render(config.ENTITY_PAGE, {
       ...entity,
-      ...principalAddress,
-      ...serviceAddress,
       ...appData,
+      ...serviceAddress,
+      ...principalAddress,
       templateName: config.ENTITY_PAGE,
       entityName: appData?.[EntityNameKey],
       backLinkUrl: getRedirectUrl({

@@ -50,8 +50,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     const templateOptions = {
       ...dataToReview,
-      ...residentialAddress,
       ...serviceAddress,
+      ...residentialAddress,
       templateName: UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_PAGE,
       backLinkUrl: getRedirectUrl({
         req,

@@ -1,6 +1,6 @@
 import { logger } from "../logger";
-import { getBeneficialOwnersPrivateData } from "../../service/private.overseas.entity.details";
 import { ApplicationData } from "../../model";
+import { getBeneficialOwnersPrivateData } from "../../service/private.overseas.entity.details";
 import { mapCorporateOrGovernmentBOPrivateData, mapIndividualBOPrivateData } from "./psc.to.beneficial.owner.type.mapper";
 
 export const fetchBeneficialOwnersPrivateData = async (appData: ApplicationData, req) => {

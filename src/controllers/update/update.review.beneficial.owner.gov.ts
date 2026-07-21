@@ -47,6 +47,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const appData = await getApplicationData(req);
     const index = req.query.index;
+    const reviewed = req.query.r;
     let dataToReview = {}, principalAddress = {}, serviceAddress = {};
 
     if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
@@ -76,7 +77,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC: isActiveFeature(FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC),
     };
 
-    if (CeasedDateKey in dataToReview) {
+    if (dataToReview?.[CeasedDateKey] || reviewed) {
       return res.render(templateOptions.templateName, addCeasedDateToTemplateOptions(templateOptions, appData, dataToReview));
     } else {
       return res.render(templateOptions.templateName, templateOptions);

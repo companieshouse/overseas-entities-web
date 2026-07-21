@@ -69,7 +69,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       }),
     };
 
-    if (ResignedOnKey in dataToReview) {
+    if (dataToReview?.[ResignedOnKey]) {
       return res.render(templateOptions.templateName, addResignedDateToTemplateOptions(templateOptions, appData, dataToReview));
     } else {
       return res.render(templateOptions.templateName, templateOptions);

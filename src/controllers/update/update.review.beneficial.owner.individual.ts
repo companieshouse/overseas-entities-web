@@ -84,6 +84,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     // Ceased date is undefined and residential address is private for initial review of BO - don't set ceased date data or residential address in this scenario
     if (CeasedDateKey in dataToReview) {
       templateOptions.populateResidentialAddress = true;
+    }
+    if (dataToReview?.[CeasedDateKey]) {
       return res.render(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, addCeasedDateToTemplateOptions(templateOptions, appData, dataToReview));
     } else {
       return res.render(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, templateOptions);

@@ -73,7 +73,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC: isActiveFeature(FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)
     };
 
-    if (CeasedDateKey in dataToReview) {
+    if (dataToReview?.[CeasedDateKey]) {
       return res.render(UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_PAGE, addCeasedDateToTemplateOptions(templateOptions, appData, dataToReview));
     } else {
       return res.render(UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_PAGE, templateOptions);

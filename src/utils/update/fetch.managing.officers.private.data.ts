@@ -1,6 +1,6 @@
 import { logger } from "../logger";
-import { getManagingOfficersPrivateData } from "../../service/private.overseas.entity.details";
 import { ApplicationData } from "../../model";
+import { getManagingOfficersPrivateData } from "../../service/private.overseas.entity.details";
 import { mapIndividualMoPrivateData, mapCorporateMoPrivateData } from "./managing.officer.mapper";
 
 export const fetchManagingOfficersPrivateData = async (appData: ApplicationData, req) => {

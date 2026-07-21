@@ -59,8 +59,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     const templateOptions = {
       ...dataToReview,
-      ...principalAddress,
       ...serviceAddress,
+      ...principalAddress,
       templateName: UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_PAGE,
       backLinkUrl: getRedirectUrl({
         req,

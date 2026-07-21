@@ -65,8 +65,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     const templateOptions = {
       ...dataToReview,
-      ...principalAddress,
       ...serviceAddress,
+      ...principalAddress,
       backLinkUrl,
       entity_number: appData[EntityNumberKey],
       templateName: UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_PAGE,

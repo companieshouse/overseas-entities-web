@@ -69,8 +69,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     const templateOptions = {
       ...dataToReview,
-      ...principalAddress,
       ...serviceAddress,
+      ...principalAddress,
       backLinkUrl,
       templateName: UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE,
       FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC: isActiveFeature(FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC),

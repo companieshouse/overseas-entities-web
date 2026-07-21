@@ -28,6 +28,7 @@ import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.a
 import { getApplicationData, mapDataObjectToFields, prepareData } from "../../../src/utils/application.data";
 
 import {
+  REVIEW_COMPLETE,
   APPLICATION_DATA_MOCK,
   APPLICATION_DATA_UPDATE_BO_MOCK,
   DISTINCT_PRINCIPAL_ADDRESS_MOCK,
@@ -103,6 +104,26 @@ describe(`Update review beneficial owner Gov`, () => {
       mockMapDataObjectToFields.mockReturnValueOnce(DISTINCT_PRINCIPAL_ADDRESS_MOCK);
 
       const resp = await request(app).get(UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL_WITH_PARAM_URL_TEST);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_HEADING);
+      expect(resp.text).toContain(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
+      expect(resp.text).toContain(BO_NOC_HEADING);
+      expect(resp.text).not.toContain(TRUSTS_NOC_HEADING);
+      expect(resp.text).not.toContain(FIRM_NOC_HEADING);
+      expect(resp.text).toContain(FIRM_CONTROL_NOC_HEADING);
+      expect(resp.text).toContain(TRUST_CONTROL_NOC_HEADING);
+      expect(resp.text).toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
+      expect(resp.text).toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
+      expect(resp.text).toContain("principal addressLine1");
+    });
+
+    test(`render the ${config.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE} page with the review query param is set`, async () => {
+      mockIsActiveFeature.mockReturnValue(true);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockMapDataObjectToFields.mockReturnValueOnce(DISTINCT_PRINCIPAL_ADDRESS_MOCK);
+
+      const resp = await request(app).get(`${UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL_WITH_PARAM_URL_TEST}${REVIEW_COMPLETE}`);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_HEADING);

@@ -38,6 +38,7 @@ import {
 } from '../../../src/config';
 
 import {
+  REVIEW_COMPLETE,
   APPLICATION_DATA_CH_REF_UPDATE_MOCK,
   REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_ACTIVE
 } from "../../__mocks__/session.mock";
@@ -98,6 +99,15 @@ describe('Review managing officer corporate controller tests', () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_CH_REF_UPDATE_MOCK);
       mockIsActiveFeature.mockReturnValue(true);
       const resp = await request(app).get(UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL + "?index=0");
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_HEADING);
+      expect(resp.text).toContain(UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_CONTACT_NAME);
+    });
+
+    test(`renders the review-managing-officer-corporate page for MO already popped from appData.update when the review query param is set`, async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_CH_REF_UPDATE_MOCK);
+      mockIsActiveFeature.mockReturnValue(true);
+      const resp = await request(app).get(`${UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL}?index=0${REVIEW_COMPLETE}`);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_HEADING);
       expect(resp.text).toContain(UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_CONTACT_NAME);

@@ -35,6 +35,7 @@ import {
 } from "../../../src/config";
 
 import {
+  REVIEW_COMPLETE,
   APPLICATION_DATA_UPDATE_BO_MOCK,
   DISTINCT_PRINCIPAL_ADDRESS_MOCK,
   UPDATE_OBJECT_MOCK_REVIEW_BO_OTHER_MODEL,
@@ -126,6 +127,28 @@ describe(`Update review beneficial owner other`, () => {
       });
 
       const resp = await request(app).get(UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_URL + '?index=0');
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_HEADING);
+      expect(resp.text).toContain(BO_NOC_HEADING);
+      expect(resp.text).toContain(TRUSTS_NOC_HEADING);
+      expect(resp.text).not.toContain(FIRM_NOC_HEADING);
+      expect(resp.text).toContain(FIRM_CONTROL_NOC_HEADING);
+      expect(resp.text).toContain(TRUST_CONTROL_NOC_HEADING);
+      expect(resp.text).toContain(OWNER_OF_LAND_PERSON_NOC_HEADING);
+      expect(resp.text).toContain(OWNER_OF_LAND_OTHER_ENITY_NOC_HEADING);
+      expect(resp.text).toContain("principal addressLine1");
+    });
+
+    test(`render the ${UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_PAGE} page when the review query param is set`, async () => {
+      mockIsActiveFeature.mockReturnValue(true);
+      mockMapDataObjectToFields.mockReturnValueOnce(DISTINCT_PRINCIPAL_ADDRESS_MOCK);
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_UPDATE_BO_MOCK,
+        ...UPDATE_OBJECT_MOCK_REVIEW_BO_OTHER_MODEL
+      });
+
+      const resp = await request(app).get(`${UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_URL}?index=0${REVIEW_COMPLETE}`);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_HEADING);

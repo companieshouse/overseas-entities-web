@@ -28,7 +28,7 @@ import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.a
 import { getApplicationData, mapDataObjectToFields, prepareData } from "../../../src/utils/application.data";
 
 import {
-  REVIEW_COMPLETE,
+  REVIEWED_BO_MO_QUERY_PARAM,
   APPLICATION_DATA_MOCK,
   APPLICATION_DATA_UPDATE_BO_MOCK,
   DISTINCT_PRINCIPAL_ADDRESS_MOCK,
@@ -123,7 +123,7 @@ describe(`Update review beneficial owner Gov`, () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockMapDataObjectToFields.mockReturnValueOnce(DISTINCT_PRINCIPAL_ADDRESS_MOCK);
 
-      const resp = await request(app).get(`${UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL_WITH_PARAM_URL_TEST}${REVIEW_COMPLETE}`);
+      const resp = await request(app).get(`${UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL_WITH_PARAM_URL_TEST}${REVIEWED_BO_MO_QUERY_PARAM}`);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_HEADING);

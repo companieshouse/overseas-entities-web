@@ -35,7 +35,7 @@ import {
 } from "../../../src/config";
 
 import {
-  REVIEW_COMPLETE,
+  REVIEWED_BO_MO_QUERY_PARAM,
   APPLICATION_DATA_UPDATE_BO_MOCK,
   DISTINCT_PRINCIPAL_ADDRESS_MOCK,
   UPDATE_OBJECT_MOCK_REVIEW_BO_OTHER_MODEL,
@@ -148,7 +148,7 @@ describe(`Update review beneficial owner other`, () => {
         ...UPDATE_OBJECT_MOCK_REVIEW_BO_OTHER_MODEL
       });
 
-      const resp = await request(app).get(`${UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_URL}?index=0${REVIEW_COMPLETE}`);
+      const resp = await request(app).get(`${UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_URL}?index=0${REVIEWED_BO_MO_QUERY_PARAM}`);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_HEADING);

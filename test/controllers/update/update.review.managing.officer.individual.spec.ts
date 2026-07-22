@@ -39,7 +39,7 @@ import {
 } from '../../__mocks__/text.mock';
 
 import {
-  REVIEW_COMPLETE,
+  REVIEWED_BO_MO_QUERY_PARAM,
   SERVICE_ADDRESS_MOCK,
   RESIDENTIAL_ADDRESS_MOCK,
   APPLICATION_DATA_EMPTY_BO_MOCK,
@@ -106,7 +106,7 @@ describe('Test review managing officer', () => {
     test(`render the ${config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_PAGE} page when the review query param is set`, async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_EMPTY_BO_MOCK);
       mockMapDataObjectToFields.mockReturnValueOnce(RESIDENTIAL_ADDRESS_MOCK);
-      const resp = await request(app).get(`${UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_WITH_PARAM_URL_TEST}${REVIEW_COMPLETE}`);
+      const resp = await request(app).get(`${UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_WITH_PARAM_URL_TEST}${REVIEWED_BO_MO_QUERY_PARAM}`);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_HEADING);
       expect(resp.text).toContain(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);

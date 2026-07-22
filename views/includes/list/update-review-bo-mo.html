@@ -1,4 +1,5 @@
 {% set indexQueryParam = OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM %}
+{% set isReviewedQueryParam = OE_CONFIGS.REVIEWED_BO_MO_QUERY_PARAM %}
 
 <div class="govuk-summary-card">
     <div class="govuk-summary-card__title-wrapper">
@@ -23,7 +24,7 @@
                             {% endif %}
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="{{ reviewUrls.beneficialOwnerIndividual }}{{ indexQueryParam }}{{ beneficial_owners_individual.indexOf(boi) }}&r=1"
+                            <a class="govuk-link" href="{{ reviewUrls.beneficialOwnerIndividual }}{{ indexQueryParam }}{{ beneficial_owners_individual.indexOf(boi) }}{{ isReviewedQueryParam }}"
                             data-event-id="change-link-review-individual-bo">
                                 Change<span class="govuk-visually-hidden"> {{ boi.first_name }} {{ boi.last_name }} - Individual beneficial owner</span>
                             </a>
@@ -48,7 +49,7 @@
                             {% endif %}
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="{{ reviewUrls.beneficialOwnerOther }}{{ indexQueryParam }}{{ beneficial_owners_corporate.indexOf(boo) }}&r=1"
+                            <a class="govuk-link" href="{{ reviewUrls.beneficialOwnerOther }}{{ indexQueryParam }}{{ beneficial_owners_corporate.indexOf(boo) }}{{ isReviewedQueryParam }}"
                             data-event-id="change-link-review-other-bo">
                                 Change<span class="govuk-visually-hidden">{{ boo.name }} - Other legal entity</span>
                             </a>
@@ -73,7 +74,7 @@
                             {% endif %}
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="{{ reviewUrls.beneficialOwnerGov }}{{ indexQueryParam }}{{ beneficial_owners_government_or_public_authority.indexOf(bog) }}&r=1"
+                            <a class="govuk-link" href="{{ reviewUrls.beneficialOwnerGov }}{{ indexQueryParam }}{{ beneficial_owners_government_or_public_authority.indexOf(bog) }}{{ isReviewedQueryParam }}"
                             data-event-id="change-link-review-gov-bo">
                                 Change<span class="govuk-visually-hidden">{{ bog.name }} - Government or public authority</span>
                             </a>
@@ -98,7 +99,7 @@
                             {% endif %}
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="{{ reviewUrls.managingOfficerIndividual }}{{ indexQueryParam }}{{ managing_officers_individual.indexOf(mo) }}&r=1"
+                            <a class="govuk-link" href="{{ reviewUrls.managingOfficerIndividual }}{{ indexQueryParam }}{{ managing_officers_individual.indexOf(mo) }}{{ isReviewedQueryParam }}"
                             data-event-id="change-link-review-individual-mo">
                                 Change<span class="govuk-visually-hidden">{{ mo.first_name + " " + mo.last_name }} - Individual managing officer</span>
                             </a>
@@ -123,7 +124,7 @@
                             {% endif %}
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="{{ reviewUrls.managingOfficerCorporate }}{{ indexQueryParam }}{{ managing_officers_corporate.indexOf(moc) }}&r=1"
+                            <a class="govuk-link" href="{{ reviewUrls.managingOfficerCorporate }}{{ indexQueryParam }}{{ managing_officers_corporate.indexOf(moc) }}{{ isReviewedQueryParam }}"
                             data-event-id="change-link-review-corporate-mo">
                                 Change<span class="govuk-visually-hidden">{{ moc.name }} - Corporate managing officer</span>
                             </a>

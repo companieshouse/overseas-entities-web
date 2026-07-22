@@ -173,6 +173,7 @@ export const TRUSTEE_ID = `/:${ROUTE_PARAM_TRUSTEE_ID}`;
 export const TRUSTEE_TYPE = `/:${ROUTE_PARAM_TRUSTEE_TYPE}`;
 export const GET_COMPANY_OFFICERS_PAGE_SIZE = 100;
 export const REVIEW_OWNER_INDEX_PARAM = "?index=";
+export const REVIEWED_BO_MO_QUERY_PARAM = "&r=1";
 export const UPDATE_REVIEW_OWNERS_PARAMS = REVIEW_OWNER_INDEX_PARAM + ID;
 export const ROUTE_PARAM_TRANSACTION_ID = "transactionId";
 export const ROUTE_PARAM_SUBMISSION_ID = "submissionId";

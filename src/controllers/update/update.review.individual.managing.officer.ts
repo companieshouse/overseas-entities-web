@@ -43,7 +43,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const appData = await getApplicationData(req);
     const index = Number(req.query.index);
-    const reviewed = req.query.r;
+    const isReviewed = req.query.r;
     if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       checkAndReviewManagingOfficers(req as any, appData);
     }
@@ -61,7 +61,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       }),
     };
 
-    if (dataToReview?.[ResignedOnKey] || reviewed) {
+    if (dataToReview?.[ResignedOnKey] || isReviewed) {
       return res.render(templateOptions.templateName, addResignedDateToTemplateOptions(templateOptions, appData, dataToReview));
     } else {
       return res.render(templateOptions.templateName, templateOptions);

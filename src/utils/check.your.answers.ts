@@ -9,6 +9,7 @@ import { getApplicationData } from "../utils/application.data";
 import { RoleWithinTrustType } from "../model/role.within.trust.type.model";
 import { startPaymentsSession } from "../service/payment.service";
 import { checkRPStatementsExist } from "./relevant.period";
+import { getDataFromEntityCookie } from "./update/data.cookie";
 import { relevantPeriodStatementsState } from "../controllers/update/confirm.overseas.entity.details.controller";
 import { fetchOverseasEntityEmailAddress } from "./update/fetch.overseas.entity.email";
 import { getRedirectUrl, isRemoveJourney } from "./url";
@@ -44,7 +45,7 @@ export const getDataForReview = async (req: Request, res: Response, next: NextFu
 
   const session = req.session as Session;
   const isRemove: boolean = await isRemoveJourney(req);
-  const appData: ApplicationData = await getApplicationData(req);
+  let appData: ApplicationData = await getApplicationData(req);
   const hasAnyBosWithTrusteeNocs = isNoChangeJourney ? checkEntityReviewRequiresTrusts(appData) : checkEntityRequiresTrusts(appData);
   const backLinkUrl = getBackLinkUrl(req, isNoChangeJourney, hasAnyBosWithTrusteeNocs, isRemove);
   const templateName = getTemplateName(isNoChangeJourney);
@@ -74,6 +75,7 @@ export const getDataForReview = async (req: Request, res: Response, next: NextFu
     });
 
     if (isRemove) {
+      appData = Object.assign(appData, (await getDataFromEntityCookie(req)));
       return res.render(templateName, {
         ...appData,
         backLinkUrl,

@@ -1,68 +1,89 @@
-import { Accounts, CompanyProfile, Links, RegisteredOfficeAddress } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
-import { CompanyPersonWithSignificantControl } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
-import { CompanyOfficer } from "@companieshouse/api-sdk-node/dist/services/company-officers/types";
-import { ManagingOfficerPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities/types";
-import { CreatePaymentRequest, Payment } from "@companieshouse/api-sdk-node/dist/services/payment";
 import { Session } from "@companieshouse/node-session-handler";
-import { AccessTokenKeys } from '@companieshouse/node-session-handler/lib/session/keys/AccessTokenKeys';
 import { SessionKey } from "@companieshouse/node-session-handler/lib/session/keys/SessionKey";
+import { CompanyOfficer } from "@companieshouse/api-sdk-node/dist/services/company-officers/types";
 import { SignInInfoKeys } from "@companieshouse/node-session-handler/lib/session/keys/SignInInfoKeys";
+import { AccessTokenKeys } from '@companieshouse/node-session-handler/lib/session/keys/AccessTokenKeys';
 import { UserProfileKeys } from "@companieshouse/node-session-handler/lib/session/keys/UserProfileKeys";
+import { ManagingOfficerPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities/types";
+
 import { IAccessToken, ISignInInfo } from "@companieshouse/node-session-handler/lib/session/model/SessionInterfaces";
+import { CompanyPersonWithSignificantControl } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
+import { CreatePaymentRequest, Payment } from "@companieshouse/api-sdk-node/dist/services/payment";
+import { Accounts, CompanyProfile, Links, RegisteredOfficeAddress } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
+
+import { ADDRESS } from "./fields/address.mock";
+import { EntityKey } from "../../src/model/entity.model";
+import { RemoveKey } from "../../src/model/remove.type.model";
+import { ANY_MESSAGE_ERROR } from "./text.mock";
+import { RoleWithinTrustType } from "../../src/model/role.within.trust.type.model";
+import { DUE_DILIGENCE_OBJECT_MOCK } from "./due.diligence.mock";
+import { BeneficialOwnerPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
+import { OverseasEntityDueDiligenceKey } from "../../src/model/overseas.entity.due.diligence.model";
+
 import {
-  DESCRIPTION,
-  OVERSEAS_ENTITY,
-  PAYMENT_PAID,
-  PAYMENT_REQUIRED_HEADER,
+  WhoIsRegisteringKey,
+  WhoIsRegisteringType,
+} from "../../src/model/who.is.making.filing.model";
+
+import {
+  Trust,
+  TrustKey,
+  TrustIndividual
+} from "../../src/model/trust.model";
+
+import {
+  START_DATE,
+  EMPTY_DATE,
+  DATE_OF_BIRTH,
+  RESIGNED_ON_DATE,
+} from "./fields/date.mock";
+
+import {
+  RESUME,
   REFERENCE,
+  DESCRIPTION,
+  PAYMENT_PAID,
+  OVERSEAS_ENTITY,
+  PAYMENT_REQUIRED_HEADER,
+  UPDATE_AN_OVERSEAS_ENTITY_URL,
   TRANSACTION as TRANSACTION_PATH,
   REGISTER_AN_OVERSEAS_ENTITY_URL,
-  RESUME,
-  UPDATE_AN_OVERSEAS_ENTITY_URL,
-  UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL,
   UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL,
-  UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_URL
+  UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_URL,
+  UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL,
 } from "../../src/config";
+
 import {
+  trustType,
+  entityType,
+  updateType,
+  removeType,
+  presenterType,
+  ApplicationData,
+  dueDiligenceType,
+  relevantPeriodType,
+  managingOfficerType,
   APPLICATION_DATA_KEY,
   beneficialOwnerGovType,
   beneficialOwnerOtherType,
-  ApplicationData,
-  beneficialOwnerIndividualType,
-  beneficialOwnerStatementType,
-  entityType,
   managingOfficerCorporateType,
-  managingOfficerType,
-  presenterType,
-  trustType,
-  dueDiligenceType,
-  updateType,
-  removeType,
-  relevantPeriodType
+  beneficialOwnerStatementType,
+  beneficialOwnerIndividualType,
 } from "../../src/model";
+
 import {
+  PaymentKey,
+  IsRemoveKey,
+  yesNoResponse,
   EntityNameKey,
+  Transactionkey,
   HasSoldLandKey,
-  IsSecureRegisterKey,
-  NatureOfControlType,
   EntityNumberKey,
   OverseasEntityKey,
-  PaymentKey,
-  Transactionkey,
-  yesNoResponse,
-  IsRemoveKey,
-  NatureOfControlJurisdiction
+  IsSecureRegisterKey,
+  NatureOfControlType,
+  NatureOfControlJurisdiction,
 } from "../../src/model/data.types.model";
-import { TrustKey, Trust, TrustIndividual } from "../../src/model/trust.model";
-import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../src/model/who.is.making.filing.model";
-import { DUE_DILIGENCE_OBJECT_MOCK } from "./due.diligence.mock";
-import { ADDRESS } from "./fields/address.mock";
-import { DATE_OF_BIRTH, EMPTY_DATE, RESIGNED_ON_DATE, START_DATE } from "./fields/date.mock";
-import { ANY_MESSAGE_ERROR } from "./text.mock";
-import { EntityKey } from "../../src/model/entity.model";
-import { OverseasEntityDueDiligenceKey } from "../../src/model/overseas.entity.due.diligence.model";
-import { BeneficialOwnerPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
-import { RoleWithinTrustType } from "../../src/model/role.within.trust.type.model";
 
 export const BO_GOV_ID = "10722c3c-9301-4f46-ad8b-b30f5dcd76a0";
 export const BO_GOV_ID_URL = "/" + BO_GOV_ID;
@@ -1452,7 +1473,9 @@ export const UPDATE_OBJECT_MOCK: updateType.Update = {
 };
 
 export const REMOVE_OBJECT_MOCK: removeType.Remove = {
-  is_not_proprietor_of_land: true
+  is_not_proprietor_of_land: true,
+  has_sold_all_land: "1",
+  is_listed_as_property_owner: "0",
 };
 
 export const UPDATE_OBJECT_PRIVATE_DATA_MOCK: updateType.Update = {
@@ -2124,6 +2147,7 @@ export const APPLICATION_DATA_CH_REF_UPDATE_MOCK: ApplicationData = {
 export const APPLICATION_DATA_CH_REF_REMOVE_MOCK: ApplicationData = {
   ...APPLICATION_DATA_CH_REF_UPDATE_MOCK,
   [IsRemoveKey]: true,
+  [RemoveKey]: REMOVE_OBJECT_MOCK,
 };
 
 export const FETCH_BO_APPLICATION_DATA_MOCK: ApplicationData = {
@@ -2295,6 +2319,7 @@ export const APPLICATION_DATA_UPDATE_BO_MOCK: ApplicationData = {
 export const APPLICATION_DATA_REMOVE_BO_MOCK: ApplicationData = {
   ...APPLICATION_DATA_UPDATE_BO_MOCK,
   [IsRemoveKey]: true,
+  [RemoveKey]: REMOVE_OBJECT_MOCK,
 };
 
 export const APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW: ApplicationData = {

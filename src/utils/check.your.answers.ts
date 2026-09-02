@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from "express";
 import { Session } from "@companieshouse/node-session-handler";
 import { logger } from "../utils/logger";
 import { getTodaysDate } from "./date";
-import { ApplicationData } from "../model";
 import { isActiveFeature } from "../utils/feature.flag";
 import { closeTransaction } from "../service/transaction.service";
 import { getApplicationData } from "../utils/application.data";
@@ -15,6 +14,7 @@ import { fetchOverseasEntityEmailAddress } from "./update/fetch.overseas.entity.
 import { getRedirectUrl, isRemoveJourney } from "./url";
 import { fetchBeneficialOwnersPrivateData } from "./update/fetch.beneficial.owners.private.data";
 import { fetchManagingOfficersPrivateData } from "./update/fetch.managing.officers.private.data";
+import { ApplicationData, removeType } from "../model";
 import { OverseasEntityKey, Transactionkey } from "../model/data.types.model";
 import { checkEntityRequiresTrusts, checkEntityReviewRequiresTrusts } from "./trusts";
 
@@ -45,7 +45,7 @@ export const getDataForReview = async (req: Request, res: Response, next: NextFu
 
   const session = req.session as Session;
   const isRemove: boolean = await isRemoveJourney(req);
-  let appData: ApplicationData = await getApplicationData(req);
+  const appData: ApplicationData = await getApplicationData(req);
   const hasAnyBosWithTrusteeNocs = isNoChangeJourney ? checkEntityReviewRequiresTrusts(appData) : checkEntityRequiresTrusts(appData);
   const backLinkUrl = getBackLinkUrl(req, isNoChangeJourney, hasAnyBosWithTrusteeNocs, isRemove);
   const templateName = getTemplateName(isNoChangeJourney);
@@ -75,7 +75,7 @@ export const getDataForReview = async (req: Request, res: Response, next: NextFu
     });
 
     if (isRemove) {
-      appData = Object.assign(appData, (await getDataFromEntityCookie(req)));
+      appData.remove = Object.assign(appData.remove as removeType.Remove, (await getDataFromEntityCookie(req)).remove);
       return res.render(templateName, {
         ...appData,
         backLinkUrl,

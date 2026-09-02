@@ -8,6 +8,7 @@ jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/middleware/navigation/update/has.overseas.entity.middleware');
 jest.mock('../../../src/middleware/navigation/update/has.beneficial.owners.or.managing.officers.update.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
+jest.mock("../../../src/utils/update/data.cookie");
 jest.mock('../../../src/utils/application.data');
 jest.mock("../../../src/utils/feature.flag" );
 jest.mock("../../../src/service/private.overseas.entity.details");
@@ -32,6 +33,8 @@ import { hasOverseasEntity } from "../../../src/middleware/navigation/update/has
 import { updateOverseasEntity } from "../../../src/service/overseas.entities.service";
 import { startPaymentsSession } from "../../../src/service/payment.service";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
+import { entityCookieRemoveMock } from "../../__mocks__/update.entity.mocks";
+import { getDataFromEntityCookie } from "../../../src/utils/update/data.cookie";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 
 import { postTransaction, closeTransaction } from "../../../src/service/transaction.service";
@@ -145,6 +148,9 @@ const mockCheckActiveBOExists = checkActiveBOExists as jest.Mock;
 
 const mockIsRegistrationJourney = isRegistrationJourney as jest.Mock;
 mockIsRegistrationJourney.mockReturnValue(false);
+
+const mockGetDataFromEntityCookie = getDataFromEntityCookie as jest.Mock;
+mockGetDataFromEntityCookie.mockReturnValue(entityCookieRemoveMock);
 
 const mockIsRemoveJourney = isRemoveJourney as jest.Mock;
 
@@ -399,8 +405,8 @@ describe("Update review overseas entity information controller tests", () => {
   describe("GET tests for REMOVE journey", () => {
 
     test(`renders the ${UPDATE_REVIEW_STATEMENT_PAGE} page for remove journey`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
-      mockFetchApplicationData.mockReturnValue(APPLICATION_DATA_REMOVE_BO_MOCK);
+      mockIsActiveFeature.mockReturnValue(true);
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_REMOVE_BO_MOCK);
       mockIsRemoveJourney.mockReturnValue(true);
       mockGetRedirectUrl.mockReturnValue(REMOVE_CONFIRM_STATEMENT_URL);
 

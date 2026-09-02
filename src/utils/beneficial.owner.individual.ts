@@ -3,7 +3,6 @@ import { Session } from "@companieshouse/node-session-handler";
 import { v4 as uuidv4 } from "uuid";
 import { logger } from "../utils/logger";
 import * as config from "../config";
-import { isRemoveJourney } from "./url";
 import { saveAndContinue } from "../utils/save.and.continue";
 import { isActiveFeature } from "./feature.flag";
 import { addCeasedDateToTemplateOptions } from "../utils/update/ceased_date_util";
@@ -124,13 +123,11 @@ export const postBeneficialOwnerIndividual = async (req: Request, res: Response,
   try {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-
-    const isRemove: boolean = await isRemoveJourney(req);
     const session = req.session as Session;
     const data: ApplicationDataType = setBeneficialOwnerData(req.body, uuidv4());
     data[HaveDayOfBirthKey] = true;
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && !isRemove) {
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       await setApplicationData(req, data, BeneficialOwnerIndividualKey);
     } else {
       await setApplicationData(session, data, BeneficialOwnerIndividualKey);

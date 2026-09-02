@@ -76,7 +76,6 @@ export const getDataForReview = async (req: Request, res: Response, next: NextFu
 
     if (isRemove) {
       appData.remove = Object.assign(appData.remove as removeType.Remove, (await getDataFromEntityCookie(req)).remove);
-      console.log(appData.remove);
       return res.render(templateName, {
         ...appData,
         backLinkUrl,

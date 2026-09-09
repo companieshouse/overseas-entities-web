@@ -10,11 +10,12 @@ jest.mock('../../../src/middleware/navigation/update/has.beneficial.owners.or.ma
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock("../../../src/utils/update/data.cookie");
 jest.mock('../../../src/utils/application.data');
-jest.mock("../../../src/utils/feature.flag" );
+jest.mock("../../../src/utils/feature.flag");
 jest.mock("../../../src/service/private.overseas.entity.details");
 jest.mock("../../../src/service/overseas.entities.service");
 jest.mock("../../../src/utils/date");
 jest.mock('../../../src/utils/url');
+jest.mock("../../../src/utils/trust/api.to.web.mapper");
 
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
@@ -36,6 +37,7 @@ import { companyAuthentication } from "../../../src/middleware/company.authentic
 import { entityCookieRemoveMock } from "../../__mocks__/update.entity.mocks";
 import { getDataFromEntityCookie } from "../../../src/utils/update/data.cookie";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
+import { mapTrustApiToWebWhenFlagsAreSet } from "../../../src/utils/trust/api.to.web.mapper";
 
 import { postTransaction, closeTransaction } from "../../../src/service/transaction.service";
 import { OverseasEntityKey, Transactionkey } from "../../../src/model/data.types.model";
@@ -113,16 +115,16 @@ const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 const mockGetRedirectUrl = getRedirectUrl as jest.Mock;
 
-mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockCompanyAuthenticationMiddleware = companyAuthentication as jest.Mock;
-mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
-mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockHasOverseasEntityMiddleware = hasOverseasEntity as jest.Mock;
-mockHasOverseasEntityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockHasOverseasEntityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockGetPrivateOeDetails = getPrivateOeDetails as jest.Mock;
 const mockGetBeneficialOwnersPrivateData = getBeneficialOwnersPrivateData as jest.Mock;
@@ -130,16 +132,16 @@ const mockSetExtraData = setExtraData as jest.Mock;
 const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
 
 const mockTransactionService = postTransaction as jest.Mock;
-mockTransactionService.mockReturnValue( TRANSACTION_ID );
+mockTransactionService.mockReturnValue(TRANSACTION_ID);
 
 const mockOverseasEntity = updateOverseasEntity as jest.Mock;
-mockOverseasEntity.mockReturnValue( OVERSEAS_ENTITY_ID );
+mockOverseasEntity.mockReturnValue(OVERSEAS_ENTITY_ID);
 
 const mockCloseTransaction = closeTransaction as jest.Mock;
-mockCloseTransaction.mockReturnValue( TRANSACTION_CLOSED_RESPONSE );
+mockCloseTransaction.mockReturnValue(TRANSACTION_CLOSED_RESPONSE);
 
 const mockPaymentsSession = startPaymentsSession as jest.Mock;
-mockPaymentsSession.mockReturnValue( "CONFIRMATION_URL" );
+mockPaymentsSession.mockReturnValue("CONFIRMATION_URL");
 
 const mockGetTodaysDate = getTodaysDate as jest.Mock;
 
@@ -151,6 +153,9 @@ mockIsRegistrationJourney.mockReturnValue(false);
 
 const mockGetDataFromEntityCookie = getDataFromEntityCookie as jest.Mock;
 mockGetDataFromEntityCookie.mockReturnValue(entityCookieRemoveMock);
+
+const mockMapTrustApiToWebWhenFlagsAreSet = mapTrustApiToWebWhenFlagsAreSet as jest.Mock;
+mockMapTrustApiToWebWhenFlagsAreSet.mockReturnValue(true);
 
 const mockIsRemoveJourney = isRemoveJourney as jest.Mock;
 
@@ -394,7 +399,7 @@ describe("Update review overseas entity information controller tests", () => {
 
     test('catch error when rendering the page', async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
-      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockLoggerDebugRequest.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_CH_REF_UPDATE_MOCK);
       const resp = await request(app).get(UPDATE_REVIEW_STATEMENT_URL);
       expect(resp.status).toEqual(500);

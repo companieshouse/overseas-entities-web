@@ -12,6 +12,7 @@ import { getDataFromEntityCookie } from "./update/data.cookie";
 import { relevantPeriodStatementsState } from "../controllers/update/confirm.overseas.entity.details.controller";
 import { fetchOverseasEntityEmailAddress } from "./update/fetch.overseas.entity.email";
 import { getRedirectUrl, isRemoveJourney } from "./url";
+import { mapTrustApiToWebWhenFlagsAreSet } from "./trust/api.to.web.mapper";
 import { fetchBeneficialOwnersPrivateData } from "./update/fetch.beneficial.owners.private.data";
 import { fetchManagingOfficersPrivateData } from "./update/fetch.managing.officers.private.data";
 import { ApplicationData, removeType } from "../model";
@@ -46,6 +47,7 @@ export const getDataForReview = async (req: Request, res: Response, next: NextFu
   const session = req.session as Session;
   const isRemove: boolean = await isRemoveJourney(req);
   const appData: ApplicationData = await getApplicationData(req);
+  mapTrustApiToWebWhenFlagsAreSet(appData);
   const hasAnyBosWithTrusteeNocs = isNoChangeJourney ? checkEntityReviewRequiresTrusts(appData) : checkEntityRequiresTrusts(appData);
   const backLinkUrl = getBackLinkUrl(req, isNoChangeJourney, hasAnyBosWithTrusteeNocs, isRemove);
   const templateName = getTemplateName(isNoChangeJourney);

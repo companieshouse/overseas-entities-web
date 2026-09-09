@@ -13,6 +13,7 @@ jest.mock('../../../src/middleware/statement.validation.middleware');
 jest.mock("../../../src/utils/date");
 jest.mock("../../../src/utils/url");
 jest.mock("../../../src/utils/update/data.cookie");
+jest.mock("../../../src/utils/trust/api.to.web.mapper");
 
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
@@ -36,6 +37,7 @@ import { BeneficialOwnerOtherKey } from "../../../src/model/beneficial.owner.oth
 import { DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/due.diligence.mock";
 import { BeneficialOwnerIndividualKey } from "../../../src/model/beneficial.owner.individual.model";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
+import { mapTrustApiToWebWhenFlagsAreSet } from "../../../src/utils/trust/api.to.web.mapper";
 import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/overseas.entity.due.diligence.mock";
 
 import { postTransaction, closeTransaction } from "../../../src/service/transaction.service";
@@ -252,6 +254,9 @@ mockIsRegistrationJourney.mockReturnValue(false);
 
 const mockGetDataFromEntityCookie = getDataFromEntityCookie as jest.Mock;
 mockGetDataFromEntityCookie.mockReturnValue(entityCookieRemoveMock);
+
+const mockMapTrustApiToWebWhenFlagsAreSet = mapTrustApiToWebWhenFlagsAreSet as jest.Mock;
+mockMapTrustApiToWebWhenFlagsAreSet.mockReturnValue(true);
 
 describe("CHECK YOUR ANSWERS controller", () => {
 

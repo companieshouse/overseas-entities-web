@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from "express";
-import { Session } from "@companieshouse/node-session-handler";
 import { logger } from "../../utils/logger";
 import { getRedirectUrl } from "../../utils/url";
 import { ApplicationData } from "../../model";
@@ -27,11 +26,8 @@ import {
 export const get = async (req: Request, res: Response, next: NextFunction) => {
 
   try {
-
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const session = req.session as Session;
-    const appData: ApplicationData = await getApplicationData(session);
-
+    const appData: ApplicationData = await getApplicationData(req);
     return res.render(UPDATE_CONFIRM_TO_REMOVE_PAGE, {
       backLinkUrl: UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
       templateName: UPDATE_CONFIRM_TO_REMOVE_PAGE,

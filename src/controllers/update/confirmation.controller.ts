@@ -1,12 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 import { logger } from "../../utils/logger";
-import { Transactionkey } from "../../model/data.types.model";
-import { isRemoveJourney } from "../../utils/url";
 import { ApplicationData } from "../../model/application.model";
 import { isNoChangeJourney } from "../../utils/update/no.change.journey";
 import { removeEntityCookie } from "../../utils/update/data.cookie";
 import { getLoggedInUserEmail } from "../../utils/session";
 import { WhoIsRegisteringType } from "../../model/who.is.making.filing.model";
+import { IsRemoveKey, Transactionkey } from "../../model/data.types.model";
 import { CONFIRMATION_PAGE, JourneyType } from "../../config";
 import { deleteApplicationData, getApplicationData } from "../../utils/application.data";
 
@@ -19,14 +18,10 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = await getApplicationData(req, true);
     const referenceNumber = appData[Transactionkey];
 
-    // It's necessary to do this check and save the result before deleting the application
-    // data (as the application data is used by the 'isRemoveJourney' function)
-    const isRemove: boolean = await isRemoveJourney(req);
-
     deleteApplicationData(req.session);
     removeEntityCookie(req, res);
 
-    if (isRemove) {
+    if (appData[IsRemoveKey]) {
       return res.render(CONFIRMATION_PAGE, {
         journey: JourneyType.remove,
         isAgentRegistering: appData.who_is_registering === WhoIsRegisteringType.AGENT,

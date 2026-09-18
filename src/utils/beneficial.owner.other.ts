@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 import { v4 as uuidv4 } from 'uuid';
 import { Session } from "@companieshouse/node-session-handler";
-import * as config from "../config";
 import { logger } from "./logger";
 import { isActiveFeature } from "./feature.flag";
 import { saveAndContinue } from "./save.and.continue";
 import { addCeasedDateToTemplateOptions } from "../utils/update/ceased_date_util";
-import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
+import { isRemoveJourney, isUpdateJourney } from "./url";
 import { ApplicationData, ApplicationDataType } from "../model";
+import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
 
 import {
   StartDateKey,
@@ -50,6 +50,11 @@ import {
   getFromApplicationData,
   removeFromApplicationData, getApplicationData,
 } from "./application.data";
+import {
+  FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC,
+  FEATURE_FLAG_ENABLE_REDIS_REMOVAL,
+  JourneyType
+} from "../config";
 
 export const getBeneficialOwnerOther = async (
   req: Request,
@@ -60,13 +65,16 @@ export const getBeneficialOwnerOther = async (
 
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
   const appData: ApplicationData = await getApplicationData(req);
+  const isRemove: boolean = await isRemoveJourney(req);
+  const isUpdate: boolean = await isUpdateJourney(req);
 
   return res.render(templateName, {
     ...appData,
     backLinkUrl,
     templateName,
     relevant_period: req.query["relevant-period"] === "true",
-    FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC: isActiveFeature(config.FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)
+    journey: isRemove ? JourneyType.remove : (isUpdate ? JourneyType.update : JourneyType.register),
+    FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC: isActiveFeature(FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)
   });
 };
 
@@ -83,6 +91,8 @@ export const getBeneficialOwnerOtherById = async (
     logger.debugRequest(req, `GET BY ID ${req.route.path}`);
 
     const appData: ApplicationData = await getApplicationData(req);
+    const isRemove: boolean = await isRemoveJourney(req);
+    const isUpdate: boolean = await isUpdateJourney(req);
     const id = req.params[ID];
     const data = await getFromApplicationData(req, BeneficialOwnerOtherKey, id, true);
     const principalAddress = data ? mapDataObjectToFields(data[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};
@@ -98,7 +108,8 @@ export const getBeneficialOwnerOtherById = async (
       templateName: `${templateName}/${id}`,
       [StartDateKey]: startDate,
       entity_name: appData.entity_name,
-      FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC: isActiveFeature(config.FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)
+      journey: isRemove ? JourneyType.remove : (isUpdate ? JourneyType.update : JourneyType.register),
+      FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC: isActiveFeature(FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)
     };
 
     addActiveSubmissionBasePathToTemplateData(templateOptions, req);
@@ -123,7 +134,7 @@ export const postBeneficialOwnerOther = async (req: Request, res: Response, next
     const data: ApplicationDataType = await setBeneficialOwnerData(req.body, uuidv4());
     const session = req.session as Session;
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+    if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       await setApplicationData(req, data, BeneficialOwnerOtherKey);
     } else {
       await setApplicationData(session, data, BeneficialOwnerOtherKey);
@@ -156,7 +167,7 @@ export const updateBeneficialOwnerOther = async (req: Request, res: Response, ne
       (data as BeneficialOwnerOther).trust_ids = [...trustIds];
     }
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+    if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       await setApplicationData(req, data, BeneficialOwnerOtherKey);
     } else {
       await setApplicationData(session, data, BeneficialOwnerOtherKey);
@@ -180,7 +191,7 @@ export const removeBeneficialOwnerOther = async (req: Request, res: Response, ne
     const session = req.session as Session;
     await removeFromApplicationData(req, BeneficialOwnerOtherKey, req.params[ID], appData);
 
-    if (!isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+    if (!isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       await saveAndContinue(req, session);
     }
 

@@ -1,12 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 import { Session } from "@companieshouse/node-session-handler";
-import * as config from "../../config";
 import { logger } from "../../utils/logger";
-import { getRedirectUrl } from "../../utils/url";
 import { saveAndContinue } from "../../utils/save.and.continue";
 import { isActiveFeature } from "../../utils/feature.flag";
 import { updateOverseasEntity } from "../../service/overseas.entities.service";
 import { mapRequestToEntityData } from "../../utils/request.to.entity.mapper";
+import { getRedirectUrl, isRemoveJourney } from "../../utils/url";
 import { fetchOverseasEntityEmailAddress } from "../../utils/update/fetch.overseas.entity.email";
 import { fetchBeneficialOwnersPrivateData } from "../../utils/update/fetch.beneficial.owners.private.data";
 import { fetchManagingOfficersPrivateData } from "../../utils/update/fetch.managing.officers.private.data";
@@ -28,6 +27,15 @@ import {
   PrincipalAddressKey,
   PrincipalAddressKeys,
 } from "../../model/address.model";
+import {
+  ENTITY_PAGE,
+  JourneyType,
+  FEATURE_FLAG_ENABLE_REDIS_REMOVAL,
+  UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
+  UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL,
+  UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_WITH_PARAMS_URL,
+  UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_WITH_PARAMS_URL
+} from "../../config";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -35,6 +43,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const session = req.session as Session;
+    const isRemove: boolean = await isRemoveJourney(req);
     const appData: ApplicationData = await getApplicationData(req);
     await fetchBeneficialOwnersPrivateData(appData, req);
     await fetchManagingOfficersPrivateData(appData, req);
@@ -48,17 +57,18 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       ? mapDataObjectToFields(entity[ServiceAddressKey], ServiceAddressKeys, AddressKeys)
       : {};
 
-    return res.render(config.ENTITY_PAGE, {
+    return res.render(ENTITY_PAGE, {
       ...entity,
       ...appData,
       ...serviceAddress,
       ...principalAddress,
-      templateName: config.ENTITY_PAGE,
+      templateName: ENTITY_PAGE,
       entityName: appData?.[EntityNameKey],
+      journey: isRemove ? JourneyType.remove : JourneyType.update,
       backLinkUrl: getRedirectUrl({
         req,
-        urlWithEntityIds: config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_WITH_PARAMS_URL,
-        urlWithoutEntityIds: config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL,
+        urlWithEntityIds: UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_WITH_PARAMS_URL,
+        urlWithoutEntityIds: UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL,
       }),
     });
 
@@ -82,7 +92,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     let appData: ApplicationData = await getApplicationData(req);
     appData = { ...appData, [EntityNameKey]: entityName };
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+    if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       await updateOverseasEntity(req, session, appData);
     } else {
       await saveAndContinue(req, session);
@@ -91,8 +101,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     return res.redirect(getRedirectUrl({
       req,
-      urlWithEntityIds: config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_WITH_PARAMS_URL,
-      urlWithoutEntityIds: config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
+      urlWithEntityIds: UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_WITH_PARAMS_URL,
+      urlWithoutEntityIds: UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
     }));
 
   } catch (error) {

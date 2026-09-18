@@ -4,7 +4,6 @@ import { Session } from "@companieshouse/node-session-handler";
 import { logger } from "../../utils/logger";
 import { InputDate } from "../../model/data.types.model";
 import { setOfficerData } from "../../utils/managing.officer.individual";
-import { getRedirectUrl } from "../../utils/url";
 import { isActiveFeature } from "../../utils/feature.flag";
 import { saveAndContinue } from "../../utils/save.and.continue";
 import { ManagingOfficerKey } from "../../model/managing.officer.model";
@@ -13,6 +12,7 @@ import { setReviewedDateOfBirth } from "./update.review.beneficial.owner.individ
 import { addResignedDateToTemplateOptions } from "../../utils/update/ceased_date_util";
 
 import { HaveDayOfBirthKey, ResignedOnKey } from "../../model/date.model";
+import { getRedirectUrl, isRemoveJourney } from "../../utils/url";
 import { ApplicationData, ApplicationDataType } from "../../model";
 
 import {
@@ -27,6 +27,7 @@ import {
 } from "../../utils/application.data";
 
 import {
+  JourneyType,
   RELEVANT_PERIOD_QUERY_PARAM,
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
   FEATURE_FLAG_ENABLE_REDIS_REMOVAL,
@@ -42,6 +43,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const appData = await getApplicationData(req);
+    const isRemove: boolean = await isRemoveJourney(req);
     const index = Number(req.query.index);
     const isReviewed = req.query.r;
     if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
@@ -54,6 +56,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       ...serviceAddress,
       ...residentialAddress,
       templateName: UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_PAGE,
+      journey: isRemove ? JourneyType.remove : JourneyType.update,
       backLinkUrl: getRedirectUrl({
         req,
         urlWithEntityIds: UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_WITH_PARAMS_URL,

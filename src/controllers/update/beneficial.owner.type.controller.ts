@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from "express";
 import { Session } from "@companieshouse/node-session-handler";
 import { logger } from "../../utils/logger";
 import * as config from "../../config";
-import { getRedirectUrl } from "../../utils/url";
 import { ApplicationData } from "../../model";
 import { saveAndContinue } from "../../utils/save.and.continue";
 import { isActiveFeature } from "../../utils/feature.flag";
@@ -17,6 +16,7 @@ import { BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.indiv
 import { checkAndReviewBeneficialOwner } from "../../utils/update/review.beneficial.owner";
 import { checkAndReviewManagingOfficers } from "../../utils/update/review.managing.officer";
 
+import { getRedirectUrl, isRemoveJourney } from "../../utils/url";
 import { getApplicationData, setExtraData } from "../../utils/application.data";
 import { checkEntityRequiresTrusts, getTrustLandingUrl } from "../../utils/trusts";
 import { FormattedValidationErrors, formatValidationError } from "../../middleware/validation.middleware";
@@ -54,11 +54,13 @@ type BeneficialOwnerTypePageProperties = {
   reviewUrls: ReviewBaseUrls;
   boMoUrls: BoMoBaseUrls;
   boTypeSubmitUrl: string;
+  journey?: string;
 };
 
 const getPageProperties = async (req: Request, errors?: FormattedValidationErrors,): Promise<BeneficialOwnerTypePageProperties> => {
 
   const appData: ApplicationData = await getApplicationData(req);
+  const isRemove: boolean = await isRemoveJourney(req);
 
   const allBosMos = [
     ...(appData[BeneficialOwnerIndividualKey] ?? []),
@@ -93,6 +95,7 @@ const getPageProperties = async (req: Request, errors?: FormattedValidationError
     boMoUrls: getBoMoBaseUrls(req),
     reviewUrls: getReviewBaseUrls(req),
     templateName: config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
+    journey: isRemove ? config.JourneyType.remove : config.JourneyType.update,
   };
 };
 

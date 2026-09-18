@@ -3,15 +3,15 @@ import { v4 as uuidv4 } from "uuid";
 import { Session } from "@companieshouse/node-session-handler";
 import { logger } from "../../utils/logger";
 import { CeasedDateKey } from "../../model/date.model";
-import { getRedirectUrl } from "../../utils/url";
 import { saveAndContinue } from "../../utils/save.and.continue";
 import { isActiveFeature } from "../../utils/feature.flag";
 import { checkRelevantPeriod } from "../../utils/relevant.period";
 import { setBeneficialOwnerData } from "../../utils/beneficial.owner.other";
+import { AddressKeys, EntityNumberKey } from "../../model/data.types.model";
 import { checkAndReviewBeneficialOwner } from "../../utils/update/review.beneficial.owner";
 import { addCeasedDateToTemplateOptions } from "../../utils/update/ceased_date_util";
+import { getRedirectUrl, isRemoveJourney } from "../../utils/url";
 import { ApplicationData, ApplicationDataType } from "../../model";
-import { AddressKeys, EntityNumberKey } from "../../model/data.types.model";
 import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../../model/beneficial.owner.other.model";
 
 import {
@@ -29,6 +29,7 @@ import {
 } from "../../model/address.model";
 
 import {
+  JourneyType,
   RELEVANT_PERIOD_QUERY_PARAM,
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
   FEATURE_FLAG_ENABLE_REDIS_REMOVAL,
@@ -45,6 +46,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const appData = await getApplicationData(req);
+    const isRemove: boolean = await isRemoveJourney(req);
     const index = req.query.index;
     const isReviewed = req.query.r;
     checkAndReviewBeneficialOwner(req as any, appData);
@@ -71,6 +73,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       backLinkUrl,
       entity_number: appData[EntityNumberKey],
       templateName: UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_PAGE,
+      journey: isRemove ? JourneyType.remove : JourneyType.update,
       FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC: isActiveFeature(FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC)
     };
 

@@ -5,7 +5,6 @@ import { Session } from "@companieshouse/node-session-handler";
 import { logger } from "../../utils/logger";
 import { AddressKeys } from "../../model/data.types.model";
 import { CeasedDateKey } from "../../model/date.model";
-import { getRedirectUrl } from "../../utils/url";
 import { isActiveFeature } from "../../utils/feature.flag";
 import { saveAndContinue } from "../../utils/save.and.continue";
 import { checkRelevantPeriod } from "../../utils/relevant.period";
@@ -13,6 +12,7 @@ import { BeneficialOwnerGovKey } from "../../model/beneficial.owner.gov.model";
 import { setBeneficialOwnerData } from "../../utils/beneficial.owner.gov";
 import { checkAndReviewBeneficialOwner } from "../../utils/update/review.beneficial.owner";
 import { addCeasedDateToTemplateOptions } from "../../utils/update/ceased_date_util";
+import { getRedirectUrl, isRemoveJourney } from "../../utils/url";
 import { ApplicationData, ApplicationDataType } from "../../model";
 
 import {
@@ -30,6 +30,7 @@ import {
 } from "../../model/address.model";
 
 import {
+  JourneyType,
   RELEVANT_PERIOD_QUERY_PARAM,
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
   FEATURE_FLAG_ENABLE_REDIS_REMOVAL,
@@ -46,6 +47,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const appData = await getApplicationData(req);
+    const isRemove: boolean = await isRemoveJourney(req);
     const index = req.query.index;
     const isReviewed = req.query.r;
     let dataToReview = {}, principalAddress = {}, serviceAddress = {};
@@ -74,6 +76,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       ...principalAddress,
       backLinkUrl,
       templateName: UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE,
+      journey: isRemove ? JourneyType.remove : JourneyType.update,
       FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC: isActiveFeature(FEATURE_FLAG_ENABLE_PROPERTY_OR_LAND_OWNER_NOC),
     };
 

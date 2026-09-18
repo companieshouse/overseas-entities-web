@@ -1,10 +1,25 @@
 import { NextFunction, Request, Response } from "express";
 import { logger } from "../../utils/logger";
-import * as config from "../../config";
-import { getRedirectUrl } from "../../utils/url";
 import { ApplicationData } from "model";
 import { DueDiligenceKey } from "../../model/due.diligence.model";
 import { getApplicationData } from "../../utils/application.data";
+
+import {
+  getRedirectUrl,
+  isRemoveJourney,
+  isUpdateJourney,
+} from "../../utils/url";
+
+import {
+  JourneyType,
+  UPDATE_DUE_DILIGENCE_URL,
+  OVERSEAS_ENTITY_UPDATE_DETAILS_URL,
+  UPDATE_DUE_DILIGENCE_WITH_PARAMS_URL,
+  UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL,
+  UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE,
+  OVERSEAS_ENTITY_UPDATE_DETAILS_WITH_PARAMS_URL,
+  UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_WITH_PARAMS_URL,
+} from "../../config";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -12,11 +27,14 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const appData: ApplicationData = await getApplicationData(req);
+    const isRemove: boolean = await isRemoveJourney(req);
+    const isUpdate: boolean = await isUpdateJourney(req);
 
-    return res.render(config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE, {
+    return res.render(UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE, {
       ...appData,
       backLinkUrl: getBackLinkUrl(req, appData),
-      templateName: config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE,
+      templateName: UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE,
+      journey: isRemove ? JourneyType.remove : (isUpdate ? JourneyType.update : JourneyType.register),
     });
 
   } catch (errors) {
@@ -30,8 +48,8 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const redirectUrl = getRedirectUrl({
       req,
-      urlWithEntityIds: config.OVERSEAS_ENTITY_UPDATE_DETAILS_WITH_PARAMS_URL,
-      urlWithoutEntityIds: config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL,
+      urlWithEntityIds: OVERSEAS_ENTITY_UPDATE_DETAILS_WITH_PARAMS_URL,
+      urlWithoutEntityIds: OVERSEAS_ENTITY_UPDATE_DETAILS_URL,
     });
     return res.redirect(redirectUrl);
   } catch (errors) {
@@ -47,14 +65,14 @@ const getBackLinkUrl = (req: Request, appData: ApplicationData) => {
   if (agentDueDiligence) {
     backLinkUrl = getRedirectUrl({
       req,
-      urlWithEntityIds: config.UPDATE_DUE_DILIGENCE_WITH_PARAMS_URL,
-      urlWithoutEntityIds: config.UPDATE_DUE_DILIGENCE_URL,
+      urlWithEntityIds: UPDATE_DUE_DILIGENCE_WITH_PARAMS_URL,
+      urlWithoutEntityIds: UPDATE_DUE_DILIGENCE_URL,
     });
   } else {
     backLinkUrl = getRedirectUrl({
       req,
-      urlWithEntityIds: config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_WITH_PARAMS_URL,
-      urlWithoutEntityIds: config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL,
+      urlWithEntityIds: UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_WITH_PARAMS_URL,
+      urlWithoutEntityIds: UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL,
     });
   }
 

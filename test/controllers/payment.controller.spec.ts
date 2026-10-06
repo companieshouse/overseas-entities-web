@@ -8,6 +8,7 @@ jest.mock('../../src/middleware/service.availability.middleware');
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
 
+import mockJourneyDetectionMiddleware from "../__mocks__/journey.detection.middleware.mock";
 import app from "../../src/app";
 import { PaymentKey } from "../../src/model/data.types.model";
 import { authentication } from "../../src/middleware/authentication.middleware";
@@ -41,6 +42,8 @@ import {
   PAYMENT_DECLINED_WITH_TRANSACTION_URL_AND_QUERY_STRING,
 } from "../__mocks__/session.mock";
 
+mockJourneyDetectionMiddleware.mockClear();
+
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockLoggerInfoRequest = logger.infoRequest as jest.Mock;
 const mockCreateAndLogErrorRequest = createAndLogErrorRequest as jest.Mock;
@@ -69,7 +72,7 @@ describe("Payment controller", () => {
       mockFetchApplicationData.mockReturnValueOnce({});
       await request(app).get(PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING);
 
-      expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(4);
+      expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(3);
       expect(mockLoggerDebugRequest).not.toHaveBeenCalled();
       expect(mockCreateAndLogErrorRequest).toHaveBeenCalledTimes(1);
     });
@@ -86,7 +89,7 @@ describe("Payment controller", () => {
       expect(resp.header.location).toEqual(CONFIRMATION_URL);
       expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${CONFIRMATION_URL}`);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
-      expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(4);
+      expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(3);
       expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
     });
 
@@ -99,7 +102,7 @@ describe("Payment controller", () => {
       expect(resp.header.location).toEqual(`${REGISTER_AN_OVERSEAS_ENTITY_URL}${PAYMENT_FAILED_PAGE}`);
       expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${PAYMENT_FAILED_URL}`);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
-      expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(4);
+      expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(3);
       expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
     });
 
@@ -128,7 +131,7 @@ describe("Payment controller", () => {
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(`${REGISTER_AN_OVERSEAS_ENTITY_URL}transaction/${TRANSACTION_ID}/submission/${OVERSEAS_ENTITY_ID}/${CONFIRMATION_PAGE}`);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
-      expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(4);
+      expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(3);
       expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
     });
 
@@ -145,7 +148,7 @@ describe("Payment controller", () => {
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(`${REGISTER_AN_OVERSEAS_ENTITY_URL}transaction/${TRANSACTION_ID}/submission/${OVERSEAS_ENTITY_ID}/${PAYMENT_FAILED_PAGE}`);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
-      expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(4);
+      expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(3);
       expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
     });
 

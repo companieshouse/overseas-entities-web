@@ -30,9 +30,9 @@
   "homepage": "https://github.com/companieshouse/overseas-entities-web#readme",
   "dependencies": {
     "@companieshouse/api-sdk-node": "^2.0.356",
-    "@companieshouse/node-session-handler": "^5.2.15",
+    "@companieshouse/node-session-handler": "^5.2.20",
     "@companieshouse/structured-logging-node": "^2.0.14",
-    "@companieshouse/web-security-node": "^4.4.21",
+    "@companieshouse/web-security-node": "^4.4.30",
     "cookie-parser": "^1.4.6",
     "express": "^4.17.3",
     "express-validator": "^6.14.0",

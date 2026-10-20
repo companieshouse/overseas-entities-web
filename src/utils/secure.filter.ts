@@ -118,10 +118,10 @@ const updateEntityDetails = async (
     } else {
       if (appData[Transactionkey] && appData[OverseasEntityKey]) {
         if (isSecureRegister === "0") {
-          await updateOverseasEntity(req, session, appData, true);
+          await updateOverseasEntity(req, session, appData);
         } else {
           delete appData[IsSecureRegisterKey]; // updating when values is not "0" fails with API error, so we unset it instead
-          await updateOverseasEntity(req, session, appData, true);
+          await updateOverseasEntity(req, session, appData);
         }
       } else {
         throw new Error("Error: is_secure_register filter cannot be updated - transaction_id or overseas_entity_id is missing");
@@ -139,7 +139,7 @@ const getNextPageUrl = (req, appData: ApplicationData, fallbackUrl: string, isSe
     }
 
     if (appData[Transactionkey] && appData[OverseasEntityKey]) {
-      return getUrlWithTransactionIdAndSubmissionId(fallbackUrl, appData[Transactionkey], appData[OverseasEntityKey]);
+      return getUrlWithTransactionIdAndSubmissionId(fallbackUrl, appData[Transactionkey] as string, appData[OverseasEntityKey] as string);
     }
 
     if (isSecureRegister === "0") {

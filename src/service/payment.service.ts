@@ -1,24 +1,22 @@
 import { Request } from "express";
-import { v4 as uuidv4 } from 'uuid';
+import { CreatePaymentRequest, Payment } from "@companieshouse/api-sdk-node/dist/services/payment";
 import { Session } from "@companieshouse/node-session-handler";
+import { v4 as uuidv4 } from 'uuid';
 import ApiClient from "@companieshouse/api-sdk-node/dist/client";
+
 import { isActiveFeature } from "../utils/feature.flag";
 import { ApplicationData } from "../model";
 import { createOAuthApiClient } from "./api.service";
 import { getUrlWithParamsToPath } from "../utils/url";
 import { createAndLogErrorRequest, logger } from "../utils/logger";
 
-import { CreatePaymentRequest, Payment } from "@companieshouse/api-sdk-node/dist/services/payment";
-
 import {
-  PaymentKey,
   Transactionkey,
   OverseasEntityKey,
 } from "../model/data.types.model";
 
 import {
   setExtraData,
-  setApplicationData,
   getApplicationData,
 } from "../utils/application.data";
 
@@ -45,11 +43,11 @@ export const startPaymentsSession = async (
   transactionId: string,
   overseasEntityId: string,
   transactionRes,
-  baseURL?: string
+  paymentRef: CreatePaymentRequest
 ): Promise<string> => {
 
   const appData: ApplicationData = {
-    ...(await getApplicationData(req, true)),
+    ...(await getApplicationData(req)),
     [Transactionkey]: transactionId,
     [OverseasEntityKey]: overseasEntityId
   };
@@ -67,20 +65,11 @@ export const startPaymentsSession = async (
     return confirmationPageUrl;
   }
 
-  const createPaymentRequest: CreatePaymentRequest = setPaymentRequest(req, transactionId, overseasEntityId, baseURL);
-
-  // Save app data including the state used as `nonce` against CSRF.
-  if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
-    await setApplicationData(req, createPaymentRequest, PaymentKey);
-  } else {
-    await setApplicationData(session, createPaymentRequest, PaymentKey);
-  }
-
   // Create Payment Api Client by using the `paymentUrl` as baseURL
   const apiClient: ApiClient = createOAuthApiClient(session, paymentUrl);
 
   // Calls the platform to create a payment session
-  const paymentResult = await apiClient.payment.createPaymentWithFullUrl(createPaymentRequest);
+  const paymentResult = await apiClient.payment.createPaymentWithFullUrl(paymentRef);
 
   // Verify the state of the payment, success or failure (e.g. cost not found, connection issues, etc..)
   if (paymentResult.isFailure()) {
@@ -102,7 +91,7 @@ export const startPaymentsSession = async (
   }
 };
 
-const setPaymentRequest = (req: Request, transactionId: string, overseasEntityId: string, baseUrl?: string): CreatePaymentRequest => {
+export const setPaymentRequest = (req: Request, transactionId: string, overseasEntityId: string, baseUrl?: string): CreatePaymentRequest => {
 
   const paymentResourceUri = `${API_URL}/transactions/${transactionId}/${PAYMENT}`;
   const reference = `${REFERENCE}_${transactionId}`;

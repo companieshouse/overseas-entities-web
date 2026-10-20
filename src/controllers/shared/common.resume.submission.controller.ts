@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { v4 as uuidv4 } from "uuid";
 import { Session } from "@companieshouse/node-session-handler";
+import { CreatePaymentRequest } from "@companieshouse/api-sdk-node/dist/services/payment";
 
 import * as config from "../../config";
 import { setExtraData } from "../../utils/application.data";
@@ -9,7 +10,7 @@ import { isActiveFeature } from "../../utils/feature.flag";
 import { DueDiligenceKey } from "../../model/due.diligence.model";
 import { ApplicationData } from "../../model";
 import { startPaymentsSession } from "../../service/payment.service";
-import { isRegistrationJourney } from "../../utils/url";
+// import { isRegistrationJourney } from "../../utils/url";
 import { OverseasEntityDueDiligenceKey } from "../../model/overseas.entity.due.diligence.model";
 import { mapTrustApiReturnModelToWebModel } from "../../utils/trusts";
 
@@ -46,7 +47,7 @@ export const getResumePage = async (req: Request, res: Response, next: NextFunct
 
     const { transactionId, overseasEntityId } = req.params;
     const infoMsg = `Transaction ID: ${transactionId}, OverseasEntity ID: ${overseasEntityId}`;
-    const isRegistration: boolean = isRegistrationJourney(req);
+    // const isRegistration: boolean = isRegistrationJourney(req);
     logger.infoRequest(req, `Resuming OE - ${infoMsg}`);
     const appData: ApplicationData = await getOverseasEntity(req, transactionId, overseasEntityId);
 
@@ -55,8 +56,11 @@ export const getResumePage = async (req: Request, res: Response, next: NextFunct
     }
 
     const session = req.session as Session;
-    await setWebApplicationData(req, session, appData, transactionId, overseasEntityId);
     const transactionResource = await getTransaction(req, transactionId);
+
+    if (transactionResource.status === config.OPEN) {
+      await setWebApplicationData(req, session, appData, transactionId, overseasEntityId);
+    }
 
     if (transactionResource.status === config.CLOSED_PENDING_PAYMENT) {
       const headersPaymentUrl = {
@@ -64,8 +68,8 @@ export const getResumePage = async (req: Request, res: Response, next: NextFunct
           [config.PAYMENT_REQUIRED_HEADER]: config.PAYMENTS_API_URL + config.PAYMENTS
         }
       };
-      const baseURL = `${config.CHS_URL}${isRegistration ? config.REGISTER_AN_OVERSEAS_ENTITY_URL : config.UPDATE_AN_OVERSEAS_ENTITY_URL}`;
-      const redirectPath = await startPaymentsSession(req, session, transactionId, overseasEntityId, headersPaymentUrl, baseURL);
+      // const baseURL = `${config.CHS_URL}${isRegistration ? config.REGISTER_AN_OVERSEAS_ENTITY_URL : config.UPDATE_AN_OVERSEAS_ENTITY_URL}`;
+      const redirectPath = await startPaymentsSession(req, session, transactionId, overseasEntityId, headersPaymentUrl, appData.payment as CreatePaymentRequest);
       logger.infoRequest(req, `Payments Session created on Resume link with, Trans_ID: ${transactionId}, OE_ID: ${overseasEntityId}. Redirect to: ${redirectPath}`);
       return res.redirect(redirectPath);
     }
@@ -132,7 +136,7 @@ const setWebApplicationData = async (
   }
 
   if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
-    await updateOverseasEntity(req, req.session as Session, appData, true);
+    await updateOverseasEntity(req, req.session as Session, appData);
   }
 
   setExtraData(session, appData);

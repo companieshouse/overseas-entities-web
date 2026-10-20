@@ -11,7 +11,7 @@ import {
 } from '../../config';
 export const hasBOsOrMOs = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const appData: ApplicationData = await getApplicationData(req, true);
+    const appData: ApplicationData = await getApplicationData(req);
     if (!checkBOsOrMOsDetailsEntered(appData)) {
       logger.infoRequest(req, NavigationErrorMessage);
       return res.redirect(getRedirectUrl({

@@ -1,18 +1,21 @@
 import { NextFunction, Request, Response } from "express";
 import { Session } from "@companieshouse/node-session-handler";
+import { CreatePaymentRequest } from "@companieshouse/api-sdk-node/dist/services/payment";
+
 import { logger } from "../utils/logger";
 import * as config from "../config";
-import { updateOverseasEntity } from "../service/overseas.entities.service";
-import { closeTransaction } from "../service/transaction.service";
 import { isActiveFeature } from "../utils/feature.flag";
 import { ApplicationData } from "../model";
-import { startPaymentsSession } from "../service/payment.service";
+import { closeTransaction } from "../service/transaction.service";
+import { updateOverseasEntity } from "../service/overseas.entities.service";
 import { RoleWithinTrustType } from "../model/role.within.trust.type.model";
-import { fetchApplicationData } from "../utils/application.data";
-import { OverseasEntityKey, Transactionkey } from "../model/data.types.model";
+import { mapTrustApiToWebWhenFlagsAreSet } from "../utils/trust/api.to.web.mapper";
+
+import { setPaymentRequest, startPaymentsSession } from "../service/payment.service";
+import { fetchApplicationData, setApplicationData } from "../utils/application.data";
 import { getUrlWithParamsToPath, isRegistrationJourney } from "../utils/url";
 import { checkEntityRequiresTrusts, getTrustLandingUrl } from "../utils/trusts";
-import { mapTrustApiToWebWhenFlagsAreSet } from "../utils/trust/api.to.web.mapper";
+import { OverseasEntityKey, PaymentKey, Transactionkey } from "../model/data.types.model";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -76,11 +79,18 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
     const transactionID = appData[Transactionkey] as string;
     const overseasEntityID = appData[OverseasEntityKey] as string;
+
     await updateOverseasEntity(req, session);
+
+    const paymentRef: CreatePaymentRequest = setPaymentRequest(req, transactionID, overseasEntityID);
+    await setApplicationData(req, paymentRef, PaymentKey);
+
     const transactionClosedResponse = await closeTransaction(req, session, transactionID, overseasEntityID);
     logger.infoRequest(req, `Transaction Closed, ID: ${transactionID}`);
-    const redirectPath = await startPaymentsSession(req, session, transactionID, overseasEntityID, transactionClosedResponse);
+
+    const redirectPath = await startPaymentsSession(req, session, transactionID, overseasEntityID, transactionClosedResponse, paymentRef);
     logger.infoRequest(req, `Payments Session created with, Trans_ID: ${transactionID}, OE_ID: ${overseasEntityID}. Redirect to: ${redirectPath}`);
+
     return res.redirect(redirectPath);
 
   } catch (error) {

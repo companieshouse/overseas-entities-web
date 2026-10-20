@@ -4,9 +4,9 @@ import { logger } from "../utils/logger";
 import { getTodaysDate } from "./date";
 import { isActiveFeature } from "../utils/feature.flag";
 import { closeTransaction } from "../service/transaction.service";
-import { getApplicationData } from "../utils/application.data";
+import { getApplicationData, setApplicationData } from "../utils/application.data";
 import { RoleWithinTrustType } from "../model/role.within.trust.type.model";
-import { startPaymentsSession } from "../service/payment.service";
+import { setPaymentRequest, startPaymentsSession } from "../service/payment.service";
 import { checkRPStatementsExist } from "./relevant.period";
 import { getDataFromEntityCookie } from "./update/data.cookie";
 import { relevantPeriodStatementsState } from "../controllers/update/confirm.overseas.entity.details.controller";
@@ -16,7 +16,7 @@ import { mapTrustApiToWebWhenFlagsAreSet } from "./trust/api.to.web.mapper";
 import { fetchBeneficialOwnersPrivateData } from "./update/fetch.beneficial.owners.private.data";
 import { fetchManagingOfficersPrivateData } from "./update/fetch.managing.officers.private.data";
 import { ApplicationData, removeType } from "../model";
-import { OverseasEntityKey, Transactionkey } from "../model/data.types.model";
+import { OverseasEntityKey, PaymentKey, Transactionkey } from "../model/data.types.model";
 import { checkEntityRequiresTrusts, checkEntityReviewRequiresTrusts } from "./trusts";
 
 import {
@@ -41,6 +41,7 @@ import {
   UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_WITH_PARAMS_URL,
   UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_WITH_PARAMS_URL,
 } from "../config";
+import { CreatePaymentRequest } from "@companieshouse/api-sdk-node/dist/services/payment";
 
 export const getDataForReview = async (req: Request, res: Response, next: NextFunction, isNoChangeJourney: boolean) => {
 
@@ -144,8 +145,14 @@ export const postDataForReview = async (req: Request, res: Response, next: NextF
 
     const transactionID = appData[Transactionkey] as string;
     const overseasEntityID = appData[OverseasEntityKey] as string;
-    const transactionClosedResponse = await closeTransaction(req, session, transactionID, overseasEntityID);
     const baseURL = `${CHS_URL}${UPDATE_AN_OVERSEAS_ENTITY_URL}`;
+
+    // Generate and save the payment reference before the transaction is closed, and before the payment session starts
+    const paymentRef: CreatePaymentRequest = setPaymentRequest(req, transactionID, overseasEntityID, baseURL);
+    await setApplicationData(req, paymentRef, PaymentKey);
+
+    // Close the transaction and start the payment session
+    const transactionClosedResponse = await closeTransaction(req, session, transactionID, overseasEntityID);
 
     logger.infoRequest(req, `Transaction Closed, ID: ${transactionID}`);
 
@@ -155,12 +162,13 @@ export const postDataForReview = async (req: Request, res: Response, next: NextF
       transactionID,
       overseasEntityID,
       transactionClosedResponse,
-      baseURL
+      paymentRef
     );
 
     logger.infoRequest(req, `Payments Session created with, Trans_ID: ${transactionID}, OE_ID: ${overseasEntityID}. Redirect to: ${redirectPath}`);
 
     return res.redirect(redirectPath);
+
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

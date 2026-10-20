@@ -25,7 +25,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     const { status, state } = req.query;
     req.params[ROUTE_PARAM_SUBMISSION_ID] = req.params[ROUTE_PARAM_SUBMISSION_ID] ?? req.params[ROUTE_PARAM_OVERSEAS_ENTITY_ID];
-    const appData: ApplicationData = await getApplicationData(req, true);
+    const appData: ApplicationData = await getApplicationData(req);
     const savedPayment = appData[PaymentKey] || {} as CreatePaymentRequest;
 
     logger.infoRequest(req, `Returned state: ${ state }, saved state: ${savedPayment.state}, with status: ${ status }`);

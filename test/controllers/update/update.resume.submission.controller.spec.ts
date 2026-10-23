@@ -21,7 +21,6 @@ import { authentication } from "../../../src/middleware/authentication.middlewar
 import { getTransaction } from "../../../src/service/transaction.service";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { DueDiligenceKey } from '../../../src/model/due.diligence.model';
-import { getOverseasEntity } from "../../../src/service/overseas.entities.service";
 import { startPaymentsSession } from "../../../src/service/payment.service";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
@@ -32,6 +31,7 @@ import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from '../../__mocks__/overs
 
 import { createAndLogErrorRequest, logger } from "../../../src/utils/logger";
 import { getApplicationData, setExtraData } from "../../../src/utils/application.data";
+import { getOverseasEntity, updateOverseasEntity } from "../../../src/service/overseas.entities.service";
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from '../../../src/model/who.is.making.filing.model';
 
 import {
@@ -74,19 +74,19 @@ import {
 
 const mockSetExtraData = setExtraData as jest.Mock;
 const mockInfoRequest = logger.infoRequest as jest.Mock;
-const mockMapTrustApiReturnModelToWebModel = mapTrustApiReturnModelToWebModel as jest.Mock;
+const mockGetTransactionService = getTransaction as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockStartPaymentsSessionService = startPaymentsSession as jest.Mock;
+const mockMapTrustApiReturnModelToWebModel = mapTrustApiReturnModelToWebModel as jest.Mock;
+
+const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
+mockUpdateOverseasEntity.mockReturnValue(true);
 
 const mockCreateAndLogErrorRequest = createAndLogErrorRequest as jest.Mock;
 mockCreateAndLogErrorRequest.mockReturnValue("Error on resuming OE");
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue(false);
-
-const mockGetTransactionService = getTransaction as jest.Mock;
-mockGetTransactionService.mockReturnValue({});
-
-const mockStartPaymentsSessionService = startPaymentsSession as jest.Mock;
 
 const mockGetOverseasEntity = getOverseasEntity as jest.Mock;
 mockGetOverseasEntity.mockReturnValue(APPLICATION_DATA_MOCK);
@@ -124,6 +124,7 @@ describe("Update Resume submission controller", () => {
     jest.clearAllMocks();
     mockGetOverseasEntity.mockReset();
     mockIsActiveFeature.mockReset();
+    mockGetTransactionService.mockReset();
   });
 
   describe("GET tests", () => {
@@ -131,6 +132,10 @@ describe("Update Resume submission controller", () => {
     test(`Redirect to ${SECURE_UPDATE_FILTER_URL} page`, async () => {
       const mockAppData = APPLICATION_DATA_MOCK;
       mockGetOverseasEntity.mockReturnValueOnce(mockAppData);
+      mockGetTransactionService.mockReturnValueOnce({
+        ...MOCK_GET_TRANSACTION_RESPONSE.resource,
+        status: config.OPEN,
+      });
 
       const resp = await request(app).get(RESUME_UPDATE_SUBMISSION_URL);
 
@@ -154,6 +159,10 @@ describe("Update Resume submission controller", () => {
 
       mockIsActiveFeature.mockReturnValueOnce(true);
       mockIsActiveFeature.mockReturnValueOnce(true);
+      mockGetTransactionService.mockReturnValueOnce({
+        ...MOCK_GET_TRANSACTION_RESPONSE.resource,
+        status: config.OPEN,
+      });
       mockGetOverseasEntity.mockReturnValueOnce(mockAppData);
       const resp = await request(app).get(RESUME_UPDATE_SUBMISSION_URL);
 
@@ -181,6 +190,10 @@ describe("Update Resume submission controller", () => {
       };
 
       mockIsActiveFeature.mockReturnValueOnce(false);
+      mockGetTransactionService.mockReturnValueOnce({
+        ...MOCK_GET_TRANSACTION_RESPONSE.resource,
+        status: config.OPEN,
+      });
       mockGetOverseasEntity.mockReturnValueOnce(mockAppData);
       const resp = await request(app).get(RESUME_UPDATE_SUBMISSION_URL);
 
@@ -210,6 +223,10 @@ describe("Update Resume submission controller", () => {
 
       mockIsActiveFeature.mockReturnValueOnce(true);
       mockIsActiveFeature.mockReturnValueOnce(true);
+      mockGetTransactionService.mockReturnValueOnce({
+        ...MOCK_GET_TRANSACTION_RESPONSE.resource,
+        status: config.OPEN,
+      });
       mockGetOverseasEntity.mockReturnValueOnce(mockAppData);
       const resp = await request(app).get(RESUME_UPDATE_SUBMISSION_URL);
 
@@ -226,12 +243,12 @@ describe("Update Resume submission controller", () => {
     });
 
     test(`Redirect to starting payment page after resuming the OverseasEntity object`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockIsActiveFeature.mockReturnValue(true);
+      mockGetTransactionService.mockReturnValueOnce(MOCK_GET_TRANSACTION_RESPONSE.resource);
       mockGetOverseasEntity.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
         [OverseasEntityDueDiligenceKey]: {}
       });
-      mockGetTransactionService.mockReturnValueOnce(MOCK_GET_TRANSACTION_RESPONSE.resource);
       mockStartPaymentsSessionService.mockReturnValueOnce(FULL_PAYMENT_REDIRECT_PATH);
 
       const errorMsg = `Trans_ID: ${TRANSACTION_ID}, OE_ID: ${OVERSEAS_ENTITY_ID}. Redirect to: ${FULL_PAYMENT_REDIRECT_PATH}`;
@@ -249,7 +266,7 @@ describe("Update Resume submission controller", () => {
       );
       expect(mockInfoRequest).toHaveBeenCalledWith(expect.anything(), `Payments Session created on Resume link with, ${errorMsg}`);
       expect(mockGetOverseasEntity).toHaveBeenCalledTimes(1);
-      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+      expect(mockSetExtraData).not.toHaveBeenCalled();
       expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
     });
 
@@ -279,9 +296,9 @@ describe("Update Resume submission controller", () => {
       );
       expect(mockInfoRequest).toHaveBeenCalledWith(expect.anything(), `Payments Session created on Resume link with, ${errorMsg}`);
       expect(mockGetOverseasEntity).toHaveBeenCalledTimes(1);
-      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+      expect(mockSetExtraData).not.toHaveBeenCalled();
       expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
-      expect(mockMapTrustApiReturnModelToWebModel).toHaveBeenCalledTimes(1);
+      expect(mockMapTrustApiReturnModelToWebModel).not.toHaveBeenCalled();
     });
 
     test(`Should throw an error on Resuming the OverseasEntity`, async () => {
@@ -315,7 +332,10 @@ describe("Update Resume submission controller", () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // REDIS flag
       mockIsActiveFeature.mockReturnValueOnce(true); // trusts feature flag
       mockIsActiveFeature.mockReturnValueOnce(true); // new NOCs
-
+      mockGetTransactionService.mockReturnValueOnce({
+        ...MOCK_GET_TRANSACTION_RESPONSE.resource,
+        status: config.OPEN,
+      });
       const mockAppData = { ...mockNocAppData };
       mockGetOverseasEntity.mockReturnValueOnce(mockAppData);
       const resp = await request(app).get(RESUME_UPDATE_SUBMISSION_URL);
@@ -339,7 +359,10 @@ describe("Update Resume submission controller", () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // REDIS flag
       mockIsActiveFeature.mockReturnValueOnce(true); // trusts feature flag
       mockIsActiveFeature.mockReturnValueOnce(false); // new NOCs
-
+      mockGetTransactionService.mockReturnValueOnce({
+        ...MOCK_GET_TRANSACTION_RESPONSE.resource,
+        status: config.OPEN,
+      });
       const mockAppData = { ...mockNocAppData };
       mockGetOverseasEntity.mockReturnValueOnce(mockAppData);
       const resp = await request(app).get(RESUME_UPDATE_SUBMISSION_URL);

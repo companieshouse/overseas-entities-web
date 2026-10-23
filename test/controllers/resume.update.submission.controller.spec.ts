@@ -25,7 +25,8 @@ import { serviceAvailabilityMiddleware } from "../../src/middleware/service.avai
 import {
   SECURE_UPDATE_FILTER_URL,
   SECURE_UPDATE_FILTER_PAGE,
-  UPDATE_AN_OVERSEAS_ENTITY_URL, SECURE_UPDATE_FILTER_WITH_PARAMS_URL
+  UPDATE_AN_OVERSEAS_ENTITY_URL,
+  SECURE_UPDATE_FILTER_WITH_PARAMS_URL,
 } from "../../src/config";
 
 import {
@@ -45,7 +46,7 @@ const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue(false);
 
 const mockGetTransactionService = getTransaction as jest.Mock;
-mockGetTransactionService.mockReturnValue({});
+mockGetTransactionService.mockReturnValue({ status: "open" });
 
 const mockGetOverseasEntity = getOverseasEntity as jest.Mock;
 mockGetOverseasEntity.mockReturnValue(APPLICATION_DATA_MOCK);

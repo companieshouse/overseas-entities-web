@@ -55,8 +55,11 @@ export const getResumePage = async (req: Request, res: Response, next: NextFunct
     }
 
     const session = req.session as Session;
-    await setWebApplicationData(req, session, appData, transactionId, overseasEntityId);
     const transactionResource = await getTransaction(req, transactionId);
+
+    if (transactionResource.status === config.OPEN) {
+      await setWebApplicationData(req, session, appData, transactionId, overseasEntityId);
+    }
 
     if (transactionResource.status === config.CLOSED_PENDING_PAYMENT) {
       const headersPaymentUrl = {
@@ -64,9 +67,11 @@ export const getResumePage = async (req: Request, res: Response, next: NextFunct
           [config.PAYMENT_REQUIRED_HEADER]: config.PAYMENTS_API_URL + config.PAYMENTS
         }
       };
+
       const baseURL = `${config.CHS_URL}${isRegistration ? config.REGISTER_AN_OVERSEAS_ENTITY_URL : config.UPDATE_AN_OVERSEAS_ENTITY_URL}`;
       const redirectPath = await startPaymentsSession(req, session, transactionId, overseasEntityId, headersPaymentUrl, baseURL);
       logger.infoRequest(req, `Payments Session created on Resume link with, Trans_ID: ${transactionId}, OE_ID: ${overseasEntityId}. Redirect to: ${redirectPath}`);
+
       return res.redirect(redirectPath);
     }
 
@@ -132,7 +137,7 @@ const setWebApplicationData = async (
   }
 
   if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
-    await updateOverseasEntity(req, req.session as Session, appData, true);
+    await updateOverseasEntity(req, req.session as Session, appData);
   }
 
   setExtraData(session, appData);

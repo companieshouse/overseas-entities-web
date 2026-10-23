@@ -41,7 +41,9 @@ export const REFERENCE = "OverseasEntitiesReference";
 export const PAYMENT_REQUIRED_HEADER = "x-payment-required";
 export const PAYMENT_PAID = "paid";
 export const CLOSED_PENDING_PAYMENT = "closed pending payment";
+export const OPEN = "open";
 export const PAYMENTS = "/payments";
+export const PAYMENT_REF_CACHE_PREFIX = "roe_payment_ref_";
 export const YOUR_FILINGS_PATH = "/user/transactions";
 
 export const EXCLUDED_PATHS = /^\/(?!register-an-overseas-entity\/healthcheck).*/;

@@ -1,3 +1,5 @@
+import { PAYMENT_REF_MOCK } from "../__mocks__/payment.mock";
+
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock("../../src/utils/logger");
@@ -6,10 +8,13 @@ jest.mock('../../src/utils/feature.flag');
 jest.mock('../../src/middleware/service.availability.middleware');
 
 import { NextFunction, Request, Response } from "express";
+import { Session } from "@companieshouse/node-session-handler";
+
 import request from "supertest";
 
 import mockJourneyDetectionMiddleware from "../__mocks__/journey.detection.middleware.mock";
 import app from "../../src/app";
+import { get } from "../../src/controllers/payment.controller";
 import { PaymentKey } from "../../src/model/data.types.model";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { isActiveFeature } from "../../src/utils/feature.flag";
@@ -42,10 +47,24 @@ import {
   PAYMENT_DECLINED_WITH_TRANSACTION_URL_AND_QUERY_STRING,
 } from "../__mocks__/session.mock";
 
+const mockNext = jest.fn();
+
+const mockRes = {
+  render: jest.fn() as any,
+  redirect: jest.fn() as any,
+} as Response;
+
+const mockReq = {
+  session: {} as Session,
+  headers: {},
+  params: {},
+} as Request;
+
 mockJourneyDetectionMiddleware.mockClear();
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockLoggerInfoRequest = logger.infoRequest as jest.Mock;
+const mockLoggerInfo = logger.info as jest.Mock;
 const mockCreateAndLogErrorRequest = createAndLogErrorRequest as jest.Mock;
 const mockFetchApplicationData = fetchApplicationData as jest.Mock;
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
@@ -119,20 +138,37 @@ describe("Payment controller", () => {
 
   describe("GET tests for Payment controller with params url", () => {
 
+    beforeEach(() => {
+      mockReq.url = PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING;
+      mockReq.session.getExtraData = jest.fn().mockReturnValue(PAYMENT_REF_MOCK);
+      mockReq.session.deleteExtraData = jest.fn().mockReturnValue(true);
+      mockReq.query = {
+        status: PAYMENT_PAID,
+        state: PAYMENT_REF_MOCK.state
+      };
+      mockReq.params = {
+        transactionId: TRANSACTION_ID,
+        overseasEntityId: OVERSEAS_ENTITY_ID
+      };
+    });
+
     test(`should redirect to ${CONFIRMATION_PAGE} page, Payment Successful with status ${PAYMENT_PAID}`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockIsActiveFeature.mockReturnValueOnce(true);
-      mockFetchApplicationData.mockReturnValueOnce({
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockFetchApplicationData.mockReturnValue({
         ...APPLICATION_DATA_MOCK,
         [PaymentKey]: PAYMENT_OBJECT_MOCK
       });
-      const resp = await request(app).get(PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING);
 
-      expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(`${REGISTER_AN_OVERSEAS_ENTITY_URL}transaction/${TRANSACTION_ID}/submission/${OVERSEAS_ENTITY_ID}/${CONFIRMATION_PAGE}`);
+      await get(mockReq, mockRes, mockNext);
+
+      expect(mockRes.redirect).toBeCalledWith(`${REGISTER_AN_OVERSEAS_ENTITY_URL}transaction/${TRANSACTION_ID}/submission/${OVERSEAS_ENTITY_ID}/${CONFIRMATION_PAGE}`);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
-      expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(3);
+      expect(mockLoggerInfo).toHaveBeenCalledTimes(2);
+      expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
       expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
+      expect(mockReq.session.getExtraData).toHaveBeenCalledTimes(1);
+      expect(mockReq.session.deleteExtraData).toHaveBeenCalledTimes(1);
     });
 
     test(`should redirect to ${PAYMENT_FAILED_PAGE} page, Payment failed somehow and feature flag active`, async () => {
@@ -142,14 +178,20 @@ describe("Payment controller", () => {
         ...APPLICATION_DATA_MOCK,
         [PaymentKey]: PAYMENT_OBJECT_MOCK
       });
+      mockReq.query = {
+        ...mockReq.query,
+        status: null,
+      };
 
-      const resp = await request(app).get(PAYMENT_DECLINED_WITH_TRANSACTION_URL_AND_QUERY_STRING);
+      await get(mockReq, mockRes, mockNext);
 
-      expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(`${REGISTER_AN_OVERSEAS_ENTITY_URL}transaction/${TRANSACTION_ID}/submission/${OVERSEAS_ENTITY_ID}/${PAYMENT_FAILED_PAGE}`);
+      expect(mockRes.redirect).toBeCalledWith(`${REGISTER_AN_OVERSEAS_ENTITY_URL}transaction/${TRANSACTION_ID}/submission/${OVERSEAS_ENTITY_ID}/${PAYMENT_FAILED_PAGE}`);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
-      expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(3);
+      expect(mockLoggerInfo).toHaveBeenCalledTimes(2);
+      expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
       expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
+      expect(mockReq.session.getExtraData).toHaveBeenCalledTimes(1);
+      expect(mockReq.session.deleteExtraData).toHaveBeenCalledTimes(1);
     });
 
   });

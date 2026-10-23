@@ -15,7 +15,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `GET ${CONFIRMATION_PAGE}`);
 
     const isRegistration: boolean = isRegistrationJourney(req);
-    const appData: ApplicationData = await fetchApplicationData(req, isRegistration, true);
+    const appData: ApplicationData = await fetchApplicationData(req, isRegistration);
     const referenceNumber = appData[Transactionkey];
 
     deleteApplicationData(req.session);

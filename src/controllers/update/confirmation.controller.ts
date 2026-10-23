@@ -15,7 +15,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     logger.debugRequest(req, `${req?.method} ${req?.route?.path}`);
 
-    const appData: ApplicationData = await getApplicationData(req, true);
+    const appData: ApplicationData = await getApplicationData(req);
     const referenceNumber = appData[Transactionkey];
 
     deleteApplicationData(req.session);

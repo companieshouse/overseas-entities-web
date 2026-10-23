@@ -21,7 +21,6 @@ import {
 
 import {
   ID,
-  PaymentKey,
   TrusteesNoc,
   Transactionkey,
   NonLegalFirmNoc,
@@ -48,15 +47,15 @@ import {
 /**
  * @todo: remove this method after REDIS removal has been implemented for the Update/Remove journeys (ROE-2645)
  */
-export const fetchApplicationData = (req: Request, isRegistrationOrUpdate: boolean, forceFetch: boolean = false): Promise<ApplicationData> => {
+export const fetchApplicationData = (req: Request, isRegistrationOrUpdate: boolean): Promise<ApplicationData> => {
   if (isRegistrationOrUpdate) {
-    return getApplicationData(req, forceFetch);
+    return getApplicationData(req);
   } else {
     return getApplicationData(req.session);
   }
 };
 
-export const getApplicationData = async (sessionOrRequest: Session | Request | undefined, forceFetch: boolean = false): Promise<ApplicationData> => {
+export const getApplicationData = async (sessionOrRequest: Session | Request | undefined): Promise<ApplicationData> => {
 
   const emptyAppData = {};
   let req: Request;
@@ -82,7 +81,7 @@ export const getApplicationData = async (sessionOrRequest: Session | Request | u
       return emptyAppData;
     }
 
-    const appData = await getOverseasEntity(req, transactionId, submissionId, forceFetch);
+    const appData = await getOverseasEntity(req, transactionId, submissionId);
     appData[Transactionkey] = transactionId;
     appData[OverseasEntityKey] = submissionId;
 
@@ -129,9 +128,7 @@ export const setApplicationData = async (sessionOrRequest: Request | Session | u
 
     setExtraData(req?.session as Session, appData);
 
-    const forceUpdate: boolean = key === PaymentKey;
-
-    return updateOverseasEntity(req as Request, req?.session as Session, appData, forceUpdate);
+    return updateOverseasEntity(req as Request, req?.session as Session, appData);
 
   } catch (e) {
     logger.error(`Error setting application data, with error object: ${e}`);

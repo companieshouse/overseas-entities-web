@@ -3,9 +3,15 @@ import { CreatePaymentRequest } from "@companieshouse/api-sdk-node/dist/services
 import { isActiveFeature } from "../utils/feature.flag";
 import { ApplicationData } from "../model";
 import { fetchApplicationData } from "../utils/application.data";
+import { getCacheKeyForPaymentRef } from "../service/payment.service";
 import { logger, createAndLogErrorRequest } from "../utils/logger";
 import { getUrlWithTransactionIdAndSubmissionId } from "../utils/url";
-import { OverseasEntityKey, PaymentKey, Transactionkey } from "../model/data.types.model";
+
+import {
+  PaymentKey,
+  Transactionkey,
+  OverseasEntityKey,
+} from "../model/data.types.model";
 
 import {
   PAYMENT_PAID,
@@ -14,6 +20,7 @@ import {
   PAYMENT_FAILED_URL,
   PAYMENT_FAILED_PAGE,
   ROUTE_PARAM_SUBMISSION_ID,
+  ROUTE_PARAM_TRANSACTION_ID,
   ACTIVE_SUBMISSION_BASE_PATH,
   ROUTE_PARAM_OVERSEAS_ENTITY_ID,
   REGISTER_AN_OVERSEAS_ENTITY_URL,
@@ -28,10 +35,20 @@ export const get = async (req: Request, res: Response, next: NextFunction): Prom
 
     const { status, state } = req.query;
     req.params[ROUTE_PARAM_SUBMISSION_ID] = req.params[ROUTE_PARAM_SUBMISSION_ID] ?? req.params[ROUTE_PARAM_OVERSEAS_ENTITY_ID];
-    const appData: ApplicationData = await fetchApplicationData(req, true, true);
-    const savedPayment = appData[PaymentKey] || {} as CreatePaymentRequest;
+    const transactionId = req.params[ROUTE_PARAM_TRANSACTION_ID];
+    const submissionId = req.params[ROUTE_PARAM_SUBMISSION_ID];
+    const appData: ApplicationData = await fetchApplicationData(req, true);
+    let savedPayment = appData[PaymentKey] || {} as CreatePaymentRequest;
+    let cacheKey: string = "";
+
+    if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+      logger.info(`Fetching payment reference from cache for transactionId: ${transactionId} and submissionId: ${submissionId}`);
+      cacheKey = getCacheKeyForPaymentRef(transactionId, submissionId);
+      savedPayment = req.session?.getExtraData(cacheKey) as CreatePaymentRequest;
+    }
 
     logger.infoRequest(req, `Returned state: ${ state }, saved state: ${savedPayment.state}, with status: ${ status }`);
+
     // The application must ensure that the returned `state` matches the nonce
     // sent by the application to the Payment Platform. Protection against CSRF
     if (!savedPayment.state || savedPayment.state !== state) {
@@ -45,6 +62,8 @@ export const get = async (req: Request, res: Response, next: NextFunction): Prom
       const basePath = getUrlWithTransactionIdAndSubmissionId(ACTIVE_SUBMISSION_BASE_PATH, appData[Transactionkey] as string, appData[OverseasEntityKey] as string);
       paymentConfirmationUrl = REGISTER_AN_OVERSEAS_ENTITY_URL + basePath + CONFIRMATION_PAGE;
       paymentFailureUrl = REGISTER_AN_OVERSEAS_ENTITY_URL + basePath + PAYMENT_FAILED_PAGE;
+      logger.info(`Deleting payment reference from cache for transactionId: ${transactionId} and submissionId: ${submissionId}`);
+      req.session?.deleteExtraData(cacheKey);
     }
 
     if (status === PAYMENT_PAID) {

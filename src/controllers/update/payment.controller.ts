@@ -27,16 +27,16 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     const { status, state } = req.query;
     req.params[ROUTE_PARAM_SUBMISSION_ID] = req.params[ROUTE_PARAM_SUBMISSION_ID] ?? req.params[ROUTE_PARAM_OVERSEAS_ENTITY_ID];
-    const transactionId = req.params[ROUTE_PARAM_TRANSACTION_ID];
-    const submissionId = req.params[ROUTE_PARAM_SUBMISSION_ID];
+    const transactionID = req.params[ROUTE_PARAM_TRANSACTION_ID];
+    const overseasEntityID = req.params[ROUTE_PARAM_SUBMISSION_ID];
     const appData: ApplicationData = await getApplicationData(req);
     let savedPayment = appData[PaymentKey] || {} as CreatePaymentRequest;
-    let cacheKey: string = "";
+    let storageKey: string = "";
 
     if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
-      logger.info(`Fetching payment reference from cache for transactionId: ${transactionId} and submissionId: ${submissionId}`);
-      cacheKey = getCacheKeyForPaymentRef(transactionId, submissionId);
-      savedPayment = req.session?.getExtraData(cacheKey) as CreatePaymentRequest;
+      logger.info(`Fetching payment reference from cache for transactionId: ${transactionID} and submissionId: ${overseasEntityID}`);
+      storageKey = getCacheKeyForPaymentRef(transactionID, overseasEntityID);
+      savedPayment = req.session?.getExtraData(storageKey) as CreatePaymentRequest;
     }
 
     logger.infoRequest(req, `Returned state: ${ state }, saved state: ${savedPayment.state}, with status: ${ status }`);
@@ -52,8 +52,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       const basePath = getUrlWithTransactionIdAndSubmissionId(ACTIVE_SUBMISSION_BASE_PATH, appData[Transactionkey] as string, appData[OverseasEntityKey] as string);
       updatePaymentCompletedUrl = UPDATE_AN_OVERSEAS_ENTITY_URL + basePath + UPDATE_CONFIRMATION_PAGE;
       updatePaymentFailedUrl = UPDATE_AN_OVERSEAS_ENTITY_URL + basePath + PAYMENT_FAILED_PAGE;
-      logger.info(`Deleting payment reference from cache for transactionId: ${transactionId} and submissionId: ${submissionId}}`);
-      req.session?.deleteExtraData(cacheKey);
+      logger.info(`Deleting payment reference from cache for transactionId: ${transactionID} and submissionId: ${overseasEntityID}`);
+      req.session?.deleteExtraData(storageKey);
     }
 
     if (status === PAYMENT_PAID) {

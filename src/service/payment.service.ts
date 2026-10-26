@@ -1,14 +1,18 @@
 import { Request } from "express";
 import { v4 as uuidv4 } from 'uuid';
-import { Session } from "@companieshouse/node-session-handler";
+import * as crypto from "crypto";
 import ApiClient from "@companieshouse/api-sdk-node/dist/client";
+import { Session } from "@companieshouse/node-session-handler";
 import { isActiveFeature } from "../utils/feature.flag";
 import { ApplicationData } from "../model";
 import { createOAuthApiClient } from "./api.service";
 import { getUrlWithParamsToPath } from "../utils/url";
-import { createAndLogErrorRequest, logger } from "../utils/logger";
+import { logger, createAndLogErrorRequest } from "../utils/logger";
 
-import { CreatePaymentRequest, Payment } from "@companieshouse/api-sdk-node/dist/services/payment";
+import {
+  Payment,
+  CreatePaymentRequest
+} from "@companieshouse/api-sdk-node/dist/services/payment";
 
 import {
   PaymentKey,
@@ -31,6 +35,7 @@ import {
   OVERSEAS_ENTITY,
   CONFIRMATION_URL,
   PAYMENT_REQUIRED_HEADER,
+  PAYMENT_REF_CACHE_PREFIX,
   CONFIRMATION_WITH_PARAMS_URL,
   REGISTER_AN_OVERSEAS_ENTITY_URL,
   FEATURE_FLAG_ENABLE_REDIS_REMOVAL,
@@ -49,7 +54,7 @@ export const startPaymentsSession = async (
 ): Promise<string> => {
 
   const appData: ApplicationData = {
-    ...(await getApplicationData(req, true)),
+    ...(await getApplicationData(req)),
     [Transactionkey]: transactionId,
     [OverseasEntityKey]: overseasEntityId
   };
@@ -69,9 +74,9 @@ export const startPaymentsSession = async (
 
   const createPaymentRequest: CreatePaymentRequest = setPaymentRequest(req, transactionId, overseasEntityId, baseURL);
 
-  // Save app data including the state used as `nonce` against CSRF.
   if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
-    await setApplicationData(req, createPaymentRequest, PaymentKey);
+    logger.info(`Saving payment reference to cache for transactionId: ${transactionId} and submissionId: ${overseasEntityId}`);
+    req.session?.setExtraData(getCacheKeyForPaymentRef(transactionId, overseasEntityId), createPaymentRequest);
   } else {
     await setApplicationData(session, createPaymentRequest, PaymentKey);
   }
@@ -120,4 +125,8 @@ const setPaymentRequest = (req: Request, transactionId: string, overseasEntityId
     redirectUri,
     reference
   };
+};
+
+export const getCacheKeyForPaymentRef = (transactionId: string, submissionId: string): string => {
+  return PAYMENT_REF_CACHE_PREFIX + crypto.createHash('md5').update(`${transactionId}${submissionId}`).digest("hex");
 };

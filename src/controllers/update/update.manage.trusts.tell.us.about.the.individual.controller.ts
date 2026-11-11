@@ -34,7 +34,6 @@ import {
 
 import {
   ROUTE_PARAM_TRUSTEE_ID,
-  UPDATE_AN_OVERSEAS_ENTITY_URL,
   FEATURE_FLAG_ENABLE_REDIS_REMOVAL,
   UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL,
   UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL,
@@ -52,7 +51,7 @@ const getPageProperties = (trust, formData, trustee: TrustIndividual, req: Reque
     isUpdate: true,
     uneditableDOB: !!trustee?.ch_references,
     backLinkUrl: getBackLink(req, trust.review_status.reviewed_individuals),
-    templateName: req.url ? req.url.replace(UPDATE_AN_OVERSEAS_ENTITY_URL, "") : UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE,
+    templateName: UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE,
     pageParams: {
       title: 'Tell us about the individual',
     },

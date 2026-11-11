@@ -59,7 +59,7 @@ const getPageProperties = async (
 ): Promise<TrustIndividualBeneificalOwnerPageProperties> => {
 
   const appData: ApplicationData = await getApplicationData(req);
-  const { templateName, template } = getPageTemplate(isUpdate, req.url);
+  const { templateName, template } = getPageTemplate(isUpdate);
 
   return {
     errors,
@@ -192,11 +192,11 @@ export const postTrustIndividualBo = async (req: Request, res: Response, next: N
   }
 };
 
-const getPageTemplate = (isUpdate: boolean, url: string) => {
+const getPageTemplate = (isUpdate: boolean) => {
   if (isUpdate) {
     return {
       template: config.UPDATE_TRUSTS_INDIVIDUAL_BENEFICIAL_OWNER_PAGE,
-      templateName: url.replace(config.UPDATE_AN_OVERSEAS_ENTITY_URL, "")
+      templateName: config.UPDATE_TRUSTS_INDIVIDUAL_BENEFICIAL_OWNER_PAGE
     };
   } else {
     return {

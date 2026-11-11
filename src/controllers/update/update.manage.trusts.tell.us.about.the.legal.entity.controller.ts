@@ -24,7 +24,6 @@ import { checkTrustLegalEntityBeneficialOwnerStillInvolved } from '../../validat
 
 import {
   ROUTE_PARAM_TRUSTEE_ID,
-  UPDATE_AN_OVERSEAS_ENTITY_URL,
   FEATURE_FLAG_ENABLE_REDIS_REMOVAL,
   UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL,
   UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL,
@@ -42,7 +41,7 @@ const getPageProperties = (req, trust, formData, url: string, errors?: Formatted
     formData,
     isUpdate: true,
     backLinkUrl: getBackLink(req, trust.review_status?.reviewed_legal_entities),
-    templateName: url ? url.replace(UPDATE_AN_OVERSEAS_ENTITY_URL, "") : UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE,
+    templateName: UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE,
     pageParams: {
       title: 'Tell us about the legal entity',
     },

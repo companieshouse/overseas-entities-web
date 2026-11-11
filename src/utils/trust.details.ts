@@ -71,7 +71,7 @@ const getPageProperties = async (
   errors?: FormattedValidationErrors,
 ): Promise<TrustDetailPageProperties> => {
 
-  const { templateName, template } = getPageTemplate(isUpdate, isReview, req.url);
+  const { templateName, template } = getPageTemplate(isUpdate, isReview);
   const appData: ApplicationData = await getApplicationData(req);
   const boAvailableForTrust = [
     ...getBoIndividualAssignableToTrust(appData).map(mapperBo.mapBoIndividualToPage),
@@ -276,7 +276,7 @@ const getBackLinkUrl = (isUpdate: boolean, appData: ApplicationData, req: Reques
   return backLinkUrl;
 };
 
-const getPageTemplate = (isUpdate: boolean, isReview: boolean, url: string) => {
+const getPageTemplate = (isUpdate: boolean, isReview: boolean) => {
   if (isReview) {
     return {
       template: config.UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_PAGE,
@@ -286,7 +286,7 @@ const getPageTemplate = (isUpdate: boolean, isReview: boolean, url: string) => {
   if (isUpdate) {
     return {
       template: config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_PAGE,
-      templateName: url.replace(config.UPDATE_AN_OVERSEAS_ENTITY_URL, "")
+      templateName: config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_PAGE,
     };
   } else {
     return { template: config.TRUST_DETAILS_PAGE, templateName: config.TRUST_DETAILS_PAGE };

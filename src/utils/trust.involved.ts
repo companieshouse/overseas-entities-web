@@ -102,7 +102,7 @@ const getPageProperties = async (
     formerTrusteeData = getFormerTrusteesFromTrust(appData, trustId, isReview);
   }
 
-  const { templateName, template } = getPageTemplate(isUpdate, isReview, req.url);
+  const { templateName, template } = getPageTemplate(isUpdate, isReview);
 
   return {
     errors,
@@ -280,7 +280,7 @@ export const postTrustInvolvedPage = async (
   }
 };
 
-const getPageTemplate = (isUpdate: boolean, isReview: boolean, url: string) => {
+const getPageTemplate = (isUpdate: boolean, isReview: boolean) => {
   if (isReview) {
     return {
       template: config.UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE,
@@ -289,7 +289,7 @@ const getPageTemplate = (isUpdate: boolean, isReview: boolean, url: string) => {
   } else if (isUpdate) {
     return {
       template: config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE,
-      templateName: url.replace(config.UPDATE_AN_OVERSEAS_ENTITY_URL, "")
+      templateName: config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE
     };
   } else {
     return {

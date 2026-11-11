@@ -58,7 +58,7 @@ const getPageProperties = async (
 ): Promise<TrustLegalEntityBeneficialOwnerPageProperties> => {
 
   const appData: ApplicationData = await getApplicationData(req);
-  const { templateName, template } = getPageTemplate(isUpdate, req.url);
+  const { templateName, template } = getPageTemplate(isUpdate);
 
   return {
     errors,
@@ -179,9 +179,9 @@ const getTrustInvolvedUrl = (isUpdate: boolean, trustId: string, req: Request) =
   }
 };
 
-const getPageTemplate = (isUpdate: boolean, url: string) => (
+const getPageTemplate = (isUpdate: boolean) => (
   isUpdate
-    ? { template: config.UPDATE_TRUSTS_TELL_US_ABOUT_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE, templateName: url.replace(config.UPDATE_AN_OVERSEAS_ENTITY_URL, "") }
+    ? { template: config.UPDATE_TRUSTS_TELL_US_ABOUT_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE, templateName: config.UPDATE_TRUSTS_TELL_US_ABOUT_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE }
     : { template: config.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE, templateName: config.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE }
 );
 

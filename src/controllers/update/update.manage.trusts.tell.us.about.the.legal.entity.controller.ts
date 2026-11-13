@@ -24,7 +24,6 @@ import { checkTrustLegalEntityBeneficialOwnerStillInvolved } from '../../validat
 
 import {
   ROUTE_PARAM_TRUSTEE_ID,
-  UPDATE_AN_OVERSEAS_ENTITY_URL,
   FEATURE_FLAG_ENABLE_REDIS_REMOVAL,
   UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL,
   UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL,
@@ -35,14 +34,14 @@ import {
   UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_WITH_PARAMS_URL,
 } from '../../config';
 
-const getPageProperties = (req, trust, formData, url: string, errors?: FormattedValidationErrors) => {
+const getPageProperties = (req, trust, formData, errors?: FormattedValidationErrors) => {
 
   return {
     errors,
     formData,
     isUpdate: true,
     backLinkUrl: getBackLink(req, trust.review_status?.reviewed_legal_entities),
-    templateName: url ? url.replace(UPDATE_AN_OVERSEAS_ENTITY_URL, "") : UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE,
+    templateName: UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE,
     pageParams: {
       title: 'Tell us about the legal entity',
     },
@@ -56,8 +55,8 @@ const getPageProperties = (req, trust, formData, url: string, errors?: Formatted
   };
 };
 
-const getPagePropertiesRelevantPeriod = (req, isRelevantPeriod, trust, formData, url: string, entityName, errors?: FormattedValidationErrors) => {
-  const pageProps = getPageProperties(req, trust, formData, url, errors);
+const getPagePropertiesRelevantPeriod = (req, isRelevantPeriod, trust, formData, entityName, errors?: FormattedValidationErrors) => {
+  const pageProps = getPageProperties(req, trust, formData, errors);
   pageProps.formData.relevant_period = isRelevantPeriod;
   pageProps.pageData.entity_name = entityName;
   return pageProps;
@@ -78,9 +77,9 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const formData = trustee ? mapLegalEntityTrusteeFromSessionToPage(trustee) : {};
 
     if (isRelevantPeriod || (trustee && trustee.relevant_period)) {
-      return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE, getPagePropertiesRelevantPeriod(req, true, trust, formData, req.url, appData.entity_name));
+      return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE, getPagePropertiesRelevantPeriod(req, true, trust, formData, appData.entity_name));
     } else {
-      return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE, getPageProperties(req, trust, formData, req.url));
+      return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE, getPageProperties(req, trust, formData));
     }
   } catch (error) {
     next(error);
@@ -108,12 +107,12 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       if (isRelevantPeriod || (trustee && trustee.relevant_period)) {
         return res.render(
           UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE,
-          getPagePropertiesRelevantPeriod(req, true, trust, formData, req.url, appData.entity_name, formatValidationError([...errorListArray, ...errors])),
+          getPagePropertiesRelevantPeriod(req, true, trust, formData, appData.entity_name, formatValidationError([...errorListArray, ...errors])),
         );
       } else {
         return res.render(
           UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE,
-          getPageProperties(req, trust, formData, req.url, formatValidationError([...errorListArray, ...errors])),
+          getPageProperties(req, trust, formData, formatValidationError([...errorListArray, ...errors])),
         );
       }
     }

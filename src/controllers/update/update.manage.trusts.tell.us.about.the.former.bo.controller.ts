@@ -20,7 +20,6 @@ import { filingPeriodTrustCeaseDateValidations, filingPeriodTrustStartDateValida
 
 import {
   ROUTE_PARAM_TRUSTEE_ID,
-  UPDATE_AN_OVERSEAS_ENTITY_URL,
   FEATURE_FLAG_ENABLE_REDIS_REMOVAL,
   UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL,
   UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL,
@@ -104,7 +103,7 @@ const getPageProperties = (trust: Trust, formData: TrustHistoricalBeneficialOwne
   errors,
   formData,
   backLinkUrl: getBackLink(trust.review_status?.reviewed_former_bos, req),
-  templateName: req.url ? req.url.replace(UPDATE_AN_OVERSEAS_ENTITY_URL, "") : UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_PAGE,
+  templateName: UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_PAGE,
   pageParams: {
     title: "Tell us about the former beneficial owner",
   },
